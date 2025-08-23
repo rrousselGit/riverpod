@@ -6,9 +6,8 @@ import 'package:test/test.dart';
 void main() {
   group('StreamProvider.family', () {
     test('specifies `from` & `argument` for related providers', () {
-      final provider = StreamProvider.family<int, int>(
-        (ref, _) => Stream.value(0),
-      );
+      final provider =
+          StreamProvider.family<int, int>((ref, _) => Stream.value(0));
 
       expect(provider(0).from, provider);
       expect(provider(0).argument, 0);
@@ -34,11 +33,8 @@ void main() {
         expect(
           container.getAllProviderElements(),
           unorderedEquals(<Object?>[
-            isA<ProviderElement>().having(
-              (e) => e.origin,
-              'origin',
-              provider(0),
-            ),
+            isA<ProviderElement>()
+                .having((e) => e.origin, 'origin', provider(0)),
           ]),
         );
       });
@@ -51,7 +47,9 @@ void main() {
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
           parent: root,
-          overrides: [provider.overrideWith((ref, value) => Stream.value(42))],
+          overrides: [
+            provider.overrideWith((ref, value) => Stream.value(42)),
+          ],
         );
 
         container.listen(provider(0), (p, n) {});
@@ -62,18 +60,18 @@ void main() {
         expect(
           container.getAllProviderElements(),
           unorderedEquals(<Object?>[
-            isA<ProviderElement>().having(
-              (e) => e.origin,
-              'origin',
-              provider(0),
-            ),
+            isA<ProviderElement>()
+                .having((e) => e.origin, 'origin', provider(0)),
           ]),
         );
       });
     });
 
     test('can be auto-scoped', () async {
-      final dep = Provider((ref) => 0, dependencies: const []);
+      final dep = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final provider = StreamProvider.family<int, int>(
         (ref, i) => Stream.value(ref.watch(dep) + i),
         dependencies: [dep],

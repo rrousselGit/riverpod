@@ -5,50 +5,53 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('ProviderScope', () {
     testWidgets(
-      'If ProviderScope does not rebuild after a few frames, flush the scheduler',
-      (tester) async {
-        var result = 'Hello World';
-        final provider = Provider((ref) => result);
+        'If ProviderScope does not rebuild after a few frames, flush the scheduler',
+        (tester) async {
+      var result = 'Hello World';
+      final provider = Provider((ref) => result);
 
-        await tester.pumpWidget(
-          ProviderScope(
-            child: Consumer(
-              builder: (context, ref, _) {
-                return Text(
-                  ref.watch(provider),
-                  textDirection: TextDirection.ltr,
-                );
-              },
-            ),
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(
+            builder: (context, ref, _) {
+              return Text(
+                ref.watch(provider),
+                textDirection: TextDirection.ltr,
+              );
+            },
           ),
-        );
-        final container = tester.container();
+        ),
+      );
+      final container = tester.container();
 
-        late String value;
-        container.listen(
-          provider,
-          (previous, next) => value = next,
-          fireImmediately: true,
-        );
+      late String value;
+      container.listen(
+        provider,
+        (previous, next) => value = next,
+        fireImmediately: true,
+      );
 
-        result = 'Hello Foo';
-        container.invalidate(provider);
+      result = 'Hello Foo';
+      container.invalidate(provider);
 
-        expect(value, 'Hello World');
+      expect(value, 'Hello World');
 
-        await tester.idle();
+      await tester.idle();
 
-        expect(value, 'Hello Foo');
-      },
-    );
+      expect(value, 'Hello Foo');
+    });
 
-    testWidgets('Supports scheduling rebuilds of a scoped provider '
+    testWidgets(
+        'Supports scheduling rebuilds of a scoped provider '
         'from an ancestor scope update', (tester) async {
       // Regression test for https://github.com/rrousselGit/riverpod/issues/3498
-      final futureProvider = FutureProvider.autoDispose<int>((ref) async {
-        await null;
-        return 42;
-      }, name: 'futureProvider');
+      final futureProvider = FutureProvider.autoDispose<int>(
+        (ref) async {
+          await null;
+          return 42;
+        },
+        name: 'futureProvider',
+      );
 
       final secondProvider = Provider.autoDispose<int?>(
         (ref) => ref.watch(futureProvider).value,
@@ -141,7 +144,9 @@ void main() {
           Builder(
             builder: (context) {
               return const Column(
-                children: [ProviderScope(child: Placeholder())],
+                children: [
+                  ProviderScope(child: Placeholder()),
+                ],
               );
             },
           ),
@@ -149,8 +154,7 @@ void main() {
         expect(
           tester.container(),
           isA<ProviderContainer>(),
-          reason:
-              'the helper method should find the container'
+          reason: 'the helper method should find the container'
               ' in a scope that is not the first widget',
         );
       });
@@ -176,7 +180,9 @@ void main() {
               key: outerKey,
               child: UncontrolledProviderScope(
                 container: innerContainer,
-                child: Container(key: innerKey),
+                child: Container(
+                  key: innerKey,
+                ),
               ),
             ),
           ),

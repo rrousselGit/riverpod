@@ -80,12 +80,11 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-         $allTransitiveDependencies: computeAllTransitiveDependencies(
-           dependencies,
-         ),
-         from: null,
-         argument: null,
-       );
+          $allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+        );
 
   /// An implementation detail of Riverpod
   /// @nodoc
@@ -123,10 +122,13 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   /// This may happen if the provider is refreshed or one of its dependencies
   /// has changes.
   Refreshable<NotifierT> get notifier =>
-      ProviderElementProxy<NotifierT, NotifierT>(this, (element) {
-        return (element as _ChangeNotifierProviderElement<NotifierT>)
-            ._notifierNotifier;
-      });
+      ProviderElementProxy<NotifierT, NotifierT>(
+        this,
+        (element) {
+          return (element as _ChangeNotifierProviderElement<NotifierT>)
+              ._notifierNotifier;
+        },
+      );
 
   final NotifierT Function(Ref ref) _createFn;
   @override
@@ -187,7 +189,9 @@ class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
   }
 
   @override
-  void visitListenables(void Function($Observable element) listenableVisitor) {
+  void visitListenables(
+    void Function($Observable element) listenableVisitor,
+  ) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(_notifierNotifier);
   }
@@ -195,18 +199,10 @@ class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 
 /// The [Family] of [ChangeNotifierProvider].
 @publicInMisc
-final class ChangeNotifierProviderFamily<
-  NotifierT extends ChangeNotifier?,
-  ArgT
->
-    extends
-        FunctionalFamily<
-          NotifierT,
-          NotifierT,
-          ArgT,
-          NotifierT,
-          ChangeNotifierProvider<NotifierT>
-        > {
+final class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?,
+        ArgT>
+    extends FunctionalFamily<NotifierT, NotifierT, ArgT, NotifierT,
+        ChangeNotifierProvider<NotifierT>> {
   /// The [Family] of [ChangeNotifierProvider].
   /// @nodoc
   @internal
@@ -217,9 +213,8 @@ final class ChangeNotifierProviderFamily<
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-         providerFactory: ChangeNotifierProvider.internal,
-         $allTransitiveDependencies: computeAllTransitiveDependencies(
-           dependencies,
-         ),
-       );
+          providerFactory: ChangeNotifierProvider.internal,
+          $allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
 }

@@ -15,15 +15,15 @@ const bProvider = BProvider._();
 final class BProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const BProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'bProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'bProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$bHash();
@@ -55,15 +55,15 @@ const anotherScopedProvider = AnotherScopedProvider._();
 final class AnotherScopedProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const AnotherScopedProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'anotherScopedProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[],
-        $allTransitiveDependencies: const <ProviderOrFamily>[],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'anotherScopedProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
 
   @override
   String debugGetCreateSourceHash() => _$anotherScopedHash();
@@ -93,20 +93,19 @@ String _$anotherScopedHash() => r'edf3ccffb7c3ce1b1e4ffdd4009aeed4fa38c3f8';
 const anotherNonEmptyScopedProvider = AnotherNonEmptyScopedProvider._();
 
 final class AnotherNonEmptyScopedProvider
-    extends $FunctionalProvider<int, int, int>
-    with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const AnotherNonEmptyScopedProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'anotherNonEmptyScopedProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[anotherScopedProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          AnotherNonEmptyScopedProvider.$allTransitiveDependencies0,
-        ],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'anotherNonEmptyScopedProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[anotherScopedProvider],
+          $allTransitiveDependencies: const <ProviderOrFamily>[
+            AnotherNonEmptyScopedProvider.$allTransitiveDependencies0,
+          ],
+        );
 
   static const $allTransitiveDependencies0 = anotherScopedProvider;
 

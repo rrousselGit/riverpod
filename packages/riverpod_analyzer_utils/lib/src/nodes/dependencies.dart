@@ -82,7 +82,10 @@ extension on CollectionElement {
 }
 
 final class ProviderDependency {
-  ProviderDependency._({required this.node, required this.provider});
+  ProviderDependency._({
+    required this.node,
+    required this.provider,
+  });
 
   final CollectionElement node;
   final GeneratorProviderDeclarationElement provider;
@@ -122,7 +125,10 @@ extension on Expression {
 }
 
 final class ProviderDependencyList {
-  ProviderDependencyList._({required this.node, required this.values});
+  ProviderDependencyList._({
+    required this.node,
+    required this.values,
+  });
 
   final ListLiteral? node;
   final List<ProviderDependency>? values;
@@ -130,13 +136,13 @@ final class ProviderDependencyList {
 
 extension on DartObject {
   /// An element in `@Riverpod(dependencies: [a, b])` or equivalent.
-  GeneratorProviderDeclarationElement? toDependency({required AstNode from}) {
+  GeneratorProviderDeclarationElement? toDependency({
+    required AstNode from,
+  }) {
     final functionType = toFunctionValue2();
     if (functionType != null) {
-      final provider = FunctionalProviderDeclarationElement._parse(
-        functionType,
-        from,
-      );
+      final provider =
+          FunctionalProviderDeclarationElement._parse(functionType, from);
 
       if (provider != null) return provider;
     }
@@ -171,10 +177,8 @@ extension on DartObject {
       return null;
     }
 
-    final values = list
-        .map((e) => e.toDependency(from: from))
-        .nonNulls
-        .toList();
+    final values =
+        list.map((e) => e.toDependency(from: from)).nonNulls.toList();
 
     // If any dependency failed to parse, return null.
     // Errors should already have been reported
@@ -201,9 +205,9 @@ final class AccumulatedDependencyList {
     required this.widgetDependencies,
     required this.overrides,
   }) : parent = node.ancestors
-           .map((e) => e.accumulatedDependencies)
-           .nonNulls
-           .firstOrNull;
+            .map((e) => e.accumulatedDependencies)
+            .nonNulls
+            .firstOrNull;
 
   final AstNode node;
   final AccumulatedDependencyList? parent;
@@ -224,13 +228,22 @@ final class AccumulatedDependencyList {
     }
 
     final dependenciesValues = dependencies?.values?.map(
-      (e) => AccumulatedDependency._(node: e.node, provider: e.provider),
+      (e) => AccumulatedDependency._(
+        node: e.node,
+        provider: e.provider,
+      ),
     );
     final riverpodValues = riverpod?.values?.map(
-      (e) => AccumulatedDependency._(node: e.node, provider: e.provider),
+      (e) => AccumulatedDependency._(
+        node: e.node,
+        provider: e.provider,
+      ),
     );
     final dependenciesElementValues = widgetDependencies?.map(
-      (provider) => AccumulatedDependency._(node: null, provider: provider),
+      (provider) => AccumulatedDependency._(
+        node: null,
+        provider: provider,
+      ),
     );
 
     return (dependenciesValues ?? const [])
@@ -353,10 +366,8 @@ extension IdentifierDependenciesX on Identifier {
       final Object? staticElement = element;
       if (staticElement is! Annotatable) return null;
 
-      final dependencies = DependenciesAnnotationElement._of(
-        staticElement,
-        this,
-      );
+      final dependencies =
+          DependenciesAnnotationElement._of(staticElement, this);
       if (dependencies == null) return null;
 
       return IdentifierDependencies._(node: this, dependencies: dependencies);
@@ -365,7 +376,10 @@ extension IdentifierDependenciesX on Identifier {
 }
 
 class NamedTypeDependencies {
-  NamedTypeDependencies._({required this.node, required this.dependencies});
+  NamedTypeDependencies._({
+    required this.node,
+    required this.dependencies,
+  });
 
   final NamedType node;
   final DependenciesAnnotationElement dependencies;
@@ -380,13 +394,14 @@ extension NamedTypeDependenciesX on NamedType {
       final Object? staticElement = type?.element3;
       if (staticElement is! Annotatable) return null;
 
-      final dependencies = DependenciesAnnotationElement._of(
-        staticElement,
-        this,
-      );
+      final dependencies =
+          DependenciesAnnotationElement._of(staticElement, this);
       if (dependencies == null) return null;
 
-      return NamedTypeDependencies._(node: this, dependencies: dependencies);
+      return NamedTypeDependencies._(
+        node: this,
+        dependencies: dependencies,
+      );
     });
   }
 }
@@ -464,9 +479,8 @@ final class DependenciesAnnotationElement {
       final type = annotation.element2.cast<ExecutableElement2>()?.returnType;
       if (type == null || !dependenciesType.isExactlyType(type)) return null;
 
-      final dependencies = annotation.computeConstantValue()?.getField(
-        'dependencies',
-      );
+      final dependencies =
+          annotation.computeConstantValue()?.getField('dependencies');
       if (dependencies == null) return null;
 
       final dependencyList = dependencies.toDependencyList(from: from);
@@ -478,7 +492,10 @@ final class DependenciesAnnotationElement {
     });
   }
 
-  static DependenciesAnnotationElement? _of(Annotatable element, AstNode from) {
+  static DependenciesAnnotationElement? _of(
+    Annotatable element,
+    AstNode from,
+  ) {
     return element.metadata2.annotations
         .map((e) => _parse(e, from))
         .nonNulls

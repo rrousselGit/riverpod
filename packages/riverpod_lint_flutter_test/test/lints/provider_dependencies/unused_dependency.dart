@@ -19,7 +19,10 @@ int dep2(Ref ref) => 0;
 @Riverpod(
   keepAlive: false,
   // expect_lint: provider_dependencies
-  dependencies: [dep, dep2],
+  dependencies: [
+    dep,
+    dep2,
+  ],
 )
 int extraDep(Ref ref) {
   ref.watch(dep2Provider);
@@ -29,7 +32,9 @@ int extraDep(Ref ref) {
 @Riverpod(
   keepAlive: false,
   // expect_lint: provider_dependencies
-  dependencies: [dep],
+  dependencies: [
+    dep,
+  ],
 )
 int noDep(Ref ref) {
   return 0;
@@ -37,7 +42,9 @@ int noDep(Ref ref) {
 
 @Riverpod(
   // expect_lint: provider_dependencies
-  dependencies: [dep],
+  dependencies: [
+    dep,
+  ],
   keepAlive: false,
 )
 int dependenciesFirstThenKeepAlive(Ref ref) {
@@ -46,7 +53,9 @@ int dependenciesFirstThenKeepAlive(Ref ref) {
 
 @Riverpod(
   // expect_lint: provider_dependencies
-  dependencies: [dep],
+  dependencies: [
+    dep,
+  ],
 )
 int noDepNoParam(Ref ref) {
   return 0;
@@ -61,7 +70,9 @@ int noDepWithoutComma(Ref ref) {
 @Riverpod(
   keepAlive: false,
   // expect_lint: provider_dependencies
-  dependencies: [root],
+  dependencies: [
+    root,
+  ],
 )
 int rootDep(Ref ref) => 0;
 
@@ -123,7 +134,10 @@ void secondUnused() {
 }
 
 // expect_lint: provider_dependencies
-@Dependencies([dep2, dep])
+@Dependencies([
+  dep2,
+  dep,
+])
 void secondUnusedWithTrailingComma() {
   dep2Provider;
 }

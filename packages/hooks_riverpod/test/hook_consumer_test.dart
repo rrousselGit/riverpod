@@ -15,7 +15,10 @@ void main() {
               final a = ref.watch(provider);
               final b = useState(21).value;
 
-              return Text('$a $b', textDirection: TextDirection.ltr);
+              return Text(
+                '$a $b',
+                textDirection: TextDirection.ltr,
+              );
             },
           ),
         ),

@@ -14,16 +14,20 @@ const fnProvider = FnFamily._();
 
 final class FnProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const FnProvider._({
-    required FnFamily super.from,
-    required (BuildContext, {BuildContext context2}) super.argument,
-  }) : super(
-         retry: null,
-         name: r'fnProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  const FnProvider._(
+      {required FnFamily super.from,
+      required (
+        BuildContext, {
+        BuildContext context2,
+      })
+          super.argument})
+      : super(
+          retry: null,
+          name: r'fnProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$fnHash();
@@ -42,8 +46,15 @@ final class FnProvider extends $FunctionalProvider<int, int, int>
 
   @override
   int create(Ref ref) {
-    final argument = this.argument as (BuildContext, {BuildContext context2});
-    return fn(ref, argument.$1, context2: argument.context2);
+    final argument = this.argument as (
+      BuildContext, {
+      BuildContext context2,
+    });
+    return fn(
+      ref,
+      argument.$1,
+      context2: argument.context2,
+    );
   }
 
   /// {@macro riverpod.override_with_value}
@@ -70,20 +81,28 @@ String _$fnHash() => r'8a726da6104b38a55782e44062757e6771b19de3';
 final class FnFamily extends $Family
     with
         $FunctionalFamilyOverride<
-          int,
-          (BuildContext, {BuildContext context2})
-        > {
+            int,
+            (
+              BuildContext, {
+              BuildContext context2,
+            })> {
   const FnFamily._()
-    : super(
-        retry: null,
-        name: r'fnProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'fnProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
-  FnProvider call(BuildContext context1, {required BuildContext context2}) =>
-      FnProvider._(argument: (context1, context2: context2), from: this);
+  FnProvider call(
+    BuildContext context1, {
+    required BuildContext context2,
+  }) =>
+      FnProvider._(argument: (
+        context1,
+        context2: context2,
+      ), from: this);
 
   @override
   String toString() => r'fnProvider';
@@ -93,16 +112,20 @@ final class FnFamily extends $Family
 const myProvider = MyNotifierFamily._();
 
 final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
-  const MyNotifierProvider._({
-    required MyNotifierFamily super.from,
-    required (BuildContext, {BuildContext context2}) super.argument,
-  }) : super(
-         retry: null,
-         name: r'myProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  const MyNotifierProvider._(
+      {required MyNotifierFamily super.from,
+      required (
+        BuildContext, {
+        BuildContext context2,
+      })
+          super.argument})
+      : super(
+          retry: null,
+          name: r'myProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$myNotifierHash();
@@ -142,53 +165,59 @@ String _$myNotifierHash() => r'04a0cf33dbda80e3fa80748fe46546b1c968da22';
 final class MyNotifierFamily extends $Family
     with
         $ClassFamilyOverride<
-          MyNotifier,
-          int,
-          int,
-          int,
-          (BuildContext, {BuildContext context2})
-        > {
+            MyNotifier,
+            int,
+            int,
+            int,
+            (
+              BuildContext, {
+              BuildContext context2,
+            })> {
   const MyNotifierFamily._()
-    : super(
-        retry: null,
-        name: r'myProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'myProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
   MyNotifierProvider call(
     BuildContext context1, {
     required BuildContext context2,
-  }) => MyNotifierProvider._(
-    argument: (context1, context2: context2),
-    from: this,
-  );
+  }) =>
+      MyNotifierProvider._(argument: (
+        context1,
+        context2: context2,
+      ), from: this);
 
   @override
   String toString() => r'myProvider';
 }
 
 abstract class _$MyNotifier extends $Notifier<int> {
-  late final _$args = ref.$arg as (BuildContext, {BuildContext context2});
+  late final _$args = ref.$arg as (
+    BuildContext, {
+    BuildContext context2,
+  });
   BuildContext get context1 =>
       _$args.$1; // expect_lint: avoid_build_context_in_providers
   BuildContext get context2 => _$args.context2;
 
-  int build(BuildContext context1, {required BuildContext context2});
+  int build(
+    BuildContext context1, {
+    required BuildContext context2,
+  });
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args.$1, context2: _$args.context2);
+    final created = build(
+      _$args.$1,
+      context2: _$args.context2,
+    );
     final ref = this.ref as $Ref<int, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<int, int>,
-              int,
-              Object?,
-              Object?
-            >;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -199,15 +228,15 @@ const regression2959Provider = Regression2959Provider._();
 final class Regression2959Provider
     extends $NotifierProvider<Regression2959, void> {
   const Regression2959Provider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'regression2959Provider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'regression2959Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$regression2959Hash();
@@ -234,14 +263,8 @@ abstract class _$Regression2959 extends $Notifier<void> {
   void runBuild() {
     build();
     final ref = this.ref as $Ref<void, void>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<void, void>,
-              void,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<void, void>, void, Object?, Object?>;
     element.handleValue(ref, null);
   }
 }

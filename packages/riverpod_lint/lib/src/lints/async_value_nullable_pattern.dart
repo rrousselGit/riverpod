@@ -62,8 +62,7 @@ class AsyncValueNullablePattern extends RiverpodLintRule {
       if (genericType is TypeParameterType) {
         final unit = node.thisOrAncestorOfType<CompilationUnit>()!;
 
-        genericType =
-            genericType.element3.bound ??
+        genericType = genericType.element3.bound ??
             unit.declaredFragment!.element.library2.typeProvider.dynamicType;
       }
 

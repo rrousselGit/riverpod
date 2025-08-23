@@ -15,15 +15,15 @@ const aProvider = AProvider._();
 final class AProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const AProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: myRetry,
-        name: r'aProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: myRetry,
+          name: r'aProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$aHash();
@@ -55,13 +55,13 @@ const bProvider = BFamily._();
 final class BProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const BProvider._({required BFamily super.from, required int super.argument})
-    : super(
-        retry: myRetry2,
-        name: r'bProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          retry: myRetry2,
+          name: r'bProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$bHash();
@@ -81,7 +81,10 @@ final class BProvider extends $FunctionalProvider<String, String, String>
   @override
   String create(Ref ref) {
     final argument = this.argument as int;
-    return b(ref, argument);
+    return b(
+      ref,
+      argument,
+    );
   }
 
   /// {@macro riverpod.override_with_value}
@@ -108,15 +111,18 @@ String _$bHash() => r'95798a157250c86a901bca5701b487f508f8a5a4';
 final class BFamily extends $Family
     with $FunctionalFamilyOverride<String, int> {
   const BFamily._()
-    : super(
-        retry: myRetry2,
-        name: r'bProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
+      : super(
+          retry: myRetry2,
+          name: r'bProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
-  BProvider call(int arg) => BProvider._(argument: arg, from: this);
+  BProvider call(
+    int arg,
+  ) =>
+      BProvider._(argument: arg, from: this);
 
   @override
   String toString() => r'bProvider';

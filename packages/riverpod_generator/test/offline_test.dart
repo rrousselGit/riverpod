@@ -8,7 +8,10 @@ void main() {
   test('Custom annotation', () async {
     final container = ProviderContainer.test();
     final persist = await container
-        .listen(storageProvider.future, (a, b) {})
+        .listen(
+          storageProvider.future,
+          (a, b) {},
+        )
         .read();
     persist.write('CustomAnnotation', '21', const StorageOptions());
 
@@ -23,7 +26,10 @@ void main() {
   test('CustomJson', () async {
     final container = ProviderContainer.test();
     final persist = await container
-        .listen(storageProvider.future, (a, b) {})
+        .listen(
+          storageProvider.future,
+          (a, b) {},
+        )
         .read();
     persist.write(
       'CustomJson',
@@ -43,7 +49,10 @@ void main() {
   test('CustomKey', () async {
     final container = ProviderContainer.test();
     final persist = await container
-        .listen(storageProvider.future, (a, b) {})
+        .listen(
+          storageProvider.future,
+          (a, b) {},
+        )
         .read();
     persist.write('My key', '{"foo": {"value": 42}}', const StorageOptions());
 
@@ -59,7 +68,10 @@ void main() {
   test('CustomJsonWithArgs', () async {
     final container = ProviderContainer.test();
     final persist = await container
-        .listen(storageProvider.future, (a, b) {})
+        .listen(
+          storageProvider.future,
+          (a, b) {},
+        )
         .read();
     persist.write(
       'CustomJsonWithArgs((42, a, arg3: null))',
@@ -79,9 +91,16 @@ void main() {
   test('PassEncodeDecodeByHand', () async {
     final container = ProviderContainer.test();
     final persist = await container
-        .listen(storageProvider.future, (a, b) {})
+        .listen(
+          storageProvider.future,
+          (a, b) {},
+        )
         .read();
-    persist.write('Foo', 'Hello world', const StorageOptions());
+    persist.write(
+      'Foo',
+      'Hello world',
+      const StorageOptions(),
+    );
 
     final result = await container
         .listen(passEncodeDecodeByHandProvider.future, (prev, next) {})

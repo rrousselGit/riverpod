@@ -48,8 +48,7 @@ String buildParamDefinitionQuery(
         ? 'required $metadata'
         : metadata;
     late final constant = element.computeConstantValue();
-    late final trailing =
-        element.hasDefaultValue &&
+    late final trailing = element.hasDefaultValue &&
             constant != null &&
             !asRequiredNamed &&
             withDefaults
@@ -87,12 +86,10 @@ String buildParamInvocationQuery(
   final buffer = StringBuffer();
 
   buffer.writeAll(
-    parameters.entries
-        .map((e) {
-          if (e.key.isNamed) return '${e.key.name}: ${e.value}';
-          return e.value;
-        })
-        .expand((e) => [e, ',']),
+    parameters.entries.map((e) {
+      if (e.key.isNamed) return '${e.key.name}: ${e.value}';
+      return e.value;
+    }).expand((e) => [e, ',']),
   );
 
   return buffer.toString();

@@ -22,7 +22,10 @@ extension ProviderIdentifierX on SimpleIdentifier {
 
       if (providerElement == null) return null;
 
-      return ProviderIdentifier._(node: this, providerElement: providerElement);
+      return ProviderIdentifier._(
+        node: this,
+        providerElement: providerElement,
+      );
     });
   }
 }

@@ -23,11 +23,14 @@ void main() {
   });
 
   test('Can do exhaustive pattern matching', () {
-    expect(switch (const AsyncValue<int>.loading()) {
-      AsyncData() => 'data',
-      AsyncError() => 'error',
-      AsyncLoading() => 'loading',
-    }, 'loading');
+    expect(
+      switch (const AsyncValue<int>.loading()) {
+        AsyncData() => 'data',
+        AsyncError() => 'error',
+        AsyncLoading() => 'loading',
+      },
+      'loading',
+    );
   });
 
   group('progress', () {
@@ -51,9 +54,9 @@ void main() {
 
   test('unwrapPrevious', () {
     expect(
-      const AsyncLoading<int>(
-        progress: .1,
-      ).copyWithPrevious(const AsyncData(42)).unwrapPrevious(),
+      const AsyncLoading<int>(progress: .1)
+          .copyWithPrevious(const AsyncData(42))
+          .unwrapPrevious(),
       const AsyncLoading<int>(progress: .1),
     );
     expect(
@@ -75,9 +78,9 @@ void main() {
     );
 
     expect(
-      const AsyncData<int>(
-        42,
-      ).copyWithPrevious(const AsyncLoading(progress: .1)).unwrapPrevious(),
+      const AsyncData<int>(42)
+          .copyWithPrevious(const AsyncLoading(progress: .1))
+          .unwrapPrevious(),
       const AsyncData<int>(42),
     );
     expect(
@@ -88,10 +91,9 @@ void main() {
     );
 
     expect(
-      const AsyncError<int>(
-        42,
-        StackTrace.empty,
-      ).copyWithPrevious(const AsyncLoading()).unwrapPrevious(),
+      const AsyncError<int>(42, StackTrace.empty)
+          .copyWithPrevious(const AsyncLoading())
+          .unwrapPrevious(),
       const AsyncError<int>(42, StackTrace.empty),
     );
     expect(
@@ -101,10 +103,9 @@ void main() {
       const AsyncError<int>(42, StackTrace.empty),
     );
     expect(
-      const AsyncError<int>(
-        42,
-        StackTrace.empty,
-      ).copyWithPrevious(const AsyncData(42)).unwrapPrevious(),
+      const AsyncError<int>(42, StackTrace.empty)
+          .copyWithPrevious(const AsyncData(42))
+          .unwrapPrevious(),
       const AsyncError<int>(42, StackTrace.empty),
     );
   });
@@ -112,13 +113,11 @@ void main() {
   group('copyWithPrevious', () {
     group('with seamless: false', () {
       test('with AsyncLoading, is identical to the incoming AsyncLoading', () {
-        final incomingLoading = const AsyncLoading<int>(
-          progress: .1,
-        ).copyWithPrevious(const AsyncData(42), isRefresh: false);
+        final incomingLoading = const AsyncLoading<int>(progress: .1)
+            .copyWithPrevious(const AsyncData(42), isRefresh: false);
 
-        final result = const AsyncLoading<int>(
-          progress: .1,
-        ).copyWithPrevious(incomingLoading, isRefresh: false);
+        final result = const AsyncLoading<int>(progress: .1)
+            .copyWithPrevious(incomingLoading, isRefresh: false);
 
         expect(result, isA<AsyncLoading<int>>());
         expect(result.hasValue, true);
@@ -149,68 +148,54 @@ void main() {
       });
 
       test(
-        'with AsyncError, sets error and stackTraces while also importing hasValue/value',
-        () {
-          final error = const AsyncError<int>(
-            Object(),
-            StackTrace.empty,
-          ).copyWithPrevious(const AsyncData(42));
-          final result = const AsyncLoading<int>(
-            progress: .1,
-          ).copyWithPrevious(error, isRefresh: false);
+          'with AsyncError, sets error and stackTraces while also importing hasValue/value',
+          () {
+        final error = const AsyncError<int>(Object(), StackTrace.empty)
+            .copyWithPrevious(const AsyncData(42));
+        final result = const AsyncLoading<int>(progress: .1)
+            .copyWithPrevious(error, isRefresh: false);
 
-          expect(result, isA<AsyncLoading<int>>());
-          expect(result.hasValue, true);
-          expect(result.value, 42);
-          expect(result.progress, .1);
+        expect(result, isA<AsyncLoading<int>>());
+        expect(result.hasValue, true);
+        expect(result.value, 42);
+        expect(result.progress, .1);
 
-          expect(result.hasError, true);
-          expect(result.error, const Object());
-          expect(result.stackTrace, StackTrace.empty);
-        },
-      );
+        expect(result.hasError, true);
+        expect(result.error, const Object());
+        expect(result.stackTrace, StackTrace.empty);
+      });
     });
 
     group('with seamless:true', () {
       group('on AsyncError', () {
         test('with AsyncLoading', () {
           expect(
-            const AsyncError<int>(
-              'err',
-              StackTrace.empty,
-            ).copyWithPrevious(const AsyncLoading<int>()),
+            const AsyncError<int>('err', StackTrace.empty)
+                .copyWithPrevious(const AsyncLoading<int>()),
             const AsyncError<int>('err', StackTrace.empty),
           );
         });
 
         test('with AsyncError', () {
           expect(
-            const AsyncError<int>(
-              'err',
-              StackTrace.empty,
-            ).copyWithPrevious(AsyncError<int>('err2', StackTrace.current)),
+            const AsyncError<int>('err', StackTrace.empty)
+                .copyWithPrevious(AsyncError<int>('err2', StackTrace.current)),
             const AsyncError<int>('err', StackTrace.empty),
           );
 
           expect(
             const AsyncError<int>('err', StackTrace.empty).copyWithPrevious(
-              AsyncError<int>(
-                'err2',
-                StackTrace.current,
-              ).copyWithPrevious(const AsyncData(42)),
+              AsyncError<int>('err2', StackTrace.current)
+                  .copyWithPrevious(const AsyncData(42)),
             ),
-            const AsyncError<int>(
-              'err',
-              StackTrace.empty,
-            ).copyWithPrevious(const AsyncData(42)),
+            const AsyncError<int>('err', StackTrace.empty)
+                .copyWithPrevious(const AsyncData(42)),
           );
         });
 
         test('with AsyncData', () {
-          final value = const AsyncError<int>(
-            'err',
-            StackTrace.empty,
-          ).copyWithPrevious(const AsyncData(42));
+          final value = const AsyncError<int>('err', StackTrace.empty)
+              .copyWithPrevious(const AsyncData(42));
 
           expect(value, isA<AsyncError<int>>());
           expect(value.isLoading, false);
@@ -242,9 +227,9 @@ void main() {
 
         test('with AsyncError', () {
           expect(
-            const AsyncData<int>(
-              42,
-            ).copyWithPrevious(const AsyncError<int>('err', StackTrace.empty)),
+            const AsyncData<int>(42).copyWithPrevious(
+              const AsyncError<int>('err', StackTrace.empty),
+            ),
             const AsyncData<int>(42),
           );
         });
@@ -253,17 +238,15 @@ void main() {
       group('on AsyncLoading', () {
         test('with AsyncLoading', () {
           expect(
-            const AsyncLoading<int>(
-              progress: .1,
-            ).copyWithPrevious(const AsyncLoading<int>(progress: .2)),
+            const AsyncLoading<int>(progress: .1)
+                .copyWithPrevious(const AsyncLoading<int>(progress: .2)),
             const AsyncLoading<int>(progress: .1),
           );
         });
 
         test('with AsyncError', () {
-          final value = const AsyncLoading<int>(
-            progress: .1,
-          ).copyWithPrevious(const AsyncError<int>('err', StackTrace.empty));
+          final value = const AsyncLoading<int>(progress: .1)
+              .copyWithPrevious(const AsyncError<int>('err', StackTrace.empty));
 
           expect(value, isA<AsyncError<int>>());
           expect(value.isLoading, true);
@@ -278,10 +261,8 @@ void main() {
 
         test('with AsyncError containing previous data', () {
           final value = const AsyncLoading<int>(progress: .1).copyWithPrevious(
-            const AsyncError<int>(
-              'err',
-              StackTrace.empty,
-            ).copyWithPrevious(const AsyncData(42)),
+            const AsyncError<int>('err', StackTrace.empty)
+                .copyWithPrevious(const AsyncData(42)),
           );
 
           expect(value, isA<AsyncError<int>>());
@@ -299,25 +280,20 @@ void main() {
           expect(
             const AsyncLoading<int>(progress: .1).copyWithPrevious(
               const AsyncLoading<int>(progress: .1).copyWithPrevious(
-                const AsyncError<int>(
-                  'err',
-                  StackTrace.empty,
-                ).copyWithPrevious(const AsyncData(42)),
+                const AsyncError<int>('err', StackTrace.empty)
+                    .copyWithPrevious(const AsyncData(42)),
               ),
             ),
             const AsyncLoading<int>(progress: .1).copyWithPrevious(
-              const AsyncError<int>(
-                'err',
-                StackTrace.empty,
-              ).copyWithPrevious(const AsyncData(42)),
+              const AsyncError<int>('err', StackTrace.empty)
+                  .copyWithPrevious(const AsyncData(42)),
             ),
           );
         });
 
         test('with AsyncData', () {
-          final value = const AsyncLoading<int>(
-            progress: .1,
-          ).copyWithPrevious(const AsyncData(42, kind: DataKind.cache));
+          final value = const AsyncLoading<int>(progress: .1)
+              .copyWithPrevious(const AsyncData(42, kind: DataKind.cache));
 
           expect(value, isA<AsyncData<int>>());
           expect(value.isLoading, true);
@@ -454,9 +430,9 @@ void main() {
       false,
     );
     expect(
-      const AsyncData<int>(
-        42,
-      ).copyWithPrevious(const AsyncError(42, StackTrace.empty)).isLoading,
+      const AsyncData<int>(42)
+          .copyWithPrevious(const AsyncError(42, StackTrace.empty))
+          .isLoading,
       false,
     );
   });
@@ -577,9 +553,9 @@ void main() {
 
     test('matching case', () {
       expect(
-        const AsyncValue.data(
-          42,
-        ).mapOrNull(data: (AsyncData<int> value) => [value.value]),
+        const AsyncValue.data(42).mapOrNull(
+          data: (AsyncData<int> value) => [value.value],
+        ),
         [42],
       );
 
@@ -602,9 +578,10 @@ void main() {
 
     test('orElse', () {
       expect(
-        const AsyncValue.data(
-          42,
-        ).mapOrNull(error: (_) => throw Error(), loading: (_) => throw Error()),
+        const AsyncValue.data(42).mapOrNull(
+          error: (_) => throw Error(),
+          loading: (_) => throw Error(),
+        ),
         null,
       );
 
@@ -639,9 +616,7 @@ void main() {
         'loading',
       );
       expect(
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(42))
-            .when(
+        const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)).when(
               data: (value) => value,
               error: (a, b) => throw Error(),
               loading: () => throw Error(),
@@ -724,9 +699,7 @@ void main() {
         'loading',
       );
       expect(
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(42))
-            .when(
+        const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)).when(
               skipLoadingOnRefresh: false,
               data: (value) => throw Error(),
               error: (a, b) => throw Error(),
@@ -816,9 +789,7 @@ void main() {
         'loading',
       );
       expect(
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(42))
-            .when(
+        const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)).when(
               skipLoadingOnReload: true,
               data: (value) => value,
               error: (a, b) => throw Error(),
@@ -909,9 +880,7 @@ void main() {
         'loading',
       );
       expect(
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(42))
-            .when(
+        const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)).when(
               skipLoadingOnReload: true,
               skipLoadingOnRefresh: false,
               data: (value) => throw Error(),
@@ -1037,9 +1006,10 @@ void main() {
   group('maybeWhen', () {
     test('matching case', () {
       expect(
-        const AsyncValue.data(
-          42,
-        ).maybeWhen(data: (value) => [value], orElse: () => throw Error()),
+        const AsyncValue.data(42).maybeWhen(
+          data: (value) => [value],
+          orElse: () => throw Error(),
+        ),
         [42],
       );
 
@@ -1049,7 +1019,10 @@ void main() {
         AsyncError<int>(
           42,
           stack,
-        ).maybeWhen(error: (a, b) => [a, b], orElse: () => throw Error()),
+        ).maybeWhen(
+          error: (a, b) => [a, b],
+          orElse: () => throw Error(),
+        ),
         [42, stack],
       );
 
@@ -1104,19 +1077,29 @@ void main() {
     });
 
     test('matching case', () {
-      expect(const AsyncValue.data(42).whenOrNull(data: (value) => [value]), [
-        42,
-      ]);
+      expect(
+        const AsyncValue.data(42).whenOrNull(
+          data: (value) => [value],
+        ),
+        [42],
+      );
 
       final stack = StackTrace.current;
 
-      expect(AsyncError<int>(42, stack).whenOrNull(error: (a, b) => [a, b]), [
-        42,
-        stack,
-      ]);
+      expect(
+        AsyncError<int>(
+          42,
+          stack,
+        ).whenOrNull(
+          error: (a, b) => [a, b],
+        ),
+        [42, stack],
+      );
 
       expect(
-        const AsyncLoading<int>().whenOrNull(loading: () => 'loading'),
+        const AsyncLoading<int>().whenOrNull(
+          loading: () => 'loading',
+        ),
         'loading',
       );
     });
@@ -1157,32 +1140,45 @@ void main() {
     final stack = StackTrace.current;
     final stack2 = StackTrace.current;
 
-    expect(AsyncData<int>(value), AsyncData<int>(value));
+    expect(
+      AsyncData<int>(value),
+      AsyncData<int>(value),
+    );
     expect(
       AsyncData<int>(value),
       isNot(const AsyncLoading<int>().copyWithPrevious(AsyncData(value))),
     );
-    expect(AsyncData<int>(value), isNot(AsyncData<int>(value2)));
-    expect(AsyncData<int>(value), isNot(AsyncValue<num>.data(value)));
-    expect(AsyncValue<num>.data(value), isNot(AsyncData<int>(value)));
+    expect(
+      AsyncData<int>(value),
+      isNot(AsyncData<int>(value2)),
+    );
+    expect(
+      AsyncData<int>(value),
+      isNot(AsyncValue<num>.data(value)),
+    );
+    expect(
+      AsyncValue<num>.data(value),
+      isNot(AsyncData<int>(value)),
+    );
     expect(
       const AsyncData<int>(42).copyWithPrevious(const AsyncLoading()),
       const AsyncData<int>(42),
     );
     expect(
-      const AsyncData<int>(
-        42,
-      ).copyWithPrevious(const AsyncError(42, StackTrace.empty)),
+      const AsyncData<int>(42)
+          .copyWithPrevious(const AsyncError(42, StackTrace.empty)),
       const AsyncData<int>(42),
     );
 
-    expect(AsyncError<int>(value, stack), AsyncError<int>(value, stack));
+    expect(
+      AsyncError<int>(value, stack),
+      AsyncError<int>(value, stack),
+    );
     expect(
       AsyncError<int>(value, stack),
       isNot(
-        const AsyncLoading<int>().copyWithPrevious(
-          AsyncError<int>(value, stack),
-        ),
+        const AsyncLoading<int>()
+            .copyWithPrevious(AsyncError<int>(value, stack)),
       ),
     );
     expect(
@@ -1202,33 +1198,40 @@ void main() {
       isNot(AsyncError<int>(value2, stack)),
     );
 
-    expect(AsyncLoading<int>(), AsyncLoading<int>());
-    expect(AsyncLoading<int>(progress: .1), AsyncLoading<int>(progress: .1));
+    expect(
+      AsyncLoading<int>(),
+      AsyncLoading<int>(),
+    );
+    expect(
+      AsyncLoading<int>(progress: .1),
+      AsyncLoading<int>(progress: .1),
+    );
     expect(
       AsyncLoading<int>(progress: .1),
       isNot(AsyncLoading<int>(progress: .2)),
     );
-    expect(AsyncLoading<int>(), isNot(AsyncValue<num>.loading()));
-    expect(AsyncValue<num>.loading(), isNot(AsyncLoading<int>()));
+    expect(
+      AsyncLoading<int>(),
+      isNot(AsyncValue<num>.loading()),
+    );
+    expect(
+      AsyncValue<num>.loading(),
+      isNot(AsyncLoading<int>()),
+    );
 
     expect(
-      const AsyncError<int?>(
-        42,
-        StackTrace.empty,
-      ).copyWithPrevious(const AsyncData(null)),
+      const AsyncError<int?>(42, StackTrace.empty)
+          .copyWithPrevious(const AsyncData(null)),
       isNot(const AsyncError<int?>(42, StackTrace.empty)),
       reason: 'hasValue should be checked',
     );
 
     expect(
-      const AsyncError<int?>(
-        42,
-        StackTrace.empty,
-      ).copyWithPrevious(const AsyncData(42)),
+      const AsyncError<int?>(42, StackTrace.empty)
+          .copyWithPrevious(const AsyncData(42)),
       isNot(
-        const AsyncData<int?>(
-          42,
-        ).copyWithPrevious(const AsyncError(42, StackTrace.empty)),
+        const AsyncData<int?>(42)
+            .copyWithPrevious(const AsyncError(42, StackTrace.empty)),
       ),
       reason: 'runtimeType should be checked',
     );
@@ -1250,7 +1253,10 @@ void main() {
     final stack = StackTrace.current;
     final stack2 = StackTrace.current;
 
-    expect(AsyncData<int>(value).hashCode, AsyncData<int>(value).hashCode);
+    expect(
+      AsyncData<int>(value).hashCode,
+      AsyncData<int>(value).hashCode,
+    );
     expect(
       AsyncData<int>(value).hashCode,
       isNot(
@@ -1301,7 +1307,10 @@ void main() {
       isNot(AsyncError<int>(value2, stack).hashCode),
     );
 
-    expect(AsyncLoading<int>().hashCode, AsyncLoading<int>().hashCode);
+    expect(
+      AsyncLoading<int>().hashCode,
+      AsyncLoading<int>().hashCode,
+    );
     expect(
       AsyncLoading<int>(progress: .1).hashCode,
       AsyncLoading<int>(progress: .1).hashCode,
@@ -1320,23 +1329,21 @@ void main() {
     );
 
     expect(
-      const AsyncError<int?>(
-        42,
-        StackTrace.empty,
-      ).copyWithPrevious(const AsyncData(null)).hashCode,
+      const AsyncError<int?>(42, StackTrace.empty)
+          .copyWithPrevious(const AsyncData(null))
+          .hashCode,
       isNot(const AsyncError<int?>(42, StackTrace.empty).hashCode),
       reason: 'hasValue should be checked',
     );
 
     expect(
-      const AsyncError<int?>(
-        42,
-        StackTrace.empty,
-      ).copyWithPrevious(const AsyncData(42)).hashCode,
+      const AsyncError<int?>(42, StackTrace.empty)
+          .copyWithPrevious(const AsyncData(42))
+          .hashCode,
       isNot(
-        const AsyncData<int?>(
-          42,
-        ).copyWithPrevious(const AsyncError(42, StackTrace.empty)).hashCode,
+        const AsyncData<int?>(42)
+            .copyWithPrevious(const AsyncError(42, StackTrace.empty))
+            .hashCode,
       ),
       reason: 'runtimeType should be checked',
     );
@@ -1354,7 +1361,10 @@ void main() {
   test('requireValue', () {
     expect(const AsyncData(42).requireValue, 42);
 
-    expect(() => const AsyncLoading<int>().requireValue, throwsStateError);
+    expect(
+      () => const AsyncLoading<int>().requireValue,
+      throwsStateError,
+    );
     expect(
       const AsyncLoading<int>()
           .copyWithPrevious(const AsyncData(42), isRefresh: true)
@@ -1364,10 +1374,8 @@ void main() {
     expect(
       const AsyncLoading<int>()
           .copyWithPrevious(
-            const AsyncError<int>(
-              'err',
-              StackTrace.empty,
-            ).copyWithPrevious(const AsyncData(42)),
+            const AsyncError<int>('err', StackTrace.empty)
+                .copyWithPrevious(const AsyncData(42)),
             isRefresh: true,
           )
           .requireValue,
@@ -1386,12 +1394,18 @@ void main() {
   });
 
   test('toString', () {
-    expect(const AsyncValue.data(42).toString(), 'AsyncData<int>(value: 42)');
+    expect(
+      const AsyncValue.data(42).toString(),
+      'AsyncData<int>(value: 42)',
+    );
     expect(
       const AsyncError<int>(42, StackTrace.empty).toString(),
       'AsyncError<int>(error: 42, stackTrace: )',
     );
-    expect(const AsyncLoading<int>().toString(), 'AsyncLoading<int>()');
+    expect(
+      const AsyncLoading<int>().toString(),
+      'AsyncLoading<int>()',
+    );
     expect(
       const AsyncLoading<int>(progress: .1).toString(),
       'AsyncLoading<int>(progress: 0.1)',
@@ -1404,9 +1418,9 @@ void main() {
       'AsyncData<int>(isLoading: true, value: 42)',
     );
     expect(
-      const AsyncLoading<int>(
-        progress: .1,
-      ).copyWithPrevious(const AsyncData(42)).toString(),
+      const AsyncLoading<int>(progress: .1)
+          .copyWithPrevious(const AsyncData(42))
+          .toString(),
       'AsyncData<int>(isLoading: true, progress: 0.1, value: 42)',
     );
     expect(
@@ -1416,16 +1430,15 @@ void main() {
       'AsyncError<int>(isLoading: true, error: 42, stackTrace: )',
     );
     expect(
-      const AsyncData<int>(
-        42,
-      ).copyWithPrevious(const AsyncError(42, StackTrace.empty)).toString(),
+      const AsyncData<int>(42)
+          .copyWithPrevious(const AsyncError(42, StackTrace.empty))
+          .toString(),
       'AsyncData<int>(value: 42)',
     );
     expect(
-      const AsyncError<int>(
-        42,
-        StackTrace.empty,
-      ).copyWithPrevious(const AsyncData(42)).toString(),
+      const AsyncError<int>(42, StackTrace.empty)
+          .copyWithPrevious(const AsyncData(42))
+          .toString(),
       'AsyncError<int>(value: 42, error: 42, stackTrace: )',
     );
     expect(
@@ -1447,10 +1460,9 @@ void main() {
     expect(const AsyncError<int>('err', StackTrace.empty).hasValue, false);
 
     expect(
-      const AsyncError<int>(
-        42,
-        StackTrace.empty,
-      ).copyWithPrevious(const AsyncData(42)).hasValue,
+      const AsyncError<int>(42, StackTrace.empty)
+          .copyWithPrevious(const AsyncData(42))
+          .hasValue,
       true,
     );
     expect(
@@ -1473,17 +1485,16 @@ void main() {
     expect(const AsyncError<int>('err', StackTrace.empty).hasError, true);
 
     expect(
-      const AsyncData<int>(
-        42,
-      ).copyWithPrevious(const AsyncError(42, StackTrace.empty)).hasError,
+      const AsyncData<int>(42)
+          .copyWithPrevious(const AsyncError(42, StackTrace.empty))
+          .hasError,
       false,
     );
     expect(
       const AsyncData<int>(42)
           .copyWithPrevious(
-            const AsyncLoading<int>().copyWithPrevious(
-              const AsyncError(42, StackTrace.empty),
-            ),
+            const AsyncLoading<int>()
+                .copyWithPrevious(const AsyncError(42, StackTrace.empty)),
           )
           .hasError,
       false,
@@ -1499,12 +1510,11 @@ void main() {
   group('whenData', () {
     test('preserves isLoading/isRefreshing', () {
       expect(
-        const AsyncLoading<int>(
-          progress: .1,
-        ).copyWithPrevious(const AsyncData(42)).whenData((value) => value * 2),
-        const AsyncLoading<int>(
-          progress: .1,
-        ).copyWithPrevious(const AsyncData(84)),
+        const AsyncLoading<int>(progress: .1)
+            .copyWithPrevious(const AsyncData(42))
+            .whenData((value) => value * 2),
+        const AsyncLoading<int>(progress: .1)
+            .copyWithPrevious(const AsyncData(84)),
       );
 
       expect(
@@ -1513,18 +1523,20 @@ void main() {
             .whenData<String>(
               (value) => Error.throwWithStackTrace(84, StackTrace.empty),
             ),
-        const AsyncLoading<String>(
-          progress: .1,
-        ).copyWithPrevious(const AsyncError(84, StackTrace.empty)),
+        const AsyncLoading<String>(progress: .1).copyWithPrevious(
+          const AsyncError(84, StackTrace.empty),
+        ),
       );
 
       expect(
         const AsyncLoading<int>(progress: .1)
-            .copyWithPrevious(const AsyncError(84, StackTrace.empty))
+            .copyWithPrevious(
+              const AsyncError(84, StackTrace.empty),
+            )
             .whenData<String>((value) => '$value'),
-        const AsyncLoading<String>(
-          progress: .1,
-        ).copyWithPrevious(const AsyncError(84, StackTrace.empty)),
+        const AsyncLoading<String>(progress: .1).copyWithPrevious(
+          const AsyncError(84, StackTrace.empty),
+        ),
       );
     });
 
@@ -1538,19 +1550,17 @@ void main() {
         const AsyncLoading<String>(progress: .1),
       );
       expect(
-        const AsyncError<int>(
-          21,
-          StackTrace.empty,
-        ).whenData((value) => '$value'),
+        const AsyncError<int>(21, StackTrace.empty)
+            .whenData((value) => '$value'),
         const AsyncError<String>(21, StackTrace.empty),
       );
     });
 
     test('catches errors in data transformer and return AsyncError', () {
       expect(
-        const AsyncValue.data(
-          42,
-        ).whenData<int>((value) => throw StateError('foo')),
+        const AsyncValue.data(42).whenData<int>(
+          (value) => throw StateError('foo'),
+        ),
         isA<AsyncError<int>>()
             .having((e) => e.error, 'error', isStateError)
             .having((e) => e.stackTrace, 'stackTrace', isNotNull),
@@ -1563,7 +1573,10 @@ void main() {
 
     final AsyncData<int>? data = value.asData;
 
-    expect(const AsyncValue.data(42).asData, const AsyncData<int>(42));
+    expect(
+      const AsyncValue.data(42).asData,
+      const AsyncData<int>(42),
+    );
     expect(const AsyncValue<void>.loading().asData, isNull);
     expect(AsyncValue<void>.error(Error(), StackTrace.empty).asData, isNull);
 
@@ -1575,14 +1588,19 @@ void main() {
 
   test('AsyncValue.value', () {
     expect(const AsyncValue.data(42).value, 42);
-    expect(const AsyncLoading<int>().value, null);
-    expect(const AsyncError<int>('err', StackTrace.empty).value, null);
+    expect(
+      const AsyncLoading<int>().value,
+      null,
+    );
+    expect(
+      const AsyncError<int>('err', StackTrace.empty).value,
+      null,
+    );
 
     expect(
-      const AsyncError<int>(
-        'err',
-        StackTrace.empty,
-      ).copyWithPrevious(const AsyncData(42)).value,
+      const AsyncError<int>('err', StackTrace.empty)
+          .copyWithPrevious(const AsyncData(42))
+          .value,
       42,
     );
     expect(
@@ -1591,92 +1609,98 @@ void main() {
     );
   });
 
-  test(
-    'AsyncValue.guard emits the data when the created future completes',
-    () async {
-      await expectLater(
-        AsyncValue.guard(() => Future.value(42)),
-        completion(const AsyncValue.data(42)),
-      );
-    },
-  );
+  test('AsyncValue.guard emits the data when the created future completes',
+      () async {
+    await expectLater(
+      AsyncValue.guard(() => Future.value(42)),
+      completion(const AsyncValue.data(42)),
+    );
+  });
+
+  test('AsyncValue.guard emits the error when the created future fails',
+      () async {
+    final stack = StackTrace.current;
+
+    await expectLater(
+      AsyncValue.guard(() => Future<int>.error(42, stack)),
+      completion(AsyncError<int>(42, stack)),
+    );
+  });
 
   test(
-    'AsyncValue.guard emits the error when the created future fails',
-    () async {
-      final stack = StackTrace.current;
+      'AsyncValue.guard emits the error when the created future fails and predicate is null',
+      () async {
+    final stack = StackTrace.current;
 
-      await expectLater(
-        AsyncValue.guard(() => Future<int>.error(42, stack)),
-        completion(AsyncError<int>(42, stack)),
-      );
-    },
-  );
-
-  test(
-    'AsyncValue.guard emits the error when the created future fails and predicate is null',
-    () async {
-      final stack = StackTrace.current;
-
-      await expectLater(
-        AsyncValue.guard(() => Future<int>.error(42, stack)),
-        completion(AsyncError<int>(42, stack)),
-      );
-    },
-  );
+    await expectLater(
+      AsyncValue.guard(
+        () => Future<int>.error(42, stack),
+      ),
+      completion(AsyncError<int>(42, stack)),
+    );
+  });
 
   test(
-    'AsyncValue.guard emits the error when the created future fails and predicate is true',
-    () async {
-      final stack = StackTrace.current;
-      bool isInt(Object error) => error is int;
+      'AsyncValue.guard emits the error when the created future fails and predicate is true',
+      () async {
+    final stack = StackTrace.current;
+    bool isInt(Object error) => error is int;
 
-      await expectLater(
-        AsyncValue.guard(() => Future<int>.error(42, stack), isInt),
-        completion(AsyncError<int>(42, stack)),
-      );
-    },
-  );
+    await expectLater(
+      AsyncValue.guard(
+        () => Future<int>.error(42, stack),
+        isInt,
+      ),
+      completion(AsyncError<int>(42, stack)),
+    );
+  });
 
   test('AsyncValue.guard rethrows exception if predicate is false,', () async {
     bool isInt(Object error) => error is int;
 
     await expectLater(
-      AsyncValue.guard<int>(() => throw const FormatException(), isInt),
+      AsyncValue.guard<int>(
+        () => throw const FormatException(),
+        isInt,
+      ),
       throwsA(isA<FormatException>()),
     );
   });
 
   test(
-    'AsyncValue.guard emits the error when the created future fails and predicate is null',
-    () async {
-      final stack = StackTrace.current;
+      'AsyncValue.guard emits the error when the created future fails and predicate is null',
+      () async {
+    final stack = StackTrace.current;
 
-      await expectLater(
-        AsyncValue.guard(() => Future<int>.error(42, stack)),
-        completion(AsyncError<int>(42, stack)),
-      );
-    },
-  );
+    await expectLater(
+      AsyncValue.guard(() => Future<int>.error(42, stack)),
+      completion(AsyncError<int>(42, stack)),
+    );
+  });
 
   test(
-    'AsyncValue.guard emits the error when the created future fails and predicate is true',
-    () async {
-      final stack = StackTrace.current;
-      bool isInt(Object error) => error is int;
+      'AsyncValue.guard emits the error when the created future fails and predicate is true',
+      () async {
+    final stack = StackTrace.current;
+    bool isInt(Object error) => error is int;
 
-      await expectLater(
-        AsyncValue.guard(() => Future<int>.error(42, stack), isInt),
-        completion(AsyncError<int>(42, stack)),
-      );
-    },
-  );
+    await expectLater(
+      AsyncValue.guard(
+        () => Future<int>.error(42, stack),
+        isInt,
+      ),
+      completion(AsyncError<int>(42, stack)),
+    );
+  });
 
   test('AsyncValue.guard rethrows exception if predicate is false,', () async {
     bool isInt(Object error) => error is int;
 
     await expectLater(
-      AsyncValue.guard<int>(() => throw const FormatException(), isInt),
+      AsyncValue.guard<int>(
+        () => throw const FormatException(),
+        isInt,
+      ),
       throwsA(isA<FormatException>()),
     );
   });

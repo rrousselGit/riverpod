@@ -47,9 +47,8 @@ void main() {
     );
   });
 
-  testWidgets('Supports multiple ProviderScope roots in the same tree', (
-    tester,
-  ) async {
+  testWidgets('Supports multiple ProviderScope roots in the same tree',
+      (tester) async {
     final a = StateProvider((_) => 0);
     final b = Provider((ref) => ref.watch(a));
 
@@ -123,9 +122,8 @@ void main() {
     verifyOnly(listener2, listener2('0-1', '1-1'));
   });
 
-  testWidgets('ref.invalidate triggers a rebuild on next frame', (
-    tester,
-  ) async {
+  testWidgets('ref.invalidate triggers a rebuild on next frame',
+      (tester) async {
     final listener = Listener<int>();
     var result = 0;
     final provider = Provider((r) => result);
@@ -156,9 +154,8 @@ void main() {
     verifyOnly(listener, listener(0, 1));
   });
 
-  testWidgets('ref.read works with providers that returns null', (
-    tester,
-  ) async {
+  testWidgets('ref.read works with providers that returns null',
+      (tester) async {
     final nullProvider = Provider((ref) => null);
     late WidgetRef ref;
 
@@ -215,9 +212,8 @@ void main() {
     expect(ref.read(provider), 21);
   });
 
-  testWidgets('widgets cannot modify providers in their build method', (
-    tester,
-  ) async {
+  testWidgets('widgets cannot modify providers in their build method',
+      (tester) async {
     final onError = FlutterError.onError;
     Object? error;
     FlutterError.onError = (details) {
@@ -248,9 +244,8 @@ void main() {
     expect(error, isNotNull);
   });
 
-  testWidgets('ref.watch within a build method can flush providers', (
-    tester,
-  ) async {
+  testWidgets('ref.watch within a build method can flush providers',
+      (tester) async {
     final container = ProviderContainer.test();
     final dep = StateProvider((ref) => 0);
     final provider = Provider((ref) => ref.watch(dep));
@@ -283,16 +278,18 @@ void main() {
     expect(find.text('1'), findsOneWidget);
   });
 
-  testWidgets('UncontrolledProviderScope gracefully handles vsync', (
-    tester,
-  ) async {
+  testWidgets('UncontrolledProviderScope gracefully handles vsync',
+      (tester) async {
     final container = ProviderContainer.test();
     final container2 = ProviderContainer.test(parent: container);
 
     expect(container.scheduler.flutterVsyncs, isEmpty);
 
     await tester.pumpWidget(
-      UncontrolledProviderScope(container: container, child: Container()),
+      UncontrolledProviderScope(
+        container: container,
+        child: Container(),
+      ),
     );
 
     expect(container.scheduler.flutterVsyncs, hasLength(1));
@@ -312,7 +309,10 @@ void main() {
     expect(container2.scheduler.flutterVsyncs, hasLength(1));
 
     await tester.pumpWidget(
-      UncontrolledProviderScope(container: container, child: Container()),
+      UncontrolledProviderScope(
+        container: container,
+        child: Container(),
+      ),
     );
 
     expect(container.scheduler.flutterVsyncs, hasLength(1));
@@ -324,9 +324,8 @@ void main() {
     expect(container2.scheduler.flutterVsyncs, isEmpty);
   });
 
-  testWidgets('When there are multiple vsyncs, rebuild providers only once', (
-    tester,
-  ) async {
+  testWidgets('When there are multiple vsyncs, rebuild providers only once',
+      (tester) async {
     var buildCount = 0;
     final dep = StateProvider((ref) => 0);
     final provider = Provider((ref) {
@@ -365,23 +364,25 @@ void main() {
   });
 
   testWidgets(
-    'UncontrolledProviderScope gracefully handles debugCanModifyProviders',
-    (tester) async {
-      final container = ProviderContainer.test();
+      'UncontrolledProviderScope gracefully handles debugCanModifyProviders',
+      (tester) async {
+    final container = ProviderContainer.test();
 
-      expect(debugCanModifyProviders, null);
+    expect(debugCanModifyProviders, null);
 
-      await tester.pumpWidget(
-        UncontrolledProviderScope(container: container, child: Container()),
-      );
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: Container(),
+      ),
+    );
 
-      expect(debugCanModifyProviders, isNotNull);
+    expect(debugCanModifyProviders, isNotNull);
 
-      await tester.pumpWidget(Container());
+    await tester.pumpWidget(Container());
 
-      expect(debugCanModifyProviders, null);
-    },
-  );
+    expect(debugCanModifyProviders, null);
+  });
 
   testWidgets('ref.refresh forces a provider to refresh', (tester) async {
     var future = Future<int>.value(21);
@@ -407,9 +408,8 @@ void main() {
     await expectLater(ref.read(provider.future), completion(42));
   });
 
-  testWidgets('ref.refresh forces a provider of nullable type to refresh', (
-    tester,
-  ) async {
+  testWidgets('ref.refresh forces a provider of nullable type to refresh',
+      (tester) async {
     int? value = 42;
     final provider = Provider<int?>((ref) => value);
     late WidgetRef ref;
@@ -432,9 +432,8 @@ void main() {
     expect(ref.refresh(provider), null);
   });
 
-  testWidgets('AlwaysAliveProviderBase.read(context) inside initState', (
-    tester,
-  ) async {
+  testWidgets('AlwaysAliveProviderBase.read(context) inside initState',
+      (tester) async {
     final provider = Provider((_) => 42);
     int? result;
 
@@ -449,9 +448,8 @@ void main() {
     expect(result, 42);
   });
 
-  testWidgets('AlwaysAliveProviderBase.read(context) inside build', (
-    tester,
-  ) async {
+  testWidgets('AlwaysAliveProviderBase.read(context) inside build',
+      (tester) async {
     final provider = Provider((_) => 42);
 
     await tester.pumpWidget(
@@ -460,7 +458,10 @@ void main() {
           builder: (context, ref, _) {
             // Allowed even if not a good practice. Will have a lint instead
             final value = ref.read(provider);
-            return Text('$value', textDirection: TextDirection.ltr);
+            return Text(
+              '$value',
+              textDirection: TextDirection.ltr,
+            );
           },
         ),
       ),
@@ -472,12 +473,19 @@ void main() {
   testWidgets('adding overrides throws', (tester) async {
     final provider = Provider((_) => 0);
 
-    await tester.pumpWidget(ProviderScope(child: Container()));
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Container(),
+      ),
+    );
 
     expect(tester.takeException(), isNull);
 
     await tester.pumpWidget(
-      ProviderScope(overrides: [provider], child: Container()),
+      ProviderScope(
+        overrides: [provider],
+        child: Container(),
+      ),
     );
 
     expect(tester.takeException(), isAssertionError);
@@ -495,7 +503,10 @@ void main() {
       },
     );
     await tester.pumpWidget(
-      ProviderScope(overrides: [provider], child: consumer),
+      ProviderScope(
+        overrides: [provider],
+        child: consumer,
+      ),
     );
 
     expect(find.text('0'), findsOneWidget);
@@ -510,13 +521,19 @@ void main() {
     final provider2 = Provider((_) => 0);
 
     await tester.pumpWidget(
-      ProviderScope(overrides: [provider], child: Container()),
+      ProviderScope(
+        overrides: [provider],
+        child: Container(),
+      ),
     );
 
     expect(tester.takeException(), isNull);
 
     await tester.pumpWidget(
-      ProviderScope(overrides: [provider2], child: Container()),
+      ProviderScope(
+        overrides: [provider2],
+        child: Container(),
+      ),
     );
 
     expect(tester.takeException(), isAssertionError);
@@ -558,7 +575,12 @@ void main() {
       ),
     );
 
-    await tester.pumpWidget(ProviderScope(key: UniqueKey(), child: builder));
+    await tester.pumpWidget(
+      ProviderScope(
+        key: UniqueKey(),
+        child: builder,
+      ),
+    );
 
     expect(find.text('root'), findsOneWidget);
     expect(find.text('root2'), findsOneWidget);
@@ -566,7 +588,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         key: UniqueKey(),
-        overrides: [provider.overrideWithValue('override')],
+        overrides: [
+          provider.overrideWithValue('override'),
+        ],
         child: builder,
       ),
     );
@@ -582,13 +606,18 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [provider.overrideWithValue('rootOverride')],
+        overrides: [
+          provider.overrideWithValue('rootOverride'),
+        ],
         child: ProviderScope(
           child: Consumer(
             builder: (c, ref, _) {
               final first = ref.watch(provider);
               final second = ref.watch(provider2);
-              return Text('$first $second', textDirection: TextDirection.ltr);
+              return Text(
+                '$first $second',
+                textDirection: TextDirection.ltr,
+              );
             },
           ),
         ),
@@ -604,7 +633,10 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: ProviderScope(key: key, child: Container()),
+        child: ProviderScope(
+          key: key,
+          child: Container(),
+        ),
       ),
     );
 
@@ -613,7 +645,10 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         child: ProviderScope(
-          child: ProviderScope(key: key, child: Container()),
+          child: ProviderScope(
+            key: key,
+            child: Container(),
+          ),
         ),
       ),
     );
@@ -630,7 +665,10 @@ void main() {
         children: [
           ProviderScope(
             key: const Key('foo'),
-            child: ProviderScope(key: key, child: Container()),
+            child: ProviderScope(
+              key: key,
+              child: Container(),
+            ),
           ),
         ],
       ),
@@ -642,8 +680,14 @@ void main() {
       Stack(
         textDirection: TextDirection.ltr,
         children: [
-          ProviderScope(key: const Key('foo'), child: Container()),
-          ProviderScope(key: key, child: Container()),
+          ProviderScope(
+            key: const Key('foo'),
+            child: Container(),
+          ),
+          ProviderScope(
+            key: key,
+            child: Container(),
+          ),
         ],
       ),
     );
@@ -657,7 +701,10 @@ void main() {
         children: [
           ProviderScope(
             key: const Key('foo'),
-            child: ProviderScope(key: key, child: Container()),
+            child: ProviderScope(
+              key: key,
+              child: Container(),
+            ),
           ),
         ],
       ),
@@ -665,9 +712,8 @@ void main() {
   });
 
   group('ProviderScope.containerOf', () {
-    testWidgets('throws if no container is found independently from `listen`', (
-      tester,
-    ) async {
+    testWidgets('throws if no container is found independently from `listen`',
+        (tester) async {
       await tester.pumpWidget(Container());
 
       final context = tester.element(find.byType(Container));
@@ -676,13 +722,15 @@ void main() {
         () => ProviderScope.containerOf(context, listen: false),
         throwsStateError,
       );
-      expect(() => ProviderScope.containerOf(context), throwsStateError);
+      expect(
+        () => ProviderScope.containerOf(context),
+        throwsStateError,
+      );
     });
   });
 
-  testWidgets('autoDispose states are kept alive during pushReplacement', (
-    tester,
-  ) async {
+  testWidgets('autoDispose states are kept alive during pushReplacement',
+      (tester) async {
     var disposeCount = 0;
     final counterProvider = StateProvider.autoDispose((ref) {
       ref.onDispose(() => disposeCount++);

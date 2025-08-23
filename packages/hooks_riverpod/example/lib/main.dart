@@ -7,7 +7,9 @@ void main() {
     /// [MyApp] is wrapped in a [ProviderScope].
     /// This widget is where the state of most of our providers will be stored.
     /// This replaces `MultiProvider` if you've used `provider` before.
-    const ProviderScope(child: MyApp()),
+    const ProviderScope(
+      child: MyApp(),
+    ),
   );
 }
 
@@ -35,7 +37,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: MyHomePage());
+    return const MaterialApp(
+      home: MyHomePage(),
+    );
   }
 }
 
@@ -45,7 +49,9 @@ class MyHomePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Riverpod counter example')),
+      appBar: AppBar(
+        title: const Text('Riverpod counter example'),
+      ),
       body: Center(
         // HookConsumer is a builder widget that allows you to read providers and utilize hooks.
         child: HookConsumer(

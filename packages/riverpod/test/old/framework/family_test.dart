@@ -10,53 +10,54 @@ import '../utils.dart';
 
 void main() {
   test(
-    'does not re-initialize a family if read by a child container after the provider was initialized',
-    () {
-      final root = ProviderContainer.test();
-      // the child must be created before the provider is initialized
-      final child = ProviderContainer.test(parent: root);
+      'does not re-initialize a family if read by a child container after the provider was initialized',
+      () {
+    final root = ProviderContainer.test();
+    // the child must be created before the provider is initialized
+    final child = ProviderContainer.test(parent: root);
 
-      var buildCount = 0;
-      final provider = Provider.family<int, int>((ref, param) {
-        buildCount++;
-        return 0;
-      });
+    var buildCount = 0;
+    final provider = Provider.family<int, int>((ref, param) {
+      buildCount++;
+      return 0;
+    });
 
-      expect(root.read(provider(0)), 0);
+    expect(root.read(provider(0)), 0);
 
-      expect(buildCount, 1);
+    expect(buildCount, 1);
 
-      expect(child.read(provider(0)), 0);
+    expect(child.read(provider(0)), 0);
 
-      expect(buildCount, 1);
-    },
-  );
+    expect(buildCount, 1);
+  });
 
   test(
-    'does not re-initialize a scoped family if read by a child container after the provider was initialized',
-    () {
-      var buildCount = 0;
-      final provider = Provider.family<int, int>((ref, param) {
+      'does not re-initialize a scoped family if read by a child container after the provider was initialized',
+      () {
+    var buildCount = 0;
+    final provider = Provider.family<int, int>(
+      (ref, param) {
         buildCount++;
         return 42;
-      }, dependencies: const []);
+      },
+      dependencies: const [],
+    );
 
-      final root = ProviderContainer.test();
-      final scope = ProviderContainer.test(parent: root, overrides: [provider]);
-      // the child must be created before the provider is initialized
-      final child = ProviderContainer.test(parent: scope);
+    final root = ProviderContainer.test();
+    final scope = ProviderContainer.test(parent: root, overrides: [provider]);
+    // the child must be created before the provider is initialized
+    final child = ProviderContainer.test(parent: scope);
 
-      expect(scope.read(provider(0)), 42);
+    expect(scope.read(provider(0)), 42);
 
-      expect(root.getAllProviderElements(), isEmpty);
-      expect(buildCount, 1);
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(buildCount, 1);
 
-      expect(child.read(provider(0)), 42);
+    expect(child.read(provider(0)), 42);
 
-      expect(root.getAllProviderElements(), isEmpty);
-      expect(buildCount, 1);
-    },
-  );
+    expect(root.getAllProviderElements(), isEmpty);
+    expect(buildCount, 1);
+  });
 
   test('caches the provider per value', () {
     final family = Provider.family<String, int>((ref, a) => '$a');
@@ -93,13 +94,23 @@ void main() {
 
     controllers[0]!.add('42');
 
-    verify(listener(const AsyncValue.loading(), const AsyncValue.data('42')));
+    verify(
+      listener(
+        const AsyncValue.loading(),
+        const AsyncValue.data('42'),
+      ),
+    );
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(listener2);
 
     controllers[1]!.add('21');
 
-    verify(listener2(const AsyncValue.loading(), const AsyncValue.data('21')));
+    verify(
+      listener2(
+        const AsyncValue.loading(),
+        const AsyncValue.data('21'),
+      ),
+    );
     verifyNoMoreInteractions(listener);
     verifyNoMoreInteractions(listener2);
   });

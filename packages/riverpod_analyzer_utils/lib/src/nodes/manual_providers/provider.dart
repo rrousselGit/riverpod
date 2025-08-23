@@ -13,9 +13,8 @@ final class ManualProviderDependencies {
 
     List<ManualProviderDependency>? dependencies;
     if (value is ListLiteral) {
-      dependencies = value.elements
-          .map(ManualProviderDependency._parse)
-          .toList();
+      dependencies =
+          value.elements.map(ManualProviderDependency._parse).toList();
     }
 
     return ManualProviderDependencies._(
@@ -29,14 +28,19 @@ final class ManualProviderDependencies {
 }
 
 final class ManualProviderDependency {
-  ManualProviderDependency._({required this.node, required this.provider});
+  ManualProviderDependency._({
+    required this.node,
+    required this.provider,
+  });
 
   factory ManualProviderDependency._parse(CollectionElement node) {
-    final provider = node.cast<Expression>().let(
-      ProviderOrFamilyExpression._parse,
-    );
+    final provider =
+        node.cast<Expression>().let(ProviderOrFamilyExpression._parse);
 
-    return ManualProviderDependency._(node: node, provider: provider);
+    return ManualProviderDependency._(
+      node: node,
+      provider: provider,
+    );
   }
 
   final CollectionElement node;
@@ -110,12 +114,11 @@ extension LegacyProviderDeclarationX on VariableDeclaration {
       final build = arguments.positionalArguments().firstOrNull;
       if (build is! FunctionExpression) return null;
 
-      final dependenciesElement = arguments.namedArguments().firstWhereOrNull(
-        (e) => e.name.label.name == 'dependencies',
-      );
-      final dependencies = ManualProviderDependencies._parse(
-        dependenciesElement,
-      );
+      final dependenciesElement = arguments
+          .namedArguments()
+          .firstWhereOrNull((e) => e.name.label.name == 'dependencies');
+      final dependencies =
+          ManualProviderDependencies._parse(dependenciesElement);
 
       return ManualProviderDeclaration._(
         name: name,
@@ -196,7 +199,7 @@ enum ManualProviderType {
   provider,
 
   /// Type for `NotifierProvider`
-  notifierProvider,
+  notifierProvider;
 }
 
 @internal

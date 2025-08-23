@@ -11,8 +11,7 @@ class AvoidPublicNotifierProperties extends RiverpodLintRule {
 
   static const _code = LintCode(
     name: 'avoid_public_notifier_properties',
-    problemMessage:
-        'Notifiers should not have public properties/getters. '
+    problemMessage: 'Notifiers should not have public properties/getters. '
         'Instead, all their public API should be exposed through the `state` property.',
   );
 
@@ -32,9 +31,8 @@ class AvoidPublicNotifierProperties extends RiverpodLintRule {
 
       for (final member in node.members) {
         final metadata = switch (member) {
-          FieldDeclaration() =>
-            member.fields.variables.first.declaredFragment?.element
-                as Annotatable?,
+          FieldDeclaration() => member
+              .fields.variables.first.declaredFragment?.element as Annotatable?,
           _ => member.declaredFragment?.element as Annotatable?,
         };
         // Skip members if there's an @override annotation

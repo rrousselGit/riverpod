@@ -1,7 +1,10 @@
 part of '../riverpod_types.dart';
 
 /// [TypeChecker] for `Override`
-const overrideType = TypeChecker.fromName('Override', packageName: 'riverpod');
+const overrideType = TypeChecker.fromName(
+  'Override',
+  packageName: 'riverpod',
+);
 
 /// [TypeChecker] for `ProviderBase`
 const providerBaseType = TypeChecker.fromName(

@@ -15,15 +15,15 @@ const myCountPod = CountProvider._();
 final class CountProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const CountProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'myCountPod',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'myCountPod',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$countHash();
@@ -56,15 +56,15 @@ final class CountFutureProvider
     extends $FunctionalProvider<AsyncValue<int>, int, FutureOr<int>>
     with $FutureModifier<int>, $FutureProvider<int> {
   const CountFutureProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'myCountFuturePod',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'myCountFuturePod',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$countFutureHash();
@@ -89,15 +89,15 @@ final class CountStreamProvider
     extends $FunctionalProvider<AsyncValue<int>, int, Stream<int>>
     with $FutureModifier<int>, $StreamProvider<int> {
   const CountStreamProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'myCountStreamPod',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'myCountStreamPod',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$countStreamHash();
@@ -121,15 +121,15 @@ const myCountNotifierPod = CountNotifierProvider._();
 final class CountNotifierProvider
     extends $NotifierProvider<CountNotifier, int> {
   const CountNotifierProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'myCountNotifierPod',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'myCountNotifierPod',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$countNotifierHash();
@@ -156,14 +156,8 @@ abstract class _$CountNotifier extends $Notifier<int> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<int, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<int, int>,
-              int,
-              Object?,
-              Object?
-            >;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -174,15 +168,15 @@ const myCountAsyncNotifierPod = CountAsyncNotifierProvider._();
 final class CountAsyncNotifierProvider
     extends $AsyncNotifierProvider<CountAsyncNotifier, int> {
   const CountAsyncNotifierProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'myCountAsyncNotifierPod',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'myCountAsyncNotifierPod',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$countAsyncNotifierHash();
@@ -202,14 +196,8 @@ abstract class _$CountAsyncNotifier extends $AsyncNotifier<int> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<int>, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AsyncValue<int>, int>,
-              AsyncValue<int>,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -220,15 +208,15 @@ const myCountStreamNotifierPod = CountStreamNotifierProvider._();
 final class CountStreamNotifierProvider
     extends $StreamNotifierProvider<CountStreamNotifier, int> {
   const CountStreamNotifierProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'myCountStreamNotifierPod',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'myCountStreamNotifierPod',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$countStreamNotifierHash();
@@ -248,14 +236,8 @@ abstract class _$CountStreamNotifier extends $StreamNotifier<int> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<int>, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AsyncValue<int>, int>,
-              AsyncValue<int>,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -265,16 +247,15 @@ const myFamilyCount2ProviderFamily = Count2Family._();
 
 final class Count2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const Count2Provider._({
-    required Count2Family super.from,
-    required int super.argument,
-  }) : super(
-         retry: null,
-         name: r'myFamilyCount2ProviderFamily',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  const Count2Provider._(
+      {required Count2Family super.from, required int super.argument})
+      : super(
+          retry: null,
+          name: r'myFamilyCount2ProviderFamily',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$count2Hash();
@@ -294,7 +275,10 @@ final class Count2Provider extends $FunctionalProvider<int, int, int>
   @override
   int create(Ref ref) {
     final argument = this.argument as int;
-    return count2(ref, argument);
+    return count2(
+      ref,
+      argument,
+    );
   }
 
   /// {@macro riverpod.override_with_value}
@@ -321,15 +305,18 @@ String _$count2Hash() => r'4146ae486161f9d444b4d80ec846199b13eeaae2';
 final class Count2Family extends $Family
     with $FunctionalFamilyOverride<int, int> {
   const Count2Family._()
-    : super(
-        retry: null,
-        name: r'myFamilyCount2ProviderFamily',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'myFamilyCount2ProviderFamily',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
-  Count2Provider call(int a) => Count2Provider._(argument: a, from: this);
+  Count2Provider call(
+    int a,
+  ) =>
+      Count2Provider._(argument: a, from: this);
 
   @override
   String toString() => r'myFamilyCount2ProviderFamily';
@@ -341,16 +328,15 @@ const myFamilyCountFuture2ProviderFamily = CountFuture2Family._();
 final class CountFuture2Provider
     extends $FunctionalProvider<AsyncValue<int>, int, FutureOr<int>>
     with $FutureModifier<int>, $FutureProvider<int> {
-  const CountFuture2Provider._({
-    required CountFuture2Family super.from,
-    required int super.argument,
-  }) : super(
-         retry: null,
-         name: r'myFamilyCountFuture2ProviderFamily',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  const CountFuture2Provider._(
+      {required CountFuture2Family super.from, required int super.argument})
+      : super(
+          retry: null,
+          name: r'myFamilyCountFuture2ProviderFamily',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$countFuture2Hash();
@@ -370,7 +356,10 @@ final class CountFuture2Provider
   @override
   FutureOr<int> create(Ref ref) {
     final argument = this.argument as int;
-    return countFuture2(ref, argument);
+    return countFuture2(
+      ref,
+      argument,
+    );
   }
 
   @override
@@ -389,15 +378,17 @@ String _$countFuture2Hash() => r'6acaa58de0116853fd831efb4ac1a8047205f12b';
 final class CountFuture2Family extends $Family
     with $FunctionalFamilyOverride<FutureOr<int>, int> {
   const CountFuture2Family._()
-    : super(
-        retry: null,
-        name: r'myFamilyCountFuture2ProviderFamily',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'myFamilyCountFuture2ProviderFamily',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
-  CountFuture2Provider call(int a) =>
+  CountFuture2Provider call(
+    int a,
+  ) =>
       CountFuture2Provider._(argument: a, from: this);
 
   @override
@@ -410,16 +401,15 @@ const myFamilyCountStream2ProviderFamily = CountStream2Family._();
 final class CountStream2Provider
     extends $FunctionalProvider<AsyncValue<int>, int, Stream<int>>
     with $FutureModifier<int>, $StreamProvider<int> {
-  const CountStream2Provider._({
-    required CountStream2Family super.from,
-    required int super.argument,
-  }) : super(
-         retry: null,
-         name: r'myFamilyCountStream2ProviderFamily',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  const CountStream2Provider._(
+      {required CountStream2Family super.from, required int super.argument})
+      : super(
+          retry: null,
+          name: r'myFamilyCountStream2ProviderFamily',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$countStream2Hash();
@@ -439,7 +429,10 @@ final class CountStream2Provider
   @override
   Stream<int> create(Ref ref) {
     final argument = this.argument as int;
-    return countStream2(ref, argument);
+    return countStream2(
+      ref,
+      argument,
+    );
   }
 
   @override
@@ -458,15 +451,17 @@ String _$countStream2Hash() => r'96c9a0935240f1727986800c1fe6dea974b9accc';
 final class CountStream2Family extends $Family
     with $FunctionalFamilyOverride<Stream<int>, int> {
   const CountStream2Family._()
-    : super(
-        retry: null,
-        name: r'myFamilyCountStream2ProviderFamily',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'myFamilyCountStream2ProviderFamily',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
-  CountStream2Provider call(int a) =>
+  CountStream2Provider call(
+    int a,
+  ) =>
       CountStream2Provider._(argument: a, from: this);
 
   @override
@@ -478,16 +473,15 @@ const myFamilyCountNotifier2ProviderFamily = CountNotifier2Family._();
 
 final class CountNotifier2Provider
     extends $NotifierProvider<CountNotifier2, int> {
-  const CountNotifier2Provider._({
-    required CountNotifier2Family super.from,
-    required int super.argument,
-  }) : super(
-         retry: null,
-         name: r'myFamilyCountNotifier2ProviderFamily',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  const CountNotifier2Provider._(
+      {required CountNotifier2Family super.from, required int super.argument})
+      : super(
+          retry: null,
+          name: r'myFamilyCountNotifier2ProviderFamily',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$countNotifier2Hash();
@@ -527,15 +521,17 @@ String _$countNotifier2Hash() => r'ef12bb4f94add336804ae43bcdbcd8e9b0bec420';
 final class CountNotifier2Family extends $Family
     with $ClassFamilyOverride<CountNotifier2, int, int, int, int> {
   const CountNotifier2Family._()
-    : super(
-        retry: null,
-        name: r'myFamilyCountNotifier2ProviderFamily',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'myFamilyCountNotifier2ProviderFamily',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
-  CountNotifier2Provider call(int a) =>
+  CountNotifier2Provider call(
+    int a,
+  ) =>
       CountNotifier2Provider._(argument: a, from: this);
 
   @override
@@ -546,20 +542,18 @@ abstract class _$CountNotifier2 extends $Notifier<int> {
   late final _$args = ref.$arg as int;
   int get a => _$args;
 
-  int build(int a);
+  int build(
+    int a,
+  );
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
+    final created = build(
+      _$args,
+    );
     final ref = this.ref as $Ref<int, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<int, int>,
-              int,
-              Object?,
-              Object?
-            >;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -569,16 +563,16 @@ const myFamilyCountAsyncNotifier2ProviderFamily = CountAsyncNotifier2Family._();
 
 final class CountAsyncNotifier2Provider
     extends $AsyncNotifierProvider<CountAsyncNotifier2, int> {
-  const CountAsyncNotifier2Provider._({
-    required CountAsyncNotifier2Family super.from,
-    required int super.argument,
-  }) : super(
-         retry: null,
-         name: r'myFamilyCountAsyncNotifier2ProviderFamily',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  const CountAsyncNotifier2Provider._(
+      {required CountAsyncNotifier2Family super.from,
+      required int super.argument})
+      : super(
+          retry: null,
+          name: r'myFamilyCountAsyncNotifier2ProviderFamily',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$countAsyncNotifier2Hash();
@@ -610,23 +604,20 @@ String _$countAsyncNotifier2Hash() =>
 
 final class CountAsyncNotifier2Family extends $Family
     with
-        $ClassFamilyOverride<
-          CountAsyncNotifier2,
-          AsyncValue<int>,
-          int,
-          FutureOr<int>,
-          int
-        > {
+        $ClassFamilyOverride<CountAsyncNotifier2, AsyncValue<int>, int,
+            FutureOr<int>, int> {
   const CountAsyncNotifier2Family._()
-    : super(
-        retry: null,
-        name: r'myFamilyCountAsyncNotifier2ProviderFamily',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'myFamilyCountAsyncNotifier2ProviderFamily',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
-  CountAsyncNotifier2Provider call(int a) =>
+  CountAsyncNotifier2Provider call(
+    int a,
+  ) =>
       CountAsyncNotifier2Provider._(argument: a, from: this);
 
   @override
@@ -637,20 +628,18 @@ abstract class _$CountAsyncNotifier2 extends $AsyncNotifier<int> {
   late final _$args = ref.$arg as int;
   int get a => _$args;
 
-  FutureOr<int> build(int a);
+  FutureOr<int> build(
+    int a,
+  );
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
+    final created = build(
+      _$args,
+    );
     final ref = this.ref as $Ref<AsyncValue<int>, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AsyncValue<int>, int>,
-              AsyncValue<int>,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -661,16 +650,16 @@ const myFamilyCountStreamNotifier2ProviderFamily =
 
 final class CountStreamNotifier2Provider
     extends $StreamNotifierProvider<CountStreamNotifier2, int> {
-  const CountStreamNotifier2Provider._({
-    required CountStreamNotifier2Family super.from,
-    required int super.argument,
-  }) : super(
-         retry: null,
-         name: r'myFamilyCountStreamNotifier2ProviderFamily',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  const CountStreamNotifier2Provider._(
+      {required CountStreamNotifier2Family super.from,
+      required int super.argument})
+      : super(
+          retry: null,
+          name: r'myFamilyCountStreamNotifier2ProviderFamily',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$countStreamNotifier2Hash();
@@ -702,23 +691,20 @@ String _$countStreamNotifier2Hash() =>
 
 final class CountStreamNotifier2Family extends $Family
     with
-        $ClassFamilyOverride<
-          CountStreamNotifier2,
-          AsyncValue<int>,
-          int,
-          Stream<int>,
-          int
-        > {
+        $ClassFamilyOverride<CountStreamNotifier2, AsyncValue<int>, int,
+            Stream<int>, int> {
   const CountStreamNotifier2Family._()
-    : super(
-        retry: null,
-        name: r'myFamilyCountStreamNotifier2ProviderFamily',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'myFamilyCountStreamNotifier2ProviderFamily',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
-  CountStreamNotifier2Provider call(int a) =>
+  CountStreamNotifier2Provider call(
+    int a,
+  ) =>
       CountStreamNotifier2Provider._(argument: a, from: this);
 
   @override
@@ -729,20 +715,18 @@ abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {
   late final _$args = ref.$arg as int;
   int get a => _$args;
 
-  Stream<int> build(int a);
+  Stream<int> build(
+    int a,
+  );
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
+    final created = build(
+      _$args,
+    );
     final ref = this.ref as $Ref<AsyncValue<int>, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AsyncValue<int>, int>,
-              AsyncValue<int>,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -753,15 +737,15 @@ const myTimePod = TimeControllerProvider._();
 final class TimeControllerProvider
     extends $NotifierProvider<TimeController, int> {
   const TimeControllerProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'myTimePod',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'myTimePod',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$timeControllerHash();
@@ -788,14 +772,8 @@ abstract class _$TimeController extends $Notifier<int> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<int, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<int, int>,
-              int,
-              Object?,
-              Object?
-            >;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -805,16 +783,15 @@ const myFamilyTimeProviderFamily = TimeController2Family._();
 
 final class TimeController2Provider
     extends $NotifierProvider<TimeController2, int> {
-  const TimeController2Provider._({
-    required TimeController2Family super.from,
-    required int super.argument,
-  }) : super(
-         retry: null,
-         name: r'myFamilyTimeProviderFamily',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  const TimeController2Provider._(
+      {required TimeController2Family super.from, required int super.argument})
+      : super(
+          retry: null,
+          name: r'myFamilyTimeProviderFamily',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$timeController2Hash();
@@ -854,15 +831,17 @@ String _$timeController2Hash() => r'8bba0763d5955bd6e276ee913a0f25e032aa0db6';
 final class TimeController2Family extends $Family
     with $ClassFamilyOverride<TimeController2, int, int, int, int> {
   const TimeController2Family._()
-    : super(
-        retry: null,
-        name: r'myFamilyTimeProviderFamily',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'myFamilyTimeProviderFamily',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
-  TimeController2Provider call(int a) =>
+  TimeController2Provider call(
+    int a,
+  ) =>
       TimeController2Provider._(argument: a, from: this);
 
   @override
@@ -873,20 +852,18 @@ abstract class _$TimeController2 extends $Notifier<int> {
   late final _$args = ref.$arg as int;
   int get a => _$args;
 
-  int build(int a);
+  int build(
+    int a,
+  );
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
+    final created = build(
+      _$args,
+    );
     final ref = this.ref as $Ref<int, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<int, int>,
-              int,
-              Object?,
-              Object?
-            >;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }

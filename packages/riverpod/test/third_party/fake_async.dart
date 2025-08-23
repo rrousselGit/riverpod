@@ -183,16 +183,16 @@ class FakeAsync {
   /// Note: it's usually more convenient to use [fakeAsync] rather than creating
   /// a [FakeAsync] object and calling [run] manually.
   T run<T>(T Function(FakeAsync self) callback) => runZoned(
-    () => withClock(_clock, () => callback(this)),
-    zoneSpecification: ZoneSpecification(
-      createTimer: (_, __, ___, duration, callback) =>
-          _createTimer(duration, callback, false),
-      createPeriodicTimer: (_, __, ___, duration, callback) =>
-          _createTimer(duration, callback, true),
-      // scheduleMicrotask: (_, __, ___, microtask) =>
-      //     _microtasks.add(microtask)
-    ),
-  );
+        () => withClock(_clock, () => callback(this)),
+        zoneSpecification: ZoneSpecification(
+          createTimer: (_, __, ___, duration, callback) =>
+              _createTimer(duration, callback, false),
+          createPeriodicTimer: (_, __, ___, duration, callback) =>
+              _createTimer(duration, callback, true),
+          // scheduleMicrotask: (_, __, ___, microtask) =>
+          //     _microtasks.add(microtask)
+        ),
+      );
 
   /// Runs all pending microtasks scheduled within a call to [run] or
   /// [fakeAsync] until there are no more microtasks scheduled.
@@ -213,10 +213,9 @@ class FakeAsync {
   /// The [timeout] controls how much fake time may elapse before a [StateError]
   /// is thrown. This ensures that a periodic timer doesn't cause this method to
   /// deadlock. It defaults to one hour.
-  void flushTimers({
-    Duration timeout = const Duration(hours: 1),
-    bool flushPeriodicTimers = true,
-  }) {
+  void flushTimers(
+      {Duration timeout = const Duration(hours: 1),
+      bool flushPeriodicTimers = true}) {
     final absoluteTimeout = _elapsed + timeout;
     _fireTimersWhile((timer) {
       if (timer._nextCall > absoluteTimeout) {
@@ -228,9 +227,8 @@ class FakeAsync {
       // Continue firing timers until the only ones left are periodic *and*
       // every periodic timer has had a change to run against the final
       // value of [_elapsed].
-      return _timers.any(
-        (timer) => !timer.isPeriodic || timer._nextCall <= _elapsed,
-      );
+      return _timers
+          .any((timer) => !timer.isPeriodic || timer._nextCall <= _elapsed);
     });
   }
 
@@ -256,13 +254,8 @@ class FakeAsync {
   /// Creates a new timer controlled by `this` that fires [callback] after
   /// [duration] (or every [duration] if [periodic] is `true`).
   Timer _createTimer(Duration duration, Function callback, bool periodic) {
-    final timer = FakeTimer._(
-      duration,
-      callback,
-      periodic,
-      this,
-      includeStackTrace: includeTimerStackTrace,
-    );
+    final timer = FakeTimer._(duration, callback, periodic, this,
+        includeStackTrace: includeTimerStackTrace);
     _timers.add(timer);
     return timer;
   }
@@ -311,18 +304,13 @@ class FakeTimer implements Timer {
 
   /// Returns debugging information to try to identify the source of the
   /// [Timer].
-  String get debugString =>
-      'Timer (duration: $duration, periodic: $isPeriodic)'
+  String get debugString => 'Timer (duration: $duration, periodic: $isPeriodic)'
       '${_creationStackTrace != null ? ', created:\n$creationStackTrace' : ''}';
 
-  FakeTimer._(
-    Duration duration,
-    this._callback,
-    this.isPeriodic,
-    this._async, {
-    bool includeStackTrace = true,
-  }) : duration = duration < Duration.zero ? Duration.zero : duration,
-       _creationStackTrace = includeStackTrace ? StackTrace.current : null {
+  FakeTimer._(Duration duration, this._callback, this.isPeriodic, this._async,
+      {bool includeStackTrace = true})
+      : duration = duration < Duration.zero ? Duration.zero : duration,
+        _creationStackTrace = includeStackTrace ? StackTrace.current : null {
     _nextCall = _async._elapsed + this.duration;
   }
 

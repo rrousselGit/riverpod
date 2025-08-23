@@ -36,7 +36,10 @@ void main() {
     });
 
     test('can be auto-scoped', () async {
-      final dep = Provider((ref) => 0, dependencies: const []);
+      final dep = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final provider = Provider.family.autoDispose<int, int>(
         (ref, i) => ref.watch(dep) + i,
         dependencies: [dep],
@@ -61,11 +64,8 @@ void main() {
       final listener = Listener<String>();
       final container = ProviderContainer.test();
 
-      final sub = container.listen(
-        provider(0),
-        listener.call,
-        fireImmediately: true,
-      );
+      final sub =
+          container.listen(provider(0), listener.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, '0'));
 

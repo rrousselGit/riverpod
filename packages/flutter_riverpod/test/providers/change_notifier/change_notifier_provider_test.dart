@@ -28,9 +28,8 @@ void main() {
   });
 
   test('supports overrideWith', () {
-    final provider = ChangeNotifierProvider<ValueNotifier<int>>(
-      (ref) => ValueNotifier(0),
-    );
+    final provider =
+        ChangeNotifierProvider<ValueNotifier<int>>((ref) => ValueNotifier(0));
     final autoDispose = ChangeNotifierProvider.autoDispose<ValueNotifier<int>>(
       (ref) => ValueNotifier(0),
     );
@@ -54,16 +53,15 @@ void main() {
     final family = ChangeNotifierProvider.family<ValueNotifier<String>, int>(
       (ref, arg) => ValueNotifier('0 $arg'),
     );
-    final autoDisposeFamily = ChangeNotifierProvider.autoDispose
-        .family<ValueNotifier<String>, int>(
-          (ref, arg) => ValueNotifier('0 $arg'),
-        );
+    final autoDisposeFamily =
+        ChangeNotifierProvider.autoDispose.family<ValueNotifier<String>, int>(
+      (ref, arg) => ValueNotifier('0 $arg'),
+    );
     final container = ProviderContainer.test(
       overrides: [
         family.overrideWith((ref, int arg) => ValueNotifier('42 $arg')),
-        autoDisposeFamily.overrideWith(
-          (ref, int arg) => ValueNotifier('84 $arg'),
-        ),
+        autoDisposeFamily
+            .overrideWith((ref, int arg) => ValueNotifier('84 $arg')),
       ],
     );
 
@@ -134,10 +132,8 @@ void main() {
         dependencies: const [],
       );
       final root = ProviderContainer.test();
-      final container = ProviderContainer.test(
-        parent: root,
-        overrides: [provider],
-      );
+      final container =
+          ProviderContainer.test(parent: root, overrides: [provider]);
 
       expect(container.read(provider.notifier).value, 0);
       expect(container.read(provider).value, 0);
@@ -158,7 +154,9 @@ void main() {
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
         parent: root,
-        overrides: [provider.overrideWith((ref) => ValueNotifier(42))],
+        overrides: [
+          provider.overrideWith((ref) => ValueNotifier(42)),
+        ],
       );
 
       expect(container.read(provider.notifier).value, 42);
@@ -187,10 +185,8 @@ void main() {
 
   test('family', () {
     final container = ProviderContainer.test();
-    final provider = ChangeNotifierProvider.family<ValueNotifier<int>, int>((
-      ref,
-      value,
-    ) {
+    final provider =
+        ChangeNotifierProvider.family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
     });
 
@@ -257,7 +253,10 @@ void main() {
     addTearDown(container.dispose);
 
     var callCount = 0;
-    final sub = container.listen(provider.notifier, (_, __) => callCount++);
+    final sub = container.listen(
+      provider.notifier,
+      (_, __) => callCount++,
+    );
 
     expect(sub.read(), notifier);
     expect(callCount, 0);
@@ -301,7 +300,9 @@ void main() {
     final notifier = TestNotifier();
     final notifier2 = TestNotifier();
     final container = ProviderContainer.test(
-      overrides: [provider.overrideWith((_) => notifier)],
+      overrides: [
+        provider.overrideWith((_) => notifier),
+      ],
     );
     addTearDown(container.dispose);
 
@@ -318,7 +319,9 @@ void main() {
     await container.pump();
     expect(callCount, 1);
 
-    container.updateOverrides([provider.overrideWith((_) => notifier2)]);
+    container.updateOverrides([
+      provider.overrideWith((_) => notifier2),
+    ]);
 
     await container.pump();
     expect(callCount, 1);

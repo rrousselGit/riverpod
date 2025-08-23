@@ -95,13 +95,20 @@ class _TenableFromFuture<ValueT> extends Tenable<ValueT> {
     FutureOr<NewT> Function(ValueT value) cb, {
     FutureOr<NewT> Function(Object error, StackTrace stack)? onError,
   }) {
-    return Tenable.fromFuture(future.then(cb, onError: onError));
+    return Tenable.fromFuture(
+      future.then(
+        cb,
+        onError: onError,
+      ),
+    );
   }
 }
 
 @internal
 extension OrX<ValueT> on FutureOr<ValueT> {
-  FutureOr<NewT> then<NewT>(FutureOr<NewT> Function(ValueT value) cb) {
+  FutureOr<NewT> then<NewT>(
+    FutureOr<NewT> Function(ValueT value) cb,
+  ) {
     final that = this;
     if (that is Future<ValueT>) {
       return that.then(cb);

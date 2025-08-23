@@ -12,10 +12,8 @@ extension FunctionalProviderDeclarationX on FunctionDeclaration {
       final riverpod = this.riverpod;
       if (riverpod == null) return null;
 
-      final providerElement = FunctionalProviderDeclarationElement._parse(
-        element,
-        this,
-      );
+      final providerElement =
+          FunctionalProviderDeclarationElement._parse(element, this);
       if (providerElement == null) return null;
 
       return FunctionalProviderDeclaration._(

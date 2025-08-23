@@ -100,12 +100,12 @@ class FamilyClass extends _$FamilyClass {
 }
 
 // Regression test for https://github.com/rrousselGit/riverpod/issues/3490
-typedef Regression3490Cb<ModelT, SortT, CursorT> =
-    Future<(int, CursorT)> Function({
-      Map<String, dynamic> filters,
-      SortT? sort,
-      CursorT? cursor,
-    });
+typedef Regression3490Cb<ModelT, SortT, CursorT> = Future<(int, CursorT)>
+    Function({
+  Map<String, dynamic> filters,
+  SortT? sort,
+  CursorT? cursor,
+});
 
 @riverpod
 class Regression3490<ModelT, SortT, CursorT>

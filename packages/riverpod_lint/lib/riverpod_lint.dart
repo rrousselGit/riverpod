@@ -29,35 +29,38 @@ PluginBase createPlugin() => _RiverpodPlugin();
 class _RiverpodPlugin extends PluginBase {
   @override
   List<RiverpodLintRule> getLintRules(CustomLintConfigs configs) => [
-    const AsyncValueNullablePattern(),
-    const AvoidBuildContextInProviders(),
-    const OnlyUseKeepAliveInsideKeepAlive(),
-    const AvoidPublicNotifierProperties(),
-    const AvoidRefInsideStateDispose(),
-    const FunctionalRef(),
-    const MissingProviderScope(),
-    const NotifierBuild(),
-    const NotifierExtends(),
-    const ProtectedNotifierProperties(),
-    const ProviderDependencies(),
-    const ProviderParameters(),
-    const RiverpodSyntaxError(),
-    const ScopedProvidersShouldSpecifyDependencies(),
-    const UnsupportedProviderValue(),
-  ];
+        const AsyncValueNullablePattern(),
+        const AvoidBuildContextInProviders(),
+        const OnlyUseKeepAliveInsideKeepAlive(),
+        const AvoidPublicNotifierProperties(),
+        const AvoidRefInsideStateDispose(),
+        const FunctionalRef(),
+        const MissingProviderScope(),
+        const NotifierBuild(),
+        const NotifierExtends(),
+        const ProtectedNotifierProperties(),
+        const ProviderDependencies(),
+        const ProviderParameters(),
+        const RiverpodSyntaxError(),
+        const ScopedProvidersShouldSpecifyDependencies(),
+        const UnsupportedProviderValue(),
+      ];
 
   @override
   List<Assist> getAssists() => [
-    WrapWithConsumer(),
-    WrapWithProviderScope(),
-    ...StatelessBaseWidgetType.values.map(
-      (targetWidget) =>
-          ConvertToStatelessBaseWidget(targetWidget: targetWidget),
-    ),
-    ...StatefulBaseWidgetType.values.map(
-      (targetWidget) => ConvertToStatefulBaseWidget(targetWidget: targetWidget),
-    ),
-    FunctionalToClassBasedProvider(),
-    ClassBasedToFunctionalProvider(),
-  ];
+        WrapWithConsumer(),
+        WrapWithProviderScope(),
+        ...StatelessBaseWidgetType.values.map(
+          (targetWidget) => ConvertToStatelessBaseWidget(
+            targetWidget: targetWidget,
+          ),
+        ),
+        ...StatefulBaseWidgetType.values.map(
+          (targetWidget) => ConvertToStatefulBaseWidget(
+            targetWidget: targetWidget,
+          ),
+        ),
+        FunctionalToClassBasedProvider(),
+        ClassBasedToFunctionalProvider(),
+      ];
 }

@@ -25,35 +25,37 @@ void main() {
 
         sub.close();
 
-        expect(container.readProviderElement(provider).weakDependents, isEmpty);
+        expect(
+          container.readProviderElement(provider).weakDependents,
+          isEmpty,
+        );
       });
 
       test(
-        'calls mayNeedDispose in ProviderSubscription.read for the sake of listen(weak: true)',
-        () async {
-          final container = ProviderContainer.test();
-          final onDispose = OnDisposeMock();
-          final provider = FutureProvider.autoDispose((ref) {
-            ref.onDispose(onDispose.call);
-            return 0;
-          });
+          'calls mayNeedDispose in ProviderSubscription.read for the sake of listen(weak: true)',
+          () async {
+        final container = ProviderContainer.test();
+        final onDispose = OnDisposeMock();
+        final provider = FutureProvider.autoDispose((ref) {
+          ref.onDispose(onDispose.call);
+          return 0;
+        });
 
-          final element = container.readProviderElement(provider);
+        final element = container.readProviderElement(provider);
 
-          final sub = container.listen(
-            provider.future,
-            weak: true,
-            (previous, value) {},
-          );
+        final sub = container.listen(
+          provider.future,
+          weak: true,
+          (previous, value) {},
+        );
 
-          expect(sub.read(), completion(0));
-          verifyZeroInteractions(onDispose);
+        expect(sub.read(), completion(0));
+        verifyZeroInteractions(onDispose);
 
-          await container.pump();
+        await container.pump();
 
-          verifyOnly(onDispose, onDispose());
-        },
-      );
+        verifyOnly(onDispose, onDispose());
+      });
 
       test('common use-case ', () async {
         var buildCount = 0;
@@ -64,7 +66,11 @@ void main() {
         final container = ProviderContainer.test();
         final listener = Listener<Future<String>>();
 
-        container.listen(provider.future, listener.call, weak: true);
+        container.listen(
+          provider.future,
+          listener.call,
+          weak: true,
+        );
 
         verifyZeroInteractions(listener);
         expect(buildCount, 0);
@@ -79,31 +85,29 @@ void main() {
         expect(await future, 'Hello');
       });
 
-      test(
-        'calling `sub.read` on a weak listener will read the value',
-        () async {
-          final provider = FutureProvider((ref) => 'Hello');
-          final container = ProviderContainer.test();
-          final listener = Listener<Future<String>>();
+      test('calling `sub.read` on a weak listener will read the value',
+          () async {
+        final provider = FutureProvider((ref) => 'Hello');
+        final container = ProviderContainer.test();
+        final listener = Listener<Future<String>>();
 
-          final sub = container.listen(
-            provider.future,
-            listener.call,
-            weak: true,
-          );
+        final sub = container.listen(
+          provider.future,
+          listener.call,
+          weak: true,
+        );
 
-          verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener);
 
-          expect(await sub.read(), 'Hello');
+        expect(await sub.read(), 'Hello');
 
-          final [future as Future<String>] = verifyOnly(
-            listener,
-            listener.call(argThat(isNull), captureAny),
-          ).captured;
+        final [future as Future<String>] = verifyOnly(
+          listener,
+          listener.call(argThat(isNull), captureAny),
+        ).captured;
 
-          expect(await future, 'Hello');
-        },
-      );
+        expect(await future, 'Hello');
+      });
     });
   });
 }

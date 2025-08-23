@@ -14,9 +14,9 @@ extension ProviderContainerInstanceCreationExpressionX
         return null;
       }
 
-      final overrides = argumentList.namedArguments().firstWhereOrNull(
-        (e) => e.name.label.name == 'overrides',
-      );
+      final overrides = argumentList
+          .namedArguments()
+          .firstWhereOrNull((e) => e.name.label.name == 'overrides');
 
       return ProviderContainerInstanceCreationExpression._(
         node: this,

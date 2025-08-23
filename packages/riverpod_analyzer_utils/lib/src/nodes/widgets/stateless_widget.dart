@@ -1,7 +1,10 @@
 part of '../../nodes.dart';
 
 final class StatelessWidgetDeclaration extends WidgetDeclaration {
-  StatelessWidgetDeclaration._({required this.element, required this.node});
+  StatelessWidgetDeclaration._({
+    required this.element,
+    required this.node,
+  });
 
   static StatelessWidgetDeclaration? _parse(ClassDeclaration node) {
     final element = node.declaredFragment?.element.let(
@@ -9,7 +12,10 @@ final class StatelessWidgetDeclaration extends WidgetDeclaration {
     );
     if (element == null) return null;
 
-    return StatelessWidgetDeclaration._(element: element, node: node);
+    return StatelessWidgetDeclaration._(
+      element: element,
+      node: node,
+    );
   }
 
   @override
@@ -31,7 +37,9 @@ final class StatelessWidgetDeclarationElement extends WidgetDeclarationElement {
     return _cache(node, () {
       final dependencies = DependenciesAnnotationElement._of(node, from);
 
-      return StatelessWidgetDeclarationElement._(dependencies: dependencies);
+      return StatelessWidgetDeclarationElement._(
+        dependencies: dependencies,
+      );
     });
   }
 

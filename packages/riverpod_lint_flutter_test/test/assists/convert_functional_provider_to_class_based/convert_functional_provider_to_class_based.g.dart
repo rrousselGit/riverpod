@@ -19,15 +19,15 @@ final class ExampleProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   /// Some comment
   const ExampleProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'exampleProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'exampleProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$exampleHash();
@@ -63,16 +63,20 @@ const exampleFamilyProvider = ExampleFamilyFamily._();
 final class ExampleFamilyProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   /// Some comment
-  const ExampleFamilyProvider._({
-    required ExampleFamilyFamily super.from,
-    required ({int a, String b}) super.argument,
-  }) : super(
-         retry: null,
-         name: r'exampleFamilyProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  const ExampleFamilyProvider._(
+      {required ExampleFamilyFamily super.from,
+      required ({
+        int a,
+        String b,
+      })
+          super.argument})
+      : super(
+          retry: null,
+          name: r'exampleFamilyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$exampleFamilyHash();
@@ -91,8 +95,15 @@ final class ExampleFamilyProvider extends $FunctionalProvider<int, int, int>
 
   @override
   int create(Ref ref) {
-    final argument = this.argument as ({int a, String b});
-    return exampleFamily(ref, a: argument.a, b: argument.b);
+    final argument = this.argument as ({
+      int a,
+      String b,
+    });
+    return exampleFamily(
+      ref,
+      a: argument.a,
+      b: argument.b,
+    );
   }
 
   /// {@macro riverpod.override_with_value}
@@ -119,20 +130,32 @@ String _$exampleFamilyHash() => r'70dfc6f4b2d7d251edbc3a66c3ac0f2c56aebf8b';
 /// Some comment
 
 final class ExampleFamilyFamily extends $Family
-    with $FunctionalFamilyOverride<int, ({int a, String b})> {
+    with
+        $FunctionalFamilyOverride<
+            int,
+            ({
+              int a,
+              String b,
+            })> {
   const ExampleFamilyFamily._()
-    : super(
-        retry: null,
-        name: r'exampleFamilyProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'exampleFamilyProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
   /// Some comment
 
-  ExampleFamilyProvider call({required int a, String b = '42'}) =>
-      ExampleFamilyProvider._(argument: (a: a, b: b), from: this);
+  ExampleFamilyProvider call({
+    required int a,
+    String b = '42',
+  }) =>
+      ExampleFamilyProvider._(argument: (
+        a: a,
+        b: b,
+      ), from: this);
 
   @override
   String toString() => r'exampleFamilyProvider';

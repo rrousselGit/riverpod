@@ -9,20 +9,25 @@ import '../../../utils.dart';
 void main() {
   group('StateNotifier.family', () {
     test('specifies `from` & `argument` for related providers', () {
-      final provider = StateNotifierProvider.autoDispose
-          .family<Counter, int, int>((ref, _) => Counter());
+      final provider =
+          StateNotifierProvider.autoDispose.family<Counter, int, int>(
+        (ref, _) => Counter(),
+      );
 
       expect(provider(0).from, provider);
       expect(provider(0).argument, 0);
     });
 
     test('can be auto-scoped', () async {
-      final dep = Provider((ref) => 0, dependencies: const []);
+      final dep = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final provider = StateNotifierProvider.autoDispose
           .family<StateController<int>, int, int>(
-            (ref, i) => StateController(ref.watch(dep) + i),
-            dependencies: [dep],
-          );
+        (ref, i) => StateController(ref.watch(dep) + i),
+        dependencies: [dep],
+      );
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
         parent: root,
@@ -40,9 +45,9 @@ void main() {
         final controller = StateController(0);
         final provider = StateNotifierProvider.autoDispose
             .family<StateController<int>, int, int>(
-              (ref, _) => controller,
-              dependencies: const [],
-            );
+          (ref, _) => controller,
+          dependencies: const [],
+        );
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
           parent: root,
@@ -54,11 +59,8 @@ void main() {
         expect(
           container.getAllProviderElementsInOrder(),
           unorderedEquals(<Object?>[
-            isA<ProviderElement>().having(
-              (e) => e.origin,
-              'origin',
-              provider(0),
-            ),
+            isA<ProviderElement>()
+                .having((e) => e.origin, 'origin', provider(0)),
           ]),
         );
         expect(root.getAllProviderElementsInOrder(), isEmpty);
@@ -68,9 +70,9 @@ void main() {
         final controller = StateController(0);
         final provider = StateNotifierProvider.autoDispose
             .family<StateController<int>, int, int>(
-              (ref, _) => controller,
-              dependencies: const [],
-            );
+          (ref, _) => controller,
+          dependencies: const [],
+        );
         final root = ProviderContainer.test();
         final controllerOverride = StateController(42);
         final container = ProviderContainer.test(
@@ -86,11 +88,8 @@ void main() {
         expect(
           container.getAllProviderElementsInOrder(),
           unorderedEquals(<Object?>[
-            isA<ProviderElement>().having(
-              (e) => e.origin,
-              'origin',
-              provider(0),
-            ),
+            isA<ProviderElement>()
+                .having((e) => e.origin, 'origin', provider(0)),
           ]),
         );
       });

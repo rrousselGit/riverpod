@@ -15,15 +15,15 @@ const rootProvider = RootProvider._();
 final class RootProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const RootProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'rootProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'rootProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$rootHash();
@@ -55,15 +55,15 @@ const depProvider = DepProvider._();
 final class DepProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const DepProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'depProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[],
-        $allTransitiveDependencies: const <ProviderOrFamily>[],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'depProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
 
   @override
   String debugGetCreateSourceHash() => _$depHash();
@@ -95,15 +95,15 @@ const dep2Provider = Dep2Provider._();
 final class Dep2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const Dep2Provider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'dep2Provider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[],
-        $allTransitiveDependencies: const <ProviderOrFamily>[],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'dep2Provider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
 
   @override
   String debugGetCreateSourceHash() => _$dep2Hash();
@@ -140,18 +140,18 @@ final class ExtraDepProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   ////////////
   const ExtraDepProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'extraDepProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[depProvider, dep2Provider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          ExtraDepProvider.$allTransitiveDependencies0,
-          ExtraDepProvider.$allTransitiveDependencies1,
-        ],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'extraDepProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider, dep2Provider],
+          $allTransitiveDependencies: const <ProviderOrFamily>[
+            ExtraDepProvider.$allTransitiveDependencies0,
+            ExtraDepProvider.$allTransitiveDependencies1,
+          ],
+        );
 
   static const $allTransitiveDependencies0 = depProvider;
   static const $allTransitiveDependencies1 = dep2Provider;
@@ -186,17 +186,17 @@ const noDepProvider = NoDepProvider._();
 final class NoDepProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const NoDepProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'noDepProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[depProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          NoDepProvider.$allTransitiveDependencies0,
-        ],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'noDepProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider],
+          $allTransitiveDependencies: const <ProviderOrFamily>[
+            NoDepProvider.$allTransitiveDependencies0,
+          ],
+        );
 
   static const $allTransitiveDependencies0 = depProvider;
 
@@ -229,20 +229,19 @@ const dependenciesFirstThenKeepAliveProvider =
     DependenciesFirstThenKeepAliveProvider._();
 
 final class DependenciesFirstThenKeepAliveProvider
-    extends $FunctionalProvider<int, int, int>
-    with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const DependenciesFirstThenKeepAliveProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'dependenciesFirstThenKeepAliveProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[depProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          DependenciesFirstThenKeepAliveProvider.$allTransitiveDependencies0,
-        ],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'dependenciesFirstThenKeepAliveProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider],
+          $allTransitiveDependencies: const <ProviderOrFamily>[
+            DependenciesFirstThenKeepAliveProvider.$allTransitiveDependencies0,
+          ],
+        );
 
   static const $allTransitiveDependencies0 = depProvider;
 
@@ -277,17 +276,17 @@ const noDepNoParamProvider = NoDepNoParamProvider._();
 final class NoDepNoParamProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const NoDepNoParamProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'noDepNoParamProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[depProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          NoDepNoParamProvider.$allTransitiveDependencies0,
-        ],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'noDepNoParamProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider],
+          $allTransitiveDependencies: const <ProviderOrFamily>[
+            NoDepNoParamProvider.$allTransitiveDependencies0,
+          ],
+        );
 
   static const $allTransitiveDependencies0 = depProvider;
 
@@ -321,17 +320,17 @@ const noDepWithoutCommaProvider = NoDepWithoutCommaProvider._();
 final class NoDepWithoutCommaProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const NoDepWithoutCommaProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'noDepWithoutCommaProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[depProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          NoDepWithoutCommaProvider.$allTransitiveDependencies0,
-        ],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'noDepWithoutCommaProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider],
+          $allTransitiveDependencies: const <ProviderOrFamily>[
+            NoDepWithoutCommaProvider.$allTransitiveDependencies0,
+          ],
+        );
 
   static const $allTransitiveDependencies0 = depProvider;
 
@@ -365,17 +364,17 @@ const rootDepProvider = RootDepProvider._();
 final class RootDepProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const RootDepProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'rootDepProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[rootProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          RootDepProvider.$allTransitiveDependencies0,
-        ],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'rootDepProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[rootProvider],
+          $allTransitiveDependencies: const <ProviderOrFamily>[
+            RootDepProvider.$allTransitiveDependencies0,
+          ],
+        );
 
   static const $allTransitiveDependencies0 = rootProvider;
 

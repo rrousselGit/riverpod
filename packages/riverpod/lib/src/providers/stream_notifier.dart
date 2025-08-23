@@ -22,18 +22,15 @@ abstract class $StreamNotifier<ValueT> extends $AsyncNotifierBase<ValueT>
 /// Do not use.
 @publicInCodegen
 abstract base class $StreamNotifierProvider<
-  NotifierT extends $StreamNotifier<ValueT>, //
-  ValueT
-> //
-    extends
-        $ClassProvider<
-          //
-          NotifierT,
-          AsyncValue<ValueT>,
-          ValueT,
-          Stream<ValueT>
-        > //
-    with $FutureModifier<ValueT> {
+        NotifierT extends $StreamNotifier<ValueT>, //
+        ValueT> //
+    extends $ClassProvider< //
+        NotifierT,
+        AsyncValue<ValueT>,
+        ValueT,
+        Stream<ValueT>> //
+    with
+        $FutureModifier<ValueT> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use.
   const $StreamNotifierProvider({
@@ -60,19 +57,14 @@ abstract base class $StreamNotifierProvider<
 /// Do not use.
 @internal
 @publicInCodegen
-class $StreamNotifierProviderElement<
-  //
-  NotifierT extends $StreamNotifier<ValueT>,
-  ValueT
-> //
-    extends
-        $ClassProviderElement<
-          //
-          NotifierT,
-          AsyncValue<ValueT>,
-          ValueT,
-          Stream<ValueT>
-        > //
+class $StreamNotifierProviderElement< //
+        NotifierT extends $StreamNotifier<ValueT>,
+        ValueT> //
+    extends $ClassProviderElement< //
+        NotifierT,
+        AsyncValue<ValueT>,
+        ValueT,
+        Stream<ValueT>> //
     with
         FutureModifierElement<ValueT>,
         FutureModifierClassElement<NotifierT, ValueT, Stream<ValueT>> {

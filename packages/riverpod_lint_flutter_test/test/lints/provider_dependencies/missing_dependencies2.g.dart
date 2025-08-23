@@ -15,15 +15,15 @@ const depProvider = DepProvider._();
 final class DepProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const DepProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'depProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[],
-        $allTransitiveDependencies: const <ProviderOrFamily>[],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'depProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
 
   @override
   String debugGetCreateSourceHash() => _$depHash();
@@ -55,15 +55,15 @@ const generatedScopedProvider = GeneratedScopedProvider._();
 final class GeneratedScopedProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const GeneratedScopedProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'generatedScopedProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[],
-        $allTransitiveDependencies: const <ProviderOrFamily>[],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'generatedScopedProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
 
   @override
   String debugGetCreateSourceHash() => _$generatedScopedHash();
@@ -95,15 +95,15 @@ const generatedRootProvider = GeneratedRootProvider._();
 final class GeneratedRootProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const GeneratedRootProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'generatedRootProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'generatedRootProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$generatedRootHash();
@@ -134,18 +134,17 @@ const watchScopedButNoDependenciesProvider =
     WatchScopedButNoDependenciesProvider._();
 
 final class WatchScopedButNoDependenciesProvider
-    extends $FunctionalProvider<int, int, int>
-    with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchScopedButNoDependenciesProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'watchScopedButNoDependenciesProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchScopedButNoDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$watchScopedButNoDependenciesHash();
@@ -177,18 +176,17 @@ const watchGeneratedScopedButNoDependenciesProvider =
     WatchGeneratedScopedButNoDependenciesProvider._();
 
 final class WatchGeneratedScopedButNoDependenciesProvider
-    extends $FunctionalProvider<int, int, int>
-    with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchGeneratedScopedButNoDependenciesProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'watchGeneratedScopedButNoDependenciesProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchGeneratedScopedButNoDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() =>
@@ -221,18 +219,17 @@ const watchRootButNoDependenciesProvider =
     WatchRootButNoDependenciesProvider._();
 
 final class WatchRootButNoDependenciesProvider
-    extends $FunctionalProvider<int, int, int>
-    with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchRootButNoDependenciesProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'watchRootButNoDependenciesProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchRootButNoDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$watchRootButNoDependenciesHash();
@@ -264,18 +261,17 @@ const watchGeneratedRootButNoDependenciesProvider =
     WatchGeneratedRootButNoDependenciesProvider._();
 
 final class WatchGeneratedRootButNoDependenciesProvider
-    extends $FunctionalProvider<int, int, int>
-    with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchGeneratedRootButNoDependenciesProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'watchGeneratedRootButNoDependenciesProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchGeneratedRootButNoDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() =>
@@ -308,18 +304,17 @@ const watchScopedButEmptyDependenciesProvider =
     WatchScopedButEmptyDependenciesProvider._();
 
 final class WatchScopedButEmptyDependenciesProvider
-    extends $FunctionalProvider<int, int, int>
-    with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchScopedButEmptyDependenciesProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'watchScopedButEmptyDependenciesProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[],
-        $allTransitiveDependencies: const <ProviderOrFamily>[],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchScopedButEmptyDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
 
   @override
   String debugGetCreateSourceHash() => _$watchScopedButEmptyDependenciesHash();
@@ -351,18 +346,17 @@ const watchGeneratedScopedButEmptyDependenciesProvider =
     WatchGeneratedScopedButEmptyDependenciesProvider._();
 
 final class WatchGeneratedScopedButEmptyDependenciesProvider
-    extends $FunctionalProvider<int, int, int>
-    with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchGeneratedScopedButEmptyDependenciesProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'watchGeneratedScopedButEmptyDependenciesProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[],
-        $allTransitiveDependencies: const <ProviderOrFamily>[],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchGeneratedScopedButEmptyDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
 
   @override
   String debugGetCreateSourceHash() =>
@@ -395,18 +389,17 @@ const watchRootButEmptyDependenciesProvider =
     WatchRootButEmptyDependenciesProvider._();
 
 final class WatchRootButEmptyDependenciesProvider
-    extends $FunctionalProvider<int, int, int>
-    with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchRootButEmptyDependenciesProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'watchRootButEmptyDependenciesProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[],
-        $allTransitiveDependencies: const <ProviderOrFamily>[],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchRootButEmptyDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
 
   @override
   String debugGetCreateSourceHash() => _$watchRootButEmptyDependenciesHash();
@@ -438,18 +431,17 @@ const watchGeneratedRootButEmptyDependenciesProvider =
     WatchGeneratedRootButEmptyDependenciesProvider._();
 
 final class WatchGeneratedRootButEmptyDependenciesProvider
-    extends $FunctionalProvider<int, int, int>
-    with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchGeneratedRootButEmptyDependenciesProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'watchGeneratedRootButEmptyDependenciesProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[],
-        $allTransitiveDependencies: const <ProviderOrFamily>[],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchGeneratedRootButEmptyDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
 
   @override
   String debugGetCreateSourceHash() =>
@@ -482,20 +474,20 @@ const watchScopedButMissingDependenciesProvider =
     WatchScopedButMissingDependenciesProvider._();
 
 final class WatchScopedButMissingDependenciesProvider
-    extends $FunctionalProvider<int, int, int>
-    with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchScopedButMissingDependenciesProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'watchScopedButMissingDependenciesProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[depProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          WatchScopedButMissingDependenciesProvider.$allTransitiveDependencies0,
-        ],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchScopedButMissingDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider],
+          $allTransitiveDependencies: const <ProviderOrFamily>[
+            WatchScopedButMissingDependenciesProvider
+                .$allTransitiveDependencies0,
+          ],
+        );
 
   static const $allTransitiveDependencies0 = depProvider;
 
@@ -530,21 +522,20 @@ const watchGeneratedScopedButMissingDependenciesProvider =
     WatchGeneratedScopedButMissingDependenciesProvider._();
 
 final class WatchGeneratedScopedButMissingDependenciesProvider
-    extends $FunctionalProvider<int, int, int>
-    with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchGeneratedScopedButMissingDependenciesProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'watchGeneratedScopedButMissingDependenciesProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[depProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          WatchGeneratedScopedButMissingDependenciesProvider
-              .$allTransitiveDependencies0,
-        ],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchGeneratedScopedButMissingDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider],
+          $allTransitiveDependencies: const <ProviderOrFamily>[
+            WatchGeneratedScopedButMissingDependenciesProvider
+                .$allTransitiveDependencies0,
+          ],
+        );
 
   static const $allTransitiveDependencies0 = depProvider;
 
@@ -579,20 +570,19 @@ const watchRootButMissingDependenciesProvider =
     WatchRootButMissingDependenciesProvider._();
 
 final class WatchRootButMissingDependenciesProvider
-    extends $FunctionalProvider<int, int, int>
-    with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchRootButMissingDependenciesProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'watchRootButMissingDependenciesProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[depProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          WatchRootButMissingDependenciesProvider.$allTransitiveDependencies0,
-        ],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchRootButMissingDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider],
+          $allTransitiveDependencies: const <ProviderOrFamily>[
+            WatchRootButMissingDependenciesProvider.$allTransitiveDependencies0,
+          ],
+        );
 
   static const $allTransitiveDependencies0 = depProvider;
 
@@ -626,21 +616,20 @@ const watchGeneratedRootButMissingDependenciesProvider =
     WatchGeneratedRootButMissingDependenciesProvider._();
 
 final class WatchGeneratedRootButMissingDependenciesProvider
-    extends $FunctionalProvider<int, int, int>
-    with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchGeneratedRootButMissingDependenciesProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'watchGeneratedRootButMissingDependenciesProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[depProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          WatchGeneratedRootButMissingDependenciesProvider
-              .$allTransitiveDependencies0,
-        ],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchGeneratedRootButMissingDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider],
+          $allTransitiveDependencies: const <ProviderOrFamily>[
+            WatchGeneratedRootButMissingDependenciesProvider
+                .$allTransitiveDependencies0,
+          ],
+        );
 
   static const $allTransitiveDependencies0 = depProvider;
 
@@ -675,21 +664,20 @@ const watchGeneratedScopedAndContainsDependencyProvider =
     WatchGeneratedScopedAndContainsDependencyProvider._();
 
 final class WatchGeneratedScopedAndContainsDependencyProvider
-    extends $FunctionalProvider<int, int, int>
-    with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchGeneratedScopedAndContainsDependencyProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'watchGeneratedScopedAndContainsDependencyProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[generatedScopedProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          WatchGeneratedScopedAndContainsDependencyProvider
-              .$allTransitiveDependencies0,
-        ],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchGeneratedScopedAndContainsDependencyProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[generatedScopedProvider],
+          $allTransitiveDependencies: const <ProviderOrFamily>[
+            WatchGeneratedScopedAndContainsDependencyProvider
+                .$allTransitiveDependencies0,
+          ],
+        );
 
   static const $allTransitiveDependencies0 = generatedScopedProvider;
 
@@ -724,21 +712,20 @@ const watchGeneratedRootAndContainsDependencyProvider =
     WatchGeneratedRootAndContainsDependencyProvider._();
 
 final class WatchGeneratedRootAndContainsDependencyProvider
-    extends $FunctionalProvider<int, int, int>
-    with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchGeneratedRootAndContainsDependencyProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'watchGeneratedRootAndContainsDependencyProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[generatedRootProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          WatchGeneratedRootAndContainsDependencyProvider
-              .$allTransitiveDependencies0,
-        ],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchGeneratedRootAndContainsDependencyProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[generatedRootProvider],
+          $allTransitiveDependencies: const <ProviderOrFamily>[
+            WatchGeneratedRootAndContainsDependencyProvider
+                .$allTransitiveDependencies0,
+          ],
+        );
 
   static const $allTransitiveDependencies0 = generatedRootProvider;
 
@@ -773,24 +760,23 @@ const specifiedDependencyButNeverUsedProvider =
     SpecifiedDependencyButNeverUsedProvider._();
 
 final class SpecifiedDependencyButNeverUsedProvider
-    extends $FunctionalProvider<int, int, int>
-    with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const SpecifiedDependencyButNeverUsedProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'specifiedDependencyButNeverUsedProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[
-          depProvider,
-          generatedRootProvider,
-        ],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          SpecifiedDependencyButNeverUsedProvider.$allTransitiveDependencies0,
-          SpecifiedDependencyButNeverUsedProvider.$allTransitiveDependencies1,
-        ],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'specifiedDependencyButNeverUsedProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[
+            depProvider,
+            generatedRootProvider
+          ],
+          $allTransitiveDependencies: const <ProviderOrFamily>[
+            SpecifiedDependencyButNeverUsedProvider.$allTransitiveDependencies0,
+            SpecifiedDependencyButNeverUsedProvider.$allTransitiveDependencies1,
+          ],
+        );
 
   static const $allTransitiveDependencies0 = depProvider;
   static const $allTransitiveDependencies1 = generatedRootProvider;
@@ -825,18 +811,18 @@ const classWatchGeneratedRootButMissingDependenciesProvider =
     ClassWatchGeneratedRootButMissingDependenciesProvider._();
 
 final class ClassWatchGeneratedRootButMissingDependenciesProvider
-    extends
-        $NotifierProvider<ClassWatchGeneratedRootButMissingDependencies, int> {
+    extends $NotifierProvider<ClassWatchGeneratedRootButMissingDependencies,
+        int> {
   const ClassWatchGeneratedRootButMissingDependenciesProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'classWatchGeneratedRootButMissingDependenciesProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[],
-        $allTransitiveDependencies: const <ProviderOrFamily>[],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'classWatchGeneratedRootButMissingDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
 
   @override
   String debugGetCreateSourceHash() =>
@@ -867,14 +853,8 @@ abstract class _$ClassWatchGeneratedRootButMissingDependencies
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<int, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<int, int>,
-              int,
-              Object?,
-              Object?
-            >;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -885,17 +865,17 @@ const regression2348Provider = Regression2348Provider._();
 final class Regression2348Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const Regression2348Provider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'regression2348Provider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[generatedScopedProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          Regression2348Provider.$allTransitiveDependencies0,
-        ],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'regression2348Provider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[generatedScopedProvider],
+          $allTransitiveDependencies: const <ProviderOrFamily>[
+            Regression2348Provider.$allTransitiveDependencies0,
+          ],
+        );
 
   static const $allTransitiveDependencies0 = generatedScopedProvider;
 
@@ -929,17 +909,17 @@ const regression2417Provider = Regression2417Provider._();
 final class Regression2417Provider
     extends $NotifierProvider<Regression2417, int> {
   const Regression2417Provider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'regression2417Provider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[generatedScopedProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          Regression2417Provider.$allTransitiveDependencies0,
-        ],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'regression2417Provider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[generatedScopedProvider],
+          $allTransitiveDependencies: const <ProviderOrFamily>[
+            Regression2417Provider.$allTransitiveDependencies0,
+          ],
+        );
 
   static const $allTransitiveDependencies0 = generatedScopedProvider;
 
@@ -968,14 +948,8 @@ abstract class _$Regression2417 extends $Notifier<int> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<int, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<int, int>,
-              int,
-              Object?,
-              Object?
-            >;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -985,16 +959,15 @@ const familyDepProvider = FamilyDepFamily._();
 
 final class FamilyDepProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const FamilyDepProvider._({
-    required FamilyDepFamily super.from,
-    required int super.argument,
-  }) : super(
-         retry: null,
-         name: r'familyDepProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  const FamilyDepProvider._(
+      {required FamilyDepFamily super.from, required int super.argument})
+      : super(
+          retry: null,
+          name: r'familyDepProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   static const $allTransitiveDependencies0 = depProvider;
 
@@ -1016,7 +989,10 @@ final class FamilyDepProvider extends $FunctionalProvider<int, int, int>
   @override
   int create(Ref ref) {
     final argument = this.argument as int;
-    return familyDep(ref, argument);
+    return familyDep(
+      ref,
+      argument,
+    );
   }
 
   /// {@macro riverpod.override_with_value}
@@ -1043,17 +1019,20 @@ String _$familyDepHash() => r'ed674a44492b3871b72b4fbc68180ea0839723e5';
 final class FamilyDepFamily extends $Family
     with $FunctionalFamilyOverride<int, int> {
   const FamilyDepFamily._()
-    : super(
-        retry: null,
-        name: r'familyDepProvider',
-        dependencies: const <ProviderOrFamily>[depProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          FamilyDepProvider.$allTransitiveDependencies0,
-        ],
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'familyDepProvider',
+          dependencies: const <ProviderOrFamily>[depProvider],
+          $allTransitiveDependencies: const <ProviderOrFamily>[
+            FamilyDepProvider.$allTransitiveDependencies0,
+          ],
+          isAutoDispose: true,
+        );
 
-  FamilyDepProvider call(int p) => FamilyDepProvider._(argument: p, from: this);
+  FamilyDepProvider call(
+    int p,
+  ) =>
+      FamilyDepProvider._(argument: p, from: this);
 
   @override
   String toString() => r'familyDepProvider';
@@ -1064,16 +1043,15 @@ const familyDep2Provider = FamilyDep2Family._();
 
 final class FamilyDep2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const FamilyDep2Provider._({
-    required FamilyDep2Family super.from,
-    required int super.argument,
-  }) : super(
-         retry: null,
-         name: r'familyDep2Provider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  const FamilyDep2Provider._(
+      {required FamilyDep2Family super.from, required int super.argument})
+      : super(
+          retry: null,
+          name: r'familyDep2Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   static const $allTransitiveDependencies0 = familyDepProvider;
   static const $allTransitiveDependencies1 =
@@ -1097,7 +1075,10 @@ final class FamilyDep2Provider extends $FunctionalProvider<int, int, int>
   @override
   int create(Ref ref) {
     final argument = this.argument as int;
-    return familyDep2(ref, argument);
+    return familyDep2(
+      ref,
+      argument,
+    );
   }
 
   /// {@macro riverpod.override_with_value}
@@ -1124,18 +1105,20 @@ String _$familyDep2Hash() => r'ee9c96f7a1d65e1b66c29aa8d8c030146995504c';
 final class FamilyDep2Family extends $Family
     with $FunctionalFamilyOverride<int, int> {
   const FamilyDep2Family._()
-    : super(
-        retry: null,
-        name: r'familyDep2Provider',
-        dependencies: const <ProviderOrFamily>[familyDepProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          FamilyDep2Provider.$allTransitiveDependencies0,
-          FamilyDep2Provider.$allTransitiveDependencies1,
-        ],
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'familyDep2Provider',
+          dependencies: const <ProviderOrFamily>[familyDepProvider],
+          $allTransitiveDependencies: const <ProviderOrFamily>[
+            FamilyDep2Provider.$allTransitiveDependencies0,
+            FamilyDep2Provider.$allTransitiveDependencies1,
+          ],
+          isAutoDispose: true,
+        );
 
-  FamilyDep2Provider call(int p) =>
+  FamilyDep2Provider call(
+    int p,
+  ) =>
       FamilyDep2Provider._(argument: p, from: this);
 
   @override
@@ -1148,15 +1131,15 @@ const aliasProvider = AliasProvider._();
 final class AliasProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const AliasProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'aliasProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'aliasProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$aliasHash();
@@ -1187,15 +1170,15 @@ const aliasClassProvider = AliasClassProvider._();
 
 final class AliasClassProvider extends $NotifierProvider<AliasClass, int> {
   const AliasClassProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'aliasClassProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'aliasClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$aliasClassHash();
@@ -1222,14 +1205,8 @@ abstract class _$AliasClass extends $Notifier<int> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<int, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<int, int>,
-              int,
-              Object?,
-              Object?
-            >;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -1240,17 +1217,17 @@ const riverpodDependenciesProvider = RiverpodDependenciesProvider._();
 final class RiverpodDependenciesProvider
     extends $NotifierProvider<RiverpodDependencies, int> {
   const RiverpodDependenciesProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'riverpodDependenciesProvider',
-        isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[depProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
-          RiverpodDependenciesProvider.$allTransitiveDependencies0,
-        ],
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'riverpodDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider],
+          $allTransitiveDependencies: const <ProviderOrFamily>[
+            RiverpodDependenciesProvider.$allTransitiveDependencies0,
+          ],
+        );
 
   static const $allTransitiveDependencies0 = depProvider;
 
@@ -1280,14 +1257,8 @@ abstract class _$RiverpodDependencies extends $Notifier<int> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<int, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<int, int>,
-              int,
-              Object?,
-              Object?
-            >;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -1298,15 +1269,15 @@ const fooProvider = FooProvider._();
 final class FooProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const FooProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'fooProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'fooProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$fooHash();
@@ -1336,18 +1307,17 @@ String _$fooHash() => r'a390b7b969bb0eec183426bfc85bec32750e9475';
 const crossFileDependencyProvider = CrossFileDependencyProvider._();
 
 final class CrossFileDependencyProvider
-    extends $FunctionalProvider<int, int, int>
-    with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const CrossFileDependencyProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'crossFileDependencyProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'crossFileDependencyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$crossFileDependencyHash();

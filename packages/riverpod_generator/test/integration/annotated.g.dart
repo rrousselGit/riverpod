@@ -19,18 +19,16 @@ const functionalProvider = FunctionalFamily._();
 @visibleForTesting
 @protected
 final class FunctionalProvider
-    extends $FunctionalProvider<String, String, String>
-    with $Provider<String> {
-  const FunctionalProvider._({
-    required FunctionalFamily super.from,
-    required int super.argument,
-  }) : super(
-         retry: null,
-         name: r'functionalProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+    extends $FunctionalProvider<String, String, String> with $Provider<String> {
+  const FunctionalProvider._(
+      {required FunctionalFamily super.from, required int super.argument})
+      : super(
+          retry: null,
+          name: r'functionalProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$functionalHash();
@@ -50,7 +48,10 @@ final class FunctionalProvider
   @override
   String create(Ref ref) {
     final argument = this.argument as int;
-    return functional(ref, argument);
+    return functional(
+      ref,
+      argument,
+    );
   }
 
   /// {@macro riverpod.override_with_value}
@@ -80,18 +81,20 @@ String _$functionalHash() => r'ba8606cd0526e2dde0f775eb8f4c9d8b5b6fdf2c';
 final class FunctionalFamily extends $Family
     with $FunctionalFamilyOverride<String, int> {
   const FunctionalFamily._()
-    : super(
-        retry: null,
-        name: r'functionalProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'functionalProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
   @Deprecated('Deprecation message')
   @visibleForTesting
   @protected
-  FunctionalProvider call(@Deprecated('field') int id) =>
+  FunctionalProvider call(
+    @Deprecated('field') int id,
+  ) =>
       FunctionalProvider._(argument: id, from: this);
 
   @override
@@ -108,16 +111,15 @@ const classBasedProvider = ClassBasedFamily._();
 @visibleForTesting
 @protected
 final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
-  const ClassBasedProvider._({
-    required ClassBasedFamily super.from,
-    required int super.argument,
-  }) : super(
-         retry: null,
-         name: r'classBasedProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  const ClassBasedProvider._(
+      {required ClassBasedFamily super.from, required int super.argument})
+      : super(
+          retry: null,
+          name: r'classBasedProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$classBasedHash();
@@ -160,18 +162,20 @@ String _$classBasedHash() => r'92b444806ef8a304c6e0dc3d8e2383601e781183';
 final class ClassBasedFamily extends $Family
     with $ClassFamilyOverride<ClassBased, String, String, String, int> {
   const ClassBasedFamily._()
-    : super(
-        retry: null,
-        name: r'classBasedProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'classBasedProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
   @Deprecated('Deprecation message')
   @visibleForTesting
   @protected
-  ClassBasedProvider call(@Deprecated('field') int id) =>
+  ClassBasedProvider call(
+    @Deprecated('field') int id,
+  ) =>
       ClassBasedProvider._(argument: id, from: this);
 
   @override
@@ -186,20 +190,18 @@ abstract class _$ClassBased extends $Notifier<String> {
   @Deprecated('field')
   int get id => _$args;
 
-  String build(@Deprecated('field') int id);
+  String build(
+    @Deprecated('field') int id,
+  );
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
+    final created = build(
+      _$args,
+    );
     final ref = this.ref as $Ref<String, String>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<String, String>,
-              String,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -215,16 +217,15 @@ const familyProvider = FamilyFamily._();
 @protected
 final class FamilyProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const FamilyProvider._({
-    required FamilyFamily super.from,
-    required int super.argument,
-  }) : super(
-         retry: null,
-         name: r'familyProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  const FamilyProvider._(
+      {required FamilyFamily super.from, required int super.argument})
+      : super(
+          retry: null,
+          name: r'familyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$familyHash();
@@ -244,7 +245,10 @@ final class FamilyProvider extends $FunctionalProvider<String, String, String>
   @override
   String create(Ref ref) {
     final argument = this.argument as int;
-    return family(ref, argument);
+    return family(
+      ref,
+      argument,
+    );
   }
 
   /// {@macro riverpod.override_with_value}
@@ -274,18 +278,21 @@ String _$familyHash() => r'14b97009aec20a0332208f8a60bc177b44c9d1d4';
 final class FamilyFamily extends $Family
     with $FunctionalFamilyOverride<String, int> {
   const FamilyFamily._()
-    : super(
-        retry: null,
-        name: r'familyProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'familyProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
   @Deprecated('Deprecation message')
   @visibleForTesting
   @protected
-  FamilyProvider call(int id) => FamilyProvider._(argument: id, from: this);
+  FamilyProvider call(
+    int id,
+  ) =>
+      FamilyProvider._(argument: id, from: this);
 
   @override
   String toString() => r'familyProvider';
@@ -295,18 +302,17 @@ final class FamilyFamily extends $Family
 const notCopiedFunctionalProvider = NotCopiedFunctionalProvider._();
 
 final class NotCopiedFunctionalProvider
-    extends $FunctionalProvider<String, String, String>
-    with $Provider<String> {
+    extends $FunctionalProvider<String, String, String> with $Provider<String> {
   const NotCopiedFunctionalProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'notCopiedFunctionalProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'notCopiedFunctionalProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$notCopiedFunctionalHash();
@@ -339,15 +345,15 @@ const notCopiedClassBasedProvider = NotCopiedClassBasedProvider._();
 final class NotCopiedClassBasedProvider
     extends $NotifierProvider<NotCopiedClassBased, String> {
   const NotCopiedClassBasedProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'notCopiedClassBasedProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'notCopiedClassBasedProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$notCopiedClassBasedHash();
@@ -375,14 +381,8 @@ abstract class _$NotCopiedClassBased extends $Notifier<String> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<String, String>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<String, String>,
-              String,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -391,18 +391,16 @@ abstract class _$NotCopiedClassBased extends $Notifier<String> {
 const notCopiedFamilyProvider = NotCopiedFamilyFamily._();
 
 final class NotCopiedFamilyProvider
-    extends $FunctionalProvider<String, String, String>
-    with $Provider<String> {
-  const NotCopiedFamilyProvider._({
-    required NotCopiedFamilyFamily super.from,
-    required int super.argument,
-  }) : super(
-         retry: null,
-         name: r'notCopiedFamilyProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+    extends $FunctionalProvider<String, String, String> with $Provider<String> {
+  const NotCopiedFamilyProvider._(
+      {required NotCopiedFamilyFamily super.from, required int super.argument})
+      : super(
+          retry: null,
+          name: r'notCopiedFamilyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$notCopiedFamilyHash();
@@ -422,7 +420,10 @@ final class NotCopiedFamilyProvider
   @override
   String create(Ref ref) {
     final argument = this.argument as int;
-    return notCopiedFamily(ref, argument);
+    return notCopiedFamily(
+      ref,
+      argument,
+    );
   }
 
   /// {@macro riverpod.override_with_value}
@@ -449,15 +450,17 @@ String _$notCopiedFamilyHash() => r'ea652776532e2bf993a249b25b5254fc3dfff4b9';
 final class NotCopiedFamilyFamily extends $Family
     with $FunctionalFamilyOverride<String, int> {
   const NotCopiedFamilyFamily._()
-    : super(
-        retry: null,
-        name: r'notCopiedFamilyProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'notCopiedFamilyProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
-  NotCopiedFamilyProvider call(int id) =>
+  NotCopiedFamilyProvider call(
+    int id,
+  ) =>
       NotCopiedFamilyProvider._(argument: id, from: this);
 
   @override

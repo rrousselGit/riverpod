@@ -6,7 +6,10 @@ import 'package:test/test.dart';
 
 void main() {
   test('supports .name', () {
-    expect(StateProvider.family<int, int>((ref, id) => 0)(0).name, null);
+    expect(
+      StateProvider.family<int, int>((ref, id) => 0)(0).name,
+      null,
+    );
     expect(
       StateProvider.family<int, int>((ref, id) => 0, name: 'foo')(0).name,
       'foo',
@@ -40,11 +43,8 @@ void main() {
         expect(
           container.getAllProviderElementsInOrder(),
           unorderedEquals(<Object?>[
-            isA<ProviderElement>().having(
-              (e) => e.origin,
-              'origin',
-              provider(0),
-            ),
+            isA<ProviderElement>()
+                .having((e) => e.origin, 'origin', provider(0)),
           ]),
         );
         expect(root.getAllProviderElementsInOrder(), isEmpty);
@@ -58,7 +58,9 @@ void main() {
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
           parent: root,
-          overrides: [provider.overrideWith((ref, value) => 42)],
+          overrides: [
+            provider.overrideWith((ref, value) => 42),
+          ],
         );
 
         expect(container.read(provider(0).notifier).state, 42);
@@ -67,18 +69,18 @@ void main() {
         expect(
           container.getAllProviderElementsInOrder(),
           unorderedEquals(<Object?>[
-            isA<ProviderElement>().having(
-              (e) => e.origin,
-              'origin',
-              provider(0),
-            ),
+            isA<ProviderElement>()
+                .having((e) => e.origin, 'origin', provider(0)),
           ]),
         );
       });
     });
 
     test('can be auto-scoped', () async {
-      final dep = Provider((ref) => 0, dependencies: const []);
+      final dep = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final provider = StateProvider.family<int, int>(
         (ref, i) => ref.watch(dep) + i,
         dependencies: [dep],
@@ -110,7 +112,9 @@ void main() {
         return '$a';
       });
       final container = ProviderContainer.test(
-        overrides: [provider.overrideWith((ref, a) => 'override $a')],
+        overrides: [
+          provider.overrideWith((ref, a) => 'override $a'),
+        ],
       );
 
       expect(container.read(provider(0)), 'override 0');

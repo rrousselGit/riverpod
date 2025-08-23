@@ -12,7 +12,8 @@ int fn(
   BuildContext context1, {
   // expect_lint: avoid_build_context_in_providers
   required BuildContext context2,
-}) => 0;
+}) =>
+    0;
 
 @riverpod
 class MyNotifier extends _$MyNotifier {
@@ -21,7 +22,8 @@ class MyNotifier extends _$MyNotifier {
     BuildContext context1, {
     // expect_lint: avoid_build_context_in_providers
     required BuildContext context2,
-  }) => 0;
+  }) =>
+      0;
 
   void event(
     // expect_lint: avoid_build_context_in_providers

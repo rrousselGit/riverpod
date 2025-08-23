@@ -9,12 +9,15 @@ import '../../../utils.dart';
 
 void main() {
   test('can be auto-scoped', () async {
-    final dep = Provider((ref) => 0, dependencies: const []);
+    final dep = Provider(
+      (ref) => 0,
+      dependencies: const [],
+    );
     final provider =
         StateNotifierProvider.autoDispose<StateController<int>, int>(
-          (ref) => StateController(ref.watch(dep)),
-          dependencies: [dep],
-        );
+      (ref) => StateController(ref.watch(dep)),
+      dependencies: [dep],
+    );
     final root = ProviderContainer.test();
     final container = ProviderContainer.test(
       parent: root,
@@ -50,8 +53,8 @@ void main() {
     final container = ProviderContainer.test();
     final provider =
         StateNotifierProvider.autoDispose<StateController<int>, int>(
-          (ref) => result,
-        );
+      (ref) => result,
+    );
 
     expect(container.read(provider), 0);
     expect(container.read(provider.notifier), result);
@@ -68,9 +71,9 @@ void main() {
       final controller = StateController(0);
       final provider =
           StateNotifierProvider.autoDispose<StateController<int>, int>(
-            (ref) => controller,
-            dependencies: const [],
-          );
+        (ref) => controller,
+        dependencies: const [],
+      );
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
         parent: root,
@@ -171,9 +174,8 @@ void main() {
     final dep = StateProvider((ref) => 0);
     final notifier = TestNotifier();
     final notifier2 = TestNotifier();
-    final provider = StateNotifierProvider.autoDispose<TestNotifier, int>((
-      ref,
-    ) {
+    final provider =
+        StateNotifierProvider.autoDispose<TestNotifier, int>((ref) {
       return ref.watch(dep) == 0 ? notifier : notifier2;
     });
     final container = ProviderContainer.test();
@@ -206,7 +208,9 @@ void main() {
     final notifier = TestNotifier(42);
     final notifier2 = TestNotifier(21);
     final container = ProviderContainer.test(
-      overrides: [provider.overrideWith((_) => notifier)],
+      overrides: [
+        provider.overrideWith((_) => notifier),
+      ],
     );
     addTearDown(container.dispose);
     final listener = Listener<int>();
@@ -221,7 +225,9 @@ void main() {
 
     verifyOnly(listener, listener(42, 43));
 
-    container.updateOverrides([provider.overrideWith((_) => notifier2)]);
+    container.updateOverrides([
+      provider.overrideWith((_) => notifier2),
+    ]);
 
     await container.pump();
 

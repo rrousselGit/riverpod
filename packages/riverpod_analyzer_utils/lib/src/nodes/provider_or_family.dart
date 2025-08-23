@@ -4,8 +4,7 @@ part of '../nodes.dart';
   ProviderIdentifier? provider,
   SimpleIdentifier? providerPrefix,
   ArgumentList? familyArguments,
-})?
-_parsesProviderExpression(Expression? expression) {
+})? _parsesProviderExpression(Expression? expression) {
   ProviderIdentifier? provider;
   SimpleIdentifier? providerPrefix;
   ArgumentList? familyArguments;
@@ -70,7 +69,11 @@ final class ProviderOrFamilyExpression {
 
     final parseResult = _parsesProviderExpression(expression);
     if (parseResult == null) return null;
-    final (:provider, :providerPrefix, :familyArguments) = parseResult;
+    final (
+      :provider,
+      :providerPrefix,
+      :familyArguments,
+    ) = parseResult;
 
     return ProviderOrFamilyExpression._(
       node: expression,

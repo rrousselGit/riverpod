@@ -6,46 +6,54 @@ import '../utils.dart';
 
 Future<void> main() async {
   test(
-    'when a provider conditionally depends on another provider, rebuilding without the dependency can dispose the dependency',
-    () async {
-      final container = ProviderContainer.test();
-      var dependencyDisposeCount = 0;
-      final dependency = Provider.autoDispose(name: 'dependency', (ref) {
+      'when a provider conditionally depends on another provider, rebuilding without the dependency can dispose the dependency',
+      () async {
+    final container = ProviderContainer.test();
+    var dependencyDisposeCount = 0;
+    final dependency = Provider.autoDispose(
+      name: 'dependency',
+      (ref) {
         ref.onDispose(() => dependencyDisposeCount++);
         return 0;
-      });
-      final isDependingOnDependency = StateProvider(
-        name: 'isDependingOnDependency',
-        (ref) => true,
-      );
-      final provider = Provider.autoDispose(name: 'provider', (ref) {
+      },
+    );
+    final isDependingOnDependency = StateProvider(
+      name: 'isDependingOnDependency',
+      (ref) => true,
+    );
+    final provider = Provider.autoDispose(
+      name: 'provider',
+      (ref) {
         if (ref.watch(isDependingOnDependency)) {
           ref.watch(dependency);
         }
-      });
+      },
+    );
 
-      container.listen<void>(provider, (_, __) {});
+    container.listen<void>(provider, (_, __) {});
 
-      expect(dependencyDisposeCount, 0);
-      expect(
-        container.getAllProviderElements().map((e) => e.provider),
-        unorderedEquals(<Object>[
-          dependency,
-          provider,
-          isDependingOnDependency,
-        ]),
-      );
+    expect(dependencyDisposeCount, 0);
+    expect(
+      container.getAllProviderElements().map((e) => e.provider),
+      unorderedEquals(<Object>[
+        dependency,
+        provider,
+        isDependingOnDependency,
+      ]),
+    );
 
-      container.read(isDependingOnDependency.notifier).state = false;
-      await container.pump();
+    container.read(isDependingOnDependency.notifier).state = false;
+    await container.pump();
 
-      expect(dependencyDisposeCount, 1);
-      expect(
-        container.getAllProviderElements().map((e) => e.provider),
-        unorderedEquals(<Object>[provider, isDependingOnDependency]),
-      );
-    },
-  );
+    expect(dependencyDisposeCount, 1);
+    expect(
+      container.getAllProviderElements().map((e) => e.provider),
+      unorderedEquals(<Object>[
+        provider,
+        isDependingOnDependency,
+      ]),
+    );
+  });
 
   test('works if used across a ProviderContainer', () async {
     var value = 0;
@@ -88,38 +96,39 @@ Future<void> main() async {
     verifyOnly(listener, listener(null, 42));
   });
 
-  test(
-    'unsub to A then make B sub to A then unsub to B disposes B before A',
-    () async {
-      final container = ProviderContainer.test();
-      final aDispose = OnDisposeMock();
-      final a = Provider.autoDispose((ref) {
-        ref.onDispose(aDispose.call);
-        return 42;
-      });
-      final bDispose = OnDisposeMock();
-      final b = Provider.autoDispose((ref) {
-        ref.onDispose(bDispose.call);
-        ref.watch(a);
-        return '42';
-      });
+  test('unsub to A then make B sub to A then unsub to B disposes B before A',
+      () async {
+    final container = ProviderContainer.test();
+    final aDispose = OnDisposeMock();
+    final a = Provider.autoDispose((ref) {
+      ref.onDispose(aDispose.call);
+      return 42;
+    });
+    final bDispose = OnDisposeMock();
+    final b = Provider.autoDispose((ref) {
+      ref.onDispose(bDispose.call);
+      ref.watch(a);
+      return '42';
+    });
 
-      final subA = container.listen(a, (prev, value) {});
-      subA.close();
+    final subA = container.listen(a, (prev, value) {});
+    subA.close();
 
-      final subB = container.listen(b, (prev, value) {});
-      subB.close();
+    final subB = container.listen(b, (prev, value) {});
+    subB.close();
 
-      verifyNoMoreInteractions(aDispose);
-      verifyNoMoreInteractions(bDispose);
+    verifyNoMoreInteractions(aDispose);
+    verifyNoMoreInteractions(bDispose);
 
-      await container.pump();
+    await container.pump();
 
-      verifyInOrder([bDispose(), aDispose()]);
-      verifyNoMoreInteractions(aDispose);
-      verifyNoMoreInteractions(bDispose);
-    },
-  );
+    verifyInOrder([
+      bDispose(),
+      aDispose(),
+    ]);
+    verifyNoMoreInteractions(aDispose);
+    verifyNoMoreInteractions(bDispose);
+  });
 
   test('chain', () async {
     final container = ProviderContainer.test();
@@ -152,7 +161,10 @@ Future<void> main() async {
     await container.pump();
 
     verifyNoMoreInteractions(listener);
-    verifyInOrder([onDispose2(), onDispose()]);
+    verifyInOrder([
+      onDispose2(),
+      onDispose(),
+    ]);
     verifyNoMoreInteractions(onDispose);
     verifyNoMoreInteractions(onDispose2);
 
@@ -201,33 +213,31 @@ Future<void> main() async {
     verifyNoMoreInteractions(bDispose);
   });
 
-  test(
-    'ProviderContainer was disposed before Scheduler handled the dispose',
-    () async {
-      final container = ProviderContainer.test();
-      final onDispose = OnDisposeMock();
-      final provider = Provider.autoDispose((ref) {
-        ref.onDispose(onDispose.call);
-        return 42;
-      });
+  test('ProviderContainer was disposed before Scheduler handled the dispose',
+      () async {
+    final container = ProviderContainer.test();
+    final onDispose = OnDisposeMock();
+    final provider = Provider.autoDispose((ref) {
+      ref.onDispose(onDispose.call);
+      return 42;
+    });
 
-      final sub = container.listen(provider, (prev, value) {});
+    final sub = container.listen(provider, (prev, value) {});
 
-      verifyNoMoreInteractions(onDispose);
+    verifyNoMoreInteractions(onDispose);
 
-      sub.close();
-      verifyNoMoreInteractions(onDispose);
+    sub.close();
+    verifyNoMoreInteractions(onDispose);
 
-      container.dispose();
+    container.dispose();
 
-      verify(onDispose()).called(1);
-      verifyNoMoreInteractions(onDispose);
+    verify(onDispose()).called(1);
+    verifyNoMoreInteractions(onDispose);
 
-      await container.pump();
+    await container.pump();
 
-      verifyNoMoreInteractions(onDispose);
-    },
-  );
+    verifyNoMoreInteractions(onDispose);
+  });
 
   test('unsub no-op if another sub is added before event-loop', () async {
     final container = ProviderContainer.test();
@@ -257,80 +267,74 @@ Future<void> main() async {
     verifyNoMoreInteractions(onDispose);
   });
 
-  test(
-    'no-op if when removing listener if there is still a listener',
-    () async {
-      final container = ProviderContainer.test();
-      final onDispose = OnDisposeMock();
-      final provider = Provider.autoDispose((ref) {
-        ref.onDispose(onDispose.call);
-        return 42;
-      });
+  test('no-op if when removing listener if there is still a listener',
+      () async {
+    final container = ProviderContainer.test();
+    final onDispose = OnDisposeMock();
+    final provider = Provider.autoDispose((ref) {
+      ref.onDispose(onDispose.call);
+      return 42;
+    });
 
-      final sub = container.listen(provider, (prev, value) {});
-      final sub2 = container.listen(provider, (prev, value) {});
+    final sub = container.listen(provider, (prev, value) {});
+    final sub2 = container.listen(provider, (prev, value) {});
 
-      verifyNoMoreInteractions(onDispose);
+    verifyNoMoreInteractions(onDispose);
 
-      sub.close();
-      await container.pump();
+    sub.close();
+    await container.pump();
 
-      verifyNoMoreInteractions(onDispose);
+    verifyNoMoreInteractions(onDispose);
 
-      sub2.close();
-      await container.pump();
+    sub2.close();
+    await container.pump();
 
-      verify(onDispose()).called(1);
-      verifyNoMoreInteractions(onDispose);
-    },
-  );
+    verify(onDispose()).called(1);
+    verifyNoMoreInteractions(onDispose);
+  });
 
-  test(
-    'Do not dispose twice when ProviderContainer is disposed first',
-    () async {
-      final onDispose = OnDisposeMock();
-      final provider = Provider.autoDispose((ref) {
-        ref.onDispose(onDispose.call);
-        return 42;
-      });
-      final container = ProviderContainer.test();
+  test('Do not dispose twice when ProviderContainer is disposed first',
+      () async {
+    final onDispose = OnDisposeMock();
+    final provider = Provider.autoDispose((ref) {
+      ref.onDispose(onDispose.call);
+      return 42;
+    });
+    final container = ProviderContainer.test();
 
-      final sub = container.listen(provider, (_, __) {});
-      sub.close();
+    final sub = container.listen(provider, (_, __) {});
+    sub.close();
 
-      container.dispose();
+    container.dispose();
 
-      verify(onDispose()).called(1);
-      verifyNoMoreInteractions(onDispose);
+    verify(onDispose()).called(1);
+    verifyNoMoreInteractions(onDispose);
 
-      await container.pump();
+    await container.pump();
 
-      verifyNoMoreInteractions(onDispose);
-    },
-  );
+    verifyNoMoreInteractions(onDispose);
+  });
 
-  test(
-    'providers with only a "listen" as subscribers are kept alive',
-    () async {
-      final container = ProviderContainer.test();
-      var mounted = true;
-      final listened = Provider.autoDispose((ref) {
-        ref.onDispose(() => mounted = false);
-        return 0;
-      });
-      final provider = Provider.autoDispose((ref) {
-        ref.listen(listened, (prev, value) {});
-        return 0;
-      });
+  test('providers with only a "listen" as subscribers are kept alive',
+      () async {
+    final container = ProviderContainer.test();
+    var mounted = true;
+    final listened = Provider.autoDispose((ref) {
+      ref.onDispose(() => mounted = false);
+      return 0;
+    });
+    final provider = Provider.autoDispose((ref) {
+      ref.listen(listened, (prev, value) {});
+      return 0;
+    });
 
-      container.listen(provider, (prev, value) {});
-      final sub = container.listen(listened, (prev, value) {});
+    container.listen(provider, (prev, value) {});
+    final sub = container.listen(listened, (prev, value) {});
 
-      sub.close();
+    sub.close();
 
-      await container.pump();
+    await container.pump();
 
-      expect(mounted, true);
-    },
-  );
+    expect(mounted, true);
+  });
 }

@@ -12,7 +12,11 @@ extension ProviderListenableExpressionX on Expression {
 
       final parseResult = _parsesProviderExpression(this);
       if (parseResult == null) return null;
-      final (:provider, :providerPrefix, :familyArguments) = parseResult;
+      final (
+        :provider,
+        :providerPrefix,
+        :familyArguments,
+      ) = parseResult;
 
       return ProviderListenableExpression._(
         node: this,

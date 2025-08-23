@@ -67,7 +67,11 @@ void main() {
     final listener = Listener<MutationState<int>>();
     final completer = Completer<int>();
 
-    final sub = container.listen(mut, listener.call, fireImmediately: true);
+    final sub = container.listen(
+      mut,
+      listener.call,
+      fireImmediately: true,
+    );
 
     verifyOnly(
       listener,
@@ -105,7 +109,11 @@ void main() {
     final onError = ErrorListener();
     final completer = Completer<int>();
 
-    final sub = container.listen(mut, listener.call, fireImmediately: true);
+    final sub = container.listen(
+      mut,
+      listener.call,
+      fireImmediately: true,
+    );
 
     verifyOnly(
       listener,
@@ -202,8 +210,14 @@ void main() {
     final container = ProviderContainer.test(observers: [observer]);
     final completer = Completer<int>();
 
-    final sub = container.listen(mut(1), (previous, next) {});
-    final sub2 = container.listen(mut(2), (previous, next) {});
+    final sub = container.listen(
+      mut(1),
+      (previous, next) {},
+    );
+    final sub2 = container.listen(
+      mut(2),
+      (previous, next) {},
+    );
 
     final first = mut(1).run(container, (tsx) => completer.future);
 
@@ -211,7 +225,10 @@ void main() {
       observer,
       observer.mutationStart(
         argThat(
-          isProviderObserverContext(mutation: mut(1), container: container),
+          isProviderObserverContext(
+            mutation: mut(1),
+            container: container,
+          ),
         ),
         mut(1),
       ),
@@ -224,34 +241,47 @@ void main() {
       observer,
       observer.mutationSuccess(
         argThat(
-          isProviderObserverContext(mutation: mut(1), container: container),
+          isProviderObserverContext(
+            mutation: mut(1),
+            container: container,
+          ),
         ),
         mut(1),
         argThat(equals(42)),
       ),
     );
 
-    final second = mut(
-      2,
-    ).run(container, (tsx) async => throw Exception('error'));
+    final second = mut(2).run(
+      container,
+      (tsx) async => throw Exception('error'),
+    );
 
     verifyOnly(
       observer,
       observer.mutationStart(
         argThat(
-          isProviderObserverContext(mutation: mut(2), container: container),
+          isProviderObserverContext(
+            mutation: mut(2),
+            container: container,
+          ),
         ),
         mut(2),
       ),
     );
 
-    await expectLater(second, throwsA(isA<Exception>()));
+    await expectLater(
+      second,
+      throwsA(isA<Exception>()),
+    );
 
     verifyOnly(
       observer,
       observer.mutationError(
         argThat(
-          isProviderObserverContext(mutation: mut(2), container: container),
+          isProviderObserverContext(
+            mutation: mut(2),
+            container: container,
+          ),
         ),
         mut(2),
         argThat(isA<Exception>()),
@@ -263,69 +293,67 @@ void main() {
     verifyNoMoreInteractions(observer);
   });
 
-  test(
-    'While within `run`, ProviderObserver events log the current mutation',
-    () async {
-      final mut = Mutation<void>();
-      final observer = ProviderObserverMock();
-      final container = ProviderContainer.test(observers: [observer]);
-      final provider = Provider<int>((ref) => 0);
+  test('While within `run`, ProviderObserver events log the current mutation',
+      () async {
+    final mut = Mutation<void>();
+    final observer = ProviderObserverMock();
+    final container = ProviderContainer.test(
+      observers: [observer],
+    );
+    final provider = Provider<int>((ref) => 0);
 
-      unawaited(
-        mut.run(container, (tsx) async {
-          tsx.get(provider);
-        }),
-      );
+    unawaited(
+      mut.run(container, (tsx) async {
+        tsx.get(provider);
+      }),
+    );
 
-      verify(
-        observer.didAddProvider(
-          argThat(
-            isProviderObserverContext(
-              mutation: mut,
-              provider: provider,
-              container: container,
-            ),
+    verify(
+      observer.didAddProvider(
+        argThat(
+          isProviderObserverContext(
+            mutation: mut,
+            provider: provider,
+            container: container,
           ),
-          any,
         ),
-      );
-    },
-  );
+        any,
+      ),
+    );
+  });
 
-  test(
-    'Keeps used listenables active until the end of the transaction',
-    () async {
-      final mut = Mutation<int>();
-      final onDispose = OnDisposeMock();
-      final futureCompleter = Completer<int>();
-      final p = FutureProvider.autoDispose<int>((ref) {
-        ref.onDispose(onDispose.call);
-        return futureCompleter.future;
-      });
-      final container = ProviderContainer.test();
-      final completer = Completer<void>();
+  test('Keeps used listenables active until the end of the transaction',
+      () async {
+    final mut = Mutation<int>();
+    final onDispose = OnDisposeMock();
+    final futureCompleter = Completer<int>();
+    final p = FutureProvider.autoDispose<int>((ref) {
+      ref.onDispose(onDispose.call);
+      return futureCompleter.future;
+    });
+    final container = ProviderContainer.test();
+    final completer = Completer<void>();
 
-      final f = mut.run(container, (tsx) async {
-        tsx.get(p);
+    final f = mut.run(container, (tsx) async {
+      tsx.get(p);
 
-        await completer.future;
-
-        return 0;
-      });
-
-      await container.pump();
-      futureCompleter.complete(42);
-      await container.pump();
-
-      verifyZeroInteractions(onDispose);
-
-      completer.complete();
       await completer.future;
-      await container.pump();
 
-      verifyOnly(onDispose, onDispose.call());
-    },
-  );
+      return 0;
+    });
+
+    await container.pump();
+    futureCompleter.complete(42);
+    await container.pump();
+
+    verifyZeroInteractions(onDispose);
+
+    completer.complete();
+    await completer.future;
+    await container.pump();
+
+    verifyOnly(onDispose, onDispose.call());
+  });
 
   test('Resets to idle if all listeners are removed', () async {
     final mut = Mutation<int>();

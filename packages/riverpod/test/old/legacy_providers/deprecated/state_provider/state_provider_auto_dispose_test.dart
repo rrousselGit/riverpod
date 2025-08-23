@@ -6,12 +6,21 @@ import 'package:test/test.dart';
 
 void main() {
   test('supports .name', () {
-    expect(StateProvider.autoDispose((ref) => 0).name, null);
-    expect(StateProvider.autoDispose((ref) => 0, name: 'foo').name, 'foo');
+    expect(
+      StateProvider.autoDispose((ref) => 0).name,
+      null,
+    );
+    expect(
+      StateProvider.autoDispose((ref) => 0, name: 'foo').name,
+      'foo',
+    );
   });
 
   test('can be auto-scoped', () async {
-    final dep = Provider((ref) => 0, dependencies: const []);
+    final dep = Provider(
+      (ref) => 0,
+      dependencies: const [],
+    );
     final provider = StateProvider.autoDispose(
       (ref) => ref.watch(dep),
       dependencies: [dep],
@@ -93,7 +102,9 @@ void main() {
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
         parent: root,
-        overrides: [provider.overrideWith((ref) => 42)],
+        overrides: [
+          provider.overrideWith((ref) => 42),
+        ],
       );
 
       expect(container.read(provider.notifier).state, 42);

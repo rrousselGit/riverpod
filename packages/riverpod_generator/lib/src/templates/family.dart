@@ -20,9 +20,8 @@ class FamilyTemplate extends Template {
 
   late final _generics = provider.generics();
   late final _genericsDefinition = provider.genericsDefinition();
-  late final _parameterDefinition = buildParamDefinitionQuery(
-    provider.parameters,
-  );
+  late final _parameterDefinition =
+      buildParamDefinitionQuery(provider.parameters);
   late final _notifierType = '${provider.name}$_generics';
   late final _argumentCast = provider.argumentCast;
 
@@ -33,22 +32,21 @@ class FamilyTemplate extends Template {
     final topLevelBuffer = StringBuffer();
 
     final parametersPassThrough = provider.argumentToRecord();
-    final argument = provider.parameters.isEmpty
-        ? ''
-        : 'argument: $parametersPassThrough,';
+    final argument =
+        provider.parameters.isEmpty ? '' : 'argument: $parametersPassThrough,';
 
     final mixinTypes = <String>[
       ...switch (provider) {
         FunctionalProviderDeclaration(typeParameters: null) => [
-          '\$FunctionalFamilyOverride<${provider.providerElement.createdTypeNode}, $_argumentRecordType>',
-        ],
+            '\$FunctionalFamilyOverride<${provider.providerElement.createdTypeNode}, $_argumentRecordType>',
+          ],
         ClassBasedProviderDeclaration(typeParameters: null) => [
-          '\$ClassFamilyOverride<$_notifierType, '
-              '${provider.providerElement.exposedTypeNode}, '
-              '${provider.providerElement.valueTypeNode.toCode()}, '
-              '${provider.providerElement.createdTypeNode}, '
-              '$_argumentRecordType>',
-        ],
+            '\$ClassFamilyOverride<$_notifierType, '
+                '${provider.providerElement.exposedTypeNode}, '
+                '${provider.providerElement.valueTypeNode.toCode()}, '
+                '${provider.providerElement.createdTypeNode}, '
+                '$_argumentRecordType>',
+          ],
         _ => [],
       },
     ];
@@ -95,12 +93,19 @@ final class ${provider.familyTypeName} extends \$Family $mixins {
     if (this.provider.typeParameters == null) return;
 
     // overrideWith
-    _writeOverrideWith(buffer, topLevelBuffer: topLevelBuffer);
+    _writeOverrideWith(
+      buffer,
+      topLevelBuffer: topLevelBuffer,
+    );
 
     // overrideWithBuild
     final provider = this.provider;
     if (provider is ClassBasedProviderDeclaration) {
-      _writeOverrideWithBuild(buffer, provider, topLevelBuffer: topLevelBuffer);
+      _writeOverrideWithBuild(
+        buffer,
+        provider,
+        topLevelBuffer: topLevelBuffer,
+      );
     }
   }
 
@@ -122,9 +127,15 @@ final class ${provider.familyTypeName} extends \$Family $mixins {
 Override overrideWith($createType create) =>
   ${_override((buffer) {
       buffer.writeln('''
-        return provider.\$view(create: ${switch ((hasParameters: provider.parameters.isNotEmpty, provider)) {
-        (_, hasParameters: false) || (ClassBasedProviderDeclaration(), hasParameters: _) => 'create$_generics',
-        (FunctionalProviderDeclaration(), hasParameters: true) => '(ref) => create(ref, argument)',
+        return provider.\$view(create: ${switch ((
+        hasParameters: provider.parameters.isNotEmpty,
+        provider,
+      )) {
+        (_, hasParameters: false) ||
+        (ClassBasedProviderDeclaration(), hasParameters: _) =>
+          'create$_generics',
+        (FunctionalProviderDeclaration(), hasParameters: true) =>
+          '(ref) => create(ref, argument)',
       }}).\$createElement(pointer);
       ''');
     })};
@@ -136,8 +147,7 @@ Override overrideWith($createType create) =>
     ClassBasedProviderDeclaration provider, {
     required StringBuffer topLevelBuffer,
   }) {
-    final runNotifierBuildType =
-        '''
+    final runNotifierBuildType = '''
 ${provider.providerElement.createdTypeNode} Function$_genericsDefinition(
   Ref ref,
   $_notifierType notifier
@@ -167,9 +177,8 @@ Override overrideWithBuild($runNotifierBuildType build) =>
         provider.typeParameters?.typeParameters.isNotEmpty ?? false;
     final hasParameters = provider.parameters.isNotEmpty;
     if (hasGenerics) {
-      buffer.writeln(
-        'return provider._captureGenerics($_genericsDefinition() {',
-      );
+      buffer
+          .writeln('return provider._captureGenerics($_genericsDefinition() {');
       buffer.writeln('provider as ${provider.providerTypeName}$_generics;');
     }
     if (provider is! ClassBasedProviderDeclaration && hasParameters) {

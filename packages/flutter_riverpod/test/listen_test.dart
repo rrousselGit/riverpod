@@ -8,17 +8,15 @@ import 'utils.dart';
 
 void main() {
   group('WidgetRef.listenManual', () {
-    testWidgets(
-      'returns a subscription that can be used within State.dispose',
-      (tester) async {
-        await tester.pumpWidget(
-          const ProviderScope(child: DisposeListenManual()),
-        );
+    testWidgets('returns a subscription that can be used within State.dispose',
+        (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(child: DisposeListenManual()),
+      );
 
-        // Unmounting DisposeListenManual will throw if this is not allowed
-        await tester.pumpWidget(ProviderScope(child: Container()));
-      },
-    );
+      // Unmounting DisposeListenManual will throw if this is not allowed
+      await tester.pumpWidget(ProviderScope(child: Container()));
+    });
 
     testWidgets('listens to changes', (tester) async {
       final provider = StateProvider((ref) => 0);
@@ -98,9 +96,8 @@ void main() {
       verifyOnly(listener, listener(null, 0));
     });
 
-    testWidgets('can use ProviderSubscription.read to get the current value', (
-      tester,
-    ) async {
+    testWidgets('can use ProviderSubscription.read to get the current value',
+        (tester) async {
       final provider = StateProvider((ref) => 0);
 
       late WidgetRef ref;
@@ -178,110 +175,107 @@ void main() {
     });
 
     testWidgets(
-      'when using selectors, `previous` is the latest notification instead of latest event',
-      (tester) async {
-        final container = ProviderContainer.test();
-        final dep = StateNotifierProvider<StateController<int>, int>(
-          (ref) => StateController(0),
-        );
-        final listener = Listener<bool>();
+        'when using selectors, `previous` is the latest notification instead of latest event',
+        (tester) async {
+      final container = ProviderContainer.test();
+      final dep = StateNotifierProvider<StateController<int>, int>(
+        (ref) => StateController(0),
+      );
+      final listener = Listener<bool>();
 
-        await tester.pumpWidget(
-          UncontrolledProviderScope(
-            container: container,
-            child: Consumer(
-              builder: (context, ref, _) {
-                ref.listen<bool>(
-                  dep.select((value) => value.isEven),
-                  listener.call,
-                );
-                return Container();
-              },
-            ),
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: Consumer(
+            builder: (context, ref, _) {
+              ref.listen<bool>(
+                dep.select((value) => value.isEven),
+                listener.call,
+              );
+              return Container();
+            },
           ),
-        );
+        ),
+      );
 
-        container.read(dep.notifier).state += 2;
+      container.read(dep.notifier).state += 2;
 
-        verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener);
 
-        container.read(dep.notifier).state++;
+      container.read(dep.notifier).state++;
 
-        verifyOnly(listener, listener(true, false));
-      },
-    );
+      verifyOnly(listener, listener(true, false));
+    });
 
     testWidgetsWithStubbedFlutterErrors(
-      'when no onError is specified, fallbacks to handleUncaughtError',
-      (tester, errors) async {
-        final isErrored = StateProvider((ref) => false);
-        final dep = Provider<int>((ref) {
-          if (ref.watch(isErrored)) throw UnimplementedError();
-          return 0;
-        });
-        final listener = Listener<int>();
+        'when no onError is specified, fallbacks to handleUncaughtError',
+        (tester, errors) async {
+      final isErrored = StateProvider((ref) => false);
+      final dep = Provider<int>((ref) {
+        if (ref.watch(isErrored)) throw UnimplementedError();
+        return 0;
+      });
+      final listener = Listener<int>();
 
-        await tester.pumpWidget(
-          ProviderScope(
-            child: Consumer(
-              builder: (context, ref, _) {
-                ref.listen(dep, listener.call);
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(
+            builder: (context, ref, _) {
+              ref.listen(dep, listener.call);
 
-                return Container();
-              },
-            ),
+              return Container();
+            },
           ),
-        );
+        ),
+      );
 
-        verifyZeroInteractions(listener);
-        expect(errors, isEmpty);
+      verifyZeroInteractions(listener);
+      expect(errors, isEmpty);
 
-        final container = tester.container();
+      final container = tester.container();
 
-        container.read(isErrored.notifier).state = true;
+      container.read(isErrored.notifier).state = true;
 
-        await tester.pump();
+      await tester.pump();
 
-        verifyZeroInteractions(listener);
-        expect(errors, [isUnimplementedError]);
-      },
-    );
+      verifyZeroInteractions(listener);
+      expect(errors, [isUnimplementedError]);
+    });
 
     testWidgetsWithStubbedFlutterErrors(
-      'when no onError is specified, selectors fallbacks to handleUncaughtError',
-      (tester, errors) async {
-        final isErrored = StateProvider((ref) => false);
-        final dep = Provider<int>((ref) {
-          if (ref.watch(isErrored)) throw UnimplementedError();
-          return 0;
-        });
-        final listener = Listener<int>();
+        'when no onError is specified, selectors fallbacks to handleUncaughtError',
+        (tester, errors) async {
+      final isErrored = StateProvider((ref) => false);
+      final dep = Provider<int>((ref) {
+        if (ref.watch(isErrored)) throw UnimplementedError();
+        return 0;
+      });
+      final listener = Listener<int>();
 
-        await tester.pumpWidget(
-          ProviderScope(
-            child: Consumer(
-              builder: (context, ref, _) {
-                ref.listen(dep.select((value) => value), listener.call);
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(
+            builder: (context, ref, _) {
+              ref.listen(dep.select((value) => value), listener.call);
 
-                return Container();
-              },
-            ),
+              return Container();
+            },
           ),
-        );
+        ),
+      );
 
-        verifyZeroInteractions(listener);
-        expect(errors, isEmpty);
+      verifyZeroInteractions(listener);
+      expect(errors, isEmpty);
 
-        final container = tester.container();
+      final container = tester.container();
 
-        container.read(isErrored.notifier).state = true;
+      container.read(isErrored.notifier).state = true;
 
-        await tester.pump();
+      await tester.pump();
 
-        verifyZeroInteractions(listener);
-        expect(errors, [isUnimplementedError]);
-      },
-    );
+      verifyZeroInteractions(listener);
+      expect(errors, [isUnimplementedError]);
+    });
 
     testWidgets('when rebuild throws, calls onError', (tester) async {
       final dep = StateProvider((ref) => 0);
@@ -315,12 +309,14 @@ void main() {
       await tester.pump();
 
       verifyZeroInteractions(listener);
-      verifyOnly(errorListener, errorListener(isUnimplementedError, any));
+      verifyOnly(
+        errorListener,
+        errorListener(isUnimplementedError, any),
+      );
     });
 
-    testWidgets('when rebuild throws on selector, calls onError', (
-      tester,
-    ) async {
+    testWidgets('when rebuild throws on selector, calls onError',
+        (tester) async {
       final dep = StateProvider((ref) => 0);
       var buildCount = 0;
       final provider = Provider((ref) {
@@ -360,7 +356,10 @@ void main() {
 
       expect(buildCount, 2);
       verifyZeroInteractions(listener);
-      verifyOnly(errorListener, errorListener(isUnimplementedError, any));
+      verifyOnly(
+        errorListener,
+        errorListener(isUnimplementedError, any),
+      );
     });
   });
 }

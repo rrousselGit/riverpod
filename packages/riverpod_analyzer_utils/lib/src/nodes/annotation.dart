@@ -35,10 +35,8 @@ extension RiverpodAnnotatedAnnotatedNodeX on Annotation {
       final elementAnnotation = annotationOfType(riverpodType, exact: true);
       if (elementAnnotation == null) return null;
 
-      final riverpodAnnotationElement = RiverpodAnnotationElement._parse(
-        elementAnnotation,
-        this,
-      );
+      final riverpodAnnotationElement =
+          RiverpodAnnotationElement._parse(elementAnnotation, this);
       if (riverpodAnnotationElement == null) return null;
 
       final dependenciesNode = arguments?.named('dependencies');
@@ -119,7 +117,9 @@ final class RiverpodAnnotationElement {
       final dependencies = constant.getField('dependencies');
       if (dependencies == null) return null;
 
-      final dependencyList = dependencies.toDependencyList(from: from);
+      final dependencyList = dependencies.toDependencyList(
+        from: from,
+      );
       final allTransitiveDependencies = dependencyList == null
           ? null
           : <GeneratorProviderDeclarationElement>{

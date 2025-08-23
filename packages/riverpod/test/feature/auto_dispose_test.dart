@@ -30,35 +30,28 @@ final matrix = [
   Builder(Provider.new).build((ref) => throw UnimplementedError()),
   Builder(Provider.family.call).build((ref, arg) => throw UnimplementedError()),
   Builder(FutureProvider.new).build((ref) => throw UnimplementedError()),
-  Builder(
-    FutureProvider.family.call,
-  ).build((ref, arg) => throw UnimplementedError()),
+  Builder(FutureProvider.family.call)
+      .build((ref, arg) => throw UnimplementedError()),
   Builder(StreamProvider.new).build((ref) => throw UnimplementedError()),
-  Builder(
-    StreamProvider.family.call,
-  ).build((ref, arg) => throw UnimplementedError()),
+  Builder(StreamProvider.family.call)
+      .build((ref, arg) => throw UnimplementedError()),
   // Notifier
   Builder(NotifierProvider.new).build(() => throw UnimplementedError()),
-  Builder(
-    NotifierProvider.family.call,
-  ).build((arg) => throw UnimplementedError()),
+  Builder(NotifierProvider.family.call)
+      .build((arg) => throw UnimplementedError()),
   Builder(AsyncNotifierProvider.new).build(() => throw UnimplementedError()),
-  Builder(
-    AsyncNotifierProvider.family.call,
-  ).build((arg) => throw UnimplementedError()),
+  Builder(AsyncNotifierProvider.family.call)
+      .build((arg) => throw UnimplementedError()),
   Builder(StreamNotifierProvider.new).build(() => throw UnimplementedError()),
-  Builder(
-    StreamNotifierProvider.family.call,
-  ).build((arg) => throw UnimplementedError()),
+  Builder(StreamNotifierProvider.family.call)
+      .build((arg) => throw UnimplementedError()),
   // Legacy
   Builder(StateProvider.new).build((ref) => throw UnimplementedError()),
-  Builder(
-    StateProvider.family.call,
-  ).build((ref, arg) => throw UnimplementedError()),
+  Builder(StateProvider.family.call)
+      .build((ref, arg) => throw UnimplementedError()),
   Builder(StateNotifierProvider.new).build((ref) => throw UnimplementedError()),
-  Builder(
-    StateNotifierProvider.family.call,
-  ).build((ref, arg) => throw UnimplementedError()),
+  Builder(StateNotifierProvider.family.call)
+      .build((ref, arg) => throw UnimplementedError()),
 ];
 
 void main() {

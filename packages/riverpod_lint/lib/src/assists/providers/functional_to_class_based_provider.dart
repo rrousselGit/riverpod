@@ -47,10 +47,13 @@ class FunctionalToClassBasedProvider extends RiverpodAssist {
         }
 
         // Add the class name
-        builder.addSimpleInsertion(functionStartOffset, '''
+        builder.addSimpleInsertion(
+          functionStartOffset,
+          '''
 class ${classNameFor(declaration)}$typeParametersSource extends ${generatedClassNameFor(declaration)}$typeParametersSource {
   @override
-  ''');
+  ''',
+        );
 
         // Rename the function name to build
         builder.addSimpleReplacement(
@@ -78,7 +81,10 @@ class ${classNameFor(declaration)}$typeParametersSource extends ${generatedClass
 
           // Remove the ref parameter
           builder.addDeletion(
-            sourceRangeFrom(start: parameters.leftParenthesis.end, end: refEnd),
+            sourceRangeFrom(
+              start: parameters.leftParenthesis.end,
+              end: refEnd,
+            ),
           );
         }
 

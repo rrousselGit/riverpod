@@ -83,32 +83,31 @@ void main() {
   });
 
   test(
-    'listens to the parameter and rebuild the state whenever this provider changed',
-    () async {
-      final count = StateProvider((ref) => 0);
-      var buildCount = 0;
-      final provider = Provider((ref) {
-        buildCount++;
-        return ref.watch(count).isEven;
-      });
+      'listens to the parameter and rebuild the state whenever this provider changed',
+      () async {
+    final count = StateProvider((ref) => 0);
+    var buildCount = 0;
+    final provider = Provider((ref) {
+      buildCount++;
+      return ref.watch(count).isEven;
+    });
 
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
 
-      expect(container.read(provider), true);
-      // reading twice to make sure the provider isn't rebuilt on every read
-      expect(container.read(provider), true);
-      expect(buildCount, 1);
+    expect(container.read(provider), true);
+    // reading twice to make sure the provider isn't rebuilt on every read
+    expect(container.read(provider), true);
+    expect(buildCount, 1);
 
-      container.read(count.notifier).state++;
-      await container.pump();
+    container.read(count.notifier).state++;
+    await container.pump();
 
-      expect(container.read(provider), false);
-      // reading twice to make sure the provider isn't rebuilt on every read
-      expect(container.read(provider), false);
-      expect(buildCount, 2);
-    },
-  );
+    expect(container.read(provider), false);
+    // reading twice to make sure the provider isn't rebuilt on every read
+    expect(container.read(provider), false);
+    expect(buildCount, 2);
+  });
 
   test('on provider that threw, exceptions bypass the selector', () {
     final container = ProviderContainer.test();
@@ -126,161 +125,155 @@ void main() {
   });
 
   test(
-    'when rebuilding a provider after an uncaught exception, correctly updates dependents',
-    () {
-      final container = ProviderContainer.test();
-      final throws = StateProvider((ref) => true);
-      final provider = Provider((ref) {
-        if (ref.watch(throws)) {
-          throw UnimplementedError();
-        }
-        return 0;
-      });
+      'when rebuilding a provider after an uncaught exception, correctly updates dependents',
+      () {
+    final container = ProviderContainer.test();
+    final throws = StateProvider((ref) => true);
+    final provider = Provider((ref) {
+      if (ref.watch(throws)) {
+        throw UnimplementedError();
+      }
+      return 0;
+    });
 
-      final dep = Provider((ref) {
-        return ref.watch(provider);
-      });
+    final dep = Provider((ref) {
+      return ref.watch(provider);
+    });
 
-      expect(() => container.read(dep), throwsA(anything));
+    expect(() => container.read(dep), throwsA(anything));
 
-      container.read(throws.notifier).state = false;
+    container.read(throws.notifier).state = false;
 
-      expect(container.read(dep), 0);
-    },
-  );
-
-  test(
-    'when rebuilding a provider after an uncaught selected exception, correctly updates dependents',
-    () {
-      final container = ProviderContainer.test();
-      final throws = StateProvider((ref) => true);
-      final provider = Provider((ref) {
-        if (ref.watch(throws)) {
-          throw UnimplementedError();
-        }
-        return 0;
-      });
-
-      final dep = Provider((ref) {
-        return ref.watch(provider.select((value) => value));
-      });
-
-      expect(
-        () => container.read(dep),
-        throwsProviderException(isProviderException(isUnimplementedError)),
-      );
-
-      container.read(throws.notifier).state = false;
-
-      expect(container.read(dep), 0);
-    },
-  );
+    expect(container.read(dep), 0);
+  });
 
   test(
-    'disposes providers synchronously when their dependency changes',
-    () async {
-      final onDispose = OnDisposeMock();
-      final dep = StateProvider(name: 'dep', (ref) => 0);
-      final dep2 = StateProvider(name: 'dep2', (ref) => 0);
-      final container = ProviderContainer.test();
-      final provider = Provider(name: 'provider', (ref) {
-        ref.onDispose(onDispose.call);
-        ref.watch(dep);
-        ref.watch(dep2);
-      });
+      'when rebuilding a provider after an uncaught selected exception, correctly updates dependents',
+      () {
+    final container = ProviderContainer.test();
+    final throws = StateProvider((ref) => true);
+    final provider = Provider((ref) {
+      if (ref.watch(throws)) {
+        throw UnimplementedError();
+      }
+      return 0;
+    });
 
-      final depNotifier = container.read(dep.notifier);
-      final dep2Notifier = container.read(dep2.notifier);
+    final dep = Provider((ref) {
+      return ref.watch(provider.select((value) => value));
+    });
 
-      container.listen(provider, (_, __) {});
+    expect(
+      () => container.read(dep),
+      throwsProviderException(isProviderException(isUnimplementedError)),
+    );
 
-      depNotifier.state++;
+    container.read(throws.notifier).state = false;
 
-      verifyOnly(onDispose, onDispose());
+    expect(container.read(dep), 0);
+  });
 
-      depNotifier.state++;
-      dep2Notifier.state++;
+  test('disposes providers synchronously when their dependency changes',
+      () async {
+    final onDispose = OnDisposeMock();
+    final dep = StateProvider(name: 'dep', (ref) => 0);
+    final dep2 = StateProvider(name: 'dep2', (ref) => 0);
+    final container = ProviderContainer.test();
+    final provider = Provider(name: 'provider', (ref) {
+      ref.onDispose(onDispose.call);
+      ref.watch(dep);
+      ref.watch(dep2);
+    });
 
-      verifyNoMoreInteractions(onDispose);
-    },
-  );
+    final depNotifier = container.read(dep.notifier);
+    final dep2Notifier = container.read(dep2.notifier);
 
-  test(
-    'throw when trying to use ref.read inside selectors during initial call',
-    () {
-      final dep = Provider((ref) => 0, name: 'dep');
-      final provider = Provider(name: 'provider', (ref) {
+    container.listen(provider, (_, __) {});
+
+    depNotifier.state++;
+
+    verifyOnly(onDispose, onDispose());
+
+    depNotifier.state++;
+    dep2Notifier.state++;
+
+    verifyNoMoreInteractions(onDispose);
+  });
+
+  test('throw when trying to use ref.read inside selectors during initial call',
+      () {
+    final dep = Provider((ref) => 0, name: 'dep');
+    final provider = Provider(
+      name: 'provider',
+      (ref) {
         ref.watch(dep.select((value) => ref.read(dep)));
-      });
-      final container = ProviderContainer.test();
+      },
+    );
+    final container = ProviderContainer.test();
 
-      expect(
-        () => container.read(provider),
-        throwsProviderException(isProviderException(isA<AssertionError>())),
-      );
-    },
-  );
-
-  test(
-    'throw when trying to use ref.watch inside selectors during initial call',
-    () {
-      final dep = Provider((ref) => 0);
-      final provider = Provider((ref) {
-        ref.watch(dep.select((value) => ref.watch(dep)));
-      });
-      final container = ProviderContainer.test();
-
-      expect(
-        () => container.read(provider),
-        throwsProviderException(isProviderException(isA<AssertionError>())),
-      );
-    },
-  );
+    expect(
+      () => container.read(provider),
+      throwsProviderException(isProviderException(isA<AssertionError>())),
+    );
+  });
 
   test(
-    'throw when trying to use ref.listen inside selectors during initial call',
-    () {
-      final dep = Provider((ref) => 0);
-      final provider = Provider((ref) {
-        ref.watch(
-          dep.select((value) {
-            ref.listen(dep, (prev, value) {});
-            return 0;
-          }),
-        );
-      });
-      final container = ProviderContainer.test();
+      'throw when trying to use ref.watch inside selectors during initial call',
+      () {
+    final dep = Provider((ref) => 0);
+    final provider = Provider((ref) {
+      ref.watch(dep.select((value) => ref.watch(dep)));
+    });
+    final container = ProviderContainer.test();
 
-      expect(
-        () => container.read(provider),
-        throwsProviderException(isProviderException(isA<AssertionError>())),
-      );
-    },
-  );
+    expect(
+      () => container.read(provider),
+      throwsProviderException(isProviderException(isA<AssertionError>())),
+    );
+  });
 
   test(
-    'when selecting a provider, element.visitAncestors visits the selected provider',
-    () {
-      final container = ProviderContainer.test();
-      final selected = StateNotifierProvider<StateController<int>, int>((ref) {
-        return StateController(0);
-      });
-      final provider = Provider((ref) {
-        ref.watch(selected.select((value) => null));
-      });
+      'throw when trying to use ref.listen inside selectors during initial call',
+      () {
+    final dep = Provider((ref) => 0);
+    final provider = Provider((ref) {
+      ref.watch(
+        dep.select((value) {
+          ref.listen(dep, (prev, value) {});
+          return 0;
+        }),
+      );
+    });
+    final container = ProviderContainer.test();
 
-      container.read(provider);
-      container.read(selected);
+    expect(
+      () => container.read(provider),
+      throwsProviderException(isProviderException(isA<AssertionError>())),
+    );
+  });
 
-      final element = container.readProviderElement(provider);
-      final selectedElement = container.readProviderElement(selected);
+  test(
+      'when selecting a provider, element.visitAncestors visits the selected provider',
+      () {
+    final container = ProviderContainer.test();
+    final selected = StateNotifierProvider<StateController<int>, int>((ref) {
+      return StateController(0);
+    });
+    final provider = Provider((ref) {
+      ref.watch(selected.select((value) => null));
+    });
 
-      final ancestors = <ProviderElement>[];
-      element.visitAncestors(ancestors.add);
+    container.read(provider);
+    container.read(selected);
 
-      expect(ancestors, [selectedElement]);
-    },
-  );
+    final element = container.readProviderElement(provider);
+    final selectedElement = container.readProviderElement(selected);
+
+    final ancestors = <ProviderElement>[];
+    element.visitAncestors(ancestors.add);
+
+    expect(ancestors, [selectedElement]);
+  });
 
   test('can watch selectors', () {
     final container = ProviderContainer.test();
@@ -292,10 +285,13 @@ void main() {
     final isEvenListener = Listener<bool>();
     var buildCount = 0;
 
-    final another = Provider<bool>(name: 'another', (ref) {
-      buildCount++;
-      return ref.watch(provider.select(isEvenSelector.call));
-    });
+    final another = Provider<bool>(
+      name: 'another',
+      (ref) {
+        buildCount++;
+        return ref.watch(provider.select(isEvenSelector.call));
+      },
+    );
 
     container.listen(another, isEvenListener.call, fireImmediately: true);
 
@@ -319,148 +315,143 @@ void main() {
   });
 
   test(
-    'Provider removing one of multiple listeners on a provider still listen to the provider',
-    () async {
-      final stateProvider = StateProvider((ref) => 0, name: 'state');
-      final notifier0 = Counter();
-      final provider0 = StateNotifierProvider<Counter, int>((ref) => notifier0);
+      'Provider removing one of multiple listeners on a provider still listen to the provider',
+      () async {
+    final stateProvider = StateProvider((ref) => 0, name: 'state');
+    final notifier0 = Counter();
+    final provider0 = StateNotifierProvider<Counter, int>((ref) => notifier0);
 
-      final notifier1 = Counter(42);
-      final provider1 = StateNotifierProvider<Counter, int>((ref) => notifier1);
+    final notifier1 = Counter(42);
+    final provider1 = StateNotifierProvider<Counter, int>((ref) => notifier1);
 
-      var computedBuildCount = 0;
-      final computed = Provider((ref) {
-        computedBuildCount++;
-        final state = ref.watch(stateProvider);
-        final value = state == 0 ? ref.watch(provider0) : ref.watch(provider1);
-        return '${ref.watch(provider0)} $value';
-      });
+    var computedBuildCount = 0;
+    final computed = Provider((ref) {
+      computedBuildCount++;
+      final state = ref.watch(stateProvider);
+      final value = state == 0 ? ref.watch(provider0) : ref.watch(provider1);
+      return '${ref.watch(provider0)} $value';
+    });
 
-      final computedListener = Listener<String>();
-      final container = ProviderContainer.test();
+    final computedListener = Listener<String>();
+    final container = ProviderContainer.test();
 
-      container.read(provider0);
-      container.read(provider1);
-      final provider0Element = container.readProviderElement(provider0);
-      final provider1Element = container.readProviderElement(provider1);
+    container.read(provider0);
+    container.read(provider1);
+    final provider0Element = container.readProviderElement(provider0);
+    final provider1Element = container.readProviderElement(provider1);
 
-      container.listen(computed, computedListener.call, fireImmediately: true);
+    container.listen(computed, computedListener.call, fireImmediately: true);
 
-      verifyOnly(computedListener, computedListener(null, '0 0'));
-      expect(computedBuildCount, 1);
-      expect(provider0Element.hasNonWeakListeners, true);
-      expect(provider1Element.hasNonWeakListeners, false);
+    verifyOnly(computedListener, computedListener(null, '0 0'));
+    expect(computedBuildCount, 1);
+    expect(provider0Element.hasNonWeakListeners, true);
+    expect(provider1Element.hasNonWeakListeners, false);
 
-      notifier0.increment();
-      await container.pump();
+    notifier0.increment();
+    await container.pump();
 
-      verifyOnly(computedListener, computedListener('0 0', '1 1'));
-      expect(computedBuildCount, 2);
+    verifyOnly(computedListener, computedListener('0 0', '1 1'));
+    expect(computedBuildCount, 2);
 
-      notifier1.increment();
-      await container.pump();
+    notifier1.increment();
+    await container.pump();
 
-      expect(computedBuildCount, 2);
-      verifyNoMoreInteractions(computedListener);
+    expect(computedBuildCount, 2);
+    verifyNoMoreInteractions(computedListener);
 
-      // changing the provider that computed is subscribed to
-      container.read(stateProvider.notifier).state = 1;
-      await container.pump();
+    // changing the provider that computed is subscribed to
+    container.read(stateProvider.notifier).state = 1;
+    await container.pump();
 
-      verifyOnly(computedListener, computedListener('1 1', '1 43'));
-      expect(computedBuildCount, 3);
-      expect(provider1Element.hasNonWeakListeners, true);
-      expect(provider0Element.hasNonWeakListeners, true);
+    verifyOnly(computedListener, computedListener('1 1', '1 43'));
+    expect(computedBuildCount, 3);
+    expect(provider1Element.hasNonWeakListeners, true);
+    expect(provider0Element.hasNonWeakListeners, true);
 
-      notifier1.increment();
-      await container.pump();
+    notifier1.increment();
+    await container.pump();
 
-      verifyOnly(computedListener, computedListener('1 43', '1 44'));
-      expect(computedBuildCount, 4);
+    verifyOnly(computedListener, computedListener('1 43', '1 44'));
+    expect(computedBuildCount, 4);
 
-      notifier0.increment();
-      await container.pump();
+    notifier0.increment();
+    await container.pump();
 
-      verifyOnly(computedListener, computedListener('1 44', '2 44'));
-      expect(computedBuildCount, 5);
-    },
-  );
+    verifyOnly(computedListener, computedListener('1 44', '2 44'));
+    expect(computedBuildCount, 5);
+  });
 
-  test(
-    'Stops listening to a provider when recomputed but no longer using it',
-    () async {
-      final stateProvider = StateProvider((ref) => 0, name: 'state');
-      final notifier0 = Counter();
-      final provider0 = StateNotifierProvider<Counter, int>(
-        (_) => notifier0,
-        name: '0',
-      );
-      final notifier1 = Counter(42);
-      final provider1 = StateNotifierProvider<Counter, int>(
-        (_) => notifier1,
-        name: '1',
-      );
+  test('Stops listening to a provider when recomputed but no longer using it',
+      () async {
+    final stateProvider = StateProvider((ref) => 0, name: 'state');
+    final notifier0 = Counter();
+    final provider0 = StateNotifierProvider<Counter, int>(
+      (_) => notifier0,
+      name: '0',
+    );
+    final notifier1 = Counter(42);
+    final provider1 = StateNotifierProvider<Counter, int>(
+      (_) => notifier1,
+      name: '1',
+    );
 
-      var computedBuildCount = 0;
-      final computed = Provider((ref) {
-        computedBuildCount++;
-        final state = ref.watch(stateProvider);
-        return state == 0 ? ref.watch(provider0) : ref.watch(provider1);
-      });
+    var computedBuildCount = 0;
+    final computed = Provider((ref) {
+      computedBuildCount++;
+      final state = ref.watch(stateProvider);
+      return state == 0 ? ref.watch(provider0) : ref.watch(provider1);
+    });
 
-      final computedListener = Listener<int>();
-      final container = ProviderContainer.test();
+    final computedListener = Listener<int>();
+    final container = ProviderContainer.test();
 
-      final provider0Element = container.readProviderElement(provider0);
-      final provider1Element = container.readProviderElement(provider1);
+    final provider0Element = container.readProviderElement(provider0);
+    final provider1Element = container.readProviderElement(provider1);
 
-      container.listen(computed, computedListener.call, fireImmediately: true);
+    container.listen(computed, computedListener.call, fireImmediately: true);
 
-      verifyOnly(computedListener, computedListener(null, 0));
-      expect(computedBuildCount, 1);
-      expect(provider0Element.hasNonWeakListeners, true);
-      expect(provider1Element.hasNonWeakListeners, false);
+    verifyOnly(computedListener, computedListener(null, 0));
+    expect(computedBuildCount, 1);
+    expect(provider0Element.hasNonWeakListeners, true);
+    expect(provider1Element.hasNonWeakListeners, false);
 
-      notifier0.increment();
-      await container.pump();
+    notifier0.increment();
+    await container.pump();
 
-      verifyOnly(computedListener, computedListener(0, 1));
-      expect(computedBuildCount, 2);
+    verifyOnly(computedListener, computedListener(0, 1));
+    expect(computedBuildCount, 2);
 
-      notifier1.increment();
-      await container.pump();
+    notifier1.increment();
+    await container.pump();
 
-      expect(computedBuildCount, 2);
-      verifyNoMoreInteractions(computedListener);
+    expect(computedBuildCount, 2);
+    verifyNoMoreInteractions(computedListener);
 
-      // changing the provider that computed is subscribed to
-      container.read(stateProvider.notifier).state = 1;
-      await container.pump();
+    // changing the provider that computed is subscribed to
+    container.read(stateProvider.notifier).state = 1;
+    await container.pump();
 
-      expect(computedBuildCount, 3);
-      verifyOnly(computedListener, computedListener(1, 43));
-      expect(provider1Element.hasNonWeakListeners, true);
-      expect(provider0Element.hasNonWeakListeners, false);
+    expect(computedBuildCount, 3);
+    verifyOnly(computedListener, computedListener(1, 43));
+    expect(provider1Element.hasNonWeakListeners, true);
+    expect(provider0Element.hasNonWeakListeners, false);
 
-      notifier1.increment();
-      await container.pump();
+    notifier1.increment();
+    await container.pump();
 
-      expect(computedBuildCount, 4);
-      verifyOnly(computedListener, computedListener(43, 44));
+    expect(computedBuildCount, 4);
+    verifyOnly(computedListener, computedListener(43, 44));
 
-      notifier0.increment();
-      await container.pump();
+    notifier0.increment();
+    await container.pump();
 
-      expect(computedBuildCount, 4);
-      verifyNoMoreInteractions(computedListener);
-    },
-  );
+    expect(computedBuildCount, 4);
+    verifyNoMoreInteractions(computedListener);
+  });
 
   test('Provider.family', () async {
-    final computed = Provider.family<String, ProviderBase<int>>((
-      ref,
-      provider,
-    ) {
+    final computed =
+        Provider.family<String, ProviderBase<int>>((ref, provider) {
       return ref.watch(provider).toString();
     });
     final notifier = Counter();
@@ -481,70 +472,68 @@ void main() {
   });
 
   test(
-    'multiple ref.watch, when one of them forces re-evaluate, all dependencies are still flushed',
-    () async {
-      final container = ProviderContainer.test();
-      final notifier = Notifier(0);
-      final provider = StateNotifierProvider<Notifier<int>, int>((_) {
-        return notifier;
-      });
-      var callCount = 0;
-      final computed = Provider((ref) {
-        callCount++;
-        return ref.watch(provider);
-      });
+      'multiple ref.watch, when one of them forces re-evaluate, all dependencies are still flushed',
+      () async {
+    final container = ProviderContainer.test();
+    final notifier = Notifier(0);
+    final provider = StateNotifierProvider<Notifier<int>, int>((_) {
+      return notifier;
+    });
+    var callCount = 0;
+    final computed = Provider((ref) {
+      callCount++;
+      return ref.watch(provider);
+    });
 
-      final tested = Provider((ref) {
-        final first = ref.watch(provider);
-        final second = ref.watch(computed);
-        return '$first $second';
-      });
-      final listener = Listener<String>();
+    final tested = Provider((ref) {
+      final first = ref.watch(provider);
+      final second = ref.watch(computed);
+      return '$first $second';
+    });
+    final listener = Listener<String>();
 
-      container.listen(tested, listener.call, fireImmediately: true);
+    container.listen(tested, listener.call, fireImmediately: true);
 
-      verifyOnly(listener, listener(null, '0 0'));
-      expect(callCount, 1);
+    verifyOnly(listener, listener(null, '0 0'));
+    expect(callCount, 1);
 
-      notifier.setState(1);
-      await container.pump();
+    notifier.setState(1);
+    await container.pump();
 
-      verifyOnly(listener, listener('0 0', '1 1'));
-      expect(callCount, 2);
-    },
-  );
+    verifyOnly(listener, listener('0 0', '1 1'));
+    expect(callCount, 2);
+  });
 
   test(
-    'computed on computed, the first aborts rebuild, the second should not be re-evaluated',
-    () async {
-      final state = StateProvider((ref) => 0);
-      var firstCallCount = 0;
-      final first = Provider((ref) {
-        firstCallCount++;
-        ref.watch(state);
-        return 0;
-      });
-      var secondCallCount = 0;
-      final second = Provider((ref) {
-        secondCallCount++;
-        return ref.watch(first).toString();
-      });
-      final container = ProviderContainer.test();
+      'computed on computed, the first aborts rebuild, the second should not be re-evaluated',
+      () async {
+    final state = StateProvider((ref) => 0);
+    var firstCallCount = 0;
+    final first = Provider((ref) {
+      firstCallCount++;
+      ref.watch(state);
+      return 0;
+    });
+    var secondCallCount = 0;
+    final second = Provider((ref) {
+      secondCallCount++;
+      return ref.watch(first).toString();
+    });
+    final container = ProviderContainer.test();
 
-      final controller = container.read(state.notifier);
+    final controller = container.read(state.notifier);
 
-      expect(container.read(second), '0');
-      expect(firstCallCount, 1);
-      expect(secondCallCount, 1);
+    expect(container.read(second), '0');
+    expect(firstCallCount, 1);
+    expect(secondCallCount, 1);
 
-      controller.state = 42;
-      await container.pump();
+    controller.state = 42;
+    await container.pump();
 
-      expect(container.read(second), '0');
-      expect(firstCallCount, 2);
-      expect(secondCallCount, 1);
-    },
-  );
+    expect(container.read(second), '0');
+    expect(firstCallCount, 2);
+    expect(secondCallCount, 1);
+  });
 
   test('can call ref.watch asynchronously', () async {
     final container = ProviderContainer.test();
@@ -554,10 +543,13 @@ void main() {
       (_) => notifier,
     );
     var callCount = 0;
-    final computed = StreamProvider(name: 'computed', (ref) async* {
-      callCount++;
-      yield ref.watch(provider);
-    });
+    final computed = StreamProvider(
+      name: 'computed',
+      (ref) async* {
+        callCount++;
+        yield ref.watch(provider);
+      },
+    );
 
     final sub = container.listen(computed, (_, __) {});
 
@@ -574,10 +566,8 @@ void main() {
 
     expect(
       sub.read(),
-      const AsyncLoading<int>().copyWithPrevious(
-        const AsyncData(0),
-        isRefresh: false,
-      ),
+      const AsyncLoading<int>()
+          .copyWithPrevious(const AsyncData(0), isRefresh: false),
     );
     expect(callCount, 1);
 
@@ -601,17 +591,25 @@ void main() {
 
     late List<int> first;
     final firstListener = Listener<List<int>>();
-    container.listen<List<int>>(computed, fireImmediately: true, (prev, value) {
-      first = value;
-      firstListener(prev, value);
-    });
+    container.listen<List<int>>(
+      computed,
+      fireImmediately: true,
+      (prev, value) {
+        first = value;
+        firstListener(prev, value);
+      },
+    );
 
     late List<int> second;
     final secondListener = Listener<List<int>>();
-    container.listen<List<int>>(computed, fireImmediately: true, (prev, value) {
-      second = value;
-      secondListener(prev, value);
-    });
+    container.listen<List<int>>(
+      computed,
+      fireImmediately: true,
+      (prev, value) {
+        second = value;
+        secondListener(prev, value);
+      },
+    );
 
     expect(first, [0]);
     expect(callCount, 1);

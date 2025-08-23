@@ -62,7 +62,10 @@ void main() {
               container: container,
               child: Consumer(
                 builder: (context, ref, _) {
-                  ref.listen<int>(provider, (prev, v) => setState(() {}));
+                  ref.listen<int>(
+                    provider,
+                    (prev, v) => setState(() {}),
+                  );
                   return Container();
                 },
               ),
@@ -99,13 +102,16 @@ void main() {
       container.read(provider.notifier).state++;
       container.read(provider.notifier).state++;
 
-      verifyInOrder([onChange(0, 1), onChange(1, 2), onChange(2, 3)]);
+      verifyInOrder([
+        onChange(0, 1),
+        onChange(1, 2),
+        onChange(2, 3),
+      ]);
       verifyNoMoreInteractions(onChange);
     });
 
-    testWidgets('calls onChange asynchronously if the change is indirect', (
-      tester,
-    ) async {
+    testWidgets('calls onChange asynchronously if the change is indirect',
+        (tester) async {
       final provider = StateProvider((ref) => 0);
       final isEven = Provider((ref) => ref.watch(provider).isEven);
       final onChange = Listener<bool>();
@@ -209,9 +215,8 @@ void main() {
       );
     });
 
-    testWidgets('listen to the new provider on provider change', (
-      tester,
-    ) async {
+    testWidgets('listen to the new provider on provider change',
+        (tester) async {
       final provider = StateProvider.family<int, int>((ref, _) => 0);
       final container = ProviderContainer.test();
       final onChange = Listener<int>();
@@ -284,8 +289,12 @@ void main() {
         ),
       );
 
-      container.updateOverrides([provider.overrideWithValue(21)]);
-      container2.updateOverrides([provider.overrideWithValue(42)]);
+      container.updateOverrides([
+        provider.overrideWithValue(21),
+      ]);
+      container2.updateOverrides([
+        provider.overrideWithValue(42),
+      ]);
 
       await container.pump();
 
@@ -311,7 +320,9 @@ void main() {
         ),
       );
 
-      container.updateOverrides([provider.overrideWithValue(21)]);
+      container.updateOverrides([
+        provider.overrideWithValue(21),
+      ]);
 
       await container.pump();
 

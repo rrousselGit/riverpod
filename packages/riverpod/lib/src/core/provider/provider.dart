@@ -37,9 +37,9 @@ sealed class ProviderBase<StateT> extends ProviderOrFamily
     required super.isAutoDispose,
     required super.retry,
   }) : assert(
-         from == null || $allTransitiveDependencies == null,
-         'When from a family, providers cannot specify dependencies.',
-       );
+          from == null || $allTransitiveDependencies == null,
+          'When from a family, providers cannot specify dependencies.',
+        );
 
   bool get _isSynthetic => false;
 

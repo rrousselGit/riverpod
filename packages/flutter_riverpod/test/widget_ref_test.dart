@@ -10,7 +10,9 @@ void main() {
 
         await tester.pumpWidget(
           ProviderScope(
-            child: Consumer(builder: (context, ref, _) => Container()),
+            child: Consumer(
+              builder: (context, ref, _) => Container(),
+            ),
           ),
         );
 

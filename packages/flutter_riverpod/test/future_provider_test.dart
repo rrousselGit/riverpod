@@ -22,9 +22,7 @@ void main() {
         child: ProviderScope(
           child: Consumer(
             builder: (c, ref, _) {
-              return ref
-                  .watch(futureProvider)
-                  .when(
+              return ref.watch(futureProvider).when(
                     data: (data) => Text(data.toString()),
                     loading: () => const Text('loading'),
                     error: (err, stack) => Text('$err'),
@@ -55,9 +53,7 @@ void main() {
         child: ProviderScope(
           child: Consumer(
             builder: (c, ref, _) {
-              return ref
-                  .watch(futureProvider)
-                  .when(
+              return ref.watch(futureProvider).when(
                     data: (data) => Text(data.toString()),
                     loading: () => const Text('loading'),
                     error: (err, stack) {
@@ -144,9 +140,7 @@ void main() {
           textDirection: TextDirection.ltr,
           child: Consumer(
             builder: (c, ref, _) {
-              return ref
-                  .watch(futureProviderFamily)
-                  .when(
+              return ref.watch(futureProviderFamily).when(
                     data: (value) => Text(value.toString()),
                     loading: () => const Text('loading'),
                     error: (err, stack) => const Text('error'),
@@ -164,9 +158,8 @@ void main() {
     expect(find.text('84'), findsOneWidget);
   });
 
-  testWidgets('FutureProviderFamily works with other providers', (
-    tester,
-  ) async {
+  testWidgets('FutureProviderFamily works with other providers',
+      (tester) async {
     final provider = Provider((_) => 42);
 
     final futureProviderFamily = FutureProvider<int>((ref) async {
@@ -179,9 +172,7 @@ void main() {
           textDirection: TextDirection.ltr,
           child: Consumer(
             builder: (c, ref, _) {
-              return ref
-                  .watch(futureProviderFamily)
-                  .when(
+              return ref.watch(futureProviderFamily).when(
                     data: (value) => Text(value.toString()),
                     loading: () => const Text('loading'),
                     error: (err, stack) => const Text('error'),
@@ -213,9 +204,7 @@ void main() {
           textDirection: TextDirection.ltr,
           child: Consumer(
             builder: (c, ref, _) {
-              return ref
-                  .watch(futureProviderFamily)
-                  .when(
+              return ref.watch(futureProviderFamily).when(
                     data: (value) => Text(value.toString()),
                     loading: () => const Text('loading'),
                     error: (err, stack) => const Text('error'),

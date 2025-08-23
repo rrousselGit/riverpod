@@ -14,11 +14,9 @@ class OnlyUseKeepAliveInsideKeepAlive extends RiverpodLintRule {
 
   static const _code = LintCode(
     name: 'only_use_keep_alive_inside_keep_alive',
-    problemMessage:
-        'If a provider is declared as `keepAlive`, '
+    problemMessage: 'If a provider is declared as `keepAlive`, '
         'it can only use providers that are also declared as `keepAlive.',
-    correctionMessage:
-        'Either stop marking this provider as `keepAlive` or '
+    correctionMessage: 'Either stop marking this provider as `keepAlive` or '
         'remove `keepAlive` from the used provider.',
     errorSeverity: ErrorSeverity.WARNING,
   );

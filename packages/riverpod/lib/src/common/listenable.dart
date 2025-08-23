@@ -77,8 +77,7 @@ final class _ValueListenable<ValueT> {
   ({
     ({ValueT? prev, ValueT next})? data,
     ({Object error, StackTrace stack})? error,
-  })?
-  _skippedNotification;
+  })? _skippedNotification;
 
   static bool debugAssertNotDisposed(_ValueListenable<Object?> notifier) {
     assert(
@@ -165,10 +164,8 @@ final class _ValueListenable<ValueT> {
       if (_count == 0) {
         _listeners = List<_Listener<ValueT>?>.filled(1, null);
       } else {
-        final newListeners = List<_Listener<ValueT>?>.filled(
-          _listeners.length * 2,
-          null,
-        );
+        final newListeners =
+            List<_Listener<ValueT>?>.filled(_listeners.length * 2, null);
         for (var i = 0; i < _count; i++) {
           newListeners[i] = _listeners[i];
         }
@@ -365,7 +362,10 @@ final class _ValueListenable<ValueT> {
     if (_skippedNotification != null) {
       _skippedNotification = (
         error: null,
-        data: (prev: _skippedNotification?.data?.prev ?? prev, next: next),
+        data: (
+          prev: _skippedNotification?.data?.prev ?? prev,
+          next: next,
+        ),
       );
       return;
     }
@@ -375,7 +375,13 @@ final class _ValueListenable<ValueT> {
 
   void _notifyError(Object err, StackTrace stack) {
     if (_skippedNotification != null) {
-      _skippedNotification = (error: (error: err, stack: stack), data: null);
+      _skippedNotification = (
+        error: (
+          error: err,
+          stack: stack,
+        ),
+        data: null,
+      );
       return;
     }
 

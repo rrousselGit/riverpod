@@ -26,21 +26,26 @@ export './src/internal.dart'
         $ProviderOverride,
         $RefArg,
         $ProviderPointer,
+
         // Mutation/Listenables
         ProviderListenable,
         $LazyProxyListenable,
         ProviderElement,
         $Observable,
         $Result,
+
         // Provider
         $Provider,
         $ProviderElement,
+
         // FutureProvider
         $FutureProvider,
         $FutureProviderElement,
+
         // StreamProvider
         $StreamProvider,
         $StreamProviderElement,
+
         // AsyncValue
         AsyncValue,
         AsyncLoading,
@@ -48,18 +53,22 @@ export './src/internal.dart'
         AsyncError,
         AsyncResult,
         AsyncValueExtensions,
+
         // AsyncNotifier
         $AsyncNotifierProvider,
         $AsyncNotifier,
         $AsyncNotifierProviderElement,
+
         // StreamNotifier
         $StreamNotifierProvider,
         $StreamNotifierProviderElement,
         $StreamNotifier,
+
         // Notifier
         $NotifierProvider,
         $NotifierProviderElement,
         $Notifier,
+
         // Misc
         riverpod,
         Riverpod,

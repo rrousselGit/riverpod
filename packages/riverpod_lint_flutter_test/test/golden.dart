@@ -21,7 +21,11 @@ Matcher matchersGoldenFile<T>(
   required String Function(T value) encode,
   required bool Function(T value) isEmpty,
 }) {
-  return _MatchesGoldenFile(file: file, encode: encode, isEmpty: isEmpty);
+  return _MatchesGoldenFile(
+    file: file,
+    encode: encode,
+    isEmpty: isEmpty,
+  );
 }
 
 class _MatchesGoldenFile<T> extends Matcher {
@@ -39,7 +43,10 @@ class _MatchesGoldenFile<T> extends Matcher {
   static final Object _expectedKey = Object();
 
   @override
-  bool matches(Object? object, Map<Object?, Object?> matchState) {
+  bool matches(
+    Object? object,
+    Map<Object?, Object?> matchState,
+  ) {
     if (object is! T) {
       matchState[_mismatchedValueKey] = 'Expected a ${T.toString()}';
       return false;
@@ -184,8 +191,7 @@ class OffsetHelper {
 
     var mappedContent = _content;
     for (final offset in offsets.reversed) {
-      mappedContent =
-          mappedContent.substring(0, offset) +
+      mappedContent = mappedContent.substring(0, offset) +
           '<>' +
           mappedContent.substring(offset);
     }
@@ -245,8 +251,7 @@ void testGolden(
   Future<Iterable<PrioritizedSourceChange>> Function(
     ResolvedUnitResult unit,
     OffsetHelper offsetHelper,
-  )
-  body, {
+  ) body, {
   required String sourcePath,
 }) {
   test(description, () async {
@@ -256,10 +261,8 @@ void testGolden(
     result as ResolvedUnitResult;
 
     final source = file.readAsStringSync();
-    final changes = await body(
-      result,
-      OffsetHelper._(source),
-    ).then((value) => value.toList());
+    final changes = await body(result, OffsetHelper._(source))
+        .then((value) => value.toList());
 
     try {
       expect(

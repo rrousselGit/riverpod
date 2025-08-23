@@ -52,7 +52,11 @@ void main() {
 
         container.listen(provider, (_, __) {}).pause();
 
-        final sub = container.listen(provider, (_, __) {}, weak: true)..pause();
+        final sub = container.listen(
+          provider,
+          (_, __) {},
+          weak: true,
+        )..pause();
         final element = container.readProviderElement(provider);
 
         expect(
@@ -131,9 +135,8 @@ void main() {
 
     test("adding and removing a dep shouldn't stop its listeners", () async {
       // Regression test for https://github.com/rrousselGit/riverpod/issues/4117
-      final numberProvider = StreamProvider.autoDispose<int>(name: 'number', (
-        ref,
-      ) {
+      final numberProvider =
+          StreamProvider.autoDispose<int>(name: 'number', (ref) {
         final controller = StreamController<int>();
 
         int counter = 0;
@@ -181,76 +184,72 @@ void main() {
     });
 
     test(
-      'pauses old subscriptions upon invalidation until the completion of the new computation',
-      () async {
-        final container = ProviderContainer.test();
-        final depProvider = Provider.family<int, String>((ref, _) => 0);
-        final futureP = FutureProvider<Ref>(Future.value);
-        final streamP = StreamProvider<Ref>(Stream.value);
-        final p = Provider<Ref>((ref) => ref);
+        'pauses old subscriptions upon invalidation until the completion of the new computation',
+        () async {
+      final container = ProviderContainer.test();
+      final depProvider = Provider.family<int, String>((ref, _) => 0);
+      final futureP = FutureProvider<Ref>(Future.value);
+      final streamP = StreamProvider<Ref>(Stream.value);
+      final p = Provider<Ref>((ref) => ref);
 
-        final depP = container.readProviderElement(depProvider('p'));
-        final depF = container.readProviderElement(depProvider('f'));
-        final depS = container.readProviderElement(depProvider('s'));
+      final depP = container.readProviderElement(depProvider('p'));
+      final depF = container.readProviderElement(depProvider('f'));
+      final depS = container.readProviderElement(depProvider('s'));
 
-        container.listen(p, (a, b) {}).read().watch(depProvider('p'));
-        (await container.listen(futureP.future, (a, b) {}).read()).watch(
-          depProvider('f'),
-        );
-        (await container.listen(streamP.future, (a, b) {}).read()).watch(
-          depProvider('s'),
-        );
+      container.listen(p, (a, b) {}).read().watch(depProvider('p'));
+      (await container.listen(futureP.future, (a, b) {}).read())
+          .watch(depProvider('f'));
+      (await container.listen(streamP.future, (a, b) {}).read())
+          .watch(depProvider('s'));
 
-        container.invalidate(p);
-        container.invalidate(futureP);
-        container.invalidate(streamP);
+      container.invalidate(p);
+      container.invalidate(futureP);
+      container.invalidate(streamP);
 
-        expect(depP.hasNonWeakListeners, true);
-        expect(depF.hasNonWeakListeners, true);
-        expect(depS.hasNonWeakListeners, true);
-        expect(depP.isActive, false);
-        expect(depF.isActive, false);
-        expect(depS.isActive, false);
+      expect(depP.hasNonWeakListeners, true);
+      expect(depF.hasNonWeakListeners, true);
+      expect(depS.hasNonWeakListeners, true);
+      expect(depP.isActive, false);
+      expect(depF.isActive, false);
+      expect(depS.isActive, false);
 
-        await container.pump();
+      await container.pump();
 
-        expect(depP.hasNonWeakListeners, false);
-        expect(depF.hasNonWeakListeners, true);
-        expect(depS.hasNonWeakListeners, true);
-        expect(depP.isActive, false);
-        expect(depF.isActive, false);
-        expect(depS.isActive, false);
+      expect(depP.hasNonWeakListeners, false);
+      expect(depF.hasNonWeakListeners, true);
+      expect(depS.hasNonWeakListeners, true);
+      expect(depP.isActive, false);
+      expect(depF.isActive, false);
+      expect(depS.isActive, false);
 
-        await container.read(streamP.future);
-        await container.read(futureP.future);
+      await container.read(streamP.future);
+      await container.read(futureP.future);
 
-        expect(depP.hasNonWeakListeners, false);
-        expect(depF.hasNonWeakListeners, false);
-        expect(depS.hasNonWeakListeners, false);
-        expect(depP.isActive, false);
-        expect(depF.isActive, false);
-        expect(depS.isActive, false);
-      },
-    );
+      expect(depP.hasNonWeakListeners, false);
+      expect(depF.hasNonWeakListeners, false);
+      expect(depS.hasNonWeakListeners, false);
+      expect(depP.isActive, false);
+      expect(depF.isActive, false);
+      expect(depS.isActive, false);
+    });
 
     test(
-      'Adding a listener on a provider with only paused proxy subscriptions unpauses the provider',
-      () async {
-        // Regression test for when "resume" somehow triggers too late
-        final container = ProviderContainer.test();
-        final onResume = OnResume();
-        final dep = FutureProvider<int>((ref) {
-          ref.onResume(onResume.call);
-          return 0;
-        });
+        'Adding a listener on a provider with only paused proxy subscriptions unpauses the provider',
+        () async {
+      // Regression test for when "resume" somehow triggers too late
+      final container = ProviderContainer.test();
+      final onResume = OnResume();
+      final dep = FutureProvider<int>((ref) {
+        ref.onResume(onResume.call);
+        return 0;
+      });
 
-        final sub = container.listen(dep.future, (_, __) {})..pause();
-        clearInteractions(onResume);
+      final sub = container.listen(dep.future, (_, __) {})..pause();
+      clearInteractions(onResume);
 
-        container.listen(dep, (_, __) {});
-        verifyOnly(onResume, onResume.call());
-      },
-    );
+      container.listen(dep, (_, __) {});
+      verifyOnly(onResume, onResume.call());
+    });
 
     test('Only includes direct subscriptions in subscription lists', () {
       final container = ProviderContainer.test();
@@ -265,41 +264,44 @@ void main() {
       final depElement = container.readProviderElement(dep);
 
       expect(providerElement.subscriptions, null);
-      expect(providerElement.dependents, [isA<ProviderSubscription<int>>()]);
+      expect(
+        providerElement.dependents,
+        [isA<ProviderSubscription<int>>()],
+      );
       expect(providerElement.weakDependents, isEmpty);
 
-      expect(depElement.subscriptions, [isA<ProviderSubscription<int>>()]);
+      expect(depElement.subscriptions, [
+        isA<ProviderSubscription<int>>(),
+      ]);
       expect(depElement.dependents, isEmpty);
       expect(depElement.weakDependents, isEmpty);
     });
 
     group('retry', () {
-      test(
-        'does not start retry if error is emitted after element dispose',
-        () async {
-          final container = ProviderContainer.test();
-          final completer = Completer<int>();
-          final retryMock = RetryMock();
-          final provider = FutureProvider<int>(
-            (ref) => completer.future,
-            retry: retryMock.call,
-          );
+      test('does not start retry if error is emitted after element dispose',
+          () async {
+        final container = ProviderContainer.test();
+        final completer = Completer<int>();
+        final retryMock = RetryMock();
+        final provider = FutureProvider<int>(
+          (ref) => completer.future,
+          retry: retryMock.call,
+        );
 
-          container.listen(
-            provider,
-            (prev, next) {},
-            fireImmediately: true,
-            onError: (e, s) {},
-          );
+        container.listen(
+          provider,
+          (prev, next) {},
+          fireImmediately: true,
+          onError: (e, s) {},
+        );
 
-          container.dispose();
+        container.dispose();
 
-          completer.completeError('err');
-          await completer.future.catchError((_) => 0);
+        completer.completeError('err');
+        await completer.future.catchError((_) => 0);
 
-          verifyZeroInteractions(retryMock);
-        },
-      );
+        verifyZeroInteractions(retryMock);
+      });
 
       test(
         'default ignores ProviderExceptions',
@@ -315,7 +317,11 @@ void main() {
             ref.watch(dep);
           });
 
-          container.listen(provider, (prev, next) {}, onError: (e, s) {});
+          container.listen(
+            provider,
+            (prev, next) {},
+            onError: (e, s) {},
+          );
 
           fake.elapse(const Duration(hours: 1));
 
@@ -327,14 +333,20 @@ void main() {
         'default ignores Errors',
         () => fakeAsync((fake) async {
           final container = ProviderContainer.test();
-          final dep = Provider((ref) => throw Error());
+          final dep = Provider(
+            (ref) => throw Error(),
+          );
           var buildCount = 0;
           final provider = Provider((ref) {
             buildCount++;
             ref.watch(dep);
           });
 
-          container.listen(provider, (prev, next) {}, onError: (e, s) {});
+          container.listen(
+            provider,
+            (prev, next) {},
+            onError: (e, s) {},
+          );
 
           fake.elapse(const Duration(hours: 1));
 
@@ -359,7 +371,15 @@ void main() {
             onError: (e, s) {},
           );
 
-          const times = [200, 400, 800, 1600, 3200, 6400, 6400];
+          const times = [
+            200,
+            400,
+            800,
+            1600,
+            3200,
+            6400,
+            6400,
+          ];
 
           for (final (index, time) in times.indexed) {
             fake.elapse(Duration(milliseconds: time - 10));
@@ -471,7 +491,10 @@ void main() {
 
             verifyOnly(
               errorListener,
-              errorListener(argThat(isStateErrorWith(message: '0')), any),
+              errorListener(
+                argThat(isStateErrorWith(message: '0')),
+                any,
+              ),
             );
 
             msg = '1';
@@ -487,7 +510,10 @@ void main() {
 
             verifyOnly(
               errorListener,
-              errorListener(argThat(isStateErrorWith(message: '1')), any),
+              errorListener(
+                argThat(isStateErrorWith(message: '1')),
+                any,
+              ),
             );
           }),
         );
@@ -496,39 +522,51 @@ void main() {
           'if the retry function throws, stops retrying and report the error',
           () => fakeAsync((fake) {
             final errors = <Object>[];
-            runZonedGuarded(() {
-              final container = ProviderContainer.test(
-                retry: (_, __) => throw StateError('Oops!'),
-              );
-              final errorListener = ErrorListener();
-              final provider = Provider((ref) => throw StateError('msg'));
+            runZonedGuarded(
+              () {
+                final container = ProviderContainer.test(
+                  retry: (_, __) => throw StateError('Oops!'),
+                );
+                final errorListener = ErrorListener();
+                final provider = Provider((ref) => throw StateError('msg'));
 
-              container.listen(
-                provider,
-                (prev, next) {},
-                fireImmediately: true,
-                onError: errorListener.call,
-              );
+                container.listen(
+                  provider,
+                  (prev, next) {},
+                  fireImmediately: true,
+                  onError: errorListener.call,
+                );
 
-              verifyOnly(
-                errorListener,
-                errorListener(argThat(isStateErrorWith(message: 'msg')), any),
-              );
+                verifyOnly(
+                  errorListener,
+                  errorListener(
+                    argThat(isStateErrorWith(message: 'msg')),
+                    any,
+                  ),
+                );
 
-              fake.elapse(const Duration(milliseconds: 1));
+                fake.elapse(const Duration(milliseconds: 1));
 
-              verifyNoMoreInteractions(errorListener);
-            }, (e, s) => errors.add(e));
+                verifyNoMoreInteractions(errorListener);
+              },
+              (e, s) => errors.add(e),
+            );
 
-            expect(errors, equals([isStateErrorWith(message: 'Oops!')]));
+            expect(
+              errors,
+              equals([isStateErrorWith(message: 'Oops!')]),
+            );
           }),
         );
 
-        test("If the provider specifies retry, uses the provider's "
+        test(
+            "If the provider specifies retry, uses the provider's "
             'logic instead of the container one.', () {
           final retry1 = RetryMock();
           final retry2 = RetryMock();
-          final container = ProviderContainer.test(retry: retry1.call);
+          final container = ProviderContainer.test(
+            retry: retry1.call,
+          );
 
           final provider = Provider(
             retry: retry2.call,
@@ -572,43 +610,42 @@ void main() {
     });
 
     test(
-      'does not throw outdated error when a dependency is flushed while the dependent is building',
-      () async {
-        final container = ProviderContainer.test();
-        final a = StateProvider((ref) => 0);
+        'does not throw outdated error when a dependency is flushed while the dependent is building',
+        () async {
+      final container = ProviderContainer.test();
+      final a = StateProvider((ref) => 0);
 
-        final dep = Provider<int>((ref) {
-          return ref.watch(a) + 10;
-        });
-        final dependent = Provider<int?>((ref) {
-          if (ref.watch(a) > 0) {
-            ref.watch(dep);
-            // Voluntarily using "watch" twice.
-            // When `dep` is flushed, it could cause subsequent "watch" calls to throw
-            // because `dependent` is considered as outdated
-            return ref.watch(dep);
-          }
-          return null;
-        });
-        final listener = Listener<int?>();
+      final dep = Provider<int>((ref) {
+        return ref.watch(a) + 10;
+      });
+      final dependent = Provider<int?>((ref) {
+        if (ref.watch(a) > 0) {
+          ref.watch(dep);
+          // Voluntarily using "watch" twice.
+          // When `dep` is flushed, it could cause subsequent "watch" calls to throw
+          // because `dependent` is considered as outdated
+          return ref.watch(dep);
+        }
+        return null;
+      });
+      final listener = Listener<int?>();
 
-        expect(container.read(dep), 10);
-        container.listen<int?>(dependent, listener.call, fireImmediately: true);
+      expect(container.read(dep), 10);
+      container.listen<int?>(dependent, listener.call, fireImmediately: true);
 
-        verifyOnly(listener, listener(null, null));
+      verifyOnly(listener, listener(null, null));
 
-        // schedules `dep` and `dependent` to rebuild
-        // Will build `dependent` before `dep` because `dependent` doesn't depend on `dep` yet
-        // And since nothing is watching `dep` at the moment, then `dependent` will
-        // rebuild before `dep` even though `dep` is its ancestor.
-        // This is fine since nothing is listening to `dep` yet, but it should
-        // not cause certain assertions to trigger
-        container.read(a.notifier).state++;
-        await container.pump();
+      // schedules `dep` and `dependent` to rebuild
+      // Will build `dependent` before `dep` because `dependent` doesn't depend on `dep` yet
+      // And since nothing is watching `dep` at the moment, then `dependent` will
+      // rebuild before `dep` even though `dep` is its ancestor.
+      // This is fine since nothing is listening to `dep` yet, but it should
+      // not cause certain assertions to trigger
+      container.read(a.notifier).state++;
+      await container.pump();
 
-        verifyOnly(listener, listener(null, 11));
-      },
-    );
+      verifyOnly(listener, listener(null, 11));
+    });
 
     group('visitAncestors', () {
       test('includes inactive subscriptions', () async {
@@ -635,7 +672,10 @@ void main() {
         final children = <ProviderElement>[];
         element.visitAncestors(children.add);
 
-        expect(children.map((e) => e.origin).toList(), [provider]);
+        expect(
+          children.map((e) => e.origin).toList(),
+          [provider],
+        );
       });
     });
 
@@ -659,16 +699,10 @@ void main() {
         expect(
           children,
           unorderedMatches(<Object>[
-            isA<ProviderElement>().having(
-              (e) => e.provider,
-              'provider',
-              dependent,
-            ),
-            isA<ProviderElement>().having(
-              (e) => e.provider,
-              'provider',
-              dependent2,
-            ),
+            isA<ProviderElement>()
+                .having((e) => e.provider, 'provider', dependent),
+            isA<ProviderElement>()
+                .having((e) => e.provider, 'provider', dependent2),
           ]),
         );
       });
@@ -697,21 +731,12 @@ void main() {
         expect(
           children,
           unorderedMatches(<Object>[
-            isA<ProviderElement>().having(
-              (e) => e.provider,
-              'provider',
-              dependent,
-            ),
-            isA<ProviderElement>().having(
-              (e) => e.provider,
-              'provider',
-              dependent2,
-            ),
-            isA<ProviderElement>().having(
-              (e) => e.provider,
-              'provider',
-              dependent3,
-            ),
+            isA<ProviderElement>()
+                .having((e) => e.provider, 'provider', dependent),
+            isA<ProviderElement>()
+                .having((e) => e.provider, 'provider', dependent2),
+            isA<ProviderElement>()
+                .having((e) => e.provider, 'provider', dependent3),
           ]),
         );
       });
@@ -884,25 +909,23 @@ void main() {
       });
     });
 
-    test(
-      'does not notify listeners twice when using fireImmediately',
-      () async {
-        final container = ProviderContainer.test();
-        final listener = Listener<int>();
+    test('does not notify listeners twice when using fireImmediately',
+        () async {
+      final container = ProviderContainer.test();
+      final listener = Listener<int>();
 
-        final dep = StateProvider((ref) => 0);
-        final provider = NotifierProvider<DeferredNotifier<int>, int>(
-          () => DeferredNotifier((ref, self) {
-            ref.watch(dep);
-            return self.state = 0;
-          }),
-        );
+      final dep = StateProvider((ref) => 0);
+      final provider = NotifierProvider<DeferredNotifier<int>, int>(
+        () => DeferredNotifier((ref, self) {
+          ref.watch(dep);
+          return self.state = 0;
+        }),
+      );
 
-        container.listen(provider, listener.call, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
 
-        verifyOnly(listener, listener(null, 0));
-      },
-    );
+      verifyOnly(listener, listener(null, 0));
+    });
 
     test('does not notify listeners when rebuilding the state', () async {
       final container = ProviderContainer.test();

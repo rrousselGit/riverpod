@@ -41,7 +41,10 @@ Cannot use the Ref of $origin after it has been disposed. This typically happens
 /// {@category Core}
 @publicInRiverpodAndCodegen
 sealed class Ref implements MutationTarget {
-  Ref._({required this.isFirstBuild, required this.isReload});
+  Ref._({
+    required this.isFirstBuild,
+    required this.isReload,
+  });
 
   ProviderElement<Object?, Object?> get _element;
   List<KeepAliveLink>? _keepAliveLinks;
@@ -124,21 +127,24 @@ sealed class Ref implements MutationTarget {
     final origin = _element.origin;
     final provider = _element.provider;
 
-    assert(dependency != origin, 'A provider cannot depend on itself');
+    assert(
+      dependency != origin,
+      'A provider cannot depend on itself',
+    );
 
     final dependencies = origin.from?.dependencies ?? origin.dependencies ?? [];
     final targetDependencies =
         dependency.from?.dependencies ?? dependency.dependencies;
 
     if (
-    // If the target has a null "dependencies", it should never be scoped.
-    !(targetDependencies == null ||
-        // Ignore dependency check if from an override
-        provider != origin ||
-        // Families are allowed to depend on themselves with different parameters.
-        (origin.from != null && dependency.from == origin.from) ||
-        dependencies.contains(dependency.from) ||
-        dependencies.contains(dependency))) {
+        // If the target has a null "dependencies", it should never be scoped.
+        !(targetDependencies == null ||
+            // Ignore dependency check if from an override
+            provider != origin ||
+            // Families are allowed to depend on themselves with different parameters.
+            (origin.from != null && dependency.from == origin.from) ||
+            dependencies.contains(dependency.from) ||
+            dependencies.contains(dependency))) {
       throw StateError('''
 The provider `$origin` depends on `$dependency`, which may be scoped.
 Yet `$dependency` is not part of `$origin`'s `dependencies` list.
@@ -670,8 +676,11 @@ void _runCallbacks(
 @publicInCodegen
 class $Ref<StateT, ValueT> extends Ref {
   /// {@macro riverpod.provider_ref_base}
-  $Ref(this._element, {required super.isFirstBuild, required super.isReload})
-    : super._();
+  $Ref(
+    this._element, {
+    required super.isFirstBuild,
+    required super.isReload,
+  }) : super._();
 
   ProviderElement<StateT, ValueT> get element => _element;
 

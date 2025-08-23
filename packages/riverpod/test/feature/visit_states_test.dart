@@ -72,10 +72,13 @@ void main() {
   test('linear across two containers', () {
     final a = Provider<A>((ref) => A());
 
-    final b = Provider<B>((ref) {
-      ref.watch(a);
-      return B();
-    }, dependencies: const []);
+    final b = Provider<B>(
+      (ref) {
+        ref.watch(a);
+        return B();
+      },
+      dependencies: const [],
+    );
 
     final parent = ProviderContainer.test();
     final container = ProviderContainer.test(parent: parent, overrides: [b]);
@@ -91,13 +94,19 @@ void main() {
   test('branching across two containers', () {
     final a = Provider<A>((ref) => A());
 
-    final b = Provider<B>((ref) => B(), dependencies: const []);
+    final b = Provider<B>(
+      (ref) => B(),
+      dependencies: const [],
+    );
 
-    final c = Provider<C>((ref) {
-      ref.watch(a);
-      ref.watch(b);
-      return C();
-    }, dependencies: [b]);
+    final c = Provider<C>(
+      (ref) {
+        ref.watch(a);
+        ref.watch(b);
+        return C();
+      },
+      dependencies: [b],
+    );
 
     final parent = ProviderContainer.test();
 
@@ -211,7 +220,10 @@ void main() {
     for (final permutation in perm()) {
       final container = ProviderContainer.test();
       permutation.forEach(container.read);
-      expect(compute(container), [a, b, c, d]);
+      expect(
+        compute(container),
+        [a, b, c, d],
+      );
     }
   });
   //  A
@@ -243,7 +255,10 @@ void main() {
     for (final permutation in perm()) {
       final container = ProviderContainer.test();
       permutation.forEach(container.read);
-      expect(compute(container), [a, b, c, d]);
+      expect(
+        compute(container),
+        [a, b, c, d],
+      );
     }
   });
   //     A

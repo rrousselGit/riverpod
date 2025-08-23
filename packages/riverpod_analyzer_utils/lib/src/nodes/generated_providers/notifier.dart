@@ -23,9 +23,8 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
       }
 
       final constructors = members.whereType<ConstructorDeclaration>().toList();
-      final defaultConstructor = constructors.firstWhereOrNull(
-        (constructor) => constructor.name == null,
-      );
+      final defaultConstructor = constructors
+          .firstWhereOrNull((constructor) => constructor.name == null);
       if (defaultConstructor == null && constructors.isNotEmpty) {
         errorReporter(
           RiverpodAnalysisError.ast(
@@ -63,10 +62,8 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
         return null;
       }
 
-      final providerElement = ClassBasedProviderDeclarationElement._parse(
-        element,
-        this,
-      );
+      final providerElement =
+          ClassBasedProviderDeclarationElement._parse(element, this);
       if (providerElement == null) return null;
 
       final hasPersistAnnotation = metadata.any((e) {
@@ -132,9 +129,8 @@ class ClassBasedProviderDeclarationElement
       final riverpodAnnotation = RiverpodAnnotationElement._of(element, from);
       if (riverpodAnnotation == null) return null;
 
-      final buildMethod = element.methods2.firstWhereOrNull(
-        (method) => method.name3 == 'build',
-      );
+      final buildMethod = element.methods2
+          .firstWhereOrNull((method) => method.name3 == 'build');
 
       if (buildMethod == null) {
         errorReporter(

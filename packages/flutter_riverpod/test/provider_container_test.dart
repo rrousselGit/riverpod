@@ -3,9 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('ProviderContainer', () {
-    testWidgets('Does not cause Timer issue when used in widget tests', (
-      tester,
-    ) async {
+    testWidgets('Does not cause Timer issue when used in widget tests',
+        (tester) async {
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(parent: root);
       final provider = Provider((ref) => 0);

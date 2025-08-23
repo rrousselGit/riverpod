@@ -113,9 +113,11 @@ sealed class GeneratorProviderDeclarationElement
   String createdType,
   DartType valueType,
   String exposedType,
-  SupportedCreatedType supportedCreatedType,
-})?
-_computeTypes(DartType buildReturnValue, CompilationUnit unit) {
+  SupportedCreatedType supportedCreatedType
+})? _computeTypes(
+  DartType buildReturnValue,
+  CompilationUnit unit,
+) {
   final valueType = _getValueType(
     buildReturnValue,
     typeProvider: unit.declaredFragment!.element.typeProvider,

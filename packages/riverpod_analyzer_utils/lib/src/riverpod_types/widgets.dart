@@ -19,7 +19,10 @@ const statefulWidgetType = TypeChecker.fromName(
 );
 
 /// [TypeChecker for `ConsumerWidget``
-const stateType = TypeChecker.fromName('State', packageName: 'flutter');
+const stateType = TypeChecker.fromName(
+  'State',
+  packageName: 'flutter',
+);
 
 /// [TypeChecker for `ConsumerWidget``
 const consumerWidgetType = TypeChecker.fromName(

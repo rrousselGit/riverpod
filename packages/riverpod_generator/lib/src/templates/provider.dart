@@ -222,7 +222,8 @@ final class $name$_genericsDefinition
     return ${[
       'other is ${provider.providerTypeName}',
       // If there are type parameters, check the runtimeType to check them too.
-      if (provider.typeParameters?.typeParameters.isNotEmpty ?? false) 'other.runtimeType == runtimeType',
+      if (provider.typeParameters?.typeParameters.isNotEmpty ?? false)
+        'other.runtimeType == runtimeType',
       'other.argument == argument',
     ].join(' && ')};
   }
@@ -240,8 +241,8 @@ final class $name$_genericsDefinition
   void _writeToString(StringBuffer buffer) {
     if (!provider.providerElement.isFamily) return;
 
-    final encodedGenerics =
-        provider.typeParameters?.typeParameters.isEmpty ?? true
+    final encodedGenerics = provider.typeParameters?.typeParameters.isEmpty ??
+            true
         ? ''
         : '<${provider.typeParameters!.typeParameters.map((e) => '\${${e.name}}').join(', ')}>';
 

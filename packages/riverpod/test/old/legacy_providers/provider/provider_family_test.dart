@@ -51,7 +51,10 @@ void main() {
     });
 
     test('can be auto-scoped', () async {
-      final dep = Provider((ref) => 0, dependencies: const []);
+      final dep = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final provider = Provider.family<int, int>(
         (ref, i) => ref.watch(dep) + i,
         dependencies: [dep],

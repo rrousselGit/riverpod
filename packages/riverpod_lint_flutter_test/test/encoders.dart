@@ -52,7 +52,11 @@ String _encodeAnalysisErrors(
   for (final (index, error) in errors.indexed) {
     if (index != 0) buffer.writeln('\n=======\n');
 
-    _writeAnalysisError(buffer, error, relativePath: relativePath);
+    _writeAnalysisError(
+      buffer,
+      error,
+      relativePath: relativePath,
+    );
   }
 
   return buffer.toString();
@@ -111,7 +115,9 @@ void _writeDiagnosticMessage(
   String indent = '',
   required String relativePath,
 }) {
-  buffer.writeln('${indent}message: ${error.messageText(includeUrl: false)}');
+  buffer.writeln(
+    '${indent}message: ${error.messageText(includeUrl: false)}',
+  );
 
   if (error.url case final url?) {
     buffer.writeln('${indent}url: ${url}');
@@ -153,11 +159,9 @@ void _highlight(
 
   final endLine = min(lastChangedLine + trailingCount, lineInfo.lineCount - 1);
 
-  for (
-    var line = max(0, firstChangedLine - leadingCount);
-    line <= endLine;
-    line++
-  ) {
+  for (var line = max(0, firstChangedLine - leadingCount);
+      line <= endLine;
+      line++) {
     final endOfSource = !(line + 1 < lineInfo.lineCount);
 
     final lineContent = source.substring(
@@ -176,7 +180,10 @@ void _highlight(
 
     var endCol = max(lineContent.length, 0);
     if (line == lastChangedLine) {
-      endCol = max(min(end.columnNumber - 1, lineContent.length), startCol);
+      endCol = max(
+        min(end.columnNumber - 1, lineContent.length),
+        startCol,
+      );
     }
 
     buffer.write(lineContent.substring(startCol, endCol));

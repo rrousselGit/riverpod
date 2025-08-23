@@ -20,7 +20,10 @@ extension AstUtils on AstNode {
 
 @internal
 extension ExpandoUtils<NodeT> on Expando<Box<NodeT>> {
-  NodeT upsert(AstNode key, NodeT Function() create) {
+  NodeT upsert(
+    AstNode key,
+    NodeT Function() create,
+  ) {
     // Using a record to differentiate "null value" from "no value".
     final existing = this[key];
     if (existing != null) return existing.value;

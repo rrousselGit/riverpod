@@ -14,15 +14,15 @@ const myProvider = MyNotifierProvider._();
 
 final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   const MyNotifierProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'myProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'myProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$myNotifierHash();
@@ -49,14 +49,8 @@ abstract class _$MyNotifier extends $Notifier<int> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<int, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<int, int>,
-              int,
-              Object?,
-              Object?
-            >;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -67,15 +61,15 @@ const _privateClassProvider = _PrivateClassProvider._();
 final class _PrivateClassProvider
     extends $NotifierProvider<_PrivateClass, String> {
   const _PrivateClassProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'_privateClassProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'_privateClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$_privateClassHash();
@@ -102,14 +96,8 @@ abstract class _$PrivateClass extends $Notifier<String> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<String, String>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<String, String>,
-              String,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -120,14 +108,14 @@ const genericsProvider = GenericsFamily._();
 final class GenericsProvider<A extends num, B>
     extends $NotifierProvider<Generics<A, B>, int> {
   const GenericsProvider._({required GenericsFamily super.from})
-    : super(
-        argument: null,
-        retry: null,
-        name: r'genericsProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          argument: null,
+          retry: null,
+          name: r'genericsProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$genericsHash();
@@ -172,13 +160,13 @@ String _$genericsHash() => r'0a1bf00e0610ccb1fb5615460e1bc4afb2555f69';
 
 final class GenericsFamily extends $Family {
   const GenericsFamily._()
-    : super(
-        retry: null,
-        name: r'genericsProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'genericsProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
   GenericsProvider<A, B> call<A extends num, B>() =>
       GenericsProvider<A, B>._(from: this);
@@ -189,31 +177,32 @@ final class GenericsFamily extends $Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(Generics<A, B> Function<A extends num, B>() create) =>
       $FamilyOverride(
-        from: this,
-        createElement: (pointer) {
-          final provider = pointer.origin as GenericsProvider;
-          return provider._captureGenerics(<A extends num, B>() {
-            provider as GenericsProvider<A, B>;
-            return provider.$view(create: create<A, B>).$createElement(pointer);
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as GenericsProvider;
+            return provider._captureGenerics(<A extends num, B>() {
+              provider as GenericsProvider<A, B>;
+              return provider
+                  .$view(create: create<A, B>)
+                  .$createElement(pointer);
+            });
           });
-        },
-      );
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function<A extends num, B>(Ref ref, Generics<A, B> notifier) build,
-  ) => $FamilyOverride(
-    from: this,
-    createElement: (pointer) {
-      final provider = pointer.origin as GenericsProvider;
-      return provider._captureGenerics(<A extends num, B>() {
-        provider as GenericsProvider<A, B>;
-        return provider
-            .$view(runNotifierBuildOverride: build<A, B>)
-            .$createElement(pointer);
-      });
-    },
-  );
+          int Function<A extends num, B>(Ref ref, Generics<A, B> notifier)
+              build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as GenericsProvider;
+            return provider._captureGenerics(<A extends num, B>() {
+              provider as GenericsProvider<A, B>;
+              return provider
+                  .$view(runNotifierBuildOverride: build<A, B>)
+                  .$createElement(pointer);
+            });
+          });
 }
 
 abstract class _$Generics<A extends num, B> extends $Notifier<int> {
@@ -223,14 +212,8 @@ abstract class _$Generics<A extends num, B> extends $Notifier<int> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<int, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<int, int>,
-              int,
-              Object?,
-              Object?
-            >;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -241,14 +224,14 @@ const noGenericsProvider = NoGenericsFamily._();
 final class NoGenericsProvider<A extends num, B>
     extends $NotifierProvider<NoGenerics<A, B>, int> {
   const NoGenericsProvider._({required NoGenericsFamily super.from})
-    : super(
-        argument: null,
-        retry: null,
-        name: r'noGenericsProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          argument: null,
+          retry: null,
+          name: r'noGenericsProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$noGenericsHash();
@@ -293,13 +276,13 @@ String _$noGenericsHash() => r'30d5d20092f43cb17ede1f619773757df7cecb30';
 
 final class NoGenericsFamily extends $Family {
   const NoGenericsFamily._()
-    : super(
-        retry: null,
-        name: r'noGenericsProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'noGenericsProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
   NoGenericsProvider<A, B> call<A extends num, B>() =>
       NoGenericsProvider<A, B>._(from: this);
@@ -310,31 +293,32 @@ final class NoGenericsFamily extends $Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(NoGenerics<A, B> Function<A extends num, B>() create) =>
       $FamilyOverride(
-        from: this,
-        createElement: (pointer) {
-          final provider = pointer.origin as NoGenericsProvider;
-          return provider._captureGenerics(<A extends num, B>() {
-            provider as NoGenericsProvider<A, B>;
-            return provider.$view(create: create<A, B>).$createElement(pointer);
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as NoGenericsProvider;
+            return provider._captureGenerics(<A extends num, B>() {
+              provider as NoGenericsProvider<A, B>;
+              return provider
+                  .$view(create: create<A, B>)
+                  .$createElement(pointer);
+            });
           });
-        },
-      );
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function<A extends num, B>(Ref ref, NoGenerics<A, B> notifier) build,
-  ) => $FamilyOverride(
-    from: this,
-    createElement: (pointer) {
-      final provider = pointer.origin as NoGenericsProvider;
-      return provider._captureGenerics(<A extends num, B>() {
-        provider as NoGenericsProvider<A, B>;
-        return provider
-            .$view(runNotifierBuildOverride: build<A, B>)
-            .$createElement(pointer);
-      });
-    },
-  );
+          int Function<A extends num, B>(Ref ref, NoGenerics<A, B> notifier)
+              build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as NoGenericsProvider;
+            return provider._captureGenerics(<A extends num, B>() {
+              provider as NoGenericsProvider<A, B>;
+              return provider
+                  .$view(runNotifierBuildOverride: build<A, B>)
+                  .$createElement(pointer);
+            });
+          });
 }
 
 abstract class _$NoGenerics<A extends num, B> extends $Notifier<int> {
@@ -344,14 +328,8 @@ abstract class _$NoGenerics<A extends num, B> extends $Notifier<int> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<int, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<int, int>,
-              int,
-              Object?,
-              Object?
-            >;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -362,14 +340,14 @@ const missingGenericsProvider = MissingGenericsFamily._();
 final class MissingGenericsProvider<A, B>
     extends $NotifierProvider<MissingGenerics<A, B>, int> {
   const MissingGenericsProvider._({required MissingGenericsFamily super.from})
-    : super(
-        argument: null,
-        retry: null,
-        name: r'missingGenericsProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          argument: null,
+          retry: null,
+          name: r'missingGenericsProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$missingGenericsHash();
@@ -414,13 +392,13 @@ String _$missingGenericsHash() => r'b611c76d5fb87fdde78b5fc017912e0569762c23';
 
 final class MissingGenericsFamily extends $Family {
   const MissingGenericsFamily._()
-    : super(
-        retry: null,
-        name: r'missingGenericsProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'missingGenericsProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
   MissingGenericsProvider<A, B> call<A, B>() =>
       MissingGenericsProvider<A, B>._(from: this);
@@ -431,31 +409,31 @@ final class MissingGenericsFamily extends $Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(MissingGenerics<A, B> Function<A, B>() create) =>
       $FamilyOverride(
-        from: this,
-        createElement: (pointer) {
-          final provider = pointer.origin as MissingGenericsProvider;
-          return provider._captureGenerics(<A, B>() {
-            provider as MissingGenericsProvider<A, B>;
-            return provider.$view(create: create<A, B>).$createElement(pointer);
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as MissingGenericsProvider;
+            return provider._captureGenerics(<A, B>() {
+              provider as MissingGenericsProvider<A, B>;
+              return provider
+                  .$view(create: create<A, B>)
+                  .$createElement(pointer);
+            });
           });
-        },
-      );
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function<A, B>(Ref ref, MissingGenerics<A, B> notifier) build,
-  ) => $FamilyOverride(
-    from: this,
-    createElement: (pointer) {
-      final provider = pointer.origin as MissingGenericsProvider;
-      return provider._captureGenerics(<A, B>() {
-        provider as MissingGenericsProvider<A, B>;
-        return provider
-            .$view(runNotifierBuildOverride: build<A, B>)
-            .$createElement(pointer);
-      });
-    },
-  );
+          int Function<A, B>(Ref ref, MissingGenerics<A, B> notifier) build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as MissingGenericsProvider;
+            return provider._captureGenerics(<A, B>() {
+              provider as MissingGenericsProvider<A, B>;
+              return provider
+                  .$view(runNotifierBuildOverride: build<A, B>)
+                  .$createElement(pointer);
+            });
+          });
 }
 
 abstract class _$MissingGenerics<A, B> extends $Notifier<int> {
@@ -465,14 +443,8 @@ abstract class _$MissingGenerics<A, B> extends $Notifier<int> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<int, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<int, int>,
-              int,
-              Object?,
-              Object?
-            >;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -483,14 +455,14 @@ const wrongOrderProvider = WrongOrderFamily._();
 final class WrongOrderProvider<A, B>
     extends $NotifierProvider<WrongOrder<A, B>, int> {
   const WrongOrderProvider._({required WrongOrderFamily super.from})
-    : super(
-        argument: null,
-        retry: null,
-        name: r'wrongOrderProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          argument: null,
+          retry: null,
+          name: r'wrongOrderProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$wrongOrderHash();
@@ -535,13 +507,13 @@ String _$wrongOrderHash() => r'7757670a2f67406ebc96c87edf088deb9cb248a1';
 
 final class WrongOrderFamily extends $Family {
   const WrongOrderFamily._()
-    : super(
-        retry: null,
-        name: r'wrongOrderProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
+      : super(
+          retry: null,
+          name: r'wrongOrderProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
   WrongOrderProvider<A, B> call<A, B>() =>
       WrongOrderProvider<A, B>._(from: this);
@@ -552,31 +524,31 @@ final class WrongOrderFamily extends $Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(WrongOrder<A, B> Function<A, B>() create) =>
       $FamilyOverride(
-        from: this,
-        createElement: (pointer) {
-          final provider = pointer.origin as WrongOrderProvider;
-          return provider._captureGenerics(<A, B>() {
-            provider as WrongOrderProvider<A, B>;
-            return provider.$view(create: create<A, B>).$createElement(pointer);
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as WrongOrderProvider;
+            return provider._captureGenerics(<A, B>() {
+              provider as WrongOrderProvider<A, B>;
+              return provider
+                  .$view(create: create<A, B>)
+                  .$createElement(pointer);
+            });
           });
-        },
-      );
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function<A, B>(Ref ref, WrongOrder<A, B> notifier) build,
-  ) => $FamilyOverride(
-    from: this,
-    createElement: (pointer) {
-      final provider = pointer.origin as WrongOrderProvider;
-      return provider._captureGenerics(<A, B>() {
-        provider as WrongOrderProvider<A, B>;
-        return provider
-            .$view(runNotifierBuildOverride: build<A, B>)
-            .$createElement(pointer);
-      });
-    },
-  );
+          int Function<A, B>(Ref ref, WrongOrder<A, B> notifier) build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as WrongOrderProvider;
+            return provider._captureGenerics(<A, B>() {
+              provider as WrongOrderProvider<A, B>;
+              return provider
+                  .$view(runNotifierBuildOverride: build<A, B>)
+                  .$createElement(pointer);
+            });
+          });
 }
 
 abstract class _$WrongOrder<A, B> extends $Notifier<int> {
@@ -586,14 +558,8 @@ abstract class _$WrongOrder<A, B> extends $Notifier<int> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<int, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<int, int>,
-              int,
-              Object?,
-              Object?
-            >;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }

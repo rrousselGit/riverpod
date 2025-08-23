@@ -40,15 +40,18 @@ class NotifierTemplate extends Template {
     final _$args = 'late final _\$args = ref.\$arg${provider.argumentCast};';
 
     var paramOffset = 0;
-    final parametersAsFields = provider.parameters.map((p) {
-      final metadata = p.metadata.isNotEmpty
-          ? '${p.metadata.map((e) => e.toSource()).join(' ')} '
-          : '';
-      return '${p.doc} $metadata ${p.typeDisplayString} get ${p.name!.lexeme} => ${switch (provider.parameters) {
-        [_] => r'_$args;',
-        _ => '_\$args.${p.isPositional ? '\$${++paramOffset}' : p.name!.lexeme};',
-      }}';
-    }).join();
+    final parametersAsFields = provider.parameters.map(
+      (p) {
+        final metadata = p.metadata.isNotEmpty
+            ? '${p.metadata.map((e) => e.toSource()).join(' ')} '
+            : '';
+        return '${p.doc} $metadata ${p.typeDisplayString} get ${p.name!.lexeme} => ${switch (provider.parameters) {
+          [_] => r'_$args;',
+          _ =>
+            '_\$args.${p.isPositional ? '\$${++paramOffset}' : p.name!.lexeme};',
+        }}';
+      },
+    ).join();
 
     buffer.writeln('''
 ${provider.doc}
@@ -64,9 +67,8 @@ abstract class $notifierBaseName$genericsDefinition extends $baseClass {
         ? ''
         : 'final created = ';
 
-    final buildVarUsage = provider.providerElement.valueTypeNode is VoidType
-        ? 'null'
-        : 'created';
+    final buildVarUsage =
+        provider.providerElement.valueTypeNode is VoidType ? 'null' : 'created';
 
     buffer.writeln('''
   @\$mustCallSuper

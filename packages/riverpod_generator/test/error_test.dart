@@ -49,10 +49,9 @@ class MyNotifier extends _$MyNotifier {
         );
       });
 
-      test(
-        'should throw if the default constructor has required parameters',
-        () async {
-          const source = r'''
+      test('should throw if the default constructor has required parameters',
+          () async {
+        const source = r'''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 @riverpod
@@ -64,12 +63,11 @@ class MyNotifier extends _$MyNotifier {
 }
 ''';
 
-          await expectLater(
-            () => compile(source),
-            throwsA(isA<InvalidGenerationSourceError>()),
-          );
-        },
-      );
+        await expectLater(
+          () => compile(source),
+          throwsA(isA<InvalidGenerationSourceError>()),
+        );
+      });
     });
 
     group('without arguments', () {
@@ -120,9 +118,8 @@ Future<String> compile(String source) async {
     configUri,
   );
 
-  final riverpodAnnotation = config.packages
-      .where((e) => e.name == 'riverpod_annotation')
-      .firstOrNull;
+  final riverpodAnnotation =
+      config.packages.where((e) => e.name == 'riverpod_annotation').firstOrNull;
 
   if (riverpodAnnotation == null) {
     throw Exception(
@@ -131,8 +128,7 @@ Future<String> compile(String source) async {
   }
 
   final main = createTmpFile('lib/main.dart')..writeAsStringSync(source);
-  final pubspec = createTmpFile('pubspec.yaml')
-    ..writeAsStringSync('''
+  final pubspec = createTmpFile('pubspec.yaml')..writeAsStringSync('''
 name: test_app
 
 environment:
@@ -156,10 +152,11 @@ dependency_overrides:
 }
 
 Future<void> runPubGet(Directory parent) async {
-  final process = await Process.start('dart', [
-    'pub',
-    'get',
-  ], workingDirectory: parent.path);
+  final process = await Process.start(
+    'dart',
+    ['pub', 'get'],
+    workingDirectory: parent.path,
+  );
 
   final exitCode = await process.exitCode;
   if (exitCode != 0) {

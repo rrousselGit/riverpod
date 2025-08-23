@@ -14,9 +14,9 @@ extension ProviderScopeInstanceCreationExpressionX
         return null;
       }
 
-      final overrides = argumentList.namedArguments().firstWhereOrNull(
-        (e) => e.name.label.name == 'overrides',
-      );
+      final overrides = argumentList
+          .namedArguments()
+          .firstWhereOrNull((e) => e.name.label.name == 'overrides');
 
       return ProviderScopeInstanceCreationExpression._(
         node: this,

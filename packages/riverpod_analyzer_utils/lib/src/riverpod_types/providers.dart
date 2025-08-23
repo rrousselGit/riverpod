@@ -25,4 +25,7 @@ const anyAsyncNotifierProviderType = TypeChecker.any([
 ]);
 
 /// Either Provider or AutoDisposeProvider
-const providerType = TypeChecker.fromName('Provider', packageName: 'riverpod');
+const providerType = TypeChecker.fromName(
+  'Provider',
+  packageName: 'riverpod',
+);

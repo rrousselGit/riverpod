@@ -62,8 +62,7 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
     _LocatedProvider provider,
     AccumulatedDependencyList list, {
     required bool checkOverrides,
-  })
-  onProvider;
+  }) onProvider;
 
   _FindNestedDependency copyWith({
     AccumulatedDependencyList? accumulatedDependencyList,
@@ -126,7 +125,11 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
 
   @override
   void visitAccumulatedDependencyList(AccumulatedDependencyList node) {
-    node.node.visitChildren(copyWith(accumulatedDependencyList: node));
+    node.node.visitChildren(
+      copyWith(
+        accumulatedDependencyList: node,
+      ),
+    );
   }
 
   @override
@@ -177,7 +180,10 @@ class _FindNestedDependency extends RecursiveRiverpodAstVisitor {
 }
 
 class _Data {
-  _Data({required this.list, required this.usedDependencies});
+  _Data({
+    required this.list,
+    required this.usedDependencies,
+  });
 
   final AccumulatedDependencyList list;
   final List<_LocatedProvider> usedDependencies;
@@ -248,9 +254,8 @@ class ProviderDependencies extends RiverpodLintRule {
       final missingDependencies = usedDependencies
           .where(
             (dependency) =>
-                list.allDependencies?.every(
-                  (e) => e.provider != dependency.provider,
-                ) ??
+                list.allDependencies
+                    ?.every((e) => e.provider != dependency.provider) ??
                 true,
           )
           .toSet();
@@ -309,9 +314,8 @@ class _ProviderDependenciesFix extends RiverpodFix {
     final data = analysisError.data;
     if (data is! _Data) return;
 
-    final scopedDependencies = data.usedDependencies
-        .map((e) => e.provider)
-        .toSet();
+    final scopedDependencies =
+        data.usedDependencies.map((e) => e.provider).toSet();
     final newDependencies = scopedDependencies.isEmpty
         ? null
         : '[${scopedDependencies.map((e) => e.name).join(', ')}]';
@@ -341,8 +345,7 @@ class _ProviderDependenciesFix extends RiverpodFix {
       return;
     }
 
-    final dependencyList =
-        data.list.riverpod?.annotation.dependencyList ??
+    final dependencyList = data.list.riverpod?.annotation.dependencyList ??
         data.list.dependencies?.dependencies;
 
     if (dependencyList == null) {
@@ -400,7 +403,10 @@ class _ProviderDependenciesFix extends RiverpodFix {
       // Only "dependencies" is specified in the annotation.
       // So instead of @Riverpod(dependencies: []) -> @Riverpod(),
       // we can do @Riverpod(dependencies: []) -> @riverpod
-      builder.addSimpleReplacement(riverpod.node.sourceRange, '@$_riverpod');
+      builder.addSimpleReplacement(
+        riverpod.node.sourceRange,
+        '@$_riverpod',
+      );
       return;
     }
 
@@ -431,8 +437,7 @@ class _ProviderDependenciesFix extends RiverpodFix {
       // Argument list found, we are using the @Riverpod() annotation
 
       // We want to insert the "dependencies" parameter after the last
-      final insertOffset =
-          annotationArguments.arguments.lastOrNull?.end ??
+      final insertOffset = annotationArguments.arguments.lastOrNull?.end ??
           annotationArguments.leftParenthesis.end;
 
       builder.addSimpleInsertion(

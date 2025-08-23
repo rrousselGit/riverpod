@@ -34,21 +34,16 @@ void main() {
           dependencies: const [],
         );
         final root = ProviderContainer.test();
-        final container = ProviderContainer.test(
-          parent: root,
-          overrides: [provider],
-        );
+        final container =
+            ProviderContainer.test(parent: root, overrides: [provider]);
 
         expect(container.read(provider(0).notifier).value, 0);
         expect(container.read(provider(0)).value, 0);
         expect(
           container.getAllProviderElementsInOrder(),
           unorderedEquals(<Object?>[
-            isA<ProviderElement>().having(
-              (e) => e.origin,
-              'origin',
-              provider(0),
-            ),
+            isA<ProviderElement>()
+                .having((e) => e.origin, 'origin', provider(0)),
           ]),
         );
         expect(root.getAllProviderElementsInOrder(), isEmpty);
@@ -81,7 +76,9 @@ void main() {
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
         parent: root,
-        overrides: [provider.overrideWith((ref, value) => ValueNotifier(42))],
+        overrides: [
+          provider.overrideWith((ref, value) => ValueNotifier(42)),
+        ],
       );
 
       expect(container.read(provider(0).notifier).value, 42);
@@ -96,10 +93,8 @@ void main() {
     });
 
     test('family override', () {
-      final provider = ChangeNotifierProvider.family<ValueNotifier<int>, int>((
-        ref,
-        value,
-      ) {
+      final provider =
+          ChangeNotifierProvider.family<ValueNotifier<int>, int>((ref, value) {
         return ValueNotifier(value);
       });
       final container = ProviderContainer.test(

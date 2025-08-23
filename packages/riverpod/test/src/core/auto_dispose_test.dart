@@ -7,43 +7,41 @@ import 'provider_container_test.dart';
 
 void main() {
   group('AutoDispose', () {
-    test(
-      'Supports clearing the state of elements with only weak listeners',
-      () async {
-        final container = ProviderContainer.test();
-        final onDispose = OnDisposeMock();
-        var buildCount = 0;
-        final provider = Provider.autoDispose((ref) {
-          buildCount++;
-          ref.onDispose(onDispose.call);
-          return 0;
-        });
+    test('Supports clearing the state of elements with only weak listeners',
+        () async {
+      final container = ProviderContainer.test();
+      final onDispose = OnDisposeMock();
+      var buildCount = 0;
+      final provider = Provider.autoDispose((ref) {
+        buildCount++;
+        ref.onDispose(onDispose.call);
+        return 0;
+      });
 
-        final element = container.readProviderElement(provider);
+      final element = container.readProviderElement(provider);
 
-        final sub = container.listen(
-          provider,
-          weak: true,
-          (previous, value) {},
-        );
+      final sub = container.listen(
+        provider,
+        weak: true,
+        (previous, value) {},
+      );
 
-        expect(sub.read(), 0);
-        expect(buildCount, 1);
-        verifyZeroInteractions(onDispose);
+      expect(sub.read(), 0);
+      expect(buildCount, 1);
+      verifyZeroInteractions(onDispose);
 
-        await container.pump();
+      await container.pump();
 
-        verifyOnly(onDispose, onDispose());
+      verifyOnly(onDispose, onDispose());
 
-        expect(buildCount, 1);
-        expect(container.readProviderElement(provider), same(element));
-        expect(element.stateResult(), null);
+      expect(buildCount, 1);
+      expect(container.readProviderElement(provider), same(element));
+      expect(element.stateResult(), null);
 
-        expect(sub.read(), 0);
-        expect(element.stateResult(), $ResultData(0));
-        expect(buildCount, 2);
-      },
-    );
+      expect(sub.read(), 0);
+      expect(element.stateResult(), $ResultData(0));
+      expect(buildCount, 2);
+    });
 
     test('supports disposing of overridden families', () async {
       // Regression test for https://github.com/rrousselGit/riverpod/issues/2480
@@ -71,12 +69,16 @@ void main() {
       expect(container.pointerManager.readPointer(provider(0)), isNull);
     });
 
-    test('When a non-overridden autoDispose provider is disposed '
+    test(
+        'When a non-overridden autoDispose provider is disposed '
         'and the associated ProviderContainer has a child ProviderContainer which overrides said provider, '
         'the child container keeps its override', () async {
-      // Regression test for https://github.com/rrousselGit/riverpod/issues/1519
+// Regression test for https://github.com/rrousselGit/riverpod/issues/1519
 
-      final provider = Provider.autoDispose((ref) => 0, dependencies: const []);
+      final provider = Provider.autoDispose(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final root = ProviderContainer.test();
       final child = ProviderContainer.test(
         parent: root,
@@ -93,7 +95,10 @@ void main() {
 
       await root.pump();
 
-      expect(root.pointerManager.readPointer(provider), isNull);
+      expect(
+        root.pointerManager.readPointer(provider),
+        isNull,
+      );
 
       expect(
         child.pointerManager.readPointer(provider),
@@ -103,56 +108,60 @@ void main() {
 
     group('on unused providers', () {
       test(
-        'cleans up the pointers of a provider in the entire ProviderContainer tree',
-        () async {
-          final unrelated = Provider((_) => 42, dependencies: const []);
-          // Regression test for https://github.com/rrousselGit/riverpod/issues/1943
-          final a = ProviderContainer.test();
-          // b/c voluntarily do not use the Provider, but a/d do. This is to test
-          // that the disposal logic correctly cleans up the StateReaders
-          // in all ProviderContainers associated with the provider, even if
-          // some links between two ProviderContainers are not using the provider.
-          final b = ProviderContainer.test(parent: a, overrides: [unrelated]);
-          final c = ProviderContainer.test(parent: b, overrides: [unrelated]);
-          final d = ProviderContainer.test(parent: c, overrides: [unrelated]);
+          'cleans up the pointers of a provider in the entire ProviderContainer tree',
+          () async {
+        final unrelated = Provider((_) => 42, dependencies: const []);
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/1943
+        final a = ProviderContainer.test();
+        // b/c voluntarily do not use the Provider, but a/d do. This is to test
+        // that the disposal logic correctly cleans up the StateReaders
+        // in all ProviderContainers associated with the provider, even if
+        // some links between two ProviderContainers are not using the provider.
+        final b = ProviderContainer.test(parent: a, overrides: [unrelated]);
+        final c = ProviderContainer.test(parent: b, overrides: [unrelated]);
+        final d = ProviderContainer.test(parent: c, overrides: [unrelated]);
 
-          final provider = Provider.autoDispose((ref) => 3);
+        final provider = Provider.autoDispose((ref) => 3);
 
-          final subscription = d.listen(
-            provider,
-            (previous, next) {},
-            fireImmediately: true,
-          );
+        final subscription = d.listen(
+          provider,
+          (previous, next) {},
+          fireImmediately: true,
+        );
 
-          expect(a.pointerManager.readPointer(provider), isNotNull);
-          expect(b.pointerManager.readPointer(provider), isNull);
-          expect(c.pointerManager.readPointer(provider), isNull);
-          expect(d.pointerManager.readPointer(provider), isNotNull);
+        expect(a.pointerManager.readPointer(provider), isNotNull);
+        expect(b.pointerManager.readPointer(provider), isNull);
+        expect(c.pointerManager.readPointer(provider), isNull);
+        expect(d.pointerManager.readPointer(provider), isNotNull);
 
-          subscription.close();
+        subscription.close();
 
-          expect(a.pointerManager.readPointer(provider), isNotNull);
-          expect(b.pointerManager.readPointer(provider), isNull);
-          expect(c.pointerManager.readPointer(provider), isNull);
-          expect(d.pointerManager.readPointer(provider), isNotNull);
+        expect(a.pointerManager.readPointer(provider), isNotNull);
+        expect(b.pointerManager.readPointer(provider), isNull);
+        expect(c.pointerManager.readPointer(provider), isNull);
+        expect(d.pointerManager.readPointer(provider), isNotNull);
 
-          await a.pump();
+        await a.pump();
 
-          expect(a.pointerManager.readPointer(provider), isNull);
-          expect(b.pointerManager.readPointer(provider), isNull);
-          expect(c.pointerManager.readPointer(provider), isNull);
-          expect(d.pointerManager.readPointer(provider), isNull);
+        expect(a.pointerManager.readPointer(provider), isNull);
+        expect(b.pointerManager.readPointer(provider), isNull);
+        expect(c.pointerManager.readPointer(provider), isNull);
+        expect(d.pointerManager.readPointer(provider), isNull);
 
-          d.listen(provider, (previous, next) {}, fireImmediately: true);
+        d.listen(
+          provider,
+          (previous, next) {},
+          fireImmediately: true,
+        );
 
-          expect(a.pointerManager.readPointer(provider), isNotNull);
-          expect(b.pointerManager.readPointer(provider), isNull);
-          expect(c.pointerManager.readPointer(provider), isNull);
-          expect(d.pointerManager.readPointer(provider), isNotNull);
-        },
-      );
+        expect(a.pointerManager.readPointer(provider), isNotNull);
+        expect(b.pointerManager.readPointer(provider), isNull);
+        expect(c.pointerManager.readPointer(provider), isNull);
+        expect(d.pointerManager.readPointer(provider), isNotNull);
+      });
 
-      test('if a dependency changed, the element is still disposed, '
+      test(
+          'if a dependency changed, the element is still disposed, '
           'but without calling ref.onDispose again', () async {
         final container = ProviderContainer.test();
         final onDispose = OnDisposeMock();
@@ -166,7 +175,10 @@ void main() {
         verifyZeroInteractions(onDispose);
         container.read(dep.notifier).state++;
 
-        expect(container.pointerManager.readPointer(provider), isNotNull);
+        expect(
+          container.pointerManager.readPointer(provider),
+          isNotNull,
+        );
 
         await container.pump();
 

@@ -14,8 +14,14 @@ extension<BoxedT> on (BoxedT,)? {
 }
 
 extension<ValueT> on _DataRecord<ValueT> {
-  _DataRecord<ValueT> copyWith({(_DataSource?,)? source}) {
-    return ($1, kind: kind, source: source.unwrapSentinel(this.source));
+  _DataRecord<ValueT> copyWith({
+    (_DataSource?,)? source,
+  }) {
+    return (
+      $1,
+      kind: kind,
+      source: source.unwrapSentinel(this.source),
+    );
   }
 }
 
@@ -127,7 +133,11 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
   /// Note that an [AsyncData] may still be in loading/error state, such
   /// as during a pull-to-refresh.
   AsyncData<ValueT>? get asData {
-    return map(data: (d) => d, error: (e) => null, loading: (l) => null);
+    return map(
+      data: (d) => d,
+      error: (e) => null,
+      loading: (l) => null,
+    );
   }
 
   /// Upcast [AsyncValue] into an [AsyncError], or return null if the [AsyncValue]
@@ -135,8 +145,11 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
   ///
   /// Note that an [AsyncError] may still be in loading state, such
   /// as during a pull-to-refresh.
-  AsyncError<ValueT>? get asError =>
-      map(data: (_) => null, error: (e) => e, loading: (_) => null);
+  AsyncError<ValueT>? get asError => map(
+        data: (_) => null,
+        error: (e) => e,
+        loading: (_) => null,
+      );
 
   /// Perform some action based on the current state of the [AsyncValue].
   ///
@@ -179,7 +192,11 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
           );
         }
       },
-      error: (e) => AsyncError._(e._error, loading: e._loading, value: null),
+      error: (e) => AsyncError._(
+        e._error,
+        loading: e._loading,
+        value: null,
+      ),
       loading: (l) => AsyncLoading<NewT>(progress: progress),
     );
   }
@@ -331,7 +348,8 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
     final that = this;
     return switch (that) {
       AsyncValue(isLoading: true) ||
-      AsyncLoading() => AsyncLoading<ValueT>(progress: that.progress),
+      AsyncLoading() =>
+        AsyncLoading<ValueT>(progress: that.progress),
       AsyncData() => AsyncData<ValueT>(that.value),
       AsyncError() => AsyncError<ValueT>(that.error, that.stackTrace),
     };
@@ -339,9 +357,15 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
 }
 
 @internal
-enum DataKind { cache, live }
+enum DataKind {
+  cache,
+  live,
+}
 
-enum _DataSource { liveOrRefresh, reload }
+enum _DataSource {
+  liveOrRefresh,
+  reload,
+}
 
 typedef _DataRecord<ValueT> = (ValueT, {DataKind? kind, _DataSource? source});
 typedef _DataFilledRecord<ValueT> = ({
@@ -355,7 +379,9 @@ typedef _ErrorFilledRecord = ({
   StackTrace stackTrace,
   bool retrying,
 });
-typedef _LoadingRecord = ({num? progress});
+typedef _LoadingRecord = ({
+  num? progress,
+});
 
 /// A utility for safely manipulating asynchronous data.
 ///
@@ -635,18 +661,21 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
   /// {@macro async_value.data}
   const AsyncData(
     ValueT value, {
-
     /// @nodoc
     @internal DataKind? kind,
-  }) : this._((value, kind: kind, source: null), loading: null, error: null);
+  }) : this._(
+          (value, kind: kind, source: null),
+          loading: null,
+          error: null,
+        );
 
   const AsyncData._(
     this._value, {
     required _ErrorRecord? error,
     required _LoadingRecord? loading,
-  }) : _loading = loading,
-       _error = error,
-       super._();
+  })  : _loading = loading,
+        _error = error,
+        super._();
 
   @override
   final _LoadingRecord? _loading;
@@ -688,22 +717,22 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
 final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
   /// {@macro async_value.loading}
   const AsyncLoading({num? progress})
-    : _value = null,
-      _loading = (progress: progress),
-      _error = null,
-      assert(
-        progress == null || (progress >= 0 && progress <= 1),
-        'progress must be between 0 and 1',
-      ),
-      super._();
+      : _value = null,
+        _loading = (progress: progress),
+        _error = null,
+        assert(
+          progress == null || (progress >= 0 && progress <= 1),
+          'progress must be between 0 and 1',
+        ),
+        super._();
 
   const AsyncLoading._(
     this._loading, {
     required _DataRecord<ValueT>? value,
     required _ErrorRecord? error,
-  }) : _value = value,
-       _error = error,
-       super._();
+  })  : _value = value,
+        _error = error,
+        super._();
 
   @override
   final _LoadingRecord _loading;
@@ -734,7 +763,9 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
     bool isRefresh = true,
   }) {
     final source = isRefresh ? _DataSource.liveOrRefresh : _DataSource.reload;
-    final previousValue = previous._value?.copyWith(source: (source,));
+    final previousValue = previous._value?.copyWith(
+      source: (source,),
+    );
 
     if (isRefresh) {
       return previous.map(
@@ -778,18 +809,18 @@ final class AsyncError<ValueT> extends AsyncResult<ValueT> {
     StackTrace stackTrace, {
     @internal bool? retrying,
   }) : this._(
-         (err: error, stack: stackTrace, retrying: retrying),
-         loading: null,
-         value: null,
-       );
+          (err: error, stack: stackTrace, retrying: retrying),
+          loading: null,
+          value: null,
+        );
 
   const AsyncError._(
     this._error, {
     required _DataRecord<ValueT>? value,
     required _LoadingRecord? loading,
-  }) : _value = value,
-       _loading = loading,
-       super._();
+  })  : _value = value,
+        _loading = loading,
+        super._();
 
   @override
   final _LoadingRecord? _loading;
@@ -824,6 +855,10 @@ final class AsyncError<ValueT> extends AsyncResult<ValueT> {
     AsyncValue<ValueT> previous, {
     bool isRefresh = true,
   }) {
-    return AsyncError._(_error, loading: _loading, value: previous._value);
+    return AsyncError._(
+      _error,
+      loading: _loading,
+      value: previous._value,
+    );
   }
 }

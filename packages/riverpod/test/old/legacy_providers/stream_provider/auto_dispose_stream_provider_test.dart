@@ -14,7 +14,10 @@ import '../../utils.dart';
 void main() {
   group('StreamProvider.autoDispose', () {
     test('can be auto-scoped', () async {
-      final dep = Provider((ref) => 0, dependencies: const []);
+      final dep = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final provider = StreamProvider.autoDispose(
         (ref) => Stream.value(ref.watch(dep)),
         dependencies: [dep],
@@ -34,49 +37,57 @@ void main() {
     });
 
     test(
-      'when going from AsyncLoading to AsyncLoading, does not notify listeners',
-      () async {
-        final dep = StateProvider((ref) => Stream.value(42));
-        final provider = StreamProvider.autoDispose((ref) => ref.watch(dep));
-        final container = ProviderContainer.test();
-        final listener = Listener<AsyncValue<int>>();
-        final controller = StreamController<int>();
-        addTearDown(controller.close);
+        'when going from AsyncLoading to AsyncLoading, does not notify listeners',
+        () async {
+      final dep = StateProvider((ref) => Stream.value(42));
+      final provider = StreamProvider.autoDispose((ref) => ref.watch(dep));
+      final container = ProviderContainer.test();
+      final listener = Listener<AsyncValue<int>>();
+      final controller = StreamController<int>();
+      addTearDown(controller.close);
 
-        container.listen(provider, (prev, value) {});
+      container.listen(provider, (prev, value) {});
 
-        await expectLater(container.read(provider.future), completion(42));
-        expect(container.read(provider), const AsyncData<int>(42));
+      await expectLater(
+        container.read(provider.future),
+        completion(42),
+      );
+      expect(
+        container.read(provider),
+        const AsyncData<int>(42),
+      );
 
-        container.read(dep.notifier).state = controller.stream;
-        container.listen(provider, listener.call, fireImmediately: true);
+      container.read(dep.notifier).state = controller.stream;
+      container.listen(provider, listener.call, fireImmediately: true);
 
-        verifyOnly(
-          listener,
-          listener(
-            null,
-            const AsyncLoading<int>().copyWithPrevious(
-              const AsyncData(42),
-              isRefresh: false,
-            ),
-          ),
-        );
+      verifyOnly(
+        listener,
+        listener(
+          null,
+          const AsyncLoading<int>()
+              .copyWithPrevious(const AsyncData(42), isRefresh: false),
+        ),
+      );
 
-        container.read(dep.notifier).state = Stream.value(21);
+      container.read(dep.notifier).state = Stream.value(21);
 
-        verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener);
 
-        await expectLater(container.read(provider.future), completion(21));
-        expect(container.read(provider), const AsyncData<int>(21));
-      },
-    );
+      await expectLater(
+        container.read(provider.future),
+        completion(21),
+      );
+      expect(
+        container.read(provider),
+        const AsyncData<int>(21),
+      );
+    });
 
     test('can be refreshed', () async {
       var result = 0;
       final container = ProviderContainer.test();
-      final provider = StreamProvider.autoDispose(
-        (ref) => Stream.value(result),
-      );
+      final provider =
+          StreamProvider.autoDispose((ref) => Stream.value(result));
 
       container.listen(provider, (_, __) {});
 
@@ -86,62 +97,60 @@ void main() {
       result = 1;
       expect(
         container.refresh(provider),
-        const AsyncLoading<int>().copyWithPrevious(
-          const AsyncValue<int>.data(0),
-        ),
+        const AsyncLoading<int>()
+            .copyWithPrevious(const AsyncValue<int>.data(0)),
       );
 
       expect(await container.read(provider.future), 1);
       expect(container.read(provider), const AsyncValue.data(1));
     });
 
-    test(
-      'does not update dependents if the created stream did not change',
-      () async {
-        final container = ProviderContainer.test();
-        final dep = StateProvider((ref) => 0);
-        final provider = StreamProvider.autoDispose((ref) {
-          ref.watch(dep);
-          return const Stream<int>.empty();
-        });
-        final listener = Listener<AsyncValue<int>>();
+    test('does not update dependents if the created stream did not change',
+        () async {
+      final container = ProviderContainer.test();
+      final dep = StateProvider((ref) => 0);
+      final provider = StreamProvider.autoDispose((ref) {
+        ref.watch(dep);
+        return const Stream<int>.empty();
+      });
+      final listener = Listener<AsyncValue<int>>();
 
-        container.listen(provider, listener.call, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
 
-        verifyOnly(listener, listener(null, const AsyncValue.loading()));
+      verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
-        container.read(dep.notifier).state++;
-        await container.pump();
+      container.read(dep.notifier).state++;
+      await container.pump();
 
-        verifyNoMoreInteractions(listener);
-      },
-    );
+      verifyNoMoreInteractions(listener);
+    });
 
     test(
-      '.future does not update dependents if the created future did not change',
-      () async {
-        final container = ProviderContainer.test();
-        final dep = StateProvider((ref) => 0);
-        final provider = StreamProvider.autoDispose((ref) {
-          ref.watch(dep);
-          return const Stream<int>.empty();
-        });
-        final listener = Listener<Future<int>>();
+        '.future does not update dependents if the created future did not change',
+        () async {
+      final container = ProviderContainer.test();
+      final dep = StateProvider((ref) => 0);
+      final provider = StreamProvider.autoDispose((ref) {
+        ref.watch(dep);
+        return const Stream<int>.empty();
+      });
+      final listener = Listener<Future<int>>();
 
-        container.listen(provider.future, listener.call, fireImmediately: true);
+      container.listen(provider.future, listener.call, fireImmediately: true);
 
-        verifyOnly(listener, listener(any, any));
+      verifyOnly(listener, listener(any, any));
 
-        container.read(dep.notifier).state++;
-        await container.pump();
+      container.read(dep.notifier).state++;
+      await container.pump();
 
-        verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener);
 
-        // No value were emitted, so the future will fail. Catching the error to
-        // avoid false positive.
-        unawaited(container.read(provider.future).catchError((Object _) => 0));
-      },
-    );
+      // No value were emitted, so the future will fail. Catching the error to
+      // avoid false positive.
+      unawaited(
+        container.read(provider.future).catchError((Object _) => 0),
+      );
+    });
 
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () async {
@@ -176,7 +185,9 @@ void main() {
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
           parent: root,
-          overrides: [provider.overrideWithValue(const AsyncValue.data(42))],
+          overrides: [
+            provider.overrideWithValue(const AsyncValue.data(42)),
+          ],
         );
 
         expect(await container.read(provider.future), 42);
@@ -198,7 +209,9 @@ void main() {
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
           parent: root,
-          overrides: [provider.overrideWith((ref) => Stream.value(42))],
+          overrides: [
+            provider.overrideWith((ref) => Stream.value(42)),
+          ],
         );
 
         container.listen(provider, (p, n) {});
@@ -225,11 +238,8 @@ void main() {
       final container = ProviderContainer.test();
       final listener = Listener<AsyncValue<int>>();
 
-      final sub = container.listen(
-        provider,
-        listener.call,
-        fireImmediately: true,
-      );
+      final sub =
+          container.listen(provider, listener.call, fireImmediately: true);
 
       verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
@@ -241,7 +251,11 @@ void main() {
 
       stream = Stream.value(21);
 
-      container.listen(provider, listener.call, fireImmediately: true);
+      container.listen(
+        provider,
+        listener.call,
+        fireImmediately: true,
+      );
 
       verifyOnly(listener, listener(null, const AsyncValue.loading()));
 

@@ -38,11 +38,9 @@ void main() {
           .having((e) => e.isSuccess, 'isSuccess', true),
     );
 
-    await mut
-        .run(container, (tsx) async {
-          throw Exception('error');
-        })
-        .catchError((_) {});
+    await mut.run(container, (tsx) async {
+      throw Exception('error');
+    }).catchError((_) {});
 
     expect(
       container.read(mut),

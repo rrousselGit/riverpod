@@ -67,19 +67,13 @@ import '../../internals.dart';
 /// ```
 /// {@endtemplate}
 @publicInLegacy
-final class StateNotifierProvider<
-  //
-  NotifierT extends StateNotifier<ValueT>,
-  ValueT
-> //
-    extends
-        $FunctionalProvider<
-          //
-          ValueT,
-          ValueT,
-          NotifierT
-        >
-    with LegacyProviderMixin<ValueT> {
+final class StateNotifierProvider< //
+        NotifierT extends StateNotifier<ValueT>,
+        ValueT> //
+    extends $FunctionalProvider< //
+        ValueT,
+        ValueT,
+        NotifierT> with LegacyProviderMixin<ValueT> {
   /// {@macro riverpod.state_notifier_provider}
   StateNotifierProvider(
     this._create, {
@@ -88,12 +82,11 @@ final class StateNotifierProvider<
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-         $allTransitiveDependencies: computeAllTransitiveDependencies(
-           dependencies,
-         ),
-         from: null,
-         argument: null,
-       );
+          $allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+        );
 
   /// An implementation detail of Riverpod
   /// @nodoc
@@ -135,10 +128,13 @@ final class StateNotifierProvider<
   /// This may happen if the provider is refreshed or one of its dependencies
   /// has changes.
   Refreshable<NotifierT> get notifier =>
-      ProviderElementProxy<NotifierT, ValueT>(this, (element) {
-        return (element as _StateNotifierProviderElement<NotifierT, ValueT>)
-            ._notifierNotifier;
-      });
+      ProviderElementProxy<NotifierT, ValueT>(
+        this,
+        (element) {
+          return (element as _StateNotifierProviderElement<NotifierT, ValueT>)
+              ._notifierNotifier;
+        },
+      );
 
   /// @nodoc
   @internal
@@ -152,11 +148,8 @@ final class StateNotifierProvider<
 }
 
 /// The element of [StateNotifierProvider].
-class _StateNotifierProviderElement<
-  NotifierT extends StateNotifier<ValueT>,
-  ValueT
->
-    extends $FunctionalProviderElement<ValueT, ValueT, NotifierT>
+class _StateNotifierProviderElement<NotifierT extends StateNotifier<ValueT>,
+        ValueT> extends $FunctionalProviderElement<ValueT, ValueT, NotifierT>
     with SyncProviderElement<ValueT> {
   _StateNotifierProviderElement._(super.pointer);
 
@@ -181,8 +174,8 @@ class _StateNotifierProviderElement<
   @override
   bool updateShouldNotify(ValueT previous, ValueT next) {
     return _notifierNotifier.result!.valueOrProviderException
-    // ignore: invalid_use_of_protected_member
-    .updateShouldNotify(previous, next);
+        // ignore: invalid_use_of_protected_member
+        .updateShouldNotify(previous, next);
   }
 
   @override
@@ -200,7 +193,9 @@ class _StateNotifierProviderElement<
   }
 
   @override
-  void visitListenables(void Function($Observable element) listenableVisitor) {
+  void visitListenables(
+    void Function($Observable element) listenableVisitor,
+  ) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(_notifierNotifier);
   }
@@ -208,19 +203,10 @@ class _StateNotifierProviderElement<
 
 /// The [Family] of [StateNotifierProvider].
 @publicInLegacy
-final class StateNotifierProviderFamily<
-  NotifierT extends StateNotifier<ValueT>,
-  ValueT,
-  ArgT
->
-    extends
-        FunctionalFamily<
-          ValueT,
-          ValueT,
-          ArgT,
-          NotifierT,
-          StateNotifierProvider<NotifierT, ValueT>
-        > {
+final class StateNotifierProviderFamily<NotifierT extends StateNotifier<ValueT>,
+        ValueT, ArgT>
+    extends FunctionalFamily<ValueT, ValueT, ArgT, NotifierT,
+        StateNotifierProvider<NotifierT, ValueT>> {
   /// The [Family] of [StateNotifierProvider].
   /// @nodoc
   @internal
@@ -231,9 +217,8 @@ final class StateNotifierProviderFamily<
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-         providerFactory: StateNotifierProvider.internal,
-         $allTransitiveDependencies: computeAllTransitiveDependencies(
-           dependencies,
-         ),
-       );
+          providerFactory: StateNotifierProvider.internal,
+          $allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+        );
 }

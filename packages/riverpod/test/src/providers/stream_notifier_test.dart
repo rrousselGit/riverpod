@@ -198,7 +198,10 @@ void main() {
 
       container.read(provider);
 
-      expect(container.read(provider2), isA<AsyncError<int>>());
+      expect(
+        container.read(provider2),
+        isA<AsyncError<int>>(),
+      );
     });
 
     test('Cannot properties inside onDispose', () {
@@ -221,7 +224,10 @@ void main() {
 
       container.dispose();
 
-      expect(errors, everyElement(isA<AssertionError>()));
+      expect(
+        errors,
+        everyElement(isA<AssertionError>()),
+      );
     });
 
     test('Using the notifier after dispose throws', () async {
@@ -235,8 +241,14 @@ void main() {
 
       container.dispose();
 
-      expect(() => notifier.state, throwsA(isA<UnmountedRefException>()));
-      expect(() => notifier.future, throwsA(isA<UnmountedRefException>()));
+      expect(
+        () => notifier.state,
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => notifier.future,
+        throwsA(isA<UnmountedRefException>()),
+      );
       expect(
         () => notifier.state = const AsyncData(42),
         throwsA(isA<UnmountedRefException>()),
@@ -249,118 +261,108 @@ void main() {
 
     group('supports AsyncValue transition', () {
       test(
-        'performs seamless copyWithPrevious if triggered by ref.invalidate/ref.refresh',
-        () async {
-          final container = ProviderContainer.test();
-          var count = 0;
-          final provider = factory.simpleTestProvider(
-            (ref, self) => Stream.value(count++),
-          );
+          'performs seamless copyWithPrevious if triggered by ref.invalidate/ref.refresh',
+          () async {
+        final container = ProviderContainer.test();
+        var count = 0;
+        final provider = factory.simpleTestProvider(
+          (ref, self) => Stream.value(count++),
+        );
 
-          container.listen(provider, (previous, next) {});
+        container.listen(provider, (previous, next) {});
 
-          await expectLater(container.read(provider.future), completion(0));
-          expect(container.read(provider), const AsyncData(0));
+        await expectLater(container.read(provider.future), completion(0));
+        expect(container.read(provider), const AsyncData(0));
 
-          expect(
-            container.refresh(provider),
-            const AsyncLoading<int>().copyWithPrevious(const AsyncData(0)),
-          );
+        expect(
+          container.refresh(provider),
+          const AsyncLoading<int>().copyWithPrevious(const AsyncData(0)),
+        );
 
-          await expectLater(container.read(provider.future), completion(1));
-          expect(container.read(provider), const AsyncData(1));
+        await expectLater(container.read(provider.future), completion(1));
+        expect(container.read(provider), const AsyncData(1));
 
-          container.invalidate(provider);
+        container.invalidate(provider);
 
-          expect(
-            container.read(provider),
-            const AsyncLoading<int>().copyWithPrevious(const AsyncData(1)),
-          );
-          await expectLater(container.read(provider.future), completion(2));
-          expect(container.read(provider), const AsyncData(2));
-        },
-      );
-
-      test(
-        'performs seamless:false copyWithPrevious on `state = AsyncLoading()`',
-        () async {
-          final container = ProviderContainer.test();
-          final provider = factory.simpleTestProvider(
-            (ref, self) => Stream.value(0),
-          );
-
-          final sub = container.listen(provider.notifier, (previous, next) {});
-
-          await expectLater(container.read(provider.future), completion(0));
-          expect(container.read(provider), const AsyncData(0));
-
-          sub.read().state = const AsyncLoading<int>();
-
-          expect(
-            sub.read().state,
-            const AsyncLoading<int>().copyWithPrevious(
-              const AsyncData(0),
-              isRefresh: false,
-            ),
-          );
-        },
-      );
+        expect(
+          container.read(provider),
+          const AsyncLoading<int>().copyWithPrevious(const AsyncData(1)),
+        );
+        await expectLater(container.read(provider.future), completion(2));
+        expect(container.read(provider), const AsyncData(2));
+      });
 
       test(
-        'performs seamless:false copyWithPrevious if triggered by a dependency change',
-        () async {
-          final container = ProviderContainer.test();
-          final dep = StateProvider((ref) => 0);
-          final provider = factory.simpleTestProvider(
-            (ref, self) => Stream.value(ref.watch(dep)),
-          );
+          'performs seamless:false copyWithPrevious on `state = AsyncLoading()`',
+          () async {
+        final container = ProviderContainer.test();
+        final provider = factory.simpleTestProvider(
+          (ref, self) => Stream.value(0),
+        );
 
-          container.listen(provider, (previous, next) {});
+        final sub = container.listen(provider.notifier, (previous, next) {});
 
-          await expectLater(container.read(provider.future), completion(0));
-          expect(container.read(provider), const AsyncData(0));
+        await expectLater(container.read(provider.future), completion(0));
+        expect(container.read(provider), const AsyncData(0));
 
-          container.read(dep.notifier).state++;
-          expect(
-            container.read(provider),
-            const AsyncLoading<int>().copyWithPrevious(
-              const AsyncData(0),
-              isRefresh: false,
-            ),
-          );
+        sub.read().state = const AsyncLoading<int>();
 
-          await expectLater(container.read(provider.future), completion(1));
-          expect(container.read(provider), const AsyncData(1));
-        },
-      );
+        expect(
+          sub.read().state,
+          const AsyncLoading<int>()
+              .copyWithPrevious(const AsyncData(0), isRefresh: false),
+        );
+      });
 
       test(
-        'performs seamless:false copyWithPrevious if both triggered by a dependency change and ref.refresh',
-        () async {
-          final container = ProviderContainer.test();
-          final dep = StateProvider((ref) => 0);
-          final provider = factory.simpleTestProvider(
-            (ref, self) => Stream.value(ref.watch(dep)),
-          );
+          'performs seamless:false copyWithPrevious if triggered by a dependency change',
+          () async {
+        final container = ProviderContainer.test();
+        final dep = StateProvider((ref) => 0);
+        final provider = factory.simpleTestProvider(
+          (ref, self) => Stream.value(ref.watch(dep)),
+        );
 
-          container.listen(provider, (previous, next) {});
+        container.listen(provider, (previous, next) {});
 
-          await expectLater(container.read(provider.future), completion(0));
-          expect(container.read(provider), const AsyncData(0));
+        await expectLater(container.read(provider.future), completion(0));
+        expect(container.read(provider), const AsyncData(0));
 
-          container.read(dep.notifier).state++;
-          expect(
-            container.refresh(provider),
-            const AsyncLoading<int>().copyWithPrevious(
-              const AsyncData(0),
-              isRefresh: false,
-            ),
-          );
+        container.read(dep.notifier).state++;
+        expect(
+          container.read(provider),
+          const AsyncLoading<int>()
+              .copyWithPrevious(const AsyncData(0), isRefresh: false),
+        );
 
-          await expectLater(container.read(provider.future), completion(1));
-          expect(container.read(provider), const AsyncData(1));
-        },
-      );
+        await expectLater(container.read(provider.future), completion(1));
+        expect(container.read(provider), const AsyncData(1));
+      });
+
+      test(
+          'performs seamless:false copyWithPrevious if both triggered by a dependency change and ref.refresh',
+          () async {
+        final container = ProviderContainer.test();
+        final dep = StateProvider((ref) => 0);
+        final provider = factory.simpleTestProvider(
+          (ref, self) => Stream.value(ref.watch(dep)),
+        );
+
+        container.listen(provider, (previous, next) {});
+
+        await expectLater(container.read(provider.future), completion(0));
+        expect(container.read(provider), const AsyncData(0));
+
+        container.read(dep.notifier).state++;
+        expect(
+          container.refresh(provider),
+          const AsyncLoading<int>()
+              .copyWithPrevious(const AsyncData(0), isRefresh: false),
+        );
+
+        await expectLater(container.read(provider.future), completion(1));
+        expect(container.read(provider), const AsyncData(1));
+      });
     });
 
     test('does not notify listeners when refreshed during loading', () async {
@@ -378,7 +380,10 @@ void main() {
 
       await container.read(provider.future);
 
-      verifyOnly(listener, listener(const AsyncLoading(), const AsyncData(0)));
+      verifyOnly(
+        listener,
+        listener(const AsyncLoading(), const AsyncData(0)),
+      );
     });
 
     group('listenSelf', () {
@@ -408,7 +413,9 @@ void main() {
           self.listenSelf(listener.call, onError: onError.call);
           Error.throwWithStackTrace(42, StackTrace.empty);
         });
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(
+          retry: (_, __) => null,
+        );
 
         container.listen(provider, (previous, next) {});
 
@@ -435,248 +442,249 @@ void main() {
     });
 
     test(
-      'converts StreamNotifier.build into an AsyncData if the future completes',
-      () async {
-        final provider = factory.simpleTestProvider(
-          (ref, self) => Stream.value(0),
-        );
-        final container = ProviderContainer.test();
-        final listener = Listener<AsyncValue<int>>();
+        'converts StreamNotifier.build into an AsyncData if the future completes',
+        () async {
+      final provider = factory.simpleTestProvider(
+        (ref, self) => Stream.value(0),
+      );
+      final container = ProviderContainer.test();
+      final listener = Listener<AsyncValue<int>>();
 
-        container.listen(provider, listener.call, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
 
-        verifyOnly(listener, listener(null, const AsyncLoading()));
-        expect(
-          container.read(provider.notifier).state,
-          const AsyncLoading<int>(),
-        );
+      verifyOnly(listener, listener(null, const AsyncLoading()));
+      expect(
+        container.read(provider.notifier).state,
+        const AsyncLoading<int>(),
+      );
 
-        expect(await container.read(provider.future), 0);
+      expect(await container.read(provider.future), 0);
 
-        verifyOnly(
-          listener,
-          listener(const AsyncLoading(), const AsyncData(0)),
-        );
-        expect(
-          container.read(provider.notifier).state,
-          const AsyncData<int>(0),
-        );
-      },
-    );
+      verifyOnly(
+        listener,
+        listener(const AsyncLoading(), const AsyncData(0)),
+      );
+      expect(
+        container.read(provider.notifier).state,
+        const AsyncData<int>(0),
+      );
+    });
 
-    test(
-      'converts StreamNotifier.build into an AsyncError if the future fails',
-      () async {
-        final provider = factory.simpleTestProvider<int>(
-          (ref, _) => Stream.error(0, StackTrace.empty),
-        );
-        final container = ProviderContainer.test(retry: (_, __) => null);
-        final listener = Listener<AsyncValue<int>>();
+    test('converts StreamNotifier.build into an AsyncError if the future fails',
+        () async {
+      final provider = factory.simpleTestProvider<int>(
+        (ref, _) => Stream.error(0, StackTrace.empty),
+      );
+      final container = ProviderContainer.test(
+        retry: (_, __) => null,
+      );
+      final listener = Listener<AsyncValue<int>>();
 
-        container.listen(provider, listener.call, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
 
-        verifyOnly(listener, listener(null, const AsyncLoading()));
-        expect(
-          container.read(provider.notifier).state,
-          const AsyncLoading<int>(),
-        );
+      verifyOnly(listener, listener(null, const AsyncLoading()));
+      expect(
+        container.read(provider.notifier).state,
+        const AsyncLoading<int>(),
+      );
 
-        await expectLater(container.read(provider.future), throwsA(0));
+      await expectLater(container.read(provider.future), throwsA(0));
 
-        verifyOnly(
-          listener,
-          listener(const AsyncLoading(), const AsyncError(0, StackTrace.empty)),
-        );
-        expect(
-          container.read(provider.notifier).state,
-          const AsyncError<int>(0, StackTrace.empty),
-        );
-      },
-    );
+      verifyOnly(
+        listener,
+        listener(const AsyncLoading(), const AsyncError(0, StackTrace.empty)),
+      );
+      expect(
+        container.read(provider.notifier).state,
+        const AsyncError<int>(0, StackTrace.empty),
+      );
+    });
 
-    test(
-      'supports cases where the StreamNotifier constructor throws',
-      () async {
-        final provider = factory.provider<int>(
-          () => Error.throwWithStackTrace(0, StackTrace.empty),
-        );
-        final container = ProviderContainer.test(retry: (_, __) => null);
-        final listener = Listener<AsyncValue<int>>();
+    test('supports cases where the StreamNotifier constructor throws',
+        () async {
+      final provider = factory.provider<int>(
+        () => Error.throwWithStackTrace(0, StackTrace.empty),
+      );
+      final container = ProviderContainer.test(
+        retry: (_, __) => null,
+      );
+      final listener = Listener<AsyncValue<int>>();
 
-        container.listen(provider, listener.call, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
 
-        verifyOnly(
-          listener,
-          listener(null, const AsyncError(0, StackTrace.empty)),
-        );
-        expect(
-          () => container.read(provider.notifier),
-          throwsProviderException(0),
-        );
+      verifyOnly(
+        listener,
+        listener(null, const AsyncError(0, StackTrace.empty)),
+      );
+      expect(
+        () => container.read(provider.notifier),
+        throwsProviderException(0),
+      );
 
-        await expectLater(container.read(provider.future), throwsA(0));
-      },
-    );
-
-    test(
-      'synchronously emits AsyncError if StreamNotifier.build throws synchronously',
-      () async {
-        final provider = factory.simpleTestProvider<int>(
-          (ref, _) => Error.throwWithStackTrace(42, StackTrace.empty),
-        );
-        final container = ProviderContainer.test(retry: (_, __) => null);
-        final listener = Listener<AsyncValue<int>>();
-
-        container.listen(provider, listener.call, fireImmediately: true);
-
-        verifyOnly(
-          listener,
-          listener(null, const AsyncError(42, StackTrace.empty)),
-        );
-        expect(
-          container.read(provider.notifier).state,
-          const AsyncError<int>(42, StackTrace.empty),
-        );
-        await expectLater(container.read(provider.future), throwsA(42));
-      },
-    );
+      await expectLater(container.read(provider.future), throwsA(0));
+    });
 
     test(
-      'stops listening to the previous future data when the provider rebuilds',
-      () async {
-        final container = ProviderContainer.test();
-        final dep = StateProvider((ref) => 0);
-        final completers = {0: Completer<int>.sync(), 1: Completer<int>.sync()};
-        final provider = factory.simpleTestProvider<int>(
-          (ref, _) => Stream.fromFuture(completers[ref.watch(dep)]!.future),
-        );
-        final listener = Listener<AsyncValue<int>>();
+        'synchronously emits AsyncError if StreamNotifier.build throws synchronously',
+        () async {
+      final provider = factory.simpleTestProvider<int>(
+        (ref, _) => Error.throwWithStackTrace(42, StackTrace.empty),
+      );
+      final container = ProviderContainer.test(
+        retry: (_, __) => null,
+      );
+      final listener = Listener<AsyncValue<int>>();
 
-        container.listen(provider, listener.call);
+      container.listen(provider, listener.call, fireImmediately: true);
 
-        expect(
-          container.read(provider.future),
-          completion(21),
-          reason:
-              'The provider rebuilt while the future was still pending, '
-              'so .future should resolve with the next value',
-        );
-        verifyZeroInteractions(listener);
-        expect(container.read(provider), const AsyncLoading<int>());
-
-        container.read(dep.notifier).state++;
-        completers[0]!.complete(42);
-
-        verifyZeroInteractions(listener);
-
-        expect(container.read(provider.future), completion(21));
-        expect(container.read(provider), const AsyncLoading<int>());
-
-        completers[1]!.complete(21);
-
-        expect(await container.read(provider.future), 21);
-        expect(container.read(provider), const AsyncData<int>(21));
-      },
-    );
+      verifyOnly(
+        listener,
+        listener(null, const AsyncError(42, StackTrace.empty)),
+      );
+      expect(
+        container.read(provider.notifier).state,
+        const AsyncError<int>(42, StackTrace.empty),
+      );
+      await expectLater(container.read(provider.future), throwsA(42));
+    });
 
     test(
-      'stops listening to the previous future error when the provider rebuilds',
-      () async {
-        final container = ProviderContainer.test(retry: (_, __) => null);
-        final dep = StateProvider((ref) => 0);
-        final completers = {0: Completer<int>.sync(), 1: Completer<int>.sync()};
-        final provider = factory.simpleTestProvider<int>(
-          (ref, _) => Stream.fromFuture(completers[ref.watch(dep)]!.future),
-        );
-        final listener = Listener<AsyncValue<int>>();
+        'stops listening to the previous future data when the provider rebuilds',
+        () async {
+      final container = ProviderContainer.test();
+      final dep = StateProvider((ref) => 0);
+      final completers = {
+        0: Completer<int>.sync(),
+        1: Completer<int>.sync(),
+      };
+      final provider = factory.simpleTestProvider<int>(
+        (ref, _) => Stream.fromFuture(completers[ref.watch(dep)]!.future),
+      );
+      final listener = Listener<AsyncValue<int>>();
 
-        container.listen(provider, listener.call);
+      container.listen(provider, listener.call);
 
-        expect(
-          container.read(provider.future),
-          throwsA(21),
-          reason:
-              'The provider rebuilt while the future was still pending, '
-              'so .future should resolve with the next value',
-        );
-        verifyZeroInteractions(listener);
-        expect(container.read(provider), const AsyncLoading<int>());
+      expect(
+        container.read(provider.future),
+        completion(21),
+        reason: 'The provider rebuilt while the future was still pending, '
+            'so .future should resolve with the next value',
+      );
+      verifyZeroInteractions(listener);
+      expect(container.read(provider), const AsyncLoading<int>());
 
-        container.read(dep.notifier).state++;
-        completers[0]!.completeError(42, StackTrace.empty);
+      container.read(dep.notifier).state++;
+      completers[0]!.complete(42);
 
-        verifyZeroInteractions(listener);
+      verifyZeroInteractions(listener);
 
-        expect(container.read(provider.future), throwsA(21));
-        expect(container.read(provider), const AsyncLoading<int>());
+      expect(container.read(provider.future), completion(21));
+      expect(container.read(provider), const AsyncLoading<int>());
 
-        completers[1]!.completeError(21, StackTrace.empty);
+      completers[1]!.complete(21);
 
-        await expectLater(container.read(provider.future), throwsA(21));
-        expect(
-          container.read(provider),
-          const AsyncError<int>(21, StackTrace.empty),
-        );
-      },
-    );
+      expect(await container.read(provider.future), 21);
+      expect(container.read(provider), const AsyncData<int>(21));
+    });
+
+    test(
+        'stops listening to the previous future error when the provider rebuilds',
+        () async {
+      final container = ProviderContainer.test(
+        retry: (_, __) => null,
+      );
+      final dep = StateProvider((ref) => 0);
+      final completers = {
+        0: Completer<int>.sync(),
+        1: Completer<int>.sync(),
+      };
+      final provider = factory.simpleTestProvider<int>(
+        (ref, _) => Stream.fromFuture(completers[ref.watch(dep)]!.future),
+      );
+      final listener = Listener<AsyncValue<int>>();
+
+      container.listen(provider, listener.call);
+
+      expect(
+        container.read(provider.future),
+        throwsA(21),
+        reason: 'The provider rebuilt while the future was still pending, '
+            'so .future should resolve with the next value',
+      );
+      verifyZeroInteractions(listener);
+      expect(container.read(provider), const AsyncLoading<int>());
+
+      container.read(dep.notifier).state++;
+      completers[0]!.completeError(42, StackTrace.empty);
+
+      verifyZeroInteractions(listener);
+
+      expect(container.read(provider.future), throwsA(21));
+      expect(container.read(provider), const AsyncLoading<int>());
+
+      completers[1]!.completeError(21, StackTrace.empty);
+
+      await expectLater(container.read(provider.future), throwsA(21));
+      expect(
+        container.read(provider),
+        const AsyncError<int>(21, StackTrace.empty),
+      );
+    });
 
     group('StreamNotifier.state', () {
       test(
-        'when manually modifying the state, the new exposed value contains the previous state when possible',
-        () async {
-          final provider = factory.simpleTestProvider<int>(
-            (ref, _) => Stream.value(0),
-          );
-          final container = ProviderContainer.test();
+          'when manually modifying the state, the new exposed value contains the previous state when possible',
+          () async {
+        final provider = factory.simpleTestProvider<int>(
+          (ref, _) => Stream.value(0),
+        );
+        final container = ProviderContainer.test();
 
-          final sub = container.listen(provider.notifier, (previous, next) {});
-          await container.read(provider.future);
+        final sub = container.listen(provider.notifier, (previous, next) {});
+        await container.read(provider.future);
 
-          // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
-          final newState = AsyncData(84);
-          // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
-          final newLoading = AsyncLoading<int>();
-          // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
-          final newError = AsyncError<int>(84, StackTrace.empty);
+        // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
+        final newState = AsyncData(84);
+        // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
+        final newLoading = AsyncLoading<int>();
+        // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
+        final newError = AsyncError<int>(84, StackTrace.empty);
 
-          sub.read().state = newState;
+        sub.read().state = newState;
 
-          expect(sub.read().state, same(newState));
+        expect(sub.read().state, same(newState));
 
-          sub.read().state = newLoading;
+        sub.read().state = newLoading;
 
-          expect(
-            sub.read().state,
-            const AsyncLoading<int>().copyWithPrevious(
-              newState,
-              isRefresh: false,
-            ),
-          );
+        expect(
+          sub.read().state,
+          const AsyncLoading<int>()
+              .copyWithPrevious(newState, isRefresh: false),
+        );
 
-          sub.read().state = newError;
+        sub.read().state = newError;
 
-          expect(
-            sub.read().state,
-            newError.copyWithPrevious(
-              const AsyncLoading<int>().copyWithPrevious(
-                newState,
-                isRefresh: false,
-              ),
-            ),
-          );
-        },
-      );
+        expect(
+          sub.read().state,
+          newError.copyWithPrevious(
+            const AsyncLoading<int>()
+                .copyWithPrevious(newState, isRefresh: false),
+          ),
+        );
+      });
 
       test('can be read inside build', () {
         final dep = StateProvider((ref) => 0);
         late AsyncValue<int> state;
-        final provider = factory.provider<int>(() {
-          late TestStreamNotifier<int> notifier;
-          return notifier = factory.deferredNotifier<int>((ref, _) {
-            state = notifier.state;
-            return Stream.value(ref.watch(dep));
-          });
-        });
+        final provider = factory.provider<int>(
+          () {
+            late TestStreamNotifier<int> notifier;
+            return notifier = factory.deferredNotifier<int>((ref, _) {
+              state = notifier.state;
+              return Stream.value(ref.watch(dep));
+            });
+          },
+        );
         final container = ProviderContainer.test();
 
         container.listen(provider, (previous, next) {});
@@ -708,29 +716,32 @@ void main() {
 
         container.read(provider.notifier).state = const AsyncData(42);
 
-        verifyOnly(listener, listener(const AsyncData(0), const AsyncData(42)));
+        verifyOnly(
+          listener,
+          listener(const AsyncData(0), const AsyncData(42)),
+        );
       });
     });
 
     group('StreamNotifier.future', () {
       test(
-        'when disposed during loading, resolves with the content of StreamNotifier.build',
-        () async {
-          final container = ProviderContainer.test();
-          final completer = Completer<int>.sync();
-          addTearDown(() => completer.complete(42));
-          final provider = factory.simpleTestProvider<int>(
-            (ref, _) => Stream.fromFuture(completer.future),
-          );
+          'when disposed during loading, resolves with the content of StreamNotifier.build',
+          () async {
+        final container = ProviderContainer.test();
+        final completer = Completer<int>.sync();
+        addTearDown(() => completer.complete(42));
+        final provider = factory.simpleTestProvider<int>(
+          (ref, _) => Stream.fromFuture(completer.future),
+        );
 
-          final future = container.read(provider.future);
-          expect(future, throwsA(isStateError));
+        final future = container.read(provider.future);
+        expect(future, throwsA(isStateError));
 
-          container.dispose();
-        },
-      );
+        container.dispose();
+      });
 
-      test('going data > loading while the future is still pending. '
+      test(
+          'going data > loading while the future is still pending. '
           'Resolves with error', () async {
         final container = ProviderContainer.test();
         final completer = Completer<int>.sync();
@@ -749,88 +760,81 @@ void main() {
         container.dispose();
       });
 
-      test(
-        'if going back to loading after future resolved, throws StateError',
-        () async {
-          final container = ProviderContainer.test();
-          final completer = Completer<int>.sync();
-          final provider = factory.simpleTestProvider<int>(
-            (ref, _) => Stream.fromFuture(completer.future),
-          );
+      test('if going back to loading after future resolved, throws StateError',
+          () async {
+        final container = ProviderContainer.test();
+        final completer = Completer<int>.sync();
+        final provider = factory.simpleTestProvider<int>(
+          (ref, _) => Stream.fromFuture(completer.future),
+        );
 
-          container.listen(provider, (previous, next) {});
+        container.listen(provider, (previous, next) {});
 
-          completer.complete(42);
+        completer.complete(42);
 
-          container.read(provider.notifier).state = const AsyncData(42);
-          container.read(provider.notifier).state = const AsyncLoading<int>();
+        container.read(provider.notifier).state = const AsyncData(42);
+        container.read(provider.notifier).state = const AsyncLoading<int>();
 
-          final future = container.read(provider.future);
+        final future = container.read(provider.future);
 
-          container.dispose();
+        container.dispose();
 
-          await expectLater(future, throwsStateError);
-        },
-      );
+        await expectLater(future, throwsStateError);
+      });
 
       test(
-        'resolves with the new state if StreamNotifier.state is modified during loading',
-        () async {
-          final container = ProviderContainer.test();
-          final completer = Completer<int>.sync();
-          final provider = factory.simpleTestProvider<int>(
-            (ref, _) => Stream.fromFuture(completer.future),
-          );
-          final listener = Listener<Future<int>>();
+          'resolves with the new state if StreamNotifier.state is modified during loading',
+          () async {
+        final container = ProviderContainer.test();
+        final completer = Completer<int>.sync();
+        final provider = factory.simpleTestProvider<int>(
+          (ref, _) => Stream.fromFuture(completer.future),
+        );
+        final listener = Listener<Future<int>>();
 
-          final sub = container.listen(provider.notifier, (previous, next) {});
-          container.listen(provider.future, listener.call);
+        final sub = container.listen(provider.notifier, (previous, next) {});
+        container.listen(provider.future, listener.call);
 
-          expect(sub.read().future, completion(21));
+        expect(sub.read().future, completion(21));
 
-          sub.read().state = const AsyncData(21);
+        sub.read().state = const AsyncData(21);
 
-          completer.complete(42);
+        completer.complete(42);
 
-          expect(sub.read().future, completion(42));
-          final capture = verifyOnly(
-            listener,
-            listener(captureAny, captureAny),
-          ).captured;
+        expect(sub.read().future, completion(42));
+        final capture =
+            verifyOnly(listener, listener(captureAny, captureAny)).captured;
 
-          expect(capture.length, 2);
-          expect(capture.first, completion(21));
-          expect(capture.last, completion(42));
-        },
-      );
+        expect(capture.length, 2);
+        expect(capture.first, completion(21));
+        expect(capture.last, completion(42));
+      });
 
-      test(
-        'resolves with the new state when notifier.state is changed',
-        () async {
-          final container = ProviderContainer.test();
-          final provider = factory.simpleTestProvider<int>(
-            (ref, _) => Stream.value(0),
-          );
-          final listener = Listener<Future<int>>();
+      test('resolves with the new state when notifier.state is changed',
+          () async {
+        final container = ProviderContainer.test();
+        final provider = factory.simpleTestProvider<int>(
+          (ref, _) => Stream.value(0),
+        );
+        final listener = Listener<Future<int>>();
 
-          final sub = container.listen(provider.notifier, (previous, next) {});
-          container.listen(
-            provider.future,
-            listener.call,
-            fireImmediately: true,
-          );
+        final sub = container.listen(provider.notifier, (previous, next) {});
+        container.listen(
+          provider.future,
+          listener.call,
+          fireImmediately: true,
+        );
 
-          await expectLater(sub.read().future, completion(0));
-          verifyOnly(
-            listener,
-            listener(argThat(equals(null)), argThat(completion(0))),
-          );
+        await expectLater(sub.read().future, completion(0));
+        verifyOnly(
+          listener,
+          listener(argThat(equals(null)), argThat(completion(0))),
+        );
 
-          sub.read().state = const AsyncData(1);
+        sub.read().state = const AsyncData(1);
 
-          await expectLater(sub.read().future, completion(1));
-        },
-      );
+        await expectLater(sub.read().future, completion(1));
+      });
 
       test('returns a Future identical to that of .future', () {
         final listener = OnBuildMock();
@@ -849,39 +853,38 @@ void main() {
     });
 
     test(
-      'Can override StreamNotifier.updateShouldNotify to change the default filter logic',
-      () async {
-        final provider = factory.simpleTestProvider<Equal<int>>(
-          (ref, _) => Stream.value(Equal(42)),
-          updateShouldNotify: (a, b) => a != b,
-        );
-        final container = ProviderContainer.test();
-        final listener = Listener<AsyncValue<Equal<int>>>();
+        'Can override StreamNotifier.updateShouldNotify to change the default filter logic',
+        () async {
+      final provider = factory.simpleTestProvider<Equal<int>>(
+        (ref, _) => Stream.value(Equal(42)),
+        updateShouldNotify: (a, b) => a != b,
+      );
+      final container = ProviderContainer.test();
+      final listener = Listener<AsyncValue<Equal<int>>>();
 
-        // Skip the loading
-        await container.listen(provider.future, (previous, next) {}).read();
+      // Skip the loading
+      await container.listen(provider.future, (previous, next) {}).read();
 
-        container.listen(provider, listener.call);
-        final notifier = container.read(provider.notifier);
+      container.listen(provider, listener.call);
+      final notifier = container.read(provider.notifier);
 
-        // voluntarily assigning the same value
-        final self = notifier.state;
-        notifier.state = self;
+      // voluntarily assigning the same value
+      final self = notifier.state;
+      notifier.state = self;
 
-        verifyZeroInteractions(listener);
+      verifyZeroInteractions(listener);
 
-        notifier.state = AsyncData(Equal(42));
+      notifier.state = AsyncData(Equal(42));
 
-        verifyZeroInteractions(listener);
+      verifyZeroInteractions(listener);
 
-        notifier.state = AsyncData(Equal(21));
+      notifier.state = AsyncData(Equal(21));
 
-        verifyOnly(
-          listener,
-          listener(AsyncData(Equal(42)), AsyncData(Equal(21))),
-        );
-      },
-    );
+      verifyOnly(
+        listener,
+        listener(AsyncData(Equal(42)), AsyncData(Equal(21))),
+      );
+    });
 
     group('AsyncNotifier.update', () {
       test('passes in the latest state', () async {
@@ -895,15 +898,29 @@ void main() {
 
         final sub = container.listen(provider.notifier, (prev, next) {});
 
-        expect(container.read(provider), const AsyncData<int>(0));
+        expect(
+          container.read(provider),
+          const AsyncData<int>(0),
+        );
 
-        await expectLater(sub.read().update((prev) => prev + 1), completion(1));
-        await expectLater(sub.read().future, completion(1));
-        await expectLater(sub.read().update((prev) => prev + 1), completion(2));
+        await expectLater(
+          sub.read().update((prev) => prev + 1),
+          completion(1),
+        );
+        await expectLater(
+          sub.read().future,
+          completion(1),
+        );
+        await expectLater(
+          sub.read().update((prev) => prev + 1),
+          completion(2),
+        );
       });
 
       test('can specify onError to handle error scenario', () async {
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(
+          retry: (_, __) => null,
+        );
         final provider = factory.simpleTestProvider<int>(
           (ref, _) => Error.throwWithStackTrace(42, StackTrace.empty),
         );
@@ -938,60 +955,58 @@ void main() {
         expect(container.read(provider), const AsyncData(21));
       });
 
-      test(
-        'executes immediately with current state if a state is available',
-        () async {
-          final container = ProviderContainer.test();
-          final provider = factory.simpleTestProvider<int>(
-            (ref, _) => Stream.value(1),
-          );
+      test('executes immediately with current state if a state is available',
+          () async {
+        final container = ProviderContainer.test();
+        final provider = factory.simpleTestProvider<int>(
+          (ref, _) => Stream.value(1),
+        );
 
-          // Skip the loading
-          await container.listen(provider.future, (previous, next) {}).read();
+        // Skip the loading
+        await container.listen(provider.future, (previous, next) {}).read();
 
-          final sub = container.listen(provider.notifier, (prev, next) {});
+        final sub = container.listen(provider.notifier, (prev, next) {});
 
-          expect(container.read(provider), const AsyncData(1));
+        expect(container.read(provider), const AsyncData(1));
 
-          await expectLater(
-            sub.read().update((prev) => prev + 1),
-            completion(2),
-          );
-          expect(container.read(provider), const AsyncData(2));
-        },
-      );
+        await expectLater(
+          sub.read().update((prev) => prev + 1),
+          completion(2),
+        );
+        expect(container.read(provider), const AsyncData(2));
+      });
 
-      test(
-        'executes immediately with current state if an error is available',
-        () async {
-          final container = ProviderContainer.test(retry: (_, __) => null);
-          final provider = factory.simpleTestProvider<int>(
-            (ref, _) => Error.throwWithStackTrace(42, StackTrace.empty),
-          );
-          var callCount = 0;
+      test('executes immediately with current state if an error is available',
+          () async {
+        final container = ProviderContainer.test(
+          retry: (_, __) => null,
+        );
+        final provider = factory.simpleTestProvider<int>(
+          (ref, _) => Error.throwWithStackTrace(42, StackTrace.empty),
+        );
+        var callCount = 0;
 
-          final sub = container.listen(provider.notifier, (prev, next) {});
+        final sub = container.listen(provider.notifier, (prev, next) {});
 
-          expect(
-            container.read(provider),
-            const AsyncError<int>(42, StackTrace.empty),
-          );
+        expect(
+          container.read(provider),
+          const AsyncError<int>(42, StackTrace.empty),
+        );
 
-          await expectLater(
-            sub.read().update((prev) {
-              callCount++;
-              return prev + 1;
-            }),
-            throwsA(42),
-          );
+        await expectLater(
+          sub.read().update((prev) {
+            callCount++;
+            return prev + 1;
+          }),
+          throwsA(42),
+        );
 
-          expect(callCount, 0);
-          expect(
-            container.read(provider),
-            const AsyncError<int>(42, StackTrace.empty),
-          );
-        },
-      );
+        expect(callCount, 0);
+        expect(
+          container.read(provider),
+          const AsyncError<int>(42, StackTrace.empty),
+        );
+      });
 
       test('awaits the future resolution if in loading state', () async {
         final container = ProviderContainer.test();
@@ -1018,8 +1033,8 @@ void main() {
     );
     final autoDispose =
         StreamNotifierProvider.autoDispose<DeferredStreamNotifier<int>, int>(
-          () => DeferredStreamNotifier((ref, _) => Stream.value(0)),
-        );
+      () => DeferredStreamNotifier((ref, _) => Stream.value(0)),
+    );
     final container = ProviderContainer.test(
       overrides: [
         provider.overrideWith(
@@ -1042,19 +1057,21 @@ void main() {
   test('supports family overrideWith', () async {
     final family =
         StreamNotifierProvider.family<DeferredStreamNotifier<int>, int, int>(
-          (arg) => DeferredStreamNotifier<int>((ref, _) => Stream.value(0)),
-        );
+      (arg) => DeferredStreamNotifier<int>((ref, _) => Stream.value(0)),
+    );
     final autoDisposeFamily = StreamNotifierProvider.autoDispose
         .family<DeferredStreamNotifier<int>, int, int>(
-          (arg) => DeferredStreamNotifier<int>((ref, _) => Stream.value(0)),
-        );
+      (arg) => DeferredStreamNotifier<int>((ref, _) => Stream.value(0)),
+    );
     final container = ProviderContainer.test(
       overrides: [
         family.overrideWith(
           () => DeferredStreamNotifier<int>((ref, _) => Stream.value(42)),
         ),
         autoDisposeFamily.overrideWith(
-          () => DeferredStreamNotifier<int>((ref, _) => Stream.value(84)),
+          () => DeferredStreamNotifier<int>(
+            (ref, _) => Stream.value(84),
+          ),
         ),
       ],
     );
@@ -1074,10 +1091,10 @@ void main() {
       final dep = Provider.autoDispose((ref) => 0);
       final provider =
           StreamNotifierProvider.autoDispose<DeferredStreamNotifier<int>, int>(
-            () => DeferredStreamNotifier((ref, _) {
-              return Stream.value(ref.watch(dep));
-            }),
-          );
+        () => DeferredStreamNotifier((ref, _) {
+          return Stream.value(ref.watch(dep));
+        }),
+      );
       final container = ProviderContainer.test();
 
       // Skip the loading
@@ -1088,7 +1105,9 @@ void main() {
   });
 
   group('modifiers', () {
-    void canBeAssignedToRefreshable<StateT>(Refreshable<StateT> provider) {}
+    void canBeAssignedToRefreshable<StateT>(
+      Refreshable<StateT> provider,
+    ) {}
 
     void canBeAssignedToProviderListenable<StateT>(
       ProviderListenable<StateT> provider,
@@ -1115,8 +1134,8 @@ void main() {
     test('autoDispose', () {
       final autoDispose =
           StreamNotifierProvider.autoDispose<DeferredStreamNotifier<int>, int>(
-            () => DeferredStreamNotifier((ref, _) => Stream.value(0)),
-          );
+        () => DeferredStreamNotifier((ref, _) => Stream.value(0)),
+      );
 
       autoDispose.select((AsyncValue<int> value) => 0);
       autoDispose.selectAsync((int value) => 0);
@@ -1130,16 +1149,16 @@ void main() {
       canBeAssignedToProviderListenable<StreamNotifier<int>>(
         autoDispose.notifier,
       );
-      canBeAssignedToRefreshable<StreamNotifier<int>>(autoDispose.notifier);
+      canBeAssignedToRefreshable<StreamNotifier<int>>(
+        autoDispose.notifier,
+      );
     });
 
     test('family', () {
-      final family =
-          StreamNotifierProvider.family<
-            DeferredStreamNotifier<String>,
-            String,
-            int
-          >((arg) => DeferredStreamNotifier((ref, _) => Stream.value('0')));
+      final family = StreamNotifierProvider.family<
+          DeferredStreamNotifier<String>, String, int>(
+        (arg) => DeferredStreamNotifier((ref, _) => Stream.value('0')),
+      );
 
       family(0).select((AsyncValue<String> value) => 0);
       family(0).selectAsync((String value) => 0);
@@ -1159,8 +1178,8 @@ void main() {
 
       final autoDisposeFamily = StreamNotifierProvider.autoDispose
           .family<DeferredStreamNotifier<String>, String, int>(
-            (arg) => DeferredStreamNotifier((ref, _) => Stream.value('0')),
-          );
+        (arg) => DeferredStreamNotifier((ref, _) => Stream.value('0')),
+      );
 
       autoDisposeFamily(0).select((AsyncValue<String> value) => 0);
       autoDisposeFamily(0).selectAsync((String value) => 0);
@@ -1168,12 +1187,16 @@ void main() {
       canBeAssignedToProviderListenable<AsyncValue<String>>(
         autoDisposeFamily(0),
       );
-      canBeAssignedToRefreshable<AsyncValue<String>>(autoDisposeFamily(0));
+      canBeAssignedToRefreshable<AsyncValue<String>>(
+        autoDisposeFamily(0),
+      );
 
       canBeAssignedToProviderListenable<Future<String>>(
         autoDisposeFamily(0).future,
       );
-      canBeAssignedToRefreshable<Future<String>>(autoDisposeFamily(0).future);
+      canBeAssignedToRefreshable<Future<String>>(
+        autoDisposeFamily(0).future,
+      );
     });
   });
 }
