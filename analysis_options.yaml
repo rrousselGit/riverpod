@@ -20,6 +20,9 @@ analyzer:
 
 linter:
   rules:
+    # Clashes with newer dartfmt
+    require_trailing_commas: false
+
     # Maybe later. Too many to fix right now.
     document_ignores: false
 
