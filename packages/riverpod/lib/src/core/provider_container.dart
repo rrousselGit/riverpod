@@ -190,10 +190,7 @@ class ProviderDirectory implements _PointerBase {
     $ProviderBaseImpl<Object?> origin, {
     required ProviderContainer currentContainer,
   }) {
-    final pointer = upsertPointer(
-      origin,
-      currentContainer: currentContainer,
-    );
+    final pointer = upsertPointer(origin, currentContainer: currentContainer);
 
     if (pointer.element == null) {
       ProviderElement? element;
@@ -301,13 +298,11 @@ class ProviderPointerManager {
                   (!e.key.canBeTransitivelyOverridden ||
                       e.value.familyOverride != null),
             )
-            .map(
-              (e) {
-                if (e.key.$allTransitiveDependencies == null) return e;
+            .map((e) {
+              if (e.key.$allTransitiveDependencies == null) return e;
 
-                return MapEntry(e.key, ProviderDirectory.from(e.value));
-              },
-            ),
+              return MapEntry(e.key, ProviderDirectory.from(e.value));
+            }),
       ),
     );
   }
@@ -316,16 +311,11 @@ class ProviderPointerManager {
   final ProviderDirectory orphanPointers;
   final HashMap<Family, ProviderDirectory> familyPointers;
 
-  void _initializeProviderOverride(
-    _ProviderOverride override,
-  ) {
+  void _initializeProviderOverride(_ProviderOverride override) {
     final from = override.origin.from;
 
     if (from == null) {
-      orphanPointers.addProviderOverride(
-        override,
-        targetContainer: container,
-      );
+      orphanPointers.addProviderOverride(override, targetContainer: container);
       return;
     }
 
@@ -334,10 +324,7 @@ class ProviderPointerManager {
       familyOverride: null,
     );
 
-    familyPointer.addProviderOverride(
-      override,
-      targetContainer: container,
-    );
+    familyPointer.addProviderOverride(override, targetContainer: container);
   }
 
   void _initializeOverrides(List<Override> overrides) {
@@ -452,9 +439,7 @@ class ProviderPointerManager {
     );
   }
 
-  ProviderDirectory? readDirectory(
-    $ProviderBaseImpl<Object?> provider,
-  ) {
+  ProviderDirectory? readDirectory($ProviderBaseImpl<Object?> provider) {
     final from = provider.from;
 
     if (from == null) {
@@ -472,9 +457,7 @@ class ProviderPointerManager {
     return readPointer(provider)?.element;
   }
 
-  ProviderDirectory upsertDirectory(
-    $ProviderBaseImpl<Object?> provider,
-  ) {
+  ProviderDirectory upsertDirectory($ProviderBaseImpl<Object?> provider) {
     final from = provider.from;
 
     if (from == null) {
@@ -485,10 +468,9 @@ class ProviderPointerManager {
   }
 
   $ProviderPointer upsertPointer($ProviderBaseImpl<Object?> provider) {
-    return upsertDirectory(provider).mount(
+    return upsertDirectory(
       provider,
-      currentContainer: container,
-    );
+    ).mount(provider, currentContainer: container);
   }
 
   ProviderElement upsertElement($ProviderBaseImpl<Object?> provider) {
@@ -763,10 +745,7 @@ final class ProviderContainer implements Node, MutationTarget {
        _parent = parent,
        _onError = onError ?? Zone.current.handleUncaughtError,
        retry = retry ?? parent?.retry,
-       observers = [
-         ...?observers,
-         if (parent != null) ...parent.observers,
-       ],
+       observers = [...?observers, if (parent != null) ...parent.observers],
        _root = parent?._root ?? parent {
     if (parent != null) {
       if (parent.disposed) {
@@ -923,9 +902,7 @@ final class ProviderContainer implements Node, MutationTarget {
   ///   print(container.read(greetingProvider)); // Hello World
   /// }
   /// ```
-  StateT read<StateT>(
-    ProviderListenable<StateT> provider,
-  ) {
+  StateT read<StateT>(ProviderListenable<StateT> provider) {
     final sub = listen(provider, (_, __) {});
 
     try {
@@ -976,11 +953,7 @@ final class ProviderContainer implements Node, MutationTarget {
       onError: onError ?? defaultOnError,
       onDependencyMayHaveChanged: null,
     );
-    _handleFireImmediately(
-      container,
-      sub,
-      fireImmediately: fireImmediately,
-    );
+    _handleFireImmediately(container, sub, fireImmediately: fireImmediately);
 
     sub.impl._listenedElement.addDependentSubscription(sub.impl);
 
@@ -988,10 +961,7 @@ final class ProviderContainer implements Node, MutationTarget {
   }
 
   /// {@macro riverpod.invalidate}
-  void invalidate(
-    ProviderOrFamily provider, {
-    bool asReload = false,
-  }) {
+  void invalidate(ProviderOrFamily provider, {bool asReload = false}) {
     switch (provider) {
       case $ProviderBaseImpl<Object?>():
         _pointerManager
@@ -1235,10 +1205,7 @@ abstract class ProviderObserver {
   /// A provider was initialized, and the value exposed is [value].
   ///
   /// [value] will be `null` if the provider threw during initialization.
-  void didAddProvider(
-    ProviderObserverContext context,
-    Object? value,
-  ) {}
+  void didAddProvider(ProviderObserverContext context, Object? value) {}
 
   /// A provider emitted an error, be it by throwing during initialization
   /// or by having a [Future]/[Stream] emit an error

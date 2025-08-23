@@ -86,9 +86,7 @@ extension ProviderSubX<StateT> on ProviderSubscription<StateT> {
 @internal
 sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
     with _OnPauseMixin {
-  ProviderSubscriptionImpl({
-    required this.onClose,
-  });
+  ProviderSubscriptionImpl({required this.onClose});
 
   void Function()? onClose;
 

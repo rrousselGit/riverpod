@@ -67,13 +67,8 @@ extension ProviderListenableSelect<InT> on ProviderListenable<InT> {
   ///
   /// This will further optimize our widget by rebuilding it only when "isAdult"
   /// changed instead of whenever the age changes.
-  ProviderListenable<OutT> select<OutT>(
-    OutT Function(InT value) selector,
-  ) {
-    return _ProviderSelector<InT, OutT>(
-      provider: this,
-      selector: selector,
-    );
+  ProviderListenable<OutT> select<OutT>(OutT Function(InT value) selector) {
+    return _ProviderSelector<InT, OutT>(provider: this, selector: selector);
   }
 }
 
@@ -81,10 +76,7 @@ extension ProviderListenableSelect<InT> on ProviderListenable<InT> {
 final class _ProviderSelector<InputT, OutputT>
     implements ProviderListenable<OutputT> {
   /// An internal class for `ProviderBase.select`.
-  _ProviderSelector({
-    required this.provider,
-    required this.selector,
-  });
+  _ProviderSelector({required this.provider, required this.selector});
 
   /// The provider that was selected
   final ProviderListenable<InputT> provider;

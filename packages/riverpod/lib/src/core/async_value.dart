@@ -14,14 +14,8 @@ extension<BoxedT> on (BoxedT,)? {
 }
 
 extension<ValueT> on _DataRecord<ValueT> {
-  _DataRecord<ValueT> copyWith({
-    (_DataSource?,)? source,
-  }) {
-    return (
-      $1,
-      kind: kind,
-      source: source.unwrapSentinel(this.source),
-    );
+  _DataRecord<ValueT> copyWith({(_DataSource?,)? source}) {
+    return ($1, kind: kind, source: source.unwrapSentinel(this.source));
   }
 }
 
@@ -133,11 +127,7 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
   /// Note that an [AsyncData] may still be in loading/error state, such
   /// as during a pull-to-refresh.
   AsyncData<ValueT>? get asData {
-    return map(
-      data: (d) => d,
-      error: (e) => null,
-      loading: (l) => null,
-    );
+    return map(data: (d) => d, error: (e) => null, loading: (l) => null);
   }
 
   /// Upcast [AsyncValue] into an [AsyncError], or return null if the [AsyncValue]
@@ -145,11 +135,8 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
   ///
   /// Note that an [AsyncError] may still be in loading state, such
   /// as during a pull-to-refresh.
-  AsyncError<ValueT>? get asError => map(
-    data: (_) => null,
-    error: (e) => e,
-    loading: (_) => null,
-  );
+  AsyncError<ValueT>? get asError =>
+      map(data: (_) => null, error: (e) => e, loading: (_) => null);
 
   /// Perform some action based on the current state of the [AsyncValue].
   ///
@@ -192,11 +179,7 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
           );
         }
       },
-      error: (e) => AsyncError._(
-        e._error,
-        loading: e._loading,
-        value: null,
-      ),
+      error: (e) => AsyncError._(e._error, loading: e._loading, value: null),
       loading: (l) => AsyncLoading<NewT>(progress: progress),
     );
   }
@@ -356,15 +339,9 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
 }
 
 @internal
-enum DataKind {
-  cache,
-  live,
-}
+enum DataKind { cache, live }
 
-enum _DataSource {
-  liveOrRefresh,
-  reload,
-}
+enum _DataSource { liveOrRefresh, reload }
 
 typedef _DataRecord<ValueT> = (ValueT, {DataKind? kind, _DataSource? source});
 typedef _DataFilledRecord<ValueT> = ({
@@ -661,11 +638,7 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
 
     /// @nodoc
     @internal DataKind? kind,
-  }) : this._(
-         (value, kind: kind, source: null),
-         loading: null,
-         error: null,
-       );
+  }) : this._((value, kind: kind, source: null), loading: null, error: null);
 
   const AsyncData._(
     this._value, {
@@ -761,9 +734,7 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
     bool isRefresh = true,
   }) {
     final source = isRefresh ? _DataSource.liveOrRefresh : _DataSource.reload;
-    final previousValue = previous._value?.copyWith(
-      source: (source,),
-    );
+    final previousValue = previous._value?.copyWith(source: (source,));
 
     if (isRefresh) {
       return previous.map(
@@ -853,10 +824,6 @@ final class AsyncError<ValueT> extends AsyncResult<ValueT> {
     AsyncValue<ValueT> previous, {
     bool isRefresh = true,
   }) {
-    return AsyncError._(
-      _error,
-      loading: _loading,
-      value: previous._value,
-    );
+    return AsyncError._(_error, loading: _loading, value: previous._value);
   }
 }

@@ -89,10 +89,8 @@ final class _FunctionalProviderView<StateT, ValueT, CreatedT> //
     extends $FunctionalProvider<StateT, ValueT, CreatedT> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use, as this can be removed at any time.
-  _FunctionalProviderView(
-    this._inner,
-    this._createOverride,
-  ) : super(
+  _FunctionalProviderView(this._inner, this._createOverride)
+    : super(
         name: _inner.name,
         from: _inner.from,
         argument: _inner.argument,

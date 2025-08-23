@@ -4,9 +4,8 @@ part of '../framework.dart';
 /// [ProviderTransformer].
 @publicInMisc
 final class ProviderTransformerContext<InT, OutT> {
-  ProviderTransformerContext._({
-    required AsyncResult<InT> sourceState,
-  }) : _sourceState = sourceState;
+  ProviderTransformerContext._({required AsyncResult<InT> sourceState})
+    : _sourceState = sourceState;
 
   AsyncResult<InT> _sourceState;
 
@@ -150,9 +149,7 @@ extension<InT, StateT, ValueT>
     sub = this.source._addListener(
       source,
       (previous, next) => setSourceState(AsyncData(next)),
-      onError: (err, stackTrace) => setSourceState(
-        AsyncError(err, stackTrace),
-      ),
+      onError: (err, stackTrace) => setSourceState(AsyncError(err, stackTrace)),
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
       weak: weak,
     );
@@ -167,16 +164,14 @@ extension<InT, StateT, ValueT>
           source.container.runGuarded(onClose);
         }
       },
-      read: () => read(
-        switch (upsertTransformer()) {
-          AsyncData() && final transformer => transformer.value.state,
-          // Maps transformer errors as state errors
-          AsyncError(:final error, :final stackTrace) => AsyncError(
-            error,
-            stackTrace,
-          ),
-        },
-      ),
+      read: () => read(switch (upsertTransformer()) {
+        AsyncData() && final transformer => transformer.value.state,
+        // Maps transformer errors as state errors
+        AsyncError(:final error, :final stackTrace) => AsyncError(
+          error,
+          stackTrace,
+        ),
+      }),
     );
 
     // 'weak' is lazy loaded, but weak:false isn't.

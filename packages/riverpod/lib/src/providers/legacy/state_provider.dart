@@ -83,20 +83,15 @@ final class StateProvider<ValueT>
   /// The value obtained may change if the provider is refreshed (such as using
   /// [Ref.watch] or [Ref.refresh]).
   Refreshable<StateController<ValueT>> get notifier =>
-      ProviderElementProxy<StateController<ValueT>, ValueT>(
-        this,
-        (element) {
-          return (element as _StateProviderElement<ValueT>)._controllerNotifier;
-        },
-      );
+      ProviderElementProxy<StateController<ValueT>, ValueT>(this, (element) {
+        return (element as _StateProviderElement<ValueT>)._controllerNotifier;
+      });
 
   /// @nodoc
   @internal
   @override
   // ignore: library_private_types_in_public_api, not public
-  _StateProviderElement<ValueT> $createElement(
-    $ProviderPointer pointer,
-  ) {
+  _StateProviderElement<ValueT> $createElement($ProviderPointer pointer) {
     return _StateProviderElement._(pointer);
   }
 }
@@ -120,13 +115,10 @@ class _StateProviderElement<ValueT>
     final controller = StateController(initialState);
     _controllerNotifier.result = $Result.data(controller);
 
-    _removeListener = controller.addListener(
-      fireImmediately: true,
-      (state) {
-        _stateNotifier.result = _controllerNotifier.result;
-        value = AsyncData(state);
-      },
-    );
+    _removeListener = controller.addListener(fireImmediately: true, (state) {
+      _stateNotifier.result = _controllerNotifier.result;
+      value = AsyncData(state);
+    });
 
     return null;
   }
@@ -143,9 +135,7 @@ class _StateProviderElement<ValueT>
   }
 
   @override
-  void visitListenables(
-    void Function($Observable element) listenableVisitor,
-  ) {
+  void visitListenables(void Function($Observable element) listenableVisitor) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(_stateNotifier);
     listenableVisitor(_controllerNotifier);

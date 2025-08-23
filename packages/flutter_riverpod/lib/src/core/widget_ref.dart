@@ -385,8 +385,5 @@ sealed class WidgetRef implements MutationTarget {
   ///   "hard refresh".
   ///
   /// If used on a provider which is not initialized, this method will have no effect.
-  void invalidate(
-    ProviderOrFamily provider, {
-    bool asReload = false,
-  });
+  void invalidate(ProviderOrFamily provider, {bool asReload = false});
 }

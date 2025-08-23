@@ -449,9 +449,7 @@ final class MutationImpl<ResultT>
   void reset(MutationTarget target) {
     final container = target.container;
     final _MutationNotifier(:state, :setState, :getRef) = container
-        .read<_MutationNotifier<ResultT>>(
-          _MutationProvider(this),
-        );
+        .read<_MutationNotifier<ResultT>>(_MutationProvider(this));
 
     final ref = getRef();
     if (ref == null) return;
@@ -535,13 +533,10 @@ final class MutationImpl<ResultT>
   @override
   String toString() {
     final buffer = StringBuffer('Mutation<$ResultT>#${shortHash(this)}(');
-    buffer.writeAll(
-      [
-        if (_key != null) '${_key.$1}',
-        if (label != null) 'label: $label',
-      ],
-      ', ',
-    );
+    buffer.writeAll([
+      if (_key != null) '${_key.$1}',
+      if (label != null) 'label: $label',
+    ], ', ');
     buffer.write(')');
     return buffer.toString();
   }

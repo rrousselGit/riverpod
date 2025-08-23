@@ -52,9 +52,7 @@ final class $SyncValueProvider<ValueT> extends _ValueProvider<ValueT, ValueT> {
   @internal
   @override
   // ignore: library_private_types_in_public_api, not public API
-  _SyncValueProviderElement<ValueT> $createElement(
-    $ProviderPointer pointer,
-  ) {
+  _SyncValueProviderElement<ValueT> $createElement($ProviderPointer pointer) {
     return _SyncValueProviderElement(this, pointer);
   }
 }
@@ -131,9 +129,7 @@ final class $AsyncValueProvider<ValueT>
   @internal
   @override
   // ignore: library_private_types_in_public_api, not public API
-  _AsyncValueProviderElement<ValueT> $createElement(
-    $ProviderPointer pointer,
-  ) {
+  _AsyncValueProviderElement<ValueT> $createElement($ProviderPointer pointer) {
     return _AsyncValueProviderElement(this, pointer);
   }
 }

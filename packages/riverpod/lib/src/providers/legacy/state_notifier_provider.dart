@@ -135,13 +135,10 @@ final class StateNotifierProvider<
   /// This may happen if the provider is refreshed or one of its dependencies
   /// has changes.
   Refreshable<NotifierT> get notifier =>
-      ProviderElementProxy<NotifierT, ValueT>(
-        this,
-        (element) {
-          return (element as _StateNotifierProviderElement<NotifierT, ValueT>)
-              ._notifierNotifier;
-        },
-      );
+      ProviderElementProxy<NotifierT, ValueT>(this, (element) {
+        return (element as _StateNotifierProviderElement<NotifierT, ValueT>)
+            ._notifierNotifier;
+      });
 
   /// @nodoc
   @internal
@@ -203,9 +200,7 @@ class _StateNotifierProviderElement<
   }
 
   @override
-  void visitListenables(
-    void Function($Observable element) listenableVisitor,
-  ) {
+  void visitListenables(void Function($Observable element) listenableVisitor) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(_notifierNotifier);
   }

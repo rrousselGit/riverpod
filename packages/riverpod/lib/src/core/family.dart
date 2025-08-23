@@ -94,9 +94,7 @@ typedef SetupFamilyOverride<ArgT> =
 @publicInCodegen
 base mixin $FunctionalFamilyOverride<CreatedT, ArgT> on Family {
   /// {@macro riverpod.override_with}
-  Override overrideWith(
-    CreatedT Function(Ref ref, ArgT arg) create,
-  ) {
+  Override overrideWith(CreatedT Function(Ref ref, ArgT arg) create) {
     return $FamilyOverride(
       from: this,
       createElement: (pointer) {
@@ -191,9 +189,7 @@ base mixin $ClassFamilyOverride<
   }
 
   /// {@macro riverpod.override_with}
-  Override overrideWithBuild(
-    RunNotifierBuild<NotifierT, CreatedT> build,
-  ) {
+  Override overrideWithBuild(RunNotifierBuild<NotifierT, CreatedT> build) {
     return $FamilyOverride(
       from: this,
       createElement: (pointer) {

@@ -118,14 +118,13 @@ base mixin $FutureModifier<ValueT> on $ProviderBaseImpl<AsyncValue<ValueT>>
   Refreshable<Future<ValueT>> get future => _future;
 
   _ProviderRefreshable<Future<ValueT>, AsyncValue<ValueT>> get _future {
-    return ProviderElementProxy<Future<ValueT>, AsyncValue<ValueT>>(
-      this,
-      (element) {
-        element as FutureModifierElement<ValueT>;
+    return ProviderElementProxy<Future<ValueT>, AsyncValue<ValueT>>(this, (
+      element,
+    ) {
+      element as FutureModifierElement<ValueT>;
 
-        return element.futureNotifier;
-      },
-    );
+      return element.futureNotifier;
+    });
   }
 
   /// {@template riverpod.async_select}

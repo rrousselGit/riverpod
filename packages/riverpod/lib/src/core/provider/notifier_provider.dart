@@ -25,10 +25,7 @@ This means that you tried to either:
 /// The prototype of `Notifier.build` overrides.
 @internal
 typedef RunNotifierBuild<NotifierT, CreatedT> =
-    CreatedT Function(
-      Ref ref,
-      NotifierT notifier,
-    );
+    CreatedT Function(Ref ref, NotifierT notifier);
 
 /// A base class for all "notifiers".
 ///
@@ -237,12 +234,7 @@ extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
       didChange = true;
 
       try {
-        final futureOr = _callEncode(
-          storage,
-          key,
-          encode,
-          options,
-        );
+        final futureOr = _callEncode(storage, key, encode, options);
         if (futureOr is Future) {
           unawaited(futureOr.onError(ref.container.defaultOnError));
         }
@@ -299,9 +291,7 @@ abstract class $AsyncNotifierBase<ValueT>
   @override
   void _setStateFromValue(ValueT value) {
     state = AsyncLoading._(
-      (
-        progress: state.progress,
-      ),
+      (progress: state.progress),
       value: (value, kind: DataKind.cache, source: _DataSource.liveOrRefresh),
       error: state._error,
     );
@@ -439,9 +429,7 @@ abstract base class $ClassProvider<
   /// to customize the notifier's initialization logic without altering other
   /// aspects of the provider.
   /// {@endtemplate}
-  Override overrideWithBuild(
-    RunNotifierBuild<NotifierT, CreatedT> build,
-  ) {
+  Override overrideWithBuild(RunNotifierBuild<NotifierT, CreatedT> build) {
     return $ProviderOverride(
       origin: this,
       providerOverride: $view(runNotifierBuildOverride: build),
@@ -590,9 +578,7 @@ abstract class $ClassProviderElement<
   }
 
   @override
-  void visitListenables(
-    void Function($Observable element) listenableVisitor,
-  ) {
+  void visitListenables(void Function($Observable element) listenableVisitor) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(classListenable);
   }

@@ -76,10 +76,7 @@ final class _AsyncSelector<InputT, OutputT>
       }
     }
 
-    void playValue(
-      AsyncValue<InputT> value, {
-      bool callListeners = true,
-    }) {
+    void playValue(AsyncValue<InputT> value, {bool callListeners = true}) {
       void onLoading(AsyncValue<void> loading) {
         if (selectedFuture == null) {
           // The first time a future is emitted
@@ -104,10 +101,7 @@ final class _AsyncSelector<InputT, OutputT>
           switch (newSelectedValue) {
             case $ResultData():
               if (newSelectedValue != lastSelectedValue) {
-                emitData(
-                  newSelectedValue.value,
-                  callListeners: callListeners,
-                );
+                emitData(newSelectedValue.value, callListeners: callListeners);
               }
             case $ResultError():
               emitError(

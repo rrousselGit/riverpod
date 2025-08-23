@@ -169,9 +169,7 @@ class $StreamProviderElement<ValueT>
   }
 
   @override
-  void visitListenables(
-    void Function($Observable element) listenableVisitor,
-  ) {
+  void visitListenables(void Function($Observable element) listenableVisitor) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(_streamNotifier);
   }

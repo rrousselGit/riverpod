@@ -365,10 +365,7 @@ final class _ValueListenable<ValueT> {
     if (_skippedNotification != null) {
       _skippedNotification = (
         error: null,
-        data: (
-          prev: _skippedNotification?.data?.prev ?? prev,
-          next: next,
-        ),
+        data: (prev: _skippedNotification?.data?.prev ?? prev, next: next),
       );
       return;
     }
@@ -378,13 +375,7 @@ final class _ValueListenable<ValueT> {
 
   void _notifyError(Object err, StackTrace stack) {
     if (_skippedNotification != null) {
-      _skippedNotification = (
-        error: (
-          error: err,
-          stack: stack,
-        ),
-        data: null,
-      );
+      _skippedNotification = (error: (error: err, stack: stack), data: null);
       return;
     }
 

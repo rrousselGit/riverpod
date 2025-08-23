@@ -55,10 +55,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   /// [seamless] controls how the previous state is preserved:
   /// - seamless:true => import previous state and skip loading
   /// - seamless:false => import previous state and prefer loading
-  void asyncTransition(
-    AsyncValue<ValueT> newState, {
-    required bool seamless,
-  }) {
+  void asyncTransition(AsyncValue<ValueT> newState, {required bool seamless}) {
     final previous = value;
 
     if (newState._isMultiState) {
@@ -75,11 +72,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   @override
   @protected
   set value(AsyncValue<ValueT> newState) {
-    newState.map(
-      loading: onLoading,
-      error: onError,
-      data: onData,
-    );
+    newState.map(loading: onLoading, error: onError, data: onData);
   }
 
   @internal
@@ -116,17 +109,11 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
     if (completer != null) {
       completer
         ..future.ignore()
-        ..completeError(
-          value.error,
-          value.stackTrace,
-        );
+        ..completeError(value.error, value.stackTrace);
       _futureCompleter = null;
     } else {
       futureNotifier.result = $Result.data(
-        Future.error(
-          value.error,
-          value.stackTrace,
-        )..ignore(),
+        Future.error(value.error, value.stackTrace)..ignore(),
       );
     }
   }
@@ -198,10 +185,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   /// Listens to a [Future] and convert it into an [AsyncValue].
   @preferInline
   @internal
-  WhenComplete handleFuture(
-    Ref ref,
-    FutureOr<ValueT> Function() create,
-  ) {
+  WhenComplete handleFuture(Ref ref, FutureOr<ValueT> Function() create) {
     return _handleAsync(ref, ({
       required data,
       required done,
@@ -321,19 +305,14 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
         _cancelSubscription = null;
       } else {
         // The listened stream completed during a "loading" state.
-        completer.completeError(
-          _missingLastValueError(),
-          StackTrace.current,
-        );
+        completer.completeError(_missingLastValueError(), StackTrace.current);
       }
     }
     super.dispose();
   }
 
   @override
-  void visitListenables(
-    void Function($Observable element) listenableVisitor,
-  ) {
+  void visitListenables(void Function($Observable element) listenableVisitor) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(futureNotifier);
   }
@@ -480,10 +459,7 @@ depending on itself.
     }
 
     if (state == null) {
-      return $ResultError(
-        StateError(uninitializedError),
-        StackTrace.current,
-      );
+      return $ResultError(StateError(uninitializedError), StackTrace.current);
     }
 
     return state;
@@ -617,9 +593,7 @@ depending on itself.
 
     _dependencyMayHaveChanged = false;
 
-    visitAncestors(
-      (element) => element.flush(),
-    );
+    visitAncestors((element) => element.flush());
   }
 
   // Hook for async provider to init state with AsyncLoading
@@ -850,14 +824,12 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     _dependencyMayHaveChanged = true;
 
-    visitChildren(
-      (element) {
-        element._markDependencyMayHaveChanged();
-        element.visitListenables(
-          (notifier) => notifier.notifyDependencyMayHaveChanged(),
-        );
-      },
-    );
+    visitChildren((element) {
+      element._markDependencyMayHaveChanged();
+      element.visitListenables(
+        (notifier) => notifier.notifyDependencyMayHaveChanged(),
+      );
+    });
     visitListenables((notifier) => notifier.notifyDependencyMayHaveChanged());
   }
 
@@ -886,11 +858,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
     );
 
-    _handleFireImmediately(
-      container,
-      sub,
-      fireImmediately: fireImmediately,
-    );
+    _handleFireImmediately(container, sub, fireImmediately: fireImmediately);
 
     sub.impl._listenedElement.addDependentSubscription(sub.impl);
 
@@ -1250,12 +1218,8 @@ $this''',
   /// This method does not guarantee that a dependency is visited only once.
   /// If a provider both [Ref.watch] and [Ref.listen] an element, or if a provider
   /// [Ref.listen] multiple times to an element, it may be visited multiple times.
-  void visitChildren(
-    void Function(ProviderElement element) elementVisitor,
-  ) {
-    void lookup(
-      Iterable<ProviderSubscription<Object?>> children,
-    ) {
+  void visitChildren(void Function(ProviderElement element) elementVisitor) {
+    void lookup(Iterable<ProviderSubscription<Object?>> children) {
       for (final child in children) {
         switch (child.impl.source) {
           case final ProviderElement dependent:
@@ -1270,9 +1234,7 @@ $this''',
     if (dependents case final dependents?) lookup(dependents);
   }
 
-  void visitListenables(
-    void Function($Observable element) listenableVisitor,
-  ) {}
+  void visitListenables(void Function($Observable element) listenableVisitor) {}
 
   /// Visit the [ProviderElement]s that this provider is listening to.
   ///
@@ -1282,9 +1244,7 @@ $this''',
   /// This method does not guarantee that a provider is visited only once.
   /// If this provider both [Ref.watch] and [Ref.listen] an element, or if it
   /// [Ref.listen] multiple times to an element, that element may be visited multiple times.
-  void visitAncestors(
-    void Function(ProviderElement element) visitor,
-  ) {
+  void visitAncestors(void Function(ProviderElement element) visitor) {
     if (subscriptions case final subscriptions?) {
       for (var i = 0; i < subscriptions.length; i++) {
         final sub = subscriptions[i];

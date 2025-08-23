@@ -5,11 +5,7 @@ part of '../core.dart';
 /// See also [Consumer]
 @internal
 typedef ConsumerBuilder =
-    Widget Function(
-      BuildContext context,
-      WidgetRef ref,
-      Widget? child,
-    );
+    Widget Function(BuildContext context, WidgetRef ref, Widget? child);
 
 /// {@template riverpod.consumer}
 /// Build a widget tree while listening to providers.
@@ -523,10 +519,7 @@ base class ConsumerStatefulElement extends StatefulElement
   }
 
   @override
-  void invalidate(
-    ProviderOrFamily provider, {
-    bool asReload = false,
-  }) {
+  void invalidate(ProviderOrFamily provider, {bool asReload = false}) {
     _assertNotDisposed();
     container.invalidate(provider, asReload: asReload);
   }
