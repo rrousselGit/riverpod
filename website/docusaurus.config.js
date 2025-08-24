@@ -1,3 +1,5 @@
+const isMainLanguage = process.env.DOCUSAURUS_CURRENT_LOCALE === "en";
+
 module.exports = {
   title: "Riverpod",
   url: "https://riverpod.dev",
@@ -7,12 +9,24 @@ module.exports = {
   projectName: "riverpod", // Usually your repo name.
   plugins: ["docusaurus-plugin-sass"],
   trailingSlash: false,
-  onBrokenLinks: 'warn',
-  onBrokenMarkdownLinks: 'warn',
-  onDuplicateRoutes: 'warn',
+  onBrokenLinks: isMainLanguage ? "throw" : "warn",
+  onBrokenMarkdownLinks: isMainLanguage ? "throw" : "warn",
+  onDuplicateRoutes: isMainLanguage ? "throw" : "warn",
   i18n: {
     defaultLocale: "en",
-    locales: ["en", "fr", "ko", "ja", "es", "bn", "de", "it", "ru", "tr", "zh-Hans"],
+    locales: [
+      "en",
+      "fr",
+      "ko",
+      "ja",
+      "es",
+      "bn",
+      "de",
+      "it",
+      "ru",
+      "tr",
+      "zh-Hans",
+    ],
   },
   themeConfig: {
     algolia: {
