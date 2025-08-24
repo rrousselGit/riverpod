@@ -92,7 +92,7 @@ When specifying `key`, it is critical to ensure that:
 By default, state is only cached for 2 days. This default ensures that
 no leak happens and deleted providers stay in the database indefinitely
 
-This is generally safe, as Riverpod is designed to be use primarily
+This is generally safe, as Riverpod is designed to be used primarily
 as a cache for IO operations (network requests, database queries, etc).
 But such default will not be suitable for all use-cases, such as if
 you want to store user preferences.

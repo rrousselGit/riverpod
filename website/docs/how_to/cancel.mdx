@@ -85,7 +85,7 @@ The exact code needed to cancel the request will depend on the HTTP client.
 In this example, we will use `package:http`, but the same principle applies
 to other clients.
 
-The key here that `ref.onDispose` will be called when the user navigates away.
+The key here is that `ref.onDispose` will be called when the user navigates away.
 That is because our provider is no-longer used, and therefore disposed
 thanks to automatic disposal.  
 We can therefore use this callback to cancel the request. When using `package:http`,

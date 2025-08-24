@@ -89,7 +89,7 @@ of Riverpod's <Link documentID="concepts2/auto_dispose" /> in a reliable way. Th
 an implementation that "mostly works" with `BuildContext`.
 The problem is that there are lots of subtle edge-cases which could silently break the auto-dispose feature.
 
-This would cause memory leaks, but that's but that's not the real issue.  
+This would cause memory leaks, but that's not the real issue.  
 Automatic disposal is more importantly about stopping the execution of code that is no longer needed.
 If auto-dispose fails to dispose a provider, then that provider may continuously perform
 network requests in the background.

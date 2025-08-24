@@ -65,7 +65,7 @@ In the previous snippet, watching `evenItemsProvider` will produce the following
 
 With Provider, the above features aren't remotely achievable, and even less easy to workaround.
 
-### Combining providers is hard and error prone
+### Combining providers is hard and error-prone
 With Provider we may be tempted to use `context.watch` inside provider's `create`.  
 This would be unreliable, as `didChangeDependencies` may be triggered even if no dependency 
 has changed (e.g. such as when there's a GlobalKey involved in the widget tree).
