@@ -27,10 +27,16 @@ void main() {
     final mut = Mutation<num>();
     final mutInt = mut<int>(null);
     final mutDouble = mut<double>(null);
+
+    final confusingMut = mut<num>(null);
     // none should be equal
     expect(mut, isNot(mutInt));
     expect(mut, isNot(mutDouble));
     expect(mutInt, isNot(mutDouble));
+
+    // check for type equality parity
+    expect(confusingMut, isNot(mutInt));
+    expect(mutInt, isNot(confusingMut));
 
     // shows that using the same generic
     // with the same key will get the correct value

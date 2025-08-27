@@ -516,9 +516,11 @@ final class MutationImpl<ResultT>
     );
   }
 
+  bool _matchesT(Mutation<Object?> other) => other is Mutation<ResultT>;
+
   @override
   bool operator ==(Object other) {
-    if (other is! MutationImpl<ResultT>) return false;
+    if (other is! MutationImpl<ResultT> || !other._matchesT(this)) return false;
     if (_key != null) return _key == other._key;
 
     return super == other;
