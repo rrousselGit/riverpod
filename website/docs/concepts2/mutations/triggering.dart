@@ -42,7 +42,7 @@ class AddTodoButton extends ConsumerWidget {
           // This will keep the provider alive for the duration of the operation.
           final todoNotifier = tsx.get(todoNotifierProvider.notifier);
 
-          // We perform a perform request using a Notifier.
+          // We perform a request using a Notifier.
           final createdTodo = await todoNotifier.addTodo('Eat a cookie');
 
           // We return the created todo. This enables our UI to show information

@@ -5,10 +5,14 @@ class Todo {}
 void switching(MutationState<Todo> addTodoState) {
   /* SNIPPET START */
   switch (addTodoState) {
-    case MutationPending():
-    case MutationError():
-    case MutationSuccess():
     case MutationIdle():
+    // Show a button to add a todo
+    case MutationPending():
+    // Show a loading indicator
+    case MutationError():
+    // Show an error message
+    case MutationSuccess():
+    // Show the created todo
   }
   /* SNIPPET END */
 }
