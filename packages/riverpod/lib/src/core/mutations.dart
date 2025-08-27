@@ -350,7 +350,8 @@ sealed class Mutation<ResultT>
   /// // Use two different values as key
   /// ref.watch(mutation((todo.id, user.id)));
   /// ```
-  Mutation<ResultT> call(Object? key);
+  @optionalTypeArgs
+  Mutation<ChangedT> call<ChangedT extends ResultT>(Object? key);
 
   /// Starts a mutation and set its state based on the result of the callback.
   ///
@@ -404,11 +405,11 @@ final class MutationImpl<ResultT>
 
   @override
   final Object? label;
-  final (Object? value, Mutation<ResultT> parent)? _key;
+  final (Object? value, Mutation<Object?> parent)? _key;
 
   @override
-  MutationImpl<ResultT> call(Object? key) {
-    return MutationImpl<ResultT>._keyed((key, this), label: label);
+  MutationImpl<ChangedT> call<ChangedT extends ResultT>(Object? key) {
+    return MutationImpl<ChangedT>._keyed((key, this), label: label);
   }
 
   @override
