@@ -2,6 +2,9 @@
 title: Mutations (experimental)
 ---
 import { Link } from "/src/components/Link";
+import CodeBlock from "@theme/CodeBlock";
+import { trimSnippet } from "/src/components/CodeSnippet";
+import listener from 'raw-loader!./mutations/listener.dart';
 
 :::caution
 Mutations are experimental, and the API may change in a breaking way without
@@ -46,45 +49,8 @@ For this, we will need a <Link documentID="concepts2/refs" /> and pick a listeni
 
 A typical example would be:
 
-```dart
-class Example extends ConsumerWidget {
-  const Example({super.key});
+<CodeBlock>{trimSnippet(listener)}</CodeBlock>
 
-  @override
-  Widget build(BuildContext context) {
-    // We listen to the current state of the "addTodo" mutation.
-    // Listening to this will not perform any side effects by itself.
-    /* highlight-next-line */
-    final addTodoState = ref.watch(addTodo);
-
-    return Row(
-      children: [
-        ElevatedButton(
-          style: ButtonStyle(
-            // If there is an error, we show the button in red
-            /* highlight-next-line */
-            backgroundColor: switch (addTodoState) {
-              MutationError() => WidgetStatePropertyAll(Colors.red),
-              _ => null,
-            },
-          ),
-          onPressed: () {
-            // TODO
-          },
-          child: const Text('Add todo'),
-        ),
-
-        // The operation is pending, let's show a progress indicator
-        /* highlight-next-line */
-        if (addTodoState is MutationPending) ...[
-          const SizedBox(width: 8),
-          const CircularProgressIndicator(),
-        ],
-      ],
-    );
-  }
-}
-```
 ### Scoping a mutation
 
 Sometimes, you may want to have multiple instances of the same mutation.
