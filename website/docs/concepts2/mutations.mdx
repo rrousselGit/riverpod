@@ -37,35 +37,12 @@ final addTodo = Mutation<Todo>();
 Typically, this variable will either be global or as a `static final` variable on
 a [Notifier].
 :::
-You can additionally choose to call the mutation like a function,
-and provide it with a key not unlike a family provider.
-
-This is useful if you want to have multiple instances of the same mutation,
-such as deleting a specific item in a list:
-```dart
-final removeTodo = Mutation<void>();
-final removeTodoWithId = removeTodo(todo.id);
-```
-
-Sometimes, these mutations have a generic return type,
-such as if an api response may have different response types
-based on the input parameters.
-```dart
-final create = Mutation<ApiResponse>();
-final createTodo = create<CreatedResponse<Todo>>('create_todo');
-await createTodo.run(ref, (tsx) async {
-  final client = tsx.get(apiProvider);
-  final response = await client.post('/todos', data: {'title': 'Eat a cookie'});
-  return CreatedResponse<Todo>.fromJson(response.data, Todo.fromJson);
-});
-```
 
 ## Listening to a mutation
 
 Once we've defined a mutation, we can start using it inside <Link documentID="concepts2/consumers" /> or <Link documentID="concepts2/providers" />.  
 For this, we will need a <Link documentID="concepts2/refs" /> and pick a listening method of our choice
 (typically [Ref.watch]).
-
 
 A typical example would be:
 
@@ -107,6 +84,34 @@ class Example extends ConsumerWidget {
     );
   }
 }
+```
+### Scoping a mutation
+
+Sometimes, you may want to have multiple instances of the same mutation.
+
+This can include things like an id, or any other parameter that makes the mutation unique.
+
+This is useful if you want to have multiple instances of the same mutation,
+such as deleting a specific item in a list
+
+Simply call the mutation with the unique key:
+```dart
+final removeTodo = Mutation<void>();
+final removeTodoWithId = removeTodo(todo.id);
+```
+
+Sometimes, these mutations have a generic return type,
+such as if an api response may have different response types
+based on the input parameters, such as with deserialization.
+
+```dart
+final create = Mutation<ApiResponse>();
+final createTodo = create<CreatedResponse<Todo>>('create_todo');
+await createTodo.run(ref, (tsx) async {
+  final client = tsx.get(apiProvider);
+  final response = await client.post('/todos', data: {'title': 'Eat a cookie'});
+  return CreatedResponse<Todo>.fromJson(response.data, Todo.fromJson);
+});
 ```
 
 ### Triggering a mutation
