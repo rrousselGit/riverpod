@@ -38,9 +38,9 @@ void main() {
 
     final container = ProviderContainer.test();
 
-    final sub = container.listen(mut, (previous, next) {});
-    final subInt = container.listen(mutInt, (previous, next) {});
-    final subDouble = container.listen(mutDouble, (previous, next) {});
+    final sub = container.listen<MutationState<num>>(mut, (previous, next) {});
+    final subInt = container.listen<MutationState<int>>(mutInt, (previous, next) {});
+    final subDouble = container.listen<MutationState<double>>(mutDouble, (previous, next) {});
 
     await mut.run(container, (tsx) async => 9);
     await mutInt.run(container, (tsx) async => 42);
