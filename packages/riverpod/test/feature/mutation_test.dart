@@ -44,17 +44,17 @@ void main() {
 
     final container = ProviderContainer.test();
 
-    final sub = container.listen(mut, (previous, next) {});
-    final subInt = container.listen(mutInt, (previous, next) {});
-    final subDouble = container.listen(mutDouble, (previous, next) {});
+    final sub = container.listen<MutationState<num>>(mut, (previous, next) {});
+    final subInt = container.listen<MutationState<int>>(mutInt, (previous, next) {});
+    final subDouble = container.listen<MutationState<double>>(mutDouble, (previous, next) {});
 
     await mut.run(container, (tsx) async => 9);
     await mutInt.run(container, (tsx) async => 42);
     await mutDouble.run(container, (tsx) async => 3.14);
 
-    expect(sub.read(), equals(isMutationSuccess<num>(9)));
-    expect(subInt.read(), equals(isMutationSuccess<int>(42)));
-    expect(subDouble.read(), equals(isMutationSuccess<double>(3.14)));
+    expect(sub.read(), isMutationSuccess<num>(9));
+    expect(subInt.read(), isMutationSuccess<int>(42));
+    expect(subDouble.read(), isMutationSuccess<double>(3.14));
   });
 
   test('Concurrent run call ignores the previous run call', () async {
