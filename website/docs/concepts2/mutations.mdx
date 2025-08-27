@@ -37,12 +37,34 @@ final addTodo = Mutation<Todo>();
 Typically, this variable will either be global or as a `static final` variable on
 a [Notifier].
 :::
+You can additionally choose to call the mutation like a function,
+and provide it with a key not unlike a family provider.
+
+This is useful if you want to have multiple instances of the same mutation,
+such as deleting a specific item in a list:
+```dart
+final removeTodo = Mutation<void>();
+final removeTodoWithId = removeTodo(todo.id);
+```
+
+Sometimes, these mutations have a generic return type,
+such as if an api response may have different response types
+based on the input parameters.
+```dart
+final create = Mutation<ApiResponse>();
+final createTodo = create<CreatedResponse<Todo>>('create_todo');
+await createTodo.run(ref, (tsx) async {
+  final client = tsx.get(apiProvider);
+  final response = await client.post('/todos', data: {'title': 'Eat a cookie'});
+  return CreatedResponse<Todo>.fromJson(response.data, Todo.fromJson);
+});
+```
 
 ## Listening to a mutation
 
 Once we've defined a mutation, we can start using it inside <Link documentID="concepts2/consumers" /> or <Link documentID="concepts2/providers" />.  
 For this, we will need a <Link documentID="concepts2/refs" /> and pick a listening method of our choice
-(typically [Ref.watch](https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/Ref/watch.html)).
+(typically [Ref.watch]).
 
 
 A typical example would be:
@@ -128,7 +150,7 @@ Mutations can be in one of the following states:
 You can switch over the different states using a `switch` statement:
 
 ```dart
-switch (addTodo.state) {
+switch (addTodoState) {
   case MutationPending():
   case MutationError():
   case MutationSuccess():
@@ -162,6 +184,7 @@ ElevatedButton(
 [MutationSuccess]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/experimental_mutation/MutationSuccess-class.html
 [MutationIdle]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/experimental_mutation/MutationIdle-class.html
 [Mutation.reset]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/experimental_mutation/Mutation/reset.html
+[Mutation.run]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/experimental_mutation/Mutation/run.html
 [Mutation]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/experimental_mutation/Mutation-class.html
 [Notifier]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/riverpod/Notifier-class.html
-[Mutation.run]: https://pub.dev/documentation/flutter_riverpod/3.0.0-dev.17/experimental_mutation/Mutation/run.html
+[Ref.watch]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/riverpod/Ref/watch.html
