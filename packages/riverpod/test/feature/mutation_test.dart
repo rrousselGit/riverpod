@@ -46,9 +46,9 @@ void main() {
     await mutInt.run(container, (tsx) async => 42);
     await mutDouble.run(container, (tsx) async => 3.14);
 
-    expect(sub.read(), equals(isMutationSuccess<num>(9)));
-    expect(subInt.read(), equals(isMutationSuccess<int>(42)));
-    expect(subDouble.read(), equals(isMutationSuccess<double>(3.14)));
+    expect(sub.read(), isMutationSuccess<num>(9));
+    expect(subInt.read(), isMutationSuccess<int>(42));
+    expect(subDouble.read(), isMutationSuccess<double>(3.14));
   });
 
   test('Concurrent run call ignores the previous run call', () async {
