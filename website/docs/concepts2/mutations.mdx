@@ -5,6 +5,11 @@ import { Link } from "/src/components/Link";
 import CodeBlock from "@theme/CodeBlock";
 import { trimSnippet } from "/src/components/CodeSnippet";
 import listener from 'raw-loader!./mutations/listener.dart';
+import keyed from 'raw-loader!./mutations/keyed.dart';
+import generic from 'raw-loader!./mutations/generic.dart';
+import triggering from 'raw-loader!./mutations/triggering.dart';
+import switching from 'raw-loader!./mutations/switching.dart';
+import resetting from 'raw-loader!./mutations/resetting.dart';
 
 :::caution
 Mutations are experimental, and the API may change in a breaking way without
@@ -61,24 +66,14 @@ This is useful if you want to have multiple instances of the same mutation,
 such as deleting a specific item in a list
 
 Simply call the mutation with the unique key:
-```dart
-final removeTodo = Mutation<void>();
-final removeTodoWithId = removeTodo(todo.id);
-```
+
+<CodeBlock>trimSnippet(keyed)</CodeBlock>
 
 Sometimes, these mutations have a generic return type,
 such as if an api response may have different response types
 based on the input parameters, such as with deserialization.
 
-```dart
-final create = Mutation<ApiResponse>();
-final createTodo = create<CreatedResponse<Todo>>('create_todo');
-await createTodo.run(ref, (tsx) async {
-  final client = tsx.get(apiProvider);
-  final response = await client.post('/todos', data: {'title': 'Eat a cookie'});
-  return CreatedResponse<Todo>.fromJson(response.data, Todo.fromJson);
-});
-```
+<CodeBlock>trimSnippet(generic)</CodeBlock>
 
 ### Triggering a mutation
 
@@ -87,28 +82,7 @@ So far, we've listened to the state of a mutation, but nothing actually happens 
 To trigger a mutation, we can use [Mutation.run], pass our mutation, and provide an asynchronous callback
 that updates whatever state we want. Lastly, we'll need to return a value matching the generic type of the mutation.
 
-```dart
-ElevatedButton(
-  onPressed: () {
-    // Trigger the mutation, and run the callback.
-    // During the callback, we obtain a MutationTransaction (tsx) object
-    // which we can use to access providers and perform operations.
-    addTodo.run(ref, (tsx) async {
-      // We use tsx.get to access providers within mutations.
-      // This will keep the provider alive for the duration of the operation.
-      final todoNotifier = tsx.get(todoNotifierProvider);
-
-      // We perform a perform request using a Notifier.
-      final createdTodo = await todoNotifier.addTodo('Eat a cookie');
-
-      // We return the created todo. This enables our UI to show information
-      // about the created todo, such as its ID/creation date/etc.
-      return createdTodo;
-    });
-  },
-  child: const Text('Add todo'),
-);
-```
+<CodeBlock>trimSnippet(triggering)</CodeBlock>
 
 ### The different mutation states and their meaning
 
@@ -120,14 +94,7 @@ Mutations can be in one of the following states:
 
 You can switch over the different states using a `switch` statement:
 
-```dart
-switch (addTodoState) {
-  case MutationPending():
-  case MutationError():
-  case MutationSuccess():
-  case MutationIdle():
-}
-```
+<CodeBlock>trimSnippet(switching)</CodeBlock>
 
 ### After a mutation has been started once, how to reset it to its idle state?
 
@@ -140,15 +107,7 @@ This is similar to how <Link documentID="concepts2/auto_dispose"/> works, but fo
 Alternatively, you can manually reset a mutation to its idle state
 by calling the [Mutation.reset] method:
 
-```dart
-ElevatedButton(
-  onPressed: () {
-    // Reset the mutation to its idle state.
-    addTodo.reset(ref);
-  },
-  child: const Text('Reset mutation'),
-);
-```
+<CodeBlock>trimSnippet(resetting)</CodeBlock>
 
 [MutationPending]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/experimental_mutation/MutationPending-class.html
 [MutationError]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/experimental_mutation/MutationError-class.html
