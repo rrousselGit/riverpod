@@ -6,6 +6,8 @@
 - Preserve persisted state if a provider throws.
 - `provider.future` will now skip offline-persisted state by default.
   This avoids awkward unexpected provider rebuild when chaining persisted providers.
+- Made `Mutation.call` generic.
+  This allows for better compatibility with generic-returning functions (thanks to @TekExplorer)
 
 ## 3.0.0-dev.17 - 2025-08-01
 
