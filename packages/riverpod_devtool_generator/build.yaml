@@ -1,0 +1,21 @@
+targets:
+  $default:
+    builders:
+      riverpod_devtool_generator:
+        enabled: true
+        generate_for:
+          include:
+            - "**/*.dart"
+      source_gen|combining_builder:
+        options:
+          ignore_for_file:
+            - "type=lint"
+
+builders:
+  riverpod_devtool_generator:
+    import: "package:riverpod_devtool_generator/builder.dart"
+    builder_factories: ["riverpodDevtoolGenerator"]
+    build_extensions: { ".dart": [".riverpod_devtool_generator.g.part"] }
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ["source_gen|combining_builder"]

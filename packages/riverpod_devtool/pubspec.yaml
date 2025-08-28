@@ -20,6 +20,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  build_runner: ^2.7.0
+  riverpod_devtool_generator: ^0.0.0
 
 flutter:
   uses-material-design: true

@@ -745,7 +745,11 @@ final class ProviderContainer implements Node, MutationTarget {
        _parent = parent,
        _onError = onError ?? Zone.current.handleUncaughtError,
        retry = retry ?? parent?.retry,
-       observers = [...?observers, if (parent != null) ...parent.observers],
+       observers = [
+         ...?observers,
+         if (kDebugMode && parent == null) const _DevtoolObserver(),
+         if (parent != null) ...parent.observers,
+       ],
        _root = parent?._root ?? parent {
     if (parent != null) {
       if (parent.disposed) {
@@ -789,7 +793,7 @@ final class ProviderContainer implements Node, MutationTarget {
     parent?._children.add(this);
 
     if (kDebugMode) {
-      RiverpodDevtool.instance.addEvent('riverpod.container.add', [this]);
+      RiverpodDevtool.instance.addEvent(ProviderContainerAddEvent(this));
     }
   }
 
@@ -837,7 +841,7 @@ final class ProviderContainer implements Node, MutationTarget {
     return delay;
   }
 
-  final _debugId = const Uuid().v4();
+  final _debugId = ContainerId(const Uuid().v4());
 
   final int _debugOverridesLength;
 
@@ -1132,7 +1136,7 @@ final class ProviderContainer implements Node, MutationTarget {
     }
 
     if (kDebugMode) {
-      RiverpodDevtool.instance.addEvent('riverpod.container.dispose', [this]);
+      RiverpodDevtool.instance.addEvent(ProviderContainerDisposeEvent(this));
     }
   }
 
@@ -1172,12 +1176,16 @@ final class ProviderObserverContext {
   @internal
   ProviderObserverContext(
     this.provider,
-    this.container, {
+    this.container,
+    this._element, {
     required this.mutation,
   });
 
   /// The provider that triggered the event.
   final ProviderBase<Object?> provider;
+
+  /// The element associated to [provider].
+  final ProviderElement _element;
 
   /// The container that owns [provider]'s state.
   final ProviderContainer container;
@@ -1202,11 +1210,15 @@ final class ProviderObserverContext {
   }
 }
 
+/// Container ID
+@publicInDevtools
+extension type ContainerId(String value) {}
+
 /// An object that listens to the changes of a [ProviderContainer].
 ///
 /// This can be used for logging or making devtools.
 /// {@category Core}
-abstract class ProviderObserver {
+abstract base class ProviderObserver {
   /// An object that listens to the changes of a [ProviderContainer].
   ///
   /// This can be used for logging or making devtools.

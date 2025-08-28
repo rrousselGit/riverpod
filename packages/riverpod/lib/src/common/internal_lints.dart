@@ -49,6 +49,9 @@ const publicInPersist = Public.inLibrary('experimental/persist');
 @internal
 const publicInMutations = Public.inLibrary('experimental/mutation');
 
+@internal
+const publicInDevtools = Public.inLibrary('src/devtools.dart');
+
 /// Not public
 @internal
 const publicInRiverpodAndCodegen = AllOf([

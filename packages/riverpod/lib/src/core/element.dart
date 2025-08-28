@@ -334,11 +334,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
 @publicInCodegen
 abstract class ProviderElement<StateT, ValueT> implements Node {
   /// {@macro riverpod.provider_element_base}
-  ProviderElement(this.pointer) {
-    if (kDebugMode) {
-      RiverpodDevtool.instance.addEvent('riverpod.element.add', [this]);
-    }
-  }
+  ProviderElement(this.pointer);
 
   static bool defaultUpdateShouldNotify(Object? previous, Object? next) {
     return previous != next;
@@ -710,6 +706,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     return ProviderObserverContext(
       origin,
       container,
+      this,
       mutation: _currentMutationContext(),
     );
   }
@@ -1182,7 +1179,7 @@ $this''',
     });
 
     if (kDebugMode) {
-      RiverpodDevtool.instance.addEvent('riverpod.element.dispose', [this]);
+      RiverpodDevtool.instance.addEvent(ProviderElementDisposeEvent(this));
     }
   }
 

@@ -26,11 +26,12 @@ class _FlexibleLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return devtools_shared_ui.SplitPane(
-      axis: Axis.horizontal,
-      initialFractions: const [0.3, 0.7],
-      minSizes: const [50.0, 100.0],
-      children: const [ProviderListView(), StateView()],
-    );
+    return  SizedBox.expand(child: ProviderListView());
+    // return devtools_shared_ui.SplitPane(
+    //   axis: Axis.horizontal,
+    //   initialFractions: const [0.3, 0.7],
+    //   minSizes: const [50.0, 100.0],
+    //   children: const [ProviderListView(), StateView()],
+    // );
   }
 }

@@ -573,6 +573,7 @@ abstract class $ClassProviderElement<
     return ProviderObserverContext(
       origin,
       container,
+      this,
       mutation: _currentMutationContext(),
     );
   }

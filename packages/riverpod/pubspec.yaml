@@ -24,7 +24,9 @@ dependencies:
 
 dev_dependencies:
   analyzer: ^7.0.0
+  build_runner: ^2.7.0
   expect_error: ^1.0.0
   mockito: ^5.0.0
   path: ^1.9.0
+  riverpod_devtool_generator: ^0.0.0
   trotter: ^2.0.0-dev.1
