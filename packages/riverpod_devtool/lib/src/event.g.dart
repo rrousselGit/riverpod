@@ -80,14 +80,10 @@ class ProviderContainerAddEvent extends Event {
     final parentIds = List.generate(
       int.parse($events['$path.parentIds.length']!.ref.valueAsString!),
       (i) {
-        return internals.ContainerId(
-          $events['$path.parentIds[$i]']!.ref.valueAsString!,
-        );
+        return $events['$path.parentIds[$i]']!.ref;
       },
     );
-    final containerId = internals.ContainerId(
-      $events['$path.containerId']!.ref.valueAsString!,
-    );
+    final containerId = $events['$path.containerId']!.ref;
 
     return ProviderContainerAddEvent(
       container: container,
@@ -97,8 +93,8 @@ class ProviderContainerAddEvent extends Event {
   }
 
   final InstanceRef container;
-  final List<internals.ContainerId> parentIds;
-  final internals.ContainerId containerId;
+  final List<InstanceRef> parentIds;
+  final InstanceRef containerId;
 }
 
 /// Devtool code for [internals.ProviderContainerDisposeEvent]
@@ -121,7 +117,11 @@ class ProviderContainerDisposeEvent extends Event {
 
 /// Devtool code for [internals.ProviderElementAddEvent]
 class ProviderElementAddEvent extends Event {
-  ProviderElementAddEvent({required this.element});
+  ProviderElementAddEvent({
+    required this.element,
+    required this.originId,
+    required this.providerId,
+  });
 
   factory ProviderElementAddEvent.from(
     Map<String, Byte> $events, {
@@ -130,16 +130,28 @@ class ProviderElementAddEvent extends Event {
     _validate($events, name: 'ProviderElementAddEvent', path: path);
 
     final element = $events['$path.element']!.ref;
+    final originId = $events['$path.originId']!.ref;
+    final providerId = $events['$path.providerId']!.ref;
 
-    return ProviderElementAddEvent(element: element);
+    return ProviderElementAddEvent(
+      element: element,
+      originId: originId,
+      providerId: providerId,
+    );
   }
 
   final InstanceRef element;
+  final InstanceRef originId;
+  final InstanceRef providerId;
 }
 
 /// Devtool code for [internals.ProviderElementDisposeEvent]
 class ProviderElementDisposeEvent extends Event {
-  ProviderElementDisposeEvent({required this.element});
+  ProviderElementDisposeEvent({
+    required this.element,
+    required this.originId,
+    required this.providerId,
+  });
 
   factory ProviderElementDisposeEvent.from(
     Map<String, Byte> $events, {
@@ -148,11 +160,19 @@ class ProviderElementDisposeEvent extends Event {
     _validate($events, name: 'ProviderElementDisposeEvent', path: path);
 
     final element = $events['$path.element']!.ref;
+    final originId = $events['$path.originId']!.ref;
+    final providerId = $events['$path.providerId']!.ref;
 
-    return ProviderElementDisposeEvent(element: element);
+    return ProviderElementDisposeEvent(
+      element: element,
+      originId: originId,
+      providerId: providerId,
+    );
   }
 
   final InstanceRef element;
+  final InstanceRef originId;
+  final InstanceRef providerId;
 }
 
 /// Devtool code for [internals.ProviderElementUpdateEvent]
@@ -161,6 +181,8 @@ class ProviderElementUpdateEvent extends Event {
     required this.element,
     required this.previous,
     required this.next,
+    required this.originId,
+    required this.providerId,
   });
 
   factory ProviderElementUpdateEvent.from(
@@ -172,15 +194,21 @@ class ProviderElementUpdateEvent extends Event {
     final element = $events['$path.element']!.ref;
     final previous = $events['$path.previous']!.ref;
     final next = $events['$path.next']!.ref;
+    final originId = $events['$path.originId']!.ref;
+    final providerId = $events['$path.providerId']!.ref;
 
     return ProviderElementUpdateEvent(
       element: element,
       previous: previous,
       next: next,
+      originId: originId,
+      providerId: providerId,
     );
   }
 
   final InstanceRef element;
   final InstanceRef previous;
   final InstanceRef next;
+  final InstanceRef originId;
+  final InstanceRef providerId;
 }

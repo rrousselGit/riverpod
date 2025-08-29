@@ -4,7 +4,6 @@ import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer_buffer/analyzer_buffer.dart';
 import 'package:build/build.dart';
-import 'package:collection/collection.dart';
 import 'package:custom_lint_core/custom_lint_core.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:meta/meta.dart';
@@ -265,12 +264,28 @@ sealed class _BuiltInType {
       packageName: 'dart:core',
     );
 
+    const internalsUri = 'package:riverpod/src/internals.dart';
+    const containerIdChecker = TypeChecker.fromName(
+      'ContainerId',
+      packageName: internalsUri,
+    );
+    const providerIdChecker = TypeChecker.fromName(
+      'ProviderId',
+      packageName: internalsUri,
+    );
+    const originIdChecker = TypeChecker.fromName(
+      'OriginId',
+      packageName: internalsUri,
+    );
+
     if (annotatedClasses.any((e) => e.name3 == type.element3?.name3)) {
       return _OtherDevtoolType(type);
-    } else if (containerIdType.isExactlyType(type)) {
+    } else if (containerIdChecker.isExactlyType(type)) {
       return _ContainerId();
-    } else if (providerElementIdType.isExactlyType(type)) {
-      return _ProviderElementId();
+    } else if (providerIdChecker.isExactlyType(type)) {
+      return _ProviderId();
+    } else if (originIdChecker.isExactlyType(type)) {
+      return _OriginId();
     } else if (type.isDartCoreList) {
       final listType = type as InterfaceType;
       return _ListType(
@@ -303,13 +318,16 @@ sealed class _BuiltInType {
   });
 }
 
-final class _ContainerId extends _BuiltInType {
+final class _IdType extends _BuiltInType {
+  _IdType(this.typeName);
+
+  final String typeName;
   @override
-  String typeCode() => '#{{riverpod/src/internals.dart|ContainerId}}';
+  String typeCode() => '#{{riverpod/src/internals.dart|$typeName}}';
 
   @override
   String decodeBytes({required String mapSymbol, required String path}) =>
-      "#{{riverpod/src/internals.dart|ContainerId}}($mapSymbol['$path']!.ref.valueAsString!)";
+      "#{{riverpod/src/internals.dart|$typeName}}($mapSymbol['$path']!.ref.valueAsString!)";
 
   @override
   String appendEncodedValueCode({
@@ -319,20 +337,16 @@ final class _ContainerId extends _BuiltInType {
   }) => "$mapSymbol['$path'] = $valueSymbol;";
 }
 
-final class _ProviderElementId extends _BuiltInType {
-  @override
-  String typeCode() => '#{{riverpod/src/internals.dart|ProviderElementId}}';
+final class _ContainerId extends _IdType {
+  _ContainerId() : super('ContainerId');
+}
 
-  @override
-  String decodeBytes({required String mapSymbol, required String path}) =>
-      "#{{riverpod/src/internals.dart|ProviderElementId}}($mapSymbol['$path']!.ref.valueAsString!)";
+final class _ProviderId extends _IdType {
+  _ProviderId() : super('ProviderId');
+}
 
-  @override
-  String appendEncodedValueCode({
-    required String mapSymbol,
-    required String valueSymbol,
-    required String path,
-  }) => "$mapSymbol['$path'] = $valueSymbol;";
+final class _OriginId extends _IdType {
+  _OriginId() : super('OriginId');
 }
 
 final class _ListType extends _BuiltInType {

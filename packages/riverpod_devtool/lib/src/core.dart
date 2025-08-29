@@ -16,18 +16,24 @@ class ServiceManagerNotifier extends AsyncNotifier<ServiceManager> {
   @override
   Future<ServiceManager<VmService>> build() async {
     final timer = Timer.periodic(const Duration(milliseconds: 18), (_) async {
-      final value = serviceManager;
-      if (state.value == value) return;
+      final newService = serviceManager;
+      final currentService = await future;
+      // New service detected
+      if (state.value == currentService) return;
 
       state = const AsyncLoading();
-      await value.onServiceAvailable;
-      if (serviceManager != value) return;
+      await newService.onServiceAvailable;
+      // Changed service while in the async gap
+      if (serviceManager != newService) return;
 
-      state = AsyncData(value);
+      print('new service ${serviceManager.hashCode}');
+      state = AsyncData(newService);
     });
     ref.onDispose(timer.cancel);
 
     await serviceManager.onServiceAvailable;
+
+    print('Initial service ${serviceManager.hashCode}');
 
     return serviceManager;
   }

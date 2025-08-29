@@ -1,5 +1,8 @@
 // ignore: implementation_imports
+// ignore_for_file: invalid_use_of_internal_member
+
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:devtools_app_shared/utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -38,15 +41,12 @@ Iterable<ItemT> decodeAll<ItemT>(
   ItemT Function(Map<String, Byte>, {required String path}) fn, {
   required String path,
 }) sync* {
-  try {
-    final length = int.parse(events['$path.length']!.ref.valueAsString!);
+  final length = int.parse(events['$path.length']!.ref.valueAsString!);
 
-    for (var i = 0; i < length; i++) {
-      final itemPath = '$path[$i]';
-      yield fn(events, path: itemPath);
-    }
-  } catch (e, stack) {
-  } finally {}
+  for (var i = 0; i < length; i++) {
+    final itemPath = '$path[$i]';
+    yield fn(events, path: itemPath);
+  }
 }
 
 String encodeList(
@@ -87,7 +87,7 @@ void _validate(
 extension type ProviderElementId(String id) {}
 
 final framesProvider =
-    AsyncNotifierProvider.autoDispose<FramesNotifier, Frames>(
+    AsyncNotifierProvider.autoDispose<FramesNotifier, List<FoldedFrame>>(
       FramesNotifier.new,
       name: 'providerElementsProvider',
     );
@@ -101,11 +101,17 @@ final class FoldedFrame {
     final previous = this.previous;
     if (previous != null) {
       if (frame.timestamp.isBefore(previous.frame.timestamp)) {
-        throw StateError('Frames must be in chronological order');
+        throw StateError(
+          'Frames must be in chronological order. Current: '
+          '${frame.timestamp} at ${frame.index}, previous: ${previous.frame.timestamp} at ${previous.frame.index}',
+        );
       }
 
       if (frame.index != previous.frame.index + 1) {
-        throw StateError('Frame index must be strictly increasing');
+        throw StateError(
+          'Frame index must be strictly increasing. '
+          'Got ${previous.frame.index} followed by ${frame.index}',
+        );
       }
     } else {
       if (frame.index != 0) {
@@ -121,34 +127,64 @@ final class FoldedFrame {
   AccumulatedState _computeAccumulatedState() {
     final currentState = previous?.state ?? AccumulatedState._();
 
+    for (final event in frame.events) {
+      switch (event) {
+        case ProviderContainerAddEvent():
+        case ProviderContainerDisposeEvent():
+        case ProviderElementAddEvent():
+        case ProviderElementDisposeEvent():
+        case ProviderElementUpdateEvent():
+      }
+    }
+
     return AccumulatedState._();
   }
 }
 
-class Frames {
-  const Frames.initial({required this.frames});
-
-  final List<FoldedFrame> frames;
-}
-
-class FramesNotifier extends AsyncNotifier<Frames> {
+class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
   @override
-  Future<Frames> build() async {
-    final service = await ref.watch(vmServiceProvider.future);
+  Future<List<FoldedFrame>> build() async {
+    ref.listen(hotRestartEventProvider, (a, b) {
+      print('Hot restart detected, clearing frames');
+    });
+    ref.listen(vmServiceProvider.future, (a, b) {
+      print('VM service changed, clearing frames');
+    });
+    ref.listen(riverpodInternalsEvalProvider.future, (a, b) {
+      print('Riverpod eval changed, clearing frames');
+    });
 
-    if (!state.hasValue) state = const AsyncData(Frames.initial(frames: []));
+    // On hot-restart, clear the frames list.
+    ref.watch(hotRestartEventProvider);
+
+    final service = await ref.watch(vmServiceProvider.future);
 
     final riverpodEval = await ref.watch(riverpodInternalsEvalProvider.future);
     final isAlive = ref.isAlive();
 
-    final onNotification = ref.debounce<internals.Notification>((notifs) {});
-
-    final sub = service.onNotification.listen(onNotification);
+    final sub = service.onNotification
+        // Using asyncMap to ensure that notifications are processed in order
+        // and one at a time.
+        .asyncMap((event) async {
+          switch (event) {
+            case internals.NewEventNotification():
+              print('Handle event $event // ${event.offset}');
+              await _fetchNewNotifications(
+                event,
+                riverpodEval: riverpodEval,
+                isAlive: isAlive,
+              );
+          }
+        })
+        .listen((_) {});
     ref.onDispose(sub.cancel);
 
-    final rawFrames = await _evanFrames(riverpodEval, isAlive);
+    final rawFrames = await _evalFrames(riverpodEval, isAlive);
+    print(
+      'Build frames from scratch // ${rawFrames.map((e) => '${e.index} // ${e.timestamp}').join(', ')}',
+    );
     final firstFrame = rawFrames.firstOrNull;
-    if (firstFrame == null) return const Frames.initial(frames: []);
+    if (firstFrame == null) return const [];
 
     final mappedFrames = List.filled(
       rawFrames.length,
@@ -161,10 +197,10 @@ class FramesNotifier extends AsyncNotifier<Frames> {
       mappedFrames[i] = FoldedFrame(frame: rawFrame, previous: previous);
     }
 
-    return Frames.initial(frames: mappedFrames);
+    return mappedFrames;
   }
 
-  Future<List<Frame>> _evanFrames(
+  Future<List<Frame>> _evalFrames(
     Eval eval,
     Disposable isAlive, {
     int startIndex = 0,
@@ -184,39 +220,66 @@ class FramesNotifier extends AsyncNotifier<Frames> {
 
     return decodeAll(map, Frame.from, path: 'root').toList();
   }
+
+  Future<void> _fetchNewNotifications(
+    internals.NewEventNotification notification, {
+    required Eval riverpodEval,
+    required Disposable isAlive,
+  }) async {
+    final frames = await future;
+    final alreadyHasNewFrame = notification.offset <= frames.length - 1;
+    if (alreadyHasNewFrame) return;
+
+    final newFrames = await _evalFrames(
+      riverpodEval,
+      isAlive,
+      startIndex: math.max(frames.length, 0),
+    );
+
+    state = AsyncData([
+      ...?state.value,
+      for (final frame in newFrames)
+        FoldedFrame(frame: frame, previous: state.value?.lastOrNull),
+    ]);
+  }
 }
+
+/// A provider that emits an update when a hot-restart is detected.
+final hotRestartEventProvider = Provider<void>(
+  name: 'hotRestartEventProvider',
+  (ref) async {
+    final service = await ref.watch(serviceManagerProvider.future);
+    if (!ref.mounted) return;
+    final selectedIsolateListenable = service.isolateManager.selectedIsolate;
+
+    var isolateId = selectedIsolateListenable.value?.id;
+
+    void listener() {
+      final newId = selectedIsolateListenable.value?.id;
+      final oldId = isolateId;
+      isolateId = newId;
+
+      if (oldId != null && oldId != newId) {
+        ref.notifyListeners();
+        return;
+      }
+    }
+
+    selectedIsolateListenable.addListener(listener);
+    ref.onDispose(() => selectedIsolateListenable.removeListener(listener));
+  },
+);
 
 extension NotificationService on VmService {
   Stream<internals.Notification> get onNotification =>
       onExtensionEvent.expand((event) {
-        final notification = internals.Notification.fromJson(event.json!);
-        if (notification != null) return [notification];
+        final notification = internals.Notification.fromJson(
+          event.extensionKind ?? '',
+          event.extensionData?.data ?? {},
+        );
+        if (notification != null) {
+          return [notification];
+        }
         return const [];
       });
-}
-
-extension on Ref {
-  void Function(DebouncedT) debounce<DebouncedT>(
-    void Function(List<DebouncedT> items) fn, {
-    Duration delay = const Duration(milliseconds: 100),
-  }) {
-    final buffer = <DebouncedT>[];
-    Timer? timer;
-    onDispose(() {
-      timer?.cancel();
-      if (buffer.isNotEmpty) {
-        fn(List.of(buffer));
-        buffer.clear();
-      }
-    });
-
-    return (item) {
-      buffer.add(item);
-      timer?.cancel();
-      timer = Timer(delay, () {
-        fn(List.of(buffer));
-        buffer.clear();
-      });
-    };
-  }
 }

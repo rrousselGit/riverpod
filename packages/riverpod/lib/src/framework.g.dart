@@ -77,6 +77,8 @@ extension ProviderElementAddEventToBytes on ProviderElementAddEvent {
   Map<String, Object?> toBytes({required String path}) {
     final res3 = <String, Object?>{'$path._type': 'ProviderElementAddEvent'};
     res3['$path.element'] = element;
+    res3['$path.originId'] = originId;
+    res3['$path.providerId'] = providerId;
     return res3;
   }
 }
@@ -88,6 +90,8 @@ extension ProviderElementDisposeEventToBytes on ProviderElementDisposeEvent {
       '$path._type': 'ProviderElementDisposeEvent',
     };
     res4['$path.element'] = element;
+    res4['$path.originId'] = originId;
+    res4['$path.providerId'] = providerId;
     return res4;
   }
 }
@@ -99,6 +103,8 @@ extension ProviderElementUpdateEventToBytes on ProviderElementUpdateEvent {
     res5['$path.element'] = element;
     res5['$path.previous'] = previous;
     res5['$path.next'] = next;
+    res5['$path.originId'] = originId;
+    res5['$path.providerId'] = providerId;
     return res5;
   }
 }

@@ -8,6 +8,9 @@ class RiverpodDevtool {
   Frame? _pendingFrame;
   Timer? _pendingFrameTimer;
 
+  Map<ProviderOrFamily, OriginId> _uniqueOrigins = {};
+  Map<ProviderOrFamily, ProviderId> _uniqueProviders = {};
+
   final frames = <Frame>[];
   void addEvent(Event event) {
     if (_pendingFrame == null) {
@@ -25,12 +28,29 @@ class RiverpodDevtool {
 
     _pendingFrame!.events.add(event);
   }
+
+  OriginId _originId(ProviderOrFamily origin) {
+    return _uniqueOrigins.putIfAbsent(
+      origin.from ?? origin,
+      () => OriginId(const Uuid().v4()),
+    );
+  }
+
+  ProviderId _providerId(ProviderOrFamily origin) {
+    return _uniqueProviders.putIfAbsent(
+      origin,
+      () => ProviderId(const Uuid().v4()),
+    );
+  }
 }
+
+extension type OriginId(String _id) {}
+extension type ProviderId(String _id) {}
 
 @internal
 sealed class Notification {
-  static Notification? fromJson(Map<Object?, Object?> json) {
-    switch (json['code']) {
+  static Notification? fromJson(String code, Map<Object?, Object?> json) {
+    switch (code) {
       case NewEventNotification.code:
         return NewEventNotification.fromJson(json);
       default:
@@ -51,22 +71,18 @@ final class NewEventNotification extends Notification {
   NewEventNotification(this.offset);
 
   factory NewEventNotification.fromJson(Map<Object?, Object?> json) {
-    if (json['code'] != code) {
-      throw ArgumentError('Invalid notification type: ${json['type']}');
-    }
-
     return NewEventNotification(json['offset']! as int);
   }
 
   static const code = 'riverpod:new_event';
 
   @override
-  String get name => 'riverpod:new_event';
+  String get name => code;
 
   final int offset;
 
   @override
-  Map<Object?, Object?> toJson() => {'code': code, 'offset': offset};
+  Map<Object?, Object?> toJson() => {'offset': offset};
 }
 
 @devtool
@@ -106,6 +122,11 @@ final class ProviderContainerDisposeEvent extends Event {
 @internal
 final class ProviderElementAddEvent extends Event {
   ProviderElementAddEvent(this.element);
+
+  OriginId get originId => RiverpodDevtool.instance._originId(element.origin);
+  ProviderId get providerId =>
+      RiverpodDevtool.instance._providerId(element.origin);
+
   final ProviderElement element;
 }
 
@@ -113,6 +134,11 @@ final class ProviderElementAddEvent extends Event {
 @internal
 final class ProviderElementDisposeEvent extends Event {
   ProviderElementDisposeEvent(this.element);
+
+  OriginId get originId => RiverpodDevtool.instance._originId(element.origin);
+  ProviderId get providerId =>
+      RiverpodDevtool.instance._providerId(element.origin);
+
   final ProviderElement element;
 }
 
@@ -124,6 +150,11 @@ final class ProviderElementUpdateEvent extends Event {
     required this.previous,
     required this.next,
   });
+
+  OriginId get originId => RiverpodDevtool.instance._originId(element.origin);
+  ProviderId get providerId =>
+      RiverpodDevtool.instance._providerId(element.origin);
+
   final ProviderElement element;
   final Object? previous;
   final Object? next;
