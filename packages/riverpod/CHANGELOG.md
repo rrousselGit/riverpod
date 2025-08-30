@@ -1,5 +1,6 @@
 ## Unreleased build
 
+- `ProviderObserver` is now marked with `base`
 - Fix provider rebuild order issue.
 - Fix "Tried to refresh x multiple times in the same frame" incorrectly triggering.
 - Removed `FamilyNotifier` and variants, in favour of `Notifier`.
