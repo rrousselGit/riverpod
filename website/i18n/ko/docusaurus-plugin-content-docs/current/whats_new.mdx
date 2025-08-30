@@ -34,7 +34,7 @@ Riverpod 3.0에 오신 것을 환영합니다!
   - [`WidgetTester.container`](#widgettestercontainer) - 위젯 테스트 내에서 `ProviderContainer`를 얻는 헬퍼 메서드입니다.
 - [정적으로 안전한 스코핑](#statically-safe-scoping-code-generation-only) - 오버라이드가 누락된 경우를 감지하는 새로운 린트 규칙이 추가되었습니다
 
-## 오프라인 지속 기능 (experimental)
+## 오프라인 지속 기능 (experimental) {#offline-persistence-experimental}
 
 :::info
 이 기능은 실험적이며 아직 안정적이지 않습니다.
@@ -186,7 +186,7 @@ Riverpod는 데이터베이스 자체는 포함하지 않고, 데이터베이스
 ></AutoSnippet>
 
 
-## Mutation (experimental)
+## Mutation (experimental) {#mutations-experimental}
 
 :::info
 이 기능은 실험적이며 아직 안정적이지 않습니다.
@@ -258,7 +258,7 @@ Mutation이 완료될 때까지 그것을 유지합니다.
 :::
 
 
-## 자동 재시도
+## 자동 재시도 {#automatic-retry}
 
 3.0부터, 초기화 중에 실패하는 Provider는 자동으로 재시도됩니다.
 재시도는 지수적 백오프로 수행되며, Provider는
@@ -342,7 +342,7 @@ void main() {
 ></AutoSnippet>
 
 
-## `Ref.mounted`
+## `Ref.mounted` {#refmounted}
 
 오래 기다렸던 `Ref.mounted`가 마침내 등장했습니다! `BuildContext.mounted`와 유사합니다. 비동기 작업 후에 Provider가 아직 마운트되어 있는지 확인하는 데 사용할 수 있습니다:
 
@@ -388,7 +388,7 @@ void main() {
 
 이것이 작동하려면 상당한 생명주기 변경이 필요했습니다. [생명주기 변경](#provider-life-cycle-changes) 섹션을 꼭 읽어보세요.
 
-## 제네릭 지원 (코드 생성)
+## 제네릭 지원 (코드 생성) {#generic-support-code-generation}
 
 코드 생성을 사용할 때 이제 생성된 Provider에 대해 타입 매개변수를 정의할 수 있습니다. 타입 매개변수는 다른 Provider 매개변수와 같이 작동하며, Provider를 감시할 때 전달되어야 합니다.
 
@@ -404,7 +404,7 @@ int integer = ref.watch(multiplyProvider<int>(2, 3));
 double decimal = ref.watch(multiplyProvider<double>(2.5, 3.5));
 ```
 
-## 일시정지/재개 지원
+## 일시정지/재개 지원 {#pauseresume-support}
 
 2.0에서 Riverpod는 이미 어느 정도 일시정지/재개 지원이 있었지만 상당히 제한적이었습니다. 3.0에서는 모든 `ref.listen` 리스너를 필요에 따라 수동으로 일시정지/재개할 수 있습니다:
 
@@ -428,7 +428,7 @@ subscription.resume();
 
 자세한 내용은 [생명주기 변경](#provider-life-cycle-changes) 섹션을 참조하세요.
 
-## 공개 API 통합
+## 공개 API 통합 {#unification-of-the-public-apis}
 
 Riverpod 3.0의 목표 중 하나는 API를 단순화하는 것입니다. 여기에는 아래 세부 목표를 포함했습니다.
 - 권장하는 것과 그렇지 않은 것을 강조
@@ -567,7 +567,7 @@ Riverpod 2.0에서 각 Provider는 자체 [Ref] 서브클래스(`FutureProviderR
   `}
 ></AutoSnippet>
 
-## Provider 생명주기 변경
+## Provider 생명주기 변경 {#provider-life-cycle-changes}
 
 ### Provider 읽기가 예외를 발생시킬 때, 오류가 이제 ProviderException으로 래핑
 
@@ -917,9 +917,9 @@ try {
 }
 ```
 
-## 새로운 테스팅 유틸리티
+## 새로운 테스팅 유틸리티 {#new-testing-utilities}
 
-### `ProviderContainer.test`
+### `ProviderContainer.test` {#providercontainertest}
 
 2.0에서 일반적인 테스트 코드는 `createContainer`라는 사용자 정의 유틸리티에 의존했습니다. 3.0에서는 이 유틸리티가 이제 Riverpod의 일부이며, `ProviderContainer.test`라고 불립니다. 새 컨테이너를 생성하고 테스트 종료 후 자동으로 해제합니다.
 
@@ -936,7 +936,7 @@ void main() {
 
 `createContainer`를 `ProviderContainer.test`로 안전하게 전역 검색-교체할 수 있습니다.
 
-### `NotifierProvider.overrideWithBuild`
+### `NotifierProvider.overrideWithBuild` {#notifierprovideroverridewithbuild}
 
 이제 전체 notifier를 모킹하지 않고 `Notifier.build` 메서드만 모킹할 수 있습니다. 이는 notifier를 특정 상태로 초기화하면서도 notifier의 원래 구현을 계속 사용하고 싶을 때 유용합니다.
 
@@ -992,7 +992,7 @@ void main() {
   `}
 ></AutoSnippet>
 
-### `Future/StreamProvider.overrideWithValue`
+### `Future/StreamProvider.overrideWithValue` {#futurestreamprovideroverridewithvalue}
 
 얼마 전에 `FutureProvider.overrideWithValue`와 `StreamProvider.overrideWithValue`가 Riverpod에서 "일시적으로" 제거되었습니다. 다시 돌아왔습니다!
 
@@ -1032,7 +1032,7 @@ void main() {
   `}
 ></AutoSnippet>
 
-### `WidgetTester.container`
+### `WidgetTester.container` {#widgettestercontainer}
 
 위젯 트리에서 `ProviderContainer`에 접근하는 간단한 방법입니다.
 
@@ -1047,7 +1047,7 @@ void main() {
 
 자세한 정보는 [WidgetTester.container] 확장을 참조하세요.
 
-## 사용자 정의 ProviderListenable
+## 사용자 정의 ProviderListenable {#custom-providerlistenable}
 
 Riverpod 3.0에서는 사용자 정의 [ProviderListenable]을 생성할 수 있습니다. 이는 [SyncProviderTransformerMixin]을 사용하여 수행할 수 있습니다.
 
@@ -1083,7 +1083,7 @@ extension<T> on ProviderListenable<T> {
 
 `ref.watch(provider.where((previous, value) => value > 0))`로 사용됩니다.
 
-## 정적으로 안전한 스코핑 (코드 생성 전용)
+## 정적으로 안전한 스코핑 (코드 생성 전용) {#statically-safe-scoping-code-generation-only}
 
 [riverpod_lint]를 통해, Riverpod는 이제 스코핑이 잘못 사용되었을 때를 감지하는 방법을 포함합니다. 이 린트는 오버라이드가 누락되어 런타임 오류를 방지하는 것을 감지합니다.
 
@@ -1159,7 +1159,7 @@ Future<int> myFutureProvider() => throw UnimplementedError();
     }
     ```
 
-## 기타 변경사항
+## 기타 변경사항 {#other-changes}
 
 ### AsyncValue
 
