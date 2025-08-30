@@ -25,6 +25,19 @@ extension FrameToBytes on Frame {
 }
 
 @internal
+extension ProviderMetaToBytes on ProviderMeta {
+  Map<String, Object?> toBytes({required String path}) {
+    final res1 = <String, Object?>{'$path._type': 'ProviderMeta'};
+    res1['$path.originId'] = originId;
+    res1['$path.originDisplayString'] = originDisplayString;
+    res1['$path.isFamily'] = isFamily;
+    res1['$path.providerId'] = providerId;
+    res1['$path.providerDisplayString'] = providerDisplayString;
+    return res1;
+  }
+}
+
+@internal
 extension EventToBytes on Event {
   Map<String, Object?> toBytes({required String path}) {
     final that = this;
@@ -46,17 +59,17 @@ extension EventToBytes on Event {
 @internal
 extension ProviderContainerAddEventToBytes on ProviderContainerAddEvent {
   Map<String, Object?> toBytes({required String path}) {
-    final res1 = <String, Object?>{'$path._type': 'ProviderContainerAddEvent'};
-    res1['$path.container'] = container;
+    final res2 = <String, Object?>{'$path._type': 'ProviderContainerAddEvent'};
+    res2['$path.container'] = container;
     {
-      res1['$path.parentIds.length'] = parentIds.length;
+      res2['$path.parentIds.length'] = parentIds.length;
       for (final (index, e) in parentIds.indexed) {
-        res1['$path.parentIds[$index]'] = e;
+        res2['$path.parentIds[$index]'] = e;
       }
     }
 
-    res1['$path.containerId'] = containerId;
-    return res1;
+    res2['$path.containerId'] = containerId;
+    return res2;
   }
 }
 
@@ -64,47 +77,44 @@ extension ProviderContainerAddEventToBytes on ProviderContainerAddEvent {
 extension ProviderContainerDisposeEventToBytes
     on ProviderContainerDisposeEvent {
   Map<String, Object?> toBytes({required String path}) {
-    final res2 = <String, Object?>{
+    final res3 = <String, Object?>{
       '$path._type': 'ProviderContainerDisposeEvent',
     };
-    res2['$path.container'] = container;
-    return res2;
+    res3['$path.container'] = container;
+    return res3;
   }
 }
 
 @internal
 extension ProviderElementAddEventToBytes on ProviderElementAddEvent {
   Map<String, Object?> toBytes({required String path}) {
-    final res3 = <String, Object?>{'$path._type': 'ProviderElementAddEvent'};
-    res3['$path.element'] = element;
-    res3['$path.originId'] = originId;
-    res3['$path.providerId'] = providerId;
-    return res3;
+    final res4 = <String, Object?>{'$path._type': 'ProviderElementAddEvent'};
+    res4['$path.element'] = element;
+    res4.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
+    return res4;
   }
 }
 
 @internal
 extension ProviderElementDisposeEventToBytes on ProviderElementDisposeEvent {
   Map<String, Object?> toBytes({required String path}) {
-    final res4 = <String, Object?>{
+    final res5 = <String, Object?>{
       '$path._type': 'ProviderElementDisposeEvent',
     };
-    res4['$path.element'] = element;
-    res4['$path.originId'] = originId;
-    res4['$path.providerId'] = providerId;
-    return res4;
+    res5['$path.element'] = element;
+    res5.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
+    return res5;
   }
 }
 
 @internal
 extension ProviderElementUpdateEventToBytes on ProviderElementUpdateEvent {
   Map<String, Object?> toBytes({required String path}) {
-    final res5 = <String, Object?>{'$path._type': 'ProviderElementUpdateEvent'};
-    res5['$path.element'] = element;
-    res5['$path.previous'] = previous;
-    res5['$path.next'] = next;
-    res5['$path.originId'] = originId;
-    res5['$path.providerId'] = providerId;
-    return res5;
+    final res6 = <String, Object?>{'$path._type': 'ProviderElementUpdateEvent'};
+    res6['$path.element'] = element;
+    res6['$path.previous'] = previous;
+    res6['$path.next'] = next;
+    res6.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
+    return res6;
   }
 }

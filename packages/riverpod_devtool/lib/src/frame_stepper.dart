@@ -1,28 +1,19 @@
-import 'package:devtools_app_shared/ui.dart' as devtools_shared_ui;
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'event.dart';
-import 'ui.dart';
 
 class FrameStepper extends HookConsumerWidget {
-  const FrameStepper({super.key});
+  const FrameStepper({super.key, required this.selectedFrameIndex});
 
   static const _stepperHeight = 50.0;
 
+  final int? selectedFrameIndex;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedFrameIndex = useState<int>(0);
     final frames = ref.watch(framesProvider);
 
-    final selectedFrame = frames.value?.elementAtOrNull(
-      selectedFrameIndex.value,
-    );
-
-    print(frames);
-
-    final Widget content;
     switch (frames) {
       case AsyncValue(:final value?):
         return SizedBox(
@@ -30,9 +21,7 @@ class FrameStepper extends HookConsumerWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 10,
-            children: [
-              for (final frame in value) Text('Frame ${frame.frame.index}'),
-            ],
+            children: [for (final frame in value) _FrameStep(frame: frame)],
           ),
         );
       case AsyncValue(error: != null):

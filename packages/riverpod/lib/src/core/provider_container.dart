@@ -1210,10 +1210,6 @@ final class ProviderObserverContext {
   }
 }
 
-/// Container ID
-@publicInDevtools
-extension type ContainerId(String value) {}
-
 /// An object that listens to the changes of a [ProviderContainer].
 ///
 /// This can be used for logging or making devtools.

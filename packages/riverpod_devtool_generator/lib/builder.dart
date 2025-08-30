@@ -7,7 +7,6 @@ import 'package:build/build.dart';
 import 'package:custom_lint_core/custom_lint_core.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:meta/meta.dart';
-import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:source_gen/source_gen.dart' hide TypeChecker;
 
 /// Builds generators for `build_runner` to run
@@ -264,18 +263,17 @@ sealed class _BuiltInType {
       packageName: 'dart:core',
     );
 
-    const internalsUri = 'package:riverpod/src/internals.dart';
     const containerIdChecker = TypeChecker.fromName(
       'ContainerId',
-      packageName: internalsUri,
+      packageName: 'riverpod',
     );
     const providerIdChecker = TypeChecker.fromName(
       'ProviderId',
-      packageName: internalsUri,
+      packageName: 'riverpod',
     );
     const originIdChecker = TypeChecker.fromName(
       'OriginId',
-      packageName: internalsUri,
+      packageName: 'riverpod',
     );
 
     if (annotatedClasses.any((e) => e.name3 == type.element3?.name3)) {
@@ -392,7 +390,7 @@ final class _StringType extends _BuiltInType {
 
   @override
   String decodeBytes({required String mapSymbol, required String path}) =>
-      "$mapSymbol['$path']!.valueAsString!";
+      "$mapSymbol['$path']!.ref.valueAsString!";
 
   @override
   String appendEncodedValueCode({

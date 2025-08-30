@@ -5,8 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'src/frame_stepper.dart';
-import 'src/state_view.dart';
+import 'src/frame_view.dart';
 
 final class Observer extends ProviderObserver {
   const Observer();
@@ -91,20 +90,6 @@ class _RiverpodDevtoolExtensionState
 
   @override
   Widget build(BuildContext context) {
-    return const DevToolsExtension(child: _FlexibleLayout());
-  }
-}
-
-class _FlexibleLayout extends StatelessWidget {
-  const _FlexibleLayout({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Column(
-      children: [
-        Expanded(flex: 3, child: StateView()),
-        FrameStepper(),
-      ],
-    );
+    return const DevToolsExtension(child: FrameView());
   }
 }

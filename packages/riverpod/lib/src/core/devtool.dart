@@ -44,7 +44,11 @@ class RiverpodDevtool {
   }
 }
 
+@publicInDevtools
+extension type ContainerId(String value) {}
+@publicInDevtools
 extension type OriginId(String _id) {}
+@publicInDevtools
 extension type ProviderId(String _id) {}
 
 @internal
@@ -95,6 +99,37 @@ class Frame {
 
 @devtool
 @internal
+final class ProviderMeta {
+  ProviderMeta({
+    required this.originId,
+    required this.providerId,
+    required this.providerDisplayString,
+    required this.originDisplayString,
+    required this.isFamily,
+  });
+
+  factory ProviderMeta.from(ProviderBase<Object?> provider) {
+    final originId = RiverpodDevtool.instance._originId(provider);
+    final providerId = RiverpodDevtool.instance._providerId(provider);
+
+    return ProviderMeta(
+      originId: originId,
+      originDisplayString: provider.from?.toString() ?? provider.toString(),
+      providerId: providerId,
+      providerDisplayString: provider.toString(),
+      isFamily: provider.from != null,
+    );
+  }
+
+  final OriginId originId;
+  final String originDisplayString;
+  final bool isFamily;
+  final ProviderId providerId;
+  final String providerDisplayString;
+}
+
+@devtool
+@internal
 sealed class Event {
   String get name => '$runtimeType';
 }
@@ -123,9 +158,7 @@ final class ProviderContainerDisposeEvent extends Event {
 final class ProviderElementAddEvent extends Event {
   ProviderElementAddEvent(this.element);
 
-  OriginId get originId => RiverpodDevtool.instance._originId(element.origin);
-  ProviderId get providerId =>
-      RiverpodDevtool.instance._providerId(element.origin);
+  ProviderMeta get provider => ProviderMeta.from(element.origin);
 
   final ProviderElement element;
 }
@@ -135,9 +168,7 @@ final class ProviderElementAddEvent extends Event {
 final class ProviderElementDisposeEvent extends Event {
   ProviderElementDisposeEvent(this.element);
 
-  OriginId get originId => RiverpodDevtool.instance._originId(element.origin);
-  ProviderId get providerId =>
-      RiverpodDevtool.instance._providerId(element.origin);
+  ProviderMeta get provider => ProviderMeta.from(element.origin);
 
   final ProviderElement element;
 }
@@ -151,9 +182,7 @@ final class ProviderElementUpdateEvent extends Event {
     required this.next,
   });
 
-  OriginId get originId => RiverpodDevtool.instance._originId(element.origin);
-  ProviderId get providerId =>
-      RiverpodDevtool.instance._providerId(element.origin);
+  ProviderMeta get provider => ProviderMeta.from(element.origin);
 
   final ProviderElement element;
   final Object? previous;

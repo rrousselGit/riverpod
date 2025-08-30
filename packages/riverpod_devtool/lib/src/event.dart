@@ -2,6 +2,7 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 import 'dart:async';
+import 'dart:collection';
 import 'dart:math' as math;
 
 import 'package:devtools_app_shared/utils.dart';
@@ -125,18 +126,6 @@ final class FoldedFrame {
   late final state = _computeAccumulatedState();
 
   AccumulatedState _computeAccumulatedState() {
-    final currentState = previous?.state ?? AccumulatedState._();
-
-    for (final event in frame.events) {
-      switch (event) {
-        case ProviderContainerAddEvent():
-        case ProviderContainerDisposeEvent():
-        case ProviderElementAddEvent():
-        case ProviderElementDisposeEvent():
-        case ProviderElementUpdateEvent():
-      }
-    }
-
     return AccumulatedState._();
   }
 }

@@ -62,6 +62,47 @@ class Frame {
   final List<Event> events;
 }
 
+/// Devtool code for [internals.ProviderMeta]
+class ProviderMeta {
+  ProviderMeta({
+    required this.originId,
+    required this.originDisplayString,
+    required this.isFamily,
+    required this.providerId,
+    required this.providerDisplayString,
+  });
+
+  factory ProviderMeta.from(Map<String, Byte> $events, {required String path}) {
+    _validate($events, name: 'ProviderMeta', path: path);
+
+    final originId = internals.OriginId(
+      $events['$path.originId']!.ref.valueAsString!,
+    );
+    final originDisplayString =
+        $events['$path.originDisplayString']!.ref.valueAsString!;
+    final isFamily = ($events['$path.isFamily']!.ref.valueAsString! == 'true');
+    final providerId = internals.ProviderId(
+      $events['$path.providerId']!.ref.valueAsString!,
+    );
+    final providerDisplayString =
+        $events['$path.providerDisplayString']!.ref.valueAsString!;
+
+    return ProviderMeta(
+      originId: originId,
+      originDisplayString: originDisplayString,
+      isFamily: isFamily,
+      providerId: providerId,
+      providerDisplayString: providerDisplayString,
+    );
+  }
+
+  final internals.OriginId originId;
+  final String originDisplayString;
+  final bool isFamily;
+  final internals.ProviderId providerId;
+  final String providerDisplayString;
+}
+
 /// Devtool code for [internals.ProviderContainerAddEvent]
 class ProviderContainerAddEvent extends Event {
   ProviderContainerAddEvent({
@@ -80,10 +121,14 @@ class ProviderContainerAddEvent extends Event {
     final parentIds = List.generate(
       int.parse($events['$path.parentIds.length']!.ref.valueAsString!),
       (i) {
-        return $events['$path.parentIds[$i]']!.ref;
+        return internals.ContainerId(
+          $events['$path.parentIds[$i]']!.ref.valueAsString!,
+        );
       },
     );
-    final containerId = $events['$path.containerId']!.ref;
+    final containerId = internals.ContainerId(
+      $events['$path.containerId']!.ref.valueAsString!,
+    );
 
     return ProviderContainerAddEvent(
       container: container,
@@ -93,8 +138,8 @@ class ProviderContainerAddEvent extends Event {
   }
 
   final InstanceRef container;
-  final List<InstanceRef> parentIds;
-  final InstanceRef containerId;
+  final List<internals.ContainerId> parentIds;
+  final internals.ContainerId containerId;
 }
 
 /// Devtool code for [internals.ProviderContainerDisposeEvent]
@@ -117,11 +162,7 @@ class ProviderContainerDisposeEvent extends Event {
 
 /// Devtool code for [internals.ProviderElementAddEvent]
 class ProviderElementAddEvent extends Event {
-  ProviderElementAddEvent({
-    required this.element,
-    required this.originId,
-    required this.providerId,
-  });
+  ProviderElementAddEvent({required this.element, required this.provider});
 
   factory ProviderElementAddEvent.from(
     Map<String, Byte> $events, {
@@ -130,28 +171,18 @@ class ProviderElementAddEvent extends Event {
     _validate($events, name: 'ProviderElementAddEvent', path: path);
 
     final element = $events['$path.element']!.ref;
-    final originId = $events['$path.originId']!.ref;
-    final providerId = $events['$path.providerId']!.ref;
+    final provider = ProviderMeta.from($events, path: '$path.provider');
 
-    return ProviderElementAddEvent(
-      element: element,
-      originId: originId,
-      providerId: providerId,
-    );
+    return ProviderElementAddEvent(element: element, provider: provider);
   }
 
   final InstanceRef element;
-  final InstanceRef originId;
-  final InstanceRef providerId;
+  final ProviderMeta provider;
 }
 
 /// Devtool code for [internals.ProviderElementDisposeEvent]
 class ProviderElementDisposeEvent extends Event {
-  ProviderElementDisposeEvent({
-    required this.element,
-    required this.originId,
-    required this.providerId,
-  });
+  ProviderElementDisposeEvent({required this.element, required this.provider});
 
   factory ProviderElementDisposeEvent.from(
     Map<String, Byte> $events, {
@@ -160,19 +191,13 @@ class ProviderElementDisposeEvent extends Event {
     _validate($events, name: 'ProviderElementDisposeEvent', path: path);
 
     final element = $events['$path.element']!.ref;
-    final originId = $events['$path.originId']!.ref;
-    final providerId = $events['$path.providerId']!.ref;
+    final provider = ProviderMeta.from($events, path: '$path.provider');
 
-    return ProviderElementDisposeEvent(
-      element: element,
-      originId: originId,
-      providerId: providerId,
-    );
+    return ProviderElementDisposeEvent(element: element, provider: provider);
   }
 
   final InstanceRef element;
-  final InstanceRef originId;
-  final InstanceRef providerId;
+  final ProviderMeta provider;
 }
 
 /// Devtool code for [internals.ProviderElementUpdateEvent]
@@ -181,8 +206,7 @@ class ProviderElementUpdateEvent extends Event {
     required this.element,
     required this.previous,
     required this.next,
-    required this.originId,
-    required this.providerId,
+    required this.provider,
   });
 
   factory ProviderElementUpdateEvent.from(
@@ -194,21 +218,18 @@ class ProviderElementUpdateEvent extends Event {
     final element = $events['$path.element']!.ref;
     final previous = $events['$path.previous']!.ref;
     final next = $events['$path.next']!.ref;
-    final originId = $events['$path.originId']!.ref;
-    final providerId = $events['$path.providerId']!.ref;
+    final provider = ProviderMeta.from($events, path: '$path.provider');
 
     return ProviderElementUpdateEvent(
       element: element,
       previous: previous,
       next: next,
-      originId: originId,
-      providerId: providerId,
+      provider: provider,
     );
   }
 
   final InstanceRef element;
   final InstanceRef previous;
   final InstanceRef next;
-  final InstanceRef originId;
-  final InstanceRef providerId;
+  final ProviderMeta provider;
 }

@@ -22,6 +22,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
+final fam = Provider.family<int, int>((ref, id) => id);
+
 /// Annotating a class by `@riverpod` defines a new shared state for your application,
 /// accessible using the generated [counterProvider].
 /// This class is both responsible for initializing the state (through the [build] method)
@@ -58,6 +60,8 @@ class _HomeState extends ConsumerState<Home> {
             onPressed: () => setState(() => show = !show),
             child: Text(show ? 'Hide' : 'Show'),
           ),
+          Text(ref.watch(fam(42)).toString()),
+          Text(ref.watch(fam(21)).toString()),
         ],
       ),
       floatingActionButton: FloatingActionButton(
