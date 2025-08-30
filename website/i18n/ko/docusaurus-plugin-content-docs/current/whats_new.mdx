@@ -15,41 +15,36 @@ Riverpod 3.0에 오신 것을 환영합니다!
 
 :::caution
 이 버전은 몇 가지 생명주기 변경사항을 포함하고 있습니다. 이런 변경사항들이 미묘한 방식으로 앱을 손상시킬 수 있습니다. 신중하게 업그레이드하세요.  
-마이그레이션 가이드는 [마이그레이션 페이지](3.0_migration)를 참고해주세요.
+마이그레이션 가이드는 <Link documentID="3.0_migration">마이그레이션 페이지</Link>를 참고해주세요.
 :::
 
 주요 하이라이트는 다음과 같습니다:
 
-- [오프라인 지속성 (실험적)](#offline-persistence-experimental) - Provider를 데이터베이스에 저장하도록 선택할 수 있습니다
-- [뮤테이션 (실험적)](#mutations-experimental) - 인터페이스가 부작용에 반응할 수 있게 하는 새로운 메커니즘
-- [자동 재시도](#automatic-retry) - Provider가 실패할 때 지수적 백오프로 자동으로 새로고침됩니다
+- [오프라인 지속성 (experimental)](#offline-persistence-experimental) - Provider를 데이터베이스에 저장하도록 선택할 수 있습니다
+- [Mutation (experimental)](#mutations-experimental) - 인터페이스가 사이드이펙트에 반응할 수 있게 하는 새로운 메커니즘
+- [자동 재시도](#automatic-retry) - Provider가 실패할 때 지수적 백오프로 자동으로 새로고침 됩니다
 - [`Ref.mounted`](#refmounted) - `BuildContext.mounted`와 유사하지만 `Ref`용입니다.
 - [제네릭 지원 (코드 생성)](#generic-support-code-generation) - 생성된 Provider가 이제 타입 매개변수를 정의할 수 있습니다
 - [일시정지/재개 지원](#pauseresume-support) - `ref.listen` 사용 시 리스너를 일시적으로 일시정지할 수 있습니다
 - [공개 API 통합](#unification-of-the-public-apis) - 동작이 통합되고 중복 인터페이스가 융합됩니다
 - [Provider 생명주기 변경](#provider-life-cycle-changes) - 최신 코드에 더 잘 맞도록 Provider 동작에 약간의 조정
 - [새로운 테스팅 유틸리티](#new-testing-utilities):
-  - [`ProviderContainer.test`](#providercontainertest) - 컨테이너를 생성하고 테스트 종료 후 자동으로 해제하는 테스트 유틸리티
-  - [`NotifierProvider.overrideWithBuild`](#notifierprovideroverridewithbuild) - 전체 notifier를 모킹하지 않고 `Notifier.build`만 모킹하는 방법
+  - [`ProviderContainer.test`](#providercontainertest) - 컨테이너를 생성하고 테스트 종료 후 자동으로 해제하는 테스트 유틸리티입니다.
+  - [`NotifierProvider.overrideWithBuild`](#notifierprovideroverridewithbuild) - 전체 notifier를 모킹하지 않고 `Notifier.build`만 모킹합니다.
   - [`Future/StreamProvider.overrideWithValue`](#futurestreamprovideroverridewithvalue) - 기존 유틸리티가 복원되었습니다
-  - [`WidgetTester.container`](#widgettestercontainer) - 위젯 테스트 내에서 `ProviderContainer`를 얻는 헬퍼 메서드
+  - [`WidgetTester.container`](#widgettestercontainer) - 위젯 테스트 내에서 `ProviderContainer`를 얻는 헬퍼 메서드입니다.
 - [정적으로 안전한 스코핑](#statically-safe-scoping-code-generation-only) - 오버라이드가 누락된 경우를 감지하는 새로운 린트 규칙이 추가되었습니다
 
-## 오프라인 지속성 (실험적)
+## 오프라인 지속 기능 (experimental) {#offline-persistence-experimental}
 
 :::info
 이 기능은 실험적이며 아직 안정적이지 않습니다.
 사용 가능하지만, 주요 버전 업데이트 없이도 API가 파괴적인 방식으로 변경될 수 있습니다.
 :::
 
-오프라인 지속성은 Provider를 장치에 로컬로 캐시할 수 있게 하는 새로운 기능입니다.
-그러면 앱이 닫히고 다시 열렸을 때 Provider를 캐시에서 복원할 수 있습니다.  
-오프라인 지속성은 선택적이며, 모든 "Notifier" Provider에서 지원되고,
-코드 생성 사용 여부와 관계없이 작동합니다.
+오프라인 지속 기능은 Provider를 장치에 로컬로 캐시할 수 있게 하는 새로운 기능입니다. 오프라인 지속 기능을 사용하면 앱이 닫히고 다시 열렸을 때 Provider를 캐시에서 복원할 수 있습니다. 이 기능은 선택적이며, 모든 "Notifier" Provider에서 지원되고, 코드 생성 사용 여부와 관계없이 작동합니다.
 
-Riverpod는 데이터베이스와 상호작용하는 인터페이스만 포함합니다. 데이터베이스 자체는 포함하지 않습니다.
-인터페이스를 구현하는 한 원하는 모든 데이터베이스를 사용할 수 있습니다.  
-SQLite용 공식 패키지가 관리되고 있습니다: [riverpod_sqflite](https://pub.dev/packages/riverpod_sqflite).
+Riverpod는 데이터베이스 자체는 포함하지 않고, 데이터베이스와 상호작용하는 인터페이스만 포함합니다. 인터페이스를 구현하면 원하는 모든 데이터베이스를 사용할 수 있습니다. SQLite용 공식 패키지가 관리되고 있습니다: [riverpod_sqflite](https://pub.dev/packages/riverpod_sqflite).
 
 간단한 데모로서 오프라인 지속성을 사용하는 방법을 보여드립니다:  
 
@@ -192,20 +187,17 @@ SQLite용 공식 패키지가 관리되고 있습니다: [riverpod_sqflite](http
 ></AutoSnippet>
 
 
-## 뮤테이션 (실험적)
+## Mutation (experimental) {#mutations-experimental}
 
 :::info
 이 기능은 실험적이며 아직 안정적이지 않습니다.
 사용 가능하지만, 주요 버전 업데이트 없이도 API가 파괴적인 방식으로 변경될 수 있습니다.
 :::
 
-Riverpod 3.0에서 "뮤테이션"이라는 새로운 기능이 도입되었습니다.  
-이 기능은 두 가지 문제를 해결합니다:
-- UI가 "부작용"(폼 제출, 버튼 클릭 등)에 반응하여 
-  로딩/성공/오류 메시지를 표시할 수 있게 해줍니다.
-  "폼이 성공적으로 제출되었을 때 토스트 보여주기" 같은 기능을 생각해보세요.
-- [Ref.read]와 <Link documentID="concepts2/auto_dispose" />를 결합한 `onPressed` 콜백이
-  부작용이 아직 진행 중인 동안 Provider가 해제되는 문제를 해결합니다.
+Riverpod 3.0에서 "Mutation"이라는 새로운 기능이 도입되었습니다.  
+이 기능은 아래 두 가지 문제를 해결합니다:
+- UI가 "사이드이펙트"(폼 제출, 버튼 클릭 등)에 반응하여 로딩/성공/오류 메시지를 표시할 수 있게 해줍니다. "Form이 성공적으로 제출되었을 때 Toast로 보여주기" 같은 기능을 생각해보세요.
+- [Ref.read]와 <Link documentID="concepts2/auto_dispose" />를 결합한 `onPressed` 콜백이 사이드이펙트가 아직 진행 중인 동안 Provider가 해제되는 문제를 해결합니다.
 
 간단히 말하면, 새로운 [Mutation] 객체가 추가되었습니다. 이는 Provider처럼
 최상위 final 변수로 선언됩니다:
@@ -214,47 +206,47 @@ Riverpod 3.0에서 "뮤테이션"이라는 새로운 기능이 도입되었습�
 final addTodoMutation = Mutation<void>();
 ```
 
-그 후, UI에서 `ref.listen`/`ref.watch`를 사용하여 뮤테이션의 상태를 수신할 수 있습니다:
+그 후, UI에서 `ref.listen`/`ref.watch`를 사용하여 Mutation의 상태를 수신할 수 있습니다:
 
 ```dart
 class AddTodoButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // "addTodo" 부작용의 상태를 수신합니다
+    // "addTodo" 사이드이펙트의 상태를 수신합니다
     final addTodo = ref.watch(addTodoMutation);
 
     return switch (addTodo) {
-      // 진행 중인 부작용이 없습니다
+      // 진행 중인 사이드이펙트가 없습니다
       // 제출 버튼을 보여줍니다
       MutationIdle() => ElevatedButton(
-        // 클릭 시 부작용을 트리거합니다
+        // 클릭 시 사이드이펙트을 트리거합니다
         onPressed: () {
           // TODO 코드 스니펫 이후 설명을 참조하세요
         },
         child: const Text('제출'),
       ),
-      // 부작용이 진행 중입니다. 스피너를 보여줍니다
+      // 사이드이펙트가 진행 중입니다. 스피너를 보여줍니다
       MutationPending() => const CircularProgressIndicator(),
-      // 부작용이 실패했습니다. 재시도 버튼을 보여줍니다
+      // 사이드이펙트가 실패했습니다. 재시도 버튼을 보여줍니다
       MutationError() => ElevatedButton(
         onPressed: () {
           // TODO 코드 스니펫 이후 설명을 참조하세요
         },
         child: const Text('재시도'),
       ),
-      // 부작용이 성공했습니다. 성공 메시지를 보여줍니다
+      // 사이드이펙트가 성공했습니다. 성공 메시지를 보여줍니다
       MutationSuccess() => const Text('할일이 추가되었습니다!'),
     };
   }
 }
 ```
 
-마지막으로, `onPressed` 콜백 내에서 다음과 같이 부작용을 트리거할 수 있습니다:
+마지막으로, `onPressed` 콜백 내에서 다음과 같이 사이드이펙트을 트리거할 수 있습니다:
 
 ```dart
 onPressed: () {
   addTodoMutation.run(ref, (tsx) async {
-    // 여기서 부작용을 실행합니다.
+    // 여기서 사이드이펙트을 실행합니다.
     // 보통 여기서 Notifier를 가져와서 메서드를 호출합니다.
     await tsx.get(todoListProvider.notifier).addTodo('새 할일');
   });
@@ -262,20 +254,18 @@ onPressed: () {
 ```
 
 :::note
-여기서 [Ref.read] 대신 [tsx.get]을 호출했다는 점에 주목하세요.  
-이는 뮤테이션 고유의 기능입니다. [tsx.get]은 Provider의 상태를 가져오지만,
-뮤테이션이 완료될 때까지 그것을 유지합니다.
+여기서 [Ref.read] 대신 [tsx.get]을 호출했다는 점에 주목하세요. 이는 Mutation 고유의 기능입니다. [tsx.get]은 Provider의 상태를 가져오지만,
+Mutation이 완료될 때까지 그것을 유지합니다.
 :::
 
 
-## 자동 재시도
+## 자동 재시도 {#automatic-retry}
 
 3.0부터, 초기화 중에 실패하는 Provider는 자동으로 재시도됩니다.
 재시도는 지수적 백오프로 수행되며, Provider는
 성공하거나 해제될 때까지 재시도됩니다. 이는 네트워크 연결 부족과 같은 임시적인 문제로 인한 작업 실패에 도움이 됩니다.
 
-기본 동작은 모든 오류를 재시도하고, 200ms 지연으로 시작하여
-각 재시도 후 최대 6.4초까지 두 배씩 증가합니다.  
+기본 동작은 모든 오류를 재시도하고, 200ms 지연으로 시작하여 각 재시도 후 최대 6.4초까지 두 배씩 증가합니다.  
 이는 `retry` 매개변수를 전달하여 [ProviderContainer]/[ProviderScope]에서 모든 Provider에 대해 사용자 정의할 수 있습니다:
 
 <Tabs>
@@ -325,7 +315,7 @@ void main() {
 <AutoSnippet
   language="dart"
   codegen={`
-  Duration retry(int retryCount, Object error) {
+  Duration? retry(int retryCount, Object error) {
     if (error is SomeSpecificError) return null;
     if (retryCount > 5) return null;
   
@@ -353,11 +343,9 @@ void main() {
 ></AutoSnippet>
 
 
-## `Ref.mounted`
+## `Ref.mounted` {#refmounted}
 
-오래 기다렸던 `Ref.mounted`가 마침내 등장했습니다! `BuildContext.mounted`와 유사하지만 `Ref`용입니다.
-
-비동기 작업 후에 Provider가 아직 마운트되어 있는지 확인하는 데 사용할 수 있습니다:
+오래 기다렸던 `Ref.mounted`가 마침내 등장했습니다! `BuildContext.mounted`와 유사합니다. 비동기 작업 후에 Provider가 아직 마운트되어 있는지 확인하는 데 사용할 수 있습니다:
 
 <AutoSnippet
   language="dart"
@@ -399,13 +387,11 @@ void main() {
   `}
 ></AutoSnippet>
 
-이것이 작동하려면 상당한 생명주기 변경이 필요했습니다.  
-[생명주기 변경](#provider-life-cycle-changes) 섹션을 꼭 읽어보세요.
+이것이 작동하려면 상당한 생명주기 변경이 필요했습니다. [생명주기 변경](#provider-life-cycle-changes) 섹션을 꼭 읽어보세요.
 
-## 제네릭 지원 (코드 생성)
+## 제네릭 지원 (코드 생성) {#generic-support-code-generation}
 
-코드 생성을 사용할 때 이제 생성된 Provider에 대해 타입 매개변수를 정의할 수 있습니다.
-타입 매개변수는 다른 Provider 매개변수와 같이 작동하며, Provider를 감시할 때 전달되어야 합니다.
+코드 생성을 사용할 때 이제 생성된 Provider에 대해 타입 매개변수를 정의할 수 있습니다. 타입 매개변수는 다른 Provider 매개변수와 같이 작동하며, Provider를 감시할 때 전달되어야 합니다.
 
 ```dart
 @riverpod
@@ -419,10 +405,9 @@ int integer = ref.watch(multiplyProvider<int>(2, 3));
 double decimal = ref.watch(multiplyProvider<double>(2.5, 3.5));
 ```
 
-## 일시정지/재개 지원
+## 일시정지/재개 지원 {#pauseresume-support}
 
-2.0에서 Riverpod는 이미 어느 정도 일시정지/재개 지원이 있었지만 상당히 제한적이었습니다.
-3.0에서는 모든 `ref.listen` 리스너를 필요에 따라 수동으로 일시정지/재개할 수 있습니다:
+2.0에서 Riverpod는 이미 어느 정도 일시정지/재개 지원이 있었지만 상당히 제한적이었습니다. 3.0에서는 모든 `ref.listen` 리스너를 필요에 따라 수동으로 일시정지/재개할 수 있습니다:
 
 ```dart
 final subscription = ref.listen(
@@ -444,14 +429,14 @@ subscription.resume();
 
 자세한 내용은 [생명주기 변경](#provider-life-cycle-changes) 섹션을 참조하세요.
 
-## 공개 API 통합
+## 공개 API 통합 {#unification-of-the-public-apis}
 
-Riverpod 3.0의 목표 중 하나는 API를 단순화하는 것입니다. 여기에는:
+Riverpod 3.0의 목표 중 하나는 API를 단순화하는 것입니다. 여기에는 아래 세부 목표를 포함했습니다.
 - 권장하는 것과 그렇지 않은 것을 강조
 - 불필요한 인터페이스 중복 제거
 - 모든 기능이 일관된 방식으로 작동하도록 보장
 
-이를 위해 몇 가지 변경사항이 있었습니다:
+이를 위해 몇 가지 변경사항이 있었습니다
 
 ### [StateProvider]/[StateNotifierProvider]와 [ChangeNotifierProvider]는 권장되지 않으며 다른 임포트로 이동됨
 
@@ -471,14 +456,10 @@ import 'package:riverpod/legacy.dart';
 
 ### AutoDispose 인터페이스가 제거됨
 
-아니요, "auto-dispose" 기능이 제거된 것은 아닙니다. 인터페이스에 관한 것입니다.
-2.0에서 모든 Provider, Ref, Notifier는 auto-dispose를 위해 복제되었습니다(
-`Ref` vs `AutoDisposeRef`, `Notifier` vs `AutoDisposeNotifier` 등).
-이는 일부 엣지 케이스에서 컴파일 오류를 위한 것이었지만, 더 나쁜 API라는 대가를 치뤘습니다.
+AudoDispose 인터페이스가 제거된거지, 기능이 제거된 것은 아닙니다. 2.0에서 모든 Provider, Ref, Notifier는 auto-dispose를 위해 복제되었습니다(`Ref` vs `AutoDisposeRef`, `Notifier` vs `AutoDisposeNotifier` 등).
+이는 일부 엣지 케이스에서 컴파일 오류를 위한 것이었지만, 나쁜 API라는 대가를 치뤘습니다.
 
-3.0에서는 인터페이스가 통합되고, 이전 컴파일 오류는 이제 
-린트 규칙([riverpod_lint] 사용)으로 구현됩니다. 
-구체적으로 말하면 `AutoDisposeNotifier`의 모든 참조를 `Notifier`로 교체할 수 있습니다. 코드의 동작은 변경되지 않습니다.
+3.0에서는 인터페이스가 통합되고, 이전 컴파일 오류는 이제 린트 규칙([riverpod_lint] 사용)으로 구현됩니다. 구체적으로 말하면 `AutoDisposeNotifier`의 모든 참조를 `Notifier`로 교체할 수 있습니다. 코드의 동작은 변경되지 않습니다.
 
 ```diff
 final provider = NotifierProvider.autoDispose<MyNotifier, int>(
@@ -490,12 +471,11 @@ final provider = NotifierProvider.autoDispose<MyNotifier, int>(
 }
 ```
 
-### "FamilyNotifier"와 "Notifier"가 융합됨
+### "FamilyNotifier"와 "Notifier" 통합
 
-이전 점과 마찬가지로, `FamilyNotifier`와 `Notifier` 인터페이스가
-이제 융합되었습니다.
+이전 점과 마찬가지로, `FamilyNotifier`와 `Notifier` 인터페이스가 이제 통합되었습니다.
 
-간단히 말하면, 다음 대신:
+간단히 말하면, 아래 코드 대신:
 
 ```dart
 final provider = NotifierProvider.family<CounterNotifier, int, Argument>(
@@ -508,7 +488,7 @@ class CounterNotifier extends FamilyNotifier<int, Argument> {
 }
 ```
 
-이제 다음을 합니다:
+이제 아래 코드와 같이 사용합니다:
 
 ```dart
 final provider = NotifierProvider.family<CounterNotifier, int, Argument>(
@@ -530,14 +510,10 @@ class CounterNotifier extends Notifier<int> {
 
 ### 모두를 지배하는 하나의 `Ref`
 
-Riverpod 2.0에서 각 Provider는 자체 [Ref] 서브클래스(`FutureProviderRef`, `StreamProviderRef` 등)와 함께 제공되었습니다.  
-일부 `Ref`에는 `state` 속성이, 일부에는 `future` 또는 `notifier` 등이 있었습니다. 
-유용했지만, 얻는 것에 비해 많은 복잡성이었습니다. 그 이유 중 하나는
-[Notifier]가 이미 가지고 있던 추가 속성들이 있어서 인터페이스가 중복되었기 때문입니다.
+Riverpod 2.0에서 각 Provider는 자체 [Ref] 서브클래스(`FutureProviderRef`, `StreamProviderRef` 등)와 함께 제공되었습니다. 일부 `Ref`에는 `state` 속성이, 일부에는 `future` 또는 `notifier` 등이 있었습니다. 
+유용했지만, 얻는 것에 비해 많은 복잡성이었습니다. 그 이유 중 하나는 [Notifier]가 이미 가지고 있던 추가 속성들이 있어서 인터페이스가 중복되었기 때문입니다.
 
-3.0에서는 `Ref`가 통합되었습니다. `Ref<T>`와 같은 제네릭 매개변수나,
-`FutureProviderRef`는 더 이상 없습니다. 하나만 있습니다: `Ref`.
-실제로 이는 생성된 Provider의 구문이 단순화됨을 의미합니다:
+3.0에서는 `Ref`가 통합되었습니다. `Ref<T>`와 같은 제네릭 매개변수나, `FutureProviderRef`는 더 이상 없습니다. 하나만 있습니다: `Ref`. 실제로 이는 생성된 Provider의 구문이 단순화됨을 의미합니다:
 
 ```diff
 -Example example(ExampleRef ref) {
@@ -548,27 +524,19 @@ Riverpod 2.0에서 각 Provider는 자체 [Ref] 서브클래스(`FutureProviderR
 
 
 :::info
-이는 그대로 유지되는 [WidgetRef]에 관한 것이 아닙니다.  
-[Ref]와 [WidgetRef]는 두 가지 다른 것입니다.
+이는 그대로 유지되는 [WidgetRef]에 관한 것이 아닙니다. [Ref]와 [WidgetRef]는 두 가지 다른 것입니다.
 :::
 
 ### 모든 `updateShouldNotify`가 이제 `==`를 사용함
 
-`updateShouldNotify`는 상태 변경이 발생했을 때 Provider가
-리스너에게 알림을 보낼지 결정하는 데 사용되는 메서드입니다. 
-하지만 2.0에서는 이 메서드의 구현이 Provider마다 상당히 달랐습니다.
-일부 Provider는 `==`를, 일부는 `identical`을, 일부는 더 복잡한 로직을 사용했습니다.
+`updateShouldNotify`는 상태 변경이 발생했을 때 Provider가 리스너에게 알림을 보낼지 결정하는 데 사용되는 메서드입니다.  하지만 2.0에서는 이 메서드의 구현이 Provider마다 상당히 달랐습니다. 일부 Provider는 `==`를, 일부는 `identical`을, 일부는 더 복잡한 로직을 사용했습니다.
 
-3.0부터 모든 Provider는 알림을 필터링하기 위해 `==`를 사용합니다.
-
-이는 몇 가지 방식으로 영향을 줄 수 있습니다:
+3.0부터 모든 Provider는 알림을 필터링하기 위해 `==`를 사용합니다. 이는 몇 가지 방식으로 영향을 줄 수 있습니다:
 - 일부 Provider가 특정 상황에서 더 이상 리스너에게 알림을 보내지 않을 수 있습니다.
 - 일부 리스너가 이전보다 더 자주 알림을 받을 수 있습니다.
-- `==`를 오버라이드하는 큰 데이터 클래스가 있다면 약간의
-  성능 영향을 볼 수 있습니다.
+- `==`를 오버라이드하는 큰 데이터 클래스가 있다면 약간의 성능 영향을 볼 수 있습니다.
 
-이러한 변경사항에 영향을 받는다면, `updateShouldNotify`를 오버라이드하여
-사용자 정의 구현을 사용할 수 있습니다:
+이러한 변경사항에 영향을 받는다면, `updateShouldNotify`를 오버라이드하여 사용자 정의 구현을 사용할 수 있습니다:
 
 <AutoSnippet
   language="dart"
@@ -600,9 +568,9 @@ Riverpod 2.0에서 각 Provider는 자체 [Ref] 서브클래스(`FutureProviderR
   `}
 ></AutoSnippet>
 
-## Provider 생명주기 변경
+## Provider 생명주기 변경 {#provider-life-cycle-changes}
 
-### Provider 읽기가 예외를 발생시킬 때, 오류가 이제 ProviderException으로 래핑됨
+### Provider 읽기가 예외를 발생시킬 때, 오류가 이제 ProviderException으로 래핑
 
 이전에는 Provider가 오류를 던지면, Riverpod가 때때로 그 오류를 직접 다시 던졌습니다:
 
@@ -692,22 +660,18 @@ ProviderContainer(
 );
 ```
 
-### 보이지 않는 위젯 내의 리스너가 이제 일시정지됨
+### 보이지 않는 위젯 내의 리스너 일시정지
 
-Riverpod에 [리스너를 일시정지](#pauseresume-support)하는 방법이 있으므로, Riverpod는 이를 사용하여
-위젯이 보이지 않을 때 리스너를 기본적으로 일시정지합니다. 실제로 이는 보이는 위젯 트리에서 사용되지 않는 Provider가
-일시정지됨을 의미합니다.
+Riverpod에 [리스너를 일시정지](#pauseresume-support)하는 방법이 있으므로, Riverpod는 이를 사용하여 위젯이 보이지 않을 때 리스너를 기본적으로 일시정지합니다. 이는 보이는 위젯 트리에서 사용되지 않는 Provider가 일시정지됨을 의미합니다.
 
 구체적인 예로, 두 경로가 있는 애플리케이션을 생각해보세요:
 - Provider를 사용해 웹소켓을 수신하는 홈 페이지
 - 해당 웹소켓에 의존하지 않는 설정 페이지
 
 
-일반적인 애플리케이션에서 사용자는 먼저 홈 페이지를 열고 _그 다음_ 설정 페이지를 엽니다.
-이는 설정 페이지가 열려 있는 동안 홈페이지도 열려 있지만 보이지 않음을 의미합니다.
+일반적인 애플리케이션에서 사용자는 먼저 홈 페이지를 열고 _그 다음_ 설정 페이지를 엽니다. 이는 설정 페이지가 열려 있는 동안 홈페이지도 열려 있지만 보이지 않음을 의미합니다.
 
-2.0에서는 홈페이지가 웹소켓을 계속 수신했을 것입니다.  
-3.0에서는 웹소켓 Provider가 대신 일시정지되어, 리소스를 절약할 수 있습니다.
+2.0에서는 홈페이지가 웹소켓을 계속 수신했을 것입니다. 3.0에서는 웹소켓 Provider가 대신 일시정지되어, 리소스를 절약할 수 있습니다.
 
 **어떻게 작동하는가:**  
 Riverpod는 [TickerMode]에 의존하여 위젯이 보이는지 여부를 판단합니다. 그리고
@@ -735,10 +699,9 @@ class MyWidget extends StatelessWidget {
 }
 ```
 
-### Provider가 일시정지된 Provider에 의해서만 사용되는 경우, 그것도 일시정지됨
+### Provider가 일시정지된 다른 Provider만 사용되는 경우, 함께 일시정지
 
-Riverpod 2.0에는 이미 어느 정도 일시정지/재개 지원이 있었습니다. 하지만 제한적이었고 
-일부 엣지 케이스를 다루지 못했습니다.  
+Riverpod 2.0에는 이미 어느 정도 일시정지/재개 지원이 있었습니다. 하지만 제한적이었고  일부 엣지 케이스를 다루지 못했습니다.  
 다음을 생각해보세요:
 
 <AutoSnippet
@@ -762,14 +725,9 @@ Riverpod 2.0에는 이미 어느 정도 일시정지/재개 지원이 있었습�
   `}
 ></AutoSnippet>
 
-2.0에서 이 Provider에 대해 `ref.read`를 한 번 호출하면,
-Provider의 상태는 유지되지만 '일시정지됨'이 출력됩니다. 이는
-`ref.read`가 Provider를 "수신"하지 않기 때문입니다. 그리고 Provider가 "수신"되지
-않으면 일시정지됩니다.
+2.0에서 이 Provider에 대해 `ref.read`를 한 번 호출하면, Provider의 상태는 유지되지만 '일시정지됨'이 출력됩니다. 이는 `ref.read`가 Provider를 "수신"하지 않기 때문입니다. 그리고 Provider가 "수신"되지 않으면 일시정지됩니다.
 
-이는 현재 사용되지 않는 Provider를 일시정지하는 데 유용합니다! 
-문제는 많은 경우에 이 최적화가 작동하지 않는다는 것입니다.  
-예를 들어, Provider가 다른 Provider를 통해 간접적으로 사용될 수 있습니다.
+이는 현재 사용되지 않는 Provider를 일시정지하는 데 유용합니다! 문제는 많은 경우에 이 최적화가 작동하지 않는다는 것입니다. 예를 들어, Provider가 다른 Provider를 통해 간접적으로 사용될 수 있습니다.
 
 <AutoSnippet
   language="dart"
@@ -812,20 +770,13 @@ Provider의 상태는 유지되지만 '일시정지됨'이 출력됩니다. 이�
   `}
 ></AutoSnippet>
 
-이 시나리오에서 버튼을 한 번 클릭하면,
-`anotherProvider`가 `exampleProvider`를 수신하기 시작합니다. 하지만 `anotherProvider`는
-더 이상 사용되지 않고 일시정지됩니다. 그러나 `exampleProvider`는 일시정지되지 않습니다.
-왜냐하면 아직 사용되고 있다고 생각하기 때문입니다.  
-따라서 버튼을 클릭해도 더 이상 '일시정지됨'이 출력되지 않습니다. 
+이 시나리오에서 버튼을 한 번 클릭하면, `anotherProvider`가 `exampleProvider`를 수신하기 시작합니다. 하지만 `anotherProvider`는 더 이상 사용되지 않고 일시정지됩니다. 그러나 `exampleProvider`는 일시정지되지 않습니다. 왜냐하면 아직 사용되고 있다고 생각하기 때문입니다. 따라서 버튼을 클릭해도 더 이상 '일시정지됨'이 출력되지 않습니다. 
 
 3.0에서는 이것이 수정되었습니다. Provider가 일시정지된 Provider에 의해서만 사용되는 경우, 그것도 일시정지됩니다.
 
-### Provider가 재구축될 때, 이전 구독이 이제 재구축이 완료될 때까지 유지됨
+### Provider가 다시 빌드될 때, 빌드가 완료될 때 까지 이전 상태가 유지
 
-2.0에서는 비동기 Provider와 'auto-dispose'를 결합할 때 알려진 불편함이 있었습니다.
-
-구체적으로, 비동기 Provider가 `await` 후에 auto-dispose Provider를 감시하면,
-"auto dispose"가 예기치 않게 트리거될 수 있었습니다.
+2.0에서는 비동기 Provider와 'auto-dispose'를 결합할 때 알려진 불편함이 있었습니다. 구체적으로, 비동기 Provider가 `await` 후에 auto-dispose Provider를 감시하면, "auto dispose"가 예기치 않게 트리거될 수 있었습니다.
 
 다음을 생각해보세요:  
 <AutoSnippet
@@ -920,14 +871,9 @@ Provider의 상태는 유지되지만 '일시정지됨'이 출력됩니다. 이�
 ... // 매초 계속
 ```
 
-보시다시피, 이것은 매초 일관되게 `0`을 출력합니다.
-왜냐하면 `autoDispose` Provider가 비동기 간격 중에 반복적으로 해제되기 때문입니다. 
-해결 방법은 `ref.watch` 호출을 `await` 문 앞으로 이동하는 것이었습니다.
-하지만 이는 오류가 발생하기 쉽고, 직관적이지 않으며, 항상 가능하지 않았습니다.
+보시다시피, 이것은 매초 일관되게 `0`을 출력합니다. 왜냐하면 `autoDispose` Provider가 비동기 간격 중에 반복적으로 해제되기 때문입니다. 해결 방법은 `ref.watch` 호출을 `await` 문 앞으로 이동하는 것이었습니다. 하지만 이는 오류가 발생하기 쉽고, 직관적이지 않으며, 항상 가능하지 않았습니다.
 
-3.0에서는 리스너의 해제를 지연시켜 이것이 수정되었습니다.  
-Provider가 재구축될 때, 모든 리스너를 즉시 제거하는 대신,
-[일시정지](#pauseresume-support)합니다.
+3.0에서는 리스너의 해제를 지연시켜 이것이 수정되었습니다. Provider가 재구축될 때, 모든 리스너를 즉시 제거하는 대신, [일시정지](#pauseresume-support)합니다.
 
 완전히 같은 코드가 이제 대신 다음을 출력합니다:
 
@@ -954,11 +900,9 @@ Provider가 재구축될 때, 모든 리스너를 즉시 제거하는 대신,
 
 ### Provider의 예외가 "ProviderException"으로 다시 던져짐.
 
-"Provider가 실패함"과 "Provider가 실패한 Provider에 의존함"을 구별하기 위해,
-Riverpod 3.0은 이제 예외를 원본을 포함하는 `ProviderException`으로 래핑합니다.
+"Provider가 실패함"과 "Provider가 실패한 Provider에 의존함"을 구별하기 위해, Riverpod 3.0은 이제 예외를 원본을 포함하는 `ProviderException`으로 래핑합니다.
 
-이는 Provider에서 오류를 잡는다면, `ProviderException`의 내용을 검사하도록
-try/catch를 업데이트해야 함을 의미합니다:
+이는 Provider에서 오류를 잡는다면, `ProviderException`의 내용을 검사하도록 try/catch를 업데이트해야 함을 의미합니다:
 
 ```dart
 try {
@@ -974,13 +918,11 @@ try {
 }
 ```
 
-## 새로운 테스팅 유틸리티
+## 새로운 테스팅 유틸리티 {#new-testing-utilities}
 
-### `ProviderContainer.test`
+### `ProviderContainer.test` {#providercontainertest}
 
-2.0에서 일반적인 테스트 코드는 `createContainer`라는 사용자 정의 유틸리티에 의존했습니다.  
-3.0에서는 이 유틸리티가 이제 Riverpod의 일부이며, `ProviderContainer.test`라고 불립니다.
-새 컨테이너를 생성하고 테스트 종료 후 자동으로 해제합니다.
+2.0에서 일반적인 테스트 코드는 `createContainer`라는 사용자 정의 유틸리티에 의존했습니다. 3.0에서는 이 유틸리티가 이제 Riverpod의 일부이며, `ProviderContainer.test`라고 불립니다. 새 컨테이너를 생성하고 테스트 종료 후 자동으로 해제합니다.
 
 ```dart
 void main() {
@@ -995,11 +937,9 @@ void main() {
 
 `createContainer`를 `ProviderContainer.test`로 안전하게 전역 검색-교체할 수 있습니다.
 
-### `NotifierProvider.overrideWithBuild`
+### `NotifierProvider.overrideWithBuild` {#notifierprovideroverridewithbuild}
 
-이제 전체 notifier를 모킹하지 않고 `Notifier.build` 메서드만 모킹할 수 있습니다.
-이는 notifier를 특정 상태로 초기화하면서도 notifier의 원래 구현을
-계속 사용하고 싶을 때 유용합니다.
+이제 전체 notifier를 모킹하지 않고 `Notifier.build` 메서드만 모킹할 수 있습니다. 이는 notifier를 특정 상태로 초기화하면서도 notifier의 원래 구현을 계속 사용하고 싶을 때 유용합니다.
 
 <AutoSnippet
   language="dart"
@@ -1053,11 +993,9 @@ void main() {
   `}
 ></AutoSnippet>
 
-### `Future/StreamProvider.overrideWithValue`
+### `Future/StreamProvider.overrideWithValue` {#futurestreamprovideroverridewithvalue}
 
-얼마 전에 `FutureProvider.overrideWithValue`와 `StreamProvider.overrideWithValue`가
-Riverpod에서 "일시적으로" 제거되었습니다.  
-마침내 돌아왔습니다!
+얼마 전에 `FutureProvider.overrideWithValue`와 `StreamProvider.overrideWithValue`가 Riverpod에서 "일시적으로" 제거되었습니다. 다시 돌아왔습니다!
 
 <AutoSnippet
   language="dart"
@@ -1095,7 +1033,7 @@ Riverpod에서 "일시적으로" 제거되었습니다.
   `}
 ></AutoSnippet>
 
-### `WidgetTester.container`
+### `WidgetTester.container` {#widgettestercontainer}
 
 위젯 트리에서 `ProviderContainer`에 접근하는 간단한 방법입니다.
 
@@ -1110,13 +1048,11 @@ void main() {
 
 자세한 정보는 [WidgetTester.container] 확장을 참조하세요.
 
-## 사용자 정의 ProviderListenable
+## 사용자 정의 ProviderListenable {#custom-providerlistenable}
 
-Riverpod 3.0에서는 사용자 정의 [ProviderListenable]을 생성할 수 있습니다.
-이는 [SyncProviderTransformerMixin]을 사용하여 수행할 수 있습니다.
+Riverpod 3.0에서는 사용자 정의 [ProviderListenable]을 생성할 수 있습니다. 이는 [SyncProviderTransformerMixin]을 사용하여 수행할 수 있습니다.
 
-다음 예제는 콜백이 선택된 값 대신 boolean을 반환하는
-`provider.select`의 변형을 구현합니다.
+다음 예제는 콜백이 선택된 값 대신 boolean을 반환하는 `provider.select`의 변형을 구현합니다.
 
 ```dart
 final class Where<T> with SyncProviderTransformerMixin<T, T> {
@@ -1148,10 +1084,9 @@ extension<T> on ProviderListenable<T> {
 
 `ref.watch(provider.where((previous, value) => value > 0))`로 사용됩니다.
 
-## 정적으로 안전한 스코핑 (코드 생성 전용)
+## 정적으로 안전한 스코핑 (코드 생성 전용) {#statically-safe-scoping-code-generation-only}
 
-[riverpod_lint]를 통해, Riverpod는 이제 스코핑이 잘못 사용되었을 때를 감지하는 방법을 포함합니다.
-이 린트는 오버라이드가 누락되어 런타임 오류를 방지하는 것을 감지합니다.
+[riverpod_lint]를 통해, Riverpod는 이제 스코핑이 잘못 사용되었을 때를 감지하는 방법을 포함합니다. 이 린트는 오버라이드가 누락되어 런타임 오류를 방지하는 것을 감지합니다.
 
 다음을 생각해보세요:
 
@@ -1188,7 +1123,7 @@ Future<int> myFutureProvider() => throw UnimplementedError();
 - 스코프된 Provider를 사용하는 것에 `@Dependencies`를 지정하여 그것에
   의존한다는 것을 나타냅니다.
   ```dart
-  @Dependencies([myFuture])
+  @Dependencies([myFutureProvider])
   class MyWidget extends ConsumerWidget {
     @override
     Widget build(BuildContext context, WidgetRef ref) {
@@ -1215,7 +1150,7 @@ Future<int> myFutureProvider() => throw UnimplementedError();
     ```
   - `MyWidget`을 사용하는 것에 `@Dependencies`를 지정하여 그것에 의존한다는 것을 나타냅니다.
     ```dart
-    @Dependencies([myFuture])
+    @Dependencies([myFutureProvider])
     class MyApp extends ConsumerWidget {
       @override
       Widget build(BuildContext context, WidgetRef ref) {
@@ -1225,7 +1160,7 @@ Future<int> myFutureProvider() => throw UnimplementedError();
     }
     ```
 
-## 기타 변경사항
+## 기타 변경사항 {#other-changes}
 
 ### AsyncValue
 
@@ -1244,15 +1179,9 @@ Future<int> myFutureProvider() => throw UnimplementedError();
     // 기본 케이스가 필요하지 않습니다
   }
   ```
-* `valueOrNull`이 `value`로 이름이 바뀌었습니다.
-  기존 `value`는 오류와 관련된 동작이 이상해서 제거되었습니다.
-  마이그레이션하려면 `valueOrNull` -> `value`로 전역 검색-교체하세요.
-* `AsyncValue.isFromCache`가 추가되었습니다.  
-  이 플래그는 오프라인 지속성을 통해 값을 얻을 때 설정됩니다.
-  이는 UI가 데이터베이스에서 오는 상태와
-  서버에서 오는 상태를 구별할 수 있게 해줍니다.
-* `AsyncLoading`에서 선택적 `progress` 속성을 사용할 수 있습니다.
-  이는 Provider가 요청의 현재 진행률을 정의할 수 있게 해줍니다:
+* `valueOrNull`이 `value`로 이름이 바뀌었습니다. 기존 `value`는 오류와 관련된 동작이 이상해서 제거되었습니다. 마이그레이션하려면 `valueOrNull` -> `value`로 전역 검색-교체하세요.
+* `AsyncValue.isFromCache`가 추가되었습니다. 이 플래그는 오프라인 지속성을 통해 값을 얻을 때 설정됩니다. 이는 UI가 데이터베이스에서 오는 상태와 서버에서 오는 상태를 구별할 수 있게 해줍니다.
+* `AsyncLoading`에서 선택적 `progress` 속성을 사용할 수 있습니다. 이는 Provider가 요청의 현재 진행률을 정의할 수 있게 해줍니다:
   <AutoSnippet
     language="dart"
     codegen={`
@@ -1285,7 +1214,7 @@ Future<int> myFutureProvider() => throw UnimplementedError();
     `}
   ></AutoSnippet>
 
-### 모든 Ref 리스너가 이제 리스너를 제거하는 방법을 반환함
+### Ref 리스너가 구독 취소할 수 있는 함수 반환
 
 이제 다양한 생명주기 리스너를 "구독 취소"할 수 있습니다:
 
@@ -1296,7 +1225,7 @@ Future<int> myFutureProvider() => throw UnimplementedError();
     Future<int> example(Ref ref) {
       // onDispose와 다른 생명주기 리스너가 
       // 리스너를 제거하는 함수를 반환합니다.
-      final removeListener = ref.onDispose(() => print('dispose));
+      final removeListener = ref.onDispose(() => print('dispose'));
       // 단순히 함수를 호출하여 리스너를 제거합니다:
       removeListener();
       
@@ -1308,7 +1237,7 @@ Future<int> myFutureProvider() => throw UnimplementedError();
     final exampleProvider = FutureProvider<int>((ref) {
       // onDispose와 다른 생명주기 리스너가 
       // 리스너를 제거하는 함수를 반환합니다.
-      final removeListener = ref.onDispose(() => print('dispose));
+      final removeListener = ref.onDispose(() => print('dispose'));
       // 단순히 함수를 호출하여 리스너를 제거합니다:
       removeListener();
        
@@ -1317,7 +1246,7 @@ Future<int> myFutureProvider() => throw UnimplementedError();
   `}
 ></AutoSnippet>
 
-### 약한 리스너 - auto-dispose를 방지하지 않고 Provider를 수신합니다.
+### 리스너에 weak 설정 - auto-dispose를 방지하지 않고 Provider를 수신합니다.
 
 `Ref.listen`을 사용할 때 선택적으로 `weak: true`를 지정할 수 있습니다:
 
