@@ -14,7 +14,8 @@ Riverpod 3.0에 오신 것을 환영합니다!
 이 버전은 더 간단하고 통합된 Riverpod로의 전환기입니다.  
 
 :::caution
-이 버전은 몇 가지 생명주기 변경사항을 포함하고 있습니다. 이런 변경사항들이 미묘한 방식으로 앱을 손상시킬 수 있습니다. 신중하게 업그레이드하세요. 마이그레이션 가이드는 [마이그레이션 페이지](3.0_migration)를 참고해주세요.
+이 버전은 몇 가지 생명주기 변경사항을 포함하고 있습니다. 이런 변경사항들이 미묘한 방식으로 앱을 손상시킬 수 있습니다. 신중하게 업그레이드하세요.  
+마이그레이션 가이드는 <Link documentID="3.0_migration">마이그레이션 페이지</Link>를 참고해주세요.
 :::
 
 주요 하이라이트는 다음과 같습니다:
@@ -196,7 +197,7 @@ Riverpod는 데이터베이스 자체는 포함하지 않고, 데이터베이스
 Riverpod 3.0에서 "Mutation"이라는 새로운 기능이 도입되었습니다.  
 이 기능은 아래 두 가지 문제를 해결합니다:
 - UI가 "사이드이펙트"(폼 제출, 버튼 클릭 등)에 반응하여 로딩/성공/오류 메시지를 표시할 수 있게 해줍니다. "Form이 성공적으로 제출되었을 때 Toast로 보여주기" 같은 기능을 생각해보세요.
-- [Ref.read]와 <Link documentID="concepts2/auto_dispose" />를 결합한 `onPressed` 콜백이 사이드이펙트이 아직 진행 중인 동안 Provider가 해제되는 문제를 해결합니다.
+- [Ref.read]와 <Link documentID="concepts2/auto_dispose" />를 결합한 `onPressed` 콜백이 사이드이펙트가 아직 진행 중인 동안 Provider가 해제되는 문제를 해결합니다.
 
 간단히 말하면, 새로운 [Mutation] 객체가 추가되었습니다. 이는 Provider처럼
 최상위 final 변수로 선언됩니다:
@@ -215,7 +216,7 @@ class AddTodoButton extends ConsumerWidget {
     final addTodo = ref.watch(addTodoMutation);
 
     return switch (addTodo) {
-      // 진행 중인 사이드이펙트이 없습니다
+      // 진행 중인 사이드이펙트가 없습니다
       // 제출 버튼을 보여줍니다
       MutationIdle() => ElevatedButton(
         // 클릭 시 사이드이펙트을 트리거합니다
@@ -224,16 +225,16 @@ class AddTodoButton extends ConsumerWidget {
         },
         child: const Text('제출'),
       ),
-      // 사이드이펙트이 진행 중입니다. 스피너를 보여줍니다
+      // 사이드이펙트가 진행 중입니다. 스피너를 보여줍니다
       MutationPending() => const CircularProgressIndicator(),
-      // 사이드이펙트이 실패했습니다. 재시도 버튼을 보여줍니다
+      // 사이드이펙트가 실패했습니다. 재시도 버튼을 보여줍니다
       MutationError() => ElevatedButton(
         onPressed: () {
           // TODO 코드 스니펫 이후 설명을 참조하세요
         },
         child: const Text('재시도'),
       ),
-      // 사이드이펙트이 성공했습니다. 성공 메시지를 보여줍니다
+      // 사이드이펙트가 성공했습니다. 성공 메시지를 보여줍니다
       MutationSuccess() => const Text('할일이 추가되었습니다!'),
     };
   }
@@ -314,7 +315,7 @@ void main() {
 <AutoSnippet
   language="dart"
   codegen={`
-  Duration retry(int retryCount, Object error) {
+  Duration? retry(int retryCount, Object error) {
     if (error is SomeSpecificError) return null;
     if (retryCount > 5) return null;
   
@@ -487,7 +488,7 @@ class CounterNotifier extends FamilyNotifier<int, Argument> {
 }
 ```
 
-이제 아래 코드와 같이 사용 합니다:
+이제 아래 코드와 같이 사용합니다:
 
 ```dart
 final provider = NotifierProvider.family<CounterNotifier, int, Argument>(
@@ -1224,7 +1225,7 @@ Future<int> myFutureProvider() => throw UnimplementedError();
     Future<int> example(Ref ref) {
       // onDispose와 다른 생명주기 리스너가 
       // 리스너를 제거하는 함수를 반환합니다.
-      final removeListener = ref.onDispose(() => print('dispose));
+      final removeListener = ref.onDispose(() => print('dispose'));
       // 단순히 함수를 호출하여 리스너를 제거합니다:
       removeListener();
       
@@ -1236,7 +1237,7 @@ Future<int> myFutureProvider() => throw UnimplementedError();
     final exampleProvider = FutureProvider<int>((ref) {
       // onDispose와 다른 생명주기 리스너가 
       // 리스너를 제거하는 함수를 반환합니다.
-      final removeListener = ref.onDispose(() => print('dispose));
+      final removeListener = ref.onDispose(() => print('dispose'));
       // 단순히 함수를 호출하여 리스너를 제거합니다:
       removeListener();
        
