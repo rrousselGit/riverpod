@@ -98,7 +98,7 @@ Riverpod does this for a few reasons, which come down the the same logic: "No gl
 
   Using Riverpod's architecture, state updates are centralized: All the logic
   for modifying a provider is done in the provider itself.
-  And generally, the UI will no nothing but invoke one method on the provider's Notifier.
+  And generally, the UI will only invoke one method on the provider's Notifier.
 
 1. Better testing.
   By storing the state of providers inside a container, we do not have to worry about
@@ -140,7 +140,8 @@ Riverpod does this for a few reasons, which come down the the same logic: "No gl
 1. Support for <Link documentID="concepts2/scoping"/>.
   By storing the state of a provider inside a container, we can have the same provider
   resolve to a different state depending on where in the widget tree it is used.
-  This feature is quite advanced generally discouraged, but useful for performance optimizations.
+  This feature is quite advanced and generally discouraged, but useful for performance
+  optimizations.
 
 
 [ProviderContainer]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ProviderContainer-class.html
