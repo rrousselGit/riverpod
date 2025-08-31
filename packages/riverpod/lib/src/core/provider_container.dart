@@ -1196,7 +1196,7 @@ final class ProviderObserverContext {
 ///
 /// This can be used for logging or making devtools.
 /// {@category Core}
-abstract class ProviderObserver {
+abstract base class ProviderObserver {
   /// An object that listens to the changes of a [ProviderContainer].
   ///
   /// This can be used for logging or making devtools.

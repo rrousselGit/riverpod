@@ -1071,6 +1071,6 @@ class Counter extends StateNotifier<int> {
   abstract int state;
 }
 
-class ConstObserver extends ProviderObserver {
+final class ConstObserver extends ProviderObserver {
   const ConstObserver();
 }

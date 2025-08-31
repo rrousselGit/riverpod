@@ -2742,4 +2742,4 @@ void main() {
   });
 }
 
-class _EmptyObserver extends ProviderObserver {}
+final class _EmptyObserver extends ProviderObserver {}
