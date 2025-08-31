@@ -219,7 +219,7 @@ class AddTodoButton extends ConsumerWidget {
       // 진행 중인 사이드이펙트가 없습니다
       // 제출 버튼을 보여줍니다
       MutationIdle() => ElevatedButton(
-        // 클릭 시 사이드이펙트을 트리거합니다
+        // 클릭 시 사이드이펙트를 트리거합니다
         onPressed: () {
           // TODO 코드 스니펫 이후 설명을 참조하세요
         },
@@ -241,12 +241,12 @@ class AddTodoButton extends ConsumerWidget {
 }
 ```
 
-마지막으로, `onPressed` 콜백 내에서 다음과 같이 사이드이펙트을 트리거할 수 있습니다:
+마지막으로, `onPressed` 콜백 내에서 다음과 같이 사이드이펙트를 트리거할 수 있습니다:
 
 ```dart
 onPressed: () {
   addTodoMutation.run(ref, (tsx) async {
-    // 여기서 사이드이펙트을 실행합니다.
+    // 여기서 사이드이펙트를 실행합니다.
     // 보통 여기서 Notifier를 가져와서 메서드를 호출합니다.
     await tsx.get(todoListProvider.notifier).addTodo('새 할일');
   });
@@ -456,7 +456,7 @@ import 'package:riverpod/legacy.dart';
 
 ### AutoDispose 인터페이스가 제거됨
 
-AudoDispose 인터페이스가 제거된거지, 기능이 제거된 것은 아닙니다. 2.0에서 모든 Provider, Ref, Notifier는 auto-dispose를 위해 복제되었습니다(`Ref` vs `AutoDisposeRef`, `Notifier` vs `AutoDisposeNotifier` 등).
+AutoDispose 인터페이스가 제거된 것이지, 기능이 제거된 것은 아닙니다. 2.0에서 모든 Provider, Ref, Notifier는 auto-dispose를 위해 복제되었습니다(`Ref` vs `AutoDisposeRef`, `Notifier` vs `AutoDisposeNotifier` 등).
 이는 일부 엣지 케이스에서 컴파일 오류를 위한 것이었지만, 나쁜 API라는 대가를 치뤘습니다.
 
 3.0에서는 인터페이스가 통합되고, 이전 컴파일 오류는 이제 린트 규칙([riverpod_lint] 사용)으로 구현됩니다. 구체적으로 말하면 `AutoDisposeNotifier`의 모든 참조를 `Notifier`로 교체할 수 있습니다. 코드의 동작은 변경되지 않습니다.
