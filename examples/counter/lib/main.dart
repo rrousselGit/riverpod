@@ -55,7 +55,7 @@ class _HomeState extends ConsumerState<Home> {
       body: Column(
         children: [
           Text('${ref.watch(counterProvider)}'),
-          if (show) ProviderScope(child: Container()),
+          if (show) ProviderScope(child: Container(color: Colors.red)),
           ElevatedButton(
             onPressed: () => setState(() => show = !show),
             child: Text(show ? 'Hide' : 'Show'),
