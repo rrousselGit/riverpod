@@ -4,7 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
-import '../old/utils.dart' show equalsIgnoringHashCodes, ProviderObserverMock;
+import '../old/utils.dart' show equalsIgnoringHashCodes;
 import '../src/utils.dart';
 
 void main() {
@@ -198,7 +198,7 @@ void main() {
 
   test('Notifies ProviderObserver', () async {
     final mut = Mutation<int>();
-    final observer = ProviderObserverMock();
+    final observer = ObserverMock();
     final container = ProviderContainer.test(observers: [observer]);
     final completer = Completer<int>();
 
@@ -267,7 +267,7 @@ void main() {
     'While within `run`, ProviderObserver events log the current mutation',
     () async {
       final mut = Mutation<void>();
-      final observer = ProviderObserverMock();
+      final observer = ObserverMock();
       final container = ProviderContainer.test(observers: [observer]);
       final provider = Provider<int>((ref) => 0);
 

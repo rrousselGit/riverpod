@@ -31,38 +31,6 @@ List<Object> errorsOf(void Function() cb) {
   return [...errors];
 }
 
-class ProviderObserverMock extends Mock implements ProviderObserver {
-  @override
-  void didAddProvider(ProviderObserverContext? context, Object? value);
-
-  @override
-  void mutationReset(
-    ProviderObserverContext? context,
-    Mutation<Object?>? mutation,
-  );
-
-  @override
-  void mutationStart(
-    ProviderObserverContext? context,
-    Mutation<Object?>? mutation,
-  );
-
-  @override
-  void mutationError(
-    ProviderObserverContext? context,
-    Mutation<Object?>? mutation,
-    Object? error,
-    StackTrace? stackTrace,
-  );
-
-  @override
-  void mutationSuccess(
-    ProviderObserverContext? context,
-    Mutation<Object?>? mutation,
-    Object? result,
-  );
-}
-
 class OnBuildMock extends Mock {
   void call();
 }
@@ -200,47 +168,61 @@ class _EqualsIgnoringHashCodes extends Matcher {
   }
 }
 
-class ObserverMock extends Mock implements ProviderObserver {
+final class ObserverMock extends ProviderObserver with Mock {
   ObserverMock([this.label]);
 
   final String? label;
 
   @override
-  String toString() {
-    return label ?? super.toString();
-  }
+  String toString() => label ?? super.toString();
 
   @override
-  void didAddProvider(ProviderObserverContext? context, Object? value);
+  void didAddProvider(ProviderObserverContext? context, Object? value) {
+    noSuchMethod(Invocation.method(#didAddProvider, [context, value]));
+  }
 
   @override
   void providerDidFail(
     ProviderObserverContext? context,
     Object? error,
     StackTrace? stackTrace,
-  );
+  ) {
+    noSuchMethod(
+      Invocation.method(#providerDidFail, [context, error, stackTrace]),
+    );
+  }
 
   @override
   void didUpdateProvider(
     ProviderObserverContext? context,
     Object? previousValue,
     Object? newValue,
-  );
+  ) {
+    noSuchMethod(
+      Invocation.method(#didUpdateProvider, [context, previousValue, newValue]),
+    );
+  }
 
   @override
-  void didDisposeProvider(ProviderObserverContext? context);
+  void didDisposeProvider(ProviderObserverContext? context) {
+    noSuchMethod(Invocation.method(#didDisposeProvider, [context]));
+  }
 
   @override
   void mutationReset(
     ProviderObserverContext? context,
     Mutation<Object?>? mutation,
-  );
+  ) {
+    noSuchMethod(Invocation.method(#mutationReset, [context, mutation]));
+  }
 
   @override
   void mutationStart(
     ProviderObserverContext? context,
     Mutation<Object?>? mutation,
-  );
+  ) {
+    noSuchMethod(Invocation.method(#mutationStart, [context, mutation]));
+  }
 
   @override
   void mutationError(
@@ -248,18 +230,26 @@ class ObserverMock extends Mock implements ProviderObserver {
     Mutation<Object?>? mutation,
     Object? error,
     StackTrace? stackTrace,
-  );
+  ) {
+    noSuchMethod(
+      Invocation.method(#mutationError, [context, mutation, error, stackTrace]),
+    );
+  }
 
   @override
   void mutationSuccess(
     ProviderObserverContext? context,
     Mutation<Object?>? mutation,
     Object? result,
-  );
+  ) {
+    noSuchMethod(
+      Invocation.method(#mutationSuccess, [context, mutation, result]),
+    );
+  }
 }
 
 // can subclass ProviderObserver without implementing all life-cycles
-class CustomObserver extends ProviderObserver {}
+final class CustomObserver extends ProviderObserver {}
 
 TypeMatcher<ProviderObserverContext> isProviderObserverContext({
   Object? provider = const _Sentinel(),
