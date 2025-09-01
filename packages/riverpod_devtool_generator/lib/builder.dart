@@ -267,6 +267,10 @@ sealed class _BuiltInType {
       'ContainerId',
       packageName: 'riverpod',
     );
+    const elementIdChecker = TypeChecker.fromName(
+      'ElementId',
+      packageName: 'riverpod',
+    );
     const providerIdChecker = TypeChecker.fromName(
       'ProviderId',
       packageName: 'riverpod',
@@ -280,6 +284,8 @@ sealed class _BuiltInType {
       return _OtherDevtoolType(type);
     } else if (containerIdChecker.isExactlyType(type)) {
       return _ContainerId();
+    } else if (elementIdChecker.isExactlyType(type)) {
+      return _ElementId();
     } else if (providerIdChecker.isExactlyType(type)) {
       return _ProviderId();
     } else if (originIdChecker.isExactlyType(type)) {
@@ -337,6 +343,10 @@ final class _IdType extends _BuiltInType {
 
 final class _ContainerId extends _IdType {
   _ContainerId() : super('ContainerId');
+}
+
+final class _ElementId extends _IdType {
+  _ElementId() : super('ElementId');
 }
 
 final class _ProviderId extends _IdType {
@@ -491,11 +501,11 @@ final class _UnknownType extends _BuiltInType {
   final DartType type;
 
   @override
-  String typeCode() => '#{{vm_service|InstanceRef}}';
+  String typeCode() => 'Byte';
 
   @override
   String decodeBytes({required String mapSymbol, required String path}) =>
-      "$mapSymbol['$path']!.ref";
+      "Byte.of($mapSymbol['$path']!.ref)";
 
   @override
   String appendEncodedValueCode({

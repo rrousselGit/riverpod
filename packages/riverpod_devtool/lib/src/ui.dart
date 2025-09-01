@@ -1,5 +1,5 @@
 import 'package:devtools_app_shared/ui.dart' as devtools_shared_ui;
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 class Panel extends StatelessWidget {
   const Panel({super.key, this.header, required this.child});
@@ -23,6 +23,9 @@ class Panel extends StatelessWidget {
       );
     }
 
-    return devtools_shared_ui.RoundedOutlinedBorder(child: content);
+    return devtools_shared_ui.RoundedOutlinedBorder(
+      clip: true,
+      child: Material(child: content),
+    );
   }
 }

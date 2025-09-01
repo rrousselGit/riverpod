@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import 'event.dart';
 
@@ -48,15 +49,15 @@ class _FrameStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 20,
-      height: 20,
+    final format = DateFormat('HH:mm:ss.SSS');
 
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.red,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: const Text('foo'),
+      child: Text(format.format(frame.frame.timestamp)),
     );
   }
 }

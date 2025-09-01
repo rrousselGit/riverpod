@@ -65,42 +65,75 @@ class Frame {
 /// Devtool code for [internals.ProviderMeta]
 class ProviderMeta {
   ProviderMeta({
-    required this.originId,
-    required this.originDisplayString,
-    required this.isFamily,
-    required this.providerId,
-    required this.providerDisplayString,
+    required this.origin,
+    required this.id,
+    required this.toStringValue,
+    required this.hashValue,
+    required this.containerId,
+    required this.elementId,
   });
 
   factory ProviderMeta.from(Map<String, Byte> $events, {required String path}) {
     _validate($events, name: 'ProviderMeta', path: path);
 
-    final originId = internals.OriginId(
-      $events['$path.originId']!.ref.valueAsString!,
+    final origin = OriginMeta.from($events, path: '$path.origin');
+    final id = internals.ProviderId($events['$path.id']!.ref.valueAsString!);
+    final toStringValue = $events['$path.toStringValue']!.ref.valueAsString!;
+    final hashValue = $events['$path.hashValue']!.ref.valueAsString!;
+    final containerId = internals.ContainerId(
+      $events['$path.containerId']!.ref.valueAsString!,
     );
-    final originDisplayString =
-        $events['$path.originDisplayString']!.ref.valueAsString!;
-    final isFamily = ($events['$path.isFamily']!.ref.valueAsString! == 'true');
-    final providerId = internals.ProviderId(
-      $events['$path.providerId']!.ref.valueAsString!,
+    final elementId = internals.ElementId(
+      $events['$path.elementId']!.ref.valueAsString!,
     );
-    final providerDisplayString =
-        $events['$path.providerDisplayString']!.ref.valueAsString!;
 
     return ProviderMeta(
-      originId: originId,
-      originDisplayString: originDisplayString,
-      isFamily: isFamily,
-      providerId: providerId,
-      providerDisplayString: providerDisplayString,
+      origin: origin,
+      id: id,
+      toStringValue: toStringValue,
+      hashValue: hashValue,
+      containerId: containerId,
+      elementId: elementId,
     );
   }
 
-  final internals.OriginId originId;
-  final String originDisplayString;
+  final OriginMeta origin;
+  final internals.ProviderId id;
+  final String toStringValue;
+  final String hashValue;
+  final internals.ContainerId containerId;
+  final internals.ElementId elementId;
+}
+
+/// Devtool code for [internals.OriginMeta]
+class OriginMeta {
+  OriginMeta({
+    required this.id,
+    required this.toStringValue,
+    required this.hashValue,
+    required this.isFamily,
+  });
+
+  factory OriginMeta.from(Map<String, Byte> $events, {required String path}) {
+    _validate($events, name: 'OriginMeta', path: path);
+
+    final id = internals.OriginId($events['$path.id']!.ref.valueAsString!);
+    final toStringValue = $events['$path.toStringValue']!.ref.valueAsString!;
+    final hashValue = $events['$path.hashValue']!.ref.valueAsString!;
+    final isFamily = ($events['$path.isFamily']!.ref.valueAsString! == 'true');
+
+    return OriginMeta(
+      id: id,
+      toStringValue: toStringValue,
+      hashValue: hashValue,
+      isFamily: isFamily,
+    );
+  }
+
+  final internals.OriginId id;
+  final String toStringValue;
+  final String hashValue;
   final bool isFamily;
-  final internals.ProviderId providerId;
-  final String providerDisplayString;
 }
 
 /// Devtool code for [internals.ProviderContainerAddEvent]
@@ -117,7 +150,7 @@ class ProviderContainerAddEvent extends Event {
   }) {
     _validate($events, name: 'ProviderContainerAddEvent', path: path);
 
-    final container = $events['$path.container']!.ref;
+    final container = Byte.of($events['$path.container']!.ref);
     final parentIds = List.generate(
       int.parse($events['$path.parentIds.length']!.ref.valueAsString!),
       (i) {
@@ -137,7 +170,7 @@ class ProviderContainerAddEvent extends Event {
     );
   }
 
-  final InstanceRef container;
+  final Byte container;
   final List<internals.ContainerId> parentIds;
   final internals.ContainerId containerId;
 }
@@ -152,17 +185,17 @@ class ProviderContainerDisposeEvent extends Event {
   }) {
     _validate($events, name: 'ProviderContainerDisposeEvent', path: path);
 
-    final container = $events['$path.container']!.ref;
+    final container = Byte.of($events['$path.container']!.ref);
 
     return ProviderContainerDisposeEvent(container: container);
   }
 
-  final InstanceRef container;
+  final Byte container;
 }
 
 /// Devtool code for [internals.ProviderElementAddEvent]
 class ProviderElementAddEvent extends Event {
-  ProviderElementAddEvent({required this.element, required this.provider});
+  ProviderElementAddEvent({required this.provider, required this.state});
 
   factory ProviderElementAddEvent.from(
     Map<String, Byte> $events, {
@@ -170,19 +203,19 @@ class ProviderElementAddEvent extends Event {
   }) {
     _validate($events, name: 'ProviderElementAddEvent', path: path);
 
-    final element = $events['$path.element']!.ref;
     final provider = ProviderMeta.from($events, path: '$path.provider');
+    final state = ProviderStateRef.from($events, path: '$path.state');
 
-    return ProviderElementAddEvent(element: element, provider: provider);
+    return ProviderElementAddEvent(provider: provider, state: state);
   }
 
-  final InstanceRef element;
   final ProviderMeta provider;
+  final ProviderStateRef state;
 }
 
 /// Devtool code for [internals.ProviderElementDisposeEvent]
 class ProviderElementDisposeEvent extends Event {
-  ProviderElementDisposeEvent({required this.element, required this.provider});
+  ProviderElementDisposeEvent({required this.provider});
 
   factory ProviderElementDisposeEvent.from(
     Map<String, Byte> $events, {
@@ -190,24 +223,35 @@ class ProviderElementDisposeEvent extends Event {
   }) {
     _validate($events, name: 'ProviderElementDisposeEvent', path: path);
 
-    final element = $events['$path.element']!.ref;
     final provider = ProviderMeta.from($events, path: '$path.provider');
 
-    return ProviderElementDisposeEvent(element: element, provider: provider);
+    return ProviderElementDisposeEvent(provider: provider);
   }
 
-  final InstanceRef element;
   final ProviderMeta provider;
+}
+
+/// Devtool code for [internals.ProviderStateRef]
+class ProviderStateRef {
+  ProviderStateRef({required this.state});
+
+  factory ProviderStateRef.from(
+    Map<String, Byte> $events, {
+    required String path,
+  }) {
+    _validate($events, name: 'ProviderStateRef', path: path);
+
+    final state = Byte.of($events['$path.state']!.ref);
+
+    return ProviderStateRef(state: state);
+  }
+
+  final Byte state;
 }
 
 /// Devtool code for [internals.ProviderElementUpdateEvent]
 class ProviderElementUpdateEvent extends Event {
-  ProviderElementUpdateEvent({
-    required this.element,
-    required this.previous,
-    required this.next,
-    required this.provider,
-  });
+  ProviderElementUpdateEvent({required this.provider, required this.next});
 
   factory ProviderElementUpdateEvent.from(
     Map<String, Byte> $events, {
@@ -215,21 +259,12 @@ class ProviderElementUpdateEvent extends Event {
   }) {
     _validate($events, name: 'ProviderElementUpdateEvent', path: path);
 
-    final element = $events['$path.element']!.ref;
-    final previous = $events['$path.previous']!.ref;
-    final next = $events['$path.next']!.ref;
     final provider = ProviderMeta.from($events, path: '$path.provider');
+    final next = ProviderStateRef.from($events, path: '$path.next');
 
-    return ProviderElementUpdateEvent(
-      element: element,
-      previous: previous,
-      next: next,
-      provider: provider,
-    );
+    return ProviderElementUpdateEvent(provider: provider, next: next);
   }
 
-  final InstanceRef element;
-  final InstanceRef previous;
-  final InstanceRef next;
   final ProviderMeta provider;
+  final ProviderStateRef next;
 }

@@ -1155,6 +1155,8 @@ $this''',
 
   bool _disposed = false;
 
+  late final ElementId _debugId = ElementId(const Uuid().v4());
+
   /// Release the resources associated to this [ProviderElement].
   ///
   /// This will be invoked when:

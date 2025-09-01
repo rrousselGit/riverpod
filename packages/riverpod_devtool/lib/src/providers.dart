@@ -36,22 +36,28 @@ class AllDiscoveredOriginsNotifier
       switch (event) {
         case ProviderContainerAddEvent():
         case ProviderContainerDisposeEvent():
-        case ProviderElementUpdateEvent():
           break;
-        case ProviderElementAddEvent(:final provider):
         case ProviderElementDisposeEvent(:final provider):
           changed = true;
-          final originState = state[provider.originId] ??= OriginState(
-            originDisplayString: provider.originDisplayString,
-            isFamily: provider.isFamily,
-            originId: provider.originId,
+          state[provider.origin.id]?.associatedProviders.remove(
+            provider.elementId,
+          );
+
+        case ProviderElementAddEvent(
+          state: final currentState,
+          :final provider,
+        ):
+        case ProviderElementUpdateEvent(
+          next: final currentState,
+          :final provider,
+        ):
+          changed = true;
+          final originState = state[provider.origin.id] ??= OriginState(
+            value: provider.origin,
             associatedProviders: {},
           );
 
-          originState.associatedProviders[provider.providerId] ??= ProviderState(
-            provider: provider.providerId,
-            providerDisplayString: provider.providerDisplayString,
-          );
+          originState.associatedProviders[provider.elementId] ??= provider;
       }
     }
 
@@ -60,21 +66,17 @@ class AllDiscoveredOriginsNotifier
 }
 
 class OriginState {
-  OriginState({
-    required this.originDisplayString,
-    required this.associatedProviders,
-    required this.isFamily,
-    required this.originId,
-  });
-  final String originDisplayString;
-  final internals.OriginId originId;
-  final bool isFamily;
-  final Map<internals.ProviderId, ProviderState> associatedProviders;
+  OriginState({required this.associatedProviders, required this.value});
+  final OriginMeta value;
+  final Map<internals.ElementId, ProviderMeta> associatedProviders;
 }
 
-class ProviderState {
-  ProviderState({required this.provider, required this.providerDisplayString});
+extension ProviderMetaX on ProviderMeta {
+  String get displayString => toStringValue;
 
-  final internals.ProviderId provider;
-  final String providerDisplayString;
+  bool isSelected(internals.ElementId? id) => id == elementId;
+}
+
+extension OriginMetaX on OriginMeta {
+  String get displayString => toStringValue;
 }
