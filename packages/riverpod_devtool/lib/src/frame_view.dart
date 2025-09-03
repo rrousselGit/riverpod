@@ -16,39 +16,41 @@ class FrameView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedFrameIndex = useState<int?>(null);
 
+    final selectedFrame = ref.watch(
+      framesProvider.select(
+        (frames) => selectedFrameIndex.value == null
+            ? frames.value?.lastOrNull
+            : frames.value?.elementAtOrNull(selectedFrameIndex.value!),
+      ),
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Expanded(
-          child: _FramePanel(selectedFrameIndex: selectedFrameIndex.value),
+        Expanded(child: _FramePanel(selectedFrame: selectedFrame)),
+        Center(
+          child: FrameStepper(
+            selectedFrameIndex: selectedFrame?.frame.index,
+            onSelect: (index) => selectedFrameIndex.value = index,
+          ),
         ),
-        FrameStepper(selectedFrameIndex: selectedFrameIndex.value),
       ],
     );
   }
 }
 
 class _FramePanel extends ConsumerWidget {
-  const _FramePanel({super.key, required this.selectedFrameIndex});
+  const _FramePanel({super.key, required this.selectedFrame});
 
-  final int? selectedFrameIndex;
+  final FoldedFrame? selectedFrame;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedFrameIndex = this.selectedFrameIndex;
-    final selectedFrame = ref.watch(
-      framesProvider.select(
-        (frames) => selectedFrameIndex == null
-            ? frames.value?.lastOrNull
-            : frames.value?.elementAtOrNull(selectedFrameIndex),
-      ),
-    );
-
-    if (selectedFrame == null) {
-      return const Panel(child: Center(child: Text('No frame selected')));
+    if (selectedFrame case final selectedFrame?) {
+      return _FrameViewer(frame: selectedFrame);
     }
 
-    return _FrameViewer(frame: selectedFrame);
+    return const Panel(child: Center(child: Text('No frame selected')));
   }
 }
 
@@ -82,7 +84,9 @@ class _FrameViewer extends HookConsumerWidget {
         ),
 
         if (selected case final selected?)
-          Panel(child: _StateView(state: selected))
+          Panel(
+            child: _StateView(meta: selected, frame: frame),
+          )
         else
           const Panel(child: Text('No provider selected')),
       ],
@@ -91,13 +95,16 @@ class _FrameViewer extends HookConsumerWidget {
 }
 
 class _StateView extends StatelessWidget {
-  const _StateView({super.key, required this.state});
+  const _StateView({super.key, required this.meta, required this.frame});
 
-  final ProviderMeta state;
+  final ProviderMeta meta;
+  final FoldedFrame frame;
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [Text(state.displayString)]);
+    final state = frame.state.providers[meta.elementId];
+
+    return Column(children: [Text('${state?.state ?? '<...>'}')]);
   }
 }
 
@@ -120,15 +127,23 @@ class _ProviderPickerPanel extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
           for (final MapEntry(value: meta) in originStates.entries) ...[
-            _Tile(
-              onTap: meta.associatedProviders.length == 1
-                  ? () => onSelected(meta.associatedProviders.values.single.elementId)
-                  : null,
-              selected:
-                  meta.associatedProviders.length == 1 &&
-                  meta.associatedProviders.values.single.isSelected(selectedId),
-              meta.value.displayString,
-            ),
+            if (meta.associatedProviders.length == 1)
+              _Tile(
+                onTap: () => onSelected(
+                  meta.associatedProviders.values.single.elementId,
+                ),
+                selected:
+                    meta.associatedProviders.length == 1 &&
+                    meta.associatedProviders.values.single.isSelected(
+                      selectedId,
+                    ),
+                hash: meta.value.hashValue,
+                containerHash:
+                    meta.associatedProviders.values.single.containerHashValue,
+                meta.value.toStringValue,
+              )
+            else
+              _Heading(meta.value.toStringValue),
 
             if (meta.associatedProviders.length > 1) ...[
               for (final (index, providerState)
@@ -137,12 +152,16 @@ class _ProviderPickerPanel extends StatelessWidget {
                   _Tile(
                     onTap: () => onSelected(providerState.elementId),
                     selected: providerState.isSelected(selectedId),
+                    hash: providerState.hashValue,
+                    containerHash: providerState.containerHashValue,
                     '└─ ${providerState.toStringValue}',
                   )
                 else
                   _Tile(
                     onTap: () => onSelected(providerState.elementId),
                     selected: providerState.isSelected(selectedId),
+                    hash: providerState.hashValue,
+                    containerHash: providerState.containerHashValue,
                     '├─ ${providerState.toStringValue}',
                   ),
             ],
@@ -153,17 +172,35 @@ class _ProviderPickerPanel extends StatelessWidget {
   }
 }
 
+class _Heading extends StatelessWidget {
+  const _Heading(this.text, {super.key});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Text(text),
+    );
+  }
+}
+
 class _Tile extends StatelessWidget {
   const _Tile(
     this.text, {
     super.key,
     this.selected = false,
     required this.onTap,
+    required this.hash,
+    required this.containerHash,
   });
 
   final String text;
   final bool selected;
   final void Function()? onTap;
+  final String hash;
+  final String containerHash;
 
   @override
   Widget build(BuildContext context) {
@@ -172,10 +209,12 @@ class _Tile extends StatelessWidget {
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Text(
-            text,
-            style: TextStyle(
-              color: selected ? Theme.of(context).colorScheme.primary : null,
+          child: RichText(
+            text: TextSpan(
+              text: text,
+              style: DefaultTextStyle.of(context).style.copyWith(
+                color: selected ? Theme.of(context).colorScheme.primary : null,
+              ),
             ),
           ),
         ),

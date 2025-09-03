@@ -109,6 +109,7 @@ final class ProviderMeta {
     required this.hashValue,
     required this.containerId,
     required this.elementId,
+    required this.containerHashValue,
   });
 
   factory ProviderMeta.from(ProviderElement element) {
@@ -122,6 +123,7 @@ final class ProviderMeta {
       containerId: element.container.id,
       id: providerId,
       elementId: element._debugId,
+      containerHashValue: shortHash(element.container),
     );
   }
 
@@ -130,6 +132,7 @@ final class ProviderMeta {
   final String toStringValue;
   final String hashValue;
   final ContainerId containerId;
+  final String containerHashValue;
   final ElementId elementId;
 }
 

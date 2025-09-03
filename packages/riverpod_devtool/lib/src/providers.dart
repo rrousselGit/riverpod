@@ -43,14 +43,8 @@ class AllDiscoveredOriginsNotifier
             provider.elementId,
           );
 
-        case ProviderElementAddEvent(
-          state: final currentState,
-          :final provider,
-        ):
-        case ProviderElementUpdateEvent(
-          next: final currentState,
-          :final provider,
-        ):
+        case ProviderElementAddEvent(:final provider):
+        case ProviderElementUpdateEvent(:final provider):
           changed = true;
           final originState = state[provider.origin.id] ??= OriginState(
             value: provider.origin,
@@ -72,11 +66,5 @@ class OriginState {
 }
 
 extension ProviderMetaX on ProviderMeta {
-  String get displayString => toStringValue;
-
   bool isSelected(internals.ElementId? id) => id == elementId;
-}
-
-extension OriginMetaX on OriginMeta {
-  String get displayString => toStringValue;
 }

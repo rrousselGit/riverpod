@@ -6,11 +6,13 @@ import 'dart:collection';
 import 'dart:math' as math;
 
 import 'package:devtools_app_shared/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 // ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
 import 'package:vm_service/vm_service.dart';
 
+import 'collection.dart';
 import 'core.dart';
 
 part 'event.g.dart';
@@ -94,7 +96,9 @@ final framesProvider =
     );
 
 class AccumulatedState {
-  AccumulatedState._();
+  AccumulatedState._({required this.providers});
+
+  final UnmodifiableMap<internals.ElementId, ProviderStateRef> providers;
 }
 
 final class FoldedFrame {
@@ -126,7 +130,27 @@ final class FoldedFrame {
   late final state = _computeAccumulatedState();
 
   AccumulatedState _computeAccumulatedState() {
-    return AccumulatedState._();
+    final states = {...?previous?.state.providers};
+    for (final event in frame.events) {
+      switch (event) {
+        case ProviderContainerAddEvent():
+        case ProviderContainerDisposeEvent():
+          break;
+        case ProviderElementDisposeEvent(:final provider):
+          states.remove(provider.elementId);
+        case ProviderElementAddEvent(
+          state: final currentState,
+          :final provider,
+        ):
+        case ProviderElementUpdateEvent(
+          next: final currentState,
+          :final provider,
+        ):
+          states[provider.elementId] = currentState;
+      }
+    }
+
+    return AccumulatedState._(providers: UnmodifiableMap(states));
   }
 }
 

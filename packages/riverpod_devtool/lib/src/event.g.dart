@@ -70,6 +70,7 @@ class ProviderMeta {
     required this.toStringValue,
     required this.hashValue,
     required this.containerId,
+    required this.containerHashValue,
     required this.elementId,
   });
 
@@ -83,6 +84,8 @@ class ProviderMeta {
     final containerId = internals.ContainerId(
       $events['$path.containerId']!.ref.valueAsString!,
     );
+    final containerHashValue =
+        $events['$path.containerHashValue']!.ref.valueAsString!;
     final elementId = internals.ElementId(
       $events['$path.elementId']!.ref.valueAsString!,
     );
@@ -93,6 +96,7 @@ class ProviderMeta {
       toStringValue: toStringValue,
       hashValue: hashValue,
       containerId: containerId,
+      containerHashValue: containerHashValue,
       elementId: elementId,
     );
   }
@@ -102,6 +106,7 @@ class ProviderMeta {
   final String toStringValue;
   final String hashValue;
   final internals.ContainerId containerId;
+  final String containerHashValue;
   final internals.ElementId elementId;
 }
 
