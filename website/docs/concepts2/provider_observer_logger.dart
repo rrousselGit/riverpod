@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/legacy.dart';
 /* SNIPPET START */
 
 // A basic logger, which logs any state changes.
-class Logger extends ProviderObserver {
+final class Logger extends ProviderObserver {
   @override
   void didUpdateProvider(
     ProviderObserverContext context,
