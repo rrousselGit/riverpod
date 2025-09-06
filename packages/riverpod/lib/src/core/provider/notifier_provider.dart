@@ -292,7 +292,7 @@ abstract class $AsyncNotifierBase<ValueT>
   void _setStateFromValue(ValueT value) {
     state = AsyncLoading._(
       (progress: state.progress),
-      value: (value, kind: DataKind.cache, source: _DataSource.liveOrRefresh),
+      value: (value, kind: DataKind.cache, source: DataSource.liveOrRefresh),
       error: state._error,
     );
   }
