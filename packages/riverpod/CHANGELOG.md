@@ -1,5 +1,6 @@
 ## Unreleased build
 
+- Fix an issue with the internals of AsyncValue
 - `ProviderObserver` is now marked with `base`
 - Fix provider rebuild order issue.
 - Fix "Tried to refresh x multiple times in the same frame" incorrectly triggering.

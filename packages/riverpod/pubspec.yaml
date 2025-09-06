@@ -8,6 +8,11 @@ repository: https://github.com/rrousselGit/riverpod
 issue_tracker: https://github.com/rrousselGit/riverpod/issues
 funding:
   - https://github.com/sponsors/rrousselGit/
+topics:
+  - state-management
+  - caching
+  - dependency-injection
+  - riverpod
 
 environment:
   sdk: ^3.8.0

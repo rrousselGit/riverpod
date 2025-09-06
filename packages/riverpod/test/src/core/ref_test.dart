@@ -1,9 +1,19 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/experimental/mutation.dart';
 import 'package:riverpod/legacy.dart';
+import 'package:riverpod/misc.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/framework.dart';
+import 'package:riverpod/src/internals.dart'
+    show
+        UnmountedRefException,
+        InternalProviderContainer,
+        ProviderElement,
+        CircularDependencyError,
+        ProviderContainerTest,
+        AsyncValueInternals,
+        DataSource;
 import 'package:test/test.dart';
 
 import '../matrix.dart';
@@ -249,6 +259,34 @@ void main() {
     });
 
     group('invalidate', () {
+      test(
+        'After a reload, keeps marking previous state as from reload',
+        () async {
+          final container = ProviderContainer.test();
+          var completer = Completer<int>();
+          final provider = FutureProvider<int>((r) => completer.future);
+
+          container.listen(provider, (a, b) {});
+
+          completer.complete(0);
+          await container.read(provider.future);
+
+          completer = Completer<int>();
+          container.invalidate(provider, asReload: true);
+
+          final original = container.read(provider);
+          expect(original.value, 0);
+          expect(original.valueFilled?.source, DataSource.reload);
+
+          container.invalidate(provider);
+
+          final value = container.read(provider);
+
+          expect(value.value, 0);
+          expect(value.valueFilled?.source, DataSource.reload);
+        },
+      );
+
       test('Does not mount unmounted providers', () {
         final container = ProviderContainer.test();
         var buildCount = 0;
