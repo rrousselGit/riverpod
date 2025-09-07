@@ -11,7 +11,6 @@ topics:
   - dependency-injection
   - riverpod
   - codegen
-  - build-runner
 
 environment:
   sdk: ^3.8.0
