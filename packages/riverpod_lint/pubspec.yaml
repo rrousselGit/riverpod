@@ -11,6 +11,7 @@ topics:
   - caching
   - dependency-injection
   - riverpod
+  - lints
 
 environment:
   sdk: ^3.8.0
