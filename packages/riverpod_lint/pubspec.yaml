@@ -8,9 +8,10 @@ funding:
   - https://github.com/sponsors/rrousselGit/
 topics:
   - state-management
-  - caching
+  - cache
   - dependency-injection
   - riverpod
+  - lints
 
 environment:
   sdk: ^3.8.0
