@@ -84,6 +84,17 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
     }
   }
 
+  void onValue(AsyncValue<ValueT> value, {bool seamless = false}) {
+    switch (value) {
+      case AsyncLoading():
+        onLoading(value, seamless: seamless);
+      case AsyncData():
+        onData(value, seamless: seamless);
+      case AsyncError():
+        onError(value, seamless: seamless);
+    }
+  }
+
   /// Life-cycle for when an error from the provider's "build" method is received.
   ///
   /// Might be invoked after the element is disposed in the case where `provider.future`
@@ -244,7 +255,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
     listen,
   ) {
     void callOnError(Object error, StackTrace stackTrace) {
-      onError(triggerRetry(error, stackTrace), seamless: !ref.isReload);
+      onValue(triggerRetry(error, stackTrace), seamless: !ref.isReload);
     }
 
     void Function()? onDone;
@@ -635,7 +646,7 @@ depending on itself.
 
   @protected
   @useResult
-  AsyncError<ValueT> triggerRetry(Object error, StackTrace stackTrace) {
+  AsyncValue<ValueT> triggerRetry(Object error, StackTrace stackTrace) {
     var retrying = false;
 
     // Don't start retry if the provider was disposed
@@ -658,7 +669,15 @@ depending on itself.
       });
     }
 
-    return AsyncError(error, stackTrace, retrying: retrying);
+    if (retrying) {
+      return AsyncLoading<ValueT>._(
+        value._loading ?? (progress: 0),
+        value: value._value,
+        error: (err: error, stack: stackTrace, retrying: true),
+      );
+    }
+
+    return AsyncError(error, stackTrace, retrying: false);
   }
 
   void _debugAssertNotificationAllowed() {
