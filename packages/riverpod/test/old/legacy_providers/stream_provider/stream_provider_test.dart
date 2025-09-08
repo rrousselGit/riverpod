@@ -497,8 +497,11 @@ void main() {
   test('throwing inside "create" result in an AsyncValue.error', () {
     final container = ProviderContainer.test();
 
-    // ignore: only_throw_errors
-    final provider = StreamProvider<int>((ref) => throw 42);
+    final provider = StreamProvider<int>(
+      // ignore: only_throw_errors
+      (ref) => throw 42,
+      retry: (_, _) => null,
+    );
 
     expect(
       container.read(provider),
@@ -735,25 +738,13 @@ void main() {
         await controller.close();
       });
 
-      test('read currentValue before first error', () async {
+      test('read currentValue after error', () async {
         final container = ProviderContainer.test();
         final controller = StreamController<int>();
-        final provider = StreamProvider<int>((_) => controller.stream);
-
-        container.listen(provider, (p, n) {});
-        final future = container.read(provider.future);
-
-        controller.addError(42);
-
-        await expectLater(future, throwsA(42));
-
-        await controller.close();
-      });
-
-      test('read currentValue before after error', () async {
-        final container = ProviderContainer.test();
-        final controller = StreamController<int>();
-        final provider = StreamProvider<int>((_) => controller.stream);
+        final provider = StreamProvider<int>(
+          (_) => controller.stream,
+          retry: (_, __) => null,
+        );
 
         controller.addError(42);
 

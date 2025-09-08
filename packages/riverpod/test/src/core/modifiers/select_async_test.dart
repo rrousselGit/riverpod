@@ -32,7 +32,10 @@ void main() {
       final controller = StreamController<int>();
       final provider = Provider((ref) => ref);
       addTearDown(controller.close);
-      final dep = StreamProvider<int>((ref) => controller.stream);
+      final dep = StreamProvider<int>(
+        (ref) => controller.stream,
+        retry: (_, _) => null,
+      );
 
       container.listen(dep, (p, n) {});
       final ref = container.listen(provider, (a, b) {});

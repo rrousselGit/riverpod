@@ -1295,8 +1295,9 @@ mixin SyncProviderElement<ValueT> on ProviderElement<ValueT, ValueT> {
     switch (value) {
       case AsyncData():
         return $ResultData(value.value);
-      case AsyncError():
-        return $ResultError(value.error, value.stackTrace);
+      case AsyncLoading(:final error?, :final stackTrace?) when value.retrying:
+      case AsyncError(:final error, :final stackTrace):
+        return $ResultError(error, stackTrace);
       case AsyncLoading():
         return null;
     }
