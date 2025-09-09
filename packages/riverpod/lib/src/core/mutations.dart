@@ -350,7 +350,8 @@ sealed class Mutation<ResultT>
   /// // Use two different values as key
   /// ref.watch(mutation((todo.id, user.id)));
   /// ```
-  Mutation<ResultT> call(Object? key);
+  @optionalTypeArgs
+  Mutation<ChangedT> call<ChangedT extends ResultT>(Object? key);
 
   /// Starts a mutation and set its state based on the result of the callback.
   ///
@@ -404,11 +405,11 @@ final class MutationImpl<ResultT>
 
   @override
   final Object? label;
-  final (Object? value, Mutation<ResultT> parent)? _key;
+  final (Object? value, Mutation<Object?> parent)? _key;
 
   @override
-  MutationImpl<ResultT> call(Object? key) {
-    return MutationImpl<ResultT>._keyed((key, this), label: label);
+  MutationImpl<ChangedT> call<ChangedT extends ResultT>(Object? key) {
+    return MutationImpl<ChangedT>._keyed((key, this), label: label);
   }
 
   @override
@@ -515,9 +516,11 @@ final class MutationImpl<ResultT>
     );
   }
 
+  bool _matchesT(Mutation<Object?> other) => other is Mutation<ResultT>;
+
   @override
   bool operator ==(Object other) {
-    if (other is! MutationImpl<ResultT>) return false;
+    if (other is! MutationImpl<ResultT> || !other._matchesT(this)) return false;
     if (_key != null) return _key == other._key;
 
     return super == other;

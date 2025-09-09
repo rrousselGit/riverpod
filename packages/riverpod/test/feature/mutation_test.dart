@@ -23,6 +23,43 @@ void main() {
     expect(container.read(mut), isMutationSuccess<void>());
   });
 
+  test('Supports generic mutations', () async {
+    final mut = Mutation<num>();
+    final mutInt = mut<int>(null);
+    final mutDouble = mut<double>(null);
+
+    final confusingMut = mut<num>(null);
+    // none should be equal
+    expect(mut, isNot(mutInt));
+    expect(mut, isNot(mutDouble));
+    expect(mutInt, isNot(mutDouble));
+
+    // check for type equality parity
+    expect(confusingMut, isNot(mutInt));
+    expect(mutInt, isNot(confusingMut));
+
+    // shows that using the same generic
+    // with the same key will get the correct value
+    expect(mutInt, equals(mut<int>(null)));
+
+    final container = ProviderContainer.test();
+
+    final sub = container.listen<MutationState<num>>(mut, (_, _) {});
+    final subInt = container.listen<MutationState<int>>(mutInt, (_, _) {});
+    final subDouble = container.listen<MutationState<double>>(
+      mutDouble,
+      (_, _) {},
+    );
+
+    await mut.run(container, (tsx) async => 9);
+    await mutInt.run(container, (tsx) async => 42);
+    await mutDouble.run(container, (tsx) async => 3.14);
+
+    expect(sub.read(), isMutationSuccess<num>(9));
+    expect(subInt.read(), isMutationSuccess<int>(42));
+    expect(subDouble.read(), isMutationSuccess<double>(3.14));
+  });
+
   test('Concurrent run call ignores the previous run call', () async {
     final mut = Mutation<int>();
     final container = ProviderContainer.test();
