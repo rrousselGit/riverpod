@@ -285,7 +285,11 @@ TypeMatcher<AsyncLoading<ValueT>> isAsyncLoading<ValueT>({
     matcher = matcher.having((e) => e.isReloading, 'isReloading', isReloading);
   }
   if (isRefreshing != const _Sentinel()) {
-    matcher = matcher.having((e) => e.isRefreshing, 'isRefreshing', isRefreshing);
+    matcher = matcher.having(
+      (e) => e.isRefreshing,
+      'isRefreshing',
+      isRefreshing,
+    );
   }
   if (retrying != const _Sentinel()) {
     matcher = matcher.having((e) => e.retrying, 'retrying', retrying);
