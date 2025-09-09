@@ -964,7 +964,7 @@ resumed
 ... // And so on every second
 ```
 
-### Exceptions in providers are rethrown as "ProviderException".
+### Exceptions in providers are rethrown as a `ProviderException`.
 
 For the sake of differentiating between "a provider failed" from "a provider is depending on a failed provider",
 Riverpod 3.0 now wraps exceptions in a `ProviderException` that contains the original.

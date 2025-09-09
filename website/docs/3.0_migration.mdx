@@ -13,10 +13,10 @@ They should in general be relatively minor, but we recommend you to read this pa
 :::info
 This migration is supposed to be smooth.  
 If there is anything that is unclear, or if you encountered a scenario that is difficult
-to migrate, please [open an issue](https://github.com/rrousselGit/riverpod/issues/new/choose)).
+to migrate, please [open an issue](https://github.com/rrousselGit/riverpod/issues/new/choose).
 
-It is important to us that the migration is as smooth as possible, so we will do our best to help you ; 
-improve the migration guide ; or even include helpers to make the migration easier.
+It is important to us that the migration is as smooth as possible, so we will do our best to help you, 
+improve the migration guide, or even include helpers to make the migration easier.
 :::
 
 ## Automatic retry
@@ -118,7 +118,7 @@ class MyWidget extends StatelessWidget {
 ## StateProvider, StateNotifierProvider, and ChangeNotifierProvider are moved to a new import
 
 In Riverpod 3.0, `StateProvider`, `StateNotifierProvider`, and `ChangeNotifierProvider` are considered "legacy".  
-They are not removed, but are no-longer part of the main API. This is to discourage their use
+They are not removed, but are no longer part of the main API. This is to discourage their use
 in favor of the new `Notifier` API.
 
 To keep using them, you need to change your imports to one of the following:
@@ -196,7 +196,7 @@ class MyObserver extends ProviderObserver {
 
 ## Simplified Ref and removed Ref subclasses
 
-For the sake of simplification, [Ref] lost its type parameter. And all properties/methods that were
+For the sake of simplification, [Ref] has lost its type parameter, and all properties/methods that were
 using the type parameter have been moved to [Notifier]s.  
 
 Specifically, `ProviderRef.state`, `Ref.listenSelf` and `FutureProviderRef.future` should be replaced by
@@ -308,8 +308,8 @@ To easily migrate, you can do a case-sensitive replace of `AutoDispose` to ` ` (
 
 ## The family variant of Notifiers is removed
 
-In the same vein as the previous point, the family variant of Notifiers is removed.
-Now, we use `Notifier`/`AsyncNotifier`/`StreamNotifier` only, and `FamilyNotifier`/... are removed.
+In the same vein as the previous point, the family variant of Notifiers has been removed.
+Now, we only use `Notifier`/`AsyncNotifier`/`StreamNotifier`, and `FamilyNotifier`/... have been removed.
 
 To migrate, you will need to replace:
 - `FamilyNotifier` -> `Notifier`
