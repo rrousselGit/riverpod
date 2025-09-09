@@ -206,9 +206,7 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor2<void> {
 
 extension on Element {
   bool get hasChangePrivacy {
-    return metadata.annotations.any(
-      (e) => e.element?.name == 'changePrivacy',
-    );
+    return metadata.annotations.any((e) => e.element?.name == 'changePrivacy');
   }
 }
 

@@ -32,9 +32,7 @@ class _LintVisitorGenerator extends Generator {
 
   void _writeRiverpodAstVisitor(LibraryReader library, StringBuffer buffer) {
     final allAst = library.element.extensions
-        .where(
-          (e) => e.metadata.annotations.firstOrNull?.toSource() == '@_ast',
-        )
+        .where((e) => e.metadata.annotations.firstOrNull?.toSource() == '@_ast')
         .expand((extension) {
           final constraint = extension.extendedType;
 
