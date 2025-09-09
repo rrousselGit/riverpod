@@ -2,6 +2,7 @@
 
 import 'dart:async';
 
+import 'package:async/async.dart';
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
@@ -109,39 +110,36 @@ void main() {
               return const Duration(seconds: 1);
             },
           );
-          final listener = Listener<AsyncValue<int>>();
+          final queueController = StreamController<AsyncValue<int>>();
+          addTearDown(queueController.close);
+          final queue = StreamQueue(queueController.stream);
+          addTearDown(queue.cancel);
 
-          container.listen(provider, fireImmediately: true, listener.call);
-          verifyOnly(listener, listener(null, const AsyncLoading<int>()));
+          final sub = container.listen(provider, fireImmediately: true, (a, b) {
+            queueController.add(b);
+          });
+          await queue.next;
 
           controller.addError(Exception('foo'));
+          await queue.next;
 
-          await container.read(provider.future).catchError((e) => 0);
-
-          verifyOnly(
-            listener,
-            listener(any, argThat(isAsyncError<int>(anything, retrying: true))),
+          expect(
+            sub.read(),
+            isAsyncLoading<int>(error: anything, retrying: true),
           );
 
           fake.elapse(const Duration(seconds: 1));
           fake.flushMicrotasks();
 
-          verifyOnly(
-            listener,
-            listener(any, argThat(isAsyncError<int>(anything, retrying: true))),
+          expect(
+            sub.read(),
+            isAsyncLoading<int>(error: anything, retrying: true),
           );
 
           controller.addError(Exception('foo'));
+          await queue.next;
 
-          await container.read(provider.future).catchError((e) => 0);
-
-          verifyOnly(
-            listener,
-            listener(
-              any,
-              argThat(isAsyncError<int>(anything, retrying: false)),
-            ),
-          );
+          expect(sub.read(), isAsyncError<int>(anything, retrying: false));
         }),
       );
 
@@ -155,19 +153,19 @@ void main() {
             (ref, self) => Error.throwWithStackTrace(err, stack),
             retry: (_, __) => const Duration(seconds: 1),
           );
-          final listener = Listener<AsyncValue<int>>();
+          final eventController = StreamController<AsyncValue<int>>();
+          addTearDown(eventController.close);
+          final eventQueue = StreamQueue(eventController.stream);
+          addTearDown(eventQueue.cancel);
 
-          container.listen(provider, fireImmediately: true, listener.call);
-          await container.read(provider.future).catchError((e) => 0);
+          final sub = container.listen(provider, fireImmediately: true, (a, b) {
+            eventController.add(b);
+          });
+          await eventQueue.next;
 
-          verifyOnly(
-            listener,
-            listener(
-              any,
-              argThat(
-                isAsyncError<int>(err, stackTrace: stack, retrying: true),
-              ),
-            ),
+          expect(
+            sub.read(),
+            isAsyncLoading<int>(error: err, stackTrace: stack, retrying: true),
           );
 
           err = Exception('bar');
@@ -175,16 +173,11 @@ void main() {
           fake.elapse(const Duration(seconds: 1));
           fake.flushMicrotasks();
 
-          await container.read(provider.future).catchError((e) => 0);
+          await eventQueue.next;
 
-          verifyOnly(
-            listener,
-            listener(
-              any,
-              argThat(
-                isAsyncError<int>(err, stackTrace: stack, retrying: true),
-              ),
-            ),
+          expect(
+            sub.read(),
+            isAsyncLoading<int>(error: err, stackTrace: stack, retrying: true),
           );
         }),
       );

@@ -74,7 +74,10 @@ void main() {
   test('implements ProviderSubscription.read on AsyncError', () async {
     final container = ProviderContainer.test();
     final dep = StateProvider((ref) => 0);
-    final provider = FutureProvider<int>((ref) => Future.error(ref.watch(dep)));
+    final provider = FutureProvider<int>(
+      (ref) => Future.error(ref.watch(dep)),
+      retry: (_, __) => null,
+    );
 
     final sub = container.listen<Future<bool>>(
       provider.selectAsync((data) => data.isEven),

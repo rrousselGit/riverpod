@@ -755,12 +755,10 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
           value: previousValue,
         ),
         loading: (_) {
-          if (_value == previousValue) return this;
-
           return AsyncLoading<ValueT>._(
             _loading,
             value: previousValue,
-            error: _error,
+            error: previous._error,
           );
         },
       );
