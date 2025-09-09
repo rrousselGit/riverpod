@@ -28,7 +28,7 @@ class UnsupportedProviderValue extends RiverpodLintRule {
   @override
   void run(
     CustomLintResolver resolver,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
     CustomLintContext context,
   ) {
     void checkCreatedType(GeneratorProviderDeclaration declaration) {

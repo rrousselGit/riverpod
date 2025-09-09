@@ -8,7 +8,7 @@ environment:
 resolution: workspace
 
 dependencies:
-  analyzer: ^7.0.0
+  analyzer: ^8.0.0
   collection: ^1.16.0
   freezed_annotation: ^3.0.0
   meta: ^1.15.0

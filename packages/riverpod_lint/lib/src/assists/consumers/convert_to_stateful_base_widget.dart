@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/source/source.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
@@ -87,7 +87,7 @@ class ConvertToStatefulBaseWidget extends RiverpodAssist {
       if (widgetClass == null) return;
 
       final nodesToMove = <ClassMember>{};
-      final elementsToMove = <Element2>{};
+      final elementsToMove = <Element>{};
       final visitor = _FieldFinder();
       for (final member in widgetClass.members) {
         if (member is ConstructorDeclaration) {
@@ -99,18 +99,18 @@ class ConvertToStatefulBaseWidget extends RiverpodAssist {
       for (final member in widgetClass.members) {
         if (member is FieldDeclaration && !member.isStatic) {
           for (final fieldNode in member.fields.variables) {
-            final fieldElement = fieldNode.declaredElement2 as FieldElement2?;
+            final fieldElement = fieldNode.declaredElement as FieldElement?;
             if (fieldElement == null) continue;
             if (!fieldsAssignedInConstructors.contains(fieldElement)) {
               nodesToMove.add(member);
               elementsToMove.add(fieldElement);
 
-              final getter = fieldElement.getter2;
+              final getter = fieldElement.getter;
               if (getter != null) {
                 elementsToMove.add(getter);
               }
 
-              final setter = fieldElement.setter2;
+              final setter = fieldElement.setter;
               if (setter != null) {
                 elementsToMove.add(setter);
               }
@@ -234,13 +234,13 @@ class $createdStateClassName extends $baseStateName<${widgetClass.name}> {
 // Original implementation in
 // package:analysis_server/lib/src/services/correction/dart/flutter_convert_to_stateful_widget.dart
 class _FieldFinder extends RecursiveAstVisitor<void> {
-  Set<FieldElement2> fieldsAssignedInConstructors = {};
+  Set<FieldElement> fieldsAssignedInConstructors = {};
 
   @override
   void visitFieldFormalParameter(FieldFormalParameter node) {
     final element = node.declaredFragment?.element;
-    if (element is FieldFormalParameterElement2) {
-      final field = element.field2;
+    if (element is FieldFormalParameterElement) {
+      final field = element.field;
       if (field != null) {
         fieldsAssignedInConstructors.add(field);
       }
@@ -253,15 +253,15 @@ class _FieldFinder extends RecursiveAstVisitor<void> {
   void visitSimpleIdentifier(SimpleIdentifier node) {
     if (node.parent is ConstructorFieldInitializer) {
       final element = node.element;
-      if (element is FieldElement2) {
+      if (element is FieldElement) {
         fieldsAssignedInConstructors.add(element);
       }
     }
     if (node.inSetterContext()) {
       final element = node.writeOrReadElement;
-      if (element is PropertyAccessorElement2) {
-        final field = element.variable3;
-        if (field is FieldElement2) {
+      if (element is PropertyAccessorElement) {
+        final field = element.variable;
+        if (field is FieldElement) {
           fieldsAssignedInConstructors.add(field);
         }
       }
@@ -276,8 +276,8 @@ class _ReplacementEditBuilder extends RecursiveAstVisitor<void> {
     this.builder,
   );
 
-  final ClassElement2 widgetClassElement;
-  final Set<Element2> elementsToMove;
+  final ClassElement widgetClassElement;
+  final Set<Element> elementsToMove;
   final DartFileEditBuilder builder;
 
   @override
@@ -286,8 +286,8 @@ class _ReplacementEditBuilder extends RecursiveAstVisitor<void> {
       return;
     }
     final element = node.element;
-    if (element is ExecutableElement2 &&
-        element.enclosingElement2 == widgetClassElement &&
+    if (element is ExecutableElement &&
+        element.enclosingElement == widgetClassElement &&
         !elementsToMove.contains(element)) {
       final offset = node.offset;
       final qualifier = element.isStatic

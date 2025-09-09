@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:analyzer/diagnostic/diagnostic.dart';
-import 'package:analyzer/error/error.dart';
 import 'package:analyzer/source/line_info.dart';
 import 'package:analyzer_plugin/protocol/protocol_generated.dart';
 import 'package:custom_lint_core/custom_lint_core.dart';
@@ -31,7 +30,7 @@ Matcher matchesPrioritizedSourceChangesGolden(
 }
 
 Matcher matchesAnalysisErrorGoldens(String fileName) {
-  return matchersGoldenFile<Iterable<AnalysisError>>(
+  return matchersGoldenFile<Iterable<Diagnostic>>(
     File(fileName),
     isEmpty: (value) => value.isEmpty,
     encode: (changes) {
@@ -44,7 +43,7 @@ Matcher matchesAnalysisErrorGoldens(String fileName) {
 }
 
 String _encodeAnalysisErrors(
-  Iterable<AnalysisError> errors, {
+  Iterable<Diagnostic> errors, {
   required String relativePath,
 }) {
   final buffer = StringBuffer();
@@ -64,11 +63,11 @@ String _encodeAnalysisErrors(
 
 void _writeAnalysisError(
   StringBuffer buffer,
-  AnalysisError error, {
+  Diagnostic error, {
   String indent = '',
   required String relativePath,
 }) {
-  buffer.writeln('${indent}code: ${error.errorCode.name}');
+  buffer.writeln('${indent}code: ${error.diagnosticCode.name}');
   _writeDiagnostic(
     buffer,
     error,

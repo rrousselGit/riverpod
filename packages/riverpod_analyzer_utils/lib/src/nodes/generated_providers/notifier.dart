@@ -125,15 +125,15 @@ class ClassBasedProviderDeclarationElement
   static final _cache = _Cache<ClassBasedProviderDeclarationElement?>();
 
   static ClassBasedProviderDeclarationElement? _parse(
-    ClassElement2 element,
+    ClassElement element,
     AstNode from,
   ) {
     return _cache(element, () {
       final riverpodAnnotation = RiverpodAnnotationElement._of(element, from);
       if (riverpodAnnotation == null) return null;
 
-      final buildMethod = element.methods2.firstWhereOrNull(
-        (method) => method.name3 == 'build',
+      final buildMethod = element.methods.firstWhereOrNull(
+        (method) => method.name == 'build',
       );
 
       if (buildMethod == null) {
@@ -157,7 +157,7 @@ class ClassBasedProviderDeclarationElement
       }
 
       return ClassBasedProviderDeclarationElement._(
-        name: element.name3!,
+        name: element.name!,
         buildMethod: buildMethod,
         element: element,
         annotation: riverpodAnnotation,
@@ -172,16 +172,16 @@ class ClassBasedProviderDeclarationElement
   @override
   bool get isFamily {
     return buildMethod.formalParameters.isNotEmpty ||
-        element.typeParameters2.isNotEmpty;
+        element.typeParameters.isNotEmpty;
   }
 
   @override
-  final ClassElement2 element;
+  final ClassElement element;
   @override
   final String name;
   @override
   final RiverpodAnnotationElement annotation;
-  final ExecutableElement2 buildMethod;
+  final ExecutableElement buildMethod;
   @override
   final String createdTypeNode;
   @override

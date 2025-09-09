@@ -12,13 +12,13 @@ class AvoidSubRead extends DartLintRule {
   static const _code = LintCode(
     name: 'avoid_sub_read',
     problemMessage: 'Do not use `sub.read()` within Riverpod packages.',
-    errorSeverity: ErrorSeverity.ERROR,
+    errorSeverity: DiagnosticSeverity.ERROR,
   );
 
   @override
   void run(
     CustomLintResolver resolver,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
     CustomLintContext context,
   ) {
     const ignoredFolderPaths = {

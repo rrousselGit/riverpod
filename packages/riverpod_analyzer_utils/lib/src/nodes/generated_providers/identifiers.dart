@@ -7,9 +7,8 @@ extension ProviderIdentifierX on SimpleIdentifier {
   ProviderIdentifier? get provider {
     return _cache.upsert(this, () {
       final element = this.element;
-      if (element is! PropertyAccessorElement2) return null;
-      final variable = element.variable3;
-      if (variable == null) return null;
+      if (element is! PropertyAccessorElement) return null;
+      final variable = element.variable;
 
       final providerFor = parseFirstProviderFor(variable, this);
 

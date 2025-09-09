@@ -4,7 +4,7 @@
 library;
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:riverpod_analyzer_utils/src/nodes.dart';
 import 'package:test/test.dart';
 
@@ -36,7 +36,7 @@ Consumer? fromFlutterRiverpod = null;
         expect(
           parseFirstProviderFor(
             variable.variables.variables.single.declaredFragment!.element
-                as TopLevelVariableElement2,
+                as TopLevelVariableElement,
             variable,
           ),
           isNull,
@@ -129,7 +129,7 @@ class D3 extends _$D3 {
         expect(
           parseFirstProviderFor(
             variable.variables.variables.single.declaredFragment!.element
-                as TopLevelVariableElement2,
+                as TopLevelVariableElement,
             variable,
           )?.$1,
           isNotNull,
@@ -199,7 +199,7 @@ final streamNotifierProviderFamily = StreamNotifierProvider.family<int, int>((re
         expect(
           parseFirstProviderFor(
             variable.variables.variables.single.declaredFragment!.element
-                as TopLevelVariableElement2,
+                as TopLevelVariableElement,
             variable,
           ),
           isNull,
