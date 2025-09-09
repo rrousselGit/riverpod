@@ -5,7 +5,7 @@ import 'dart:isolate';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
@@ -86,7 +86,7 @@ void testSource(
     ) async {
       final lib = await resolver.findLibraryByName('foo');
 
-      final ast = await lib!.session.getResolvedLibraryByElement2(lib);
+      final ast = await lib!.session.getResolvedLibraryByElement(lib);
       ast as ResolvedLibraryResult;
 
       return (
@@ -247,13 +247,13 @@ extension ResolverX on Resolver {
       ignoreErrors: ignoreErrors,
     );
 
-    final libraryAst = await library.session.getResolvedLibraryByElement2(
+    final libraryAst = await library.session.getResolvedLibraryByElement(
       library,
     );
     libraryAst as ResolvedLibraryResult;
 
     final compilerErrors = libraryAst.units
-        .expand((e) => e.errors)
+        .expand((e) => e.diagnostics)
         .where((e) => e.severity == Severity.error)
         .toList();
     if (compilerErrors.isNotEmpty) {
@@ -294,7 +294,7 @@ ${compilerErrors.map((e) => '- $e\n').join()}
     return result;
   }
 
-  Future<LibraryElement2> requireFindLibraryByName(
+  Future<LibraryElement> requireFindLibraryByName(
     String libraryName, {
     required bool ignoreErrors,
   }) async {
@@ -309,7 +309,7 @@ ${compilerErrors.map((e) => '- $e\n').join()}
       );
       errorResult as ErrorsResult;
 
-      final errors = errorResult.errors
+      final errors = errorResult.diagnostics
           // Infos are only recommendations. There's no reason to fail just for this
           .where((e) => e.severity != Severity.info)
           .toList();

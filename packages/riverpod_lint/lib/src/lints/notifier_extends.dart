@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:analyzer/error/error.dart'
     hide
         // ignore: undefined_hidden_name, necessary to support broad analyzer versions
@@ -58,13 +59,13 @@ class NotifierExtends extends RiverpodLintRule {
   static const _code = LintCode(
     name: 'notifier_extends',
     problemMessage: r'Classes annotated by @riverpod must extend _$ClassName',
-    errorSeverity: ErrorSeverity.WARNING,
+    errorSeverity: DiagnosticSeverity.WARNING,
   );
 
   @override
   void run(
     CustomLintResolver resolver,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
     CustomLintContext context,
   ) {
     riverpodRegistry(context).addClassBasedProviderDeclaration((declaration) {
@@ -77,7 +78,7 @@ class NotifierExtends extends RiverpodLintRule {
       }
 
       final expectedClassName = _generatedClassName(declaration);
-      if (extendsClause.superclass.name2.lexeme != expectedClassName) {
+      if (extendsClause.superclass.name.lexeme != expectedClassName) {
         // No type specified. Underlining the ref name
         reporter.atNode(extendsClause.superclass, _code);
         return;
@@ -110,8 +111,8 @@ class NotifierExtendsFix extends RiverpodFix {
     CustomLintResolver resolver,
     ChangeReporter reporter,
     CustomLintContext context,
-    AnalysisError analysisError,
-    List<AnalysisError> others,
+    Diagnostic analysisError,
+    List<Diagnostic> others,
   ) {
     riverpodRegistry(context).addClassBasedProviderDeclaration((declaration) {
       // This provider is not the one that triggered the error

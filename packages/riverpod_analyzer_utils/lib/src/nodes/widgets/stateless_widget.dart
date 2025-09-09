@@ -25,7 +25,7 @@ final class StatelessWidgetDeclarationElement extends WidgetDeclarationElement {
   static final _cache = _Cache<StatelessWidgetDeclarationElement>();
 
   static StatelessWidgetDeclarationElement? _parse(
-    ClassElement2 node,
+    ClassElement node,
     AstNode from,
   ) {
     return _cache(node, () {

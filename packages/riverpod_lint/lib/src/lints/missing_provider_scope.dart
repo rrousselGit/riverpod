@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:analyzer/error/error.dart'
     hide
         // ignore: undefined_hidden_name, necessary to support lower analyzer version
@@ -21,13 +22,13 @@ class MissingProviderScope extends RiverpodLintRule {
     problemMessage:
         'Flutter applications should have a ProviderScope widget '
         'at the top of the widget tree.',
-    errorSeverity: ErrorSeverity.WARNING,
+    errorSeverity: DiagnosticSeverity.WARNING,
   );
 
   @override
   void run(
     CustomLintResolver resolver,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
     CustomLintContext context,
   ) {
     context.registry.addMethodInvocation((node) {
@@ -35,7 +36,7 @@ class MissingProviderScope extends RiverpodLintRule {
       final function = node.function;
       if (function is! SimpleIdentifier) return;
       final functionElement = function.element;
-      if (functionElement is! ExecutableElement2) return;
+      if (functionElement is! ExecutableElement) return;
 
       // runApp call detected, now checking if if the first widget is a ProviderScope
       final firstArgument = node.argumentList.arguments.firstOrNull?.staticType;
@@ -61,8 +62,8 @@ class AddProviderScope extends DartFix {
     CustomLintResolver resolver,
     ChangeReporter reporter,
     CustomLintContext context,
-    AnalysisError analysisError,
-    List<AnalysisError> others,
+    Diagnostic analysisError,
+    List<Diagnostic> others,
   ) {
     context.registry.addMethodInvocation((node) {
       // The method is not impacted by this analysis error

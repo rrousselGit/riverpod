@@ -65,7 +65,7 @@ extension LegacyProviderDeclarationX on VariableDeclaration {
         // Provider((ref) => ...)
 
         arguments = initializer.argumentList;
-        provider = initializer.constructorName.type.name2;
+        provider = initializer.constructorName.type.name;
         typeArguments = initializer.constructorName.type.typeArguments;
       } else if (initializer is FunctionExpressionInvocation) {
         // Provider.modifier()
@@ -206,7 +206,7 @@ ManualProviderType? parseLegacyProviderType(DartType type) {
     return null;
   }
 
-  final name = type.element3?.name3;
+  final name = type.element?.name;
   if (name == 'FutureProvider' || name == 'FutureProviderFamily') {
     return ManualProviderType.futureProvider;
   }
@@ -250,7 +250,7 @@ class ManualProviderDeclarationElement implements ProviderDeclarationElement {
     required this.providerType,
   });
 
-  static ManualProviderDeclarationElement? _parse(VariableElement2 element) {
+  static ManualProviderDeclarationElement? _parse(VariableElement element) {
     return _cache(element, () {
       final type = element.type;
       final providerType = parseLegacyProviderType(type);
@@ -259,9 +259,9 @@ class ManualProviderDeclarationElement implements ProviderDeclarationElement {
 
       ManualFamilyInvocationElement? familyElement;
       if (familyType.isAssignableFromType(element.type)) {
-        final callFn = (element.type as InterfaceType).lookUpMethod3(
+        final callFn = (element.type as InterfaceType).lookUpMethod(
           'call',
-          element.library2!,
+          element.library!,
         )!;
         final parameter = callFn.formalParameters.single;
 
@@ -269,7 +269,7 @@ class ManualProviderDeclarationElement implements ProviderDeclarationElement {
       }
 
       return ManualProviderDeclarationElement._(
-        name: element.name3!,
+        name: element.name!,
         element: element,
         familyElement: familyElement,
         providerType: providerType,
@@ -280,7 +280,7 @@ class ManualProviderDeclarationElement implements ProviderDeclarationElement {
   static final _cache = _Cache<ManualProviderDeclarationElement?>();
 
   @override
-  final VariableElement2 element;
+  final VariableElement element;
 
   @override
   final String name;

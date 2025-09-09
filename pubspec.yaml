@@ -39,5 +39,9 @@ workspace:
   - packages/riverpod_sqflite
   - tools/generate_providers
   - website
+
 dependencies:
   flutter_riverpod: ^3.0.0-dev.17
+
+dependency_overrides:
+  test_api: 0.7.7

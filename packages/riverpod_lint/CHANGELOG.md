@@ -1,5 +1,6 @@
 ## Unreleased build
 
+- Handle analyzer 8.0
 - Removed `avoid_manual_providers_as_generated_provider_dependency`.
   The corresponding technical limitation has been solved, so this constraint is no-longer necessary.
 

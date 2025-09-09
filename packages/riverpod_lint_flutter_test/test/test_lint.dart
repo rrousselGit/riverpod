@@ -33,7 +33,7 @@ void testLint(
 
   test(description, () async {
     final sourcePath = File(normalize(file)).absolute;
-    final result = await resolveFile2(path: sourcePath.path);
+    final result = await resolveFile(path: sourcePath.path);
     result as ResolvedUnitResult;
 
     final errors = await lint.testRun(result);
@@ -76,7 +76,7 @@ void testGolden(
 
     final sourceFile = File(sourcePath).absolute;
 
-    final result = await resolveFile2(path: absoluteSource.path);
+    final result = await resolveFile(path: absoluteSource.path);
     result as ResolvedUnitResult;
 
     final source = sourceFile.readAsStringSync();

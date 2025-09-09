@@ -197,13 +197,13 @@ class ProviderDependencies extends RiverpodLintRule {
   static const _code = LintCode(
     name: 'provider_dependencies',
     problemMessage: '{0}',
-    errorSeverity: ErrorSeverity.WARNING,
+    errorSeverity: DiagnosticSeverity.WARNING,
   );
 
   @override
   void run(
     CustomLintResolver resolver,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
     CustomLintContext context,
   ) {
     riverpodRegistry(context).addAccumulatedDependencyList((list) {
@@ -303,8 +303,8 @@ class _ProviderDependenciesFix extends RiverpodFix {
     CustomLintResolver resolver,
     ChangeReporter reporter,
     CustomLintContext context,
-    AnalysisError analysisError,
-    List<AnalysisError> others,
+    Diagnostic analysisError,
+    List<Diagnostic> others,
   ) {
     final data = analysisError.data;
     if (data is! _Data) return;

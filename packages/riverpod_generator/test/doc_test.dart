@@ -10,7 +10,7 @@ import 'annotated_test.dart';
 
 void main() async {
   final file = File('test/integration/documented.g.dart').absolute;
-  final result = await resolveFile2(path: file.path) as ResolvedUnitResult;
+  final result = await resolveFile(path: file.path) as ResolvedUnitResult;
   final topLevelDeclarations = result.unit.declarations.toList();
 
   final variables = [

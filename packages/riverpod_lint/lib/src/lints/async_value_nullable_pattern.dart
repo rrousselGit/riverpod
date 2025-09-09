@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:analyzer/error/error.dart'
     hide
         // ignore: undefined_hidden_name, necessary to support lower analyzer version
@@ -19,13 +20,13 @@ class AsyncValueNullablePattern extends RiverpodLintRule {
     problemMessage:
         'Using AsyncValue(:final value?) on possibly nullable value is unsafe. '
         'Use AsyncValue(:final value, hasValue: true) instead.',
-    errorSeverity: ErrorSeverity.WARNING,
+    errorSeverity: DiagnosticSeverity.WARNING,
   );
 
   @override
   void run(
     CustomLintResolver resolver,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
     CustomLintContext context,
   ) {
     context.registry.addNullCheckPattern((node) {
@@ -63,8 +64,8 @@ class AsyncValueNullablePattern extends RiverpodLintRule {
         final unit = node.thisOrAncestorOfType<CompilationUnit>()!;
 
         genericType =
-            genericType.element3.bound ??
-            unit.declaredFragment!.element.library2.typeProvider.dynamicType;
+            genericType.element.bound ??
+            unit.declaredFragment!.element.library.typeProvider.dynamicType;
       }
 
       if (genericType is! DynamicType &&
@@ -86,8 +87,8 @@ class _AddHasDataFix extends DartFix {
     CustomLintResolver resolver,
     ChangeReporter reporter,
     CustomLintContext context,
-    AnalysisError analysisError,
-    List<AnalysisError> others,
+    Diagnostic analysisError,
+    List<Diagnostic> others,
   ) {
     context.registry.addNullCheckPattern((node) {
       if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
