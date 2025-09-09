@@ -8,7 +8,7 @@ resolution: workspace
 
 dependencies:
   analyzer: ^8.0.0
-  build: ^3.0.0
+  build: ^4.0.0
   build_config: ^1.1.0
   collection: ^1.17.1
   meta: ^1.15.0
