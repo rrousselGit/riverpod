@@ -158,6 +158,7 @@ export const documentTitles = {
     "case_studies/pull_to_refresh": "당겨서 새로고침(Pull to refresh)",
     "case_studies/cancel": "네트워크요청 디바운싱/취소 (Debouncing/Cancelling)",
     "advanced/select": "성능 최적화하기",
+    "whats_new": "Riverpod 3.0의 새로운 기능",
   },
   'ja': {
     "providers/stream_provider": "StreamProvider",
