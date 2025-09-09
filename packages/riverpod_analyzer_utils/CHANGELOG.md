@@ -1,4 +1,4 @@
-## Unreleased build
+## 1.0.0-dev.5 - 2025-09-09
 
 Handle analyzer 8.0
 

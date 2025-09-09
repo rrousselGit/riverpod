@@ -1,4 +1,4 @@
-## Unreleased build
+## 3.0.0-dev.18 - 2025-09-09
 
 - A provider that is currently being retried is now flagged as "loading"
   while the retry attempts complete.

@@ -1,3 +1,7 @@
+## 0.2.1 - 2025-09-09
+
+Handle latest Riverpod version
+
 ## 0.2.0 - 2025-08-01
 
 - Bump minimum `meta` version
