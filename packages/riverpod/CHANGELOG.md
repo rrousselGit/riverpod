@@ -1,5 +1,8 @@
 ## Unreleased build
 
+- A provider that is currently being retried is now flagged as "loading"
+  while the retry attempts complete.
+  Meaning that `ref.watch(provider.future)` skips the intermediate error states.
 - Fix an issue with the internals of AsyncValue
 - `ProviderObserver` is now marked with `base`
 - Fix provider rebuild order issue.
