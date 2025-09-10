@@ -1,3 +1,9 @@
+## 3.0.0 - 2025-09-10
+
+Finally, a stable release for Riverpod 3.0!
+
+For the full changelog, check out https://riverpod.dev/docs/whats_new
+
 ## 3.0.0-dev.18 - 2025-09-09
 
 - A provider that is currently being retried is now flagged as "loading"

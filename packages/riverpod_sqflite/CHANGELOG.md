@@ -1,3 +1,9 @@
+## 0.3.0 - 2025-09-10
+
+Finally, a stable release for Riverpod 3.0!
+
+For the full changelog, check out https://riverpod.dev/docs/whats_new
+
 ## 0.2.1 - 2025-09-09
 
 Handle latest Riverpod version
