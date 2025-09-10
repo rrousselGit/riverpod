@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 
 void main() async {
   final file = File('test/integration/annotated.g.dart').absolute;
-  final result = await resolveFile(path: file.path) as ResolvedUnitResult;
+  final result = await resolveFile2(path: file.path) as ResolvedUnitResult;
   final declarations = result.unit.declarations;
 
   test('Annotations on parameters', () {

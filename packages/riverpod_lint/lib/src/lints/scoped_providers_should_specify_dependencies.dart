@@ -13,7 +13,7 @@ extension SimpleIdentifierX on SimpleIdentifier {
   bool get isFlutterRunApp {
     if (name != 'runApp') return false;
 
-    final library = element?.library;
+    final library = element?.library2;
     if (library == null) return false;
 
     return library.uri.scheme == 'package' &&
@@ -23,7 +23,7 @@ extension SimpleIdentifierX on SimpleIdentifier {
   bool get isPumpWidget {
     if (name != 'pumpWidget') return false;
 
-    final library = element?.library;
+    final library = element?.library2;
     if (library == null) return false;
 
     return library.uri.scheme == 'package' &&
@@ -38,13 +38,13 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
     name: 'scoped_providers_should_specify_dependencies',
     problemMessage:
         'Providers which are overridden in a non-root ProviderContainer/ProviderScope should specify dependencies.',
-    errorSeverity: DiagnosticSeverity.WARNING,
+    errorSeverity: ErrorSeverity.WARNING,
   );
 
   @override
   void run(
     CustomLintResolver resolver,
-    DiagnosticReporter reporter,
+    ErrorReporter reporter,
     CustomLintContext context,
   ) {
     riverpodRegistry(context)
@@ -58,7 +58,7 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
 
   void checkScopedOverrideList(
     ProviderOverrideList? overrideList,
-    DiagnosticReporter reporter,
+    ErrorReporter reporter,
   ) {
     final overrides = overrideList?.overrides;
     if (overrides == null) return;
@@ -76,7 +76,7 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
 
   void handleProviderScopeInstanceCreation(
     ProviderScopeInstanceCreationExpression expression,
-    DiagnosticReporter reporter,
+    ErrorReporter reporter,
   ) {
     final isScoped = isProviderScopeScoped(expression);
     if (!isScoped) return;
@@ -86,7 +86,7 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
 
   void handleProviderContainerInstanceCreation(
     ProviderContainerInstanceCreationExpression expression,
-    DiagnosticReporter reporter,
+    ErrorReporter reporter,
   ) {
     // This might be doable by checking that the expression's
     // static type is non-nullable

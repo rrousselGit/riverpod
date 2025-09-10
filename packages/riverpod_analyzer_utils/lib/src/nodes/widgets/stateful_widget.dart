@@ -7,9 +7,9 @@ bool _isCoreType(DartType type) {
       isFromHooksRiverpod.isExactlyType(type);
 }
 
-ClassElement? _findStateFromReturnType(ClassElement node) {
-  final type = node.methods
-      .firstWhereOrNull((e) => e.name == 'createState')
+ClassElement2? _findStateFromReturnType(ClassElement2 node) {
+  final type = node.methods2
+      .firstWhereOrNull((e) => e.name3 == 'createState')
       ?.returnType;
 
   if (type == null) return null;
@@ -18,11 +18,11 @@ ClassElement? _findStateFromReturnType(ClassElement node) {
   // The latter prevents from finding the state class.
   if (_isCoreType(type)) return null;
 
-  return type.element.cast<ClassElement>();
+  return type.element3.cast<ClassElement2>();
 }
 
-ClassElement? _findStateWithMatchingGeneric(ClassElement node) {
-  for (final clazz in node.library.classes) {
+ClassElement2? _findStateWithMatchingGeneric(ClassElement2 node) {
+  for (final clazz in node.library2.classes) {
     final type = clazz.supertype;
     if (type != null && isState(type) && _findStateWidget(clazz) == node) {
       return clazz;
@@ -32,7 +32,7 @@ ClassElement? _findStateWithMatchingGeneric(ClassElement node) {
   return null;
 }
 
-ClassElement? _findState(ClassElement node) {
+ClassElement2? _findState(ClassElement2 node) {
   return _findStateFromReturnType(node) ?? _findStateWithMatchingGeneric(node);
 }
 
@@ -64,7 +64,7 @@ final class StatefulWidgetDeclaration extends WidgetDeclaration {
   final ClassDeclaration node;
 
   StateDeclaration? findStateAst() {
-    final stateName = state?.element.name;
+    final stateName = state?.element.name3;
     if (stateName == null) return null;
 
     final unit = node.thisOrAncestorOfType<CompilationUnit>()!;
@@ -86,7 +86,7 @@ final class StatefulWidgetDeclarationElement extends WidgetDeclarationElement {
   static final _cache = _Cache<StatefulWidgetDeclarationElement>();
 
   static StatefulWidgetDeclarationElement? _parse(
-    ClassElement node,
+    ClassElement2 node,
     AstNode from,
   ) {
     return _cache(node, () {
@@ -99,7 +99,7 @@ final class StatefulWidgetDeclarationElement extends WidgetDeclarationElement {
     });
   }
 
-  final ClassElement element;
+  final ClassElement2 element;
   @override
   final DependenciesAnnotationElement? dependencies;
 }

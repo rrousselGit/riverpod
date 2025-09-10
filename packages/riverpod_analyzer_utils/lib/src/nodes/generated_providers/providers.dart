@@ -7,7 +7,7 @@ sealed class ProviderDeclaration {
 }
 
 sealed class ProviderDeclarationElement {
-  Element get element;
+  Element2 get element;
   String get name;
 }
 

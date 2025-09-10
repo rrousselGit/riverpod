@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/dart/element/visitor2.dart';
 import 'package:path/path.dart' as path;
@@ -14,24 +14,24 @@ void main() {
   // - all {@template} are used
   // - all {@macro} have an associated {@template}
 
-  late final LibraryElement riverpod;
+  late final LibraryElement2 riverpod;
   late final _PublicAPIVisitor visitor;
 
   setUpAll(() async {
     const file = './example/lib/main.dart';
     final absolute = path.normalize(path.absolute(file));
 
-    final result = await resolveFile(path: absolute);
+    final result = await resolveFile2(path: absolute);
     result as ResolvedUnitResult;
 
-    riverpod = result.libraryFragment.importedLibraries.firstWhere(
+    riverpod = result.libraryFragment.importedLibraries2.firstWhere(
       (e) => e.uri.toString() == 'package:riverpod/riverpod.dart',
     );
     visitor = _PublicAPIVisitor(riverpod);
 
-    riverpod.accept(visitor);
+    riverpod.accept2(visitor);
     for (final publicApi in riverpod.exportNamespace.definedNames2.values) {
-      publicApi.accept(visitor);
+      publicApi.accept2(visitor);
     }
   });
 
@@ -61,7 +61,7 @@ void main() {
 class _PublicAPIVisitor extends GeneralizingElementVisitor2<void> {
   _PublicAPIVisitor(this.riverpod);
 
-  final LibraryElement riverpod;
+  final LibraryElement2 riverpod;
   final missingInheritedAnnotations = <String>{};
   final unexportedElements = <String>{};
   final undocumentedElements = <String>{};
@@ -70,7 +70,7 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor2<void> {
   final duplicateTemplates = <String>{};
   final macros = <String>{};
 
-  void _verifyTypeIsExported(DartType type, VariableElement element) {
+  void _verifyTypeIsExported(DartType type, VariableElement2 element) {
     if (type is TypeParameterType) {
       _verifyTypeIsExported(type.bound, element);
       return;
@@ -86,27 +86,27 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor2<void> {
 
     if (type.isCore) return;
 
-    final key = type.element?.name ?? '';
+    final key = type.element3?.name3 ?? '';
     if (!riverpod.exportNamespace.definedNames2.containsKey(key)) {
-      unexportedElements.add('${element.library!.uri}#$key');
+      unexportedElements.add('${element.library2!.uri}#$key');
     }
   }
 
-  void _verifyHasDocs(Element element) {
+  void _verifyHasDocs(Element2 element) {
     final Object annotatable = element;
-    if (annotatable is! Element) return;
+    if (annotatable is! Annotatable) return;
 
     if (annotatable.documentationComment?.isNotEmpty != true) {
-      undocumentedElements.add('${element.library!.uri}');
+      undocumentedElements.add('${element.library2!.uri}');
     }
   }
 
-  bool _isPublicApi(Element element) {
+  bool _isPublicApi(Element2 element) {
     if (element.isPrivate) return false;
     // Is part of an @internal element
-    if (element.thisOrAncestorMatching((e) {
+    if (element.thisOrAncestorMatching2((e) {
           final Object obj = e;
-          return obj is Element && obj.metadata.hasInternal;
+          return obj is Annotatable && obj.metadata2.hasInternal;
         }) !=
         null) {
       return false;
@@ -116,7 +116,7 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor2<void> {
   }
 
   @override
-  void visitElement(Element element) {
+  void visitElement(Element2 element) {
     super.visitElement(element);
 
     if (_isPublicApi(element)) {
@@ -127,7 +127,7 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor2<void> {
   }
 
   @override
-  void visitClassElement(ClassElement element) {
+  void visitClassElement(ClassElement2 element) {
     super.visitClassElement(element);
 
     // Verify that inherited members also respect public API constraints
@@ -137,27 +137,27 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor2<void> {
   }
 
   @override
-  void visitVariableElement(VariableElement element) {
+  void visitVariableElement(VariableElement2 element) {
     super.visitVariableElement(element);
 
     _verifyTypeIsExported(element.type, element);
   }
 
-  void _verifyInheritsAnnotations(Element element) {
-    final annotatable = element;
-    final parent = element.enclosingElement;
+  void _verifyInheritsAnnotations(Element2 element) {
+    final annotatable = element as Annotatable;
+    final parent = element.enclosingElement2;
 
-    if (parent is! ClassElement) return;
+    if (parent is! ClassElement2) return;
 
     final overrides = parent.allSupertypes
         .map((e) {
-          final name = element.name!;
+          final name = element.name3!;
           final override =
-              e.getMethod(name) ?? e.getGetter(name) ?? e.getSetter(name);
+              e.getMethod2(name) ?? e.getGetter2(name) ?? e.getSetter2(name);
 
           if (override == null) return null;
 
-          return (override, e.element.name!);
+          return (override, e.element3.name3!);
         })
         .nonNulls
         .toList();
@@ -166,24 +166,24 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor2<void> {
 
     for (final (override, className) in overrides) {
       if (annotatable.hasChangePrivacy) continue;
-      if ((!annotatable.metadata.hasInternal &&
-              override.metadata.hasInternal) ||
-          (!annotatable.metadata.hasProtected &&
-              override.metadata.hasProtected) ||
-          (!annotatable.metadata.hasVisibleForOverriding &&
-              override.metadata.hasVisibleForOverriding) ||
-          (!annotatable.metadata.hasVisibleForTesting &&
-              override.metadata.hasVisibleForTesting)) {
+      if ((!annotatable.metadata2.hasInternal &&
+              override.metadata2.hasInternal) ||
+          (!annotatable.metadata2.hasProtected &&
+              override.metadata2.hasProtected) ||
+          (!annotatable.metadata2.hasVisibleForOverriding &&
+              override.metadata2.hasVisibleForOverriding) ||
+          (!annotatable.metadata2.hasVisibleForTesting &&
+              override.metadata2.hasVisibleForTesting)) {
         missingInheritedAnnotations.add(
-          '${element.library!.uri}#${element.enclosingElement!.name}.${element.name} vs ${override.library.uri}#$className.${override.name}',
+          '${element.library2!.uri}#${element.enclosingElement2!.name3}.${element.name3} vs ${override.library2.uri}#$className.${override.name3}',
         );
       }
     }
   }
 
-  void _parseTemplatesAndMacros(Element element) {
+  void _parseTemplatesAndMacros(Element2 element) {
     final Object annotatable = element;
-    if (annotatable is! Element) return;
+    if (annotatable is! Annotatable) return;
 
     final docs = annotatable.documentationComment;
     if (docs == null) return;
@@ -204,9 +204,11 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor2<void> {
   }
 }
 
-extension on Element {
+extension on Annotatable {
   bool get hasChangePrivacy {
-    return metadata.annotations.any((e) => e.element?.name == 'changePrivacy');
+    return metadata2.annotations.any(
+      (e) => e.element2?.name3 == 'changePrivacy',
+    );
   }
 }
 
@@ -237,9 +239,9 @@ extension on DartType {
       return true;
     }
 
-    final element = this.element;
+    final element = element3;
     if (element == null) return false;
 
-    return element.library?.uri.toString().startsWith('dart:') ?? false;
+    return element.library2?.uri.toString().startsWith('dart:') ?? false;
   }
 }

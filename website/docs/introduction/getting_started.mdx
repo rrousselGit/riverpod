@@ -95,40 +95,6 @@ dart run build_runner watch -d
 
 That's it. You've added [Riverpod] to your app!
 
-:::caution
-Due to the stable version using some out-of-date dependencies,
-you may see the following error when running `flutter pub get`:
-
-```
-Note: test_api is pinned to version 0.7.4 by flutter_test from the flutter SDK.
-See https://dart.dev/go/sdk-version-pinning for details.
-
-
-Because test >=1.25.9 <1.26.3 depends on analyzer >=6.0.0 <8.0.0 and no versions of
-  test match >1.26.3 <2.0.0, test >=1.25.9 <1.26.3-∞ or >1.26.3 <2.0.0 requires analyzer
-  >=6.0.0 <8.0.0.
-And because test >=1.25.8 <1.25.9 depends on test_api 0.7.3 and test 1.26.3 depends on
-  test_api 0.7.7, test ^1.25.8 requires test_api 0.7.3 or 0.7.7 or analyzer >=6.0.0
-  <8.0.0.
-Because benchmarks depends on flutter_test from sdk which depends on test_api 0.7.4,
-  test_api 0.7.4 is required.
-Thus, test ^1.25.8 requires analyzer >=6.0.0 <8.0.0.
-So, because riverpod_sqflite depends on test ^1.25.8 and lint_visitor_generator
-  depends on analyzer ^8.0.0, version solving failed.
-```
-
-To solve this, consider either:
-- Upgrading Flutter (such as using the beta/dev channel)
-- Overriding `test_api` in your `pubspec.yaml` like this:
-
-```yaml
-dependency_overrides:
-  test_api: 0.7.7
-```
-
-This is a temporary workaround until the next stable Flutter is released.
-:::
-
 ## Enabling riverpod_lint/custom_lint
 
 Riverpod comes with an optional [riverpod_lint]

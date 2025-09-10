@@ -13,9 +13,9 @@ extension RiverpodAnnotatedAnnotatedNodeOfX on AnnotatedNode {
 extension AnnotationOf on Annotation {
   ElementAnnotation? annotationOfType(TypeChecker type, {required bool exact}) {
     final elementAnnotation = this.elementAnnotation;
-    final element = this.element;
+    final element = element2;
     if (element == null || elementAnnotation == null) return null;
-    if (element is! ExecutableElement) return null;
+    if (element is! ExecutableElement2) return null;
 
     if ((exact && !type.isExactlyType(element.returnType)) ||
         (!exact && !type.isAssignableFromType(element.returnType))) {
@@ -104,7 +104,7 @@ final class RiverpodAnnotationElement {
     AstNode from,
   ) {
     return _cache(element, () {
-      final type = element.element.cast<ExecutableElement>()?.returnType;
+      final type = element.element2.cast<ExecutableElement2>()?.returnType;
       if (type == null || !riverpodType.isExactlyType(type)) return null;
 
       final constant = element.computeConstantValue();
@@ -139,8 +139,8 @@ final class RiverpodAnnotationElement {
     });
   }
 
-  static RiverpodAnnotationElement? _of(Element element, AstNode from) {
-    return element.metadata.annotations
+  static RiverpodAnnotationElement? _of(Annotatable element, AstNode from) {
+    return element.metadata2.annotations
         .map((e) => _parse(e, from))
         .nonNulls
         .firstOrNull;

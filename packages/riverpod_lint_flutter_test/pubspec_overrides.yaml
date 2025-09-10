@@ -14,5 +14,3 @@ dependency_overrides:
     path: ../riverpod_generator
   riverpod_lint:
     path: ../riverpod_lint
-
-  test_api: 0.7.7
