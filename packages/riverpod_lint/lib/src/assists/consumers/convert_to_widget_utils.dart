@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -179,22 +179,22 @@ ClassDeclaration? findStateClass(ClassDeclaration widgetClass) {
 
 // Original implementation in package:analyzer/lib/src/dart/ast/extensions.dart
 extension IdentifierExtension on Identifier {
-  Element? get writeOrReadElement {
+  Element2? get writeOrReadElement {
     return _writeElement(this) ?? element;
   }
 }
 
-Element? _writeElement(AstNode node) {
+Element2? _writeElement(AstNode node) {
   final parent = node.parent;
 
   if (parent is AssignmentExpression && parent.leftHandSide == node) {
-    return parent.writeElement;
+    return parent.writeElement2;
   }
   if (parent is PostfixExpression && parent.operand == node) {
-    return parent.writeElement;
+    return parent.writeElement2;
   }
   if (parent is PrefixExpression && parent.operand == node) {
-    return parent.writeElement;
+    return parent.writeElement2;
   }
 
   if (parent is PrefixedIdentifier && parent.identifier == node) {

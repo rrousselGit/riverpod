@@ -72,10 +72,10 @@ bool isRiverpodRef(DartType targetType) {
   final isBuiltInRef = _isBuiltInRef(targetType);
   if (isBuiltInRef) return true;
 
-  final targetElement = targetType.element;
+  final targetElement = targetType.element3;
 
   // Not a built-in ref. Might be a generated ref, let's check that.
-  if (targetElement is! MixinElement) return false;
+  if (targetElement is! MixinElement2) return false;
   final constraints = targetElement.superclassConstraints.singleOrNull;
   if (constraints == null) return false;
 

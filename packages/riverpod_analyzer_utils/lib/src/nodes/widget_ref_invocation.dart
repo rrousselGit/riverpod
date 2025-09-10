@@ -19,8 +19,8 @@ extension WidgetRefInvocationX on MethodInvocation {
       final function = this.function;
       if (function is! SimpleIdentifier) return null;
       final functionOwner = function.element
-          .cast<MethodElement>()
-          ?.enclosingElement;
+          .cast<MethodElement2>()
+          ?.enclosingElement2;
 
       if (functionOwner == null ||
           // Since Ref is sealed, checking that the function is from the package:riverpod

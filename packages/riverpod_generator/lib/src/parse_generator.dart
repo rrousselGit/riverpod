@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:path/path.dart' as p;
 import 'package:source_gen/source_gen.dart';
@@ -15,14 +15,14 @@ abstract class ParserGenerator<AnnotationT>
     extends GeneratorForAnnotation<AnnotationT> {
   @override
   Future<String> generate(LibraryReader library, BuildStep buildStep) async {
-    final firstAnnotatedElementFromUniqueSource = <Uri, Element>{};
+    final firstAnnotatedElementFromUniqueSource = <Uri, Element2>{};
 
     for (final annotated in library.annotatedWithExact(
       typeChecker,
       throwOnUnresolved: false,
     )) {
       firstAnnotatedElementFromUniqueSource.putIfAbsent(
-        annotated.element.library!.uri,
+        annotated.element.library2!.uri,
         () => annotated.element,
       );
     }
@@ -42,7 +42,7 @@ abstract class ParserGenerator<AnnotationT>
 
   @override
   Stream<String> generateForAnnotatedElement(
-    Element element,
+    Element2 element,
     ConstantReader annotation,
     BuildStep buildStep,
   ) async* {

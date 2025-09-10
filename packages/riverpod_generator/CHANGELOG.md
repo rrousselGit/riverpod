@@ -1,6 +1,5 @@
 ## 3.0.0-dev.18 - 2025-09-09
 
-- Handle analyzer 8.0
 - Fix invalid generated code when a `Notifier` uses `static const` as default value for some of its `build` parameters.
 - Support records with a single value.
 - Set the default for `provider_name_strip_pattern` to `Notifier$`.

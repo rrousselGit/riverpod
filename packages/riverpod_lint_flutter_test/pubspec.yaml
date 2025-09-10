@@ -26,7 +26,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   glob: ^2.1.2
-  analyzer: ^8.0.0
+  analyzer: ^7.0.0
   path: ^1.9.0
   source_span: ^1.10.0
   analyzer_plugin: ^0.13.0

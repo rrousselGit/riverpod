@@ -17,7 +17,7 @@ class ProtectedNotifierProperties extends RiverpodLintRule {
   @override
   void run(
     CustomLintResolver resolver,
-    DiagnosticReporter reporter,
+    ErrorReporter reporter,
     CustomLintContext context,
   ) {
     context.registry.addPropertyAccess((propertyAccess) {

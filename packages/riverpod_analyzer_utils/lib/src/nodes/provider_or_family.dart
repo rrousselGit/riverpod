@@ -26,7 +26,7 @@ _parsesProviderExpression(Expression? expression) {
     } else if (expression is PrefixedIdentifier) {
       // watch(expression.modifier)
       final element = expression.prefix.element;
-      if (element is PrefixElement) {
+      if (element is PrefixElement2) {
         providerPrefix = expression.prefix;
         parseExpression(expression.identifier);
       } else {

@@ -21,7 +21,7 @@ class AvoidBuildContextInProviders extends RiverpodLintRule {
   @override
   void run(
     CustomLintResolver resolver,
-    DiagnosticReporter reporter,
+    ErrorReporter reporter,
     CustomLintContext context,
   ) {
     riverpodRegistry(context).addFunctionalProviderDeclaration((declaration) {
@@ -42,7 +42,7 @@ class AvoidBuildContextInProviders extends RiverpodLintRule {
   }
 
   void _emitWarningsForBuildContext(
-    DiagnosticReporter reporter,
+    ErrorReporter reporter,
     FormalParameterList parameters,
   ) {
     final buildContextParameters = parameters.parameters.where(

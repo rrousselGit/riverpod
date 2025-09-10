@@ -29,7 +29,7 @@ extension on CollectionElement {
       }
 
       final dependencyElement = that.element;
-      if (dependencyElement is ExecutableElement) {
+      if (dependencyElement is ExecutableElement2) {
         final dependencyProvider = FunctionalProviderDeclarationElement._parse(
           dependencyElement,
           this,
@@ -49,7 +49,7 @@ extension on CollectionElement {
         return null;
       }
 
-      if (dependencyElement is ClassElement) {
+      if (dependencyElement is ClassElement2) {
         final dependencyProvider = ClassBasedProviderDeclarationElement._parse(
           dependencyElement,
           this,
@@ -131,7 +131,7 @@ final class ProviderDependencyList {
 extension on DartObject {
   /// An element in `@Riverpod(dependencies: [a, b])` or equivalent.
   GeneratorProviderDeclarationElement? toDependency({required AstNode from}) {
-    final functionType = toFunctionValue();
+    final functionType = toFunctionValue2();
     if (functionType != null) {
       final provider = FunctionalProviderDeclarationElement._parse(
         functionType,
@@ -144,7 +144,7 @@ extension on DartObject {
     final type = toTypeValue();
     if (type != null) {
       final provider = ClassBasedProviderDeclarationElement._parse(
-        type.element! as ClassElement,
+        type.element3! as ClassElement2,
         from,
       );
 
@@ -351,7 +351,7 @@ extension IdentifierDependenciesX on Identifier {
   IdentifierDependencies? get identifierDependencies {
     return _cache.upsert(this, () {
       final Object? staticElement = element;
-      if (staticElement is! Element) return null;
+      if (staticElement is! Annotatable) return null;
 
       final dependencies = DependenciesAnnotationElement._of(
         staticElement,
@@ -377,8 +377,8 @@ extension NamedTypeDependenciesX on NamedType {
 
   NamedTypeDependencies? get typeAnnotationDependencies {
     return _cache.upsert(this, () {
-      final Object? staticElement = type?.element;
-      if (staticElement is! Element) return null;
+      final Object? staticElement = type?.element3;
+      if (staticElement is! Annotatable) return null;
 
       final dependencies = DependenciesAnnotationElement._of(
         staticElement,
@@ -461,7 +461,7 @@ final class DependenciesAnnotationElement {
     AstNode from,
   ) {
     return _cache(annotation, () {
-      final type = annotation.element.cast<ExecutableElement>()?.returnType;
+      final type = annotation.element2.cast<ExecutableElement2>()?.returnType;
       if (type == null || !dependenciesType.isExactlyType(type)) return null;
 
       final dependencies = annotation.computeConstantValue()?.getField(
@@ -478,8 +478,8 @@ final class DependenciesAnnotationElement {
     });
   }
 
-  static DependenciesAnnotationElement? _of(Element element, AstNode from) {
-    return element.metadata.annotations
+  static DependenciesAnnotationElement? _of(Annotatable element, AstNode from) {
+    return element.metadata2.annotations
         .map((e) => _parse(e, from))
         .nonNulls
         .firstOrNull;

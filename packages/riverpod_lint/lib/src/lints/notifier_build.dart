@@ -1,5 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/diagnostic/diagnostic.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/error/error.dart'
     hide
         // ignore: undefined_hidden_name, necessary to support lower analyzer version
@@ -19,21 +18,21 @@ class NotifierBuild extends RiverpodLintRule {
     name: 'notifier_build',
     problemMessage:
         'Classes annotated by `@riverpod` must have the `build` method',
-    errorSeverity: DiagnosticSeverity.ERROR,
+    errorSeverity: ErrorSeverity.ERROR,
   );
 
   @override
   void run(
     CustomLintResolver resolver,
-    DiagnosticReporter reporter,
+    ErrorReporter reporter,
     CustomLintContext context,
   ) {
     context.registry.addClassDeclaration((node) {
       final hasRiverpodAnnotation = node.metadata.where((element) {
-        final annotationElement = element.element;
+        final annotationElement = element.element2;
 
         if (annotationElement == null ||
-            annotationElement is! ExecutableElement) {
+            annotationElement is! ExecutableElement2) {
           return false;
         }
 
@@ -64,8 +63,8 @@ class AddBuildMethodFix extends RiverpodFix {
     CustomLintResolver resolver,
     ChangeReporter reporter,
     CustomLintContext context,
-    Diagnostic analysisError,
-    List<Diagnostic> others,
+    AnalysisError analysisError,
+    List<AnalysisError> others,
   ) {
     context.registry.addClassDeclaration((node) {
       if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
