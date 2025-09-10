@@ -48,8 +48,7 @@ for that specific provider:
     return 0;
   }
   `}
-  raw={`final myProvider = FutureProvider<int>((ref) async {
-  final provider = Provider<int>(
+  raw={`final myProvider = Provider<int>(
     // highlight-next-line
     retry: myRetry,
     (ref) => 0,
