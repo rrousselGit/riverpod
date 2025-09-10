@@ -348,6 +348,8 @@ enum DataKind { cache, live }
 enum DataSource { liveOrRefresh, reload }
 
 typedef _DataRecord<ValueT> = (ValueT, {DataKind? kind, DataSource? source});
+
+/// Not public
 @internal
 typedef DataFilledRecord<ValueT> = ({
   ValueT value,
