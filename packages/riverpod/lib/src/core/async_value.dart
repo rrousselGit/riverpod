@@ -14,8 +14,22 @@ extension<BoxedT> on (BoxedT,)? {
 }
 
 extension<ValueT> on _DataRecord<ValueT> {
-  _DataRecord<ValueT> copyWith({(_DataSource?,)? source}) {
+  _DataRecord<ValueT> copyWith({(DataSource?,)? source}) {
     return ($1, kind: kind, source: source.unwrapSentinel(this.source));
+  }
+}
+
+@internal
+extension AsyncValueInternals<ValueT> on AsyncValue<ValueT> {
+  DataFilledRecord<ValueT>? get valueFilled {
+    final value = _value;
+    if (value == null) return null;
+
+    return (
+      value: value.$1,
+      kind: value.kind ?? DataKind.live,
+      source: value.source ?? DataSource.liveOrRefresh,
+    );
   }
 }
 
@@ -29,17 +43,6 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
     if (_error != null) count++;
 
     return count > 1;
-  }
-
-  _DataFilledRecord<ValueT>? get _valueFilled {
-    final value = _value;
-    if (value == null) return null;
-
-    return (
-      value: value.$1,
-      kind: value.kind ?? DataKind.live,
-      source: value.source ?? _DataSource.liveOrRefresh,
-    );
   }
 
   _ErrorFilledRecord? get _errorFilled {
@@ -62,7 +65,7 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
   /// Whether the value was obtained using Riverpod's offline-persistence feature.
   ///
   /// When [isFromCache] is true, [isLoading] should also be true.
-  bool get isFromCache => _valueFilled?.kind == DataKind.cache;
+  bool get isFromCache => valueFilled?.kind == DataKind.cache;
 
   /// Whether some new value is currently asynchronously loading.
   ///
@@ -341,13 +344,17 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
 @internal
 enum DataKind { cache, live }
 
-enum _DataSource { liveOrRefresh, reload }
+@internal
+enum DataSource { liveOrRefresh, reload }
 
-typedef _DataRecord<ValueT> = (ValueT, {DataKind? kind, _DataSource? source});
-typedef _DataFilledRecord<ValueT> = ({
+typedef _DataRecord<ValueT> = (ValueT, {DataKind? kind, DataSource? source});
+
+/// Not public
+@internal
+typedef DataFilledRecord<ValueT> = ({
   ValueT value,
   DataKind kind,
-  _DataSource? source,
+  DataSource? source,
 });
 typedef _ErrorRecord = ({Object err, StackTrace stack, bool? retrying});
 typedef _ErrorFilledRecord = ({
@@ -601,13 +608,13 @@ sealed class AsyncValue<ValueT> {
     return runtimeType == other.runtimeType &&
         other is AsyncValue<ValueT> &&
         other._loading == _loading &&
-        other._valueFilled == _valueFilled &&
+        other.valueFilled == valueFilled &&
         other._errorFilled == _errorFilled;
   }
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, _loading, _valueFilled, _errorFilled);
+      Object.hash(runtimeType, _loading, valueFilled, _errorFilled);
 }
 
 /// A variant of [AsyncValue] that excludes [AsyncLoading].
@@ -733,8 +740,9 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
     AsyncValue<ValueT> previous, {
     bool isRefresh = true,
   }) {
-    final source = isRefresh ? _DataSource.liveOrRefresh : _DataSource.reload;
-    final previousValue = previous._value?.copyWith(source: (source,));
+    final previousValue = isRefresh
+        ? previous._value
+        : previous._value?.copyWith(source: (DataSource.reload,));
 
     if (isRefresh) {
       return previous.map(
@@ -749,12 +757,10 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
           value: previousValue,
         ),
         loading: (_) {
-          if (_value == previousValue) return this;
-
           return AsyncLoading<ValueT>._(
             _loading,
             value: previousValue,
-            error: _error,
+            error: previous._error,
           );
         },
       );

@@ -42,4 +42,4 @@ workspace:
   - tools/generate_providers
   - website
 dependencies:
-  flutter_riverpod: ^3.0.0-dev.17
+  flutter_riverpod: ^3.0.0-dev.18

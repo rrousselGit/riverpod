@@ -38,7 +38,7 @@ void main() {
 
 :::note
 Inside tests, do not use [ProviderContainer] directly.
-Use [ProviderContainer.test](https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ProviderContainer/ProviderContainer.test.html) instead.
+Use [ProviderContainer.test](https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.18/hooks_riverpod/ProviderContainer/ProviderContainer.test.html) instead.
 This will automatically dispose the container when the test ends.
 
 ```dart
@@ -94,7 +94,7 @@ Riverpod does this for a few reasons, which come down the the same logic: "No gl
 1. Better separation of concerns.  
   If Riverpod were to allow providers to store their own state,
   it would imply that _anything_ could read/write to that state. This means
-  that it would be difficult to control how/when is a state is modified.
+  that it would be difficult to control how/when a state is modified.
 
   Using Riverpod's architecture, state updates are centralized: All the logic
   for modifying a provider is done in the provider itself.
@@ -144,6 +144,6 @@ Riverpod does this for a few reasons, which come down the the same logic: "No gl
   optimizations.
 
 
-[ProviderContainer]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ProviderContainer-class.html
-[ProviderScope]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ProviderScope-class.html
-[ProviderObserver]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ProviderObserver-class.html
+[ProviderContainer]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.18/hooks_riverpod/ProviderContainer-class.html
+[ProviderScope]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.18/hooks_riverpod/ProviderScope-class.html
+[ProviderObserver]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.18/hooks_riverpod/ProviderObserver-class.html

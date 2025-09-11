@@ -1,3 +1,11 @@
+## 1.0.0-dev.6 - 2025-09-10
+
+Handle latest Riverpod
+
+## 1.0.0-dev.5 - 2025-09-09
+
+Handle analyzer 8.0
+
 ## 1.0.0-dev.4 - 2025-08-01
 
 - Bump minimum `meta` version

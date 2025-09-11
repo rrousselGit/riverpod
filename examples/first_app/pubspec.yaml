@@ -12,7 +12,7 @@ dependencies:
   dio: ^5.9.0
   flutter:
     sdk: flutter
-  flutter_riverpod: ^3.0.0-dev.17
+  flutter_riverpod: ^3.0.0-dev.18
 
 flutter:
   uses-material-design: true

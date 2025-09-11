@@ -964,7 +964,7 @@ resumed
 ... // And so on every second
 ```
 
-### Exceptions in providers are rethrown as "ProviderException".
+### Exceptions in providers are rethrown as a `ProviderException`.
 
 For the sake of differentiating between "a provider failed" from "a provider is depending on a failed provider",
 Riverpod 3.0 now wraps exceptions in a `ProviderException` that contains the original.
@@ -1373,11 +1373,11 @@ regarding combining multiple "sources of truth" in a single provider.
 
 [ProviderContainer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderContainer-class.html
 [ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
-[Mutation]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/experimental_mutation/Mutation-class.html
+[Mutation]: https://pub.dev/documentation/riverpod/3.0.0-dev.18/experimental_mutation/Mutation-class.html
 [riverpod_lint]: https://pub.dev/packages/riverpod_lint
 [Ref]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref-class.html
 [Ref.read]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref/read.html
-[tsx.get]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/experimental_mutation/MutationTransaction/get.html
+[tsx.get]: https://pub.dev/documentation/riverpod/3.0.0-dev.18/experimental_mutation/MutationTransaction/get.html
 [WidgetRef]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef-class.html
 [TickerMode]: https://api.flutter.dev/flutter/widgets/TickerMode-class.html
 [Consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html
@@ -1385,5 +1385,5 @@ regarding combining multiple "sources of truth" in a single provider.
 [AsyncValue]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/AsyncValue-class.html
 [ProviderObserver]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderObserver-class.html
 [WidgetTester.container]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/RiverpodWidgetTesterX/container.html
-[SyncProviderTransformerMixin]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/misc/SyncProviderTransformerMixin-mixin.html
-[ProviderListenable]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/misc/ProviderListenable-class.html
+[SyncProviderTransformerMixin]: https://pub.dev/documentation/riverpod/3.0.0-dev.18/misc/SyncProviderTransformerMixin-mixin.html
+[ProviderListenable]: https://pub.dev/documentation/riverpod/3.0.0-dev.18/misc/ProviderListenable-class.html

@@ -108,13 +108,10 @@ final class ProviderScope extends StatefulWidget {
     return scope.container;
   }
 
-  /// The default retry logic used by providers associated to this container.
+  /// The retry logic used by providers associated to this container.
   ///
-  /// The default implementation:
-  /// - has unlimited retries
-  /// - starts with a delay of 200ms
-  /// - doubles the delay on each retry up to 6.4 seconds
-  /// - retries all failures
+  /// See [ProviderContainer.defaultRetry] for information about the
+  /// default retry logic.
   final Retry? retry;
 
   /// The part of the widget tree that can use Riverpod and has overridden providers.

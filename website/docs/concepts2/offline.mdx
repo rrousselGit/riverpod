@@ -92,7 +92,7 @@ When specifying `key`, it is critical to ensure that:
 By default, state is only cached for 2 days. This default ensures that
 no leak happens and deleted providers stay in the database indefinitely
 
-This is generally safe, as Riverpod is designed to be use primarily
+This is generally safe, as Riverpod is designed to be used primarily
 as a cache for IO operations (network requests, database queries, etc).
 But such default will not be suitable for all use-cases, such as if
 you want to store user preferences.
@@ -156,8 +156,8 @@ To have your test use this in-memory database, you can use <Link documentID="con
 <AutoSnippet raw={inMemoryTest} />
 
 [riverpod_sqflite]: https://pub.dev/packages/riverpod_sqflite
-[Storage]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/experimental_persist/Storage-class.html
-[AnyNotifier.persist]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/experimental_persist/NotifierPersistX/persist.html
+[Storage]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.18/experimental_persist/Storage-class.html
+[AnyNotifier.persist]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.18/experimental_persist/NotifierPersistX/persist.html
 [JsonSqFliteStorage]: https://pub.dev/documentation/riverpod_sqflite/latest/riverpod_sqflite/JsonSqFliteStorage-class.html
-[JsonPersist]: https://pub.dev/documentation/riverpod_annotation/3.0.0-dev.17/experimental_json_persist/JsonPersist-class.html
-[Storage.inMemory]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/experimental_persist/Storage/Storage.inMemory.html
+[JsonPersist]: https://pub.dev/documentation/riverpod_annotation/3.0.0-dev.18/experimental_json_persist/JsonPersist-class.html
+[Storage.inMemory]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.18/experimental_persist/Storage/Storage.inMemory.html

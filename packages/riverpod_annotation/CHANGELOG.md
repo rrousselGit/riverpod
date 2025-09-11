@@ -1,3 +1,13 @@
+## 3.0.0 - 2025-09-10
+
+Finally, a stable release for Riverpod 3.0!
+
+For the full changelog, check out https://riverpod.dev/docs/whats_new
+
+## 3.0.0-dev.18 - 2025-09-09
+
+- `riverpod` upgraded to `3.0.0-dev.18`
+
 ## 3.0.0-dev.17 - 2025-08-01
 
 - Fixed a conflict between public and private providers of the same name

@@ -89,7 +89,7 @@ of Riverpod's <Link documentID="concepts2/auto_dispose" /> in a reliable way. Th
 an implementation that "mostly works" with `BuildContext`.
 The problem is that there are lots of subtle edge-cases which could silently break the auto-dispose feature.
 
-This would cause memory leaks, but that's but that's not the real issue.  
+This would cause memory leaks, but that's not the real issue.  
 Automatic disposal is more importantly about stopping the execution of code that is no longer needed.
 If auto-dispose fails to dispose a provider, then that provider may continuously perform
 network requests in the background.
@@ -105,9 +105,9 @@ Riverpod offers various refactors in IDEs like VSCode and Android Studio.
 To enable them in your IDE, see <Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint" />
 :::
 
-[ref]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/Ref-class.html
-[consumer]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/Consumer-class.html
-[consumerWidget]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ConsumerWidget-class.html
-[consumerStatefulWidget]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ConsumerStatefulWidget-class.html
-[consumerState]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ConsumerState-class.html
-[widgetref]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/WidgetRef-class.html
+[ref]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.18/hooks_riverpod/Ref-class.html
+[consumer]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.18/hooks_riverpod/Consumer-class.html
+[consumerWidget]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.18/hooks_riverpod/ConsumerWidget-class.html
+[consumerStatefulWidget]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.18/hooks_riverpod/ConsumerStatefulWidget-class.html
+[consumerState]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.18/hooks_riverpod/ConsumerState-class.html
+[widgetref]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.18/hooks_riverpod/WidgetRef-class.html

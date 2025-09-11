@@ -681,27 +681,6 @@ class $Ref<StateT, ValueT> extends Ref {
   List<void Function(StateT?, StateT)>? _onChangeSelfListeners;
   List<OnError>? _onErrorSelfListeners;
 
-  /// Obtains the state currently exposed by this provider.
-  ///
-  /// Mutating this property will notify the provider listeners.
-  ///
-  /// If called before a value was set, there are two possible scenarios:
-  /// - on synchronous providers, this will throw a [StateError].
-  /// - on asynchronous providers, this will return an [AsyncLoading].
-  ///
-  /// Will throw if the provider threw during creation.
-  StateT get state {
-    _throwIfInvalidUsage();
-
-    return _element.readSelf().valueOrRawException;
-  }
-
-  set state(StateT newState) {
-    _throwIfInvalidUsage();
-
-    _element.setValueFromState(newState);
-  }
-
   /// Listens to changes on the value exposed by this provider.
   ///
   /// The listener will be called immediately after the provider completes building.

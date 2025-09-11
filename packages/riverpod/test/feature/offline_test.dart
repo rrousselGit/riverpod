@@ -302,7 +302,7 @@ void main() {
 
               expect(
                 container.read(provider),
-                isA<AsyncError<Object?>>()
+                isA<AsyncLoading<Object?>>()
                     .having((e) => e.isFromCache, 'isFromCache', true)
                     .having((e) => e.value, 'value', 42)
                     .having((e) => e.stackTrace, 'stackTrace', isNotNull)

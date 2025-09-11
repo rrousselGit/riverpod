@@ -178,7 +178,7 @@ mixin FutureModifierClassElement<
         $ClassProviderElement<NotifierT, AsyncValue<ValueT>, ValueT, CreatedT> {
   @override
   void handleError(Ref ref, Object error, StackTrace stackTrace) {
-    onError(triggerRetry(error, stackTrace), seamless: !ref.isReload);
+    onValue(triggerRetry(error, stackTrace), seamless: !ref.isReload);
   }
 }
 

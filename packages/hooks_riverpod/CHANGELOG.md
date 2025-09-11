@@ -1,9 +1,24 @@
-## Unreleased build
+## 3.0.0 - 2025-09-10
 
-- Fixed a "markNeedsBuild" exception in some edge-cases when using scoped providers.
+Finally, a stable release for Riverpod 3.0!
+
+For the full changelog, check out https://riverpod.dev/docs/whats_new
+
+## 3.0.0-dev.18 - 2025-09-09
+
+- A provider that is currently being retried is now flagged as "loading"
+  while the retry attempts complete.
+  Meaning that `ref.watch(provider.future)` skips the intermediate error states.
+- Fix an issue with the internals of AsyncValue
+- `ProviderObserver` is now marked with `base`
 - Fix provider rebuild order issue.
 - Fix "Tried to refresh x multiple times in the same frame" incorrectly triggering.
 - Removed `FamilyNotifier` and variants, in favour of `Notifier`.
+- Preserve persisted state if a provider throws.
+- `provider.future` will now skip offline-persisted state by default.
+  This avoids awkward unexpected provider rebuild when chaining persisted providers.
+- Made `Mutation.call` generic.
+  This allows for better compatibility with generic-returning functions (thanks to @TekExplorer)
 
 ## 3.0.0-dev.17 - 2025-08-01
 

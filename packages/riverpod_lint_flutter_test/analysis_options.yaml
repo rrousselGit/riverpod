@@ -7,6 +7,10 @@ analyzer:
     - test/lints/functional_ref/functional_ref.g.dart
     - test/lints/functional_ref/fix/auto_import.g.dart
     - test/lints/functional_ref/fix/use_prefix.g.dart
+  errors:
+    # Remove once we require analyzer 8.0.0
+    # We currently support both 7.0 and 8.0, so we can't migrate yet.
+    deprecated_member_use: ignore
 
 custom_lint:
   debug: true

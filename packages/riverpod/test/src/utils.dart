@@ -269,8 +269,28 @@ TypeMatcher<AsyncLoading<ValueT>> isAsyncLoading<ValueT>({
   Object? error = const _Sentinel(),
   Object? stackTrace = const _Sentinel(),
   Object? hasError = const _Sentinel(),
+  Object? isReloading = const _Sentinel(),
+  Object? isRefreshing = const _Sentinel(),
+  Object? progress = const _Sentinel(),
 }) {
-  var matcher = isA<AsyncLoading<ValueT>>();
+  var matcher = isA<AsyncLoading<ValueT>>().having(
+    (e) => e.isLoading,
+    'isLoading',
+    true,
+  );
+  if (progress != const _Sentinel()) {
+    matcher = matcher.having((e) => e.progress, 'progress', progress);
+  }
+  if (isReloading != const _Sentinel()) {
+    matcher = matcher.having((e) => e.isReloading, 'isReloading', isReloading);
+  }
+  if (isRefreshing != const _Sentinel()) {
+    matcher = matcher.having(
+      (e) => e.isRefreshing,
+      'isRefreshing',
+      isRefreshing,
+    );
+  }
   if (retrying != const _Sentinel()) {
     matcher = matcher.having((e) => e.retrying, 'retrying', retrying);
   }

@@ -372,8 +372,11 @@ void main() {
   });
 
   test('throwing inside "create" result in an AsyncValue.error', () {
-    // ignore: only_throw_errors
-    final provider = FutureProvider<int>((ref) => throw 42);
+    final provider = FutureProvider<int>(
+      // ignore: only_throw_errors
+      (ref) => throw 42,
+      retry: (_, __) => null,
+    );
     final container = ProviderContainer.test();
 
     expect(
@@ -403,11 +406,7 @@ void main() {
 
     expect(
       container.read(provider),
-      isA<AsyncValue<int>>().having(
-        (s) => s.maybeWhen(error: (err, _) => err, orElse: () => null),
-        'error',
-        42,
-      ),
+      isA<AsyncValue<int>>().having((s) => s.error, 'error', 42),
     );
   });
 

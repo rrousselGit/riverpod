@@ -32,7 +32,10 @@ void main() {
       final controller = StreamController<int>();
       final provider = Provider((ref) => ref);
       addTearDown(controller.close);
-      final dep = StreamProvider<int>((ref) => controller.stream);
+      final dep = StreamProvider<int>(
+        (ref) => controller.stream,
+        retry: (_, _) => null,
+      );
 
       container.listen(dep, (p, n) {});
       final ref = container.listen(provider, (a, b) {});
@@ -71,7 +74,10 @@ void main() {
   test('implements ProviderSubscription.read on AsyncError', () async {
     final container = ProviderContainer.test();
     final dep = StateProvider((ref) => 0);
-    final provider = FutureProvider<int>((ref) => Future.error(ref.watch(dep)));
+    final provider = FutureProvider<int>(
+      (ref) => Future.error(ref.watch(dep)),
+      retry: (_, __) => null,
+    );
 
     final sub = container.listen<Future<bool>>(
       provider.selectAsync((data) => data.isEven),

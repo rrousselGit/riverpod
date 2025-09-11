@@ -49,7 +49,7 @@ typedef RunNotifierBuild<NotifierT, CreatedT> =
 /// ```
 /// {@category Notifiers}
 @publicInRiverpodAndCodegen
-mixin AnyNotifier<StateT, ValueT> {
+abstract class AnyNotifier<StateT, ValueT> {
   (Object?,)? _debugKey;
 
   $ClassProviderElement<AnyNotifier<StateT, ValueT>, StateT, ValueT, Object?>?
@@ -77,11 +77,21 @@ mixin AnyNotifier<StateT, ValueT> {
   /// Asynchronous notifiers will instead convert the error into an [AsyncError].
   @visibleForTesting
   @protected
-  StateT get state => $ref.state;
+  StateT get state {
+    final ref = $ref;
+    ref._throwIfInvalidUsage();
+
+    return ref._element.readSelf().valueOrRawException;
+  }
 
   @visibleForTesting
   @protected
-  set state(StateT newState) => $ref.state = newState;
+  set state(StateT newState) {
+    final ref = $ref;
+    ref._throwIfInvalidUsage();
+
+    ref._element.setValueFromState(newState);
+  }
 
   void _setStateFromValue(ValueT value);
 
@@ -287,12 +297,12 @@ extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
 
 @internal
 abstract class $AsyncNotifierBase<ValueT>
-    with AnyNotifier<AsyncValue<ValueT>, ValueT> {
+    extends AnyNotifier<AsyncValue<ValueT>, ValueT> {
   @override
   void _setStateFromValue(ValueT value) {
     state = AsyncLoading._(
       (progress: state.progress),
-      value: (value, kind: DataKind.cache, source: _DataSource.liveOrRefresh),
+      value: (value, kind: DataKind.cache, source: DataSource.liveOrRefresh),
       error: state._error,
     );
   }
@@ -318,7 +328,7 @@ abstract class $AsyncNotifierBase<ValueT>
 }
 
 @internal
-abstract class $SyncNotifierBase<ValueT> with AnyNotifier<ValueT, ValueT> {
+abstract class $SyncNotifierBase<ValueT> extends AnyNotifier<ValueT, ValueT> {
   @override
   void _setStateFromValue(ValueT value) => state = value;
 

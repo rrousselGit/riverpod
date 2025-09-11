@@ -2,6 +2,7 @@
 
 import 'dart:async';
 
+import 'package:async/async.dart' hide DelegatingStream;
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
@@ -119,23 +120,23 @@ void main() {
           final container = ProviderContainer.test();
           var err = Exception('foo');
           final stack = StackTrace.current;
+          final controller = StreamController<AsyncValue<int>>();
+          addTearDown(controller.close);
+          final queue = StreamQueue(controller.stream);
+          addTearDown(queue.cancel);
           final provider = factory.deferredProvider<int>(
             (ref, _) => Error.throwWithStackTrace(err, stack),
             retry: (_, __) => const Duration(seconds: 1),
           );
-          final listener = Listener<AsyncValue<int>>();
 
-          container.listen(provider, fireImmediately: true, listener.call);
-          await container.read(provider.future).catchError((e) => 0);
+          final sub = container.listen(provider, fireImmediately: true, (a, b) {
+            controller.add(b);
+          });
+          await queue.next;
 
-          verifyOnly(
-            listener,
-            listener(
-              any,
-              argThat(
-                isAsyncError<int>(err, stackTrace: stack, retrying: true),
-              ),
-            ),
+          expect(
+            sub.read(),
+            isAsyncLoading<int>(error: err, stackTrace: stack, retrying: true),
           );
 
           err = Exception('bar');
@@ -143,16 +144,11 @@ void main() {
           fake.elapse(const Duration(seconds: 1));
           fake.flushMicrotasks();
 
-          await container.read(provider.future).catchError((e) => 0);
+          await queue.next;
 
-          verifyOnly(
-            listener,
-            listener(
-              any,
-              argThat(
-                isAsyncError<int>(err, stackTrace: stack, retrying: true),
-              ),
-            ),
+          expect(
+            sub.read(),
+            isAsyncLoading<int>(error: err, stackTrace: stack, retrying: true),
           );
         }),
       );
