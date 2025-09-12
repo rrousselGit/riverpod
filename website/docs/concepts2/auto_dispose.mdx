@@ -49,15 +49,15 @@ which can lead to memory leaks.
 ## When is automatic disposal triggered?
 
 When automatic disposal is enabled, Riverpod will track whether a provider has listeners or not.
-This happens by tracking [Ref.watch](https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.18/hooks_riverpod/Ref/watch.html)/[Ref.listen](https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.18/hooks_riverpod/Ref/listen.html)
+This happens by tracking [Ref.watch](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/watch.html)/[Ref.listen](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/listen.html)
 calls (and a few others).  
 
 When that counter reaches zero, the provider is considered "not used", and
-[Ref.onCancel](https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.18/hooks_riverpod/Ref/onCancel.html)
+[Ref.onCancel](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/onCancel.html)
 is triggered. 
 At that point, Riverpod waits for one frame (cf. `await null`). If, after that frame,
 the provider is still not used, then the provider is destroyed and
-[Ref.onDispose](https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.18/hooks_riverpod/Ref/onDispose.html)
+[Ref.onDispose](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/onDispose.html)
 will be triggered.
 ## Reacting to state disposal
 
