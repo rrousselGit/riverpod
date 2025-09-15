@@ -740,6 +740,7 @@ final class ProviderContainer implements Node, MutationTarget {
     List<ProviderObserver>? observers,
     @internal void Function(Object error, StackTrace stackTrace)? onError,
     Retry? retry,
+    @visibleForTesting bool throwOnDuplicatedOverride = kDebugMode,
   }) : _debugOverridesLength = overrides.length,
        _depth = parent == null ? 0 : parent._depth + 1,
        _parent = parent,
@@ -755,7 +756,7 @@ final class ProviderContainer implements Node, MutationTarget {
       }
     }
 
-    if (false) {
+    if (throwOnDuplicatedOverride) {
       final overrideOrigins = <Object?>{};
       for (final override in overrides) {
         switch (override) {
