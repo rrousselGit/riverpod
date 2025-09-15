@@ -77,6 +77,7 @@ final class ProviderScope extends StatefulWidget {
     this.overrides = const [],
     this.observers,
     this.retry,
+    @visibleForTesting this.throwOnOverrideDuplication = kDebugMode,
     required this.child,
   });
 
@@ -136,6 +137,12 @@ final class ProviderScope extends StatefulWidget {
   /// Ancestors of this [ProviderScope] will not be affected by the overrides.
   final List<Override> overrides;
 
+  /// Whether to throw if a provider is overridden more than once.
+  ///
+  /// This is enabled by default in debug mode to catch mistakes, and disabled
+  /// in release mode.
+  final bool throwOnOverrideDuplication;
+
   @override
   ProviderScopeState createState() => ProviderScopeState();
 }
@@ -163,6 +170,8 @@ final class ProviderScopeState extends State<ProviderScope> {
       overrides: widget.overrides,
       observers: widget.observers,
       retry: widget.retry,
+      // ignore: invalid_use_of_visible_for_testing_member
+      throwOnOverrideDuplication: widget.throwOnOverrideDuplication,
       onError: (err, stack) {
         FlutterError.reportError(
           FlutterErrorDetails(
