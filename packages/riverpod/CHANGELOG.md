@@ -1,3 +1,7 @@
+## Unreleased fix
+
+- Added `ProviderContainer` parameter to disable duplicate override error in tests.
+
 ## 3.0.0 - 2025-09-10
 
 Finally, a stable release for Riverpod 3.0!
