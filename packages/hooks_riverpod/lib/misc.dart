@@ -1,6 +1,5 @@
 export 'src/internals.dart'
     show
-        ChangeNotifierProviderFamily,
         ProviderListenableOrFamily,
         ProviderOrFamily,
         AsyncNotifierProviderFamily,
@@ -20,3 +19,6 @@ export 'src/internals.dart'
         ProviderTransformer,
         SyncProviderTransformerMixin,
         AsyncProviderListenable;
+
+@Deprecated('Import misc.dart instead')
+export 'src/internals.dart' show ChangeNotifierProviderFamily;

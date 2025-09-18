@@ -194,7 +194,7 @@ class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 }
 
 /// The [Family] of [ChangeNotifierProvider].
-@publicInMisc
+@publicInLegacy
 final class ChangeNotifierProviderFamily<
   NotifierT extends ChangeNotifier?,
   ArgT
