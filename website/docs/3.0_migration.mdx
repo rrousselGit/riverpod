@@ -52,12 +52,7 @@ void main() {
 void main() {
   final container = ProviderContainer(
     // Never retry any provider
-    retry: (retryCount, error) {
-      if (error is SomeSpecificError) return null;
-      if (retryCount > 5) return null;
-
-      return Duration(seconds: retryCount * 2);
-    },
+    retry: (retryCount, error) => null,
   );
 }
 ```
@@ -101,11 +96,11 @@ class MyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TickerMode(
-      enabled: false, // This will pause the listeners
+      enabled: true, // Never pause any descendant listener.
       child: Consumer(
         builder: (context, ref, child) {
-          // This "watch" will be paused
-          // until TickerMode is set to true
+          // This "watch" will not follow the automatic pausing behavior
+          // until TickerMode is removed.
           final value = ref.watch(myProvider);
           return Text(value.toString());
         },
