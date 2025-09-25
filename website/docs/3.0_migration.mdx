@@ -96,7 +96,7 @@ class MyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TickerMode(
-      enabled: true, // Never pause any decsendent listener.
+      enabled: true, // Never pause any descendant listener.
       child: Consumer(
         builder: (context, ref, child) {
           // This "watch" will not follow the automatic pausing behavior
