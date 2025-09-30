@@ -16,45 +16,51 @@ String buildParamDefinitionQuery(
     'Cannot enable both asThisParameter and asSuperParameter',
   );
 
-  final requiredPositional = parameters
-      .where((element) => element.isRequiredPositional && !asRequiredNamed)
-      .toList();
-  final optionalPositional = parameters
-      .where((element) => element.isOptionalPositional && !asRequiredNamed)
-      .toList();
-  final named = parameters
-      .where((element) => element.isNamed || asRequiredNamed)
-      .toList();
+  final requiredPositional =
+      parameters
+          .where((element) => element.isRequiredPositional && !asRequiredNamed)
+          .toList();
+  final optionalPositional =
+      parameters
+          .where((element) => element.isOptionalPositional && !asRequiredNamed)
+          .toList();
+  final named =
+      parameters
+          .where((element) => element.isNamed || asRequiredNamed)
+          .toList();
 
   final buffer = StringBuffer();
 
   String encodeParameter(FormalParameter parameter) {
     if (asRecord) {
-      final type = parameter.typeDisplayString.isEmpty
-          ? 'dynamic'
-          : parameter.typeDisplayString;
+      final type =
+          parameter.typeDisplayString.isEmpty
+              ? 'dynamic'
+              : parameter.typeDisplayString;
       if (parameter.isNamed) {
         return '$type ${parameter.name}';
       }
       return type;
     }
 
-    late final metadata = parameter.metadata.isNotEmpty
-        ? '${parameter.metadata.map((e) => e.toSource()).join(' ')} '
-        : '';
+    late final metadata =
+        parameter.metadata.isNotEmpty
+            ? '${parameter.metadata.map((e) => e.toSource()).join(' ')} '
+            : '';
 
     late final element = parameter.declaredFragment!.element;
-    late final leading = parameter.isRequiredNamed || asRequiredNamed
-        ? 'required $metadata'
-        : metadata;
+    late final leading =
+        parameter.isRequiredNamed || asRequiredNamed
+            ? 'required $metadata'
+            : metadata;
     late final constant = element.computeConstantValue();
     late final trailing =
         element.hasDefaultValue &&
-            constant != null &&
-            !asRequiredNamed &&
-            withDefaults
-        ? '= ${constant.toCode()}'
-        : '';
+                constant != null &&
+                !asRequiredNamed &&
+                withDefaults
+            ? '= ${constant.toCode()}'
+            : '';
     if (asThisParameter) return '${leading}this.${parameter.name}$trailing';
     if (asSuperParameter) return '${leading}super.${parameter.name}$trailing';
 

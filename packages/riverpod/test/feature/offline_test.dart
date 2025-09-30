@@ -166,10 +166,11 @@ void main() {
 
       test('throws if two providers have the same persistKey', () {
         final errors = <Object>[];
-        final container = runZonedGuarded(
-          ProviderContainer.test,
-          (err, stack) => errors.add(err),
-        )!;
+        final container =
+            runZonedGuarded(
+              ProviderContainer.test,
+              (err, stack) => errors.add(err),
+            )!;
         final a = factory.simpleProvider(
           (ref, self) => 0,
           persistKey: (_) => 'myKey',
@@ -211,10 +212,11 @@ void main() {
           ),
         );
         final errors = <Object>[];
-        final container = runZonedGuarded(
-          ProviderContainer.test,
-          (err, stack) => errors.add(err),
-        )!;
+        final container =
+            runZonedGuarded(
+              ProviderContainer.test,
+              (err, stack) => errors.add(err),
+            )!;
 
         container.read(provider);
 
@@ -789,9 +791,8 @@ extension on TestFactory<Object?> {
       },
       streamNotifier: (factory) {
         Stream<Object?> handle(Ref ref, AnyNotifier<Object?, Object?> self) {
-          final futureOR = factory.isFamily
-              ? familyCreate(ref, self)
-              : create(ref, self);
+          final futureOR =
+              factory.isFamily ? familyCreate(ref, self) : create(ref, self);
 
           final controller = StreamController<void>();
           ref.onDispose(controller.close);

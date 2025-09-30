@@ -90,9 +90,8 @@ extension<PointerT extends _PointerBase, ProviderT extends ProviderOrFamily>
 
     if (target == currentContainer) {
       return this[provider] = scope(
-        override: deepestTransitiveDependencyContainer == null
-            ? null
-            : provider,
+        override:
+            deepestTransitiveDependencyContainer == null ? null : provider,
       );
     }
 
@@ -167,16 +166,17 @@ class ProviderDirectory implements _PointerBase {
       currentContainer: currentContainer,
       targetContainer: targetContainer,
       inherit: (target) => target._pointerManager.upsertPointer(provider),
-      scope: ({override}) => $ProviderPointer(
-        targetContainer: currentContainer,
-        providerOverride:
-            override == null ||
-                provider.from !=
-                    null //
-            ? null
-            : TransitiveProviderOverride(override),
-        origin: provider,
-      ),
+      scope:
+          ({override}) => $ProviderPointer(
+            targetContainer: currentContainer,
+            providerOverride:
+                override == null ||
+                        provider.from !=
+                            null //
+                    ? null
+                    : TransitiveProviderOverride(override),
+            origin: provider,
+          ),
     );
   }
 
@@ -319,10 +319,11 @@ class ProviderPointerManager {
       return;
     }
 
-    final familyPointer = familyPointers[from] ??= ProviderDirectory.empty(
-      container._root ?? container,
-      familyOverride: null,
-    );
+    final familyPointer =
+        familyPointers[from] ??= ProviderDirectory.empty(
+          container._root ?? container,
+          familyOverride: null,
+        );
 
     familyPointer.addProviderOverride(override, targetContainer: container);
   }
@@ -417,9 +418,9 @@ class ProviderPointerManager {
       scope: ({override}) {
         final familyOverride =
             override ==
-                null //
-            ? null
-            : TransitiveFamilyOverride(override);
+                    null //
+                ? null
+                : TransitiveFamilyOverride(override);
 
         final parent = container.parent?._pointerManager.familyPointers[family];
 
@@ -775,13 +776,17 @@ final class ProviderContainer implements Node, MutationTarget {
       }
     }
 
-    _pointerManager = parent != null
-        ? ProviderPointerManager.from(parent, overrides, container: this)
-        : ProviderPointerManager(
-            overrides,
-            container: this,
-            orphanPointers: ProviderDirectory.empty(this, familyOverride: null),
-          );
+    _pointerManager =
+        parent != null
+            ? ProviderPointerManager.from(parent, overrides, container: this)
+            : ProviderPointerManager(
+              overrides,
+              container: this,
+              orphanPointers: ProviderDirectory.empty(
+                this,
+                familyOverride: null,
+              ),
+            );
 
     // Mutate the parent & global state only at the very end.
     // This ensures that if an error is thrown, the parent & global state

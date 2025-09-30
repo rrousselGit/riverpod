@@ -88,11 +88,14 @@ class MarvelRepository {
     final configs = await ref.read(configurationsProvider.future);
 
     final timestamp = _getCurrentTimestamp();
-    final hash = md5
-        .convert(
-          utf8.encode('$timestamp${configs.privateKey}${configs.publicKey}'),
-        )
-        .toString();
+    final hash =
+        md5
+            .convert(
+              utf8.encode(
+                '$timestamp${configs.privateKey}${configs.publicKey}',
+              ),
+            )
+            .toString();
 
     final result = await ref
         .read(dioProvider)

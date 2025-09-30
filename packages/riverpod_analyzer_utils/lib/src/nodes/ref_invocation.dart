@@ -13,9 +13,8 @@ extension RefInvocationX on MethodInvocation {
 
       final function = this.function;
       if (function is! SimpleIdentifier) return null;
-      final functionOwner = function.element
-          .cast<MethodElement2>()
-          ?.enclosingElement2;
+      final functionOwner =
+          function.element.cast<MethodElement2>()?.enclosingElement2;
 
       if (functionOwner == null ||
           // Since Ref is sealed, checking that the function is from the package:riverpod
@@ -75,10 +74,11 @@ final class RefWatchInvocation extends RefDependencyInvocation {
       'Argument error, function is not a ref.watch function',
     );
 
-    final providerListenableExpression = node.argumentList
-        .positionalArguments()
-        .singleOrNull
-        ?.providerListenable;
+    final providerListenableExpression =
+        node.argumentList
+            .positionalArguments()
+            .singleOrNull
+            ?.providerListenable;
     if (providerListenableExpression == null) return null;
 
     return RefWatchInvocation._(
@@ -105,10 +105,11 @@ final class RefReadInvocation extends RefDependencyInvocation {
       'Argument error, function is not a ref.read function',
     );
 
-    final providerListenableExpression = node.argumentList
-        .positionalArguments()
-        .singleOrNull
-        ?.providerListenable;
+    final providerListenableExpression =
+        node.argumentList
+            .positionalArguments()
+            .singleOrNull
+            ?.providerListenable;
     if (providerListenableExpression == null) return null;
 
     return RefReadInvocation._(

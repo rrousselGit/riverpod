@@ -301,14 +301,14 @@ extension ProviderNames on GeneratorProviderDeclaration {
     bool withGenericDefinition = false,
     bool withArguments = false,
   }) {
-    final genericsDefinition = withGenericDefinition
-        ? this.genericsDefinition()
-        : '';
+    final genericsDefinition =
+        withGenericDefinition ? this.genericsDefinition() : '';
     final notifierType = '$name${generics()}';
 
-    final parameters = withArguments
-        ? buildParamDefinitionQuery(this.parameters, withDefaults: false)
-        : '';
+    final parameters =
+        withArguments
+            ? buildParamDefinitionQuery(this.parameters, withDefaults: false)
+            : '';
 
     return '${providerElement.createdTypeNode} Function$genericsDefinition(Ref, $notifierType, $parameters)';
   }
@@ -318,16 +318,16 @@ extension ProviderNames on GeneratorProviderDeclaration {
     bool withGenericDefinition = false,
   }) {
     final generics = this.generics();
-    final genericsDefinition = withGenericDefinition
-        ? this.genericsDefinition()
-        : '';
+    final genericsDefinition =
+        withGenericDefinition ? this.genericsDefinition() : '';
 
     final provider = this;
     switch (provider) {
       case FunctionalProviderDeclaration():
-        final params = withArguments
-            ? buildParamDefinitionQuery(parameters, withDefaults: false)
-            : '';
+        final params =
+            withArguments
+                ? buildParamDefinitionQuery(parameters, withDefaults: false)
+                : '';
 
         return '${provider.providerElement.createdTypeNode} Function$genericsDefinition(Ref ref, $params)';
       case ClassBasedProviderDeclaration():

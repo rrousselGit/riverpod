@@ -17,10 +17,11 @@ void main() {
       onDispose: () => throw StateError('called'),
     );
     final errors = <Object>[];
-    final container = runZonedGuarded(
-      ProviderContainer.test,
-      (err, stack) => errors.add(err),
-    )!;
+    final container =
+        runZonedGuarded(
+          ProviderContainer.test,
+          (err, stack) => errors.add(err),
+        )!;
     final provider = StateNotifierProvider<DelegateNotifier, int>(
       (_) => notifier,
     );

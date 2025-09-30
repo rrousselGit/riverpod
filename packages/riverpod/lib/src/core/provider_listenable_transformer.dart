@@ -164,14 +164,15 @@ extension<InT, StateT, ValueT>
           source.container.runGuarded(onClose);
         }
       },
-      read: () => read(switch (upsertTransformer()) {
-        AsyncData() && final transformer => transformer.value.state,
-        // Maps transformer errors as state errors
-        AsyncError(:final error, :final stackTrace) => AsyncError(
-          error,
-          stackTrace,
-        ),
-      }),
+      read:
+          () => read(switch (upsertTransformer()) {
+            AsyncData() && final transformer => transformer.value.state,
+            // Maps transformer errors as state errors
+            AsyncError(:final error, :final stackTrace) => AsyncError(
+              error,
+              stackTrace,
+            ),
+          }),
     );
 
     // 'weak' is lazy loaded, but weak:false isn't.

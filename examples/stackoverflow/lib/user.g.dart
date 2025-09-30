@@ -11,13 +11,14 @@ part of 'user.dart';
 _User _$UserFromJson(Map<String, dynamic> json) => _User(
   reputation: (json['reputation'] as num).toInt(),
   userId: (json['user_id'] as num).toInt(),
-  badgeCounts: json['badge_counts'] == null
-      ? null
-      : BadgeCount.fromJson(
-          (json['badge_counts'] as Map<String, dynamic>).map(
-            (k, e) => MapEntry(k, e as Object),
+  badgeCounts:
+      json['badge_counts'] == null
+          ? null
+          : BadgeCount.fromJson(
+            (json['badge_counts'] as Map<String, dynamic>).map(
+              (k, e) => MapEntry(k, e as Object),
+            ),
           ),
-        ),
   displayName: json['display_name'] as String,
   profileImage: json['profile_image'] as String,
   link: json['link'] as String,

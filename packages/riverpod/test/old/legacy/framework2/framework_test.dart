@@ -394,10 +394,11 @@ void main() {
 
       test('is guarded', () {
         final errors = <Object>[];
-        final container = runZonedGuarded(
-          ProviderContainer.test,
-          (err, stack) => errors.add(err),
-        )!;
+        final container =
+            runZonedGuarded(
+              ProviderContainer.test,
+              (err, stack) => errors.add(err),
+            )!;
         final counter = Counter();
         final provider = StateNotifierProvider<Counter, int>((ref) => counter);
         final didChange2 = Listener<int>();

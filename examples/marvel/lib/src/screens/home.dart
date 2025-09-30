@@ -85,10 +85,11 @@ class Home extends HookConsumerWidget {
     return ref
         .watch(charactersCount(''))
         .when(
-          loading: () => Container(
-            color: Colors.white,
-            child: const Center(child: CircularProgressIndicator()),
-          ),
+          loading:
+              () => Container(
+                color: Colors.white,
+                child: const Center(child: CircularProgressIndicator()),
+              ),
           error: (err, stack) {
             return Scaffold(
               appBar: AppBar(title: const Text('Error')),
@@ -144,8 +145,8 @@ class Home extends HookConsumerWidget {
                 ],
               ),
               floatingActionButton: FloatingActionButton.extended(
-                onPressed: () =>
-                    Navigator.pushNamed(context, '/characters/1009368'),
+                onPressed:
+                    () => Navigator.pushNamed(context, '/characters/1009368'),
                 label: const Text('Deep link to Iron-man'),
                 icon: const Icon(Icons.link),
               ),

@@ -42,8 +42,9 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
             'The default constructor of classes annotated with @riverpod '
             'cannot have required parameters.',
             targetNode: this,
-            code: RiverpodAnalysisErrorCode
-                .notifierDefaultConstructorHasRequiredParameters,
+            code:
+                RiverpodAnalysisErrorCode
+                    .notifierDefaultConstructorHasRequiredParameters,
           ),
         );
       }

@@ -78,12 +78,13 @@ class FunctionalRefFix extends RiverpodFix {
         return;
       }
 
-      final refNode = declaration
-          .node
-          .functionExpression
-          .parameters!
-          .parameters
-          .firstOrNull;
+      final refNode =
+          declaration
+              .node
+              .functionExpression
+              .parameters!
+              .parameters
+              .firstOrNull;
       if (refNode == null || refNode.isNamed) {
         // No ref parameter, adding one
         final changeBuilder = reporter.createChangeBuilder(

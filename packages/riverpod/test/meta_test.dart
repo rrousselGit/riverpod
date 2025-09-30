@@ -149,18 +149,21 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor2<void> {
 
     if (parent is! ClassElement2) return;
 
-    final overrides = parent.allSupertypes
-        .map((e) {
-          final name = element.name3!;
-          final override =
-              e.getMethod2(name) ?? e.getGetter2(name) ?? e.getSetter2(name);
+    final overrides =
+        parent.allSupertypes
+            .map((e) {
+              final name = element.name3!;
+              final override =
+                  e.getMethod2(name) ??
+                  e.getGetter2(name) ??
+                  e.getSetter2(name);
 
-          if (override == null) return null;
+              if (override == null) return null;
 
-          return (override, e.element3.name3!);
-        })
-        .nonNulls
-        .toList();
+              return (override, e.element3.name3!);
+            })
+            .nonNulls
+            .toList();
 
     if (overrides.isEmpty) return;
 

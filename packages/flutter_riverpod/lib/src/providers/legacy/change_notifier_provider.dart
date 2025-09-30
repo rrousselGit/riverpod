@@ -155,9 +155,8 @@ class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 
   @override
   WhenComplete create(Ref ref) {
-    final notifierResult = _notifierNotifier.result = $Result.guard(
-      () => provider.create(ref),
-    );
+    final notifierResult =
+        _notifierNotifier.result = $Result.guard(() => provider.create(ref));
 
     final notifier = notifierResult.valueOrRawException;
 

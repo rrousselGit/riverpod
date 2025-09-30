@@ -8,9 +8,10 @@ bool _isCoreType(DartType type) {
 }
 
 ClassElement2? _findStateFromReturnType(ClassElement2 node) {
-  final type = node.methods2
-      .firstWhereOrNull((e) => e.name3 == 'createState')
-      ?.returnType;
+  final type =
+      node.methods2
+          .firstWhereOrNull((e) => e.name3 == 'createState')
+          ?.returnType;
 
   if (type == null) return null;
 

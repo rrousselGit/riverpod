@@ -75,10 +75,13 @@ final paginatedQuestionsProvider = FutureProvider.autoDispose
 
       final parsed = QuestionsResponse.fromJson(response.data!);
       final page = parsed.copyWith(
-        items: parsed.items.map((e) {
-          final document = parse(e.body);
-          return e.copyWith(body: document.body!.text.replaceAll('\n', ' '));
-        }).toList(),
+        items:
+            parsed.items.map((e) {
+              final document = parse(e.body);
+              return e.copyWith(
+                body: document.body!.text.replaceAll('\n', ' '),
+              );
+            }).toList(),
       );
 
       return page;
@@ -257,19 +260,21 @@ class AnswersCount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = accepted
-        ? null
-        : answerCount == 0
-        ? const TextStyle(color: Color(0xffacb2b8))
-        : const TextStyle(color: Color(0xff5a9e6f));
+    final textStyle =
+        accepted
+            ? null
+            : answerCount == 0
+            ? const TextStyle(color: Color(0xffacb2b8))
+            : const TextStyle(color: Color(0xff5a9e6f));
     return Container(
-      decoration: answerCount > 0
-          ? BoxDecoration(
-              color: accepted ? const Color(0xff5a9e6f) : null,
-              border: Border.all(color: const Color(0xff5a9e6f)),
-              borderRadius: BorderRadius.circular(3),
-            )
-          : null,
+      decoration:
+          answerCount > 0
+              ? BoxDecoration(
+                color: accepted ? const Color(0xff5a9e6f) : null,
+                border: Border.all(color: const Color(0xff5a9e6f)),
+                borderRadius: BorderRadius.circular(3),
+              )
+              : null,
       padding: const EdgeInsets.all(7),
       child: Column(
         children: [

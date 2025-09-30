@@ -120,14 +120,15 @@ final class RiverpodAnnotationElement {
       if (dependencies == null) return null;
 
       final dependencyList = dependencies.toDependencyList(from: from);
-      final allTransitiveDependencies = dependencyList == null
-          ? null
-          : <GeneratorProviderDeclarationElement>{
-              ...dependencyList,
-              ...dependencyList.expand(
-                (e) => e.annotation.allTransitiveDependencies ?? const {},
-              ),
-            };
+      final allTransitiveDependencies =
+          dependencyList == null
+              ? null
+              : <GeneratorProviderDeclarationElement>{
+                ...dependencyList,
+                ...dependencyList.expand(
+                  (e) => e.annotation.allTransitiveDependencies ?? const {},
+                ),
+              };
 
       return RiverpodAnnotationElement._(
         keepAlive: keepAlive.toBoolValue()!,

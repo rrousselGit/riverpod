@@ -51,8 +51,8 @@ class ProviderParameters extends RiverpodLintRule {
           // provider(() => 42) is bad because a new function will always be created
           reporter.atNode(value, _code);
         } else if (value is InstanceCreationExpression && !value.isConst) {
-          final instantiatedObject = value.constructorName.element
-              ?.applyRedirectedConstructors();
+          final instantiatedObject =
+              value.constructorName.element?.applyRedirectedConstructors();
 
           final operatorEqual = instantiatedObject?.enclosingElement2
               .recursiveGetMethod('==');

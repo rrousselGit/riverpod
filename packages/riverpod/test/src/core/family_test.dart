@@ -24,9 +24,8 @@ void main() {
 
         container.read(provider);
 
-        final [ref as Ref, notifier as TestNotifier<int>] = verify(
-          overrideWithBuild.call(captureAny, captureAny),
-        ).captured;
+        final [ref as Ref, notifier as TestNotifier<int>] =
+            verify(overrideWithBuild.call(captureAny, captureAny)).captured;
 
         // ignore: invalid_use_of_protected_member
         expect(ref, same(notifier.ref));
@@ -57,9 +56,8 @@ void main() {
 
         container.read(provider(0));
 
-        final [ref as Ref, notifier as TestNotifier<int>] = verify(
-          overrideWithBuild.call(captureAny, captureAny),
-        ).captured;
+        final [ref as Ref, notifier as TestNotifier<int>] =
+            verify(overrideWithBuild.call(captureAny, captureAny)).captured;
 
         // ignore: invalid_use_of_protected_member
         expect(ref, same(notifier.ref));
