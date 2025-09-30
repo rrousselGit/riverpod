@@ -91,8 +91,9 @@ _computeExportDiff(ExportDirective export) {
             final annotatable = e as Annotatable;
 
             var targets = _Public.of(annotatable);
-            if (targets.isEmpty && annotatable.metadata2.hasInternal)
+            if (targets.isEmpty && annotatable.metadata2.hasInternal) {
               return false;
+            }
 
             if (targets.isEmpty) {
               targets = _Public.of(e.library2!);
