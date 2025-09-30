@@ -1,6 +1,7 @@
 ## Unreleased patch
 
 - Now supports Dart 3.7.0
+- Support `async` 2.12.0
 
 ## 3.0.0 - 2025-09-10
 
