@@ -1,4 +1,4 @@
-## Unreleased patch
+## 3.0.1 - 2025-09-30
 
 - Now supports Dart 3.7.0
 
