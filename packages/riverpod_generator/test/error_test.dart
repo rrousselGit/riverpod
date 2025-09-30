@@ -136,7 +136,7 @@ Future<String> compile(String source) async {
 name: test_app
 
 environment:
-  sdk: ^3.8.0
+  sdk: ^3.7.0
 
 dependencies:
   riverpod_annotation:

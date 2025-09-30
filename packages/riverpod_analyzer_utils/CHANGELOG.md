@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Now supports Dart 3.7.0
+
 ## 1.0.0-dev.6 - 2025-09-10
 
 Handle latest Riverpod

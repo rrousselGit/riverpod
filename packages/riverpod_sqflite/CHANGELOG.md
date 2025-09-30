@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Now supports Dart 3.7.0
+
 ## 0.3.0 - 2025-09-10
 
 Finally, a stable release for Riverpod 3.0!

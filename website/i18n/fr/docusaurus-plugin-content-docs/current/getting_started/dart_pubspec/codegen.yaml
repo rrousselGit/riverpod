@@ -1,6 +1,6 @@
 name: my_app_name
 environment:
-  sdk: ^3.8.0
+  sdk: ^3.7.0
 
 dependencies:
   riverpod: ^3.0.0-dev.12
