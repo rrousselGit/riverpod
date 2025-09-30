@@ -662,8 +662,8 @@ void fn(_Ref ref) {
     (resolver, unit, units) async {
       final result = await resolver.resolveRiverpodAnalysisResult();
 
-      final providerRefInvocations = result.refInvocations
-          .cast<RefWatchInvocation>();
+      final providerRefInvocations =
+          result.refInvocations.cast<RefWatchInvocation>();
 
       expect(providerRefInvocations, hasLength(3));
       expect(result.refWatchInvocations, providerRefInvocations);

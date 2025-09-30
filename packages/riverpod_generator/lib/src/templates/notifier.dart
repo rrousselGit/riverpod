@@ -13,9 +13,10 @@ class NotifierTemplate extends Template {
 
   @override
   void run(StringBuffer buffer) {
-    final notifierBaseName = provider.isPersisted
-        ? '_\$${provider.name.lexeme.public}Base'
-        : '_\$${provider.name.lexeme.public}';
+    final notifierBaseName =
+        provider.isPersisted
+            ? '_\$${provider.name.lexeme.public}Base'
+            : '_\$${provider.name.lexeme.public}';
     final genericsDefinition = provider.genericsDefinition();
 
     final baseClass = switch (provider.providerElement.createdType) {
@@ -40,15 +41,17 @@ class NotifierTemplate extends Template {
     final _$args = 'late final _\$args = ref.\$arg${provider.argumentCast};';
 
     var paramOffset = 0;
-    final parametersAsFields = provider.parameters.map((p) {
-      final metadata = p.metadata.isNotEmpty
-          ? '${p.metadata.map((e) => e.toSource()).join(' ')} '
-          : '';
-      return '${p.doc} $metadata ${p.typeDisplayString} get ${p.name!.lexeme} => ${switch (provider.parameters) {
-        [_] => r'_$args;',
-        _ => '_\$args.${p.isPositional ? '\$${++paramOffset}' : p.name!.lexeme};',
-      }}';
-    }).join();
+    final parametersAsFields =
+        provider.parameters.map((p) {
+          final metadata =
+              p.metadata.isNotEmpty
+                  ? '${p.metadata.map((e) => e.toSource()).join(' ')} '
+                  : '';
+          return '${p.doc} $metadata ${p.typeDisplayString} get ${p.name!.lexeme} => ${switch (provider.parameters) {
+            [_] => r'_$args;',
+            _ => '_\$args.${p.isPositional ? '\$${++paramOffset}' : p.name!.lexeme};',
+          }}';
+        }).join();
 
     buffer.writeln('''
 ${provider.doc}
@@ -60,13 +63,13 @@ abstract class $notifierBaseName$genericsDefinition extends $baseClass {
 
     _writeBuild(buffer);
 
-    final buildVar = provider.providerElement.valueTypeNode is VoidType
-        ? ''
-        : 'final created = ';
+    final buildVar =
+        provider.providerElement.valueTypeNode is VoidType
+            ? ''
+            : 'final created = ';
 
-    final buildVarUsage = provider.providerElement.valueTypeNode is VoidType
-        ? 'null'
-        : 'created';
+    final buildVarUsage =
+        provider.providerElement.valueTypeNode is VoidType ? 'null' : 'created';
 
     buffer.writeln('''
   @\$mustCallSuper

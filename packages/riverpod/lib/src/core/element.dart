@@ -531,11 +531,12 @@ depending on itself.
   /// to dependencies that are no-longer used.
   void _performRebuild() {
     runOnDispose();
-    final ref = this.ref = $Ref(
-      this,
-      isFirstBuild: false,
-      isReload: _didChangeDependency,
-    );
+    final ref =
+        this.ref = $Ref(
+          this,
+          isFirstBuild: false,
+          isReload: _didChangeDependency,
+        );
     final previousValue = value;
 
     if (kDebugMode) _debugDidSetState = false;
@@ -738,9 +739,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (kDebugMode && !isFirstBuild) _debugAssertNotificationAllowed();
 
     final newState = resultForValue(newStateValue)!;
-    final previousStateResult = previousStateValue != null
-        ? resultForValue(previousStateValue)
-        : null;
+    final previousStateResult =
+        previousStateValue != null ? resultForValue(previousStateValue) : null;
 
     final previousState = previousStateResult?.value;
 

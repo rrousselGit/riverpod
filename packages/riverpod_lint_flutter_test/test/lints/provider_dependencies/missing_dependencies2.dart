@@ -117,11 +117,11 @@ int watchGeneratedScopedAndContainsDependency(
 
 @Riverpod(
   dependencies:
-      // The dependency is redundant because it is not a scoped provider
-      // expect_lint: provider_dependencies
-      [
-        generatedRoot,
-      ],
+  // The dependency is redundant because it is not a scoped provider
+  // expect_lint: provider_dependencies
+  [
+    generatedRoot,
+  ],
 )
 int watchGeneratedRootAndContainsDependency(
   Ref ref,
@@ -133,12 +133,12 @@ int watchGeneratedRootAndContainsDependency(
 
 @Riverpod(
   dependencies:
-      // generatedRoot is extra
-      // expect_lint: provider_dependencies
-      [
-        dep,
-        generatedRoot,
-      ],
+  // generatedRoot is extra
+  // expect_lint: provider_dependencies
+  [
+    dep,
+    generatedRoot,
+  ],
 )
 int specifiedDependencyButNeverUsed(Ref ref) {
   ref.watch(depProvider);

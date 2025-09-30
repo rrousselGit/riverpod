@@ -114,9 +114,10 @@ class _Row {
   _Row.fromMap(Map<String, Object?> map)
     : key = map['key']! as String,
       json = map['json']! as String,
-      expireAt = map['expireAt'] == null
-          ? null
-          : DateTime.fromMillisecondsSinceEpoch(map['expireAt']! as int),
+      expireAt =
+          map['expireAt'] == null
+              ? null
+              : DateTime.fromMillisecondsSinceEpoch(map['expireAt']! as int),
       destroyKey = map['destroyKey'] as String?;
 
   final String key;

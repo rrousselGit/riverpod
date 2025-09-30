@@ -17,9 +17,10 @@ class ConvertToStatefulBaseWidget extends RiverpodAssist {
   ConvertToStatefulBaseWidget({required this.targetWidget});
   final StatefulBaseWidgetType targetWidget;
   late final statelessBaseType = getStatelessBaseType(
-    exclude: targetWidget == StatefulBaseWidgetType.statefulWidget
-        ? StatelessBaseWidgetType.statelessWidget
-        : null,
+    exclude:
+        targetWidget == StatefulBaseWidgetType.statefulWidget
+            ? StatelessBaseWidgetType.statelessWidget
+            : null,
   );
   late final statefulBaseType = getStatefulBaseType(exclude: targetWidget);
 
@@ -290,9 +291,8 @@ class _ReplacementEditBuilder extends RecursiveAstVisitor<void> {
         element.enclosingElement2 == widgetClassElement &&
         !elementsToMove.contains(element)) {
       final offset = node.offset;
-      final qualifier = element.isStatic
-          ? widgetClassElement.displayName
-          : 'widget';
+      final qualifier =
+          element.isStatic ? widgetClassElement.displayName : 'widget';
 
       final parent = node.parent;
       if (parent is InterpolationExpression &&

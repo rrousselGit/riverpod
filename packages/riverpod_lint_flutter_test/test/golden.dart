@@ -123,9 +123,10 @@ File writeToTemporaryFile(String content) {
   final tempDir = Directory.systemTemp.createTempSync();
   addTearDown(() => tempDir.deleteSync(recursive: true));
 
-  final file = File(join(tempDir.path, 'file.dart'))
-    ..createSync(recursive: true)
-    ..writeAsStringSync(content);
+  final file =
+      File(join(tempDir.path, 'file.dart'))
+        ..createSync(recursive: true)
+        ..writeAsStringSync(content);
 
   return file;
 }

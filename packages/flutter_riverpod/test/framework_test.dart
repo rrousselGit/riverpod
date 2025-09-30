@@ -76,10 +76,11 @@ void main() {
       ),
     );
 
-    final containers = tester.allElements
-        .where((e) => e.widget is Consumer)
-        .map(ProviderScope.containerOf)
-        .toList();
+    final containers =
+        tester.allElements
+            .where((e) => e.widget is Consumer)
+            .map(ProviderScope.containerOf)
+            .toList();
 
     expect(containers, hasLength(2));
 
@@ -603,9 +604,7 @@ void main() {
     final key = GlobalKey();
 
     await tester.pumpWidget(
-      ProviderScope(
-        child: ProviderScope(key: key, child: Container()),
-      ),
+      ProviderScope(child: ProviderScope(key: key, child: Container())),
     );
 
     expect(find.byType(Container), findsOneWidget);

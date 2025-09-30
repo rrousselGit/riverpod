@@ -68,9 +68,10 @@ Map<String, dynamic> _$LikedPackageToJson(_LikedPackage instance) =>
 _LikesPackagesResponse _$LikesPackagesResponseFromJson(
   Map<String, dynamic> json,
 ) => _LikesPackagesResponse(
-  likedPackages: (json['likedPackages'] as List<dynamic>)
-      .map((e) => LikedPackage.fromJson(e as Map<String, dynamic>))
-      .toList(),
+  likedPackages:
+      (json['likedPackages'] as List<dynamic>)
+          .map((e) => LikedPackage.fromJson(e as Map<String, dynamic>))
+          .toList(),
 );
 
 Map<String, dynamic> _$LikesPackagesResponseToJson(
@@ -79,9 +80,10 @@ Map<String, dynamic> _$LikesPackagesResponseToJson(
 
 _PubPackagesResponse _$PubPackagesResponseFromJson(Map<String, dynamic> json) =>
     _PubPackagesResponse(
-      packages: (json['packages'] as List<dynamic>)
-          .map((e) => Package.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      packages:
+          (json['packages'] as List<dynamic>)
+              .map((e) => Package.fromJson(e as Map<String, dynamic>))
+              .toList(),
     );
 
 Map<String, dynamic> _$PubPackagesResponseToJson(
@@ -96,9 +98,10 @@ Map<String, dynamic> _$SearchPackageToJson(_SearchPackage instance) =>
 
 _PubSearchResponse _$PubSearchResponseFromJson(Map<String, dynamic> json) =>
     _PubSearchResponse(
-      packages: (json['packages'] as List<dynamic>)
-          .map((e) => SearchPackage.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      packages:
+          (json['packages'] as List<dynamic>)
+              .map((e) => SearchPackage.fromJson(e as Map<String, dynamic>))
+              .toList(),
     );
 
 Map<String, dynamic> _$PubSearchResponseToJson(_PubSearchResponse instance) =>

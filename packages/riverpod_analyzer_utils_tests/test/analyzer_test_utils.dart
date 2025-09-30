@@ -252,10 +252,11 @@ extension ResolverX on Resolver {
     );
     libraryAst as ResolvedLibraryResult;
 
-    final compilerErrors = libraryAst.units
-        .expand((e) => e.errors)
-        .where((e) => e.severity == Severity.error)
-        .toList();
+    final compilerErrors =
+        libraryAst.units
+            .expand((e) => e.errors)
+            .where((e) => e.severity == Severity.error)
+            .toList();
     if (compilerErrors.isNotEmpty) {
       throw StateError('''
 The parsed library has compiler errors:
@@ -309,10 +310,11 @@ ${compilerErrors.map((e) => '- $e\n').join()}
       );
       errorResult as ErrorsResult;
 
-      final errors = errorResult.errors
-          // Infos are only recommendations. There's no reason to fail just for this
-          .where((e) => e.severity != Severity.info)
-          .toList();
+      final errors =
+          errorResult.errors
+              // Infos are only recommendations. There's no reason to fail just for this
+              .where((e) => e.severity != Severity.info)
+              .toList();
 
       if (errors.isNotEmpty) {
         throw StateError('''

@@ -85,12 +85,14 @@ sealed class GeneratorProviderDeclarationElement
   String providerName(BuildYamlOptions options) {
     if (annotation.name case final name?) return name;
 
-    final prefix = (isFamily
-        ? options.providerFamilyNamePrefix
-        : options.providerNamePrefix);
-    final suffix = (isFamily
-        ? options.providerFamilyNameSuffix
-        : options.providerNameSuffix);
+    final prefix =
+        (isFamily
+            ? options.providerFamilyNamePrefix
+            : options.providerNamePrefix);
+    final suffix =
+        (isFamily
+            ? options.providerFamilyNameSuffix
+            : options.providerNameSuffix);
 
     var baseName = name;
 
