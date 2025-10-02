@@ -1317,5 +1317,23 @@ typedef SetupOverride =
 /// benefits of avoiding circular dependencies.
 @internal
 class CircularDependencyError extends Error {
-  CircularDependencyError._();
+  CircularDependencyError._(this.loop)
+    : assert(
+        loop.isNotEmpty,
+        'Circular dependency must have at least one provider',
+      ),
+      assert(loop.first == loop.last, 'Circular dependency must be a loop');
+
+  final List<ProviderBase<Object?>> loop;
+
+  @override
+  String toString() {
+    return '''
+CircularDependencyError: Circular dependency detected.
+This happens when a provider somehow depends on itself.
+
+The circular dependency chain is as follows:
+${loop.map((e) => '  $e\n').join()}
+''';
+  }
 }

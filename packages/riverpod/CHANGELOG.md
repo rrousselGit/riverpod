@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Improve the error message when a circular dependency error is thrown
+
 ## 3.0.1 - 2025-09-30
 
 - Now supports Dart 3.7.0
