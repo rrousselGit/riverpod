@@ -14,7 +14,7 @@ dependencies:
   flutter_hooks: ^0.21.2
   hooks_riverpod:
   riverpod:
-  uuid: ^4.5.1
+  uuid: ^4.0.0
 
 dev_dependencies:
   build_runner: ^2.0.0

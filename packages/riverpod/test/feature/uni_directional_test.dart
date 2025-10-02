@@ -52,7 +52,7 @@ void main() {
     test('direct dependency', () {
       final provider = Provider((ref) => ref);
       final provider2 = Provider((ref) => ref);
-      final container = ProviderContainer();
+      final container = ProviderContainer.test();
 
       final ref = container.read(provider);
       final ref2 = container.read(provider2);
@@ -63,12 +63,13 @@ void main() {
         throwsA(isA<CircularDependencyError>()),
       );
     });
+
     test('indirect dependency', () {
-      final provider = Provider((ref) => ref);
-      final provider2 = Provider((ref) => ref);
-      final provider3 = Provider((ref) => ref);
-      final provider4 = Provider((ref) => ref);
-      final container = ProviderContainer();
+      final provider = Provider(name: 'provider', (ref) => ref);
+      final provider2 = Provider(name: 'provider2', (ref) => ref);
+      final provider3 = Provider(name: 'provider3', (ref) => ref);
+      final provider4 = Provider(name: 'provider4', (ref) => ref);
+      final container = ProviderContainer.test();
 
       final ref = container.read(provider);
       final ref2 = container.read(provider2);
@@ -81,7 +82,15 @@ void main() {
 
       expect(
         () => ref4.watch(provider),
-        throwsA(isA<CircularDependencyError>()),
+        throwsA(
+          isA<CircularDependencyError>().having((e) => e.loop, 'loop', [
+            provider,
+            provider4,
+            provider3,
+            provider2,
+            provider,
+          ]),
+        ),
       );
     });
   });
