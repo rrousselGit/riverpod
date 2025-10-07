@@ -1,3 +1,8 @@
+## 3.0.2 - 2025-10-07
+
+- `flutter_riverpod` upgraded to `3.0.2`
+- `riverpod` upgraded to `3.0.2`
+
 ## 3.0.1 - 2025-09-30
 
 - `ChangeNotifierProviderFamily` is now correctly accessible in `package:flutter_riverpod/legacy.dart` instead of `/misc.dart`

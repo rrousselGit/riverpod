@@ -1,4 +1,4 @@
-## Unreleased patch
+## 3.0.2 - 2025-10-07
 
 - Improve the error message when a circular dependency error is thrown
 
