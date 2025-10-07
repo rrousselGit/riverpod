@@ -1,12 +1,27 @@
 part of '../framework.dart';
 
+@internal
+class Task {
+  Task(this._scheduler);
+
+  final ProviderScheduler _scheduler;
+  var _completed = false;
+  bool get completed => _completed;
+
+  void call() {
+    if (_completed) return;
+    _completed = true;
+    _scheduler._task();
+  }
+}
+
 /// A listener used to determine when providers should rebuild.
 /// This is used to synchronize provider rebuilds when widget rebuilds.
 @internal
-typedef Vsync = void Function(void Function());
+typedef Vsync = void Function(Task task);
 
-void Function()? _defaultVsync(void Function() task) {
-  final timer = Timer(Duration.zero, task);
+void Function()? _defaultVsync(Task task) {
+  final timer = Timer(Duration.zero, task.call);
 
   return timer.cancel;
 }
@@ -28,21 +43,14 @@ class ProviderScheduler {
   /// A function that controls the refresh rate of providers.
   ///
   /// Defaults to refreshing providers at the end of the next event-loop.
-  void Function()? Function(void Function()) get vsync {
+  void Function()? Function(Task) get vsync {
     if (flutterVsyncs.isNotEmpty) {
       // Notify all InheritedWidgets of a possible rebuild.
       // At the same time, we only execute the task once, in whichever
       // InheritedWidget that rebuilds first.
       return (task) {
-        var invoked = false;
-        void invoke() {
-          if (invoked) return;
-          invoked = true;
-          task();
-        }
-
         for (final flutterVsync in flutterVsyncs) {
-          flutterVsync(invoke);
+          flutterVsync(task);
         }
 
         return;
@@ -84,8 +92,9 @@ class ProviderScheduler {
     // In this case, we don't want to schedule a task as the container is already
     // disposed.
     if (_pendingTaskCompleter != null || _disposed) return;
+
     _pendingTaskCompleter = Completer<void>();
-    _cancel = vsync(_task);
+    _cancel = vsync(Task(this));
   }
 
   void _task() {
