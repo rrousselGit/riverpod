@@ -130,7 +130,7 @@ void main() {
     });
 
     group('_debugAssertNotificationAllowed', () {
-      test('allows ref.listen to call state= for depencies', () {
+      test('allows ref.listen to call state= for dependencies', () {
         // Regression test for false positive with the assert when
         // a dependency is using ref.listen((transitiveDeps) => state = ...);
         final container = ProviderContainer.test();
