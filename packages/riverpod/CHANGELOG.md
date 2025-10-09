@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Fixed a false positive incorrectly causing `Providers are not allowed to modify other providers during their initialization.`
+
 ## 3.0.2 - 2025-10-07
 
 - Improve the error message when a circular dependency error is thrown
