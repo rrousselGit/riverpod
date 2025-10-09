@@ -615,6 +615,25 @@ use a custom implementation:
 
 ## Provider life-cycle changes
 
+### Refs and Notifiers can no-longer be interacted with after they have been disposed
+
+In 2.0, in some edge-cases you could still interact with things like [Ref] or [Notifier]
+after they were disposed. This was not intended and caused various severe bugs.
+
+In 3.0, Riverpod will throw an error if you try to interact with a disposed Ref/Notifier.
+
+You can use [Ref.mounted] to check if a Ref/Notifier is still usable.
+
+```dart
+final provider = FutureProvider<int>((ref) async {
+  await Future.delayed(Duration(seconds: 1));
+  // Abort the provider if it has been disposed during the await.
+  // You can throw whatever you want and ignore this exception in your error reporting tools.
+  if (!ref.mounted) throw MyException();
+  return 42;
+});
+```
+
 ### When reading a provider results in an exception, the error is now wrapped in a ProviderException
 
 Before, if a provider threw an error, Riverpod would sometimes rethrow that error directly:
@@ -1392,3 +1411,4 @@ regarding combining multiple "sources of truth" in a single provider.
 [ProviderListenable]: https://pub.dev/documentation/riverpod/latest/misc/ProviderListenable-class.html
 [StreamProvider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamProvider-class.html
 [StreamNotifier]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamNotifier-class.html
+[Ref.mounted]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref/mounted.html
