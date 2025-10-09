@@ -129,6 +129,35 @@ void main() {
       });
     });
 
+    group('_debugAssertNotificationAllowed', () {
+      test('allows ref.listen to call state= for depencies', () {
+        // Regression test for false positive with the assert when
+        // a dependency is using ref.listen((transitiveDeps) => state = ...);
+        final container = ProviderContainer.test();
+        final transitiveProvider = Provider(
+          name: 'transitiveProvider',
+          (ref) => Object(),
+        );
+        final dep = NotifierProvider<DeferredNotifier<Object>, Object>(
+          name: 'dep',
+          () => DeferredNotifier((ref, self) {
+            ref.listen(transitiveProvider, (prev, next) => self.state = next);
+            return 0;
+          }),
+        );
+        final provider = Provider(name: 'provider', (ref) {
+          ref.watch(dep);
+          return 0;
+        });
+
+        container.read(dep);
+        container.invalidate(transitiveProvider);
+
+        // Should not emit an assertion error
+        container.read(provider);
+      });
+    });
+
     test("adding and removing a dep shouldn't stop its listeners", () async {
       // Regression test for https://github.com/rrousselGit/riverpod/issues/4117
       final numberProvider = StreamProvider.autoDispose<int>(name: 'number', (

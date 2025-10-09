@@ -81,15 +81,20 @@ abstract class _ValueProviderElement<StateT, ValueT>
     final previousState = stateResult()! as $ResultData<StateT>;
 
     if (newValue != previousState.value) {
+      final debugPreviouslyBuildingElement =
+          ProviderElement._debugCurrentlyBuildingElement;
       // Asserts would otherwise prevent a provider rebuild from updating
       // other providers
-      if (kDebugMode) _debugSkipNotifyListenersAsserts = true;
+      if (kDebugMode) ProviderElement._debugCurrentlyBuildingElement = null;
 
       _setValue(newValue);
 
       // Asserts would otherwise prevent a provider rebuild from updating
       // other providers
-      if (kDebugMode) _debugSkipNotifyListenersAsserts = false;
+      if (kDebugMode) {
+        ProviderElement._debugCurrentlyBuildingElement =
+            debugPreviouslyBuildingElement;
+      }
 
       onChange?.call(newValue);
     }
