@@ -1,3 +1,8 @@
+## 3.0.3 - 2025-10-09
+
+- `flutter_riverpod` upgraded to `3.0.3`
+- `riverpod` upgraded to `3.0.3`
+
 ## 3.0.2 - 2025-10-07
 
 - `flutter_riverpod` upgraded to `3.0.2`
