@@ -359,6 +359,7 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   ///
   /// Available only in debug mode.
   String? _debugCurrentCreateHash;
+  var _debugSkipNotifyListenersAsserts = false;
 
   /// The provider associated with this [ProviderElement], before applying overrides.
   $ProviderBaseImpl<StateT> get origin =>
@@ -573,11 +574,17 @@ depending on itself.
       if (!identical(value, previousValue)) {
         // Asserts would otherwise prevent a provider rebuild from updating
         // other providers
-        if (kDebugMode) _debugCurrentlyBuildingElement = null;
+        if (kDebugMode) {
+          _debugSkipNotifyListenersAsserts = true;
+          _debugCurrentlyBuildingElement = null;
+        }
 
         _notifyListeners(value, previousValue);
 
-        if (kDebugMode) _debugCurrentlyBuildingElement = null;
+        if (kDebugMode) {
+          _debugSkipNotifyListenersAsserts = false;
+          _debugCurrentlyBuildingElement = null;
+        }
       }
     } finally {
       if (kDebugMode) {
@@ -704,6 +711,8 @@ depending on itself.
   }
 
   void _debugAssertNotificationAllowed() {
+    if (_debugSkipNotifyListenersAsserts) return;
+
     assert(
       _debugCurrentlyBuildingElement == null ||
           _debugCurrentlyBuildingElement == this,
