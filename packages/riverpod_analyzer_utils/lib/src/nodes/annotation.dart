@@ -53,7 +53,7 @@ extension RiverpodAnnotatedAnnotatedNodeX on Annotation {
       if (retryNode != null && parsedRetryNode == null) {
         errorReporter(
           RiverpodAnalysisError.ast(
-            'The "retry" argument must be a variable.',
+            'The "retry" argument must be a variable. Got: ${retryNode.runtimeType}',
             targetNode: retryNode,
             code: RiverpodAnalysisErrorCode.invalidRetryArgument,
           ),
@@ -100,6 +100,8 @@ sealed class ConstantSymbol {
         return PrefixedIdentifierConstantSymbol(node);
       case SimpleIdentifier():
         return SimpleIdentifierConstantSymbol(node);
+      case PropertyAccess():
+        return PropertyAccessConstantSymbol(node);
       default:
         return null;
     }
@@ -108,6 +110,15 @@ sealed class ConstantSymbol {
   AstNode get node;
 }
 
+/// prefix.Class.staticVariable
+final class PropertyAccessConstantSymbol extends ConstantSymbol {
+  PropertyAccessConstantSymbol(this.node);
+
+  @override
+  final PropertyAccess node;
+}
+
+/// Class.staticVariable
 final class PrefixedIdentifierConstantSymbol extends ConstantSymbol {
   PrefixedIdentifierConstantSymbol(this.node);
 
@@ -115,6 +126,7 @@ final class PrefixedIdentifierConstantSymbol extends ConstantSymbol {
   final PrefixedIdentifier node;
 }
 
+/// staticVariable
 final class SimpleIdentifierConstantSymbol extends ConstantSymbol {
   SimpleIdentifierConstantSymbol(this.node);
 
