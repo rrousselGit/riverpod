@@ -1,3 +1,6 @@
+@Timeout.factor(2)
+library;
+
 import 'package:test/test.dart';
 
 import 'analyzer_test_utils.dart';
