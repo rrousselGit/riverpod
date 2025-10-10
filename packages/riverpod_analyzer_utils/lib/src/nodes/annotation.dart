@@ -47,11 +47,13 @@ extension RiverpodAnnotatedAnnotatedNodeX on Annotation {
         (e) => e.expression.providerDependencyList,
       );
 
-      final AstNode? retryNode = arguments?.named('retry')?.expression;
-      if (retryNode is! SimpleIdentifier?) {
+      final retryNode = arguments?.named('retry')?.expression;
+      final parsedRetryNode = retryNode.let(ConstantSymbol.tryParse);
+
+      if (retryNode != null && parsedRetryNode == null) {
         errorReporter(
           RiverpodAnalysisError.ast(
-            'The "retry" argument must be a variable.',
+            'The "retry" argument must be a variable. Got: ${retryNode.runtimeType}',
             targetNode: retryNode,
             code: RiverpodAnalysisErrorCode.invalidRetryArgument,
           ),
@@ -64,7 +66,7 @@ extension RiverpodAnnotatedAnnotatedNodeX on Annotation {
         keepAliveNode: arguments?.named('keepAlive'),
         dependenciesNode: dependenciesNode,
         dependencyList: dependencyList,
-        retryNode: retryNode as SimpleIdentifier?,
+        retryNode: parsedRetryNode,
       );
     });
   }
@@ -85,7 +87,51 @@ final class RiverpodAnnotation {
   final NamedExpression? keepAliveNode;
   final NamedExpression? dependenciesNode;
   final ProviderDependencyList? dependencyList;
-  final SimpleIdentifier? retryNode;
+  final ConstantSymbol? retryNode;
+}
+
+sealed class ConstantSymbol {
+  const ConstantSymbol();
+
+  static ConstantSymbol? tryParse(AstNode node) {
+    // Use a switch with type patterns instead of if-else chains
+    switch (node) {
+      case PrefixedIdentifier():
+        return PrefixedIdentifierConstantSymbol(node);
+      case SimpleIdentifier():
+        return SimpleIdentifierConstantSymbol(node);
+      case PropertyAccess():
+        return PropertyAccessConstantSymbol(node);
+      default:
+        return null;
+    }
+  }
+
+  AstNode get node;
+}
+
+/// prefix.Class.staticVariable
+final class PropertyAccessConstantSymbol extends ConstantSymbol {
+  PropertyAccessConstantSymbol(this.node);
+
+  @override
+  final PropertyAccess node;
+}
+
+/// Class.staticVariable
+final class PrefixedIdentifierConstantSymbol extends ConstantSymbol {
+  PrefixedIdentifierConstantSymbol(this.node);
+
+  @override
+  final PrefixedIdentifier node;
+}
+
+/// staticVariable
+final class SimpleIdentifierConstantSymbol extends ConstantSymbol {
+  SimpleIdentifierConstantSymbol(this.node);
+
+  @override
+  final SimpleIdentifier node;
 }
 
 final class RiverpodAnnotationElement {

@@ -108,7 +108,7 @@ final class $name$_genericsDefinition
     buffer.writeln('''
   ${provider.doc} const ${provider.providerTypeName}._($params): super(
         $superParameters
-        retry: ${provider.annotation.retryNode?.name ?? 'null'},
+        retry: ${provider.annotation.retryNode?.node.toSource() ?? 'null'},
         name: r'${provider.providerName(options)}',
         isAutoDispose: ${!provider.annotation.element.keepAlive},
         dependencies: ${!provider.providerElement.isFamily ? provider.dependencies(options) : 'null'},
