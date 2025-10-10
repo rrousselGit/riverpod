@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Fix a bug when using `Class.staticVariable` as parameter to `@Riverpod(retry: ...)`
+
 ## 3.0.3 - 2025-10-09
 
 - `riverpod` upgraded to `3.0.3`
