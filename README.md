@@ -25,10 +25,10 @@
 A reactive caching and data-binding framework. https://riverpod.dev
 Riverpod makes working with asynchronous code a breeze by:
 
-- handling errors/loading states by default. No need to manually catch errors
-- natively supporting advanced scenarios, such as pull-to-refresh
-- separating the logic from your UI
-- ensuring your code is testable, scalable and reusable
+- Handling errors/loading states by default. No need to manually catch errors
+- Natively supporting advanced scenarios, such as pull-to-refresh
+- Separating the logic from your UI
+- Ensuring your code is testable, scalable and reusable
 
 | riverpod         | [![pub package](https://img.shields.io/pub/v/riverpod.svg?label=riverpod&color=blue)](https://pub.dartlang.org/packages/riverpod)                 |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
