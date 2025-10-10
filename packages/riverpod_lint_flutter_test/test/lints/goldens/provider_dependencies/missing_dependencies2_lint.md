@@ -79,14 +79,14 @@ int watchGeneratedScopedButMissingDependencies(
 code: provider_dependencies
 severity: Severity.warning
 message: Unused dependencies: generatedRoot
-test/lints/provider_dependencies/missing_dependencies2.dart:122:7
+test/lints/provider_dependencies/missing_dependencies2.dart:122:3
 
 ```dart
-      // The dependency is redundant because it is not a scoped provider
-      // expect_lint: provider_dependencies
-      >>>[
-        generatedRoot,
-      ]<<<,
+  // The dependency is redundant because it is not a scoped provider
+  // expect_lint: provider_dependencies
+  >>>[
+    generatedRoot,
+  ]<<<,
 )
 int watchGeneratedRootAndContainsDependency(
 ```
@@ -96,15 +96,15 @@ int watchGeneratedRootAndContainsDependency(
 code: provider_dependencies
 severity: Severity.warning
 message: Unused dependencies: generatedRoot
-test/lints/provider_dependencies/missing_dependencies2.dart:138:7
+test/lints/provider_dependencies/missing_dependencies2.dart:138:3
 
 ```dart
-      // generatedRoot is extra
-      // expect_lint: provider_dependencies
-      >>>[
-        dep,
-        generatedRoot,
-      ]<<<,
+  // generatedRoot is extra
+  // expect_lint: provider_dependencies
+  >>>[
+    dep,
+    generatedRoot,
+  ]<<<,
 )
 int specifiedDependencyButNeverUsed(Ref ref) {
 ```
