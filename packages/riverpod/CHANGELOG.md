@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Added `Ref.isPaused` to check if there are any active/non-paused listeners.
+
 ## 3.0.3 - 2025-10-09
 
 - Fixed a false positive incorrectly causing `Providers are not allowed to modify other providers during their initialization.`
