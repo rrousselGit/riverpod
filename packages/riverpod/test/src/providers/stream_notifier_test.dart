@@ -477,7 +477,10 @@ void main() {
           const AsyncLoading<int>(),
         );
 
-        await expectLater(container.read(provider.future), throwsA(0));
+        await expectLater(
+          container.read(provider.future),
+          throwsProviderException(0),
+        );
 
         verifyOnly(
           listener,
@@ -510,7 +513,10 @@ void main() {
           throwsProviderException(0),
         );
 
-        await expectLater(container.read(provider.future), throwsA(0));
+        await expectLater(
+          container.read(provider.future),
+          throwsProviderException(0),
+        );
       },
     );
 
@@ -533,7 +539,10 @@ void main() {
           container.read(provider.notifier).state,
           const AsyncError<int>(42, StackTrace.empty),
         );
-        await expectLater(container.read(provider.future), throwsA(42));
+        await expectLater(
+          container.read(provider.future),
+          throwsProviderException(42),
+        );
       },
     );
 
@@ -552,7 +561,7 @@ void main() {
 
         expect(
           container.read(provider.future),
-          completion(21),
+          throwsProviderException(21),
           reason:
               'The provider rebuilt while the future was still pending, '
               'so .future should resolve with the next value',
@@ -565,7 +574,7 @@ void main() {
 
         verifyZeroInteractions(listener);
 
-        expect(container.read(provider.future), completion(21));
+        expect(container.read(provider.future), throwsProviderException(21));
         expect(container.read(provider), const AsyncLoading<int>());
 
         completers[1]!.complete(21);
@@ -590,7 +599,7 @@ void main() {
 
         expect(
           container.read(provider.future),
-          throwsA(21),
+          throwsProviderException(21),
           reason:
               'The provider rebuilt while the future was still pending, '
               'so .future should resolve with the next value',
@@ -603,12 +612,18 @@ void main() {
 
         verifyZeroInteractions(listener);
 
-        expect(container.read(provider.future), throwsA(21));
+        expect(
+          container.read(provider.future),
+          throwsProviderException(21, StackTrace.empty),
+        );
         expect(container.read(provider), const AsyncLoading<int>());
 
         completers[1]!.completeError(21, StackTrace.empty);
 
-        await expectLater(container.read(provider.future), throwsA(21));
+        await expectLater(
+          container.read(provider.future),
+          throwsProviderException(21, StackTrace.empty),
+        );
         expect(
           container.read(provider),
           const AsyncError<int>(21, StackTrace.empty),
@@ -927,8 +942,8 @@ void main() {
           completion(21),
         );
         expect(callCount, 0);
-        expect(actualErr, 42);
-        expect(actualStack, StackTrace.empty);
+        expect(actualErr, isProviderException(42));
+        expect(actualStack, isA<StackTrace>());
         expect(container.read(provider), const AsyncData(21));
       });
 
@@ -976,7 +991,7 @@ void main() {
               callCount++;
               return prev + 1;
             }),
-            throwsA(42),
+            throwsProviderException(42),
           );
 
           expect(callCount, 0);
