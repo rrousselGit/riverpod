@@ -434,6 +434,15 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
 
   bool _debugDidSetState = false;
   bool _didBuild = false;
+
+  /// Subscriptions for an element are only added after the first frame of the
+  /// `build()` is run.
+  /// In order to tell if an element was just created or has active
+  /// subscriptions this flag is needed.
+  ///
+  /// After the first async gap of an async `build()` we can check if there
+  /// are any active subscriptions.
+  bool _insideBuildFrame = false;
   var _didMount = false;
 
   /* STATE */
@@ -671,6 +680,7 @@ depending on itself.
     }
 
     _didBuild = false;
+    _insideBuildFrame = true;
     initState(ref);
     try {
       final whenComplete = create(ref) ?? (cb) => cb();
@@ -681,6 +691,7 @@ depending on itself.
 
       value = triggerRetry(err, stack);
     } finally {
+      _insideBuildFrame = false;
       _didBuild = true;
     }
   }

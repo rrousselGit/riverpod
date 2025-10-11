@@ -109,6 +109,22 @@ sealed class Ref implements MutationTarget {
   /// complete, and stop its logic after it is done.
   bool get mounted => !_element._disposed;
 
+  /// Whether this [Ref] is currently **paused** (no active, non-paused listeners).
+  ///
+  /// A provider is paused when all of its listeners are removed or temporarily
+  /// inactive. The state remains in memory but stops notifying listeners until
+  /// it resumes (triggering [onResume]).
+  ///
+  /// This can happen, for example, when the provider’s listeners are inside a
+  /// widget that is not visible due to **TickerMode** being disabled. Paused
+  /// providers may later resume without being disposed, unless marked
+  /// `autoDispose` without a [keepAlive] link.
+  ///
+  /// Note that during an asynchronous gap in `build`, a provider might become
+  /// paused before the awaited code resumes. In such cases, [onCancel] may have
+  /// already been called earlier in the build, so it will not trigger again.
+  bool get isPaused => !_element.isActive && !_element._insideBuildFrame;
+
   /// The [ProviderContainer] that this provider is associated with.
   @override
   ProviderContainer get container => _element.container;
