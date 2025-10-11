@@ -7,6 +7,7 @@ import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
 import 'package:test/test.dart';
 
+import '../../../src/utils.dart' show throwsProviderException;
 import '../../utils.dart';
 
 void main() {
@@ -54,7 +55,7 @@ void main() {
     );
     await expectLater(
       container.read(provider.future),
-      throwsUnimplementedError,
+      throwsProviderException(isUnimplementedError),
     );
   });
 

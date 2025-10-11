@@ -9,6 +9,7 @@ import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
 import 'package:test/test.dart';
 
+import '../../../src/utils.dart' show throwsProviderException;
 import '../../utils.dart';
 
 void main() {
@@ -365,8 +366,8 @@ void main() {
       container.listen(provider, (p, n) {});
       expect(container.read(provider.future), future);
 
-      await expectLater(future, throwsA(error));
-      expect(await future.stackTrace, StackTrace.empty);
+      await expectLater(future, throwsProviderException(error, StackTrace.empty));
+      expect(await future.stackTrace, isNot(StackTrace.empty));
 
       final error2 = Error();
 
@@ -382,8 +383,8 @@ void main() {
 
       expect(container.read(provider.future), future);
 
-      await expectLater(future, throwsA(error2));
-      expect(await future.stackTrace, StackTrace.empty);
+      await expectLater(future, throwsProviderException(error2, StackTrace.empty));
+      expect(await future.stackTrace, isNot(StackTrace.empty));
     });
 
     test('supports loading then error then another error', () async {
@@ -402,8 +403,11 @@ void main() {
 
       expect(container.read(provider.future), future);
 
-      await expectLater(future, throwsA(error));
-      expect(await future.stackTrace, StackTrace.empty);
+      await expectLater(
+        future,
+        throwsProviderException(error, StackTrace.empty),
+      );
+      expect(await future.stackTrace, isNot(StackTrace.empty));
 
       final error2 = Error();
 
@@ -414,8 +418,11 @@ void main() {
 
       future = container.read(provider.future);
 
-      await expectLater(future, throwsA(error2));
-      expect(await future.stackTrace, StackTrace.empty);
+      await expectLater(
+        future,
+        throwsProviderException(error2, StackTrace.empty),
+      );
+      expect(await future.stackTrace, isNot(StackTrace.empty));
     });
 
     test('supports loading then data then loading', () async {
@@ -751,7 +758,7 @@ void main() {
         container.listen(provider, (p, n) {});
         final future = container.read(provider.future);
 
-        await expectLater(future, throwsA(42));
+        await expectLater(future, throwsProviderException(42));
 
         await controller.close();
       });
@@ -805,7 +812,7 @@ void main() {
           ),
         ]);
 
-        await expectLater(future, throwsA(42));
+        await expectLater(future, throwsProviderException(42));
       });
 
       test('read currentValue before after error', () async {
@@ -823,7 +830,7 @@ void main() {
         container.listen(provider, (p, n) {});
         final future = container.read(provider.future);
 
-        await expectLater(future, throwsA(42));
+        await expectLater(future, throwsProviderException(42));
       });
 
       test('synchronous first event', () async {
