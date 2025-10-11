@@ -116,15 +116,18 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
       }
     }
 
+    final exception = ProviderException(value.error, value.stackTrace);
+    final stackTrace = StackTrace.current;
+
     final completer = _futureCompleter;
     if (completer != null) {
       completer
         ..future.ignore()
-        ..completeError(value.error, value.stackTrace);
+        ..completeError(exception, stackTrace);
       _futureCompleter = null;
     } else {
       futureNotifier.result = $Result.data(
-        Future.error(value.error, value.stackTrace)..ignore(),
+        Future.error(exception, stackTrace)..ignore(),
       );
     }
   }
