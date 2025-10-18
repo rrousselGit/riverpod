@@ -1,3 +1,7 @@
+## Unreleased minor
+
+- Exposed `ProviderOverride`, `FamilyOverride`, and extension methods (`ProviderOverrideX`, `FamilyOverrideX`, `ListOverrideX`) for testing purposes. These allow inspecting which providers/families are being overridden via the `origin` and `from` properties, and provide a `containsOverride` method to help prevent duplicate overrides when merging override lists. (thanks to @Peetee06)
+
 ## 3.0.3 - 2025-10-09
 
 - Fixed a false positive incorrectly causing `Providers are not allowed to modify other providers during their initialization.`

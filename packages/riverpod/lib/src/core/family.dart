@@ -45,7 +45,7 @@ typedef FamilyCreate<CreatedT, ArgT> = CreatedT Function(Ref ref, ArgT arg);
 
 /// A base class for all families
 @publicInMisc
-final class Family extends ProviderOrFamily implements _FamilyOverride {
+final class Family extends ProviderOrFamily implements FamilyOverride {
   /// A base class for all families
   const Family({
     required super.name,

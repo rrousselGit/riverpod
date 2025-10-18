@@ -26,7 +26,7 @@ sealed class ProviderBase<StateT> extends ProviderOrFamily
     implements
         ProviderListenable<StateT>,
         Refreshable<StateT>,
-        _ProviderOverride {
+        ProviderOverride {
   /// A base class for _all_ providers.
   const ProviderBase({
     required super.name,
