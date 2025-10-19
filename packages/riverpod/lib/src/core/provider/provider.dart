@@ -47,6 +47,9 @@ sealed class ProviderBase<StateT> extends ProviderOrFamily
   @override
   final Family? from;
 
+  @override
+  ProviderBase<StateT> get origin => this;
+
   /// If this provider was created with the `.family` modifier, [argument] is
   /// the variable that was used.
   ///
