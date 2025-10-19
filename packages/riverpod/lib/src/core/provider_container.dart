@@ -43,8 +43,8 @@ class $ProviderPointer implements _PointerBase {
   /// If non-null, this pointer should **never** be removed.
   ///
   /// This override may be implicitly created by [ProviderOrFamily.$allTransitiveDependencies].
-  // ignore: library_private_types_in_public_api
-  ProviderOverride? providerOverride;
+  // ignore: library_private_types_in_public_api, not public API
+  _ProviderOverride? providerOverride;
   ProviderElement? element;
   @override
   final ProviderContainer targetContainer;
@@ -118,7 +118,7 @@ class ProviderDirectory implements _PointerBase {
   ProviderDirectory.from(
     ProviderDirectory pointer, {
     ProviderContainer? targetContainer,
-    FamilyOverride? familyOverride,
+    _FamilyOverride? familyOverride,
   }) : assert(
          (familyOverride == null) == (targetContainer == null),
          'Either both or neither of familyOverride and targetContainer should be null',
@@ -137,15 +137,15 @@ class ProviderDirectory implements _PointerBase {
   /// If non-null, this pointer should **never** be removed.
   ///
   /// This override may be implicitly created by [ProviderOrFamily.$allTransitiveDependencies].
-  // ignore: library_private_types_in_public_api
-  FamilyOverride? familyOverride;
+  // ignore: library_private_types_in_public_api, not public API
+  _FamilyOverride? familyOverride;
   final HashMap<$ProviderBaseImpl<Object?>, $ProviderPointer> pointers;
   @override
   ProviderContainer targetContainer;
 
   void addProviderOverride(
-    // ignore: library_private_types_in_public_api
-    ProviderOverride override, {
+    // ignore: library_private_types_in_public_api, not public API
+    _ProviderOverride override, {
     required ProviderContainer targetContainer,
   }) {
     final origin = override.origin;
@@ -205,7 +205,7 @@ class ProviderDirectory implements _PointerBase {
           element = override.createElement(pointer);
 
         // Either the provider wasn't overridden or it was scoped.
-        case (null, FamilyOverride() || null):
+        case (null, _FamilyOverride() || null):
           element = origin.$createElement(pointer);
       }
 
@@ -311,7 +311,7 @@ class ProviderPointerManager {
   final ProviderDirectory orphanPointers;
   final HashMap<Family, ProviderDirectory> familyPointers;
 
-  void _initializeProviderOverride(ProviderOverride override) {
+  void _initializeProviderOverride(_ProviderOverride override) {
     final from = override.origin.from;
 
     if (from == null) {
@@ -331,9 +331,9 @@ class ProviderPointerManager {
   void _initializeOverrides(List<Override> overrides) {
     for (final override in overrides) {
       switch (override) {
-        case ProviderOverride():
+        case _ProviderOverride():
           _initializeProviderOverride(override);
-        case FamilyOverride():
+        case _FamilyOverride():
           final overriddenFamily = override.from;
 
           final previousPointer = familyPointers[overriddenFamily];
@@ -760,13 +760,13 @@ final class ProviderContainer implements Node, MutationTarget {
       final overrideOrigins = <Object?>{};
       for (final override in overrides) {
         switch (override) {
-          case ProviderOverride():
+          case _ProviderOverride():
             if (!overrideOrigins.add(override.origin)) {
               throw AssertionError(
                 'Tried to override a provider twice within the same container: ${override.origin}',
               );
             }
-          case FamilyOverride():
+          case _FamilyOverride():
             if (!overrideOrigins.add(override.from)) {
               throw AssertionError(
                 'Tried to override a family twice within the same container: ${override.from}',
@@ -1059,7 +1059,7 @@ final class ProviderContainer implements Node, MutationTarget {
       }
 
       switch (override) {
-        case ProviderOverride():
+        case _ProviderOverride():
           final pointer = _pointerManager.readPointer(override.origin);
 
           if (kDebugMode) {
@@ -1076,7 +1076,7 @@ final class ProviderContainer implements Node, MutationTarget {
 
           runUnaryGuarded(element.update, override.providerOverride);
 
-        case FamilyOverride():
+        case _FamilyOverride():
           final pointer = _pointerManager.familyPointers[override.from];
 
           if (kDebugMode) {

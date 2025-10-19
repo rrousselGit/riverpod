@@ -1,6 +1,5 @@
 ---
 title: Provider overrides
-version: 2
 ---
 import { Link } from "/src/components/Link";
 import {
@@ -8,10 +7,6 @@ import {
 } from "/src/components/CodeSnippet";
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import providerOverrideExample from "!!raw-loader!./overrides/provider_override.dart";
-import familyOverrideExample from "!!raw-loader!./overrides/family_override.dart";
-import duplicateOverrideError from "!!raw-loader!./overrides/duplicate_override_error.dart";
-import defaultOverridesExample from "!!raw-loader!./overrides/default_overrides.dart";
 
 In Riverpod, _all_ providers can be overridden to change their behavior.
 This is useful for testing, debugging, or providing different implementations in different environments,
@@ -20,7 +15,7 @@ or even <Link documentID="concepts2/scoping"/>.
 Overriding a provider is done on <Link documentID="concepts2/containers"/>, using the `overrides` parameter.
 In it, you can specify a list of instructions on how to override a specific provider.
 
-Such "instruction" is created using your provider, combined with value methods named `overrideWithSomething`.
+Such "instruction" is created using your provider, combined with value methods named `overrideWithSomething`.  
 There are a bunch of these methods available, but all of them have their name starting with `overrideWith`.
 This includes:
 - [overrideWith](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Provider/overrideWith.html)
@@ -61,43 +56,3 @@ final container = ProviderContainer(
 ```
 </TabItem>
 </Tabs>
-
-## Inspecting overrides
-
-When writing tests, you may want to assert that a specific provider/family was overridden.
-This can be achieved by inspecting the `overrides` list of a `ProviderScope`/`ProviderContainer`.
-
-The `ProviderOverride` and `FamilyOverride` classes expose properties for this purpose:
-
-- `ProviderOverride.origin`, which returns the original provider that was overridden.
-- `FamilyOverride.from`, which returns the original family that was overridden.
-
-These properties are marked with `@visibleForTesting` and are intended for use in tests only.
-
-As an example, we could check that a `ProviderScope` correctly overrides a provider by doing:
-
-<AutoSnippet raw={providerOverrideExample} />
-
-Similarly, for families, we can use `FamilyOverride.from`:
-
-<AutoSnippet raw={familyOverrideExample} />
-
-### Dynamically overriding a provider
-
-A common need in tests is to have a default set of overrides,
-and then add or change an override for a specific test.
-
-A naive attempt at this would be to use the spread operator:
-
-<AutoSnippet raw={duplicateOverrideError} />
-
-The issue with this approach is that this will define **two** overrides for `authProvider`.
-This is illegal and will throw an exception at runtime.
-
-To solve this, you can use the `containsOverride` extension on lists of overrides.
-This method can be used to check if a list of overrides already contains an override
-for a specific provider/family.
-
-We could use it to write a function that merges two lists of overrides:
-
-<AutoSnippet raw={defaultOverridesExample} />

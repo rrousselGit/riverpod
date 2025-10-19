@@ -8,14 +8,9 @@ part of '../framework.dart';
 @publicInMisc
 sealed class Override {}
 
-/// An object used by [ProviderContainer]/`ProviderScope` to override the behavior
-/// of a provider for part of the application.
-@visibleForTesting
-sealed class ProviderOverride implements Override {}
+sealed class _ProviderOverride implements Override {}
 
-/// Extension methods for [ProviderOverride].
-@visibleForTesting
-extension ProviderOverrideX on ProviderOverride {
+extension on _ProviderOverride {
   /// The provider that is overridden.
   $ProviderBaseImpl<Object?> get origin {
     final that = this;
@@ -24,9 +19,7 @@ extension ProviderOverrideX on ProviderOverride {
       $ProviderOverride() => that.origin,
     };
   }
-}
 
-extension on ProviderOverride {
   /// The new provider behavior.
   $ProviderBaseImpl<Object?> get providerOverride {
     final that = this;
@@ -37,14 +30,9 @@ extension on ProviderOverride {
   }
 }
 
-/// An object used by [ProviderContainer]/`ProviderScope` to override the behavior
-/// of a family for part of the application.
-@visibleForTesting
-sealed class FamilyOverride implements Override {}
+sealed class _FamilyOverride implements Override {}
 
-/// Extension methods for [FamilyOverride].
-@visibleForTesting
-extension FamilyOverrideX on FamilyOverride {
+extension on _FamilyOverride {
   /// The provider that is overridden.
   Family get from {
     final that = this;
@@ -52,26 +40,6 @@ extension FamilyOverrideX on FamilyOverride {
       Family() => that,
       $FamilyOverride() => that.from,
     };
-  }
-}
-
-/// Extension methods for `List<Override>`.
-@visibleForTesting
-extension ListOverrideX on List<Override> {
-  /// Returns `true` if the list already contains an [Override] for the family or provider that [override] overrides, `false` otherwise.
-  bool containsOverride(Override override) {
-    return any((o) {
-      return switch ((o, override)) {
-        (
-          ProviderOverride(:final origin),
-          ProviderOverride(origin: final otherOrigin),
-        ) =>
-          origin == otherOrigin,
-        (FamilyOverride(:final from), FamilyOverride(from: final otherFrom)) =>
-          from == otherFrom,
-        _ => false,
-      };
-    });
   }
 }
 
@@ -85,7 +53,7 @@ extension ListOverrideX on List<Override> {
 /// - [ProviderContainer], which uses this object.
 /// - `overrideWithValue`, which creates a [$ProviderOverride].
 @publicInCodegen
-class $ProviderOverride implements ProviderOverride {
+class $ProviderOverride implements _ProviderOverride {
   /// Override a provider
   $ProviderOverride({required this.origin, required this.providerOverride});
 
@@ -126,7 +94,7 @@ class TransitiveProviderOverride implements $ProviderOverride {
 /// to override the behavior of a "family" for part of the application.
 @internal
 @publicInCodegen
-abstract class $FamilyOverride implements FamilyOverride {
+abstract class $FamilyOverride implements _FamilyOverride {
   /// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
   /// to override the behavior of a "family" for part of the application.
   factory $FamilyOverride({

@@ -40,16 +40,6 @@ void main() {
           'myName(42).overrideWith(...)',
         );
       });
-
-      test('exposes `origin` in tests', () {
-        final provider = Provider<int>((_) => 42);
-        final override = provider.overrideWith((ref) => 21);
-
-        expect(
-          override,
-          isA<ProviderOverride>().having((o) => o.origin, 'origin', provider),
-        );
-      });
     });
 
     group('overrideWithValue', () {
@@ -77,16 +67,6 @@ void main() {
         expect(
           family(42).overrideWithValue(21).toString(),
           'myName(42).overrideWithValue(21)',
-        );
-      });
-
-      test('exposes `origin` in tests', () {
-        final provider = Provider<int>((_) => 42);
-        final override = provider.overrideWithValue(21);
-
-        expect(
-          override,
-          isA<ProviderOverride>().having((o) => o.origin, 'origin', provider),
         );
       });
     });
@@ -120,103 +100,6 @@ void main() {
         expect(
           family.overrideWith((ref, _) => 42).toString(),
           'myName.overrideWith(...)',
-        );
-      });
-
-      test('exposes `from` in tests', () {
-        final family = Provider.family<int, int>((_, __) => 42);
-        final override = family.overrideWith((ref, arg) => arg);
-
-        expect(
-          override,
-          isA<FamilyOverride>().having((o) => o.from, 'from', family),
-        );
-      });
-    });
-  });
-
-  group('List<Override>', () {
-    group('containsOverride', () {
-      test(
-        'returns true when list contains override for the same provider',
-        () {
-          final provider = Provider<int>((_) => 42);
-          final anotherProvider = Provider<int>((_) => 21);
-
-          final overrides = <Override>[provider.overrideWithValue(100)];
-
-          expect(
-            overrides.containsOverride(provider.overrideWithValue(200)),
-            true,
-          );
-          expect(
-            overrides.containsOverride(anotherProvider.overrideWithValue(100)),
-            false,
-          );
-        },
-      );
-
-      test('returns true when list contains override for the same family', () {
-        final family = Provider.family<int, int>((_, __) => 42);
-        final anotherFamily = Provider.family<int, int>((_, __) => 21);
-
-        final overrides = <Override>[family.overrideWith((ref, arg) => arg)];
-
-        expect(
-          overrides.containsOverride(
-            family.overrideWith((ref, arg) => arg * 2),
-          ),
-          true,
-        );
-        expect(
-          overrides.containsOverride(
-            anotherFamily.overrideWith((ref, arg) => arg),
-          ),
-          false,
-        );
-      });
-
-      test('returns false for empty list', () {
-        final provider = Provider<int>((_) => 42);
-        final overrides = <Override>[];
-
-        expect(
-          overrides.containsOverride(provider.overrideWithValue(100)),
-          false,
-        );
-      });
-
-      test('works with mixed provider and family overrides', () {
-        final provider = Provider<int>((_) => 42);
-        final anotherProvider = Provider<int>((_) => 21);
-        final family = Provider.family<int, int>((_, __) => 42);
-        final anotherFamily = Provider.family<int, int>((_, __) => 21);
-
-        final overrides = <Override>[
-          provider.overrideWithValue(100),
-          family.overrideWith((ref, arg) => arg),
-        ];
-
-        expect(
-          overrides.containsOverride(provider.overrideWithValue(200)),
-          true,
-        );
-        expect(
-          overrides.containsOverride(anotherProvider.overrideWithValue(100)),
-          false,
-        );
-
-        expect(
-          overrides.containsOverride(
-            family.overrideWith((ref, arg) => arg * 2),
-          ),
-          true,
-        );
-        expect(
-          overrides.containsOverride(
-            anotherFamily.overrideWith((ref, arg) => arg),
-          ),
-          false,
         );
       });
     });
