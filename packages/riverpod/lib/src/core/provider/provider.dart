@@ -47,6 +47,7 @@ sealed class ProviderBase<StateT> extends ProviderOrFamily
   @override
   final Family? from;
 
+  @visibleForTesting
   @override
   ProviderBase<StateT> get origin => this;
 
