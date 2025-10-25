@@ -1,5 +1,4 @@
 {
-  
   "theme.NotFound.title": {
     "message": "ページが見つかりません",
     "description": "The title of the 404 page"
@@ -215,7 +214,7 @@
     "message": "Riverpod は Flutter に依存することなくプロバイダを作成・共有・テストすることが可能です。 {BuildContext} を使わずにプロバイダを利用することができます。"
   },
   "home.tagline": {
-    "message": "リアクティブ・キャッシングとデータバインディングを実現するフレームワーク"
+    "message": "リアクティブ・キャッシングとデータバインディング・フレームワーク"
   },
   "home.get_started": {
     "message": "始める"
@@ -335,5 +334,4 @@
   "home.lint_body": {
     "message": "Riverpodに特化した新しいlintルールは実装済みであり、今後さらに継続的に追加されます。これにより、コードが最適な状態に保たれます。{warnings}"
   }
-
 }
