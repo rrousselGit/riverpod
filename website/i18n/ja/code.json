@@ -228,7 +228,7 @@
     "description": "The homepage input placeholder"
   },
   "home.recompute_title": {
-    "message": "ステートの再評価、UI の更新を最小限に"
+    "message": "ステートの再計算、UI の更新を最小限に"
   },
   "home.recompute_body": {
     "message": "{build} メソッドの中でリストをソート / フィルタする必要はありません。高度なキャッシュ手法に頼る必要もありません。 {br}{br} {Provider} と {families} を使って、本当に必要な時に限り、リストのソートや HTTP リクエストを実行できます。"
