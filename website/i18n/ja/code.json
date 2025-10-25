@@ -236,7 +236,7 @@
     "message": "プロバイダの安全な読み取り"
   },
   "home.safe_read_body": {
-    "message": "プロパイダを読み取った結果、bad stateになることは決してありません。プロバイダを読み取るために必要なコードを書ければ、常に有効な値を取得できます。 {br}{br} これは非同期により値を取得する場合も同様に適用されます。Providerとは対照的に、Riverpodは読み込み/エラーケースのハンドリングを明確に処理できます。"
+    "message": "プロバイダを読み取った結果、bad stateになることは決してありません。プロバイダを読み取るために必要なコードを書ければ、常に有効な値を取得できます。 {br}{br} これは非同期により値を取得する場合も同様に適用されます。Providerとは対照的に、Riverpodは読み込み/エラーケースのハンドリングを明確に処理できます。"
   },
   "home.devtool_title": {
     "message": "DevTools によるステートの検証"
@@ -293,7 +293,7 @@
     "message": "リファクタリング標準搭載"
   },
   "homepage.features_socket_check": {
-    "message": "Webソケットサポート"
+    "message": "WebSocketサポート"
   },
   "homepage.features_error_check": {
     "message": "ロード/エラーの自動ハンドリング"
