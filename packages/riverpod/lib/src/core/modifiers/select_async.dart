@@ -152,58 +152,57 @@ final class _AsyncSelector<InputT, OutputT>
       callListeners: false,
     );
 
-    return providerSub =
-        ExternalProviderSubscription<
-          AsyncValue<InputT>,
-          Future<OutputT>
-        >.fromSub(
-          innerSubscription: sub,
-          listener: listener,
-          onError: onError,
-          read: () {
-            // Flush
-            final result = sub.readSafe();
-            if (result case $ResultError(:final error, :final stackTrace)) {
-              return $Result.error(error, stackTrace);
-            }
+    return providerSub = ExternalProviderSubscription<
+      AsyncValue<InputT>,
+      Future<OutputT>
+    >.fromSub(
+      innerSubscription: sub,
+      listener: listener,
+      onError: onError,
+      read: () {
+        // Flush
+        final result = sub.readSafe();
+        if (result case $ResultError(:final error, :final stackTrace)) {
+          return $Result.error(error, stackTrace);
+        }
 
-            return $ResultData(selectedFuture!);
-          },
-          onClose: () {
-            final completer = selectedCompleter;
-            if (completer != null && !completer.isCompleted) {
-              final sub = switch (node) {
-                ProviderElement() => node.listen(
-                  future,
-                  (prev, next) {},
-                  onError: onError,
-                ),
-                ProviderContainer() => node.listen(
-                  future,
-                  (prev, next) {},
-                  onError: onError,
-                ),
-              };
+        return $ResultData(selectedFuture!);
+      },
+      onClose: () {
+        final completer = selectedCompleter;
+        if (completer != null && !completer.isCompleted) {
+          final sub = switch (node) {
+            ProviderElement() => node.listen(
+              future,
+              (prev, next) {},
+              onError: onError,
+            ),
+            ProviderContainer() => node.listen(
+              future,
+              (prev, next) {},
+              onError: onError,
+            ),
+          };
 
-              // ignore: avoid_sub_read, We are handling errors
-              sub
-                  .read()
-                  .then((v) => _select(v).valueOrProviderException)
-                  .then(
-                    (value) {
-                      // Avoid possible race condition
-                      if (!completer.isCompleted) completer.complete(value);
-                    },
-                    onError: (Object err, StackTrace stack) {
-                      // Avoid possible race condition
-                      if (!completer.isCompleted) {
-                        completer.completeError(err, stack);
-                      }
-                    },
-                  )
-                  .whenComplete(sub.close);
-            }
-          },
-        );
+          // ignore: avoid_sub_read, We are handling errors
+          sub
+              .read()
+              .then((v) => _select(v).valueOrProviderException)
+              .then(
+                (value) {
+                  // Avoid possible race condition
+                  if (!completer.isCompleted) completer.complete(value);
+                },
+                onError: (Object err, StackTrace stack) {
+                  // Avoid possible race condition
+                  if (!completer.isCompleted) {
+                    completer.completeError(err, stack);
+                  }
+                },
+              )
+              .whenComplete(sub.close);
+        }
+      },
+    );
   }
 }

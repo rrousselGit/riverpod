@@ -143,8 +143,10 @@ class Toolbar extends HookConsumerWidget {
             key: allFilterKey,
             message: 'All todos',
             child: TextButton(
-              onPressed: () =>
-                  ref.read(todoListFilter.notifier).state = TodoListFilter.all,
+              onPressed:
+                  () =>
+                      ref.read(todoListFilter.notifier).state =
+                          TodoListFilter.all,
               style: ButtonStyle(
                 visualDensity: VisualDensity.compact,
                 foregroundColor: WidgetStatePropertyAll(
@@ -158,8 +160,10 @@ class Toolbar extends HookConsumerWidget {
             key: activeFilterKey,
             message: 'Only uncompleted todos',
             child: TextButton(
-              onPressed: () => ref.read(todoListFilter.notifier).state =
-                  TodoListFilter.active,
+              onPressed:
+                  () =>
+                      ref.read(todoListFilter.notifier).state =
+                          TodoListFilter.active,
               style: ButtonStyle(
                 visualDensity: VisualDensity.compact,
                 foregroundColor: WidgetStatePropertyAll(
@@ -173,8 +177,10 @@ class Toolbar extends HookConsumerWidget {
             key: completedFilterKey,
             message: 'Only completed todos',
             child: TextButton(
-              onPressed: () => ref.read(todoListFilter.notifier).state =
-                  TodoListFilter.completed,
+              onPressed:
+                  () =>
+                      ref.read(todoListFilter.notifier).state =
+                          TodoListFilter.completed,
               style: ButtonStyle(
                 visualDensity: VisualDensity.compact,
                 foregroundColor: WidgetStatePropertyAll(
@@ -255,16 +261,17 @@ class TodoItem extends HookConsumerWidget {
           },
           leading: Checkbox(
             value: todo.completed,
-            onChanged: (value) =>
-                ref.read(todoListProvider.notifier).toggle(todo.id),
+            onChanged:
+                (value) => ref.read(todoListProvider.notifier).toggle(todo.id),
           ),
-          title: itemIsFocused
-              ? TextField(
-                  autofocus: true,
-                  focusNode: textFieldFocusNode,
-                  controller: textEditingController,
-                )
-              : Text(todo.description),
+          title:
+              itemIsFocused
+                  ? TextField(
+                    autofocus: true,
+                    focusNode: textFieldFocusNode,
+                    controller: textEditingController,
+                  )
+                  : Text(todo.description),
         ),
       ),
     );

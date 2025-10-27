@@ -121,3 +121,43 @@ final class BFamily extends $Family
   @override
   String toString() => r'bProvider';
 }
+
+@ProviderFor(c)
+const cProvider = CProvider._();
+
+final class CProvider extends $FunctionalProvider<String, String, String>
+    with $Provider<String> {
+  const CProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: ProviderContainer.defaultRetry,
+        name: r'cProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$cHash();
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String create(Ref ref) {
+    return c(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String>(value),
+    );
+  }
+}
+
+String _$cHash() => r'0740be3fc310f1a5a8e637f5c7283d601013d3d2';

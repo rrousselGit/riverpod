@@ -1,3 +1,16 @@
+## 3.0.3 - 2025-10-09
+
+- Fixed a false positive incorrectly causing `Providers are not allowed to modify other providers during their initialization.`
+
+## 3.0.2 - 2025-10-07
+
+- Improve the error message when a circular dependency error is thrown
+
+## 3.0.1 - 2025-09-30
+
+- Now supports Dart 3.7.0
+- Support `async` 2.12.0
+
 ## 3.0.0 - 2025-09-10
 
 Finally, a stable release for Riverpod 3.0!

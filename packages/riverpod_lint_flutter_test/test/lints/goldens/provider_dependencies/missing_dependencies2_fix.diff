@@ -42,11 +42,11 @@ Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:118`:
 
 - @Riverpod(
 -   dependencies:
--       // The dependency is redundant because it is not a scoped provider
--       // expect_lint: provider_dependencies
--       [
--         generatedRoot,
--       ],
+-   // The dependency is redundant because it is not a scoped provider
+-   // expect_lint: provider_dependencies
+-   [
+-     generatedRoot,
+-   ],
 - )
 + @riverpod
 int watchGeneratedRootAndContainsDependency(
@@ -57,13 +57,13 @@ Message: `Update "dependencies"`
 Priority: 100
 Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:138`:
 ```
-      // generatedRoot is extra
-      // expect_lint: provider_dependencies
--       [
--         dep,
--         generatedRoot,
--       ],
-+       [dep],
+  // generatedRoot is extra
+  // expect_lint: provider_dependencies
+-   [
+-     dep,
+-     generatedRoot,
+-   ],
++   [dep],
 )
 int specifiedDependencyButNeverUsed(Ref ref) {
 ```

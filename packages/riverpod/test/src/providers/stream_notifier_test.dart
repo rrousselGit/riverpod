@@ -789,10 +789,8 @@ void main() {
           completer.complete(42);
 
           expect(sub.read().future, completion(42));
-          final capture = verifyOnly(
-            listener,
-            listener(captureAny, captureAny),
-          ).captured;
+          final capture =
+              verifyOnly(listener, listener(captureAny, captureAny)).captured;
 
           expect(capture.length, 2);
           expect(capture.first, completion(21));
@@ -1130,12 +1128,11 @@ void main() {
     });
 
     test('family', () {
-      final family =
-          StreamNotifierProvider.family<
-            DeferredStreamNotifier<String>,
-            String,
-            int
-          >((arg) => DeferredStreamNotifier((ref, _) => Stream.value('0')));
+      final family = StreamNotifierProvider.family<
+        DeferredStreamNotifier<String>,
+        String,
+        int
+      >((arg) => DeferredStreamNotifier((ref, _) => Stream.value('0')));
 
       family(0).select((AsyncValue<String> value) => 0);
       family(0).selectAsync((String value) => 0);

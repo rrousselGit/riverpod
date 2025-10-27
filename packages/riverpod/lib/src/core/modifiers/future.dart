@@ -2,15 +2,16 @@ part of '../../framework.dart';
 
 /// Internal typedef for cancelling the subscription to an async operation
 @internal
-typedef AsyncSubscription = ({
-  /// The provider was disposed, but may rebuild later
-  void Function() cancel,
-  void Function()? pause,
-  void Function()? resume,
+typedef AsyncSubscription =
+    ({
+      /// The provider was disposed, but may rebuild later
+      void Function() cancel,
+      void Function()? pause,
+      void Function()? resume,
 
-  /// The provider was disposed
-  void Function()? abort,
-});
+      /// The provider was disposed
+      void Function()? abort,
+    });
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.

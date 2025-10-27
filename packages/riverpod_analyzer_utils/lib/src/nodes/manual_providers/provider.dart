@@ -13,9 +13,8 @@ final class ManualProviderDependencies {
 
     List<ManualProviderDependency>? dependencies;
     if (value is ListLiteral) {
-      dependencies = value.elements
-          .map(ManualProviderDependency._parse)
-          .toList();
+      dependencies =
+          value.elements.map(ManualProviderDependency._parse).toList();
     }
 
     return ManualProviderDependencies._(
@@ -259,10 +258,11 @@ class ManualProviderDeclarationElement implements ProviderDeclarationElement {
 
       ManualFamilyInvocationElement? familyElement;
       if (familyType.isAssignableFromType(element.type)) {
-        final callFn = (element.type as InterfaceType).lookUpMethod3(
-          'call',
-          element.library2!,
-        )!;
+        final callFn =
+            (element.type as InterfaceType).lookUpMethod3(
+              'call',
+              element.library2!,
+            )!;
         final parameter = callFn.formalParameters.single;
 
         familyElement = ManualFamilyInvocationElement._(parameter.type);

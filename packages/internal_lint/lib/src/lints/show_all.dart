@@ -85,30 +85,34 @@ _computeExportDiff(ExportDirective export) {
     return null;
   }
 
-  final exportedIdentifiers = exportedLibrary!.exportedElements
-      .where((e) {
-        final annotatable = e as Annotatable;
+  final exportedIdentifiers =
+      exportedLibrary!.exportedElements
+          .where((e) {
+            final annotatable = e as Annotatable;
 
-        var targets = _Public.of(annotatable);
-        if (targets.isEmpty && annotatable.metadata2.hasInternal) return false;
+            var targets = _Public.of(annotatable);
+            if (targets.isEmpty && annotatable.metadata2.hasInternal) {
+              return false;
+            }
 
-        if (targets.isEmpty) {
-          targets = _Public.of(e.library2!);
-        }
+            if (targets.isEmpty) {
+              targets = _Public.of(e.library2!);
+            }
 
-        if (targets.isEmpty) {
-          targets = _Public.defaultOf(export, e);
-        }
-        if (targets.isEmpty) return false;
+            if (targets.isEmpty) {
+              targets = _Public.defaultOf(export, e);
+            }
+            if (targets.isEmpty) return false;
 
-        final match = targets
-            .where((public) => public.hasMatch(export.libraryExport!))
-            .firstOrNull;
+            final match =
+                targets
+                    .where((public) => public.hasMatch(export.libraryExport!))
+                    .firstOrNull;
 
-        return match != null;
-      })
-      .nonNulls
-      .toList();
+            return match != null;
+          })
+          .nonNulls
+          .toList();
 
   final show = export.combinators.whereType<ShowCombinator>().firstOrNull;
 
@@ -214,10 +218,8 @@ extension on RangeFactory {
       HideCombinator() => combinator.hiddenNames,
     };
 
-    final indexes = nodes
-        .map(list.indexOf)
-        .where((index) => index != -1)
-        .toList();
+    final indexes =
+        nodes.map(list.indexOf).where((index) => index != -1).toList();
 
     final grouped = indexes.foldIndexes();
 

@@ -120,9 +120,8 @@ Future<String> compile(String source) async {
     configUri,
   );
 
-  final riverpodAnnotation = config.packages
-      .where((e) => e.name == 'riverpod_annotation')
-      .firstOrNull;
+  final riverpodAnnotation =
+      config.packages.where((e) => e.name == 'riverpod_annotation').firstOrNull;
 
   if (riverpodAnnotation == null) {
     throw Exception(
@@ -131,12 +130,11 @@ Future<String> compile(String source) async {
   }
 
   final main = createTmpFile('lib/main.dart')..writeAsStringSync(source);
-  final pubspec = createTmpFile('pubspec.yaml')
-    ..writeAsStringSync('''
+  final pubspec = createTmpFile('pubspec.yaml')..writeAsStringSync('''
 name: test_app
 
 environment:
-  sdk: ^3.8.0
+  sdk: ^3.7.0
 
 dependencies:
   riverpod_annotation:

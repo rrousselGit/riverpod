@@ -88,10 +88,11 @@ final class $name$_genericsDefinition
   }
 
   void _writeConstructor(StringBuffer buffer) {
-    final superParameters = [
-      if (!provider.providerElement.isFamily) 'from: null,',
-      if (provider.parameters.isEmpty) 'argument: null,',
-    ].join();
+    final superParameters =
+        [
+          if (!provider.providerElement.isFamily) 'from: null,',
+          if (provider.parameters.isEmpty) 'argument: null,',
+        ].join();
 
     final constructorParameters = [
       if (provider.providerElement.isFamily)
@@ -99,14 +100,15 @@ final class $name$_genericsDefinition
       if (provider.parameters.isNotEmpty)
         'required $_argumentRecordType super.argument',
     ];
-    final params = constructorParameters.isEmpty
-        ? ''
-        : '{${constructorParameters.join(',')}}';
+    final params =
+        constructorParameters.isEmpty
+            ? ''
+            : '{${constructorParameters.join(',')}}';
 
     buffer.writeln('''
   ${provider.doc} const ${provider.providerTypeName}._($params): super(
         $superParameters
-        retry: ${provider.annotation.retryNode?.name ?? 'null'},
+        retry: ${provider.annotation.retryNode?.node.toSource() ?? 'null'},
         name: r'${provider.providerName(options)}',
         isAutoDispose: ${!provider.annotation.element.keepAlive},
         dependencies: ${!provider.providerElement.isFamily ? provider.dependencies(options) : 'null'},
@@ -242,8 +244,8 @@ final class $name$_genericsDefinition
 
     final encodedGenerics =
         provider.typeParameters?.typeParameters.isEmpty ?? true
-        ? ''
-        : '<${provider.typeParameters!.typeParameters.map((e) => '\${${e.name}}').join(', ')}>';
+            ? ''
+            : '<${provider.typeParameters!.typeParameters.map((e) => '\${${e.name}}').join(', ')}>';
 
     buffer.writeln('''
 @override

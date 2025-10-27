@@ -3,7 +3,7 @@ description: A new Flutter project.
 publish_to: "none"
 
 environment:
-  sdk: ^3.8.0
+  sdk: ^3.7.0
   flutter: ">=1.17.0"
 
 resolution: workspace
@@ -14,7 +14,7 @@ dependencies:
   flutter_hooks: ^0.21.2
   hooks_riverpod:
   riverpod:
-  uuid: ^4.5.1
+  uuid: ^4.0.0
 
 dev_dependencies:
   build_runner: ^2.0.0

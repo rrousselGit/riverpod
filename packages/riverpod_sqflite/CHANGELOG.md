@@ -1,3 +1,15 @@
+## 0.3.3 - 2025-10-09
+
+- `riverpod` upgraded to `3.0.3`
+
+## 0.3.2 - 2025-10-07
+
+- `riverpod` upgraded to `3.0.2`
+
+## 0.3.1 - 2025-09-30
+
+- Now supports Dart 3.7.0
+
 ## 0.3.0 - 2025-09-10
 
 Finally, a stable release for Riverpod 3.0!

@@ -1,3 +1,21 @@
+## Unreleased patch
+
+- Fix a bug when using `Class.staticVariable` as parameter to `@Riverpod(retry: ...)`
+
+## 3.0.3 - 2025-10-09
+
+- `riverpod` upgraded to `3.0.3`
+- `riverpod_annotation` upgraded to `3.0.3`
+
+## 3.0.2 - 2025-10-07
+
+- `riverpod` upgraded to `3.0.2`
+- `riverpod_annotation` upgraded to `3.0.2`
+
+## 3.0.1 - 2025-09-30
+
+- Now supports Dart 3.7.0
+
 ## 3.0.0 - 2025-09-10
 
 Finally, a stable release for Riverpod 3.0!

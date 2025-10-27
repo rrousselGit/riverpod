@@ -152,22 +152,24 @@ class PackageDetailPage extends HookConsumerWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: isToggleLikeLoading
-            ? null
-            : () async {
-                final packageLikes = ref.read(
-                  packageMetricsProvider(packageName: packageName).notifier,
-                );
+        onPressed:
+            isToggleLikeLoading
+                ? null
+                : () async {
+                  final packageLikes = ref.read(
+                    packageMetricsProvider(packageName: packageName).notifier,
+                  );
 
-                if (isLiked) {
-                  pendingToggleLike.value = packageLikes.unlike();
-                } else {
-                  pendingToggleLike.value = packageLikes.like();
-                }
-              },
-        child: isLiked
-            ? const Icon(Icons.favorite)
-            : const Icon(Icons.favorite_border),
+                  if (isLiked) {
+                    pendingToggleLike.value = packageLikes.unlike();
+                  } else {
+                    pendingToggleLike.value = packageLikes.like();
+                  }
+                },
+        child:
+            isLiked
+                ? const Icon(Icons.favorite)
+                : const Icon(Icons.favorite_border),
       ),
     );
   }

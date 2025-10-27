@@ -24,7 +24,7 @@ import 'models.dart';
 final configurationProvider = FutureProvider<Configuration>((_) async {
   final file =
       await File.fromUri(Uri.file('configuration.json')) //
-          .readAsString();
+      .readAsString();
   final map = json.decode(file) as Map<String, Object?>;
 
   return Configuration.fromJson(map);

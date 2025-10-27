@@ -27,8 +27,8 @@ class ProtectedNotifierProperties extends RiverpodLintRule {
         return;
       }
 
-      final enclosingClass = propertyAccess
-          .thisOrAncestorOfType<ClassDeclaration>();
+      final enclosingClass =
+          propertyAccess.thisOrAncestorOfType<ClassDeclaration>();
       final enclosingClassElement = enclosingClass?.declaredFragment?.element;
       if (enclosingClass == null || enclosingClassElement == null) return;
 

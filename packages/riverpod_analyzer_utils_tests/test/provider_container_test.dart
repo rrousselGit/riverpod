@@ -40,14 +40,10 @@ void main() {
     (resolver, unit, units) async {
       final result = await resolver.resolveRiverpodAnalysisResult();
 
-      final provider = result.manualProviderDeclarations
-          .takeAll(['provider'])
-          .values
-          .single;
-      final family = result.manualProviderDeclarations
-          .takeAll(['family'])
-          .values
-          .single;
+      final provider =
+          result.manualProviderDeclarations.takeAll(['provider']).values.single;
+      final family =
+          result.manualProviderDeclarations.takeAll(['family']).values.single;
 
       final containers = result.providerContainerInstanceCreationExpressions;
 

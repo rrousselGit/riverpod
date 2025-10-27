@@ -163,13 +163,14 @@ ClassDeclaration? findStateClass(ClassDeclaration widgetClass) {
             false,
       )
       .firstWhereOrNull((e) {
-        final stateWidgetType = e
-            .extendsClause
-            ?.superclass
-            .typeArguments
-            ?.arguments
-            .firstOrNull
-            ?.type;
+        final stateWidgetType =
+            e
+                .extendsClause
+                ?.superclass
+                .typeArguments
+                ?.arguments
+                .firstOrNull
+                ?.type;
         if (stateWidgetType == null) return false;
 
         final checker = TypeChecker.fromStatic(widgetType);

@@ -1,3 +1,16 @@
+## 3.0.3 - 2025-10-09
+
+- `riverpod` upgraded to `3.0.3`
+
+## 3.0.2 - 2025-10-07
+
+Fixed an assertion error when a `ProviderContainer` is linked to two different `UncontrolledProviderScope`
+
+## 3.0.1 - 2025-09-30
+
+- `ChangeNotifierProviderFamily` is now correctly accessible in `package:flutter_riverpod/legacy.dart` instead of `/misc.dart`
+- Now supports Dart 3.7.0
+
 ## 3.0.0 - 2025-09-10
 
 Finally, a stable release for Riverpod 3.0!

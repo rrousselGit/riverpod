@@ -33,9 +33,8 @@ class FamilyTemplate extends Template {
     final topLevelBuffer = StringBuffer();
 
     final parametersPassThrough = provider.argumentToRecord();
-    final argument = provider.parameters.isEmpty
-        ? ''
-        : 'argument: $parametersPassThrough,';
+    final argument =
+        provider.parameters.isEmpty ? '' : 'argument: $parametersPassThrough,';
 
     final mixinTypes = <String>[
       ...switch (provider) {
@@ -61,7 +60,7 @@ ${provider.metadata}
 final class ${provider.familyTypeName} extends \$Family $mixins {
   const ${provider.familyTypeName}._()
       : super(
-        retry: ${provider.annotation.retryNode?.name ?? 'null'},
+        retry: ${provider.annotation.retryNode?.node.toSource() ?? 'null'},
         name: r'${provider.providerName(options)}',
         dependencies: ${provider.dependencies(options)},
         \$allTransitiveDependencies: ${provider.allTransitiveDependencies(allTransitiveDependencies)},
@@ -136,8 +135,7 @@ Override overrideWith($createType create) =>
     ClassBasedProviderDeclaration provider, {
     required StringBuffer topLevelBuffer,
   }) {
-    final runNotifierBuildType =
-        '''
+    final runNotifierBuildType = '''
 ${provider.providerElement.createdTypeNode} Function$_genericsDefinition(
   Ref ref,
   $_notifierType notifier

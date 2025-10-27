@@ -275,13 +275,14 @@ void main() {
         final provider = StateNotifierProvider<Counter, int>((_) => Counter());
         final counter = Counter();
         final errors = <Object>[];
-        final container = runZonedGuarded(
-          () => ProviderContainer.test(
-            overrides: [provider.overrideWith((ref) => counter)],
-            observers: [observer, observer2, observer3],
-          ),
-          (err, stack) => errors.add(err),
-        )!;
+        final container =
+            runZonedGuarded(
+              () => ProviderContainer.test(
+                overrides: [provider.overrideWith((ref) => counter)],
+                observers: [observer, observer2, observer3],
+              ),
+              (err, stack) => errors.add(err),
+            )!;
 
         container.read(provider);
 
@@ -866,12 +867,13 @@ void main() {
         final observer3 = ObserverMock();
         final provider = Provider((_) => 42);
         final errors = <Object>[];
-        final container = runZonedGuarded(
-          () => ProviderContainer.test(
-            observers: [observer, observer2, observer3],
-          ),
-          (err, stack) => errors.add(err),
-        )!;
+        final container =
+            runZonedGuarded(
+              () => ProviderContainer.test(
+                observers: [observer, observer2, observer3],
+              ),
+              (err, stack) => errors.add(err),
+            )!;
 
         final result = container.read(provider);
 
@@ -992,11 +994,13 @@ void main() {
       });
       final provider2 = Provider((ref) => ref.watch(provider));
       final errors = <Object>[];
-      final container = runZonedGuarded(
-        () =>
-            ProviderContainer.test(observers: [observer, observer2, observer3]),
-        (err, stack) => errors.add(err),
-      )!;
+      final container =
+          runZonedGuarded(
+            () => ProviderContainer.test(
+              observers: [observer, observer2, observer3],
+            ),
+            (err, stack) => errors.add(err),
+          )!;
 
       expect(container.read(provider), 0);
       expect(container.read(provider2), 0);

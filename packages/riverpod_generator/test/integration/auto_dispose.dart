@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_redundant_argument_values
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auto_dispose.g.dart';

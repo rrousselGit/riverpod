@@ -40,17 +40,14 @@ class ParametrizedClass extends _$ParametrizedClass {
 ''',
     (resolver, unit, units) async {
       final generic = unit.declarations.findByName('generic').provider!;
-      final genericClass = unit.declarations
-          .findByName('GenericClass')
-          .provider!;
+      final genericClass =
+          unit.declarations.findByName('GenericClass').provider!;
       final value = unit.declarations.findByName('value').provider!;
       final valueClass = unit.declarations.findByName('ValueClass').provider!;
-      final parametrized = unit.declarations
-          .findByName('parametrized')
-          .provider!;
-      final parametrizedClass = unit.declarations
-          .findByName('ParametrizedClass')
-          .provider!;
+      final parametrized =
+          unit.declarations.findByName('parametrized').provider!;
+      final parametrizedClass =
+          unit.declarations.findByName('ParametrizedClass').provider!;
 
       expect(generic.providerElement.isFamily, true);
       expect(genericClass.providerElement.isFamily, true);
@@ -78,15 +75,12 @@ Future<int> value2(Ref ref) async => 0;
 Future<Raw<int>> value3(Ref ref) async => 0;
 ''',
     (resolver, unit, units) async {
-      final value = unit.declarations
-          .findByName<FunctionDeclaration>('value')
-          .provider!;
-      final value2 = unit.declarations
-          .findByName<FunctionDeclaration>('value2')
-          .provider!;
-      final value3 = unit.declarations
-          .findByName<FunctionDeclaration>('value3')
-          .provider!;
+      final value =
+          unit.declarations.findByName<FunctionDeclaration>('value').provider!;
+      final value2 =
+          unit.declarations.findByName<FunctionDeclaration>('value2').provider!;
+      final value3 =
+          unit.declarations.findByName<FunctionDeclaration>('value3').provider!;
       expect(
         value.providerElement.createdTypeNode,
         '#{{package:riverpod_annotation/src/riverpod_annotation.dart|Raw}}<#{{dart:async|Future}}<#{{dart:core|int}}>>',
@@ -142,12 +136,10 @@ int scoped() => 0;
 int plain(Ref ref) => 0;
 ''',
     (resolver, unit, units) async {
-      final scoped = unit.declarations
-          .findByName<FunctionDeclaration>('scoped')
-          .provider!;
-      final plain = unit.declarations
-          .findByName<FunctionDeclaration>('plain')
-          .provider!;
+      final scoped =
+          unit.declarations.findByName<FunctionDeclaration>('scoped').provider!;
+      final plain =
+          unit.declarations.findByName<FunctionDeclaration>('plain').provider!;
 
       expect(scoped.providerElement.isScoped, true);
       expect(plain.providerElement.isScoped, false);
@@ -227,10 +219,8 @@ class KeepAliveNotifier extends _$KeepAliveNotifier {
 }
 ''',
     (resolver, unit, units) async {
-      final providers = unit.declarations
-          .map((e) => e.provider)
-          .nonNulls
-          .toList();
+      final providers =
+          unit.declarations.map((e) => e.provider).nonNulls.toList();
 
       final autoDispose = providers.takeAll([
         'autoDispose',
@@ -335,10 +325,8 @@ class FamilyClass extends _$FamilyClass {
 }
 ''',
     (resolver, unit, units) async {
-      final providers = unit.declarations
-          .map((e) => e.provider)
-          .nonNulls
-          .toList();
+      final providers =
+          unit.declarations.map((e) => e.provider).nonNulls.toList();
 
       final roots = providers.takeAll(['root', 'RootNotifier']);
       final empty = providers.takeAll(['empty', 'EmptyNotifier']);

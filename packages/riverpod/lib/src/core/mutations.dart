@@ -462,9 +462,8 @@ final class MutationImpl<ResultT>
     ProviderSubscription<_MutationNotifier<ResultT>> sub,
     MutationTransaction ref,
   ) {
-    final _MutationNotifier(:state, :setState, :setRef) = sub
-        .readSafe()
-        .valueOrRawException;
+    final _MutationNotifier(:state, :setState, :setRef) =
+        sub.readSafe().valueOrRawException;
 
     setRef(ref);
 
@@ -476,9 +475,8 @@ final class MutationImpl<ResultT>
     MutationTransaction ref,
     ResultT result,
   ) {
-    final _MutationNotifier(:state, :setState) = sub
-        .readSafe()
-        .valueOrRawException;
+    final _MutationNotifier(:state, :setState) =
+        sub.readSafe().valueOrRawException;
 
     setState(MutationSuccess<ResultT>._(result), ref);
   }
@@ -489,9 +487,8 @@ final class MutationImpl<ResultT>
     Object error,
     StackTrace stackTrace,
   ) {
-    final _MutationNotifier(:state, :setState) = sub
-        .readSafe()
-        .valueOrRawException;
+    final _MutationNotifier(:state, :setState) =
+        sub.readSafe().valueOrRawException;
 
     setState(MutationError<ResultT>._(error, stackTrace), ref);
   }

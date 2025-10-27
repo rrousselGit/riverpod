@@ -163,9 +163,52 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
       current.visitChildren(queue.add);
 
       if (current.origin == dependency) {
-        throw CircularDependencyError._();
+        final dependencyLoop = _buildDependencyLoop(current, current.origin);
+        throw CircularDependencyError._(dependencyLoop);
       }
     }
+  }
+
+  List<ProviderBase<Object?>> _buildDependencyLoop(
+    ProviderElement from,
+    ProviderBase<Object?> to,
+  ) {
+    final visited = <ProviderElement>{};
+    final path = <ProviderBase<Object?>>[to];
+
+    bool _findPath(ProviderElement current) {
+      // Already visited, avoid infinite loops
+      if (visited.contains(current)) return false;
+
+      visited.add(current);
+      path.add(current.origin);
+
+      // If we found the target, return true
+      if (current.origin == to) return true;
+
+      // Search through all children
+      var found = false;
+      current.visitChildren((child) {
+        if (!found && !visited.contains(child)) {
+          if (_findPath(child)) found = true;
+        }
+      });
+
+      if (found) return true;
+
+      // Backtrack if this path doesn't lead to the target
+      path.removeLast();
+      return false;
+    }
+
+    from.visitChildren((child) {
+      if (!visited.contains(child)) _findPath(child);
+    });
+
+    // Ensure the loop is closed by adding the target at the end if it's not already there
+    if (path.isNotEmpty && path.last != to) path.add(to);
+
+    return path;
   }
 
   void _throwIfInvalidUsage() {

@@ -52,12 +52,7 @@ void main() {
 void main() {
   final container = ProviderContainer(
     // Never retry any provider
-    retry: (retryCount, error) {
-      if (error is SomeSpecificError) return null;
-      if (retryCount > 5) return null;
-
-      return Duration(seconds: retryCount * 2);
-    },
+    retry: (retryCount, error) => null,
   );
 }
 ```
@@ -101,11 +96,11 @@ class MyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TickerMode(
-      enabled: false, // This will pause the listeners
+      enabled: true, // Never pause any descendant listener.
       child: Consumer(
         builder: (context, ref, child) {
-          // This "watch" will be paused
-          // until TickerMode is set to true
+          // This "watch" will not follow the automatic pausing behavior
+          // until TickerMode is removed.
           final value = ref.watch(myProvider);
           return Text(value.toString());
         },
@@ -135,8 +130,9 @@ Before, Riverpod was inconsistent in how it filtered updates to providers.
 Some providers used `==` to filter updates, while others used `identical`.
 In Riverpod 3.0, [all providers now use `==` to filter updates](./whats_new.mdx#all-updateshouldnotify-now-use-).
 
-This generally shouldn't change anything in your code. But if you need to,
-you can override `Notifier.updateShouldNotify` to customize the behavior.
+The most likely way for you to be impacted by this change is when using
+[StreamProvider]/[StreamNotifier], as now stream values will be filtered by `==`.
+If you need to, you can override `Notifier.updateShouldNotify` to customize the behavior.
 
 <AutoSnippet
   language="dart"
@@ -144,10 +140,10 @@ you can override `Notifier.updateShouldNotify` to customize the behavior.
   @riverpod
   class TodoList extends _$TodoList {
     @override
-    List<Todo> build() => [];
+    Stream<Todo> build() => Stream(...);
   
     @override
-    bool updateShouldNotify(List<Todo> previous, List<Todo> next) {
+    bool updateShouldNotify(AsyncValue<Todo> previous, AsyncValue<Todo> next) {
       // Custom implementation
       return true;
     }
@@ -155,12 +151,12 @@ you can override `Notifier.updateShouldNotify` to customize the behavior.
   `}
   
   raw={`
-  class TodoList extends Notifier<List<Todo>> {
+  class TodoList extends StreamNotifier<Todo> {
     @override
-    List<Todo> build() => [];
+    Stream<Todo> build() => Stream(...);
   
     @override
-    bool updateShouldNotify(List<Todo> previous, List<Todo> next) {
+    bool updateShouldNotify(AsyncValue<Todo> previous, AsyncValue<Todo> next) {
       // Custom implementation
       return true;
     }
@@ -376,6 +372,7 @@ if (value.error is NotFoundException) {
 
 [TickerMode]: https://api.flutter.dev/flutter/widgets/TickerMode-class.html
 [StreamProvider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamProvider-class.html
+[StreamNotifier]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamNotifier-class.html
 [StreamNotifierProvider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamNotifierProvider.html
 [ProviderObserver]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderObserver-class.html
 [ProviderContainer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderContainer-class.html

@@ -253,8 +253,9 @@ class UncontrolledProviderScope extends StatefulWidget {
       _UncontrolledProviderScopeState();
 }
 
-class _UncontrolledProviderScopeState extends State<UncontrolledProviderScope> {
-  void Function()? _task;
+final class _UncontrolledProviderScopeState
+    extends State<UncontrolledProviderScope> {
+  Task? _task;
   Timer? _vsyncTimer;
   Timer? _vsyncTimOutTimer;
 
@@ -263,6 +264,10 @@ class _UncontrolledProviderScopeState extends State<UncontrolledProviderScope> {
     super.initState();
 
     if (kDebugMode) debugCanModifyProviders ??= _debugCanModifyProviders;
+    assert(
+      !widget.container.scheduler.flutterVsyncs.contains(_flutterVsync),
+      'Sync already added',
+    );
     widget.container.scheduler.flutterVsyncs.add(_flutterVsync);
   }
 
@@ -277,12 +282,27 @@ class _UncontrolledProviderScopeState extends State<UncontrolledProviderScope> {
   void _callTask() {
     if (!mounted) return;
 
-    _task?.call();
+    _vsyncTimOutTimer?.cancel();
+    _vsyncTimOutTimer = null;
+    _vsyncTimer?.cancel();
+    _vsyncTimer = null;
+
+    final task = _task;
     _task = null;
+    task?.call();
   }
 
-  void _flutterVsync(void Function() task) {
-    assert(_task == null, 'Only one task can be scheduled at a time');
+  void _flutterVsync(Task task) {
+    assert(
+      _task == null
+          // Checks for race conditions where a task has been completed in a different scope.
+          // If so, it then becomes possible for another task to be scheduled
+          // before this scoped had the opportunity to run its task.
+          // TODO find a way to test this.
+          ||
+          _task!.completed,
+      'Only one task can be scheduled at a time',
+    );
     assert(mounted, 'Cannot schedule a task on an unmounted element');
     _task = task;
 

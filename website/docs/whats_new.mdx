@@ -577,6 +577,9 @@ This can impact you in a few ways:
 - If you have a large data class that overrides `==`, you may see a small
   performance impact.
 
+The most common case where you will be impacted is when using [StreamProvider]/[StreamNotifier],
+as events of the stream are now filtered using `==`.
+
 If you are impacted by those changes, you can override `updateShouldNotify` to
 use a custom implementation:
 
@@ -586,10 +589,10 @@ use a custom implementation:
   @riverpod
   class TodoList extends _$TodoList {
     @override
-    List<Todo> build() => [];
+    Stream<Todo> build() => Stream(...);
   
     @override
-    bool updateShouldNotify(List<Todo> previous, List<Todo> next) {
+    bool updateShouldNotify(AsyncValue<Todo> previous, AsyncValue<Todo> next) {
       // Custom implementation
       return true;
     }
@@ -597,12 +600,12 @@ use a custom implementation:
   `}
   
   raw={`
-  class TodoList extends Notifier<List<Todo>> {
+  class TodoList extends StreamNotifier<Todo> {
     @override
-    List<Todo> build() => [];
+    Stream<Todo> build() => Stream(...);
   
     @override
-    bool updateShouldNotify(List<Todo> previous, List<Todo> next) {
+    bool updateShouldNotify(AsyncValue<Todo> previous, AsyncValue<Todo> next) {
       // Custom implementation
       return true;
     }
@@ -611,6 +614,25 @@ use a custom implementation:
 ></AutoSnippet>
 
 ## Provider life-cycle changes
+
+### Refs and Notifiers can no-longer be interacted with after they have been disposed
+
+In 2.0, in some edge-cases you could still interact with things like [Ref] or [Notifier]
+after they were disposed. This was not intended and caused various severe bugs.
+
+In 3.0, Riverpod will throw an error if you try to interact with a disposed Ref/Notifier.
+
+You can use [Ref.mounted] to check if a Ref/Notifier is still usable.
+
+```dart
+final provider = FutureProvider<int>((ref) async {
+  await Future.delayed(Duration(seconds: 1));
+  // Abort the provider if it has been disposed during the await.
+  // You can throw whatever you want and ignore this exception in your error reporting tools.
+  if (!ref.mounted) throw MyException();
+  return 42;
+});
+```
 
 ### When reading a provider results in an exception, the error is now wrapped in a ProviderException
 
@@ -1373,11 +1395,11 @@ regarding combining multiple "sources of truth" in a single provider.
 
 [ProviderContainer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderContainer-class.html
 [ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
-[Mutation]: https://pub.dev/documentation/riverpod/3.0.0-dev.18/experimental_mutation/Mutation-class.html
+[Mutation]: https://pub.dev/documentation/riverpod/latest/experimental_mutation/Mutation-class.html
 [riverpod_lint]: https://pub.dev/packages/riverpod_lint
 [Ref]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref-class.html
 [Ref.read]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref/read.html
-[tsx.get]: https://pub.dev/documentation/riverpod/3.0.0-dev.18/experimental_mutation/MutationTransaction/get.html
+[tsx.get]: https://pub.dev/documentation/riverpod/latest/experimental_mutation/MutationTransaction/get.html
 [WidgetRef]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef-class.html
 [TickerMode]: https://api.flutter.dev/flutter/widgets/TickerMode-class.html
 [Consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html
@@ -1385,5 +1407,8 @@ regarding combining multiple "sources of truth" in a single provider.
 [AsyncValue]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/AsyncValue-class.html
 [ProviderObserver]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderObserver-class.html
 [WidgetTester.container]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/RiverpodWidgetTesterX/container.html
-[SyncProviderTransformerMixin]: https://pub.dev/documentation/riverpod/3.0.0-dev.18/misc/SyncProviderTransformerMixin-mixin.html
-[ProviderListenable]: https://pub.dev/documentation/riverpod/3.0.0-dev.18/misc/ProviderListenable-class.html
+[SyncProviderTransformerMixin]: https://pub.dev/documentation/riverpod/latest/misc/SyncProviderTransformerMixin-mixin.html
+[ProviderListenable]: https://pub.dev/documentation/riverpod/latest/misc/ProviderListenable-class.html
+[StreamProvider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamProvider-class.html
+[StreamNotifier]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamNotifier-class.html
+[Ref.mounted]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref/mounted.html

@@ -166,9 +166,8 @@ class _StateNotifierProviderElement<
 
   @override
   WhenComplete create(Ref ref) {
-    final notifier = _notifierNotifier.result = $Result.guard(
-      () => provider.create(ref),
-    );
+    final notifier =
+        _notifierNotifier.result = $Result.guard(() => provider.create(ref));
 
     _removeListener = notifier.valueOrRawException.addListener(
       (newState) => value = AsyncData(newState),

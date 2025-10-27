@@ -10,9 +10,10 @@ part of 'question.dart';
 
 _QuestionsResponse _$QuestionsResponseFromJson(Map<String, dynamic> json) =>
     _QuestionsResponse(
-      items: (json['items'] as List<dynamic>)
-          .map((e) => Question.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      items:
+          (json['items'] as List<dynamic>)
+              .map((e) => Question.fromJson(e as Map<String, dynamic>))
+              .toList(),
       total: (json['total'] as num).toInt(),
     );
 
