@@ -20,6 +20,7 @@ import 'internals.dart';
 
 part 'framework.g.dart';
 
+part 'core/base_ref.dart';
 part 'core/element.dart';
 part 'core/family.dart';
 part 'core/foundation.dart';

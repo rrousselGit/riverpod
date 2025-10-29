@@ -6,7 +6,6 @@ import 'dart:collection';
 import 'dart:math' as math;
 
 import 'package:devtools_app_shared/utils.dart';
-import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 // ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;

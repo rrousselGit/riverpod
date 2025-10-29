@@ -1215,6 +1215,34 @@ final class ProviderObserverContext {
   }
 }
 
+@internal
+class ConsumerContext {}
+
+@internal
+base mixin DebugProviderObserver on ProviderObserver {
+  BaseWidgetRef debugOnWidgetRefMethod(ProviderObserverContext context);
+  BaseRef debugOnRefMethod(ProviderObserverContext context);
+  BaseNotifier debugOnNotifierMethod(ProviderObserverContext context);
+  BaseAsyncNotifier debugOnAsyncNotifierMethod(ProviderObserverContext context);
+  BaseStreamNotifier debugOnStreamNotifierMethod(
+    ProviderObserverContext context,
+  );
+
+  void debugDidCreateProviderContainer(ProviderContainer container);
+  void debugDidDisposeProviderContainer(ProviderContainer container);
+
+  void debugProviderBuildStart(ProviderObserverContext context);
+  void debugProviderBuildEnd(ProviderObserverContext context);
+
+  void debugProviderMarkedNeedsBuild(ProviderObserverContext context);
+  void debugProviderUnmount(ProviderObserverContext context);
+
+  void debugConsumerMount(ConsumerContext context);
+  void debugConsumerUnmount(ConsumerContext context);
+  void debugConsumerBuildStart(ConsumerContext context);
+  void debugConsumerBuildEnd(ConsumerContext context);
+}
+
 /// An object that listens to the changes of a [ProviderContainer].
 ///
 /// This can be used for logging or making devtools.
