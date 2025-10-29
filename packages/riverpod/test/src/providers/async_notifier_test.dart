@@ -56,6 +56,43 @@ void main() {
           ),
           listener(any, const AsyncData<int>(1)),
         ]);
+        verifyNoMoreInteractions(listener);
+      },
+    );
+
+    test(
+      'Setting to a non-empty async value aborts the async transition',
+      () async {
+        final completer = Completer<void>();
+        addTearDown(() {
+          if (!completer.isCompleted) {
+            completer.completeError(StateError('Test did not complete'));
+          }
+        });
+
+        final provider = factory.simpleTestProvider<int>((ref, self) async {
+          await null;
+          self.state = const AsyncData(42);
+          await null;
+          self.state = AsyncLoading<int>().copyWithPrevious(
+            const AsyncData(21),
+          );
+          completer.complete();
+          return 30;
+        });
+        final container = ProviderContainer.test();
+        final listener = Listener<AsyncValue<int>>();
+
+        container.listen(provider, listener.call);
+        await completer.future;
+
+        verifyInOrder([
+          listener(AsyncLoading<int>(), const AsyncData(42)),
+          listener(
+            const AsyncData(42),
+            AsyncLoading<int>().copyWithPrevious(const AsyncData(21)),
+          ),
+        ]);
       },
     );
 
