@@ -27,6 +27,38 @@ void main() {
   });
 
   asyncNotifierProviderFactory.createGroup((factory) {
+    test(
+      'Calling state= followed by returning .future does not cause a double notification',
+      () async {
+        final provider = factory.simpleTestProvider<int>((ref, self) async {
+          await null;
+          self.state = AsyncData((self.state.value ?? -1) + 1);
+          return self.future;
+        });
+        final container = ProviderContainer.test();
+        final listener = Listener<AsyncValue<int>>();
+
+        container.listen(provider, listener.call);
+        await container.read(provider.future);
+
+        verifyOnly(
+          listener,
+          listener(AsyncLoading<int>(), const AsyncData<int>(0)),
+        );
+
+        container.invalidate(provider);
+        await container.read(provider.future);
+
+        verifyInOrder([
+          listener(
+            AsyncData<int>(0),
+            AsyncLoading<int>().copyWithPrevious(const AsyncData<int>(0)),
+          ),
+          listener(any, const AsyncData<int>(1)),
+        ]);
+      },
+    );
+
     test('filters state update by == by default', () async {
       final provider = factory.simpleTestProvider<Equal<int>>(
         (ref, _) => Equal(42),
