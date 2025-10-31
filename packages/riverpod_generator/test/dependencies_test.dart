@@ -170,18 +170,18 @@ void main() {
   });
 
   test('remove duplicate dependencies', () {
-    expect(
-      duplicateDependenciesProvider.dependencies,
-      same(const <ProviderOrFamily>[depProvider, dep2Provider]),
-    );
+    expect(duplicateDependenciesProvider.dependencies, <ProviderOrFamily>[
+      depProvider,
+      dep2Provider,
+    ]);
     expect(
       duplicateDependenciesProvider.$allTransitiveDependencies,
-      same(const <ProviderOrFamily>[depProvider, dep2Provider]),
+      <ProviderOrFamily>[depProvider, dep2Provider],
     );
 
     expect(
       transitiveDuplicateDependenciesProvider.$allTransitiveDependencies,
-      same(const <ProviderOrFamily>{
+      same(<ProviderOrFamily>{
         duplicateDependenciesProvider,
         depProvider,
         dep2Provider,

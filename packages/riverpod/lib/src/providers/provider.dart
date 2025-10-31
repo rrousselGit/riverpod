@@ -34,7 +34,7 @@ final class Provider<ValueT> extends $FunctionalProvider<ValueT, ValueT, ValueT>
   /// An implementation detail of Riverpod
   /// @nodoc
   @internal
-  const Provider.internal(
+  Provider.internal(
     this._create, {
     required super.name,
     required super.dependencies,

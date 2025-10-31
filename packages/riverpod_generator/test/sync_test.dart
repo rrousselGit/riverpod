@@ -168,7 +168,7 @@ void main() {
     () async {
       final container = ProviderContainer.test();
 
-      const ProviderBase<Stream<String>> provider = rawStreamProvider;
+      final ProviderBase<Stream<String>> provider = rawStreamProvider;
       final Stream<String> result = container.read(rawStreamProvider);
 
       await expectLater(result, emits('Hello world'));
@@ -180,7 +180,7 @@ void main() {
     () {
       final container = ProviderContainer.test();
 
-      const ProviderBase<String> provider = publicProvider;
+      final ProviderBase<String> provider = publicProvider;
       final String result = container.read(publicProvider);
 
       expect(result, 'Hello world');
@@ -206,7 +206,7 @@ void main() {
     () {
       final container = ProviderContainer.test();
 
-      const FamilyFamily family = familyProvider;
+      final FamilyFamily family = familyProvider;
 
       expect(familyProvider(42, third: .42).from, familyProvider);
 
