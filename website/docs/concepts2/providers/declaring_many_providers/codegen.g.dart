@@ -12,11 +12,11 @@ part of 'codegen.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(city)
-const cityProvider = CityProvider._();
+final cityProvider = CityProvider._();
 
 final class CityProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const CityProvider._()
+  CityProvider._()
     : super(
         from: null,
         argument: null,
@@ -52,11 +52,11 @@ final class CityProvider extends $FunctionalProvider<String, String, String>
 String _$cityHash() => r'6a5023a3aba119f1ecaee6c7db44b3f519e72759';
 
 @ProviderFor(country)
-const countryProvider = CountryProvider._();
+final countryProvider = CountryProvider._();
 
 final class CountryProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const CountryProvider._()
+  CountryProvider._()
     : super(
         from: null,
         argument: null,

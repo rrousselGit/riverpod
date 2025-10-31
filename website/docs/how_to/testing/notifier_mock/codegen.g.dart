@@ -12,10 +12,10 @@ part of 'codegen.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(MyNotifier)
-const myProvider = MyNotifierProvider._();
+final myProvider = MyNotifierProvider._();
 
 final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
-  const MyNotifierProvider._()
+  MyNotifierProvider._()
     : super(
         from: null,
         argument: null,

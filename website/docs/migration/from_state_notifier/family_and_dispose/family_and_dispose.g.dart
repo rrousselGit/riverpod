@@ -12,13 +12,13 @@ part of 'family_and_dispose.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(taskTracker)
-const taskTrackerProvider = TaskTrackerProvider._();
+final taskTrackerProvider = TaskTrackerProvider._();
 
 final class TaskTrackerProvider
     extends
         $FunctionalProvider<TaskTrackerRepo, TaskTrackerRepo, TaskTrackerRepo>
     with $Provider<TaskTrackerRepo> {
-  const TaskTrackerProvider._()
+  TaskTrackerProvider._()
     : super(
         from: null,
         argument: null,
@@ -54,11 +54,11 @@ final class TaskTrackerProvider
 String _$taskTrackerHash() => r'004d4554b37d841c6f668e298067dd39611a453a';
 
 @ProviderFor(BugsEncounteredNotifier)
-const bugsEncounteredProvider = BugsEncounteredNotifierFamily._();
+final bugsEncounteredProvider = BugsEncounteredNotifierFamily._();
 
 final class BugsEncounteredNotifierProvider
     extends $AsyncNotifierProvider<BugsEncounteredNotifier, int> {
-  const BugsEncounteredNotifierProvider._({
+  BugsEncounteredNotifierProvider._({
     required BugsEncounteredNotifierFamily super.from,
     required String super.argument,
   }) : super(
@@ -107,7 +107,7 @@ final class BugsEncounteredNotifierFamily extends $Family
           FutureOr<int>,
           String
         > {
-  const BugsEncounteredNotifierFamily._()
+  BugsEncounteredNotifierFamily._()
     : super(
         retry: null,
         name: r'bugsEncounteredProvider',

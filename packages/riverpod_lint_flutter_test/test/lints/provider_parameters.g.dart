@@ -10,11 +10,11 @@ part of 'provider_parameters.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(generator)
-const generatorProvider = GeneratorFamily._();
+final generatorProvider = GeneratorFamily._();
 
 final class GeneratorProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const GeneratorProvider._({
+  GeneratorProvider._({
     required GeneratorFamily super.from,
     required Object? super.argument,
   }) : super(
@@ -69,7 +69,7 @@ String _$generatorHash() => r'd7d1733f8884b6702f363ddb178ae57797d0034f';
 
 final class GeneratorFamily extends $Family
     with $FunctionalFamilyOverride<int, Object?> {
-  const GeneratorFamily._()
+  GeneratorFamily._()
     : super(
         retry: null,
         name: r'generatorProvider',

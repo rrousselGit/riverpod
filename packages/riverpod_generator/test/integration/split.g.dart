@@ -10,11 +10,11 @@ part of 'split.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(counter2)
-const counter2Provider = Counter2Provider._();
+final counter2Provider = Counter2Provider._();
 
 final class Counter2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const Counter2Provider._()
+  Counter2Provider._()
     : super(
         from: null,
         argument: null,

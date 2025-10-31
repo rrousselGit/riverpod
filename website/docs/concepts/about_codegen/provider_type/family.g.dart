@@ -12,11 +12,11 @@ part of 'family.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(example)
-const exampleProvider = ExampleFamily._();
+final exampleProvider = ExampleFamily._();
 
 final class ExampleProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const ExampleProvider._({
+  ExampleProvider._({
     required ExampleFamily super.from,
     required int super.argument,
   }) : super(
@@ -71,7 +71,7 @@ String _$exampleHash() => r'7cd87bca029ed938b0e314a14fdfaa2875bd3079';
 
 final class ExampleFamily extends $Family
     with $FunctionalFamilyOverride<String, int> {
-  const ExampleFamily._()
+  ExampleFamily._()
     : super(
         retry: null,
         name: r'exampleProvider',

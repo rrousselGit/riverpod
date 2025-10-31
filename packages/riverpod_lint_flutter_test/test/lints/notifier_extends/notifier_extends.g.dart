@@ -10,10 +10,10 @@ part of 'notifier_extends.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(MyNotifier)
-const myProvider = MyNotifierProvider._();
+final myProvider = MyNotifierProvider._();
 
 final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
-  const MyNotifierProvider._()
+  MyNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -62,11 +62,11 @@ abstract class _$MyNotifier extends $Notifier<int> {
 }
 
 @ProviderFor(_PrivateClass)
-const _privateClassProvider = _PrivateClassProvider._();
+final _privateClassProvider = _PrivateClassProvider._();
 
 final class _PrivateClassProvider
     extends $NotifierProvider<_PrivateClass, String> {
-  const _PrivateClassProvider._()
+  _PrivateClassProvider._()
     : super(
         from: null,
         argument: null,
@@ -115,11 +115,11 @@ abstract class _$PrivateClass extends $Notifier<String> {
 }
 
 @ProviderFor(Generics)
-const genericsProvider = GenericsFamily._();
+final genericsProvider = GenericsFamily._();
 
 final class GenericsProvider<A extends num, B>
     extends $NotifierProvider<Generics<A, B>, int> {
-  const GenericsProvider._({required GenericsFamily super.from})
+  GenericsProvider._({required GenericsFamily super.from})
     : super(
         argument: null,
         retry: null,
@@ -171,7 +171,7 @@ final class GenericsProvider<A extends num, B>
 String _$genericsHash() => r'0a1bf00e0610ccb1fb5615460e1bc4afb2555f69';
 
 final class GenericsFamily extends $Family {
-  const GenericsFamily._()
+  GenericsFamily._()
     : super(
         retry: null,
         name: r'genericsProvider',
@@ -236,11 +236,11 @@ abstract class _$Generics<A extends num, B> extends $Notifier<int> {
 }
 
 @ProviderFor(NoGenerics)
-const noGenericsProvider = NoGenericsFamily._();
+final noGenericsProvider = NoGenericsFamily._();
 
 final class NoGenericsProvider<A extends num, B>
     extends $NotifierProvider<NoGenerics<A, B>, int> {
-  const NoGenericsProvider._({required NoGenericsFamily super.from})
+  NoGenericsProvider._({required NoGenericsFamily super.from})
     : super(
         argument: null,
         retry: null,
@@ -292,7 +292,7 @@ final class NoGenericsProvider<A extends num, B>
 String _$noGenericsHash() => r'30d5d20092f43cb17ede1f619773757df7cecb30';
 
 final class NoGenericsFamily extends $Family {
-  const NoGenericsFamily._()
+  NoGenericsFamily._()
     : super(
         retry: null,
         name: r'noGenericsProvider',
@@ -357,11 +357,11 @@ abstract class _$NoGenerics<A extends num, B> extends $Notifier<int> {
 }
 
 @ProviderFor(MissingGenerics)
-const missingGenericsProvider = MissingGenericsFamily._();
+final missingGenericsProvider = MissingGenericsFamily._();
 
 final class MissingGenericsProvider<A, B>
     extends $NotifierProvider<MissingGenerics<A, B>, int> {
-  const MissingGenericsProvider._({required MissingGenericsFamily super.from})
+  MissingGenericsProvider._({required MissingGenericsFamily super.from})
     : super(
         argument: null,
         retry: null,
@@ -413,7 +413,7 @@ final class MissingGenericsProvider<A, B>
 String _$missingGenericsHash() => r'b611c76d5fb87fdde78b5fc017912e0569762c23';
 
 final class MissingGenericsFamily extends $Family {
-  const MissingGenericsFamily._()
+  MissingGenericsFamily._()
     : super(
         retry: null,
         name: r'missingGenericsProvider',
@@ -478,11 +478,11 @@ abstract class _$MissingGenerics<A, B> extends $Notifier<int> {
 }
 
 @ProviderFor(WrongOrder)
-const wrongOrderProvider = WrongOrderFamily._();
+final wrongOrderProvider = WrongOrderFamily._();
 
 final class WrongOrderProvider<A, B>
     extends $NotifierProvider<WrongOrder<A, B>, int> {
-  const WrongOrderProvider._({required WrongOrderFamily super.from})
+  WrongOrderProvider._({required WrongOrderFamily super.from})
     : super(
         argument: null,
         retry: null,
@@ -534,7 +534,7 @@ final class WrongOrderProvider<A, B>
 String _$wrongOrderHash() => r'7757670a2f67406ebc96c87edf088deb9cb248a1';
 
 final class WrongOrderFamily extends $Family {
-  const WrongOrderFamily._()
+  WrongOrderFamily._()
     : super(
         retry: null,
         name: r'wrongOrderProvider',

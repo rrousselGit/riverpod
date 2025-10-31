@@ -12,7 +12,7 @@ part of 'search.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(fetchPackages)
-const fetchPackagesProvider = FetchPackagesFamily._();
+final fetchPackagesProvider = FetchPackagesFamily._();
 
 final class FetchPackagesProvider
     extends
@@ -22,7 +22,7 @@ final class FetchPackagesProvider
           FutureOr<List<Package>>
         >
     with $FutureModifier<List<Package>>, $FutureProvider<List<Package>> {
-  const FetchPackagesProvider._({
+  FetchPackagesProvider._({
     required FetchPackagesFamily super.from,
     required ({int page, String search}) super.argument,
   }) : super(
@@ -74,7 +74,7 @@ final class FetchPackagesFamily extends $Family
           FutureOr<List<Package>>,
           ({int page, String search})
         > {
-  const FetchPackagesFamily._()
+  FetchPackagesFamily._()
     : super(
         retry: null,
         name: r'fetchPackagesProvider',

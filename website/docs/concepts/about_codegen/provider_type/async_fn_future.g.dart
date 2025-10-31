@@ -12,12 +12,12 @@ part of 'async_fn_future.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(example)
-const exampleProvider = ExampleProvider._();
+final exampleProvider = ExampleProvider._();
 
 final class ExampleProvider
     extends $FunctionalProvider<AsyncValue<String>, String, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String> {
-  const ExampleProvider._()
+  ExampleProvider._()
     : super(
         from: null,
         argument: null,

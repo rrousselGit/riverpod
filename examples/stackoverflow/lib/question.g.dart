@@ -64,12 +64,12 @@ Map<String, dynamic> _$QuestionToJson(_Question instance) => <String, dynamic>{
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(questionTheme)
-const questionThemeProvider = QuestionThemeProvider._();
+final questionThemeProvider = QuestionThemeProvider._();
 
 final class QuestionThemeProvider
     extends $FunctionalProvider<QuestionTheme, QuestionTheme, QuestionTheme>
     with $Provider<QuestionTheme> {
-  const QuestionThemeProvider._()
+  QuestionThemeProvider._()
     : super(
         from: null,
         argument: null,
@@ -118,7 +118,7 @@ String _$questionThemeHash() => r'c66658995d65c988e6db012ab7f9f754eaa0e5ce';
 /// it's entirely fine to simply pass the [Question] to [QuestionItem] directly.
 
 @ProviderFor(currentQuestion)
-const currentQuestionProvider = CurrentQuestionProvider._();
+final currentQuestionProvider = CurrentQuestionProvider._();
 
 /// A scoped provider, exposing the current question used by [QuestionItem].
 ///
@@ -153,15 +153,15 @@ final class CurrentQuestionProvider
   ///
   /// This is an optional step. Since scoping is a fairly advanced mechanism,
   /// it's entirely fine to simply pass the [Question] to [QuestionItem] directly.
-  const CurrentQuestionProvider._()
+  CurrentQuestionProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'currentQuestionProvider',
         isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[],
-        $allTransitiveDependencies: const <ProviderOrFamily>[],
+        dependencies: <ProviderOrFamily>[],
+        $allTransitiveDependencies: <ProviderOrFamily>[],
       );
 
   @override

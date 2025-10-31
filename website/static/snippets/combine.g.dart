@@ -12,12 +12,12 @@ part of 'combine.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(todos)
-const todosProvider = TodosProvider._();
+final todosProvider = TodosProvider._();
 
 final class TodosProvider
     extends $FunctionalProvider<List<Todo>, List<Todo>, List<Todo>>
     with $Provider<List<Todo>> {
-  const TodosProvider._()
+  TodosProvider._()
     : super(
         from: null,
         argument: null,
@@ -53,11 +53,11 @@ final class TodosProvider
 String _$todosHash() => r'ed255140669430745a7779b542a1209dc182ce0c';
 
 @ProviderFor(filter)
-const filterProvider = FilterProvider._();
+final filterProvider = FilterProvider._();
 
 final class FilterProvider extends $FunctionalProvider<Filter, Filter, Filter>
     with $Provider<Filter> {
-  const FilterProvider._()
+  FilterProvider._()
     : super(
         from: null,
         argument: null,
@@ -93,12 +93,12 @@ final class FilterProvider extends $FunctionalProvider<Filter, Filter, Filter>
 String _$filterHash() => r'38c5f61dc2d4b44e9be37bb724487d265cc0a645';
 
 @ProviderFor(filteredTodos)
-const filteredTodosProvider = FilteredTodosProvider._();
+final filteredTodosProvider = FilteredTodosProvider._();
 
 final class FilteredTodosProvider
     extends $FunctionalProvider<List<Todo>, List<Todo>, List<Todo>>
     with $Provider<List<Todo>> {
-  const FilteredTodosProvider._()
+  FilteredTodosProvider._()
     : super(
         from: null,
         argument: null,

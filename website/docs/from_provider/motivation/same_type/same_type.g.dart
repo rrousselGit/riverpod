@@ -12,12 +12,12 @@ part of 'same_type.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(items)
-const itemsProvider = ItemsProvider._();
+final itemsProvider = ItemsProvider._();
 
 final class ItemsProvider
     extends $FunctionalProvider<List<Item>, List<Item>, List<Item>>
     with $Provider<List<Item>> {
-  const ItemsProvider._()
+  ItemsProvider._()
     : super(
         from: null,
         argument: null,
@@ -53,12 +53,12 @@ final class ItemsProvider
 String _$itemsHash() => r'8dafed1afc3fc52651c24445640d8b57ff080f66';
 
 @ProviderFor(evenItems)
-const evenItemsProvider = EvenItemsProvider._();
+final evenItemsProvider = EvenItemsProvider._();
 
 final class EvenItemsProvider
     extends $FunctionalProvider<List<Item>, List<Item>, List<Item>>
     with $Provider<List<Item>> {
-  const EvenItemsProvider._()
+  EvenItemsProvider._()
     : super(
         from: null,
         argument: null,

@@ -30,13 +30,13 @@ Map<String, dynamic> _$ActivityToJson(_Activity instance) => <String, dynamic>{
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(activity)
-const activityProvider = ActivityProvider._();
+final activityProvider = ActivityProvider._();
 
 final class ActivityProvider
     extends
         $FunctionalProvider<AsyncValue<Activity>, Activity, FutureOr<Activity>>
     with $FutureModifier<Activity>, $FutureProvider<Activity> {
-  const ActivityProvider._()
+  ActivityProvider._()
     : super(
         from: null,
         argument: null,

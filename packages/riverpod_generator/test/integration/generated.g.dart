@@ -10,12 +10,12 @@ part of 'generated.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor($dynamic)
-const $dynamicProvider = $DynamicProvider._();
+final $dynamicProvider = $DynamicProvider._();
 
 final class $DynamicProvider
     extends $FunctionalProvider<dynamic, dynamic, dynamic>
     with $Provider<dynamic> {
-  const $DynamicProvider._()
+  $DynamicProvider._()
     : super(
         from: null,
         argument: null,
@@ -51,12 +51,12 @@ final class $DynamicProvider
 String _$$dynamicHash() => r'1b4a1470c37babf1053660e3774de1a482c91269';
 
 @ProviderFor($dynamicFamily)
-const $dynamicFamilyProvider = $DynamicFamilyFamily._();
+final $dynamicFamilyProvider = $DynamicFamilyFamily._();
 
 final class $DynamicFamilyProvider
     extends $FunctionalProvider<dynamic, dynamic, dynamic>
     with $Provider<dynamic> {
-  const $DynamicFamilyProvider._({
+  $DynamicFamilyProvider._({
     required $DynamicFamilyFamily super.from,
     required dynamic super.argument,
   }) : super(
@@ -111,7 +111,7 @@ String _$$dynamicFamilyHash() => r'5cb3da6177d435e5a4fcfce446f0d3cd628fe6fb';
 
 final class $DynamicFamilyFamily extends $Family
     with $FunctionalFamilyOverride<dynamic, dynamic> {
-  const $DynamicFamilyFamily._()
+  $DynamicFamilyFamily._()
     : super(
         retry: null,
         name: r'$dynamicFamilyProvider',
@@ -128,11 +128,11 @@ final class $DynamicFamilyFamily extends $Family
 }
 
 @ProviderFor($DynamicClass)
-const $dynamicClassProvider = $DynamicClassProvider._();
+final $dynamicClassProvider = $DynamicClassProvider._();
 
 final class $DynamicClassProvider
     extends $NotifierProvider<$DynamicClass, dynamic> {
-  const $DynamicClassProvider._()
+  $DynamicClassProvider._()
     : super(
         from: null,
         argument: null,
@@ -181,11 +181,11 @@ abstract class _$$DynamicClass extends $Notifier<dynamic> {
 }
 
 @ProviderFor($DynamicClassFamily)
-const $dynamicClassFamilyProvider = $DynamicClassFamilyFamily._();
+final $dynamicClassFamilyProvider = $DynamicClassFamilyFamily._();
 
 final class $DynamicClassFamilyProvider
     extends $NotifierProvider<$DynamicClassFamily, dynamic> {
-  const $DynamicClassFamilyProvider._({
+  $DynamicClassFamilyProvider._({
     required $DynamicClassFamilyFamily super.from,
     required dynamic super.argument,
   }) : super(
@@ -241,7 +241,7 @@ final class $DynamicClassFamilyFamily extends $Family
           dynamic,
           dynamic
         > {
-  const $DynamicClassFamilyFamily._()
+  $DynamicClassFamilyFamily._()
     : super(
         retry: null,
         name: r'$dynamicClassFamilyProvider',
@@ -280,12 +280,12 @@ abstract class _$$DynamicClassFamily extends $Notifier<dynamic> {
 }
 
 @ProviderFor(_dynamic)
-const _dynamicProvider = _DynamicFamily._();
+final _dynamicProvider = _DynamicFamily._();
 
 final class _DynamicProvider
     extends $FunctionalProvider<dynamic, dynamic, dynamic>
     with $Provider<dynamic> {
-  const _DynamicProvider._({
+  _DynamicProvider._({
     required _DynamicFamily super.from,
     required dynamic super.argument,
   }) : super(
@@ -340,7 +340,7 @@ String _$_dynamicHash() => r'e08bd08481e4ea0d3da2ab7c38f940c34e96ba7f';
 
 final class _DynamicFamily extends $Family
     with $FunctionalFamilyOverride<dynamic, dynamic> {
-  const _DynamicFamily._()
+  _DynamicFamily._()
     : super(
         retry: null,
         name: r'_dynamicProvider',
@@ -357,13 +357,13 @@ final class _DynamicFamily extends $Family
 }
 
 @ProviderFor(alias)
-const aliasProvider = AliasProvider._();
+final aliasProvider = AliasProvider._();
 
 final class AliasProvider
     extends
         $FunctionalProvider<AsyncValue<int>, AsyncValue<int>, AsyncValue<int>>
     with $Provider<AsyncValue<int>> {
-  const AliasProvider._()
+  AliasProvider._()
     : super(
         from: null,
         argument: null,
@@ -399,13 +399,13 @@ final class AliasProvider
 String _$aliasHash() => r'3feb548aa9a314142b5c5e3c9c7664a316a10d11';
 
 @ProviderFor(aliasFamily)
-const aliasFamilyProvider = AliasFamilyFamily._();
+final aliasFamilyProvider = AliasFamilyFamily._();
 
 final class AliasFamilyProvider
     extends
         $FunctionalProvider<AsyncValue<int>, AsyncValue<int>, AsyncValue<int>>
     with $Provider<AsyncValue<int>> {
-  const AliasFamilyProvider._({
+  AliasFamilyProvider._({
     required AliasFamilyFamily super.from,
     required AsyncValue<int> super.argument,
   }) : super(
@@ -460,7 +460,7 @@ String _$aliasFamilyHash() => r'6afe0afc21cfd2f0f26862e9d8c1095eca5f6e42';
 
 final class AliasFamilyFamily extends $Family
     with $FunctionalFamilyOverride<AsyncValue<int>, AsyncValue<int>> {
-  const AliasFamilyFamily._()
+  AliasFamilyFamily._()
     : super(
         retry: null,
         name: r'aliasFamilyProvider',
@@ -477,11 +477,11 @@ final class AliasFamilyFamily extends $Family
 }
 
 @ProviderFor(AliasClass)
-const aliasClassProvider = AliasClassProvider._();
+final aliasClassProvider = AliasClassProvider._();
 
 final class AliasClassProvider
     extends $NotifierProvider<AliasClass, AsyncValue<int>> {
-  const AliasClassProvider._()
+  AliasClassProvider._()
     : super(
         from: null,
         argument: null,
@@ -530,11 +530,11 @@ abstract class _$AliasClass extends $Notifier<AsyncValue<int>> {
 }
 
 @ProviderFor(AliasClassFamily)
-const aliasClassFamilyProvider = AliasClassFamilyFamily._();
+final aliasClassFamilyProvider = AliasClassFamilyFamily._();
 
 final class AliasClassFamilyProvider
     extends $NotifierProvider<AliasClassFamily, AsyncValue<int>> {
-  const AliasClassFamilyProvider._({
+  AliasClassFamilyProvider._({
     required AliasClassFamilyFamily super.from,
     required AsyncValue<int> super.argument,
   }) : super(
@@ -589,7 +589,7 @@ final class AliasClassFamilyFamily extends $Family
           AsyncValue<int>,
           AsyncValue<int>
         > {
-  const AliasClassFamilyFamily._()
+  AliasClassFamilyFamily._()
     : super(
         retry: null,
         name: r'aliasClassFamilyProvider',

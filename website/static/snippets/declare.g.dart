@@ -12,10 +12,10 @@ part of 'declare.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(Count)
-const countProvider = CountProvider._();
+final countProvider = CountProvider._();
 
 final class CountProvider extends $NotifierProvider<Count, int> {
-  const CountProvider._()
+  CountProvider._()
     : super(
         from: null,
         argument: null,
