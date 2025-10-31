@@ -10,8 +10,8 @@ Stream<List<ItemT>> generic<ItemT extends num>(Ref ref) async* {
 @riverpod
 class GenericClass<StateT extends num> extends _$GenericClass<StateT> {
   @override
-  Stream<List<StateT>> build() async* {
-    yield <StateT>[];
+  Stream<List<StateT>> build(StateT param) async* {
+    yield <StateT>[param];
   }
 }
 

@@ -21,8 +21,8 @@ List<ItemT> complexGeneric<ItemT extends num, OtherT extends String?>(
 class GenericClass<ValueT extends num> extends _$GenericClass<ValueT>
     with MyMixin<List<ValueT>, List<ValueT>> {
   @override
-  List<ValueT> build() {
-    return <ValueT>[];
+  List<ValueT> build(ValueT param) {
+    return <ValueT>[param];
   }
 }
 

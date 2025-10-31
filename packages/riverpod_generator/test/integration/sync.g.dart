@@ -226,15 +226,16 @@ const genericClassProvider = GenericClassFamily._();
 
 final class GenericClassProvider<ValueT extends num>
     extends $NotifierProvider<GenericClass<ValueT>, List<ValueT>> {
-  const GenericClassProvider._({required GenericClassFamily super.from})
-    : super(
-        argument: null,
-        retry: null,
-        name: r'genericClassProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+  const GenericClassProvider._({
+    required GenericClassFamily super.from,
+    required ValueT super.argument,
+  }) : super(
+         retry: null,
+         name: r'genericClassProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$genericClassHash();
@@ -243,7 +244,7 @@ final class GenericClassProvider<ValueT extends num>
   String toString() {
     return r'genericClassProvider'
         '<${ValueT}>'
-        '()';
+        '($argument)';
   }
 
   @$internal
@@ -275,7 +276,7 @@ final class GenericClassProvider<ValueT extends num>
   }
 }
 
-String _$genericClassHash() => r'6e0c2b5d8d270649213bcc5df9d99a16a41e4fe0';
+String _$genericClassHash() => r'c1083ad4079bf4f5f3b2a14d251b5f99ed7640ff';
 
 final class GenericClassFamily extends $Family {
   const GenericClassFamily._()
@@ -287,8 +288,8 @@ final class GenericClassFamily extends $Family {
         isAutoDispose: true,
       );
 
-  GenericClassProvider<ValueT> call<ValueT extends num>() =>
-      GenericClassProvider<ValueT>._(from: this);
+  GenericClassProvider<ValueT> call<ValueT extends num>(ValueT param) =>
+      GenericClassProvider<ValueT>._(argument: param, from: this);
 
   @override
   String toString() => r'genericClassProvider';
@@ -330,11 +331,14 @@ final class GenericClassFamily extends $Family {
 
 abstract class _$GenericClass<ValueT extends num>
     extends $Notifier<List<ValueT>> {
-  List<ValueT> build();
+  late final _$args = ref.$arg as ValueT;
+  ValueT get param => _$args;
+
+  List<ValueT> build(ValueT param);
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
+    final created = build(_$args);
     final ref = this.ref as $Ref<List<ValueT>, List<ValueT>>;
     final element =
         ref.element

@@ -21,6 +21,17 @@ void main() {
     },
   );
 
+  test('Using generic class+family', () async {
+    final container = ProviderContainer.test();
+
+    final sub = container.listen(
+      genericClassProvider<int>(42).future,
+      (previous, next) {},
+    );
+
+    expect(await sub.read(), <int>[42]);
+  });
+
   test('Generates .name for providers', () {
     expect(publicProvider.name, 'publicProvider');
     expect(privateProvider.name, '_privateProvider');

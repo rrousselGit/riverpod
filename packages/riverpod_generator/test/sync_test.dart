@@ -45,6 +45,12 @@ void main() {
         3.14,
       ]);
     });
+
+    test('Using class+family', () {
+      final container = ProviderContainer.test();
+
+      expect(container.read(genericClassProvider<int>(42)), <int>[42]);
+    });
   });
 
   test('Supports Raw', () async {

@@ -106,15 +106,16 @@ const genericClassProvider = GenericClassFamily._();
 
 final class GenericClassProvider<StateT extends num>
     extends $StreamNotifierProvider<GenericClass<StateT>, List<StateT>> {
-  const GenericClassProvider._({required GenericClassFamily super.from})
-    : super(
-        argument: null,
-        retry: null,
-        name: r'genericClassProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+  const GenericClassProvider._({
+    required GenericClassFamily super.from,
+    required StateT super.argument,
+  }) : super(
+         retry: null,
+         name: r'genericClassProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$genericClassHash();
@@ -123,7 +124,7 @@ final class GenericClassProvider<StateT extends num>
   String toString() {
     return r'genericClassProvider'
         '<${StateT}>'
-        '()';
+        '($argument)';
   }
 
   @$internal
@@ -147,7 +148,7 @@ final class GenericClassProvider<StateT extends num>
   }
 }
 
-String _$genericClassHash() => r'540bc5bceb8b9367e84d136e122abba5e8e358bb';
+String _$genericClassHash() => r'f047da2d1a7876d952df66e26b8cd153be65424e';
 
 final class GenericClassFamily extends $Family {
   const GenericClassFamily._()
@@ -159,8 +160,8 @@ final class GenericClassFamily extends $Family {
         isAutoDispose: true,
       );
 
-  GenericClassProvider<StateT> call<StateT extends num>() =>
-      GenericClassProvider<StateT>._(from: this);
+  GenericClassProvider<StateT> call<StateT extends num>(StateT param) =>
+      GenericClassProvider<StateT>._(argument: param, from: this);
 
   @override
   String toString() => r'genericClassProvider';
@@ -202,11 +203,14 @@ final class GenericClassFamily extends $Family {
 
 abstract class _$GenericClass<StateT extends num>
     extends $StreamNotifier<List<StateT>> {
-  Stream<List<StateT>> build();
+  late final _$args = ref.$arg as StateT;
+  StateT get param => _$args;
+
+  Stream<List<StateT>> build(StateT param);
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
+    final created = build(_$args);
     final ref = this.ref as $Ref<AsyncValue<List<StateT>>, List<StateT>>;
     final element =
         ref.element
