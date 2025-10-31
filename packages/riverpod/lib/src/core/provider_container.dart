@@ -1222,11 +1222,11 @@ class ConsumerContext {}
 base mixin DebugProviderObserver on ProviderObserver {
   BaseWidgetRef debugOnWidgetRefMethod(ProviderObserverContext context);
   BaseRef debugOnRefMethod(ProviderObserverContext context);
-  BaseNotifier debugOnNotifierMethod(ProviderObserverContext context);
-  BaseAsyncNotifier debugOnAsyncNotifierMethod(ProviderObserverContext context);
-  BaseStreamNotifier debugOnStreamNotifierMethod(
-    ProviderObserverContext context,
-  );
+  // BaseNotifier debugOnNotifierMethod(ProviderObserverContext context);
+  // BaseAsyncNotifier debugOnAsyncNotifierMethod(ProviderObserverContext context);
+  // BaseStreamNotifier debugOnStreamNotifierMethod(
+  //   ProviderObserverContext context,
+  // );
 
   void debugDidCreateProviderContainer(ProviderContainer container);
   void debugDidDisposeProviderContainer(ProviderContainer container);
