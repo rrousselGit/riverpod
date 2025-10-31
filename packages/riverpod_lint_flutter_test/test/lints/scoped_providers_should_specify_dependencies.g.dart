@@ -10,19 +10,19 @@ part of 'scoped_providers_should_specify_dependencies.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(UnimplementedScoped)
-const unimplementedScopedProvider = UnimplementedScopedProvider._();
+final unimplementedScopedProvider = UnimplementedScopedProvider._();
 
 final class UnimplementedScopedProvider
     extends $NotifierProvider<UnimplementedScoped, int> {
-  const UnimplementedScopedProvider._()
+  UnimplementedScopedProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'unimplementedScopedProvider',
         isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[],
-        $allTransitiveDependencies: const <ProviderOrFamily>[],
+        dependencies: <ProviderOrFamily>[],
+        $allTransitiveDependencies: <ProviderOrFamily>[],
       );
 
   @override
@@ -64,19 +64,19 @@ abstract class _$UnimplementedScoped extends $Notifier<int> {
 }
 
 @ProviderFor(scoped)
-const scopedProvider = ScopedProvider._();
+final scopedProvider = ScopedProvider._();
 
 final class ScopedProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const ScopedProvider._()
+  ScopedProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'scopedProvider',
         isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[],
-        $allTransitiveDependencies: const <ProviderOrFamily>[],
+        dependencies: <ProviderOrFamily>[],
+        $allTransitiveDependencies: <ProviderOrFamily>[],
       );
 
   @override
@@ -104,11 +104,11 @@ final class ScopedProvider extends $FunctionalProvider<int, int, int>
 String _$scopedHash() => r'5a271e9b23e18517694454448b922a6c9d03781e';
 
 @ProviderFor(root)
-const rootProvider = RootProvider._();
+final rootProvider = RootProvider._();
 
 final class RootProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const RootProvider._()
+  RootProvider._()
     : super(
         from: null,
         argument: null,

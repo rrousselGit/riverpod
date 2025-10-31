@@ -90,7 +90,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   /// An implementation detail of Riverpod
   /// @nodoc
   @internal
-  const ChangeNotifierProvider.internal(
+  ChangeNotifierProvider.internal(
     this._createFn, {
     required super.name,
     required super.dependencies,

@@ -12,7 +12,7 @@ part of 'async.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(configurations)
-const configurationsProvider = ConfigurationsProvider._();
+final configurationsProvider = ConfigurationsProvider._();
 
 final class ConfigurationsProvider
     extends
@@ -22,7 +22,7 @@ final class ConfigurationsProvider
           FutureOr<Configuration>
         >
     with $FutureModifier<Configuration>, $FutureProvider<Configuration> {
-  const ConfigurationsProvider._()
+  ConfigurationsProvider._()
     : super(
         from: null,
         argument: null,

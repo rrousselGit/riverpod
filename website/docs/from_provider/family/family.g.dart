@@ -12,11 +12,11 @@ part of 'family.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(random)
-const randomProvider = RandomFamily._();
+final randomProvider = RandomFamily._();
 
 final class RandomProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const RandomProvider._({
+  RandomProvider._({
     required RandomFamily super.from,
     required ({int seed, int max}) super.argument,
   }) : super(
@@ -71,7 +71,7 @@ String _$randomHash() => r'ab69799dce84746b22880feae0f1db6dea906f6a';
 
 final class RandomFamily extends $Family
     with $FunctionalFamilyOverride<int, ({int seed, int max})> {
-  const RandomFamily._()
+  RandomFamily._()
     : super(
         retry: null,
         name: r'randomProvider',

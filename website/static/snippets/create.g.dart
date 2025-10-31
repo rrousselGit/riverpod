@@ -12,12 +12,12 @@ part of 'create.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(boredSuggestion)
-const boredSuggestionProvider = BoredSuggestionProvider._();
+final boredSuggestionProvider = BoredSuggestionProvider._();
 
 final class BoredSuggestionProvider
     extends $FunctionalProvider<AsyncValue<String>, String, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String> {
-  const BoredSuggestionProvider._()
+  BoredSuggestionProvider._()
     : super(
         from: null,
         argument: null,

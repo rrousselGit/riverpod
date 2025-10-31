@@ -12,11 +12,11 @@ part of 'codegen.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(example)
-const exampleProvider = ExampleProvider._();
+final exampleProvider = ExampleProvider._();
 
 final class ExampleProvider extends $FunctionalProvider<User, User, User>
     with $Provider<User> {
-  const ExampleProvider._()
+  ExampleProvider._()
     : super(
         from: null,
         argument: null,

@@ -5,7 +5,7 @@ abstract base class _ValueProvider<StateT, ValueT>
     extends $ProviderBaseImpl<StateT>
     with LegacyProviderMixin<StateT> {
   /// Creates a [_ValueProvider].
-  const _ValueProvider(this._value)
+  _ValueProvider(this._value)
     : super(
         name: null,
         from: null,
@@ -40,7 +40,7 @@ abstract base class _ValueProvider<StateT, ValueT>
 @internal
 final class $SyncValueProvider<ValueT> extends _ValueProvider<ValueT, ValueT> {
   /// Creates a [$SyncValueProvider].
-  const $SyncValueProvider(super._value);
+  $SyncValueProvider(super._value);
 
   @override
   Iterable<ProviderOrFamily>? get dependencies => null;
@@ -132,7 +132,7 @@ class _SyncValueProviderElement<ValueT>
 final class $AsyncValueProvider<ValueT>
     extends _ValueProvider<AsyncValue<ValueT>, ValueT> {
   /// Creates a [$AsyncValueProvider].
-  const $AsyncValueProvider(super._value);
+  $AsyncValueProvider(super._value);
 
   /// @nodoc
   @internal

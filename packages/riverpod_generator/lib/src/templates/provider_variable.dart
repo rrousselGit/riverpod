@@ -20,12 +20,12 @@ class ProviderVariableTemplate extends Template {
     switch (provider) {
       case _ when provider.providerElement.isFamily:
         buffer.writeln(
-          'const $providerName = ${provider.familyTypeName}._();\n',
+          'final $providerName = ${provider.familyTypeName}._();\n',
         );
 
       case _:
         final providerType = provider.providerTypeName;
-        buffer.writeln('const $providerName = $providerType._();\n');
+        buffer.writeln('final $providerName = $providerType._();\n');
     }
   }
 }

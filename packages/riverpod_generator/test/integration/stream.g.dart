@@ -10,7 +10,7 @@ part of 'stream.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(generic)
-const genericProvider = GenericFamily._();
+final genericProvider = GenericFamily._();
 
 final class GenericProvider<ItemT extends num>
     extends
@@ -20,7 +20,7 @@ final class GenericProvider<ItemT extends num>
           Stream<List<ItemT>>
         >
     with $FutureModifier<List<ItemT>>, $StreamProvider<List<ItemT>> {
-  const GenericProvider._({required GenericFamily super.from})
+  GenericProvider._({required GenericFamily super.from})
     : super(
         argument: null,
         retry: null,
@@ -71,7 +71,7 @@ final class GenericProvider<ItemT extends num>
 String _$genericHash() => r'ba315b9569d7dade484b5736af8e613b91f83a03';
 
 final class GenericFamily extends $Family {
-  const GenericFamily._()
+  GenericFamily._()
     : super(
         retry: null,
         name: r'genericProvider',
@@ -102,19 +102,20 @@ final class GenericFamily extends $Family {
 }
 
 @ProviderFor(GenericClass)
-const genericClassProvider = GenericClassFamily._();
+final genericClassProvider = GenericClassFamily._();
 
 final class GenericClassProvider<StateT extends num>
     extends $StreamNotifierProvider<GenericClass<StateT>, List<StateT>> {
-  const GenericClassProvider._({required GenericClassFamily super.from})
-    : super(
-        argument: null,
-        retry: null,
-        name: r'genericClassProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+  GenericClassProvider._({
+    required GenericClassFamily super.from,
+    required StateT super.argument,
+  }) : super(
+         retry: null,
+         name: r'genericClassProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$genericClassHash();
@@ -123,7 +124,7 @@ final class GenericClassProvider<StateT extends num>
   String toString() {
     return r'genericClassProvider'
         '<${StateT}>'
-        '()';
+        '($argument)';
   }
 
   @$internal
@@ -147,10 +148,10 @@ final class GenericClassProvider<StateT extends num>
   }
 }
 
-String _$genericClassHash() => r'540bc5bceb8b9367e84d136e122abba5e8e358bb';
+String _$genericClassHash() => r'f047da2d1a7876d952df66e26b8cd153be65424e';
 
 final class GenericClassFamily extends $Family {
-  const GenericClassFamily._()
+  GenericClassFamily._()
     : super(
         retry: null,
         name: r'genericClassProvider',
@@ -159,8 +160,8 @@ final class GenericClassFamily extends $Family {
         isAutoDispose: true,
       );
 
-  GenericClassProvider<StateT> call<StateT extends num>() =>
-      GenericClassProvider<StateT>._(from: this);
+  GenericClassProvider<StateT> call<StateT extends num>(StateT param) =>
+      GenericClassProvider<StateT>._(argument: param, from: this);
 
   @override
   String toString() => r'genericClassProvider';
@@ -202,11 +203,14 @@ final class GenericClassFamily extends $Family {
 
 abstract class _$GenericClass<StateT extends num>
     extends $StreamNotifier<List<StateT>> {
-  Stream<List<StateT>> build();
+  late final _$args = ref.$arg as StateT;
+  StateT get param => _$args;
+
+  Stream<List<StateT>> build(StateT param);
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
+    final created = build(_$args);
     final ref = this.ref as $Ref<AsyncValue<List<StateT>>, List<StateT>>;
     final element =
         ref.element
@@ -221,12 +225,12 @@ abstract class _$GenericClass<StateT extends num>
 }
 
 @ProviderFor(public)
-const publicProvider = PublicProvider._();
+final publicProvider = PublicProvider._();
 
 final class PublicProvider
     extends $FunctionalProvider<AsyncValue<String>, String, Stream<String>>
     with $FutureModifier<String>, $StreamProvider<String> {
-  const PublicProvider._()
+  PublicProvider._()
     : super(
         from: null,
         argument: null,
@@ -254,12 +258,12 @@ final class PublicProvider
 String _$publicHash() => r'ed93527425175c4a2475e83a3f44223a2aa604d7';
 
 @ProviderFor(_private)
-const _privateProvider = _PrivateProvider._();
+final _privateProvider = _PrivateProvider._();
 
 final class _PrivateProvider
     extends $FunctionalProvider<AsyncValue<String>, String, Stream<String>>
     with $FutureModifier<String>, $StreamProvider<String> {
-  const _PrivateProvider._()
+  _PrivateProvider._()
     : super(
         from: null,
         argument: null,
@@ -287,12 +291,12 @@ final class _PrivateProvider
 String _$_privateHash() => r'7915ccdd16751e7dc6274bb024d1b273d78dc78b';
 
 @ProviderFor(family)
-const familyProvider = FamilyFamily._();
+final familyProvider = FamilyFamily._();
 
 final class FamilyProvider
     extends $FunctionalProvider<AsyncValue<String>, String, Stream<String>>
     with $FutureModifier<String>, $StreamProvider<String> {
-  const FamilyProvider._({
+  FamilyProvider._({
     required FamilyFamily super.from,
     required (
       int, {
@@ -371,7 +375,7 @@ final class FamilyFamily extends $Family
             List<String>? fifth,
           })
         > {
-  const FamilyFamily._()
+  FamilyFamily._()
     : super(
         retry: null,
         name: r'familyProvider',
@@ -402,11 +406,11 @@ final class FamilyFamily extends $Family
 }
 
 @ProviderFor(PublicClass)
-const publicClassProvider = PublicClassProvider._();
+final publicClassProvider = PublicClassProvider._();
 
 final class PublicClassProvider
     extends $StreamNotifierProvider<PublicClass, String> {
-  const PublicClassProvider._()
+  PublicClassProvider._()
     : super(
         from: null,
         argument: null,
@@ -447,11 +451,11 @@ abstract class _$PublicClass extends $StreamNotifier<String> {
 }
 
 @ProviderFor(_PrivateClass)
-const _privateClassProvider = _PrivateClassProvider._();
+final _privateClassProvider = _PrivateClassProvider._();
 
 final class _PrivateClassProvider
     extends $StreamNotifierProvider<_PrivateClass, String> {
-  const _PrivateClassProvider._()
+  _PrivateClassProvider._()
     : super(
         from: null,
         argument: null,
@@ -492,11 +496,11 @@ abstract class _$PrivateClass extends $StreamNotifier<String> {
 }
 
 @ProviderFor(FamilyClass)
-const familyClassProvider = FamilyClassFamily._();
+final familyClassProvider = FamilyClassFamily._();
 
 final class FamilyClassProvider
     extends $StreamNotifierProvider<FamilyClass, String> {
-  const FamilyClassProvider._({
+  FamilyClassProvider._({
     required FamilyClassFamily super.from,
     required (
       int, {
@@ -556,7 +560,7 @@ final class FamilyClassFamily extends $Family
             List<String>? fifth,
           })
         > {
-  const FamilyClassFamily._()
+  FamilyClassFamily._()
     : super(
         retry: null,
         name: r'familyClassProvider',

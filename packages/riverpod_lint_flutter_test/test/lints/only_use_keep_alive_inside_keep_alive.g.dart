@@ -10,11 +10,11 @@ part of 'only_use_keep_alive_inside_keep_alive.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(keepAlive)
-const keepAliveProvider = KeepAliveProvider._();
+final keepAliveProvider = KeepAliveProvider._();
 
 final class KeepAliveProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const KeepAliveProvider._()
+  KeepAliveProvider._()
     : super(
         from: null,
         argument: null,
@@ -50,11 +50,11 @@ final class KeepAliveProvider extends $FunctionalProvider<int, int, int>
 String _$keepAliveHash() => r'095b2cb2261b9d79721aa6552b8aaf0d8a7bb7ee';
 
 @ProviderFor(KeepAliveClass)
-const keepAliveClassProvider = KeepAliveClassProvider._();
+final keepAliveClassProvider = KeepAliveClassProvider._();
 
 final class KeepAliveClassProvider
     extends $NotifierProvider<KeepAliveClass, int> {
-  const KeepAliveClassProvider._()
+  KeepAliveClassProvider._()
     : super(
         from: null,
         argument: null,
@@ -103,11 +103,11 @@ abstract class _$KeepAliveClass extends $Notifier<int> {
 }
 
 @ProviderFor(autoDispose)
-const autoDisposeProvider = AutoDisposeProvider._();
+final autoDisposeProvider = AutoDisposeProvider._();
 
 final class AutoDisposeProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const AutoDisposeProvider._()
+  AutoDisposeProvider._()
     : super(
         from: null,
         argument: null,
@@ -143,11 +143,11 @@ final class AutoDisposeProvider extends $FunctionalProvider<int, int, int>
 String _$autoDisposeHash() => r'1ace7b4b2957ecf77b683b868e91a2614fc77d03';
 
 @ProviderFor(AutoDisposeClass)
-const autoDisposeClassProvider = AutoDisposeClassProvider._();
+final autoDisposeClassProvider = AutoDisposeClassProvider._();
 
 final class AutoDisposeClassProvider
     extends $NotifierProvider<AutoDisposeClass, int> {
-  const AutoDisposeClassProvider._()
+  AutoDisposeClassProvider._()
     : super(
         from: null,
         argument: null,
@@ -196,11 +196,11 @@ abstract class _$AutoDisposeClass extends $Notifier<int> {
 }
 
 @ProviderFor(fn)
-const fnProvider = FnProvider._();
+final fnProvider = FnProvider._();
 
 final class FnProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const FnProvider._()
+  FnProvider._()
     : super(
         from: null,
         argument: null,

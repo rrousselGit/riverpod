@@ -10,11 +10,11 @@ part of 'another.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(b)
-const bProvider = BProvider._();
+final bProvider = BProvider._();
 
 final class BProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const BProvider._()
+  BProvider._()
     : super(
         from: null,
         argument: null,
@@ -50,19 +50,19 @@ final class BProvider extends $FunctionalProvider<int, int, int>
 String _$bHash() => r'31624e9aa10c9cd7941c9626e841c6df3468723b';
 
 @ProviderFor(anotherScoped)
-const anotherScopedProvider = AnotherScopedProvider._();
+final anotherScopedProvider = AnotherScopedProvider._();
 
 final class AnotherScopedProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const AnotherScopedProvider._()
+  AnotherScopedProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'anotherScopedProvider',
         isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[],
-        $allTransitiveDependencies: const <ProviderOrFamily>[],
+        dependencies: <ProviderOrFamily>[],
+        $allTransitiveDependencies: <ProviderOrFamily>[],
       );
 
   @override
@@ -90,25 +90,25 @@ final class AnotherScopedProvider extends $FunctionalProvider<int, int, int>
 String _$anotherScopedHash() => r'edf3ccffb7c3ce1b1e4ffdd4009aeed4fa38c3f8';
 
 @ProviderFor(anotherNonEmptyScoped)
-const anotherNonEmptyScopedProvider = AnotherNonEmptyScopedProvider._();
+final anotherNonEmptyScopedProvider = AnotherNonEmptyScopedProvider._();
 
 final class AnotherNonEmptyScopedProvider
     extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const AnotherNonEmptyScopedProvider._()
+  AnotherNonEmptyScopedProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'anotherNonEmptyScopedProvider',
         isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[anotherScopedProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
+        dependencies: <ProviderOrFamily>[anotherScopedProvider],
+        $allTransitiveDependencies: <ProviderOrFamily>[
           AnotherNonEmptyScopedProvider.$allTransitiveDependencies0,
         ],
       );
 
-  static const $allTransitiveDependencies0 = anotherScopedProvider;
+  static final $allTransitiveDependencies0 = anotherScopedProvider;
 
   @override
   String debugGetCreateSourceHash() => _$anotherNonEmptyScopedHash();

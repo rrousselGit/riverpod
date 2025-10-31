@@ -42,7 +42,7 @@ abstract base class $NotifierProvider //
   /// An internal base class for [Notifier].
   ///
   /// Not meant for public consumption.
-  const $NotifierProvider({
+  $NotifierProvider({
     required super.name,
     required super.from,
     required super.argument,

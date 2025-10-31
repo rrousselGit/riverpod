@@ -12,11 +12,11 @@ part of 'sync_fn.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(example)
-const exampleProvider = ExampleProvider._();
+final exampleProvider = ExampleProvider._();
 
 final class ExampleProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const ExampleProvider._()
+  ExampleProvider._()
     : super(
         from: null,
         argument: null,

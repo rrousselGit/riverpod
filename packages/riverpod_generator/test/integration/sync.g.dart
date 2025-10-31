@@ -10,12 +10,12 @@ part of 'sync.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(generic)
-const genericProvider = GenericFamily._();
+final genericProvider = GenericFamily._();
 
 final class GenericProvider<ItemT extends num>
     extends $FunctionalProvider<List<ItemT>, List<ItemT>, List<ItemT>>
     with $Provider<List<ItemT>> {
-  const GenericProvider._({required GenericFamily super.from})
+  GenericProvider._({required GenericFamily super.from})
     : super(
         argument: null,
         retry: null,
@@ -73,7 +73,7 @@ final class GenericProvider<ItemT extends num>
 String _$genericHash() => r'560436def511aa3619152db2325771684296d7e5';
 
 final class GenericFamily extends $Family {
-  const GenericFamily._()
+  GenericFamily._()
     : super(
         retry: null,
         name: r'genericProvider',
@@ -104,12 +104,12 @@ final class GenericFamily extends $Family {
 }
 
 @ProviderFor(complexGeneric)
-const complexGenericProvider = ComplexGenericFamily._();
+final complexGenericProvider = ComplexGenericFamily._();
 
 final class ComplexGenericProvider<ItemT extends num, OtherT extends String?>
     extends $FunctionalProvider<List<ItemT>, List<ItemT>, List<ItemT>>
     with $Provider<List<ItemT>> {
-  const ComplexGenericProvider._({
+  ComplexGenericProvider._({
     required ComplexGenericFamily super.from,
     required ({ItemT param, OtherT? otherParam}) super.argument,
   }) : super(
@@ -175,7 +175,7 @@ final class ComplexGenericProvider<ItemT extends num, OtherT extends String?>
 String _$complexGenericHash() => r'02fe9175ec1a496c21379692efe6b11a7286ae55';
 
 final class ComplexGenericFamily extends $Family {
-  const ComplexGenericFamily._()
+  ComplexGenericFamily._()
     : super(
         retry: null,
         name: r'complexGenericProvider',
@@ -222,19 +222,20 @@ final class ComplexGenericFamily extends $Family {
 }
 
 @ProviderFor(GenericClass)
-const genericClassProvider = GenericClassFamily._();
+final genericClassProvider = GenericClassFamily._();
 
 final class GenericClassProvider<ValueT extends num>
     extends $NotifierProvider<GenericClass<ValueT>, List<ValueT>> {
-  const GenericClassProvider._({required GenericClassFamily super.from})
-    : super(
-        argument: null,
-        retry: null,
-        name: r'genericClassProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+  GenericClassProvider._({
+    required GenericClassFamily super.from,
+    required ValueT super.argument,
+  }) : super(
+         retry: null,
+         name: r'genericClassProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$genericClassHash();
@@ -243,7 +244,7 @@ final class GenericClassProvider<ValueT extends num>
   String toString() {
     return r'genericClassProvider'
         '<${ValueT}>'
-        '()';
+        '($argument)';
   }
 
   @$internal
@@ -275,10 +276,10 @@ final class GenericClassProvider<ValueT extends num>
   }
 }
 
-String _$genericClassHash() => r'6e0c2b5d8d270649213bcc5df9d99a16a41e4fe0';
+String _$genericClassHash() => r'c1083ad4079bf4f5f3b2a14d251b5f99ed7640ff';
 
 final class GenericClassFamily extends $Family {
-  const GenericClassFamily._()
+  GenericClassFamily._()
     : super(
         retry: null,
         name: r'genericClassProvider',
@@ -287,8 +288,8 @@ final class GenericClassFamily extends $Family {
         isAutoDispose: true,
       );
 
-  GenericClassProvider<ValueT> call<ValueT extends num>() =>
-      GenericClassProvider<ValueT>._(from: this);
+  GenericClassProvider<ValueT> call<ValueT extends num>(ValueT param) =>
+      GenericClassProvider<ValueT>._(argument: param, from: this);
 
   @override
   String toString() => r'genericClassProvider';
@@ -330,11 +331,14 @@ final class GenericClassFamily extends $Family {
 
 abstract class _$GenericClass<ValueT extends num>
     extends $Notifier<List<ValueT>> {
-  List<ValueT> build();
+  late final _$args = ref.$arg as ValueT;
+  ValueT get param => _$args;
+
+  List<ValueT> build(ValueT param);
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
+    final created = build(_$args);
     final ref = this.ref as $Ref<List<ValueT>, List<ValueT>>;
     final element =
         ref.element
@@ -349,7 +353,7 @@ abstract class _$GenericClass<ValueT extends num>
 }
 
 @ProviderFor(rawFuture)
-const rawFutureProvider = RawFutureProvider._();
+final rawFutureProvider = RawFutureProvider._();
 
 final class RawFutureProvider
     extends
@@ -359,7 +363,7 @@ final class RawFutureProvider
           Raw<Future<String>>
         >
     with $Provider<Raw<Future<String>>> {
-  const RawFutureProvider._()
+  RawFutureProvider._()
     : super(
         from: null,
         argument: null,
@@ -396,7 +400,7 @@ final class RawFutureProvider
 String _$rawFutureHash() => r'9d397f4c0a578a2741610f9ca6f17438ee8e5a34';
 
 @ProviderFor(rawStream)
-const rawStreamProvider = RawStreamProvider._();
+final rawStreamProvider = RawStreamProvider._();
 
 final class RawStreamProvider
     extends
@@ -406,7 +410,7 @@ final class RawStreamProvider
           Raw<Stream<String>>
         >
     with $Provider<Raw<Stream<String>>> {
-  const RawStreamProvider._()
+  RawStreamProvider._()
     : super(
         from: null,
         argument: null,
@@ -443,11 +447,11 @@ final class RawStreamProvider
 String _$rawStreamHash() => r'c7d6cd22f1f325827c866c3ec757d08315fd9858';
 
 @ProviderFor(RawFutureClass)
-const rawFutureClassProvider = RawFutureClassProvider._();
+final rawFutureClassProvider = RawFutureClassProvider._();
 
 final class RawFutureClassProvider
     extends $NotifierProvider<RawFutureClass, Raw<Future<String>>> {
-  const RawFutureClassProvider._()
+  RawFutureClassProvider._()
     : super(
         from: null,
         argument: null,
@@ -496,11 +500,11 @@ abstract class _$RawFutureClass extends $Notifier<Raw<Future<String>>> {
 }
 
 @ProviderFor(RawStreamClass)
-const rawStreamClassProvider = RawStreamClassProvider._();
+final rawStreamClassProvider = RawStreamClassProvider._();
 
 final class RawStreamClassProvider
     extends $NotifierProvider<RawStreamClass, Raw<Stream<String>>> {
-  const RawStreamClassProvider._()
+  RawStreamClassProvider._()
     : super(
         from: null,
         argument: null,
@@ -549,7 +553,7 @@ abstract class _$RawStreamClass extends $Notifier<Raw<Stream<String>>> {
 }
 
 @ProviderFor(rawFamilyFuture)
-const rawFamilyFutureProvider = RawFamilyFutureFamily._();
+final rawFamilyFutureProvider = RawFamilyFutureFamily._();
 
 final class RawFamilyFutureProvider
     extends
@@ -559,7 +563,7 @@ final class RawFamilyFutureProvider
           Raw<Future<String>>
         >
     with $Provider<Raw<Future<String>>> {
-  const RawFamilyFutureProvider._({
+  RawFamilyFutureProvider._({
     required RawFamilyFutureFamily super.from,
     required int super.argument,
   }) : super(
@@ -615,7 +619,7 @@ String _$rawFamilyFutureHash() => r'0ac70d7a2133691f1a9a38cedaeeb6b3bc667ade';
 
 final class RawFamilyFutureFamily extends $Family
     with $FunctionalFamilyOverride<Raw<Future<String>>, int> {
-  const RawFamilyFutureFamily._()
+  RawFamilyFutureFamily._()
     : super(
         retry: null,
         name: r'rawFamilyFutureProvider',
@@ -632,7 +636,7 @@ final class RawFamilyFutureFamily extends $Family
 }
 
 @ProviderFor(rawFamilyStream)
-const rawFamilyStreamProvider = RawFamilyStreamFamily._();
+final rawFamilyStreamProvider = RawFamilyStreamFamily._();
 
 final class RawFamilyStreamProvider
     extends
@@ -642,7 +646,7 @@ final class RawFamilyStreamProvider
           Raw<Stream<String>>
         >
     with $Provider<Raw<Stream<String>>> {
-  const RawFamilyStreamProvider._({
+  RawFamilyStreamProvider._({
     required RawFamilyStreamFamily super.from,
     required int super.argument,
   }) : super(
@@ -698,7 +702,7 @@ String _$rawFamilyStreamHash() => r'6eacfa3a3576d884099c08c298751a3d395271be';
 
 final class RawFamilyStreamFamily extends $Family
     with $FunctionalFamilyOverride<Raw<Stream<String>>, int> {
-  const RawFamilyStreamFamily._()
+  RawFamilyStreamFamily._()
     : super(
         retry: null,
         name: r'rawFamilyStreamProvider',
@@ -715,11 +719,11 @@ final class RawFamilyStreamFamily extends $Family
 }
 
 @ProviderFor(RawFamilyFutureClass)
-const rawFamilyFutureClassProvider = RawFamilyFutureClassFamily._();
+final rawFamilyFutureClassProvider = RawFamilyFutureClassFamily._();
 
 final class RawFamilyFutureClassProvider
     extends $NotifierProvider<RawFamilyFutureClass, Raw<Future<String>>> {
-  const RawFamilyFutureClassProvider._({
+  RawFamilyFutureClassProvider._({
     required RawFamilyFutureClassFamily super.from,
     required int super.argument,
   }) : super(
@@ -775,7 +779,7 @@ final class RawFamilyFutureClassFamily extends $Family
           Raw<Future<String>>,
           int
         > {
-  const RawFamilyFutureClassFamily._()
+  RawFamilyFutureClassFamily._()
     : super(
         retry: null,
         name: r'rawFamilyFutureClassProvider',
@@ -814,11 +818,11 @@ abstract class _$RawFamilyFutureClass extends $Notifier<Raw<Future<String>>> {
 }
 
 @ProviderFor(RawFamilyStreamClass)
-const rawFamilyStreamClassProvider = RawFamilyStreamClassFamily._();
+final rawFamilyStreamClassProvider = RawFamilyStreamClassFamily._();
 
 final class RawFamilyStreamClassProvider
     extends $NotifierProvider<RawFamilyStreamClass, Raw<Stream<String>>> {
-  const RawFamilyStreamClassProvider._({
+  RawFamilyStreamClassProvider._({
     required RawFamilyStreamClassFamily super.from,
     required int super.argument,
   }) : super(
@@ -874,7 +878,7 @@ final class RawFamilyStreamClassFamily extends $Family
           Raw<Stream<String>>,
           int
         > {
-  const RawFamilyStreamClassFamily._()
+  RawFamilyStreamClassFamily._()
     : super(
         retry: null,
         name: r'rawFamilyStreamClassProvider',
@@ -915,14 +919,14 @@ abstract class _$RawFamilyStreamClass extends $Notifier<Raw<Stream<String>>> {
 /// This is some documentation
 
 @ProviderFor(public)
-const publicProvider = PublicProvider._();
+final publicProvider = PublicProvider._();
 
 /// This is some documentation
 
 final class PublicProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   /// This is some documentation
-  const PublicProvider._()
+  PublicProvider._()
     : super(
         from: null,
         argument: null,
@@ -958,12 +962,12 @@ final class PublicProvider extends $FunctionalProvider<String, String, String>
 String _$publicHash() => r'94bee36125844f9fe521363bb228632b9f3bfbc7';
 
 @ProviderFor(supports$inNames)
-const supports$inNamesProvider = Supports$inNamesProvider._();
+final supports$inNamesProvider = Supports$inNamesProvider._();
 
 final class Supports$inNamesProvider
     extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const Supports$inNamesProvider._()
+  Supports$inNamesProvider._()
     : super(
         from: null,
         argument: null,
@@ -1001,14 +1005,14 @@ String _$supports$inNamesHash() => r'8da1f9329f302ce75e38d03c96595de3260b4d2d';
 /// This is some documentation
 
 @ProviderFor(family)
-const familyProvider = FamilyFamily._();
+final familyProvider = FamilyFamily._();
 
 /// This is some documentation
 
 final class FamilyProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   /// This is some documentation
-  const FamilyProvider._({
+  FamilyProvider._({
     required FamilyFamily super.from,
     required (
       int, {
@@ -1097,7 +1101,7 @@ final class FamilyFamily extends $Family
             List<String>? fifth,
           })
         > {
-  const FamilyFamily._()
+  FamilyFamily._()
     : super(
         retry: null,
         name: r'familyProvider',
@@ -1130,11 +1134,11 @@ final class FamilyFamily extends $Family
 }
 
 @ProviderFor(_private)
-const _privateProvider = _PrivateProvider._();
+final _privateProvider = _PrivateProvider._();
 
 final class _PrivateProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const _PrivateProvider._()
+  _PrivateProvider._()
     : super(
         from: null,
         argument: null,
@@ -1172,12 +1176,12 @@ String _$_privateHash() => r'834affaed42662bf46ce7f6203ac2495e1e8974b';
 /// This is some documentation
 
 @ProviderFor(PublicClass)
-const publicClassProvider = PublicClassProvider._();
+final publicClassProvider = PublicClassProvider._();
 
 /// This is some documentation
 final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
   /// This is some documentation
-  const PublicClassProvider._()
+  PublicClassProvider._()
     : super(
         from: null,
         argument: null,
@@ -1228,11 +1232,11 @@ abstract class _$PublicClass extends $Notifier<String> {
 }
 
 @ProviderFor(_PrivateClass)
-const _privateClassProvider = _PrivateClassProvider._();
+final _privateClassProvider = _PrivateClassProvider._();
 
 final class _PrivateClassProvider
     extends $NotifierProvider<_PrivateClass, String> {
-  const _PrivateClassProvider._()
+  _PrivateClassProvider._()
     : super(
         from: null,
         argument: null,
@@ -1283,12 +1287,12 @@ abstract class _$PrivateClass extends $Notifier<String> {
 /// This is some documentation
 
 @ProviderFor(FamilyClass)
-const familyClassProvider = FamilyClassFamily._();
+final familyClassProvider = FamilyClassFamily._();
 
 /// This is some documentation
 final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
   /// This is some documentation
-  const FamilyClassProvider._({
+  FamilyClassProvider._({
     required FamilyClassFamily super.from,
     required (
       int, {
@@ -1358,7 +1362,7 @@ final class FamilyClassFamily extends $Family
             List<String>? fifth,
           })
         > {
-  const FamilyClassFamily._()
+  FamilyClassFamily._()
     : super(
         retry: null,
         name: r'familyClassProvider',
@@ -1439,11 +1443,11 @@ abstract class _$FamilyClass extends $Notifier<String> {
 }
 
 @ProviderFor(LocalStaticDefault)
-const localStaticDefaultProvider = LocalStaticDefaultFamily._();
+final localStaticDefaultProvider = LocalStaticDefaultFamily._();
 
 final class LocalStaticDefaultProvider
     extends $NotifierProvider<LocalStaticDefault, String> {
-  const LocalStaticDefaultProvider._({
+  LocalStaticDefaultProvider._({
     required LocalStaticDefaultFamily super.from,
     required String super.argument,
   }) : super(
@@ -1499,7 +1503,7 @@ final class LocalStaticDefaultFamily extends $Family
           String,
           String
         > {
-  const LocalStaticDefaultFamily._()
+  LocalStaticDefaultFamily._()
     : super(
         retry: null,
         name: r'localStaticDefaultProvider',
@@ -1538,21 +1542,20 @@ abstract class _$LocalStaticDefault extends $Notifier<String> {
 }
 
 @ProviderFor(supports$InFnName)
-const supports$InFnNameProvider = Supports$InFnNameFamily._();
+final supports$InFnNameProvider = Supports$InFnNameFamily._();
 
 final class Supports$InFnNameProvider<And$InT>
     extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const Supports$InFnNameProvider._({
-    required Supports$InFnNameFamily super.from,
-  }) : super(
-         argument: null,
-         retry: null,
-         name: r'supports$InFnNameProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  Supports$InFnNameProvider._({required Supports$InFnNameFamily super.from})
+    : super(
+        argument: null,
+        retry: null,
+        name: r'supports$InFnNameProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$supports$InFnNameHash();
@@ -1602,7 +1605,7 @@ final class Supports$InFnNameProvider<And$InT>
 String _$supports$InFnNameHash() => r'09636911da6a98293c260aad55b89bea5296136b';
 
 final class Supports$InFnNameFamily extends $Family {
-  const Supports$InFnNameFamily._()
+  Supports$InFnNameFamily._()
     : super(
         retry: null,
         name: r'supports$InFnNameProvider',
@@ -1634,12 +1637,12 @@ final class Supports$InFnNameFamily extends $Family {
 }
 
 @ProviderFor(supports$InFnNameFamily)
-const supports$InFnNameFamilyProvider = Supports$InFnNameFamilyFamily._();
+final supports$InFnNameFamilyProvider = Supports$InFnNameFamilyFamily._();
 
 final class Supports$InFnNameFamilyProvider<And$InT>
     extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const Supports$InFnNameFamilyProvider._({
+  Supports$InFnNameFamilyProvider._({
     required Supports$InFnNameFamilyFamily super.from,
     required (And$InT, {And$InT named$arg, String defaultArg}) super.argument,
   }) : super(
@@ -1706,7 +1709,7 @@ String _$supports$InFnNameFamilyHash() =>
     r'3124634e8535d4db655d6384b0827f0f195a75ef';
 
 final class Supports$InFnNameFamilyFamily extends $Family {
-  const Supports$InFnNameFamilyFamily._()
+  Supports$InFnNameFamilyFamily._()
     : super(
         retry: null,
         name: r'supports$InFnNameFamilyProvider',
@@ -1752,11 +1755,11 @@ final class Supports$InFnNameFamilyFamily extends $Family {
 }
 
 @ProviderFor(Supports$InClassName)
-const supports$InClassNameProvider = Supports$InClassNameFamily._();
+final supports$InClassNameProvider = Supports$InClassNameFamily._();
 
 final class Supports$InClassNameProvider<And$InT>
     extends $NotifierProvider<Supports$InClassName<And$InT>, String> {
-  const Supports$InClassNameProvider._({
+  Supports$InClassNameProvider._({
     required Supports$InClassNameFamily super.from,
   }) : super(
          argument: null,
@@ -1810,7 +1813,7 @@ String _$supports$InClassNameHash() =>
     r'848e57774639582ed170dce5765340e1c1cb89b3';
 
 final class Supports$InClassNameFamily extends $Family {
-  const Supports$InClassNameFamily._()
+  Supports$InClassNameFamily._()
     : super(
         retry: null,
         name: r'supports$InClassNameProvider',
@@ -1877,11 +1880,11 @@ abstract class _$Supports$InClassName<And$InT> extends $Notifier<String> {
 }
 
 @ProviderFor(Supports$InClassFamilyName)
-const supports$InClassFamilyNameProvider = Supports$InClassFamilyNameFamily._();
+final supports$InClassFamilyNameProvider = Supports$InClassFamilyNameFamily._();
 
 final class Supports$InClassFamilyNameProvider<And$InT>
     extends $NotifierProvider<Supports$InClassFamilyName<And$InT>, String> {
-  const Supports$InClassFamilyNameProvider._({
+  Supports$InClassFamilyNameProvider._({
     required Supports$InClassFamilyNameFamily super.from,
     required (And$InT, {And$InT named$arg, String defaultArg}) super.argument,
   }) : super(
@@ -1936,7 +1939,7 @@ String _$supports$InClassFamilyNameHash() =>
     r'39e844561e4f4727011bb2f97169d0334c928b20';
 
 final class Supports$InClassFamilyNameFamily extends $Family {
-  const Supports$InClassFamilyNameFamily._()
+  Supports$InClassFamilyNameFamily._()
     : super(
         retry: null,
         name: r'supports$InClassFamilyNameProvider',
@@ -2026,12 +2029,12 @@ abstract class _$Supports$InClassFamilyName<And$InT> extends $Notifier<String> {
 }
 
 @ProviderFor(generated)
-const generatedProvider = GeneratedProvider._();
+final generatedProvider = GeneratedProvider._();
 
 final class GeneratedProvider
     extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const GeneratedProvider._()
+  GeneratedProvider._()
     : super(
         from: null,
         argument: null,
@@ -2067,12 +2070,12 @@ final class GeneratedProvider
 String _$generatedHash() => r'24bfb5df4dc529258ab568372e90a1cbfc2d8c24';
 
 @ProviderFor(unnecessaryCast)
-const unnecessaryCastProvider = UnnecessaryCastFamily._();
+final unnecessaryCastProvider = UnnecessaryCastFamily._();
 
 final class UnnecessaryCastProvider
     extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const UnnecessaryCastProvider._({
+  UnnecessaryCastProvider._({
     required UnnecessaryCastFamily super.from,
     required Object? super.argument,
   }) : super(
@@ -2127,7 +2130,7 @@ String _$unnecessaryCastHash() => r'c64330124f4b03a3e6757e787f62966a32bf83ad';
 
 final class UnnecessaryCastFamily extends $Family
     with $FunctionalFamilyOverride<String, Object?> {
-  const UnnecessaryCastFamily._()
+  UnnecessaryCastFamily._()
     : super(
         retry: null,
         name: r'unnecessaryCastProvider',
@@ -2144,11 +2147,11 @@ final class UnnecessaryCastFamily extends $Family
 }
 
 @ProviderFor(UnnecessaryCastClass)
-const unnecessaryCastClassProvider = UnnecessaryCastClassFamily._();
+final unnecessaryCastClassProvider = UnnecessaryCastClassFamily._();
 
 final class UnnecessaryCastClassProvider
     extends $NotifierProvider<UnnecessaryCastClass, String> {
-  const UnnecessaryCastClassProvider._({
+  UnnecessaryCastClassProvider._({
     required UnnecessaryCastClassFamily super.from,
     required Object? super.argument,
   }) : super(
@@ -2204,7 +2207,7 @@ final class UnnecessaryCastClassFamily extends $Family
           String,
           Object?
         > {
-  const UnnecessaryCastClassFamily._()
+  UnnecessaryCastClassFamily._()
     : super(
         retry: null,
         name: r'unnecessaryCastClassProvider',
@@ -2243,7 +2246,7 @@ abstract class _$UnnecessaryCastClass extends $Notifier<String> {
 }
 
 @ProviderFor(manyDataStream)
-const manyDataStreamProvider = ManyDataStreamFamily._();
+final manyDataStreamProvider = ManyDataStreamFamily._();
 
 final class ManyDataStreamProvider<ItemT extends Object, OtherT extends Object>
     extends
@@ -2253,7 +2256,7 @@ final class ManyDataStreamProvider<ItemT extends Object, OtherT extends Object>
           Stream<List<ItemT>>
         >
     with $FutureModifier<List<ItemT>>, $StreamProvider<List<ItemT>> {
-  const ManyDataStreamProvider._({
+  ManyDataStreamProvider._({
     required ManyDataStreamFamily super.from,
     required ManyProviderData<ItemT, OtherT> super.argument,
   }) : super(
@@ -2308,7 +2311,7 @@ final class ManyDataStreamProvider<ItemT extends Object, OtherT extends Object>
 String _$manyDataStreamHash() => r'57682645596b340352f90a6b2c29d490ce30806b';
 
 final class ManyDataStreamFamily extends $Family {
-  const ManyDataStreamFamily._()
+  ManyDataStreamFamily._()
     : super(
         retry: null,
         name: r'manyDataStreamProvider',
@@ -2350,11 +2353,11 @@ final class ManyDataStreamFamily extends $Family {
 }
 
 @ProviderFor(issue4113)
-const issue4113Provider = Issue4113Provider._();
+final issue4113Provider = Issue4113Provider._();
 
 final class Issue4113Provider extends $FunctionalProvider<void, void, void>
     with $Provider<void> {
-  const Issue4113Provider._()
+  Issue4113Provider._()
     : super(
         from: null,
         argument: null,
@@ -2390,11 +2393,11 @@ final class Issue4113Provider extends $FunctionalProvider<void, void, void>
 String _$issue4113Hash() => r'3800dad2a71076827951824e347e324306cf29da';
 
 @ProviderFor(_issue4113)
-const _issue4113Provider = _Issue4113Provider._();
+final _issue4113Provider = _Issue4113Provider._();
 
 final class _Issue4113Provider extends $FunctionalProvider<void, void, void>
     with $Provider<void> {
-  const _Issue4113Provider._()
+  _Issue4113Provider._()
     : super(
         from: null,
         argument: null,
@@ -2430,11 +2433,11 @@ final class _Issue4113Provider extends $FunctionalProvider<void, void, void>
 String _$_issue4113Hash() => r'9dedddc3d06343015a3a768628a23adb9294fcf1';
 
 @ProviderFor(fn)
-const manualRename = FnProvider._();
+final manualRename = FnProvider._();
 
 final class FnProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const FnProvider._()
+  FnProvider._()
     : super(
         from: null,
         argument: null,
@@ -2470,20 +2473,18 @@ final class FnProvider extends $FunctionalProvider<String, String, String>
 String _$fnHash() => r'af32cc34953e77edd986478ab61d3dbe947b2c3e';
 
 @ProviderFor(fn2)
-const manualRename2 = Fn2Family._();
+final manualRename2 = Fn2Family._();
 
 final class Fn2Provider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const Fn2Provider._({
-    required Fn2Family super.from,
-    required int super.argument,
-  }) : super(
-         retry: null,
-         name: r'manualRename2',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  Fn2Provider._({required Fn2Family super.from, required int super.argument})
+    : super(
+        retry: null,
+        name: r'manualRename2',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$fn2Hash();
@@ -2529,7 +2530,7 @@ String _$fn2Hash() => r'529fc50b1f92a884650b5d023b2f58f49598a695';
 
 final class Fn2Family extends $Family
     with $FunctionalFamilyOverride<String, int> {
-  const Fn2Family._()
+  Fn2Family._()
     : super(
         retry: null,
         name: r'manualRename2',
@@ -2545,11 +2546,11 @@ final class Fn2Family extends $Family
 }
 
 @ProviderFor(voidFunctional)
-const voidFunctionalProvider = VoidFunctionalProvider._();
+final voidFunctionalProvider = VoidFunctionalProvider._();
 
 final class VoidFunctionalProvider extends $FunctionalProvider<void, void, void>
     with $Provider<void> {
-  const VoidFunctionalProvider._()
+  VoidFunctionalProvider._()
     : super(
         from: null,
         argument: null,
@@ -2585,12 +2586,12 @@ final class VoidFunctionalProvider extends $FunctionalProvider<void, void, void>
 String _$voidFunctionalHash() => r'520f9212a7364acb565dc676e189bdbfa898b05a';
 
 @ProviderFor(voidFunctionalWithArgs)
-const voidFunctionalWithArgsProvider = VoidFunctionalWithArgsFamily._();
+final voidFunctionalWithArgsProvider = VoidFunctionalWithArgsFamily._();
 
 final class VoidFunctionalWithArgsProvider
     extends $FunctionalProvider<void, void, void>
     with $Provider<void> {
-  const VoidFunctionalWithArgsProvider._({
+  VoidFunctionalWithArgsProvider._({
     required VoidFunctionalWithArgsFamily super.from,
     required int super.argument,
   }) : super(
@@ -2647,7 +2648,7 @@ String _$voidFunctionalWithArgsHash() =>
 
 final class VoidFunctionalWithArgsFamily extends $Family
     with $FunctionalFamilyOverride<void, int> {
-  const VoidFunctionalWithArgsFamily._()
+  VoidFunctionalWithArgsFamily._()
     : super(
         retry: null,
         name: r'voidFunctionalWithArgsProvider',
@@ -2664,10 +2665,10 @@ final class VoidFunctionalWithArgsFamily extends $Family
 }
 
 @ProviderFor(VoidClass)
-const voidClassProvider = VoidClassProvider._();
+final voidClassProvider = VoidClassProvider._();
 
 final class VoidClassProvider extends $NotifierProvider<VoidClass, void> {
-  const VoidClassProvider._()
+  VoidClassProvider._()
     : super(
         from: null,
         argument: null,
@@ -2716,11 +2717,11 @@ abstract class _$VoidClass extends $Notifier<void> {
 }
 
 @ProviderFor(VoidClassWithArgs)
-const voidClassWithArgsProvider = VoidClassWithArgsFamily._();
+final voidClassWithArgsProvider = VoidClassWithArgsFamily._();
 
 final class VoidClassWithArgsProvider
     extends $NotifierProvider<VoidClassWithArgs, void> {
-  const VoidClassWithArgsProvider._({
+  VoidClassWithArgsProvider._({
     required VoidClassWithArgsFamily super.from,
     required int super.argument,
   }) : super(
@@ -2768,7 +2769,7 @@ String _$voidClassWithArgsHash() => r'f5356413fda00368fb84893fc0cd6acc50476118';
 
 final class VoidClassWithArgsFamily extends $Family
     with $ClassFamilyOverride<VoidClassWithArgs, void, void, void, int> {
-  const VoidClassWithArgsFamily._()
+  VoidClassWithArgsFamily._()
     : super(
         retry: null,
         name: r'voidClassWithArgsProvider',

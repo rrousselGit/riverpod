@@ -385,7 +385,7 @@ abstract base class $ClassProvider<
   CreatedT
 >
     extends $ProviderBaseImpl<StateT> {
-  const $ClassProvider({
+  $ClassProvider({
     required super.name,
     required super.from,
     required super.argument,

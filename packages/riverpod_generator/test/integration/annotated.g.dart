@@ -13,7 +13,7 @@ part of 'annotated.dart';
 @Deprecated('Deprecation message')
 @visibleForTesting
 @protected
-const functionalProvider = FunctionalFamily._();
+final functionalProvider = FunctionalFamily._();
 
 @Deprecated('Deprecation message')
 @visibleForTesting
@@ -21,7 +21,7 @@ const functionalProvider = FunctionalFamily._();
 final class FunctionalProvider
     extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const FunctionalProvider._({
+  FunctionalProvider._({
     required FunctionalFamily super.from,
     required int super.argument,
   }) : super(
@@ -79,7 +79,7 @@ String _$functionalHash() => r'ba8606cd0526e2dde0f775eb8f4c9d8b5b6fdf2c';
 @protected
 final class FunctionalFamily extends $Family
     with $FunctionalFamilyOverride<String, int> {
-  const FunctionalFamily._()
+  FunctionalFamily._()
     : super(
         retry: null,
         name: r'functionalProvider',
@@ -102,13 +102,13 @@ final class FunctionalFamily extends $Family
 @Deprecated('Deprecation message')
 @visibleForTesting
 @protected
-const classBasedProvider = ClassBasedFamily._();
+final classBasedProvider = ClassBasedFamily._();
 
 @Deprecated('Deprecation message')
 @visibleForTesting
 @protected
 final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
-  const ClassBasedProvider._({
+  ClassBasedProvider._({
     required ClassBasedFamily super.from,
     required int super.argument,
   }) : super(
@@ -159,7 +159,7 @@ String _$classBasedHash() => r'92b444806ef8a304c6e0dc3d8e2383601e781183';
 @protected
 final class ClassBasedFamily extends $Family
     with $ClassFamilyOverride<ClassBased, String, String, String, int> {
-  const ClassBasedFamily._()
+  ClassBasedFamily._()
     : super(
         retry: null,
         name: r'classBasedProvider',
@@ -208,14 +208,14 @@ abstract class _$ClassBased extends $Notifier<String> {
 @Deprecated('Deprecation message')
 @visibleForTesting
 @protected
-const familyProvider = FamilyFamily._();
+final familyProvider = FamilyFamily._();
 
 @Deprecated('Deprecation message')
 @visibleForTesting
 @protected
 final class FamilyProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const FamilyProvider._({
+  FamilyProvider._({
     required FamilyFamily super.from,
     required int super.argument,
   }) : super(
@@ -273,7 +273,7 @@ String _$familyHash() => r'14b97009aec20a0332208f8a60bc177b44c9d1d4';
 @protected
 final class FamilyFamily extends $Family
     with $FunctionalFamilyOverride<String, int> {
-  const FamilyFamily._()
+  FamilyFamily._()
     : super(
         retry: null,
         name: r'familyProvider',
@@ -292,12 +292,12 @@ final class FamilyFamily extends $Family
 }
 
 @ProviderFor(notCopiedFunctional)
-const notCopiedFunctionalProvider = NotCopiedFunctionalProvider._();
+final notCopiedFunctionalProvider = NotCopiedFunctionalProvider._();
 
 final class NotCopiedFunctionalProvider
     extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const NotCopiedFunctionalProvider._()
+  NotCopiedFunctionalProvider._()
     : super(
         from: null,
         argument: null,
@@ -334,11 +334,11 @@ String _$notCopiedFunctionalHash() =>
     r'7b2cd9abef57493eebc1c05b1d2b4e2743ddbea2';
 
 @ProviderFor(NotCopiedClassBased)
-const notCopiedClassBasedProvider = NotCopiedClassBasedProvider._();
+final notCopiedClassBasedProvider = NotCopiedClassBasedProvider._();
 
 final class NotCopiedClassBasedProvider
     extends $NotifierProvider<NotCopiedClassBased, String> {
-  const NotCopiedClassBasedProvider._()
+  NotCopiedClassBasedProvider._()
     : super(
         from: null,
         argument: null,
@@ -388,12 +388,12 @@ abstract class _$NotCopiedClassBased extends $Notifier<String> {
 }
 
 @ProviderFor(notCopiedFamily)
-const notCopiedFamilyProvider = NotCopiedFamilyFamily._();
+final notCopiedFamilyProvider = NotCopiedFamilyFamily._();
 
 final class NotCopiedFamilyProvider
     extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const NotCopiedFamilyProvider._({
+  NotCopiedFamilyProvider._({
     required NotCopiedFamilyFamily super.from,
     required int super.argument,
   }) : super(
@@ -448,7 +448,7 @@ String _$notCopiedFamilyHash() => r'ea652776532e2bf993a249b25b5254fc3dfff4b9';
 
 final class NotCopiedFamilyFamily extends $Family
     with $FunctionalFamilyOverride<String, int> {
-  const NotCopiedFamilyFamily._()
+  NotCopiedFamilyFamily._()
     : super(
         retry: null,
         name: r'notCopiedFamilyProvider',

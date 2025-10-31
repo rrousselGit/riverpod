@@ -16,7 +16,7 @@ part of 'common.dart';
 /// with the current theme obtained using a [BuildContext].
 
 @ProviderFor(theme)
-const themeProvider = ThemeProvider._();
+final themeProvider = ThemeProvider._();
 
 /// A Provider that exposes the current theme.
 ///
@@ -30,15 +30,15 @@ final class ThemeProvider
   ///
   /// This is unimplemented by default, and will be overridden inside [MaterialApp]
   /// with the current theme obtained using a [BuildContext].
-  const ThemeProvider._()
+  ThemeProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'themeProvider',
         isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[],
-        $allTransitiveDependencies: const <ProviderOrFamily>[],
+        dependencies: <ProviderOrFamily>[],
+        $allTransitiveDependencies: <ProviderOrFamily>[],
       );
 
   @override

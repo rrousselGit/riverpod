@@ -53,12 +53,12 @@ void main() {
 
     expect(
       emptyDependenciesFunctionalProvider.dependencies,
-      same(const <ProviderOrFamily>[]),
+      const <ProviderOrFamily>[],
     );
 
     expect(
       emptyDependenciesClassBasedProvider.dependencies,
-      same(const <ProviderOrFamily>[]),
+      const <ProviderOrFamily>[],
     );
   });
 
@@ -103,12 +103,12 @@ void main() {
 
     expect(
       emptyDependenciesFunctionalProvider.$allTransitiveDependencies,
-      same(const <ProviderOrFamily>[]),
+      const <ProviderOrFamily>[],
     );
 
     expect(
       emptyDependenciesClassBasedProvider.$allTransitiveDependencies,
-      same(const <ProviderOrFamily>[]),
+      const <ProviderOrFamily>[],
     );
   });
 
@@ -170,25 +170,25 @@ void main() {
   });
 
   test('remove duplicate dependencies', () {
-    expect(
-      duplicateDependenciesProvider.dependencies,
-      same(const <ProviderOrFamily>[depProvider, dep2Provider]),
-    );
+    expect(duplicateDependenciesProvider.dependencies, <ProviderOrFamily>[
+      depProvider,
+      dep2Provider,
+    ]);
     expect(
       duplicateDependenciesProvider.$allTransitiveDependencies,
-      same(const <ProviderOrFamily>[depProvider, dep2Provider]),
+      <ProviderOrFamily>[depProvider, dep2Provider],
     );
 
     expect(
       transitiveDuplicateDependenciesProvider.$allTransitiveDependencies,
-      same(const <ProviderOrFamily>{
+      <ProviderOrFamily>{
         duplicateDependenciesProvider,
         depProvider,
         dep2Provider,
         duplicateDependencies2Provider,
         familyProvider,
         family2Provider,
-      }),
+      },
     );
   });
 
