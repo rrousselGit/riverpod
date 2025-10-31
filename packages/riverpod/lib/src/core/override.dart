@@ -6,25 +6,30 @@ part of '../framework.dart';
 /// Do not extend or implement.
 @publicInCodegen
 @publicInMisc
-sealed class Override {}
-
-sealed class _ProviderOverride implements Override {}
-
-extension on _ProviderOverride {
+sealed class Override {
   /// The provider that is overridden.
-  $ProviderBaseImpl<Object?> get origin {
+  @visibleForTesting
+  Override get origin;
+}
+
+sealed class _ProviderOverride implements Override {
+  /// The provider that is overridden.
+  @override
+  ProviderBase<Object?> get origin {
     final that = this;
     return switch (that) {
-      $ProviderBaseImpl() => that,
+      ProviderBase() => that,
       $ProviderOverride() => that.origin,
     };
   }
+}
 
+extension on _ProviderOverride {
   /// The new provider behavior.
-  $ProviderBaseImpl<Object?> get providerOverride {
+  ProviderBase<Object?> get providerOverride {
     final that = this;
     return switch (that) {
-      $ProviderBaseImpl() => that,
+      ProviderBase() => that,
       $ProviderOverride() => that.providerOverride,
     };
   }
@@ -58,10 +63,11 @@ class $ProviderOverride implements _ProviderOverride {
   $ProviderOverride({required this.origin, required this.providerOverride});
 
   /// The provider that is overridden.
-  final $ProviderBaseImpl<Object?> origin;
+  @override
+  final ProviderBase<Object?> origin;
 
   /// The new provider behavior.
-  final $ProviderBaseImpl<Object?> providerOverride;
+  final ProviderBase<Object?> providerOverride;
 
   @mustBeOverridden
   @override
@@ -81,10 +87,10 @@ class TransitiveProviderOverride implements $ProviderOverride {
   TransitiveProviderOverride(this.origin);
 
   @override
-  final $ProviderBaseImpl<Object?> origin;
+  final ProviderBase<Object?> origin;
 
   @override
-  $ProviderBaseImpl<Object?> get providerOverride => origin;
+  ProviderBase<Object?> get providerOverride => origin;
 
   @override
   String toString() => '$origin';
@@ -121,6 +127,9 @@ class TransitiveFamilyOverride implements $FamilyOverride {
   final Family from;
 
   @override
+  Family get origin => from;
+
+  @override
   ProviderElement createElement($ProviderPointer pointer) {
     return pointer.origin.$createElement(pointer);
   }
@@ -140,6 +149,9 @@ class _FamilyOverrideImpl implements $FamilyOverride {
 
   @override
   final Family from;
+
+  @override
+  Family get origin => from;
 
   final ProviderElement Function($ProviderPointer pointer) _createElement;
 

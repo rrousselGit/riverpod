@@ -58,6 +58,10 @@ final class Family extends ProviderOrFamily implements _FamilyOverride {
   @override
   Family get from => this;
 
+  @visibleForTesting
+  @override
+  Family get origin => from;
+
   @override
   String toString() => name ?? describeIdentity(this);
 }
