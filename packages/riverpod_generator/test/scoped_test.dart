@@ -44,11 +44,11 @@ void main() {
   test('Marks the provider as scoped', () {
     expect(
       scopedClassFamilyProvider.$allTransitiveDependencies,
-      same(const <ProviderOrFamily>[]),
+      const <ProviderOrFamily>[],
     );
     expect(
       scopedClassProvider.$allTransitiveDependencies,
-      same(const <ProviderOrFamily>[]),
+      const <ProviderOrFamily>[],
     );
   });
 }

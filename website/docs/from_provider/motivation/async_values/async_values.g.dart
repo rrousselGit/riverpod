@@ -12,7 +12,7 @@ part of 'async_values.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(itemsApi)
-const itemsApiProvider = ItemsApiProvider._();
+final itemsApiProvider = ItemsApiProvider._();
 
 final class ItemsApiProvider
     extends
@@ -22,7 +22,7 @@ final class ItemsApiProvider
           FutureOr<List<Item>>
         >
     with $FutureModifier<List<Item>>, $FutureProvider<List<Item>> {
-  const ItemsApiProvider._()
+  ItemsApiProvider._()
     : super(
         from: null,
         argument: null,
@@ -50,12 +50,12 @@ final class ItemsApiProvider
 String _$itemsApiHash() => r'fa5a8f7e93ac048d9bd5dfc1744749995cf154af';
 
 @ProviderFor(evenItems)
-const evenItemsProvider = EvenItemsProvider._();
+final evenItemsProvider = EvenItemsProvider._();
 
 final class EvenItemsProvider
     extends $FunctionalProvider<List<Item>, List<Item>, List<Item>>
     with $Provider<List<Item>> {
-  const EvenItemsProvider._()
+  EvenItemsProvider._()
     : super(
         from: null,
         argument: null,

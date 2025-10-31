@@ -12,11 +12,11 @@ part of 'codegen.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(TodoList)
-const todoListProvider = TodoListProvider._();
+final todoListProvider = TodoListProvider._();
 
 final class TodoListProvider
     extends $AsyncNotifierProvider<TodoList, List<Todo>> {
-  const TodoListProvider._()
+  TodoListProvider._()
     : super(
         from: null,
         argument: null,

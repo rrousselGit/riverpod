@@ -36,7 +36,7 @@ abstract base class $StreamNotifierProvider<
     with $FutureModifier<ValueT> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use.
-  const $StreamNotifierProvider({
+  $StreamNotifierProvider({
     required super.name,
     required super.from,
     required super.argument,

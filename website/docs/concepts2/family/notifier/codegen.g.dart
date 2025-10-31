@@ -12,11 +12,11 @@ part of 'codegen.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(UserNotifier)
-const userProvider = UserNotifierFamily._();
+final userProvider = UserNotifierFamily._();
 
 final class UserNotifierProvider
     extends $AsyncNotifierProvider<UserNotifier, User> {
-  const UserNotifierProvider._({
+  UserNotifierProvider._({
     required UserNotifierFamily super.from,
     required String super.argument,
   }) : super(
@@ -63,7 +63,7 @@ final class UserNotifierFamily extends $Family
           FutureOr<User>,
           String
         > {
-  const UserNotifierFamily._()
+  UserNotifierFamily._()
     : super(
         retry: null,
         name: r'userProvider',

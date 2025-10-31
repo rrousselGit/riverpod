@@ -9,7 +9,7 @@ interface class ProviderListenableOrFamily {}
 @publicInMisc
 sealed class ProviderOrFamily implements ProviderListenableOrFamily {
   /// A common interface shared by [ProviderBase] and [Family]
-  const ProviderOrFamily({
+  ProviderOrFamily({
     required this.name,
     required this.dependencies,
     required this.$allTransitiveDependencies,
@@ -194,7 +194,6 @@ String shortHash(Object? object) {
 ///
 /// See also:
 /// - [SyncProviderTransformerMixin] for making custom [ProviderListenable]s.
-@immutable
 @publicInCodegen
 @publicInMisc
 abstract interface class ProviderListenable<StateT>

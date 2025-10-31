@@ -12,7 +12,7 @@ void main() {
     () async {
       final container = ProviderContainer.test();
 
-      const ProviderBase<AsyncValue<String>> provider = publicProvider;
+      final ProviderBase<AsyncValue<String>> provider = publicProvider;
 
       expect(
         await container.listen(publicProvider.future, (_, __) {}).read(),
@@ -86,7 +86,7 @@ void main() {
     () async {
       final container = ProviderContainer.test();
 
-      const FamilyFamily family = familyProvider;
+      final FamilyFamily family = familyProvider;
 
       expect(familyProvider(42, third: .42).from, familyProvider);
 

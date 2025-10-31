@@ -12,11 +12,11 @@ part of 'combine.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(number)
-const numberProvider = NumberProvider._();
+final numberProvider = NumberProvider._();
 
 final class NumberProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const NumberProvider._()
+  NumberProvider._()
     : super(
         from: null,
         argument: null,
@@ -52,11 +52,11 @@ final class NumberProvider extends $FunctionalProvider<int, int, int>
 String _$numberHash() => r'03ac91d5904c18f04321b140fd263ed6bc85d3c1';
 
 @ProviderFor(doubled)
-const doubledProvider = DoubledProvider._();
+final doubledProvider = DoubledProvider._();
 
 final class DoubledProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const DoubledProvider._()
+  DoubledProvider._()
     : super(
         from: null,
         argument: null,
