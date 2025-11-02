@@ -57,9 +57,12 @@ class _HomeState extends ConsumerState<Home> {
           Text('${ref.watch(counterProvider)}'),
           if (show) ProviderScope(child: Container(color: Colors.red)),
           ElevatedButton(
-            onPressed: () => setState(() => show = !show),
+            onPressed: () {
+              setState(() => show = !show);
+            },
             child: Text(show ? 'Hide' : 'Show'),
           ),
+          Text(ref.watch(another).toString()),
           Text(ref.watch(fam(42)).toString()),
           Text(ref.watch(fam(21)).toString()),
         ],
@@ -72,3 +75,5 @@ class _HomeState extends ConsumerState<Home> {
     );
   }
 }
+
+final another = Provider<int>((ref) => 42);

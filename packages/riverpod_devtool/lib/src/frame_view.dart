@@ -1,12 +1,17 @@
 import 'package:devtools_app_shared/ui.dart';
+import 'package:devtools_app_shared/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/experimental/mutation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/src/internals.dart' as internals;
+import 'package:stack_trace/stack_trace.dart';
 
-import 'event.dart';
-import 'frame_stepper.dart';
+import 'core.dart';
+import 'frames.dart';
+import 'vm_service.dart';
 import 'providers.dart';
+import 'search.dart';
 import 'ui.dart';
 
 class FrameView extends HookConsumerWidget {
@@ -62,25 +67,33 @@ class _FrameViewer extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedId = useState<internals.ElementId?>(null);
-    final originStates = ref.watch(allDiscoveredOriginsProvider);
+    final searchController = useTextEditingController();
+    final search = useValueListenable(searchController);
+
+    final originStates = ref.watch(filteredProvidersProvider(search.text));
 
     final selected =
-        originStates.values
+        originStates
             .expand((e) => e.associatedProviders.values)
             .where((e) => e.isSelected(selectedId.value))
             .firstOrNull ??
-        originStates.values
-            .expand((e) => e.associatedProviders.values)
-            .firstOrNull;
+        originStates.expand((e) => e.associatedProviders.values).firstOrNull;
 
     return SplitPane(
       axis: Axis.horizontal,
       initialFractions: const [0.3, 0.7],
       children: [
         _ProviderPickerPanel(
+          searchController: searchController,
           originStates: originStates,
           selectedId: selected?.elementId,
-          onSelected: (value) => selectedId.value = value,
+          onSelected: (value) async {
+            if (value?.origin.creationStackTrace case final trace?) {
+              await openTraceInIDE(ref, Trace.parse(trace));
+            }
+
+            selectedId.value = value?.elementId;
+          },
         ),
 
         if (selected case final selected?)
@@ -92,6 +105,33 @@ class _FrameViewer extends HookConsumerWidget {
       ],
     );
   }
+}
+
+Future<void> openTraceInIDE(MutationTarget target, Trace trace) async {
+  const _riverpodPackages = {
+    'riverpod',
+    'hooks_riverpod',
+    'flutter_riverpod',
+    'riverpod_generator',
+  };
+
+  final mutation = Mutation<void>();
+  await mutation.run(target, (tsx) async {
+    final eval = await tsx.get(riverpodFrameworkEvalProvider.future);
+
+    final firstNonRiverpodFrame = trace.frames
+        .where((frame) => !_riverpodPackages.contains(frame.package))
+        .firstOrNull;
+    if (firstNonRiverpodFrame == null) return;
+
+    await eval.evalInstance(isAlive: Disposable(), '''
+        openInIDE(
+          uri: '${firstNonRiverpodFrame.uri}',
+          line: ${firstNonRiverpodFrame.line},
+          column: ${firstNonRiverpodFrame.column}
+        )
+      ''');
+  });
 }
 
 class _StateView extends StatelessWidget {
@@ -108,36 +148,48 @@ class _StateView extends StatelessWidget {
   }
 }
 
-class _ProviderPickerPanel extends StatelessWidget {
+class _ProviderPickerPanel extends HookConsumerWidget {
   const _ProviderPickerPanel({
     super.key,
-    required this.originStates,
     required this.selectedId,
     required this.onSelected,
+    required this.originStates,
+    required this.searchController,
   });
 
-  final Map<internals.OriginId, OriginState> originStates;
+  final List<OriginState> originStates;
   final internals.ElementId? selectedId;
-  final void Function(internals.ElementId?) onSelected;
+  final void Function(ProviderMeta?) onSelected;
+  final TextEditingController searchController;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Panel(
       child: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
-          for (final MapEntry(value: meta) in originStates.entries) ...[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: DevtoolSearchBar(
+              hintText: 'Search Providers',
+              controller: searchController,
+            ),
+          ),
+          const Divider(),
+          for (final meta in originStates) ...[
             if (meta.associatedProviders.length == 1)
               _Tile(
-                onTap: () => onSelected(
-                  meta.associatedProviders.values.single.elementId,
-                ),
+                onTap: () {
+                  onSelected(meta.associatedProviders.values.single);
+                },
                 selected:
                     meta.associatedProviders.length == 1 &&
                     meta.associatedProviders.values.single.isSelected(
                       selectedId,
                     ),
                 hash: meta.value.hashValue,
+                creationStackTrace:
+                    meta.associatedProviders.values.single.creationStackTrace,
                 containerHash:
                     meta.associatedProviders.values.single.containerHashValue,
                 meta.value.toStringValue,
@@ -150,17 +202,19 @@ class _ProviderPickerPanel extends StatelessWidget {
                   in meta.associatedProviders.values.indexed)
                 if (index == meta.associatedProviders.length - 1)
                   _Tile(
-                    onTap: () => onSelected(providerState.elementId),
+                    onTap: () => onSelected(providerState),
                     selected: providerState.isSelected(selectedId),
                     hash: providerState.hashValue,
+                    creationStackTrace: providerState.creationStackTrace,
                     containerHash: providerState.containerHashValue,
                     '└─ ${providerState.toStringValue}',
                   )
                 else
                   _Tile(
-                    onTap: () => onSelected(providerState.elementId),
+                    onTap: () => onSelected(providerState),
                     selected: providerState.isSelected(selectedId),
                     hash: providerState.hashValue,
+                    creationStackTrace: providerState.creationStackTrace,
                     containerHash: providerState.containerHashValue,
                     '├─ ${providerState.toStringValue}',
                   ),
@@ -194,28 +248,26 @@ class _Tile extends StatelessWidget {
     required this.onTap,
     required this.hash,
     required this.containerHash,
+    required this.creationStackTrace,
   });
 
-  final String text;
+  final FuzzyMatch text;
   final bool selected;
   final void Function()? onTap;
   final String hash;
   final String containerHash;
+  final String? creationStackTrace;
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: RichText(
-            text: TextSpan(
-              text: text,
-              style: DefaultTextStyle.of(context).style.copyWith(
-                color: selected ? Theme.of(context).colorScheme.primary : null,
-              ),
-            ),
+      child: Tooltip(
+        message: creationStackTrace ?? 'Default tooltip',
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: FuzzyText(match: text),
           ),
         ),
       ),

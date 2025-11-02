@@ -1,92 +1,16 @@
-// ignore: implementation_imports
-// ignore_for_file: invalid_use_of_internal_member
-
-import 'dart:async';
-import 'dart:collection';
 import 'dart:math' as math;
 
 import 'package:devtools_app_shared/utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-// ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
-import 'package:vm_service/vm_service.dart';
 
 import 'collection.dart';
 import 'core.dart';
+import 'vm_service.dart';
 
-part 'event.g.dart';
-
-final class Byte {
-  Byte.of(Object? ref) : ref = ref! as InstanceRef;
-
-  final InstanceRef ref;
-
-  @override
-  String toString() {
-    switch (ref.kind) {
-      case InstanceKind.kString:
-        return "'${ref.valueAsString}'";
-      case InstanceKind.kInt:
-      case InstanceKind.kDouble:
-      case InstanceKind.kBool:
-        return ref.valueAsString!;
-      case InstanceKind.kNull:
-        return 'null';
-      default:
-        return 'Byte(...)';
-    }
-  }
-}
-
-Iterable<ItemT> decodeAll<ItemT>(
-  Map<String, Byte> events,
-  ItemT Function(Map<String, Byte>, {required String path}) fn, {
-  required String path,
-}) sync* {
-  final length = int.parse(events['$path.length']!.ref.valueAsString!);
-
-  for (var i = 0; i < length; i++) {
-    final itemPath = '$path[$i]';
-    yield fn(events, path: itemPath);
-  }
-}
-
-String encodeList(
-  String expr,
-  String Function(String name, String path) mapCode, {
-  required String path,
-}) {
-  return '''
-() {
-  final list = $expr;
-  return {
-    '$path.length': list.length,
-    for (final (index, e) in list.indexed)
-      ...${mapCode('e', '$path[\$index]')},
-  };
-}()
-''';
-}
-
-void _validate(
-  Map<String, Byte> events, {
-  required String name,
-  required String path,
-}) {
-  final startEvent = events['$path._type'];
-  switch (startEvent) {
-    case Byte(ref: InstanceRef(valueAsString: final actualName)):
-      if (actualName != name) {
-        throw ArgumentError(
-          'Invalid event type, expected "$name" but got $actualName',
-        );
-      }
-    case _:
-      throw ArgumentError('Invalid event data for $name: $events');
-  }
-}
-
-extension type ProviderElementId(String id) {}
+extension type FrameId(String value) {}
 
 final framesProvider =
     AsyncNotifierProvider.autoDispose<FramesNotifier, List<FoldedFrame>>(
@@ -162,7 +86,7 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
     ref.listen(vmServiceProvider.future, (a, b) {
       print('VM service changed, clearing frames');
     });
-    ref.listen(riverpodInternalsEvalProvider.future, (a, b) {
+    ref.listen(riverpodFrameworkEvalProvider.future, (a, b) {
       print('Riverpod eval changed, clearing frames');
     });
 
@@ -171,7 +95,7 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
 
     final service = await ref.watch(vmServiceProvider.future);
 
-    final riverpodEval = await ref.watch(riverpodInternalsEvalProvider.future);
+    final riverpodEval = await ref.watch(riverpodFrameworkEvalProvider.future);
     final isAlive = ref.isAlive();
 
     final sub = service.onNotification
@@ -256,42 +180,98 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
   }
 }
 
-/// A provider that emits an update when a hot-restart is detected.
-final hotRestartEventProvider = Provider<void>(
-  name: 'hotRestartEventProvider',
-  (ref) async {
-    final service = await ref.watch(serviceManagerProvider.future);
-    if (!ref.mounted) return;
-    final selectedIsolateListenable = service.isolateManager.selectedIsolate;
+class FrameStepper extends HookConsumerWidget {
+  const FrameStepper({
+    super.key,
+    required this.selectedFrameIndex,
+    required this.onSelect,
+  });
 
-    var isolateId = selectedIsolateListenable.value?.id;
+  static const _stepperHeight = 50.0;
 
-    void listener() {
-      final newId = selectedIsolateListenable.value?.id;
-      final oldId = isolateId;
-      isolateId = newId;
+  final int? selectedFrameIndex;
+  final void Function(int index) onSelect;
 
-      if (oldId != null && oldId != newId) {
-        ref.notifyListeners();
-        return;
-      }
-    }
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = useScrollController();
+    final frames = ref.watch(framesProvider);
 
-    selectedIsolateListenable.addListener(listener);
-    ref.onDispose(() => selectedIsolateListenable.removeListener(listener));
-  },
-);
+    switch (frames) {
+      case AsyncValue(:final value?):
+        return SizedBox(
+          height: _stepperHeight,
+          child: Scrollbar(
+            controller: controller,
+            child: ListView.builder(
+              primary: false,
+              shrinkWrap: true,
+              controller: controller,
+              itemCount: value.length,
+              scrollDirection: Axis.horizontal,
+              itemExtent: 30,
+              itemBuilder: (context, index) {
+                final frame = value[index];
 
-extension NotificationService on VmService {
-  Stream<internals.Notification> get onNotification =>
-      onExtensionEvent.expand((event) {
-        final notification = internals.Notification.fromJson(
-          event.extensionKind ?? '',
-          event.extensionData?.data ?? {},
+                return _FrameStep(
+                  frame: frame,
+                  isSelected: selectedFrameIndex == frame.frame.index,
+                  onTap: () => onSelect(frame.frame.index),
+                );
+              },
+            ),
+          ),
         );
-        if (notification != null) {
-          return [notification];
-        }
-        return const [];
-      });
+      case AsyncValue(error: != null):
+        return const SizedBox(
+          height: _stepperHeight,
+          child: Text('Error while connecting to the Riverpod application'),
+        );
+      case AsyncValue():
+        return Container(
+          alignment: Alignment.center,
+          height: _stepperHeight,
+          child: const Text(
+            'Waiting to connect to the Riverpod application...',
+          ),
+        );
+    }
+  }
+}
+
+class _FrameStep extends StatelessWidget {
+  const _FrameStep({
+    super.key,
+    required this.frame,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final FoldedFrame frame;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    final size = isSelected ? 20.0 : 15.0;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Center(
+        child: Container(
+          width: size,
+          height: size,
+          margin: const EdgeInsets.symmetric(horizontal: 5),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(size * 2),
+            color: isSelected
+                ? theme.colorScheme.primary
+                : theme.colorScheme.secondary,
+          ),
+        ),
+      ),
+    );
+  }
 }

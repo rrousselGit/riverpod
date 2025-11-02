@@ -15,7 +15,15 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
     required this.$allTransitiveDependencies,
     required this.isAutoDispose,
     required this.retry,
-  });
+  }) {
+    if (kDebugMode) {
+      _debugCreationStackTrace = StackTrace.current;
+    } else {
+      _debugCreationStackTrace = null;
+    }
+  }
+
+  late StackTrace? _debugCreationStackTrace;
 
   /// The family that this provider/family depends on.
   Family? get from;

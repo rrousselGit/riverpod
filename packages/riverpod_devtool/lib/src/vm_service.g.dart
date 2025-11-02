@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'event.dart';
+part of 'vm_service.dart';
 
 // **************************************************************************
 // _RiverpodDevtoolGeneratorGenerator
@@ -72,6 +72,8 @@ class ProviderMeta {
     required this.containerId,
     required this.containerHashValue,
     required this.elementId,
+    required this.element,
+    required this.creationStackTrace,
   });
 
   factory ProviderMeta.from(Map<String, Byte> $events, {required String path}) {
@@ -79,16 +81,29 @@ class ProviderMeta {
 
     final origin = OriginMeta.from($events, path: '$path.origin');
     final id = internals.ProviderId($events['$path.id']!.ref.valueAsString!);
-    final toStringValue = $events['$path.toStringValue']!.ref.valueAsString!;
-    final hashValue = $events['$path.hashValue']!.ref.valueAsString!;
+    final toStringValue = List.generate(
+      int.parse($events['$path.toStringValue.length']!.ref.valueAsString!),
+      (i) => $events['$path.toStringValue.$i']!.ref.valueAsString!,
+    ).join();
+    final hashValue = List.generate(
+      int.parse($events['$path.hashValue.length']!.ref.valueAsString!),
+      (i) => $events['$path.hashValue.$i']!.ref.valueAsString!,
+    ).join();
     final containerId = internals.ContainerId(
       $events['$path.containerId']!.ref.valueAsString!,
     );
-    final containerHashValue =
-        $events['$path.containerHashValue']!.ref.valueAsString!;
+    final containerHashValue = List.generate(
+      int.parse($events['$path.containerHashValue.length']!.ref.valueAsString!),
+      (i) => $events['$path.containerHashValue.$i']!.ref.valueAsString!,
+    ).join();
     final elementId = internals.ElementId(
       $events['$path.elementId']!.ref.valueAsString!,
     );
+    final element = Byte.of($events['$path.element']!.ref);
+    final creationStackTrace = List.generate(
+      int.parse($events['$path.creationStackTrace.length']!.ref.valueAsString!),
+      (i) => $events['$path.creationStackTrace.$i']!.ref.valueAsString!,
+    ).join();
 
     return ProviderMeta(
       origin: origin,
@@ -98,6 +113,8 @@ class ProviderMeta {
       containerId: containerId,
       containerHashValue: containerHashValue,
       elementId: elementId,
+      element: element,
+      creationStackTrace: creationStackTrace,
     );
   }
 
@@ -108,6 +125,8 @@ class ProviderMeta {
   final internals.ContainerId containerId;
   final String containerHashValue;
   final internals.ElementId elementId;
+  final Byte element;
+  final String? creationStackTrace;
 }
 
 /// Devtool code for [internals.OriginMeta]
@@ -117,21 +136,33 @@ class OriginMeta {
     required this.toStringValue,
     required this.hashValue,
     required this.isFamily,
+    required this.creationStackTrace,
   });
 
   factory OriginMeta.from(Map<String, Byte> $events, {required String path}) {
     _validate($events, name: 'OriginMeta', path: path);
 
     final id = internals.OriginId($events['$path.id']!.ref.valueAsString!);
-    final toStringValue = $events['$path.toStringValue']!.ref.valueAsString!;
-    final hashValue = $events['$path.hashValue']!.ref.valueAsString!;
+    final toStringValue = List.generate(
+      int.parse($events['$path.toStringValue.length']!.ref.valueAsString!),
+      (i) => $events['$path.toStringValue.$i']!.ref.valueAsString!,
+    ).join();
+    final hashValue = List.generate(
+      int.parse($events['$path.hashValue.length']!.ref.valueAsString!),
+      (i) => $events['$path.hashValue.$i']!.ref.valueAsString!,
+    ).join();
     final isFamily = ($events['$path.isFamily']!.ref.valueAsString! == 'true');
+    final creationStackTrace = List.generate(
+      int.parse($events['$path.creationStackTrace.length']!.ref.valueAsString!),
+      (i) => $events['$path.creationStackTrace.$i']!.ref.valueAsString!,
+    ).join();
 
     return OriginMeta(
       id: id,
       toStringValue: toStringValue,
       hashValue: hashValue,
       isFamily: isFamily,
+      creationStackTrace: creationStackTrace,
     );
   }
 
@@ -139,6 +170,7 @@ class OriginMeta {
   final String toStringValue;
   final String hashValue;
   final bool isFamily;
+  final String? creationStackTrace;
 }
 
 /// Devtool code for [internals.ProviderContainerAddEvent]

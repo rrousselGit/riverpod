@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer_buffer/analyzer_buffer.dart';
 import 'package:build/build.dart';
@@ -31,7 +32,7 @@ class _RiverpodDevtoolGeneratorGenerator extends Generator {
         .toList();
     if (annotatedClasses.isEmpty) return '';
 
-    if (buildStep.inputId.pathSegments.last == 'event.dart') {
+    if (buildStep.inputId.pathSegments.last == 'vm_service.dart') {
       return _generateDevtoolChannel(library, buildStep, annotatedClasses);
     } else if (buildStep.inputId.pathSegments.last == 'framework.dart') {
       return _generateCodeExtension(library, buildStep, annotatedClasses);
@@ -296,7 +297,9 @@ sealed class _BuiltInType {
         from(listType.typeArguments.single, annotatedClasses: annotatedClasses),
       );
     } else if (type.isDartCoreString) {
-      return _StringType();
+      return _StringType(
+        nullable: type.nullabilitySuffix == NullabilitySuffix.question,
+      );
     } else if (type.isDartCoreInt) {
       return _IntType();
     } else if (type.isDartCoreDouble) {
@@ -395,19 +398,50 @@ final class _ListType extends _BuiltInType {
 }
 
 final class _StringType extends _BuiltInType {
-  @override
-  String typeCode() => '#{{dart:core|String}}';
+  _StringType({required this.nullable});
+  final bool nullable;
 
   @override
-  String decodeBytes({required String mapSymbol, required String path}) =>
-      "$mapSymbol['$path']!.ref.valueAsString!";
+  String typeCode() {
+    if (nullable) return '#{{dart:core|String}}?';
+    return '#{{dart:core|String}}';
+  }
+
+  @override
+  String decodeBytes({required String mapSymbol, required String path}) {
+    return '''
+    List.generate(
+      int.parse($mapSymbol['$path.length']!.ref.valueAsString!),
+      (i) => $mapSymbol['$path.\$i']!.ref.valueAsString!,
+    ).join()
+    ''';
+  }
 
   @override
   String appendEncodedValueCode({
     required String mapSymbol,
     required String valueSymbol,
     required String path,
-  }) => "$mapSymbol['$path'] = $valueSymbol;";
+  }) {
+    final fallback = nullable
+        ? "?? ''"
+        : '';
+
+    return '''
+  {
+    final \$value = $valueSymbol$fallback;
+    final length = (\$value.length / 128).ceil();
+    $mapSymbol['$path.length'] = length;
+    for (var i = 0; i < length; i++) {
+      final end = (i + 1) * 128;
+      $mapSymbol['$path.\$i'] = \$value.substring(
+        i * 128,
+        end > \$value.length ? \$value.length : end,
+       );
+    }
+  }
+  ''';
+  }
 }
 
 final class _IntType extends _BuiltInType {

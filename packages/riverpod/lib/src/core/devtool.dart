@@ -1,5 +1,21 @@
 part of '../framework.dart';
 
+
+
+@internal
+void openInIDE({
+  required String uri,
+  required int line,
+  required int column,
+}) {
+  developer.postEvent('navigate', stream: 'ToolEvent', {
+    'fileUri': uri,
+    'line': line,
+    'column': column,
+    'source': 'riverpod.devtools',
+  });
+}
+
 @internal
 class RiverpodDevtool {
   RiverpodDevtool._();
@@ -41,6 +57,16 @@ class RiverpodDevtool {
       origin,
       () => ProviderId(const Uuid().v4()),
     );
+  }
+
+  ProviderOrFamily? originFromId(OriginId id) {
+    print(
+      'Search origin ${_uniqueOrigins.containsValue(id)} // ${_uniqueProviders.containsValue(ProviderId(id._id))}',
+    );
+
+    return _uniqueOrigins.entries
+        .firstWhereOrNull((entry) => entry.value == id)
+        ?.key;
   }
 }
 
@@ -110,6 +136,8 @@ final class ProviderMeta {
     required this.containerId,
     required this.elementId,
     required this.containerHashValue,
+    required this.creationStackTrace,
+    required this.element,
   });
 
   factory ProviderMeta.from(ProviderElement element) {
@@ -122,8 +150,10 @@ final class ProviderMeta {
       hashValue: shortHash(provider),
       containerId: element.container.id,
       id: providerId,
+      element: element,
       elementId: element._debugId,
       containerHashValue: shortHash(element.container),
+      creationStackTrace: provider._debugCreationStackTrace?.toString(),
     );
   }
 
@@ -134,6 +164,8 @@ final class ProviderMeta {
   final ContainerId containerId;
   final String containerHashValue;
   final ElementId elementId;
+  final ProviderElement element;
+  final String? creationStackTrace;
 }
 
 @devtool
@@ -144,6 +176,7 @@ final class OriginMeta {
     required this.toStringValue,
     required this.isFamily,
     required this.hashValue,
+    required this.creationStackTrace,
   });
 
   factory OriginMeta.from(ProviderElement element) {
@@ -155,6 +188,9 @@ final class OriginMeta {
       toStringValue: provider.name ?? provider.runtimeType.toString(),
       hashValue: shortHash(provider.from ?? provider),
       isFamily: provider.from != null,
+      creationStackTrace:
+          (element.origin.from ?? element.origin)._debugCreationStackTrace
+              ?.toString(),
     );
   }
 
@@ -162,6 +198,7 @@ final class OriginMeta {
   final String toStringValue;
   final String hashValue;
   final bool isFamily;
+  final String? creationStackTrace;
 }
 
 @devtool
@@ -177,9 +214,8 @@ class ProviderContainerAddEvent extends Event {
   final ProviderContainer container;
 
   ContainerId get containerId => container.id;
-  late final List<ContainerId> parentIds = container.parents
-      .map((e) => e.id)
-      .toList();
+  late final List<ContainerId> parentIds =
+      container.parents.map((e) => e.id).toList();
 }
 
 @devtool

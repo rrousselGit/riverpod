@@ -72,15 +72,20 @@ class Eval {
 
   String _formatCode(String code) => code.replaceAll('\n', ' ');
 
-  Future<InstanceRef> eval(String code, {required Disposable isAlive}) async {
-    return _eval.safeEval(_formatCode(code), isAlive: isAlive);
+  Future<InstanceRef> eval(
+    String code, {
+    required Disposable isAlive,
+    Map<String, String>? scope,
+  }) async {
+    return _eval.safeEval(_formatCode(code), isAlive: isAlive, scope: scope);
   }
 
   Future<Instance> evalInstance(
     String code, {
     required Disposable isAlive,
+    Map<String, String>? scope,
   }) async {
-    final ref = await eval(code, isAlive: isAlive);
+    final ref = await eval(code, isAlive: isAlive, scope: scope);
     return instance(ref, isAlive: isAlive);
   }
 
@@ -112,8 +117,8 @@ final evalProvider = FutureProvider.autoDispose.family<Eval, String>(
 
 final dartCoreEvalProvider = evalProvider('dart:core');
 final dartAsyncEvalProvider = evalProvider('dart:async');
-final riverpodInternalsEvalProvider = evalProvider(
-  'package:riverpod/src/internals.dart',
+final riverpodFrameworkEvalProvider = evalProvider(
+  'package:riverpod/src/framework.dart',
 );
 
 extension IsAlive on Ref {

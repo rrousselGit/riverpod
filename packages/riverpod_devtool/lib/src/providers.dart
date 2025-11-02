@@ -1,7 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/src/internals.dart' as internals;
 
-import 'event.dart';
+import 'frames.dart';
+import 'vm_service.dart';
+import 'search.dart';
 
 final allDiscoveredOriginsProvider =
     NotifierProvider<
@@ -60,11 +63,37 @@ class AllDiscoveredOriginsNotifier
 }
 
 class OriginState {
-  OriginState({required this.associatedProviders, required this.value});
+  OriginState({
+    required this.associatedProviders,
+    required this.value,
+    required FrameId start,
+  }) : lifespan = (start: start, end: null);
+
   final OriginMeta value;
   final Map<internals.ElementId, ProviderMeta> associatedProviders;
+  final ({FrameId start, FrameId? end}) lifespan;
 }
 
 extension ProviderMetaX on ProviderMeta {
   bool isSelected(internals.ElementId? id) => id == elementId;
+}
+
+final filteredProvidersProvider = Provider.autoDispose
+    .family<List<ProviderPickerItem>, String>((ref, search) {
+      final allOrigins = ref.watch(allDiscoveredOriginsProvider);
+    });
+
+sealed class ProviderPickerItem {}
+
+final class ProviderHeading extends ProviderPickerItem {
+  ProviderHeading({required this.originMeta, required this.match});
+
+  final OriginMeta originMeta;
+  final FuzzyMatch match;
+}
+
+final class ProviderEntry extends ProviderPickerItem {
+  ProviderEntry(this.providerMeta, this.match);
+  final ProviderMeta providerMeta;
+  final FuzzyMatch match;
 }
