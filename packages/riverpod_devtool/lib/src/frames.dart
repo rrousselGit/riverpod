@@ -7,7 +7,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/src/internals.dart' as internals;
 
 import 'collection.dart';
-import 'core.dart';
 import 'vm_service.dart';
 
 extension type FrameId(String value) {}
