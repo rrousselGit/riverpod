@@ -187,9 +187,6 @@ void main() {
     // https://github.com/rrousselGit/riverpod/issues/4282
     final container = ProviderContainer.test();
 
-    expect(
-      container.read(voidClassProvider),
-      const AsyncLoading<void>(),
-    );
+    expect(container.read(voidClassProvider), const AsyncLoading<void>());
   });
 }
