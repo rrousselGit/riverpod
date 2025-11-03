@@ -13,6 +13,26 @@ import 'package:test/test.dart';
 import '../src/core/provider_container_test.dart';
 
 Future<void> main() async {
+  test('Supports reading a provider out of scope, '
+      'then adding a scope override', () {
+    // Regression test for https://github.com/rrousselGit/riverpod/issues/4324
+    final root = ProviderContainer.test();
+    final provider = Provider((ref) => 0, dependencies: []);
+    final transitive = Provider(
+      (ref) => ref.watch(provider),
+      dependencies: [provider],
+    );
+
+    root.read(transitive);
+
+    final leaf = ProviderContainer.test(
+      parent: root,
+      overrides: [provider.overrideWithValue(42)],
+    );
+
+    expect(leaf.read(transitive), 42);
+  });
+
   test('does not throw when scoping a provider with no dependencies', () {
     final a = Provider((ref) => 0);
     final b = Provider.family((ref, _) => 0);
