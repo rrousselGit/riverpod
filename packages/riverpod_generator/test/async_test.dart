@@ -1,5 +1,7 @@
 // ignore_for_file: omit_local_variable_types, unused_local_variable // Just checking
 
+import 'dart:async';
+
 import 'package:riverpod/misc.dart' show ProviderBase;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
@@ -178,6 +180,16 @@ void main() {
     expect(
       container.read(familyProvider(42, third: .2).future),
       completion('test'),
+    );
+  });
+
+  test('Regression for Future<void> providers', () async {
+    // https://github.com/rrousselGit/riverpod/issues/4282
+    final container = ProviderContainer.test();
+
+    expect(
+      container.read(voidClassProvider),
+      const AsyncLoading<void>(),
     );
   });
 }
