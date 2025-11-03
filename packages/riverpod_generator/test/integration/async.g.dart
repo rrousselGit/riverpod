@@ -1072,3 +1072,47 @@ abstract class _$Regression3490<ModelT, SortT, CursorT>
     element.handleValue(ref, null);
   }
 }
+
+@ProviderFor(VoidClass)
+final voidClassProvider = VoidClassProvider._();
+
+final class VoidClassProvider extends $AsyncNotifierProvider<VoidClass, void> {
+  VoidClassProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'voidClassProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$voidClassHash();
+
+  @$internal
+  @override
+  VoidClass create() => VoidClass();
+}
+
+String _$voidClassHash() => r'3c3109f3474209a42efd97c7315171f74669aa49';
+
+abstract class _$VoidClass extends $AsyncNotifier<void> {
+  FutureOr<void> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<void>, void>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<void>, void>,
+              AsyncValue<void>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
