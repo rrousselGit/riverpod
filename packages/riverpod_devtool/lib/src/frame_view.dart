@@ -70,14 +70,16 @@ class _FrameViewer extends HookConsumerWidget {
     final searchController = useTextEditingController();
     final search = useValueListenable(searchController);
 
-    final originStates = ref.watch(filteredProvidersProvider(search.text));
+    final originStates = ref.watch(
+      filteredProvidersProvider((text: search.text, frame: frame)),
+    );
 
     final selected =
-        originStates
-            .expand((e) => e.associatedProviders.values)
+        originStates.values
+            .expand((e) => e)
             .where((e) => e.isSelected(selectedId.value))
             .firstOrNull ??
-        originStates.expand((e) => e.associatedProviders.values).firstOrNull;
+        originStates.values.expand((e) => e).firstOrNull;
 
     return SplitPane(
       axis: Axis.horizontal,
@@ -157,7 +159,7 @@ class _ProviderPickerPanel extends HookConsumerWidget {
     required this.searchController,
   });
 
-  final List<OriginState> originStates;
+  final OriginStates originStates;
   final internals.ElementId? selectedId;
   final void Function(ProviderMeta?) onSelected;
   final TextEditingController searchController;
@@ -176,31 +178,34 @@ class _ProviderPickerPanel extends HookConsumerWidget {
             ),
           ),
           const Divider(),
-          for (final meta in originStates) ...[
-            if (meta.associatedProviders.length == 1)
+          for (final associatedProviders in originStates.values) ...[
+            if (associatedProviders.length == 1)
               _Tile(
                 onTap: () {
-                  onSelected(meta.associatedProviders.values.single);
+                  onSelected(associatedProviders.single.element.provider);
                 },
                 selected:
-                    meta.associatedProviders.length == 1 &&
-                    meta.associatedProviders.values.single.isSelected(
-                      selectedId,
-                    ),
-                hash: meta.value.hashValue,
-                creationStackTrace:
-                    meta.associatedProviders.values.single.creationStackTrace,
-                containerHash:
-                    meta.associatedProviders.values.single.containerHashValue,
-                meta.value.toStringValue,
+                    associatedProviders.length == 1 &&
+                    associatedProviders.single.isSelected(selectedId),
+                hash: associatedProviders.single.origin.hashValue,
+                creationStackTrace: associatedProviders
+                    .single
+                    .element
+                    .provider
+                    .creationStackTrace,
+                containerHash: associatedProviders
+                    .single
+                    .element
+                    .provider
+                    .containerHashValue,
+                associatedProviders.single.match,
               )
             else
               _Heading(meta.value.toStringValue),
 
-            if (meta.associatedProviders.length > 1) ...[
-              for (final (index, providerState)
-                  in meta.associatedProviders.values.indexed)
-                if (index == meta.associatedProviders.length - 1)
+            if (associatedProviders.length > 1) ...[
+              for (final (index, providerState) in associatedProviders.indexed)
+                if (index == associatedProviders.length - 1)
                   _Tile(
                     onTap: () => onSelected(providerState),
                     selected: providerState.isSelected(selectedId),

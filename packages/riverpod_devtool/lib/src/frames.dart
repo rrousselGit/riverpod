@@ -7,9 +7,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/src/internals.dart' as internals;
 
 import 'collection.dart';
+import 'elements.dart';
 import 'vm_service.dart';
 
-extension type FrameId(String value) {}
+extension type FrameId(int value) {}
 
 final framesProvider =
     AsyncNotifierProvider.autoDispose<FramesNotifier, List<FoldedFrame>>(
@@ -23,6 +24,7 @@ class AccumulatedState {
   final UnmodifiableMap<internals.ElementId, ProviderStateRef> providers;
 }
 
+@immutable
 final class FoldedFrame {
   FoldedFrame({required this.frame, required this.previous}) {
     final previous = this.previous;
@@ -47,33 +49,12 @@ final class FoldedFrame {
     }
   }
 
+  FrameId get id => FrameId(frame.index);
+
   final Frame frame;
   final FoldedFrame? previous;
-  late final state = _computeAccumulatedState();
 
-  AccumulatedState _computeAccumulatedState() {
-    final states = {...?previous?.state.providers};
-    for (final event in frame.events) {
-      switch (event) {
-        case ProviderContainerAddEvent():
-        case ProviderContainerDisposeEvent():
-          break;
-        case ProviderElementDisposeEvent(:final provider):
-          states.remove(provider.elementId);
-        case ProviderElementAddEvent(
-          state: final currentState,
-          :final provider,
-        ):
-        case ProviderElementUpdateEvent(
-          next: final currentState,
-          :final provider,
-        ):
-          states[provider.elementId] = currentState;
-      }
-    }
-
-    return AccumulatedState._(providers: UnmodifiableMap(states));
-  }
+  late final elements = computeElementsForFrame(this);
 }
 
 class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {

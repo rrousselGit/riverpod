@@ -1,21 +1,20 @@
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/src/internals.dart' as internals;
 
+import 'collection.dart';
+import 'elements.dart';
 import 'frames.dart';
-import 'vm_service.dart';
 import 'search.dart';
+import 'vm_service.dart';
 
 final allDiscoveredOriginsProvider =
-    NotifierProvider<
-      AllDiscoveredOriginsNotifier,
-      Map<internals.OriginId, OriginState>
-    >(AllDiscoveredOriginsNotifier.new);
+    NotifierProvider<AllDiscoveredOriginsNotifier, Set<internals.OriginId>>(
+      AllDiscoveredOriginsNotifier.new,
+    );
 
-class AllDiscoveredOriginsNotifier
-    extends Notifier<Map<internals.OriginId, OriginState>> {
+class AllDiscoveredOriginsNotifier extends Notifier<Set<internals.OriginId>> {
   @override
-  Map<internals.OriginId, OriginState> build() {
+  Set<internals.OriginId> build() {
     ref.watch(hotRestartEventProvider);
 
     state = {};
@@ -32,55 +31,76 @@ class AllDiscoveredOriginsNotifier
   }
 
   void _handleFrame(FoldedFrame frame) {
-    var changed = false;
+    final setBuilder = SetBuilder<internals.OriginId>(state);
 
     for (final event in frame.frame.events) {
-      // Accumulate unique origin IDs
-      switch (event) {
-        case ProviderContainerAddEvent():
-        case ProviderContainerDisposeEvent():
-          break;
-        case ProviderElementDisposeEvent(:final provider):
-          changed = true;
-          state[provider.origin.id]?.associatedProviders.remove(
-            provider.elementId,
-          );
-
-        case ProviderElementAddEvent(:final provider):
-        case ProviderElementUpdateEvent(:final provider):
-          changed = true;
-          final originState = state[provider.origin.id] ??= OriginState(
-            value: provider.origin,
-            associatedProviders: {},
-          );
-
-          originState.associatedProviders[provider.elementId] ??= provider;
+      if (event case ProviderElementAddEvent(:final provider)) {
+        state.add(provider.origin.id);
       }
     }
 
-    if (changed) ref.notifyListeners();
+    state = setBuilder.build();
   }
 }
 
-class OriginState {
-  OriginState({
-    required this.associatedProviders,
-    required this.value,
-    required FrameId start,
-  }) : lifespan = (start: start, end: null);
+// abstract class OriginState implements Built<OriginState, OriginStateBuilder> {
+//   factory OriginState({
+//     required OriginMeta2 value,
+//     required Map<internals.ElementId, ProviderState> associatedProviders,
+//   }) => _$OriginState((b) {
+//     b.value = value;
+//     b.associatedProviders = associatedProviders;
+//   });
 
-  final OriginMeta value;
-  final Map<internals.ElementId, ProviderMeta> associatedProviders;
-  final ({FrameId start, FrameId? end}) lifespan;
+//   OriginState._();
+
+//   OriginMeta2 get value;
+//   Map<internals.ElementId, ProviderState> get associatedProviders;
+// }
+
+// extension type OriginMeta2(OriginMeta value) implements OriginMeta {}
+// extension type ProviderMeta2(ProviderMeta value) implements ProviderMeta {}
+
+extension ProviderMetaX on ProviderMeta {}
+
+class FilteredElement {
+  FilteredElement({required this.element, required this.match});
+
+
+  OriginMeta get origin => element.provider.origin;
+  final ElementMeta element;
+  final FuzzyMatch match;
+
+  bool isSelected(internals.ElementId? id) => id == element.provider.elementId;
 }
 
-extension ProviderMetaX on ProviderMeta {
-  bool isSelected(internals.ElementId? id) => id == elementId;
-}
+typedef OriginStates = Map<internals.OriginId, List<FilteredElement>>;
 
 final filteredProvidersProvider = Provider.autoDispose
-    .family<List<ProviderPickerItem>, String>((ref, search) {
-      final allOrigins = ref.watch(allDiscoveredOriginsProvider);
+    .family<
+      OriginStates,
+      ({
+        String text,
+        // Frames are fully immutable, so it's safe to use them as keys.
+        FoldedFrame frame,
+      })
+    >((ref, args) {
+      final (:text, :frame) = args;
+      final result = {
+        for (final origin in ref.watch(allDiscoveredOriginsProvider))
+          origin: <FilteredElement>[],
+      };
+
+      for (final element in frame.elements.values) {
+        result[element.provider.origin.id]!.add(
+          FilteredElement(
+            element: element,
+            match: element.provider.toStringValue.fuzzyMatch(text),
+          ),
+        );
+      }
+
+      return result;
     });
 
 sealed class ProviderPickerItem {}
