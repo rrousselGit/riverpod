@@ -1,6 +1,7 @@
-## Unreleased patch
+## Unreleased minor
 
 - Fixed a bug with scoping when specifying `dependencies: [...]`
+- Added `Override.origin`. This enables knowing which provider is associated with an override.
 
 ## 3.0.3 - 2025-10-09
 
