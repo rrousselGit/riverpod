@@ -650,6 +650,7 @@ depending on itself.
   ) {
     if (_didChangeDependency) _retryCount = 0;
 
+    _didChangeDependency = false;
     if (kDebugMode) {
       container.scheduler.debugNotifyDidBuild(this);
 

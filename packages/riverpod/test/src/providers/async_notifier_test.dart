@@ -27,6 +27,27 @@ void main() {
   });
 
   asyncNotifierProviderFactory.createGroup((factory) {
+    test('Can be refreshed after a reload', () async {
+      final container = ProviderContainer.test();
+      var count = 0;
+      final provider = factory.simpleTestProvider<int>(
+        (ref, _) => Future.value(count++),
+      );
+
+      // initial read
+      final sub = container.listen(provider, (previous, next) {});
+      await container.read(provider.future);
+
+      // reloading
+      container.invalidate(provider, asReload: true);
+      await container.read(provider.future);
+
+      // refreshing
+      container.refresh(provider);
+
+      expect(sub.read().isRefreshing, true);
+    });
+
     test(
       'Calling state= followed by returning .future does not cause a double notification',
       () async {
