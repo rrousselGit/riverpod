@@ -11,14 +11,14 @@ part of 'convert_functional_provider_to_class_based.dart';
 /// Some comment
 
 @ProviderFor(example)
-const exampleProvider = ExampleProvider._();
+final exampleProvider = ExampleProvider._();
 
 /// Some comment
 
 final class ExampleProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   /// Some comment
-  const ExampleProvider._()
+  ExampleProvider._()
     : super(
         from: null,
         argument: null,
@@ -56,14 +56,14 @@ String _$exampleHash() => r'67898608b444d39a000852f647ca6d3326740c98';
 /// Some comment
 
 @ProviderFor(exampleFamily)
-const exampleFamilyProvider = ExampleFamilyFamily._();
+final exampleFamilyProvider = ExampleFamilyFamily._();
 
 /// Some comment
 
 final class ExampleFamilyProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   /// Some comment
-  const ExampleFamilyProvider._({
+  ExampleFamilyProvider._({
     required ExampleFamilyFamily super.from,
     required ({int a, String b}) super.argument,
   }) : super(
@@ -120,7 +120,7 @@ String _$exampleFamilyHash() => r'70dfc6f4b2d7d251edbc3a66c3ac0f2c56aebf8b';
 
 final class ExampleFamilyFamily extends $Family
     with $FunctionalFamilyOverride<int, ({int a, String b})> {
-  const ExampleFamilyFamily._()
+  ExampleFamilyFamily._()
     : super(
         retry: null,
         name: r'exampleFamilyProvider',

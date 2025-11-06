@@ -12,11 +12,11 @@ part of 'build_init.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(CounterNotifier)
-const counterProvider = CounterNotifierProvider._();
+final counterProvider = CounterNotifierProvider._();
 
 final class CounterNotifierProvider
     extends $NotifierProvider<CounterNotifier, int> {
-  const CounterNotifierProvider._()
+  CounterNotifierProvider._()
     : super(
         from: null,
         argument: null,

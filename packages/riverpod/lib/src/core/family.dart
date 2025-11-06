@@ -47,7 +47,7 @@ typedef FamilyCreate<CreatedT, ArgT> = CreatedT Function(Ref ref, ArgT arg);
 @publicInMisc
 final class Family extends ProviderOrFamily implements _FamilyOverride {
   /// A base class for all families
-  const Family({
+  Family({
     required super.name,
     required super.dependencies,
     required super.$allTransitiveDependencies,
@@ -71,7 +71,7 @@ final class Family extends ProviderOrFamily implements _FamilyOverride {
 @internal
 base class $Family extends Family {
   /// A base class for all families
-  const $Family({
+  $Family({
     required super.name,
     required super.dependencies,
     required super.$allTransitiveDependencies,
@@ -133,7 +133,7 @@ base class FunctionalFamily<
   /// help them define a [Family].
   ///
   /// This API is not meant for public consumption.
-  const FunctionalFamily(
+  FunctionalFamily(
     this._createFn, {
     required FunctionalProviderFactory<ProviderT, CreatedT, ArgT>
     providerFactory,
@@ -231,7 +231,7 @@ base class ClassFamily<
   /// help them define a [Family].
   ///
   /// This API is not meant for public consumption.
-  const ClassFamily(
+  ClassFamily(
     this._createFn, {
     required ClassProviderFactory<NotifierT, ProviderT, CreatedT, ArgT>
     providerFactory,

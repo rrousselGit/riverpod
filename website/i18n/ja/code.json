@@ -214,40 +214,124 @@
     "message": "Riverpod は Flutter に依存することなくプロバイダを作成・共有・テストすることが可能です。 {BuildContext} を使わずにプロバイダを利用することができます。"
   },
   "home.tagline": {
-    "message": "リアクティブ・キャッシングとデータバインディングを実現するフレームワーク"
+    "message": "リアクティブ・キャッシングとデータバインディング・フレームワーク"
   },
   "home.get_started": {
-    "message": "利用開始"
+    "message": "始める"
   },
   "home.shared_state_title": {
-    "message": "場所に縛られないステート宣言"
+    "message": "どこからでも共有ステートを宣言"
   },
   "home.shared_state_body": {
-    "message": "{main} と UI 側のコードの間を行き来する必要はもうありません。 {br} 別のパッケージ内であろうと、ウィジェットのコードと同じファイル内であろうと、場所に縛られることなくステートを宣言することができます。これによりテスト容易性を損なうことはありません。",
+    "message": "{main} と UI 側のコードの間を行き来する必要はありません。 {br} 共有ステートは、独立したパッケージや、利用するWidgetの近くなど、適切な場所に配置でき、テストのしやすさも維持されます。",
     "description": "The homepage input placeholder"
   },
   "home.recompute_title": {
-    "message": "ステートの再評価、UI の更新を最小限に"
+    "message": "ステートの再計算、UI の更新を最小限に"
   },
   "home.recompute_body": {
-    "message": "{build} メソッドの中でリストをソート / フィルタする必要はもうありません。高度なキャッシュ手法に頼る必要もありません。 {br}{br} {Provider} と {families} を使って、本当に必要な時に限ってリストのソートや HTTP リクエストを行えます。"
+    "message": "{build} メソッドの中でリストをソート / フィルタする必要はありません。高度なキャッシュ手法に頼る必要もありません。 {br}{br} {Provider} と {families} を使って、本当に必要な時に限り、リストのソートや HTTP リクエストを実行できます。"
   },
   "home.safe_read_title": {
-    "message": "Bad state とは無縁"
+    "message": "プロバイダの安全な読み取り"
   },
   "home.safe_read_body": {
-    "message": "プロバイダの監視により Bad state エラーが発生することはありません。プロバイダを適切に利用することで、常に有効な値を取得できます。 {br}{br} これは非同期操作により値を取得する場合も同様です。Riverpod なら、loading/error のステートを簡潔に処理することができます。"
+    "message": "プロバイダを読み取った結果、bad stateになることは決してありません。プロバイダを読み取るために必要なコードを書ければ、常に有効な値を取得できます。 {br}{br} これは非同期により値を取得する場合も同様に適用されます。Providerとは対照的に、Riverpodは読み込み/エラーケースのハンドリングを明確に処理できます。"
   },
   "home.devtool_title": {
     "message": "DevTools によるステートの検証"
   },
   "home.devtool_body": {
-    "message": "Riverpod では特別な設定をすることなく Flutter の DevTools でステートを検証することができます。 {br} 加えて、より本格的なステート検証ツールの開発が進行中です。"
+    "message": "Riverpodを使うと、FlutterのDevToolsでステートが可視化されます。 {br} 加えて、より本格的なステート検証ツールの開発が進行中です。"
+  },
+  "homepage.declarative_title": {
+    "message": "宣言型プログラミング"
+  },
+  "homepage.declarative_body": {
+    "message": "Stateless ウィジェットのようにビジネスロジックを記述できます。{br}ネットワークリクエストは必要に応じて自動的に再計算され、ロジックの再利用・合成・保守が容易になります。"
+  },
+  "homepage.common_ui_patterns_title": {
+    "message": "共通のUIパターンを簡単に実装"
+  },
+  "homepage.common_ui_patterns_body": {
+    "message": "Riverpodを使えば、入力しながら検索/引っ張って更新のような複雑なUIパターンでも、数行のコードで実装できます。"
+  },
+  "homepage.tooling_ready_title": {
+    "message": "開発ツールに対応"
+  },
+  "homepage.tooling_ready_body": {
+    "message": "Riverpodはよくあるミスをコンパイルエラーとして扱い、コンパイラを強化します。カスタムlintルールやリファクタリングオプションも提供します。ドキュメント生成用のコマンドラインまで備えています。"
+  },
+  "homepage.features_title":{
+    "message": "特徴"
+  },
+  "homepage.features_declarative_check":{
+    "message": "宣言型プログラミング"
+  },
+  "homepage.features_compile_check":{
+    "message": "コンパイル時の安全性"
+  },
+  "homepage.features_dart_check":{
+    "message": "バニラDartで動作 (サーバー/CLI/...)"
+  },
+  "homepage.features_lint_check": {
+    "message": "カスタムlintルール"
+  },
+  "homepage.features_logger_check": {
+    "message": "ロギング"
+  },
+  "homepage.features_network_check": {
+    "message": "ネイティブネットワークリクエストに対応"
+  },
+  "homepage.features_typed_query_check": {
+    "message": "型安全なクエリパラメータ"
+  },
+  "homepage.features_combine_check": {
+    "message": "組み合わせやすいステート"
+  },
+  "homepage.features_refactor_check": {
+    "message": "リファクタリング標準搭載"
+  },
+  "homepage.features_socket_check": {
+    "message": "WebSocketサポート"
+  },
+  "homepage.features_error_check": {
+    "message": "ロード/エラーの自動ハンドリング"
+  },
+  "homepage.features_test_check": {
+    "message": "テスト対応可"
+  },
+  "homepage.features_refresh_check": {
+    "message": "引っ張って更新の動作に標準でサポート"
+  },
+  "homepage.features_hot_reload_check": {
+    "message": "ホットリロードのサポート"
+  },
+  "homepage.features_graph_check": {
+    "message": "ドキュメント生成"
   },
   "home.create_provider": {
-    "message": "プロバイダを作成する"
+    "message": "ネットワークリクエストの作成"
   },
   "home.consume_provider": {
-    "message": "プロバイダを利用する"
+    "message": "UI上でネットワークリクエストを受信"
+  },
+  "home.refactors_title": {
+    "message": "リファクターで日々の作業を簡略化"
+  },
+  "home.refactors_list_link": {
+    "message": "リファクタリング一覧"
+  },
+  "home.refactors_body": {
+    "message": "Riverpod は、\"Wrap widget in a Consumer\"、のような、様々なリファクターを提供しています。{warnings}"
+  },
+  "home.lint_title": {
+    "message": "lintルールでコードの保守性を保つ"
+  },
+  "home.lint_rules_list_link": {
+    "message": "lintルール一覧"
+  },
+  "home.lint_body": {
+    "message": "Riverpodに特化した新しいlintルールは実装済みであり、今後さらに継続的に追加されます。これにより、コードが最適な状態に保たれます。{warnings}"
   }
 }

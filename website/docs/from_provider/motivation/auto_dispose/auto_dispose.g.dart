@@ -12,11 +12,11 @@ part of 'auto_dispose.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(diceRoll)
-const diceRollProvider = DiceRollProvider._();
+final diceRollProvider = DiceRollProvider._();
 
 final class DiceRollProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const DiceRollProvider._()
+  DiceRollProvider._()
     : super(
         from: null,
         argument: null,
@@ -52,11 +52,11 @@ final class DiceRollProvider extends $FunctionalProvider<int, int, int>
 String _$diceRollHash() => r'58d43e5143bb64e855939d55a3be3ee81d66c518';
 
 @ProviderFor(cachedDiceRoll)
-const cachedDiceRollProvider = CachedDiceRollProvider._();
+final cachedDiceRollProvider = CachedDiceRollProvider._();
 
 final class CachedDiceRollProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const CachedDiceRollProvider._()
+  CachedDiceRollProvider._()
     : super(
         from: null,
         argument: null,

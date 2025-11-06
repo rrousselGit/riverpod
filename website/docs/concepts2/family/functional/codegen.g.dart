@@ -12,12 +12,12 @@ part of 'codegen.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(user)
-const userProvider = UserFamily._();
+final userProvider = UserFamily._();
 
 final class UserProvider
     extends $FunctionalProvider<AsyncValue<User>, User, FutureOr<User>>
     with $FutureModifier<User>, $FutureProvider<User> {
-  const UserProvider._({
+  UserProvider._({
     required UserFamily super.from,
     required String super.argument,
   }) : super(
@@ -64,7 +64,7 @@ String _$userHash() => r'8d1ce92d62b70e2bde0d9c6977604c94a46a5c8f';
 
 final class UserFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<User>, String> {
-  const UserFamily._()
+  UserFamily._()
     : super(
         retry: null,
         name: r'userProvider',

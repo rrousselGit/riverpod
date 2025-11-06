@@ -20,7 +20,6 @@ typedef Create<CreatedT> = CreatedT Function(Ref ref);
 typedef OnError = void Function(Object error, StackTrace stackTrace);
 
 /// A base class for _all_ providers.
-@immutable
 @publicInMisc
 sealed class ProviderBase<StateT> extends ProviderOrFamily
     implements
@@ -28,7 +27,7 @@ sealed class ProviderBase<StateT> extends ProviderOrFamily
         Refreshable<StateT>,
         _ProviderOverride {
   /// A base class for _all_ providers.
-  const ProviderBase({
+  ProviderBase({
     required super.name,
     required this.from,
     required this.argument,
@@ -94,11 +93,10 @@ sealed class ProviderBase<StateT> extends ProviderOrFamily
 }
 
 /// A base class for _all_ providers.
-@immutable
 @internal
 abstract final class $ProviderBaseImpl<StateT> extends ProviderBase<StateT> {
   /// A base class for _all_ providers.
-  const $ProviderBaseImpl({
+  $ProviderBaseImpl({
     required super.name,
     required super.from,
     required super.argument,

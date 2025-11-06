@@ -36,7 +36,7 @@ abstract base class $AsyncNotifierProvider<
     with $FutureModifier<ValueT> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use.
-  const $AsyncNotifierProvider({
+  $AsyncNotifierProvider({
     required super.name,
     required super.from,
     required super.argument,

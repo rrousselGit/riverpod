@@ -10,11 +10,11 @@ part of 'functional_ref.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(nameless)
-const namelessProvider = NamelessProvider._();
+final namelessProvider = NamelessProvider._();
 
 final class NamelessProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const NamelessProvider._()
+  NamelessProvider._()
     : super(
         from: null,
         argument: null,
@@ -50,12 +50,12 @@ final class NamelessProvider extends $FunctionalProvider<int, int, int>
 String _$namelessHash() => r'1a2aa61445a64c65301051820b159c5998195606';
 
 @ProviderFor(generics)
-const genericsProvider = GenericsFamily._();
+final genericsProvider = GenericsFamily._();
 
 final class GenericsProvider<A extends num, B>
     extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const GenericsProvider._({required GenericsFamily super.from})
+  GenericsProvider._({required GenericsFamily super.from})
     : super(
         argument: null,
         retry: null,
@@ -113,7 +113,7 @@ final class GenericsProvider<A extends num, B>
 String _$genericsHash() => r'dddbd6460e73b1f20343bbadee6666311c5ac0ea';
 
 final class GenericsFamily extends $Family {
-  const GenericsFamily._()
+  GenericsFamily._()
     : super(
         retry: null,
         name: r'genericsProvider',
@@ -143,11 +143,11 @@ final class GenericsFamily extends $Family {
 }
 
 @ProviderFor(valid)
-const validProvider = ValidProvider._();
+final validProvider = ValidProvider._();
 
 final class ValidProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const ValidProvider._()
+  ValidProvider._()
     : super(
         from: null,
         argument: null,

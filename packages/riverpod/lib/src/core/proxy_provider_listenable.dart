@@ -136,9 +136,11 @@ final class ProviderElementProxy<OutT, InT>
   }
 
   @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) =>
       other is ProviderElementProxy<OutT, InT> && other.provider == provider;
 
   @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => provider.hashCode;
 }

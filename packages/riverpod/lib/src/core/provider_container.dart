@@ -34,7 +34,14 @@ class $ProviderPointer implements _PointerBase {
 
   @override
   bool get isTransitiveOverride =>
-      providerOverride is TransitiveProviderOverride;
+      providerOverride is TransitiveProviderOverride ||
+      // Consider pointers from providers with non-empty dependencies on the root container
+      // as "transitive overrides". Even though they aren't overrides due to
+      // being on the root container, they should be treated as such for the sake
+      // of automatic scoping.
+      (targetContainer._parent == null &&
+          providerOverride == null &&
+          (origin.$allTransitiveDependencies?.isNotEmpty ?? false));
 
   final ProviderBase<Object?> origin;
 
@@ -284,7 +291,7 @@ class ProviderPointerManager {
     return ProviderPointerManager(
       overrides,
       container: container,
-      // Always folks orphan pointers, because of possible transitive overrides.
+      // Always forks orphan pointers, because of possible transitive overrides.
       orphanPointers: ProviderDirectory.from(
         parent._pointerManager.orphanPointers,
       ),

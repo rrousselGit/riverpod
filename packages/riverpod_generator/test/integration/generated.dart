@@ -22,7 +22,7 @@ class $DynamicClassFamily extends _$$DynamicClassFamily {
   build(test) => Object();
 }
 
-const dynamicProvider = _dynamicProvider;
+final dynamicProvider = _dynamicProvider;
 
 @riverpod
 _dynamic(Ref ref, test) => 0;

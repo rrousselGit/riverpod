@@ -64,7 +64,7 @@ final class StreamNotifierProvider<
   /// An implementation detail of Riverpod
   /// @nodoc
   @internal
-  const StreamNotifierProvider.internal(
+  StreamNotifierProvider.internal(
     this._createNotifier, {
     required super.name,
     required super.dependencies,
