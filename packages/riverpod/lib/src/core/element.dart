@@ -537,7 +537,7 @@ depending on itself.
   /// - `overrideWithValue`, which relies on [update] to handle
   ///   the scenario where the value changed.
   @visibleForOverriding
-  void update($ProviderBaseImpl<StateT> newProvider) {}
+  void update(ProviderBase<StateT> newProvider) {}
 
   /// Initialize a provider and track dependencies used during the initialization.
   ///
