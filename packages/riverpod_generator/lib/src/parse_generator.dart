@@ -15,7 +15,7 @@ abstract class ParserGenerator<AnnotationT>
     extends GeneratorForAnnotation<AnnotationT> {
   @override
   Future<String> generate(LibraryReader library, BuildStep buildStep) async {
-    final elementsBySourceFile = <Uri, Fragment>{};
+    final fragmentsBySourceFile = <Uri, Fragment>{};
 
     for (final annotatedElement in library.annotatedWithExact(
       typeChecker,
@@ -24,18 +24,17 @@ abstract class ParserGenerator<AnnotationT>
       for (final fragment in annotatedElement.element.fragments) {
         final sourceUri = fragment.libraryFragment?.source.uri;
         if (sourceUri == null) continue;
-
-        elementsBySourceFile.putIfAbsent(sourceUri, () => fragment);
+        fragmentsBySourceFile.putIfAbsent(sourceUri, () => fragment);
       }
     }
 
     final compilationUnits = await Future.wait(
-      elementsBySourceFile.values.map(
-        (element) => buildStep.resolver
-            .astNodeFor(element, resolve: true)
-            .then((ast) => ast!.root as CompilationUnit),
+      fragmentsBySourceFile.values.map(
+        (fragment) => buildStep.resolver
+            .astNodeFor(fragment, resolve: true)
+            .then((ast) => ast?.root as CompilationUnit?),
       ),
-    );
+    ).then((units) => units.nonNulls.toList());
 
     return generateForUnit(compilationUnits);
   }
