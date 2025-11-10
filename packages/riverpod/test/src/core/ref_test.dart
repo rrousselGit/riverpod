@@ -1177,6 +1177,36 @@ void main() {
 
           verifyZeroInteractions(listener);
         });
+
+        test(
+          'hot reload does not trigger weak listeners on unmounted providers',
+          () async {
+            final container = ProviderContainer.test();
+            var buildCountB = 0;
+
+            final providerB = Provider((ref) => buildCountB++);
+
+            final providerA = Provider((ref) {
+              ref.listen(providerB, weak: true, (previous, next) {});
+              return 0;
+            });
+
+            container.read(providerA);
+            expect(buildCountB, 0);
+
+            final elementB = container.getAllProviderElements().firstWhere(
+              (e) => e.origin == providerB,
+            );
+
+            elementB.invalidateSelf(asReload: false);
+            await container.pump();
+
+            expect(buildCountB, 0);
+
+            container.read(providerB);
+            expect(buildCountB, 1);
+          },
+        );
       });
 
       test('ref.listen on outdated provider causes it to rebuild', () {

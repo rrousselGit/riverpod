@@ -728,6 +728,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void invalidateSelf({required bool asReload}) {
+    if (!_didMount) return;
+
     if (asReload) _didChangeDependency = true;
     if (_mustRecomputeState) return;
 

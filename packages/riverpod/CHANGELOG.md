@@ -3,6 +3,7 @@
 - Fixed a bug with scoping when specifying `dependencies: [...]`
 - Added `Override.origin`. This enables knowing which provider is associated with an override.
 - Fix a regression with `AsyncLoading.isRefreshing/isReloading`
+- Fixed a bug where providers with only weak listeners (`ref.listen(..., weak: true)`) would incorrectly initialize during hot reload (thanks to @tguerin)
 
 ## 3.0.3 - 2025-10-09
 
