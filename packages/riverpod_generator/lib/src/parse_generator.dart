@@ -15,27 +15,34 @@ abstract class ParserGenerator<AnnotationT>
     extends GeneratorForAnnotation<AnnotationT> {
   @override
   Future<String> generate(LibraryReader library, BuildStep buildStep) async {
-    final firstAnnotatedElementFromUniqueSource = <Uri, Element2>{};
+    final allAnnotatedElements = <Element2>[];
 
     for (final annotated in library.annotatedWithExact(
       typeChecker,
       throwOnUnresolved: false,
     )) {
-      firstAnnotatedElementFromUniqueSource.putIfAbsent(
-        annotated.element.library2!.uri,
-        () => annotated.element,
-      );
+      allAnnotatedElements.add(annotated.element);
     }
 
-    final ast = await Future.wait(
-      firstAnnotatedElementFromUniqueSource.values.map(
-        (e) => buildStep.resolver
-            .astNodeFor(e.firstFragment, resolve: true)
-            .then((value) => value!.root as CompilationUnit),
-      ),
-    );
+    final uniqueCompilationUnits = <Uri, CompilationUnit>{};
 
-    return generateForUnit(ast);
+    for (final element in allAnnotatedElements) {
+      final astNode = await buildStep.resolver.astNodeFor(
+        element.firstFragment,
+        resolve: true,
+      );
+
+      if (astNode == null) continue;
+
+      final compilationUnit = astNode.root as CompilationUnit;
+      final sourceUri = compilationUnit.declaredFragment!.source.uri;
+
+      // Use source URI (not library URI) to deduplicate
+      // Part files have different source URIs but share library URI
+      uniqueCompilationUnits.putIfAbsent(sourceUri, () => compilationUnit);
+    }
+
+    return generateForUnit(uniqueCompilationUnits.values.toList());
   }
 
   FutureOr<String> generateForUnit(List<CompilationUnit> compilationUnits);
