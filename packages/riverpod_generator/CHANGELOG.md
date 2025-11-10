@@ -3,6 +3,7 @@
 - Generated providers are no-longer constant
 - Fix a bug when using `Class.staticVariable` as parameter to `@Riverpod(retry: ...)`
 - Fix Notifiers returning a `Future<void>`
+- Fix providers from part files not being generated (thanks to @tguerin)
 
 ## 3.0.3 - 2025-10-09
 
