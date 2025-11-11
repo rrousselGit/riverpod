@@ -1,3 +1,24 @@
+## Unreleased minor
+
+Added an alternative way to combine asynchronous providers.
+This can be done by using `AsyncValue.requireValue` inside `FutureProvider`/`AsyncNotifier`
+like so:
+
+```dart
+final sumProvider = FutureProvider((ref) { // Not async
+  AsyncVaue<int> a = ref.watch(aProvider);
+  AsyncValue<int> b = ref.watch(bProvider);
+
+  // The following is safe if used inside the init function of providers.
+  return a.requireValue + b.requireValue;
+})
+```
+
+This enables synchronously combining asynchronous providers.
+
+See [AsyncValue.requireValue](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue/requireValue.html)
+
+
 ## 3.0.2 - 2025-10-07
 
 - Improve the error message when a circular dependency error is thrown
