@@ -1,4 +1,3 @@
-import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer_buffer/analyzer_buffer.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
