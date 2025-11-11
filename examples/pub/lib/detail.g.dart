@@ -271,7 +271,6 @@ abstract class _$PackageMetrics extends $AsyncNotifier<PackageMetricsScore> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(packageName: _$args);
     final ref =
         this.ref as $Ref<AsyncValue<PackageMetricsScore>, PackageMetricsScore>;
     final element =
@@ -282,6 +281,6 @@ abstract class _$PackageMetrics extends $AsyncNotifier<PackageMetricsScore> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(packageName: _$args));
   }
 }

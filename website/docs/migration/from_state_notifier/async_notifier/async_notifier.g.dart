@@ -43,7 +43,6 @@ abstract class _$AsyncTodosNotifier extends $AsyncNotifier<List<Todo>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<List<Todo>>, List<Todo>>;
     final element =
         ref.element
@@ -53,6 +52,6 @@ abstract class _$AsyncTodosNotifier extends $AsyncNotifier<List<Todo>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

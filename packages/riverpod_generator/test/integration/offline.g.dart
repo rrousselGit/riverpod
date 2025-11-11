@@ -84,7 +84,6 @@ abstract class _$CustomAnnotationBase extends $AsyncNotifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -94,7 +93,7 @@ abstract class _$CustomAnnotationBase extends $AsyncNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -178,7 +177,6 @@ abstract class _$JsonBase extends $AsyncNotifier<Map<String, List<int>>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref =
         this.ref
             as $Ref<AsyncValue<Map<String, List<int>>>, Map<String, List<int>>>;
@@ -193,7 +191,7 @@ abstract class _$JsonBase extends $AsyncNotifier<Map<String, List<int>>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }
 
@@ -231,7 +229,6 @@ abstract class _$Json2Base extends $AsyncNotifier<Map<String, List<int>>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref =
         this.ref
             as $Ref<AsyncValue<Map<String, List<int>>>, Map<String, List<int>>>;
@@ -246,7 +243,7 @@ abstract class _$Json2Base extends $AsyncNotifier<Map<String, List<int>>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -284,7 +281,6 @@ abstract class _$CustomJsonBase extends $AsyncNotifier<Map<String, Bar>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref =
         this.ref as $Ref<AsyncValue<Map<String, Bar>>, Map<String, Bar>>;
     final element =
@@ -295,7 +291,7 @@ abstract class _$CustomJsonBase extends $AsyncNotifier<Map<String, Bar>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -333,7 +329,6 @@ abstract class _$CustomKeyBase extends $AsyncNotifier<Map<String, Bar>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref =
         this.ref as $Ref<AsyncValue<Map<String, Bar>>, Map<String, Bar>>;
     final element =
@@ -344,7 +339,7 @@ abstract class _$CustomKeyBase extends $AsyncNotifier<Map<String, Bar>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -436,7 +431,6 @@ abstract class _$CustomJsonWithArgsBase
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args.$1, _$args.$2, arg3: _$args.arg3);
     final ref =
         this.ref as $Ref<AsyncValue<Map<String, Bar>>, Map<String, Bar>>;
     final element =
@@ -447,7 +441,10 @@ abstract class _$CustomJsonWithArgsBase
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(
+      ref,
+      () => build(_$args.$1, _$args.$2, arg3: _$args.arg3),
+    );
   }
 }
 
@@ -488,7 +485,6 @@ abstract class _$PassEncodeDecodeByHandBase
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref =
         this.ref as $Ref<AsyncValue<Map<String, String>>, Map<String, String>>;
     final element =
@@ -499,7 +495,7 @@ abstract class _$PassEncodeDecodeByHandBase
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 

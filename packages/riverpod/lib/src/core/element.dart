@@ -216,19 +216,24 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
         running = false;
       }
 
-      futureOr.then(
-        (value) {
-          if (!running) return;
-          data(value);
-          done();
-        },
-        // ignore: avoid_types_on_closure_parameters
-        onError: (Object err, StackTrace stackTrace) {
-          if (!running) return;
-          error(err, stackTrace);
-          done();
-        },
-      );
+      futureOr
+          .then((value) {
+            if (!running) return;
+            data(value);
+            done();
+          })
+          .catchError(test: (err) => err is AsyncValueIsLoadingException, (_) {
+            // Those are typically coming from `ref.watch(provider).requireValue`,
+            // which counts as an abort while the provider is still loading.
+            // We handle them outside of onError to avoid capturing the stacktrace
+            // if we do not need it.
+          })
+          .catchError((Object err, StackTrace stackTrace) {
+            if (!running) return;
+
+            error(err, stackTrace);
+            done();
+          });
 
       last(futureOr);
 
@@ -277,6 +282,11 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
           onDone?.call();
         },
       );
+    } on AsyncValueIsLoadingException {
+      // Those are typically coming from `ref.watch(provider).requireValue`,
+      // which counts as an abort while the provider is still loading.
+      // We purposefully want to keep `provider.future` pending when such an
+      // exception is thrown, instead of treating it as an error.
     } catch (error, stackTrace) {
       callOnError(error, stackTrace);
     }

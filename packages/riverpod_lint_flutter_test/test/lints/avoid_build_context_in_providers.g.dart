@@ -179,7 +179,6 @@ abstract class _$MyNotifier extends $Notifier<int> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args.$1, context2: _$args.context2);
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -189,7 +188,10 @@ abstract class _$MyNotifier extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(
+      ref,
+      () => build(_$args.$1, context2: _$args.context2),
+    );
   }
 }
 
@@ -232,7 +234,6 @@ abstract class _$Regression2959 extends $Notifier<void> {
   @$mustCallSuper
   @override
   void runBuild() {
-    build();
     final ref = this.ref as $Ref<void, void>;
     final element =
         ref.element
@@ -242,6 +243,6 @@ abstract class _$Regression2959 extends $Notifier<void> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, null);
+    element.handleCreate(ref, build);
   }
 }

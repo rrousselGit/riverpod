@@ -6,6 +6,13 @@ import 'package:test/test.dart' hide Retry;
 
 export '../old/utils.dart' show ObserverMock, isProviderObserverContext;
 
+extension CompleterX<T> on Completer<T> {
+  void dispose() {
+    if (isCompleted) return;
+    completeError(StateError('disposed'));
+  }
+}
+
 class _Sentinel {
   const _Sentinel();
 }

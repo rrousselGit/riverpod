@@ -358,6 +358,22 @@ typedef _ErrorFilledRecord =
     ({Object error, StackTrace stackTrace, bool retrying});
 typedef _LoadingRecord = ({num? progress});
 
+/// [AsyncValue.requireValue] was called on an [AsyncValue] with no error nor a value.
+///
+/// {@macro chaining_providers_synchronously}
+class AsyncValueIsLoadingException implements Exception {
+  AsyncValueIsLoadingException._(this.value);
+
+  /// The [AsyncValue] that was in loading state when [AsyncValue.requireValue] was called.
+  final AsyncValue<Object?> value;
+
+  @override
+  String toString() {
+    return 'AsyncValueIsLoadingException: '
+        '`requireValue` was called on the async value `$value`, yet it neither has an error nor a value.';
+  }
+}
+
 /// A utility for safely manipulating asynchronous data.
 ///
 /// By using [AsyncValue], you are guaranteed that you cannot forget to
@@ -401,6 +417,8 @@ typedef _LoadingRecord = ({num? progress});
 /// By using [requireValue], we get an immediate access to the value. At the same
 /// time, if we made a mistake and the value is not available, we will get an
 /// exception. This is a good thing because it will help us to spot problem.
+///
+/// {@macro chaining_providers_synchronously}
 ///
 /// See also:
 ///
@@ -534,9 +552,40 @@ sealed class AsyncValue<ValueT> {
 
   /// If [hasValue] is true, returns the value.
   /// Otherwise if [hasError], rethrows the error.
-  /// Finally if in loading state, throws a [StateError].
+  /// Finally if in loading state, throws a [AsyncValueIsLoadingException].
   ///
-  /// This is typically used for when the UI assumes that [value] is always present.
+  /// This has two main uses:
+  /// - Inside widgets, it is used for when the UI assumes that [value] is always present
+  ///   (thanks to loading/error states being handled at a different level).
+  /// - Inside providers, this enables chaining asynchronous providers in a synchronous manner..
+  ///
+  /// {@template chaining_providers_synchronously}
+  /// ## Chaining asynchronous providers synchronously.
+  ///
+  /// When [AsyncValueIsLoadingException] (thrown by [requireValue] during loading states)
+  /// is thrown within a provider's initialization,
+  /// Riverpod will silence it.
+  /// Combined with the fact that [Ref.watch] rebuilds a provider when the dependency
+  /// changes, this enables combining asynchronous providers in a synchronous manner.
+  ///
+  /// The following example adds two numbers obtained asynchronously,
+  /// in a synchronous manner. This ensures that within the same frame where
+  /// one of those asynchronous providers updates, the sum is immediately updated.
+  ///
+  /// ```dart
+  /// // We use FutureProvider + AsyncValue to sycnhronously combine asynchronous providers.
+  /// // Notice how the callback of FutureProvider is not marked as async.
+  /// final sumProvider = FutureProvider<User>((ref) {
+  ///   AsyncValue<int> value = ref.watch(someProvider);
+  ///   AsyncValue<int> anotherValue = ref.watch(anotherProvider);
+  ///
+  ///   return value.requireValue + anotherValue.requireValue;
+  /// });
+  /// ```
+  ///
+  /// Note that this usage is only valid within providers that are expected
+  /// to create a [FutureOr] (cf [FutureProvider]/[AsyncNotifierProvider]).
+  /// {@endtemplate}
   ValueT get requireValue {
     if (hasValue) return value as ValueT;
     if (hasError) {
@@ -545,9 +594,7 @@ sealed class AsyncValue<ValueT> {
     }
 
     assert(this is! AsyncData, 'Bad state');
-    throw StateError(
-      'Tried to call `requireValue` on an `AsyncValue` that has no value: $this',
-    );
+    throw AsyncValueIsLoadingException._(this);
   }
 
   /// The [error].

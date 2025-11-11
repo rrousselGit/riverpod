@@ -205,7 +205,6 @@ abstract class _$GenericClass<ObjT extends num>
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<List<ObjT>>, List<ObjT>>;
     final element =
         ref.element
@@ -215,7 +214,7 @@ abstract class _$GenericClass<ObjT extends num>
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -326,7 +325,6 @@ abstract class _$GenericArg<ObjT extends num> extends $AsyncNotifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -336,7 +334,7 @@ abstract class _$GenericArg<ObjT extends num> extends $AsyncNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }
 
@@ -621,7 +619,6 @@ abstract class _$PublicClass extends $AsyncNotifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -631,7 +628,7 @@ abstract class _$PublicClass extends $AsyncNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -666,7 +663,6 @@ abstract class _$PrivateClass extends $AsyncNotifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -676,7 +672,7 @@ abstract class _$PrivateClass extends $AsyncNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -756,7 +752,6 @@ abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -766,7 +761,7 @@ abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }
 
@@ -891,13 +886,6 @@ abstract class _$FamilyClass extends $AsyncNotifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args.$1,
-      second: _$args.second,
-      third: _$args.third,
-      fourth: _$args.fourth,
-      fifth: _$args.fifth,
-    );
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -907,7 +895,16 @@ abstract class _$FamilyClass extends $AsyncNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(
+      ref,
+      () => build(
+        _$args.$1,
+        second: _$args.second,
+        third: _$args.third,
+        fourth: _$args.fourth,
+        fifth: _$args.fifth,
+      ),
+    );
   }
 }
 
@@ -1055,11 +1052,6 @@ abstract class _$Regression3490<ModelT, SortT, CursorT>
   @$mustCallSuper
   @override
   void runBuild() {
-    build(
-      type: _$args.type,
-      getData: _$args.getData,
-      parentId: _$args.parentId,
-    );
     final ref = this.ref as $Ref<void, void>;
     final element =
         ref.element
@@ -1069,7 +1061,14 @@ abstract class _$Regression3490<ModelT, SortT, CursorT>
               Object?,
               Object?
             >;
-    element.handleValue(ref, null);
+    element.handleCreate(
+      ref,
+      () => build(
+        type: _$args.type,
+        getData: _$args.getData,
+        parentId: _$args.parentId,
+      ),
+    );
   }
 }
 
@@ -1103,7 +1102,6 @@ abstract class _$VoidClass extends $AsyncNotifier<void> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<void>, void>;
     final element =
         ref.element
@@ -1113,6 +1111,6 @@ abstract class _$VoidClass extends $AsyncNotifier<void> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

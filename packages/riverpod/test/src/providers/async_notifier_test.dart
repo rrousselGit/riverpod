@@ -27,6 +27,38 @@ void main() {
   });
 
   asyncNotifierProviderFactory.createGroup((factory) {
+    test('Does not report AsyncValueIsLoadingException as uncaught', () async {
+      final container = ProviderContainer.test();
+      final completer = Completer<int>();
+      addTearDown(completer.dispose);
+
+      final dep = FutureProvider<int>((ref) => completer.future);
+      final provider = factory.simpleTestProvider<int>((ref, _) {
+        return ref.watch(dep).requireValue * 2;
+      });
+      final provider2 = factory.simpleTestProvider<int>((ref, _) async {
+        return ref.watch(dep).requireValue * 2;
+      });
+
+      final sub = container.listen(provider.future, (previous, next) {});
+      final sub2 = container.listen(provider2.future, (previous, next) {});
+
+      expect(container.read(provider), const AsyncLoading<int>());
+      expect(container.read(provider2), const AsyncLoading<int>());
+      final future = sub.read();
+      final future2 = sub2.read();
+
+      completer.complete(42);
+      await sub.read();
+      await sub2.read();
+
+      expect(container.read(provider), const AsyncData(84));
+      expect(container.read(provider2), const AsyncData(84));
+
+      await expectLater(future, completion(84));
+      await expectLater(future2, completion(84));
+    });
+
     test('Can be refreshed after a reload', () async {
       final container = ProviderContainer.test();
       var count = 0;

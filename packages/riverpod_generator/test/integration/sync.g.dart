@@ -338,7 +338,6 @@ abstract class _$GenericClass<ValueT extends num>
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref = this.ref as $Ref<List<ValueT>, List<ValueT>>;
     final element =
         ref.element
@@ -348,7 +347,7 @@ abstract class _$GenericClass<ValueT extends num>
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }
 
@@ -485,7 +484,6 @@ abstract class _$RawFutureClass extends $Notifier<Raw<Future<String>>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<Raw<Future<String>>, Raw<Future<String>>>;
     final element =
         ref.element
@@ -495,7 +493,7 @@ abstract class _$RawFutureClass extends $Notifier<Raw<Future<String>>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -538,7 +536,6 @@ abstract class _$RawStreamClass extends $Notifier<Raw<Stream<String>>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<Raw<Stream<String>>, Raw<Stream<String>>>;
     final element =
         ref.element
@@ -548,7 +545,7 @@ abstract class _$RawStreamClass extends $Notifier<Raw<Stream<String>>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -803,7 +800,6 @@ abstract class _$RawFamilyFutureClass extends $Notifier<Raw<Future<String>>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref = this.ref as $Ref<Raw<Future<String>>, Raw<Future<String>>>;
     final element =
         ref.element
@@ -813,7 +809,7 @@ abstract class _$RawFamilyFutureClass extends $Notifier<Raw<Future<String>>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }
 
@@ -902,7 +898,6 @@ abstract class _$RawFamilyStreamClass extends $Notifier<Raw<Stream<String>>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref = this.ref as $Ref<Raw<Stream<String>>, Raw<Stream<String>>>;
     final element =
         ref.element
@@ -912,7 +907,7 @@ abstract class _$RawFamilyStreamClass extends $Notifier<Raw<Stream<String>>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }
 
@@ -1217,7 +1212,6 @@ abstract class _$PublicClass extends $Notifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -1227,7 +1221,7 @@ abstract class _$PublicClass extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -1270,7 +1264,6 @@ abstract class _$PrivateClass extends $Notifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -1280,7 +1273,7 @@ abstract class _$PrivateClass extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -1422,13 +1415,6 @@ abstract class _$FamilyClass extends $Notifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args.$1,
-      second: _$args.second,
-      third: _$args.third,
-      fourth: _$args.fourth,
-      fifth: _$args.fifth,
-    );
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -1438,7 +1424,16 @@ abstract class _$FamilyClass extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(
+      ref,
+      () => build(
+        _$args.$1,
+        second: _$args.second,
+        third: _$args.third,
+        fourth: _$args.fourth,
+        fifth: _$args.fifth,
+      ),
+    );
   }
 }
 
@@ -1527,7 +1522,6 @@ abstract class _$LocalStaticDefault extends $Notifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(arg: _$args);
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -1537,7 +1531,7 @@ abstract class _$LocalStaticDefault extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(arg: _$args));
   }
 }
 
@@ -1865,7 +1859,6 @@ abstract class _$Supports$InClassName<And$InT> extends $Notifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -1875,7 +1868,7 @@ abstract class _$Supports$InClassName<And$InT> extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -2010,11 +2003,6 @@ abstract class _$Supports$InClassFamilyName<And$InT> extends $Notifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args.$1,
-      named$arg: _$args.named$arg,
-      defaultArg: _$args.defaultArg,
-    );
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -2024,7 +2012,14 @@ abstract class _$Supports$InClassFamilyName<And$InT> extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(
+      ref,
+      () => build(
+        _$args.$1,
+        named$arg: _$args.named$arg,
+        defaultArg: _$args.defaultArg,
+      ),
+    );
   }
 }
 
@@ -2231,7 +2226,6 @@ abstract class _$UnnecessaryCastClass extends $Notifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -2241,7 +2235,7 @@ abstract class _$UnnecessaryCastClass extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }
 
@@ -2702,7 +2696,6 @@ abstract class _$VoidClass extends $Notifier<void> {
   @$mustCallSuper
   @override
   void runBuild() {
-    build();
     final ref = this.ref as $Ref<void, void>;
     final element =
         ref.element
@@ -2712,7 +2705,7 @@ abstract class _$VoidClass extends $Notifier<void> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, null);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -2793,7 +2786,6 @@ abstract class _$VoidClassWithArgs extends $Notifier<void> {
   @$mustCallSuper
   @override
   void runBuild() {
-    build(_$args);
     final ref = this.ref as $Ref<void, void>;
     final element =
         ref.element
@@ -2803,6 +2795,6 @@ abstract class _$VoidClassWithArgs extends $Notifier<void> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, null);
+    element.handleCreate(ref, () => build(_$args));
   }
 }

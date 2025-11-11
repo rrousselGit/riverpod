@@ -7,9 +7,62 @@ import 'package:test/test.dart';
 
 import '../../third_party/fake_async.dart';
 import '../matrix.dart';
+import '../utils.dart';
 
 void main() {
   group('FutureProvider', () {
+    test('Does not report AsyncValueIsLoadingException as uncaught', () async {
+      final container = ProviderContainer.test();
+      final completer = Completer<int>();
+      addTearDown(completer.dispose);
+
+      final dep = FutureProvider<int>((ref) => completer.future);
+      final provider = FutureProvider<int>((ref) {
+        return ref.watch(dep).requireValue * 2;
+      });
+      final provider2 = FutureProvider<int>((ref) async {
+        return ref.watch(dep).requireValue * 2;
+      });
+
+      final sub = container.listen(provider.future, (previous, next) {});
+      final sub2 = container.listen(provider2.future, (previous, next) {});
+
+      expect(container.read(provider), const AsyncLoading<int>());
+      expect(container.read(provider2), const AsyncLoading<int>());
+      final future = sub.read();
+      final future2 = sub2.read();
+
+      completer.complete(42);
+      await sub.read();
+      await sub2.read();
+
+      expect(container.read(provider), const AsyncData(84));
+      expect(container.read(provider2), const AsyncData(84));
+
+      await expectLater(future, completion(84));
+      await expectLater(future2, completion(84));
+    });
+
+    group('.future', () {
+      test(
+        'throws if the provider is disposed when the last value emitted was AsyncValueIsLoadingException',
+        () async {
+          final container = ProviderContainer.test();
+
+          final provider = FutureProvider<int>((ref) {
+            return const AsyncLoading<int>().requireValue;
+          });
+
+          final sub = container.listen(provider.future, (previous, next) {});
+          final future = sub.read()..ignore();
+
+          container.dispose();
+
+          await expectLater(future, throwsA(isStateError));
+        },
+      );
+    });
+
     group('retry', () {
       test(
         'handles retry',
