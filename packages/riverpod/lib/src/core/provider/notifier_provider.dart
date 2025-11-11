@@ -554,11 +554,11 @@ abstract class $ClassProviderElement<
     switch (result) {
       case $ResultData():
         try {
-          if (_runNotifierBuildOverride case final override?) {
-            final created = override(ref, result.value);
-            handleValue(ref, created);
-          } else {
-            result.value.runBuild();
+          switch (_runNotifierBuildOverride) {
+            case final override?:
+              handleCreate(ref, () => override(ref, result.value));
+            case null:
+              result.value.runBuild();
           }
         } catch (err, stack) {
           handleError(ref, err, stack);
@@ -570,7 +570,7 @@ abstract class $ClassProviderElement<
     return null;
   }
 
-  void handleValue(Ref ref, CreatedT created);
+  void handleCreate(Ref ref, CreatedT Function() created);
   void handleError(Ref ref, Object error, StackTrace stackTrace);
 
   @override

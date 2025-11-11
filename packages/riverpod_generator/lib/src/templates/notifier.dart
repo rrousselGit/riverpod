@@ -63,23 +63,19 @@ abstract class $notifierBaseName$genericsDefinition extends $baseClass {
 
     _writeBuild(buffer);
 
-    final buildVar =
-        provider.providerElement.valueTypeNode is VoidType
-            ? ''
-            : 'final created = ';
-
-    final buildVarUsage =
-        provider.providerElement.valueTypeNode is VoidType ? 'null' : 'created';
+    final buildVarUsage = switch (provider.providerElement.valueTypeNode) {
+      _ when provider.parameters.isEmpty => 'build',
+      _ => '() => build($paramsPassThrough)',
+    };
 
     buffer.writeln('''
   @\$mustCallSuper
   @override
   void runBuild() {
-    ${buildVar}build($paramsPassThrough);
     final ref = this.ref as \$Ref<${provider.providerElement.exposedTypeNode}, ${provider.providerElement.valueTypeNode.toCode()}>;
     final element = ref.element as \$ClassProviderElement<AnyNotifier<${provider.providerElement.exposedTypeNode}, ${provider.providerElement.valueTypeNode.toCode()}>,
           ${provider.providerElement.exposedTypeNode}, Object?, Object?>;
-    element.handleValue(ref, $buildVarUsage);
+    element.handleCreate(ref, $buildVarUsage);
   }
 }
 ''');

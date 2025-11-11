@@ -35,8 +35,7 @@ abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT> {
   @mustCallSuper
   @override
   void runBuild() {
-    final created = build();
-    requireElement().handleValue(ref, created);
+    requireElement().handleCreate(ref, build);
   }
 }
 
