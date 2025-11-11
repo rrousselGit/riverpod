@@ -10,11 +10,11 @@ part of 'retry.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(a)
-const aProvider = AProvider._();
+final aProvider = AProvider._();
 
 final class AProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const AProvider._()
+  AProvider._()
     : super(
         from: null,
         argument: null,
@@ -50,11 +50,11 @@ final class AProvider extends $FunctionalProvider<String, String, String>
 String _$aHash() => r'83a9516d10f85dc72ca773837e042bfc6e36c1f1';
 
 @ProviderFor(b)
-const bProvider = BFamily._();
+final bProvider = BFamily._();
 
 final class BProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const BProvider._({required BFamily super.from, required int super.argument})
+  BProvider._({required BFamily super.from, required int super.argument})
     : super(
         retry: myRetry2,
         name: r'bProvider',
@@ -107,7 +107,7 @@ String _$bHash() => r'95798a157250c86a901bca5701b487f508f8a5a4';
 
 final class BFamily extends $Family
     with $FunctionalFamilyOverride<String, int> {
-  const BFamily._()
+  BFamily._()
     : super(
         retry: myRetry2,
         name: r'bProvider',
@@ -121,3 +121,43 @@ final class BFamily extends $Family
   @override
   String toString() => r'bProvider';
 }
+
+@ProviderFor(c)
+final cProvider = CProvider._();
+
+final class CProvider extends $FunctionalProvider<String, String, String>
+    with $Provider<String> {
+  CProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: ProviderContainer.defaultRetry,
+        name: r'cProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$cHash();
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String create(Ref ref) {
+    return c(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String>(value),
+    );
+  }
+}
+
+String _$cHash() => r'0740be3fc310f1a5a8e637f5c7283d601013d3d2';

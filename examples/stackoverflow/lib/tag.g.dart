@@ -12,25 +12,25 @@ part of 'tag.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(tagTheme)
-const tagThemeProvider = TagThemeProvider._();
+final tagThemeProvider = TagThemeProvider._();
 
 final class TagThemeProvider
     extends $FunctionalProvider<TagTheme, TagTheme, TagTheme>
     with $Provider<TagTheme> {
-  const TagThemeProvider._()
+  TagThemeProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'tagThemeProvider',
         isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[themeProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
+        dependencies: <ProviderOrFamily>[themeProvider],
+        $allTransitiveDependencies: <ProviderOrFamily>[
           TagThemeProvider.$allTransitiveDependencies0,
         ],
       );
 
-  static const $allTransitiveDependencies0 = themeProvider;
+  static final $allTransitiveDependencies0 = themeProvider;
 
   @override
   String debugGetCreateSourceHash() => _$tagThemeHash();

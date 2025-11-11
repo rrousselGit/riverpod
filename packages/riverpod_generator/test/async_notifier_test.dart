@@ -11,7 +11,7 @@ void main() {
     () {
       final container = ProviderContainer.test();
 
-      const ProviderBase<AsyncValue<String>> provider = publicClassProvider;
+      final ProviderBase<AsyncValue<String>> provider = publicClassProvider;
       final AsyncValue<String> result = container.read(publicClassProvider);
 
       expect(result, const AsyncData('Hello world'));
@@ -75,7 +75,7 @@ void main() {
     () async {
       final container = ProviderContainer.test();
 
-      const FamilyClassFamily family = familyClassProvider;
+      final FamilyClassFamily family = familyClassProvider;
 
       expect(familyClassProvider(42, third: .42).from, familyClassProvider);
 

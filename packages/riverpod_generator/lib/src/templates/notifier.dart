@@ -63,9 +63,9 @@ abstract class $notifierBaseName$genericsDefinition extends $baseClass {
 
     _writeBuild(buffer);
 
-    final buildVarUsage = switch (provider.providerElement.valueTypeNode) {
-      _ when provider.parameters.isEmpty => 'build',
-      _ => '() => build($paramsPassThrough)',
+    final buildVarUsage = switch (provider.parameters) {
+      [] => 'build',
+      [_, ...] => '() => build($paramsPassThrough)',
     };
 
     buffer.writeln('''

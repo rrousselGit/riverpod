@@ -11,12 +11,12 @@ part of 'convert_class_based_provider_to_functional.dart';
 /// Some comment
 
 @ProviderFor(Example)
-const exampleProvider = ExampleProvider._();
+final exampleProvider = ExampleProvider._();
 
 /// Some comment
 final class ExampleProvider extends $NotifierProvider<Example, int> {
   /// Some comment
-  const ExampleProvider._()
+  ExampleProvider._()
     : super(
         from: null,
         argument: null,
@@ -68,13 +68,13 @@ abstract class _$Example extends $Notifier<int> {
 /// Some comment
 
 @ProviderFor(ExampleFamily)
-const exampleFamilyProvider = ExampleFamilyFamily._();
+final exampleFamilyProvider = ExampleFamilyFamily._();
 
 /// Some comment
 final class ExampleFamilyProvider
     extends $NotifierProvider<ExampleFamily, int> {
   /// Some comment
-  const ExampleFamilyProvider._({
+  ExampleFamilyProvider._({
     required ExampleFamilyFamily super.from,
     required ({int a, String b}) super.argument,
   }) : super(
@@ -131,7 +131,7 @@ final class ExampleFamilyFamily extends $Family
           int,
           ({int a, String b})
         > {
-  const ExampleFamilyFamily._()
+  ExampleFamilyFamily._()
     : super(
         retry: null,
         name: r'exampleFamilyProvider',
@@ -174,11 +174,11 @@ abstract class _$ExampleFamily extends $Notifier<int> {
 }
 
 @ProviderFor(Generic)
-const genericProvider = GenericFamily._();
+final genericProvider = GenericFamily._();
 
 final class GenericProvider<A, B>
     extends $NotifierProvider<Generic<A, B>, int> {
-  const GenericProvider._({required GenericFamily super.from})
+  GenericProvider._({required GenericFamily super.from})
     : super(
         argument: null,
         retry: null,
@@ -230,7 +230,7 @@ final class GenericProvider<A, B>
 String _$genericHash() => r'0a3792d7b59723aebd92715eef2c74d2f267cbd2';
 
 final class GenericFamily extends $Family {
-  const GenericFamily._()
+  GenericFamily._()
     : super(
         retry: null,
         name: r'genericProvider',

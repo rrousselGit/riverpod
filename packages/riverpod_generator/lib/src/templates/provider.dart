@@ -106,9 +106,9 @@ final class $name$_genericsDefinition
             : '{${constructorParameters.join(',')}}';
 
     buffer.writeln('''
-  ${provider.doc} const ${provider.providerTypeName}._($params): super(
+  ${provider.doc} ${provider.providerTypeName}._($params): super(
         $superParameters
-        retry: ${provider.annotation.retryNode?.name ?? 'null'},
+        retry: ${provider.annotation.retryNode?.node.toSource() ?? 'null'},
         name: r'${provider.providerName(options)}',
         isAutoDispose: ${!provider.annotation.element.keepAlive},
         dependencies: ${!provider.providerElement.isFamily ? provider.dependencies(options) : 'null'},
@@ -124,7 +124,7 @@ final class $name$_genericsDefinition
     for (final (index, transitiveDependency)
         in allTransitiveDependencies.indexed) {
       buffer.writeln(
-        'static const \$allTransitiveDependencies$index = $transitiveDependency;',
+        'static final \$allTransitiveDependencies$index = $transitiveDependency;',
       );
     }
 

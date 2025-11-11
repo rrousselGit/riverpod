@@ -12,7 +12,7 @@ void main() {
     () async {
       final container = ProviderContainer.test();
 
-      const ProviderBase<AsyncValue<String>> provider = publicProvider;
+      final ProviderBase<AsyncValue<String>> provider = publicProvider;
 
       expect(
         await container.listen(publicProvider.future, (_, __) {}).read(),
@@ -20,6 +20,17 @@ void main() {
       );
     },
   );
+
+  test('Using generic class+family', () async {
+    final container = ProviderContainer.test();
+
+    final sub = container.listen(
+      genericClassProvider<int>(42).future,
+      (previous, next) {},
+    );
+
+    expect(await sub.read(), <int>[42]);
+  });
 
   test('Generates .name for providers', () {
     expect(publicProvider.name, 'publicProvider');
@@ -75,7 +86,7 @@ void main() {
     () async {
       final container = ProviderContainer.test();
 
-      const FamilyFamily family = familyProvider;
+      final FamilyFamily family = familyProvider;
 
       expect(familyProvider(42, third: .42).from, familyProvider);
 

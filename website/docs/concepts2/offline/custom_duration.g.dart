@@ -29,12 +29,12 @@ Map<String, dynamic> _$TodoToJson(_Todo instance) => <String, dynamic>{
 
 @ProviderFor(TodoList)
 @JsonPersist()
-const todoListProvider = TodoListProvider._();
+final todoListProvider = TodoListProvider._();
 
 @JsonPersist()
 final class TodoListProvider
     extends $AsyncNotifierProvider<TodoList, List<Todo>> {
-  const TodoListProvider._()
+  TodoListProvider._()
     : super(
         from: null,
         argument: null,

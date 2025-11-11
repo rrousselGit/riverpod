@@ -517,14 +517,28 @@ depending on itself.
     final ref = this.ref = $Ref(this, isFirstBuild: true, isReload: false);
     final initialState = value;
 
-    buildState(ref);
+    ProviderElement? debugPreviouslyBuildingElement;
+    if (kDebugMode) {
+      debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
+      _debugCurrentlyBuildingElement = this;
+    }
 
-    _notifyListeners(
-      value,
-      initialState,
-      isFirstBuild: true,
-      checkUpdateShouldNotify: false,
-    );
+    try {
+      buildState(ref);
+
+      if (kDebugMode) _debugCurrentlyBuildingElement = null;
+
+      _notifyListeners(
+        value,
+        initialState,
+        isFirstBuild: true,
+        checkUpdateShouldNotify: false,
+      );
+    } finally {
+      if (kDebugMode) {
+        _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
+      }
+    }
   }
 
   /// Called when the override of a provider changes.
@@ -533,7 +547,7 @@ depending on itself.
   /// - `overrideWithValue`, which relies on [update] to handle
   ///   the scenario where the value changed.
   @visibleForOverriding
-  void update($ProviderBaseImpl<StateT> newProvider) {}
+  void update(ProviderBase<StateT> newProvider) {}
 
   /// Initialize a provider and track dependencies used during the initialization.
   ///
@@ -555,20 +569,37 @@ depending on itself.
       listenable.lockNotification();
     });
 
-    buildState(ref);
+    ProviderElement? debugPreviouslyBuildingElement;
+    if (kDebugMode) {
+      debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
+      _debugCurrentlyBuildingElement = this;
+    }
+    try {
+      buildState(ref);
 
-    visitListenables((listenable) {
-      listenable.unlockNotification();
-    });
+      visitListenables((listenable) {
+        listenable.unlockNotification();
+      });
 
-    if (!identical(value, previousValue)) {
-      // Asserts would otherwise prevent a provider rebuild from updating
-      // other providers
-      if (kDebugMode) _debugSkipNotifyListenersAsserts = true;
+      if (!identical(value, previousValue)) {
+        // Asserts would otherwise prevent a provider rebuild from updating
+        // other providers
+        if (kDebugMode) {
+          _debugSkipNotifyListenersAsserts = true;
+          _debugCurrentlyBuildingElement = null;
+        }
 
-      _notifyListeners(value, previousValue);
+        _notifyListeners(value, previousValue);
 
-      if (kDebugMode) _debugSkipNotifyListenersAsserts = false;
+        if (kDebugMode) {
+          _debugSkipNotifyListenersAsserts = false;
+          _debugCurrentlyBuildingElement = null;
+        }
+      }
+    } finally {
+      if (kDebugMode) {
+        _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
+      }
     }
   }
 
@@ -629,12 +660,14 @@ depending on itself.
   ) {
     if (_didChangeDependency) _retryCount = 0;
 
-    ProviderElement? debugPreviouslyBuildingElement;
     _didChangeDependency = false;
     if (kDebugMode) {
-      debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
-      _debugCurrentlyBuildingElement = this;
       container.scheduler.debugNotifyDidBuild(this);
+
+      assert(
+        _debugCurrentlyBuildingElement == this,
+        'Bad state, expected $this, got $_debugCurrentlyBuildingElement',
+      );
     }
 
     _didBuild = false;
@@ -649,9 +682,6 @@ depending on itself.
       value = triggerRetry(err, stack);
     } finally {
       _didBuild = true;
-      if (kDebugMode) {
-        _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
-      }
     }
   }
 

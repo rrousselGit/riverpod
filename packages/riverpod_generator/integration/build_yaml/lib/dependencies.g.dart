@@ -10,11 +10,11 @@ part of 'dependencies.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(calc2)
-const myFamilyCalc2ProviderFamily = Calc2Family._();
+final myFamilyCalc2ProviderFamily = Calc2Family._();
 
 final class Calc2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const Calc2Provider._({
+  Calc2Provider._({
     required Calc2Family super.from,
     required String super.argument,
   }) : super(
@@ -25,20 +25,20 @@ final class Calc2Provider extends $FunctionalProvider<int, int, int>
          $allTransitiveDependencies: null,
        );
 
-  static const $allTransitiveDependencies0 = myCountPod;
-  static const $allTransitiveDependencies1 = myCountFuturePod;
-  static const $allTransitiveDependencies2 = myCountStreamPod;
-  static const $allTransitiveDependencies3 = myCountNotifierPod;
-  static const $allTransitiveDependencies4 = myCountAsyncNotifierPod;
-  static const $allTransitiveDependencies5 = myCountStreamNotifierPod;
-  static const $allTransitiveDependencies6 = myFamilyCount2ProviderFamily;
-  static const $allTransitiveDependencies7 = myFamilyCountFuture2ProviderFamily;
-  static const $allTransitiveDependencies8 = myFamilyCountStream2ProviderFamily;
-  static const $allTransitiveDependencies9 =
+  static final $allTransitiveDependencies0 = myCountPod;
+  static final $allTransitiveDependencies1 = myCountFuturePod;
+  static final $allTransitiveDependencies2 = myCountStreamPod;
+  static final $allTransitiveDependencies3 = myCountNotifierPod;
+  static final $allTransitiveDependencies4 = myCountAsyncNotifierPod;
+  static final $allTransitiveDependencies5 = myCountStreamNotifierPod;
+  static final $allTransitiveDependencies6 = myFamilyCount2ProviderFamily;
+  static final $allTransitiveDependencies7 = myFamilyCountFuture2ProviderFamily;
+  static final $allTransitiveDependencies8 = myFamilyCountStream2ProviderFamily;
+  static final $allTransitiveDependencies9 =
       myFamilyCountNotifier2ProviderFamily;
-  static const $allTransitiveDependencies10 =
+  static final $allTransitiveDependencies10 =
       myFamilyCountAsyncNotifier2ProviderFamily;
-  static const $allTransitiveDependencies11 =
+  static final $allTransitiveDependencies11 =
       myFamilyCountStreamNotifier2ProviderFamily;
 
   @override
@@ -85,11 +85,11 @@ String _$calc2Hash() => r'ae1d601ff7cdda569255e8014bd5d8d1c178b3eb';
 
 final class Calc2Family extends $Family
     with $FunctionalFamilyOverride<int, String> {
-  const Calc2Family._()
+  Calc2Family._()
     : super(
         retry: null,
         name: r'myFamilyCalc2ProviderFamily',
-        dependencies: const <ProviderOrFamily>[
+        dependencies: <ProviderOrFamily>[
           myCountPod,
           myCountFuturePod,
           myCountStreamPod,
@@ -103,7 +103,7 @@ final class Calc2Family extends $Family
           myFamilyCountAsyncNotifier2ProviderFamily,
           myFamilyCountStreamNotifier2ProviderFamily,
         ],
-        $allTransitiveDependencies: const <ProviderOrFamily>{
+        $allTransitiveDependencies: <ProviderOrFamily>{
           Calc2Provider.$allTransitiveDependencies0,
           Calc2Provider.$allTransitiveDependencies1,
           Calc2Provider.$allTransitiveDependencies2,

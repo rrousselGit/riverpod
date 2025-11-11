@@ -190,7 +190,7 @@ extension ProviderElementNames on GeneratorProviderDeclarationElement {
     if (dependencies == null && !isScoped) return 'null';
     dependencies ??= {};
 
-    final buffer = StringBuffer('const <ProviderOrFamily>');
+    final buffer = StringBuffer('<ProviderOrFamily>');
     buffer.write('[');
 
     buffer.writeAll(dependencies.map((e) => e.providerName(options)), ',');
@@ -204,7 +204,7 @@ extension ProviderElementNames on GeneratorProviderDeclarationElement {
     if (deps == null && !isScoped) return 'null';
     allTransitiveDependencies ??= [];
 
-    final buffer = StringBuffer('const <ProviderOrFamily>');
+    final buffer = StringBuffer('<ProviderOrFamily>');
     if (allTransitiveDependencies.length < 4) {
       buffer.write('[');
     } else {

@@ -10,11 +10,11 @@ part of 'auto_dispose.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(keepAlive)
-const keepAliveProvider = KeepAliveProvider._();
+final keepAliveProvider = KeepAliveProvider._();
 
 final class KeepAliveProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const KeepAliveProvider._()
+  KeepAliveProvider._()
     : super(
         from: null,
         argument: null,
@@ -50,11 +50,11 @@ final class KeepAliveProvider extends $FunctionalProvider<int, int, int>
 String _$keepAliveHash() => r'44af50bf7e6dcfddc61a1f32855855b534a7fe4f';
 
 @ProviderFor(notKeepAlive)
-const notKeepAliveProvider = NotKeepAliveProvider._();
+final notKeepAliveProvider = NotKeepAliveProvider._();
 
 final class NotKeepAliveProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const NotKeepAliveProvider._()
+  NotKeepAliveProvider._()
     : super(
         from: null,
         argument: null,
@@ -90,11 +90,11 @@ final class NotKeepAliveProvider extends $FunctionalProvider<int, int, int>
 String _$notKeepAliveHash() => r'e60c952d04ffd7548294908c2e1ef472614c284b';
 
 @ProviderFor(defaultKeepAlive)
-const defaultKeepAliveProvider = DefaultKeepAliveProvider._();
+final defaultKeepAliveProvider = DefaultKeepAliveProvider._();
 
 final class DefaultKeepAliveProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const DefaultKeepAliveProvider._()
+  DefaultKeepAliveProvider._()
     : super(
         from: null,
         argument: null,
@@ -130,11 +130,11 @@ final class DefaultKeepAliveProvider extends $FunctionalProvider<int, int, int>
 String _$defaultKeepAliveHash() => r'76485c3c7574c38dcba6dda28c94a59c09b339c0';
 
 @ProviderFor(keepAliveFamily)
-const keepAliveFamilyProvider = KeepAliveFamilyFamily._();
+final keepAliveFamilyProvider = KeepAliveFamilyFamily._();
 
 final class KeepAliveFamilyProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const KeepAliveFamilyProvider._({
+  KeepAliveFamilyProvider._({
     required KeepAliveFamilyFamily super.from,
     required int super.argument,
   }) : super(
@@ -189,7 +189,7 @@ String _$keepAliveFamilyHash() => r'd1eb1243ea9463617b08a6e9cc5ae6b2df499ba2';
 
 final class KeepAliveFamilyFamily extends $Family
     with $FunctionalFamilyOverride<int, int> {
-  const KeepAliveFamilyFamily._()
+  KeepAliveFamilyFamily._()
     : super(
         retry: null,
         name: r'keepAliveFamilyProvider',
@@ -206,12 +206,12 @@ final class KeepAliveFamilyFamily extends $Family
 }
 
 @ProviderFor(notKeepAliveFamily)
-const notKeepAliveFamilyProvider = NotKeepAliveFamilyFamily._();
+final notKeepAliveFamilyProvider = NotKeepAliveFamilyFamily._();
 
 final class NotKeepAliveFamilyProvider
     extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const NotKeepAliveFamilyProvider._({
+  NotKeepAliveFamilyProvider._({
     required NotKeepAliveFamilyFamily super.from,
     required int super.argument,
   }) : super(
@@ -267,7 +267,7 @@ String _$notKeepAliveFamilyHash() =>
 
 final class NotKeepAliveFamilyFamily extends $Family
     with $FunctionalFamilyOverride<int, int> {
-  const NotKeepAliveFamilyFamily._()
+  NotKeepAliveFamilyFamily._()
     : super(
         retry: null,
         name: r'notKeepAliveFamilyProvider',
@@ -284,12 +284,12 @@ final class NotKeepAliveFamilyFamily extends $Family
 }
 
 @ProviderFor(defaultKeepAliveFamily)
-const defaultKeepAliveFamilyProvider = DefaultKeepAliveFamilyFamily._();
+final defaultKeepAliveFamilyProvider = DefaultKeepAliveFamilyFamily._();
 
 final class DefaultKeepAliveFamilyProvider
     extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const DefaultKeepAliveFamilyProvider._({
+  DefaultKeepAliveFamilyProvider._({
     required DefaultKeepAliveFamilyFamily super.from,
     required int super.argument,
   }) : super(
@@ -346,7 +346,7 @@ String _$defaultKeepAliveFamilyHash() =>
 
 final class DefaultKeepAliveFamilyFamily extends $Family
     with $FunctionalFamilyOverride<int, int> {
-  const DefaultKeepAliveFamilyFamily._()
+  DefaultKeepAliveFamilyFamily._()
     : super(
         retry: null,
         name: r'defaultKeepAliveFamilyProvider',

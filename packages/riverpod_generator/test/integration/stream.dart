@@ -10,8 +10,8 @@ Stream<List<ItemT>> generic<ItemT extends num>(Ref ref) async* {
 @riverpod
 class GenericClass<StateT extends num> extends _$GenericClass<StateT> {
   @override
-  Stream<List<StateT>> build() async* {
-    yield <StateT>[];
+  Stream<List<StateT>> build(StateT param) async* {
+    yield <StateT>[param];
   }
 }
 
@@ -20,7 +20,7 @@ Stream<String> public(Ref ref) {
   return Stream.value('Hello world');
 }
 
-const privateProvider = _privateProvider;
+final privateProvider = _privateProvider;
 
 @riverpod
 Stream<String> _private(Ref ref) {
@@ -53,7 +53,7 @@ class PublicClass extends _$PublicClass {
   }
 }
 
-const privateClassProvider = _privateClassProvider;
+final privateClassProvider = _privateClassProvider;
 
 @riverpod
 class _PrivateClass extends _$PrivateClass {

@@ -12,10 +12,10 @@ part of 'async_class_future.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(Example)
-const exampleProvider = ExampleProvider._();
+final exampleProvider = ExampleProvider._();
 
 final class ExampleProvider extends $AsyncNotifierProvider<Example, String> {
-  const ExampleProvider._()
+  ExampleProvider._()
     : super(
         from: null,
         argument: null,

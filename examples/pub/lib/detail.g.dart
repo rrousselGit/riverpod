@@ -12,12 +12,12 @@ part of 'detail.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(fetchPackageDetails)
-const fetchPackageDetailsProvider = FetchPackageDetailsFamily._();
+final fetchPackageDetailsProvider = FetchPackageDetailsFamily._();
 
 final class FetchPackageDetailsProvider
     extends $FunctionalProvider<AsyncValue<Package>, Package, FutureOr<Package>>
     with $FutureModifier<Package>, $FutureProvider<Package> {
-  const FetchPackageDetailsProvider._({
+  FetchPackageDetailsProvider._({
     required FetchPackageDetailsFamily super.from,
     required String super.argument,
   }) : super(
@@ -65,7 +65,7 @@ String _$fetchPackageDetailsHash() =>
 
 final class FetchPackageDetailsFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<Package>, String> {
-  const FetchPackageDetailsFamily._()
+  FetchPackageDetailsFamily._()
     : super(
         retry: null,
         name: r'fetchPackageDetailsProvider',
@@ -82,7 +82,7 @@ final class FetchPackageDetailsFamily extends $Family
 }
 
 @ProviderFor(likedPackages)
-const likedPackagesProvider = LikedPackagesProvider._();
+final likedPackagesProvider = LikedPackagesProvider._();
 
 final class LikedPackagesProvider
     extends
@@ -92,7 +92,7 @@ final class LikedPackagesProvider
           FutureOr<List<String>>
         >
     with $FutureModifier<List<String>>, $FutureProvider<List<String>> {
-  const LikedPackagesProvider._()
+  LikedPackagesProvider._()
     : super(
         from: null,
         argument: null,
@@ -121,12 +121,12 @@ final class LikedPackagesProvider
 String _$likedPackagesHash() => r'8debee8d8fa48334d1de21fa9bbf03224265d29d';
 
 @ProviderFor(pubRepository)
-const pubRepositoryProvider = PubRepositoryProvider._();
+final pubRepositoryProvider = PubRepositoryProvider._();
 
 final class PubRepositoryProvider
     extends $FunctionalProvider<PubRepository, PubRepository, PubRepository>
     with $Provider<PubRepository> {
-  const PubRepositoryProvider._()
+  PubRepositoryProvider._()
     : super(
         from: null,
         argument: null,
@@ -168,7 +168,7 @@ String _$pubRepositoryHash() => r'fd358feb202d2c34ad507ebf0a40bddbebc8ea98';
 /// is logged-in.
 
 @ProviderFor(PackageMetrics)
-const packageMetricsProvider = PackageMetricsFamily._();
+final packageMetricsProvider = PackageMetricsFamily._();
 
 /// A provider that fetches the likes count, popularity score and pub points
 /// for a given package.
@@ -182,7 +182,7 @@ final class PackageMetricsProvider
   ///
   /// It also exposes utilities to like/unlike a package, assuming the user
   /// is logged-in.
-  const PackageMetricsProvider._({
+  PackageMetricsProvider._({
     required PackageMetricsFamily super.from,
     required String super.argument,
   }) : super(
@@ -235,7 +235,7 @@ final class PackageMetricsFamily extends $Family
           FutureOr<PackageMetricsScore>,
           String
         > {
-  const PackageMetricsFamily._()
+  PackageMetricsFamily._()
     : super(
         retry: null,
         name: r'packageMetricsProvider',

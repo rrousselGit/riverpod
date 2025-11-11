@@ -5,7 +5,7 @@ abstract base class _ValueProvider<StateT, ValueT>
     extends $ProviderBaseImpl<StateT>
     with LegacyProviderMixin<StateT> {
   /// Creates a [_ValueProvider].
-  const _ValueProvider(this._value)
+  _ValueProvider(this._value)
     : super(
         name: null,
         from: null,
@@ -40,7 +40,7 @@ abstract base class _ValueProvider<StateT, ValueT>
 @internal
 final class $SyncValueProvider<ValueT> extends _ValueProvider<ValueT, ValueT> {
   /// Creates a [$SyncValueProvider].
-  const $SyncValueProvider(super._value);
+  $SyncValueProvider(super._value);
 
   @override
   Iterable<ProviderOrFamily>? get dependencies => null;
@@ -81,15 +81,24 @@ abstract class _ValueProviderElement<StateT, ValueT>
     final previousState = stateResult()! as $ResultData<StateT>;
 
     if (newValue != previousState.value) {
+      final debugPreviouslyBuildingElement =
+          ProviderElement._debugCurrentlyBuildingElement;
       // Asserts would otherwise prevent a provider rebuild from updating
       // other providers
-      if (kDebugMode) _debugSkipNotifyListenersAsserts = true;
+      if (kDebugMode) {
+        _debugSkipNotifyListenersAsserts = true;
+        ProviderElement._debugCurrentlyBuildingElement = null;
+      }
 
       _setValue(newValue);
 
       // Asserts would otherwise prevent a provider rebuild from updating
       // other providers
-      if (kDebugMode) _debugSkipNotifyListenersAsserts = false;
+      if (kDebugMode) {
+        _debugSkipNotifyListenersAsserts = false;
+        ProviderElement._debugCurrentlyBuildingElement =
+            debugPreviouslyBuildingElement;
+      }
 
       onChange?.call(newValue);
     }
@@ -123,7 +132,7 @@ class _SyncValueProviderElement<ValueT>
 final class $AsyncValueProvider<ValueT>
     extends _ValueProvider<AsyncValue<ValueT>, ValueT> {
   /// Creates a [$AsyncValueProvider].
-  const $AsyncValueProvider(super._value);
+  $AsyncValueProvider(super._value);
 
   /// @nodoc
   @internal

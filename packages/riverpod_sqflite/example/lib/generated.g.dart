@@ -26,7 +26,7 @@ Map<String, dynamic> _$TodoToJson(_Todo instance) => <String, dynamic>{
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(storage)
-const storageProvider = StorageProvider._();
+final storageProvider = StorageProvider._();
 
 final class StorageProvider
     extends
@@ -38,7 +38,7 @@ final class StorageProvider
     with
         $FutureModifier<JsonSqFliteStorage>,
         $FutureProvider<JsonSqFliteStorage> {
-  const StorageProvider._()
+  StorageProvider._()
     : super(
         from: null,
         argument: null,
@@ -68,12 +68,12 @@ String _$storageHash() => r'f0dc33f3f7b62aa7f1ecd8faff381278503b1b01';
 
 @ProviderFor(TodosNotifier)
 @JsonPersist()
-const todosProvider = TodosNotifierProvider._();
+final todosProvider = TodosNotifierProvider._();
 
 @JsonPersist()
 final class TodosNotifierProvider
     extends $AsyncNotifierProvider<TodosNotifier, List<Todo>> {
-  const TodosNotifierProvider._()
+  TodosNotifierProvider._()
     : super(
         from: null,
         argument: null,

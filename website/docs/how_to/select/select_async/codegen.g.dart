@@ -12,12 +12,12 @@ part of 'codegen.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(user)
-const userProvider = UserProvider._();
+final userProvider = UserProvider._();
 
 final class UserProvider
     extends $FunctionalProvider<AsyncValue<User>, User, FutureOr<User>>
     with $FutureModifier<User>, $FutureProvider<User> {
-  const UserProvider._()
+  UserProvider._()
     : super(
         from: null,
         argument: null,
@@ -45,12 +45,12 @@ final class UserProvider
 String _$userHash() => r'b83ca110a6fae2341d1bfca73fb3d89c4d12723d';
 
 @ProviderFor(example)
-const exampleProvider = ExampleProvider._();
+final exampleProvider = ExampleProvider._();
 
 final class ExampleProvider
     extends $FunctionalProvider<Object?, Object?, Object?>
     with $Provider<Object?> {
-  const ExampleProvider._()
+  ExampleProvider._()
     : super(
         from: null,
         argument: null,

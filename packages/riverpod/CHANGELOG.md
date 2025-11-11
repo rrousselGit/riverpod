@@ -1,23 +1,30 @@
 ## Unreleased minor
 
-Added an alternative way to combine asynchronous providers.
-This can be done by using `AsyncValue.requireValue` inside `FutureProvider`/`AsyncNotifier`
-like so:
+- Added an alternative way to combine asynchronous providers.
+  This can be done by using `AsyncValue.requireValue` inside `FutureProvider`/`AsyncNotifier`
+  like so:
 
-```dart
-final sumProvider = FutureProvider((ref) { // Not async
-  AsyncVaue<int> a = ref.watch(aProvider);
-  AsyncValue<int> b = ref.watch(bProvider);
+  ```dart
+  final sumProvider = FutureProvider((ref) { // Not async
+    AsyncVaue<int> a = ref.watch(aProvider);
+    AsyncValue<int> b = ref.watch(bProvider);
 
-  // The following is safe if used inside the init function of providers.
-  return a.requireValue + b.requireValue;
-})
-```
+    // The following is safe if used inside the init function of providers.
+    return a.requireValue + b.requireValue;
+  })
+  ```
 
-This enables synchronously combining asynchronous providers.
+  This enables synchronously combining asynchronous providers.
 
-See [AsyncValue.requireValue](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue/requireValue.html)
+  See [AsyncValue.requireValue](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue/requireValue.html)
 
+- Fixed a bug with scoping when specifying `dependencies: [...]`
+- Added `Override.origin`. This enables knowing which provider is associated with an override.
+- Fix a regression with `AsyncLoading.isRefreshing/isReloading`
+
+## 3.0.3 - 2025-10-09
+
+- Fixed a false positive incorrectly causing `Providers are not allowed to modify other providers during their initialization.`
 
 ## 3.0.2 - 2025-10-07
 

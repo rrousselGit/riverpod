@@ -59,6 +59,96 @@ void main() {
       await expectLater(future2, completion(84));
     });
 
+    test('Can be refreshed after a reload', () async {
+      final container = ProviderContainer.test();
+      var count = 0;
+      final provider = factory.simpleTestProvider<int>(
+        (ref, _) => Future.value(count++),
+      );
+
+      // initial read
+      final sub = container.listen(provider, (previous, next) {});
+      await container.read(provider.future);
+
+      // reloading
+      container.invalidate(provider, asReload: true);
+      await container.read(provider.future);
+
+      // refreshing
+      container.refresh(provider);
+
+      expect(sub.read().isRefreshing, true);
+    });
+
+    test(
+      'Calling state= followed by returning .future does not cause a double notification',
+      () async {
+        final provider = factory.simpleTestProvider<int>((ref, self) async {
+          await null;
+          self.state = AsyncData((self.state.value ?? -1) + 1);
+          return self.future;
+        });
+        final container = ProviderContainer.test();
+        final listener = Listener<AsyncValue<int>>();
+
+        container.listen(provider, listener.call);
+        await container.read(provider.future);
+
+        verifyOnly(
+          listener,
+          listener(AsyncLoading<int>(), const AsyncData<int>(0)),
+        );
+
+        container.invalidate(provider);
+        await container.read(provider.future);
+
+        verifyInOrder([
+          listener(
+            AsyncData<int>(0),
+            AsyncLoading<int>().copyWithPrevious(const AsyncData<int>(0)),
+          ),
+          listener(any, const AsyncData<int>(1)),
+        ]);
+        verifyNoMoreInteractions(listener);
+      },
+    );
+
+    test(
+      'Setting to a non-empty async value aborts the async transition',
+      () async {
+        final completer = Completer<void>();
+        addTearDown(() {
+          if (!completer.isCompleted) {
+            completer.completeError(StateError('Test did not complete'));
+          }
+        });
+
+        final provider = factory.simpleTestProvider<int>((ref, self) async {
+          await null;
+          self.state = const AsyncData(42);
+          await null;
+          self.state = AsyncLoading<int>().copyWithPrevious(
+            const AsyncData(21),
+          );
+          completer.complete();
+          return 30;
+        });
+        final container = ProviderContainer.test();
+        final listener = Listener<AsyncValue<int>>();
+
+        container.listen(provider, listener.call);
+        await completer.future;
+
+        verifyInOrder([
+          listener(AsyncLoading<int>(), const AsyncData(42)),
+          listener(
+            const AsyncData(42),
+            AsyncLoading<int>().copyWithPrevious(const AsyncData(21)),
+          ),
+        ]);
+      },
+    );
+
     test('filters state update by == by default', () async {
       final provider = factory.simpleTestProvider<Equal<int>>(
         (ref, _) => Equal(42),

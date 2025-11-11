@@ -10,12 +10,12 @@ part of 'record.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(functional)
-const functionalProvider = FunctionalFamily._();
+final functionalProvider = FunctionalFamily._();
 
 final class FunctionalProvider
     extends $FunctionalProvider<(int,), (int,), (int,)>
     with $Provider<(int,)> {
-  const FunctionalProvider._({
+  FunctionalProvider._({
     required FunctionalFamily super.from,
     required (String,) super.argument,
   }) : super(
@@ -70,7 +70,7 @@ String _$functionalHash() => r'01ea47cfc83f18c7ca3e2043a52ad62e033c6f83';
 
 final class FunctionalFamily extends $Family
     with $FunctionalFamilyOverride<(int,), (String,)> {
-  const FunctionalFamily._()
+  FunctionalFamily._()
     : super(
         retry: null,
         name: r'functionalProvider',
@@ -87,10 +87,10 @@ final class FunctionalFamily extends $Family
 }
 
 @ProviderFor(Class)
-const classProvider = ClassFamily._();
+final classProvider = ClassFamily._();
 
 final class ClassProvider extends $NotifierProvider<Class, (String,)> {
-  const ClassProvider._({
+  ClassProvider._({
     required ClassFamily super.from,
     required (String,) super.argument,
   }) : super(
@@ -145,7 +145,7 @@ final class ClassFamily extends $Family
           (String,),
           (String,)
         > {
-  const ClassFamily._()
+  ClassFamily._()
     : super(
         retry: null,
         name: r'classProvider',
@@ -183,12 +183,12 @@ abstract class _$Class extends $Notifier<(String,)> {
 }
 
 @ProviderFor(functionalAsync)
-const functionalAsyncProvider = FunctionalAsyncFamily._();
+final functionalAsyncProvider = FunctionalAsyncFamily._();
 
 final class FunctionalAsyncProvider
     extends $FunctionalProvider<AsyncValue<(int,)>, (int,), FutureOr<(int,)>>
     with $FutureModifier<(int,)>, $FutureProvider<(int,)> {
-  const FunctionalAsyncProvider._({
+  FunctionalAsyncProvider._({
     required FunctionalAsyncFamily super.from,
     required (String,) super.argument,
   }) : super(
@@ -235,7 +235,7 @@ String _$functionalAsyncHash() => r'c72d5e6353ef133c853d61197c22c6965c890b17';
 
 final class FunctionalAsyncFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<(int,)>, (String,)> {
-  const FunctionalAsyncFamily._()
+  FunctionalAsyncFamily._()
     : super(
         retry: null,
         name: r'functionalAsyncProvider',
@@ -252,11 +252,11 @@ final class FunctionalAsyncFamily extends $Family
 }
 
 @ProviderFor(ClassAsync)
-const classAsyncProvider = ClassAsyncFamily._();
+final classAsyncProvider = ClassAsyncFamily._();
 
 final class ClassAsyncProvider
     extends $AsyncNotifierProvider<ClassAsync, (String,)> {
-  const ClassAsyncProvider._({
+  ClassAsyncProvider._({
     required ClassAsyncFamily super.from,
     required (String,) super.argument,
   }) : super(
@@ -303,7 +303,7 @@ final class ClassAsyncFamily extends $Family
           FutureOr<(String,)>,
           (String,)
         > {
-  const ClassAsyncFamily._()
+  ClassAsyncFamily._()
     : super(
         retry: null,
         name: r'classAsyncProvider',
@@ -341,12 +341,12 @@ abstract class _$ClassAsync extends $AsyncNotifier<(String,)> {
 }
 
 @ProviderFor(functionalStream)
-const functionalStreamProvider = FunctionalStreamFamily._();
+final functionalStreamProvider = FunctionalStreamFamily._();
 
 final class FunctionalStreamProvider
     extends $FunctionalProvider<AsyncValue<(int,)>, (int,), Stream<(int,)>>
     with $FutureModifier<(int,)>, $StreamProvider<(int,)> {
-  const FunctionalStreamProvider._({
+  FunctionalStreamProvider._({
     required FunctionalStreamFamily super.from,
     required (String,) super.argument,
   }) : super(
@@ -393,7 +393,7 @@ String _$functionalStreamHash() => r'cdc799595d2f16a31fbf39a55949cc60aa6b4dc5';
 
 final class FunctionalStreamFamily extends $Family
     with $FunctionalFamilyOverride<Stream<(int,)>, (String,)> {
-  const FunctionalStreamFamily._()
+  FunctionalStreamFamily._()
     : super(
         retry: null,
         name: r'functionalStreamProvider',
@@ -410,11 +410,11 @@ final class FunctionalStreamFamily extends $Family
 }
 
 @ProviderFor(ClassStream)
-const classStreamProvider = ClassStreamFamily._();
+final classStreamProvider = ClassStreamFamily._();
 
 final class ClassStreamProvider
     extends $StreamNotifierProvider<ClassStream, (String,)> {
-  const ClassStreamProvider._({
+  ClassStreamProvider._({
     required ClassStreamFamily super.from,
     required (String,) super.argument,
   }) : super(
@@ -461,7 +461,7 @@ final class ClassStreamFamily extends $Family
           Stream<(String,)>,
           (String,)
         > {
-  const ClassStreamFamily._()
+  ClassStreamFamily._()
     : super(
         retry: null,
         name: r'classStreamProvider',

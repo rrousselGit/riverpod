@@ -40,6 +40,13 @@ void main() {
           'myName(42).overrideWith(...)',
         );
       });
+
+      test('exposes origin in tests', () {
+        final provider = Provider<int>((_) => 42);
+        final override = provider.overrideWith((ref) => 42);
+
+        expect(override.origin, provider);
+      });
     });
 
     group('overrideWithValue', () {
@@ -68,6 +75,13 @@ void main() {
           family(42).overrideWithValue(21).toString(),
           'myName(42).overrideWithValue(21)',
         );
+      });
+
+      test('exposes origin in tests', () {
+        final provider = Provider<int>((_) => 42);
+        final override = provider.overrideWithValue(21);
+
+        expect(override.origin, provider);
       });
     });
   });
@@ -101,6 +115,13 @@ void main() {
           family.overrideWith((ref, _) => 42).toString(),
           'myName.overrideWith(...)',
         );
+      });
+
+      test('exposes origin in tests', () {
+        final family = Provider.family<int, int>((_, __) => 42);
+        final override = family.overrideWith((ref, _) => 42);
+
+        expect(override.origin, family);
       });
     });
   });

@@ -58,9 +58,9 @@ class FamilyTemplate extends Template {
 ${provider.doc}
 ${provider.metadata}
 final class ${provider.familyTypeName} extends \$Family $mixins {
-  const ${provider.familyTypeName}._()
+  ${provider.familyTypeName}._()
       : super(
-        retry: ${provider.annotation.retryNode?.name ?? 'null'},
+        retry: ${provider.annotation.retryNode?.node.toSource() ?? 'null'},
         name: r'${provider.providerName(options)}',
         dependencies: ${provider.dependencies(options)},
         \$allTransitiveDependencies: ${provider.allTransitiveDependencies(allTransitiveDependencies)},

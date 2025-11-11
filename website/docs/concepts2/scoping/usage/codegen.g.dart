@@ -12,20 +12,20 @@ part of 'codegen.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(currentItemId)
-const currentItemIdProvider = CurrentItemIdProvider._();
+final currentItemIdProvider = CurrentItemIdProvider._();
 
 final class CurrentItemIdProvider
     extends $FunctionalProvider<String?, String?, String?>
     with $Provider<String?> {
-  const CurrentItemIdProvider._()
+  CurrentItemIdProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'currentItemIdProvider',
         isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[],
-        $allTransitiveDependencies: const <ProviderOrFamily>[],
+        dependencies: <ProviderOrFamily>[],
+        $allTransitiveDependencies: <ProviderOrFamily>[],
       );
 
   @override

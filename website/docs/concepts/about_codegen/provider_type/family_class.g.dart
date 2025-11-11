@@ -12,10 +12,10 @@ part of 'family_class.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(Example)
-const exampleProvider = ExampleFamily._();
+final exampleProvider = ExampleFamily._();
 
 final class ExampleProvider extends $NotifierProvider<Example, String> {
-  const ExampleProvider._({
+  ExampleProvider._({
     required ExampleFamily super.from,
     required (int, {String param2}) super.argument,
   }) : super(
@@ -70,7 +70,7 @@ final class ExampleFamily extends $Family
           String,
           (int, {String param2})
         > {
-  const ExampleFamily._()
+  ExampleFamily._()
     : super(
         retry: null,
         name: r'exampleProvider',

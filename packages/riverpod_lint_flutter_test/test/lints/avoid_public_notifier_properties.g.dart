@@ -10,11 +10,11 @@ part of 'avoid_public_notifier_properties.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(GeneratedNotifier)
-const generatedProvider = GeneratedNotifierFamily._();
+final generatedProvider = GeneratedNotifierFamily._();
 
 final class GeneratedNotifierProvider
     extends $NotifierProvider<GeneratedNotifier, int> {
-  const GeneratedNotifierProvider._({
+  GeneratedNotifierProvider._({
     required GeneratedNotifierFamily super.from,
     required int super.argument,
   }) : super(
@@ -62,7 +62,7 @@ String _$generatedNotifierHash() => r'2b7f4fba816b6e8ccd0e8b7d11fcd207bbb79828';
 
 final class GeneratedNotifierFamily extends $Family
     with $ClassFamilyOverride<GeneratedNotifier, int, int, int, int> {
-  const GeneratedNotifierFamily._()
+  GeneratedNotifierFamily._()
     : super(
         retry: null,
         name: r'generatedProvider',
