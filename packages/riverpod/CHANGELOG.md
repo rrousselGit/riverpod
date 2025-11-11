@@ -6,7 +6,7 @@
 
   ```dart
   final sumProvider = FutureProvider((ref) { // Not async
-    AsyncVaue<int> a = ref.watch(aProvider);
+    AsyncValue<int> a = ref.watch(aProvider);
     AsyncValue<int> b = ref.watch(bProvider);
 
     // The following is safe if used inside the init function of providers.
