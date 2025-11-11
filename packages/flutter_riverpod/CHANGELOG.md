@@ -1,3 +1,7 @@
+## Unreleased fix
+
+- `ConsumerWidget`'s now uses the TickerMode notifier instead of TickerMode.of to avoid unnecessary rebuilds when widgets are hidden (thanks to @Colton127)
+
 ## 3.0.3 - 2025-10-09
 
 - `riverpod` upgraded to `3.0.3`
