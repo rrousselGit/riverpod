@@ -206,7 +206,6 @@ abstract class _$GenericClass<StateT extends num>
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<List<StateT>>, List<StateT>>;
     final element =
         ref.element
@@ -216,7 +215,7 @@ abstract class _$GenericClass<StateT extends num>
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -432,7 +431,6 @@ abstract class _$PublicClass extends $StreamNotifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -442,7 +440,7 @@ abstract class _$PublicClass extends $StreamNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -477,7 +475,6 @@ abstract class _$PrivateClass extends $StreamNotifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -487,7 +484,7 @@ abstract class _$PrivateClass extends $StreamNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -612,13 +609,6 @@ abstract class _$FamilyClass extends $StreamNotifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args.$1,
-      second: _$args.second,
-      third: _$args.third,
-      fourth: _$args.fourth,
-      fifth: _$args.fifth,
-    );
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -628,6 +618,15 @@ abstract class _$FamilyClass extends $StreamNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(
+      ref,
+      () => build(
+        _$args.$1,
+        second: _$args.second,
+        third: _$args.third,
+        fourth: _$args.fourth,
+        fifth: _$args.fifth,
+      ),
+    );
   }
 }

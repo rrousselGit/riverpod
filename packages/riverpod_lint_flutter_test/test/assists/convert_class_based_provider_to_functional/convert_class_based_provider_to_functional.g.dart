@@ -52,7 +52,6 @@ abstract class _$Example extends $Notifier<int> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -62,7 +61,7 @@ abstract class _$Example extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -161,7 +160,6 @@ abstract class _$ExampleFamily extends $Notifier<int> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(a: _$args.a, b: _$args.b);
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -171,7 +169,7 @@ abstract class _$ExampleFamily extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(a: _$args.a, b: _$args.b));
   }
 }
 
@@ -281,7 +279,6 @@ abstract class _$Generic<A, B> extends $Notifier<int> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -291,6 +288,6 @@ abstract class _$Generic<A, B> extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

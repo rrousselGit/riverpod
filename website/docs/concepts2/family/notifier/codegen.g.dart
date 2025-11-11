@@ -87,7 +87,6 @@ abstract class _$UserNotifier extends $AsyncNotifier<User> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref = this.ref as $Ref<AsyncValue<User>, User>;
     final element =
         ref.element
@@ -97,6 +96,6 @@ abstract class _$UserNotifier extends $AsyncNotifier<User> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }

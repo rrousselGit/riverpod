@@ -166,7 +166,6 @@ abstract class _$$DynamicClass extends $Notifier<dynamic> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<dynamic, dynamic>;
     final element =
         ref.element
@@ -176,7 +175,7 @@ abstract class _$$DynamicClass extends $Notifier<dynamic> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -265,7 +264,6 @@ abstract class _$$DynamicClassFamily extends $Notifier<dynamic> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref = this.ref as $Ref<dynamic, dynamic>;
     final element =
         ref.element
@@ -275,7 +273,7 @@ abstract class _$$DynamicClassFamily extends $Notifier<dynamic> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }
 
@@ -515,7 +513,6 @@ abstract class _$AliasClass extends $Notifier<AsyncValue<int>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<int>, AsyncValue<int>>;
     final element =
         ref.element
@@ -525,7 +522,7 @@ abstract class _$AliasClass extends $Notifier<AsyncValue<int>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -613,7 +610,6 @@ abstract class _$AliasClassFamily extends $Notifier<AsyncValue<int>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref = this.ref as $Ref<AsyncValue<int>, AsyncValue<int>>;
     final element =
         ref.element
@@ -623,6 +619,6 @@ abstract class _$AliasClassFamily extends $Notifier<AsyncValue<int>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }

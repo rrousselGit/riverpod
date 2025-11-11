@@ -169,7 +169,6 @@ abstract class _$Class extends $Notifier<(String,)> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref = this.ref as $Ref<(String,), (String,)>;
     final element =
         ref.element
@@ -179,7 +178,7 @@ abstract class _$Class extends $Notifier<(String,)> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }
 
@@ -328,7 +327,6 @@ abstract class _$ClassAsync extends $AsyncNotifier<(String,)> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref = this.ref as $Ref<AsyncValue<(String,)>, (String,)>;
     final element =
         ref.element
@@ -338,7 +336,7 @@ abstract class _$ClassAsync extends $AsyncNotifier<(String,)> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }
 
@@ -487,7 +485,6 @@ abstract class _$ClassStream extends $StreamNotifier<(String,)> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref = this.ref as $Ref<AsyncValue<(String,)>, (String,)>;
     final element =
         ref.element
@@ -497,6 +494,6 @@ abstract class _$ClassStream extends $StreamNotifier<(String,)> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }
