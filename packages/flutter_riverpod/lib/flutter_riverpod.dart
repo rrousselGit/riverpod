@@ -30,4 +30,5 @@ export 'src/internals.dart'
         RiverpodWidgetTesterX,
         ProviderListenableSelect,
         AsyncResult,
-        AsyncValueExtensions;
+        AsyncValueExtensions,
+        AsyncValueIsLoadingException;

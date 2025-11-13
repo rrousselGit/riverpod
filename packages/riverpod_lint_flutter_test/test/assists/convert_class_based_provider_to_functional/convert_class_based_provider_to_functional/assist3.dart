@@ -1,14 +1,14 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// [riverpod.class_based_to_functional_provider?offset=190,196,222,256]
+
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'convert_class_based_provider_to_functional.g.dart';
+part 'assist3.g.dart';
 
 /// Some comment
 @riverpod
-class Example extends _$Example {
-  @override
-  int build() => 0;
-}
+int example(Ref ref) => 0;
 
 /// Some comment
 @riverpod

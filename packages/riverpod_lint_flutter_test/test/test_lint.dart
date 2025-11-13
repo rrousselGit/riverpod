@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:analyzer_plugin/protocol/protocol_generated.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
 import 'package:test/test.dart';
 import 'package:path/path.dart';
-import 'package:riverpod_lint/src/riverpod_custom_lint.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:collection/collection.dart';
@@ -18,7 +18,7 @@ import 'encoders.dart';
 void testLint(
   String description,
   String file,
-  RiverpodLintRule lint, {
+  AnalysisRule lint, {
   required String goldensDirectory,
 }) {
   assert(file.endsWith('.dart'));
@@ -35,6 +35,8 @@ void testLint(
     final sourcePath = File(normalize(file)).absolute;
     final result = await resolveFile2(path: sourcePath.path);
     result as ResolvedUnitResult;
+
+    lint.registerNodeProcessors(registry, context);
 
     final errors = await lint.testRun(result);
     expect(
@@ -139,7 +141,7 @@ class OffsetHelper {
   }
 
   Future<Iterable<PrioritizedSourceChange>> runAssist(
-    RiverpodAssist assist,
+    CorrectionProducer assist,
     ResolvedUnitResult result,
     Iterable<SourceRange> cursorRanges, {
     Pubspec? pubspec,
