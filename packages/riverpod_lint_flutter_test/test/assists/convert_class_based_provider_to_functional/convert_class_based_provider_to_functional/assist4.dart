@@ -1,7 +1,10 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// [riverpod.class_based_to_functional_provider?offset=286,292,330,430]
+
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'convert_class_based_provider_to_functional.g.dart';
+part 'assist4.g.dart';
 
 /// Some comment
 @riverpod
@@ -12,13 +15,10 @@ class Example extends _$Example {
 
 /// Some comment
 @riverpod
-class ExampleFamily extends _$ExampleFamily {
-  @override
-  int build({required int a, String b = '42'}) {
+int exampleFamily(Ref ref, {required int a, String b = '42'}) {
     // Hello world
     return 0;
   }
-}
 
 @riverpod
 class Generic<A, /* comment */ B> extends _$Generic<A, B> {

@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:custom_lint_core/custom_lint_core.dart';
+
+import 'type_checker.dart';
 
 part 'riverpod_types/core.dart';
 part 'riverpod_types/generator.dart';

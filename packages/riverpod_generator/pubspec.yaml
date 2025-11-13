@@ -27,7 +27,8 @@ dependencies:
   meta: ^1.15.0
   mockito: ^5.4.4
   path: ^1.8.0
-  riverpod_analyzer_utils: 1.0.0-dev.7
+  riverpod_analyzer_utils:
+    path: /Users/ext-remi.rousselet/dev/rrousselGit/riverpod/packages/riverpod_analyzer_utils
   riverpod_annotation: 3.0.3
   source_gen: ">=3.0.0 <5.0.0"
 

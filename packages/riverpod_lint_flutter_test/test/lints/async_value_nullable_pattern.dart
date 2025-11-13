@@ -56,25 +56,25 @@ void main() {
   }
 }
 
-void fn<T>(T obj) {
+void fn<TestT>(TestT obj) {
   switch (obj) {
     // expect_lint: async_value_nullable_pattern
-    case AsyncValue<T>(:final value?):
+    case AsyncValue<TestT>(:final value?):
       print(value);
   }
 }
 
-void fn2<T extends Object>(T obj) {
+void fn2<TestT extends Object>(TestT obj) {
   switch (obj) {
-    case AsyncValue<T>(:final value?):
+    case AsyncValue<TestT>(:final value?):
       print(value);
   }
 }
 
-void fn3<T extends Object?>(T obj) {
+void fn3<TestT extends Object?>(TestT obj) {
   switch (obj) {
     // expect_lint: async_value_nullable_pattern
-    case AsyncValue<T>(:final value?):
+    case AsyncValue<TestT>(:final value?):
       print(value);
   }
 }

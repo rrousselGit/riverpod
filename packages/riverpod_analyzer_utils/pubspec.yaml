@@ -16,7 +16,6 @@ dependencies:
   analyzer_buffer: ^0.1.9
   collection: ^1.16.0
   crypto: ^3.0.2
-  custom_lint_core: ^0.8.0
   freezed_annotation: ^3.0.0
   meta: ^1.15.0
   path: ^1.8.0
