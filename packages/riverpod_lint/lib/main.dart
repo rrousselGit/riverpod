@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:analysis_server_plugin/plugin.dart';
 import 'package:analysis_server_plugin/registry.dart';
 
+import 'src/assists/consumers/convert_to_stateless_base_widget.dart';
+import 'src/assists/consumers/convert_to_stateful_base_widget.dart';
 import 'src/assists/providers/class_based_to_functional_provider.dart';
 import 'src/assists/providers/functional_to_class_based_provider.dart';
 import 'src/assists/wrap/wrap_with_consumer.dart';
@@ -33,6 +35,18 @@ class _RiverpodPlugin extends Plugin {
 
     registry.registerAssist(ClassBasedToFunctionalProvider.new);
     registry.registerAssist(FunctionalToClassBasedProvider.new);
+
+    // Stateless widget conversions
+    registry.registerAssist(ConvertToHookConsumerWidget.new);
+    registry.registerAssist(ConvertToHookWidget.new);
+    registry.registerAssist(ConvertToConsumerWidget.new);
+    registry.registerAssist(ConvertToStatelessWidget.new);
+
+    // Stateful widget conversions
+    registry.registerAssist(ConvertToStatefulHookConsumerWidget.new);
+    registry.registerAssist(ConvertToStatefulHookWidget.new);
+    registry.registerAssist(ConvertToConsumerStatefulWidget.new);
+    registry.registerAssist(ConvertToStatefulWidget.new);
   }
 
   // @override

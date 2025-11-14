@@ -31,9 +31,9 @@ class ClassBasedToFunctionalProvider extends ResolvedCorrectionProducer {
     if (declaration == null) return;
 
     // Select from "class" to the opening bracket
-    final classHeading = sourceRangeFrom(
-      start: declaration.node.classKeyword.offset,
-      end: declaration.node.leftBracket.offset,
+    final classHeading = range.startStart(
+      declaration.node.classKeyword,
+      declaration.node.leftBracket,
     );
 
     if (!classHeading.intersects(range.node(node))) return;
@@ -46,9 +46,9 @@ class ClassBasedToFunctionalProvider extends ResolvedCorrectionProducer {
       // Remove anything between the first character of the build method
       // and the start of the class.
       builder.addDeletion(
-        sourceRangeFrom(
-          start: declaration.node.classKeyword.offset,
-          end: buildTypeOrNameStartOffset,
+        range.startOffsetEndOffset(
+          declaration.node.classKeyword.offset,
+          buildTypeOrNameStartOffset,
         ),
       );
 
@@ -82,10 +82,7 @@ class ClassBasedToFunctionalProvider extends ResolvedCorrectionProducer {
 
       // Remove anything after the build method
       builder.addDeletion(
-        sourceRangeFrom(
-          start: declaration.buildMethod.end,
-          end: declaration.node.end,
-        ),
+        range.endEnd(declaration.buildMethod, declaration.node),
       );
     });
   }

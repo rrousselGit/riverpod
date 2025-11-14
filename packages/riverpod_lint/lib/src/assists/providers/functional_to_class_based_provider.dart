@@ -34,9 +34,9 @@ class FunctionalToClassBasedProvider extends ResolvedCorrectionProducer {
     final parameters = declaration.node.functionExpression.parameters!;
 
     // The function prototype, from the first character to the opening parenthesis
-    final functionHeading = sourceRangeFrom(
-      start: functionStartOffset,
-      end: parameters.leftParenthesis.end,
+    final functionHeading = range.startOffsetEndOffset(
+      functionStartOffset,
+      parameters.leftParenthesis.end,
     );
     if (!functionHeading.intersects(range.node(node))) return;
 
@@ -45,12 +45,7 @@ class FunctionalToClassBasedProvider extends ResolvedCorrectionProducer {
       final typeParameters = declaration.node.functionExpression.typeParameters;
       if (typeParameters != null) {
         // Remove type arguments, if any
-        builder.addDeletion(
-          sourceRangeFrom(
-            start: typeParameters.offset,
-            end: typeParameters.end,
-          ),
-        );
+        builder.addDeletion(range.startEnd(typeParameters, typeParameters));
 
         typeParametersSource = unit.declaredFragment!.source.contents.data
             .substring(typeParameters.offset, typeParameters.end);
@@ -84,7 +79,7 @@ class ${classNameFor(declaration)}$typeParametersSource extends ${generatedClass
 
         // Remove the ref parameter
         builder.addDeletion(
-          sourceRangeFrom(start: parameters.leftParenthesis.end, end: refEnd),
+          range.startOffsetEndOffset(parameters.leftParenthesis.end, refEnd),
         );
       }
 
