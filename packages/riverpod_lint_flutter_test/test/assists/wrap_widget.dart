@@ -15,8 +15,8 @@ class MyWidget extends StatelessWidget {
 }
 
 // Regression test for https://github.com/rrousselGit/riverpod/discussions/2168#discussioncomment-4957220
-class Consumer extends ConsumerWidget {
-  const Consumer({
+class MyConsumer extends ConsumerWidget {
+  const MyConsumer({
     super.key,
     this.onSaved,
   });
