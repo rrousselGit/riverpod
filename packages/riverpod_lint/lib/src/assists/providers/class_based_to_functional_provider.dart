@@ -25,87 +25,79 @@ class ClassBasedToFunctionalProvider extends ResolvedCorrectionProducer {
 
   @override
   Future<void> compute(ChangeBuilder builder) async {
-    Future<void>? build;
-
-    final visitor = _Visitor(
-      onClassBasedProviderDeclaration: (declaration) {
-        // Select from "class" to the opening bracket
-        final classHeading = sourceRangeFrom(
-          start: declaration.node.classKeyword.offset,
-          end: declaration.node.leftBracket.offset,
-        );
-
-        if (!classHeading.intersects(range.node(node))) return;
-
-        build = builder.addDartFileEdit(file, (builder) {
-          final buildTypeOrNameStartOffset =
-              declaration.buildMethod.returnType?.offset ??
-              declaration.buildMethod.name.offset;
-
-          // Remove anything between the first character of the build method
-          // and the start of the class.
-          builder.addDeletion(
-            sourceRangeFrom(
-              start: declaration.node.classKeyword.offset,
-              end: buildTypeOrNameStartOffset,
-            ),
-          );
-
-          // Rename the build method to the class name
-          builder.addSimpleReplacement(
-            range.token(declaration.buildMethod.name),
-            declaration.node.name.lexeme.lowerFirst,
-          );
-
-          var typeParametersSource = '';
-          final typeParameters = declaration.node.typeParameters;
-          if (typeParameters != null) {
-            // Obtain the source of type parameters
-            typeParametersSource = unit.declaredFragment!.source.contents.data
-                .substring(typeParameters.offset, typeParameters.end);
-
-            // Make the function generic if the class was generic
-            builder.addSimpleInsertion(
-              declaration.buildMethod.name.end,
-              typeParametersSource,
-            );
-          }
-
-          final parameters = declaration.buildMethod.parameters!;
-          final trailingRefParameter =
-              parameters.parameters.isEmpty ? '' : ', ';
-          // Add ref parameter to the build method
-          builder.addSimpleInsertion(
-            parameters.leftParenthesis.end,
-            '${refNameFor(declaration)}$typeParametersSource ref$trailingRefParameter',
-          );
-
-          // Remove anything after the build method
-          builder.addDeletion(
-            sourceRangeFrom(
-              start: declaration.buildMethod.end,
-              end: declaration.node.end,
-            ),
-          );
-        });
-      },
-    );
+    final visitor = _Visitor();
     node.accept(visitor);
+    final declaration = visitor.classBasedProviderDeclaration;
+    if (declaration == null) return;
 
-    await build;
+    // Select from "class" to the opening bracket
+    final classHeading = sourceRangeFrom(
+      start: declaration.node.classKeyword.offset,
+      end: declaration.node.leftBracket.offset,
+    );
+
+    if (!classHeading.intersects(range.node(node))) return;
+
+    await builder.addDartFileEdit(file, (builder) {
+      final buildTypeOrNameStartOffset =
+          declaration.buildMethod.returnType?.offset ??
+          declaration.buildMethod.name.offset;
+
+      // Remove anything between the first character of the build method
+      // and the start of the class.
+      builder.addDeletion(
+        sourceRangeFrom(
+          start: declaration.node.classKeyword.offset,
+          end: buildTypeOrNameStartOffset,
+        ),
+      );
+
+      // Rename the build method to the class name
+      builder.addSimpleReplacement(
+        range.token(declaration.buildMethod.name),
+        declaration.node.name.lexeme.lowerFirst,
+      );
+
+      var typeParametersSource = '';
+      final typeParameters = declaration.node.typeParameters;
+      if (typeParameters != null) {
+        // Obtain the source of type parameters
+        typeParametersSource = unit.declaredFragment!.source.contents.data
+            .substring(typeParameters.offset, typeParameters.end);
+
+        // Make the function generic if the class was generic
+        builder.addSimpleInsertion(
+          declaration.buildMethod.name.end,
+          typeParametersSource,
+        );
+      }
+
+      final parameters = declaration.buildMethod.parameters!;
+      final trailingRefParameter = parameters.parameters.isEmpty ? '' : ', ';
+      // Add ref parameter to the build method
+      builder.addSimpleInsertion(
+        parameters.leftParenthesis.end,
+        '${refNameFor(declaration)}$typeParametersSource ref$trailingRefParameter',
+      );
+
+      // Remove anything after the build method
+      builder.addDeletion(
+        sourceRangeFrom(
+          start: declaration.buildMethod.end,
+          end: declaration.node.end,
+        ),
+      );
+    });
   }
 }
 
 class _Visitor extends SimpleRiverpodAstVisitor {
-  _Visitor({required this.onClassBasedProviderDeclaration});
-
-  final void Function(ClassBasedProviderDeclaration)
-  onClassBasedProviderDeclaration;
+  ClassBasedProviderDeclaration? classBasedProviderDeclaration;
 
   @override
   void visitClassBasedProviderDeclaration(
     ClassBasedProviderDeclaration declaration,
   ) {
-    onClassBasedProviderDeclaration(declaration);
+    classBasedProviderDeclaration = declaration;
   }
 }
