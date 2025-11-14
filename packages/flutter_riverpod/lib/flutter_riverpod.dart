@@ -1,4 +1,3 @@
-// ignore: invalid_export_of_internal_element, Already tackled by riverpod/riverpod.dart. If we export internals, that's on purpose.
 export 'src/internals.dart'
     show
         AsyncValue,

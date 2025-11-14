@@ -76,7 +76,7 @@ void main() {
     final dep = StateProvider((ref) => 0);
     final provider = FutureProvider<int>(
       (ref) => Future.error(ref.watch(dep)),
-      retry: (_, __) => null,
+      retry: (_, _) => null,
     );
 
     final sub = container.listen<Future<bool>>(

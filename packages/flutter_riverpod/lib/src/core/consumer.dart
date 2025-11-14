@@ -450,7 +450,7 @@ base class ConsumerStatefulElement extends StatefulElement
 
               final sub = container.listen<StateT>(
                 target,
-                (_, __) => markNeedsBuild(),
+                (_, _) => markNeedsBuild(),
               );
               _applyTickerMode(sub);
               return sub;

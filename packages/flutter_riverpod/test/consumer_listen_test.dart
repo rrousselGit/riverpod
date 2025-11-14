@@ -44,7 +44,7 @@ void main() {
       // should compile
       Consumer(
         builder: (context, ref, _) {
-          ref.listen<Object?>(nullProvider, (_, __) {});
+          ref.listen<Object?>(nullProvider, (_, _) {});
           return Container();
         },
       );

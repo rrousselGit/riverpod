@@ -914,7 +914,7 @@ final class ProviderContainer implements Node, MutationTarget {
   /// }
   /// ```
   StateT read<StateT>(ProviderListenable<StateT> provider) {
-    final sub = listen(provider, (_, __) {});
+    final sub = listen(provider, (_, _) {});
 
     try {
       return sub.readSafe().valueOrProviderException;

@@ -284,7 +284,7 @@ void main() {
         final provider = Provider.autoDispose((ref) => 0);
 
         expect(container.read(unrelated), 42);
-        var sub = container.listen(provider, (_, __) {});
+        var sub = container.listen(provider, (_, _) {});
 
         expect(
           container.getAllProviderElements().map((e) => e.origin),
@@ -296,7 +296,7 @@ void main() {
 
         expect(container.getAllProviderElements(), [isA<ProviderElement>()]);
 
-        sub = container.listen(provider, (_, __) {});
+        sub = container.listen(provider, (_, _) {});
 
         expect(
           container.getAllProviderElements().map((e) => e.origin),

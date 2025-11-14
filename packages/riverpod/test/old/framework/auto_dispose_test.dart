@@ -24,7 +24,7 @@ Future<void> main() async {
         }
       });
 
-      container.listen<void>(provider, (_, __) {});
+      container.listen<void>(provider, (_, _) {});
 
       expect(dependencyDisposeCount, 0);
       expect(
@@ -295,7 +295,7 @@ Future<void> main() async {
       });
       final container = ProviderContainer.test();
 
-      final sub = container.listen(provider, (_, __) {});
+      final sub = container.listen(provider, (_, _) {});
       sub.close();
 
       container.dispose();

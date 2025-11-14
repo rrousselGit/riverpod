@@ -32,7 +32,7 @@ void main() {
     final provider = FutureProvider.autoDispose((ref) => 0);
     final container = ProviderContainer.test();
 
-    container.listen(provider, (_, __) {});
+    container.listen(provider, (_, _) {});
 
     expect(container.read(provider), const AsyncData(0));
     await expectLater(container.read(provider.future), completion(0));

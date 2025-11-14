@@ -25,7 +25,7 @@ void main() {
         overrides: [provider],
       );
 
-      container.listen(provider(0), (_, __) {});
+      container.listen(provider(0), (_, _) {});
 
       expect(
         container.pointerManager.familyPointers[provider],

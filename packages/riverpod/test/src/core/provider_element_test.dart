@@ -15,8 +15,8 @@ void main() {
         final container = ProviderContainer.test();
         final provider = FutureProvider(name: 'provider', (ref) => 0);
 
-        final sub = container.listen(provider, (_, __) {});
-        final sub2 = container.listen(provider.future, (_, __) {});
+        final sub = container.listen(provider, (_, _) {});
+        final sub2 = container.listen(provider.future, (_, _) {});
         final element = container.readProviderElement(provider);
 
         expect(element.pausedActiveSubscriptionCount, 0);
@@ -50,9 +50,9 @@ void main() {
         final container = ProviderContainer.test();
         final provider = FutureProvider(name: 'provider', (ref) => 0);
 
-        container.listen(provider, (_, __) {}).pause();
+        container.listen(provider, (_, _) {}).pause();
 
-        final sub = container.listen(provider, (_, __) {}, weak: true)..pause();
+        final sub = container.listen(provider, (_, _) {}, weak: true)..pause();
         final element = container.readProviderElement(provider);
 
         expect(
@@ -83,9 +83,9 @@ void main() {
         final container = ProviderContainer.test();
         final provider = FutureProvider(name: 'provider', (ref) => 0);
 
-        container.listen(provider, (_, __) {}).pause();
+        container.listen(provider, (_, _) {}).pause();
 
-        final sub = container.listen(provider.future, (_, __) {})..pause();
+        final sub = container.listen(provider.future, (_, _) {})..pause();
         final element = container.readProviderElement(provider);
 
         expect(
@@ -118,7 +118,7 @@ void main() {
         final container = ProviderContainer.test();
         final provider = FutureProvider(name: 'provider', (ref) => 0);
 
-        final sub = container.listen(provider.future, (_, __) {});
+        final sub = container.listen(provider.future, (_, _) {});
         final element = container.readProviderElement(provider);
 
         expect(element.listenerCount, 1);
@@ -273,10 +273,10 @@ void main() {
           return 0;
         });
 
-        final sub = container.listen(dep.future, (_, __) {})..pause();
+        final sub = container.listen(dep.future, (_, _) {})..pause();
         clearInteractions(onResume);
 
-        container.listen(dep, (_, __) {});
+        container.listen(dep, (_, _) {});
         verifyOnly(onResume, onResume.call());
       },
     );
@@ -427,7 +427,7 @@ void main() {
         test(
           'if returns null, stops retrying',
           () => fakeAsync((fake) {
-            final container = ProviderContainer.test(retry: (_, __) => null);
+            final container = ProviderContainer.test(retry: (_, _) => null);
             var buildCount = 0;
             final provider = Provider((ref) {
               buildCount++;
@@ -485,7 +485,7 @@ void main() {
           'delays by the duration returned',
           () => fakeAsync((fake) {
             final container = ProviderContainer.test(
-              retry: (_, __) => const Duration(milliseconds: 3),
+              retry: (_, _) => const Duration(milliseconds: 3),
             );
             final errorListener = ErrorListener();
             var msg = '0';
@@ -527,7 +527,7 @@ void main() {
             final errors = <Object>[];
             runZonedGuarded(() {
               final container = ProviderContainer.test(
-                retry: (_, __) => throw StateError('Oops!'),
+                retry: (_, _) => throw StateError('Oops!'),
               );
               final errorListener = ErrorListener();
               final provider = Provider((ref) => throw StateError('msg'));
@@ -650,7 +650,7 @@ void main() {
           ref.watch(provider);
         });
 
-        final sub = container.listen(dependent.future, (_, __) {});
+        final sub = container.listen(dependent.future, (_, _) {});
         await sub.read();
         final element = container.readProviderElement(dependent);
 
@@ -706,13 +706,13 @@ void main() {
         final container = ProviderContainer.test();
         final provider = Provider((ref) => 0);
         final dependent = Provider((ref) {
-          ref.listen(provider, (_, __) {});
+          ref.listen(provider, (_, _) {});
         });
         final dependent2 = Provider((ref) {
-          ref.listen(provider, (_, __) {});
+          ref.listen(provider, (_, _) {});
         });
         final dependent3 = Provider((ref) {
-          ref.listen(provider, (_, __) {}, weak: true);
+          ref.listen(provider, (_, _) {}, weak: true);
         });
 
         container.read(dependent);
@@ -774,8 +774,8 @@ void main() {
 
         final element = container.readProviderElement(provider);
 
-        final sub = container.listen(provider, (_, __) {});
-        final sub2 = container.listen(provider, (_, __) {});
+        final sub = container.listen(provider, (_, _) {});
+        final sub2 = container.listen(provider, (_, _) {});
 
         expect(element.isActive, true);
 
@@ -796,7 +796,7 @@ void main() {
 
         expect(element.isActive, false);
 
-        container.listen(provider, weak: true, (_, __) {});
+        container.listen(provider, weak: true, (_, _) {});
 
         expect(element.isActive, false);
       });
@@ -835,7 +835,7 @@ void main() {
 
         expect(container.readProviderElement(provider).isActive, false);
 
-        container.listen(provider, (_, __) {});
+        container.listen(provider, (_, _) {});
 
         expect(container.readProviderElement(provider).isActive, true);
       });
@@ -850,7 +850,7 @@ void main() {
 
         expect(element.hasNonWeakListeners, false);
 
-        container.listen(provider, weak: true, (_, __) {});
+        container.listen(provider, weak: true, (_, _) {});
 
         expect(element.hasNonWeakListeners, false);
       });
@@ -904,7 +904,7 @@ void main() {
           false,
         );
 
-        container.listen(provider, (_, __) {});
+        container.listen(provider, (_, _) {});
 
         expect(
           container.readProviderElement(provider).hasNonWeakListeners,

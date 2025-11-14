@@ -76,7 +76,7 @@ void main() {
         (ref) => Stream.value(result),
       );
 
-      container.listen(provider, (_, __) {});
+      container.listen(provider, (_, _) {});
 
       expect(await container.read(provider.future), 0);
       expect(container.read(provider), const AsyncValue.data(0));

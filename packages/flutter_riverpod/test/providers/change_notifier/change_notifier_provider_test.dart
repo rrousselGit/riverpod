@@ -256,7 +256,7 @@ void main() {
     addTearDown(container.dispose);
 
     var callCount = 0;
-    final sub = container.listen(provider.notifier, (_, __) => callCount++);
+    final sub = container.listen(provider.notifier, (_, _) => callCount++);
 
     expect(sub.read(), notifier);
     expect(callCount, 0);

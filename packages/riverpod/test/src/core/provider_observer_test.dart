@@ -32,7 +32,7 @@ void main() {
             return 0;
           });
 
-          container.listen(provider, (_, __) {}, onError: (err, stack) {});
+          container.listen(provider, (_, _) {}, onError: (err, stack) {});
 
           clearInteractions(observer);
           clearInteractions(observer2);
@@ -150,7 +150,7 @@ void main() {
         final provider = StateNotifierProvider<Counter, int>((_) => notifier);
         final computed = Provider((ref) => ref.watch(provider));
 
-        container.listen(computed, (_, __) {});
+        container.listen(computed, (_, _) {});
         notifier.increment();
 
         clearInteractions(observer);
@@ -447,7 +447,7 @@ void main() {
             observers: [observer3],
           );
 
-          child.listen(provider, (_, __) {}, onError: (_, __) {});
+          child.listen(provider, (_, _) {}, onError: (_, _) {});
 
           expect(child.read(provider), 42);
           expect(mid.read(provider), 0);
@@ -539,13 +539,13 @@ void main() {
         final observer = ObserverMock();
         final container = ProviderContainer.test(
           observers: [observer],
-          retry: (_, __) => null,
+          retry: (_, _) => null,
         );
         final provider = FutureProvider(
           (ref) => Future<void>.error('error', StackTrace.empty),
         );
 
-        container.listen(provider, (_, __) {});
+        container.listen(provider, (_, _) {});
         await container.read(provider.future).catchError((_) {});
 
         verifyInOrder([
@@ -585,13 +585,13 @@ void main() {
         final observer = ObserverMock();
         final container = ProviderContainer.test(
           observers: [observer],
-          retry: (_, __) => null,
+          retry: (_, _) => null,
         );
         final provider = StreamProvider(
           (ref) => Stream<void>.error('error', StackTrace.empty),
         );
 
-        container.listen(provider, (_, __) {});
+        container.listen(provider, (_, _) {});
         await container.read(provider.future).catchError((_) {});
 
         verifyInOrder([
@@ -694,7 +694,7 @@ void main() {
           return 0;
         });
 
-        container.listen(provider, (_, __) {}, onError: (err, stack) {});
+        container.listen(provider, (_, _) {}, onError: (err, stack) {});
 
         clearInteractions(observer);
         clearInteractions(observer2);
@@ -964,7 +964,7 @@ void main() {
         return Counter();
       });
 
-      final sub = container.listen(provider, (_, __) {});
+      final sub = container.listen(provider, (_, _) {});
 
       clearInteractions(observer);
 

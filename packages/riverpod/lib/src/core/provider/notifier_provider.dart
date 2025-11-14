@@ -240,7 +240,7 @@ extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
     _debugAssertNoDuplicateKey(key, this);
 
     var didChange = false;
-    listenSelf((_, __) async {
+    listenSelf((_, _) async {
       didChange = true;
 
       try {

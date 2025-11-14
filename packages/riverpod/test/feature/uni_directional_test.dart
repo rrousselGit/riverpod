@@ -247,7 +247,7 @@ void main() {
 
     container.read(provider);
 
-    final sub = container.listen<void>(provider2, (_, __) {});
+    final sub = container.listen<void>(provider2, (_, _) {});
     sub.close();
 
     expect(counter.state, 0);
