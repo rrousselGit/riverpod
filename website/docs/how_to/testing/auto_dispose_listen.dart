@@ -9,7 +9,7 @@ void main() {
   test('Some description', () {
     final container = ProviderContainer.test();
     /* SNIPPET START */
-    final subscription = container.listen<String>(provider, (_, __) {});
+    final subscription = container.listen<String>(provider, (_, _) {});
 
     expect(
       // {@template read}
