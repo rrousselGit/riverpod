@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'convert_class_based_provider_to_functional.g.dart';
@@ -24,13 +23,4 @@ class ExampleFamily extends _$ExampleFamily {
 class Generic<A, /* comment */ B> extends _$Generic<A, B> {
   @override
   int build() => 0;
-}
-
-class Foo extends StatelessWidget {
-  const Foo({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(child: const Placeholder());
-  }
 }
