@@ -4,8 +4,8 @@ import 'package:analysis_server_plugin/edit/dart/correction_producer.dart';
 import 'package:analysis_server_plugin/registry.dart';
 import 'package:analysis_server_plugin/src/correction/fix_generators.dart';
 import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
 import 'package:analyzer/dart/analysis/results.dart';
-import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/listener.dart';
@@ -30,6 +30,10 @@ Future<void> main() async {
 
   final filesToAnalyze = await _findFilesToAnalyze().toList();
 
+  final collection = AnalysisContextCollection(
+    includedPaths: filesToAnalyze.map((e) => e.absolute.path).toList(),
+  );
+
   for (final file in filesToAnalyze) {
     group(p.basename(file.path), () {
       late final ResolvedUnitResult unit;
@@ -37,12 +41,16 @@ Future<void> main() async {
       late final Iterable<int> uniqueOffsets;
 
       setUpAll(() async {
-        final unitResult = await resolveFile2(path: file.path);
+        final context = collection.contextFor(file.absolute.path);
+        final session = context.currentSession;
+
+        final unitResult = await session.getResolvedUnit(file.absolute.path);
         unitResult as ResolvedUnitResult;
         unit = unitResult;
-        final session = unitResult.session;
 
-        final libraryResult = await session.getResolvedLibrary(file.path);
+        final libraryResult = await session.getResolvedLibrary(
+          file.absolute.path,
+        );
         libraryResult as ResolvedLibraryResult;
 
         library = libraryResult;
