@@ -25,6 +25,10 @@ analyzer:
 
 linter:
   rules:
+    # I hate it
+    specify_nonobvious_property_types: false
+    specify_nonobvious_local_variable_types: false
+
     # Clashes with newer dartfmt
     require_trailing_commas: false
 
