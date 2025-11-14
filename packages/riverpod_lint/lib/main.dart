@@ -5,6 +5,7 @@ import 'package:analysis_server_plugin/plugin.dart';
 import 'package:analysis_server_plugin/registry.dart';
 
 import 'src/assists/providers/class_based_to_functional_provider.dart';
+import 'src/assists/providers/functional_to_class_based_provider.dart';
 import 'src/assists/wrap/wrap_with_consumer.dart';
 import 'src/lints/async_value_nullable_pattern.dart';
 
@@ -31,6 +32,7 @@ class _RiverpodPlugin extends Plugin {
     registry.registerAssist(WrapWithConsumer.new);
 
     registry.registerAssist(ClassBasedToFunctionalProvider.new);
+    registry.registerAssist(FunctionalToClassBasedProvider.new);
   }
 
   // @override
