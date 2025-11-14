@@ -106,11 +106,8 @@ class RemoveNullCheckPatternAndAddHasDataCheck
   FixKind get fixKind => fix;
 
   @override
-  FixKind get multiFixKind => fix;
-
-  @override
   CorrectionApplicability get applicability =>
-      CorrectionApplicability.automatically;
+      CorrectionApplicability.singleLocation;
 
   @override
   Future<void> compute(ChangeBuilder builder) async {
