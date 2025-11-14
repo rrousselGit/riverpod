@@ -23,9 +23,9 @@ int fn(Ref ref) {
   ref.watch(keepAliveProvider);
   ref.watch(keepAliveClassProvider);
 
-  // expect_lint: only_use_keep_alive_inside_keep_alive
+  // ignore: riverpod_lint/only_use_keep_alive_inside_keep_alive
   ref.watch(autoDisposeProvider);
-  // expect_lint: only_use_keep_alive_inside_keep_alive
+  // ignore: riverpod_lint/only_use_keep_alive_inside_keep_alive
   ref.watch(autoDisposeClassProvider);
 
   return 0;

@@ -5,7 +5,7 @@ test/lints/scoped_providers_should_specify_dependencies.dart:45:7
 
 ```dart
       ),
-      // expect_lint: scoped_providers_should_specify_dependencies
+      // ignore: riverpod_lint/scoped_providers_should_specify_dependencies
       >>>rootProvider.overrideWith((ref) => 0)<<<,
     ],
   );
@@ -20,7 +20,7 @@ test/lints/scoped_providers_should_specify_dependencies.dart:71:9
 
 ```dart
         // This is not a Flutter's runApp, so the ProviderScope is considered scoped
-        // expect_lint: scoped_providers_should_specify_dependencies
+        // ignore: riverpod_lint/scoped_providers_should_specify_dependencies
         >>>rootProvider.overrideWith((ref) => 0)<<<,
       ],
       child: Container(),
@@ -35,7 +35,7 @@ test/lints/scoped_providers_should_specify_dependencies.dart:98:7
 
 ```dart
       ),
-      // expect_lint: scoped_providers_should_specify_dependencies
+      // ignore: riverpod_lint/scoped_providers_should_specify_dependencies
       >>>rootProvider.overrideWith((ref) => 0)<<<,
     ],
   );
@@ -50,7 +50,7 @@ test/lints/scoped_providers_should_specify_dependencies.dart:150:13
 
 ```dart
             ),
-            // expect_lint: scoped_providers_should_specify_dependencies
+            // ignore: riverpod_lint/scoped_providers_should_specify_dependencies
             >>>rootProvider.overrideWith((ref) => 0)<<<,
           ],
           child: Container(),
@@ -65,7 +65,7 @@ test/lints/scoped_providers_should_specify_dependencies.dart:167:7
 
 ```dart
       ),
-      // expect_lint: scoped_providers_should_specify_dependencies
+      // ignore: riverpod_lint/scoped_providers_should_specify_dependencies
       >>>rootProvider.overrideWith((ref) => 0)<<<,
     ],
     child: Container(),
@@ -80,7 +80,7 @@ test/lints/scoped_providers_should_specify_dependencies.dart:184:11
 
 ```dart
           ),
-          // expect_lint: scoped_providers_should_specify_dependencies
+          // ignore: riverpod_lint/scoped_providers_should_specify_dependencies
           >>>rootProvider.overrideWith((ref) => 0)<<<,
         ],
         child: Container(),
@@ -95,7 +95,7 @@ test/lints/scoped_providers_should_specify_dependencies.dart:204:9
 
 ```dart
         ),
-        // expect_lint: scoped_providers_should_specify_dependencies
+        // ignore: riverpod_lint/scoped_providers_should_specify_dependencies
         >>>rootProvider.overrideWith((ref) => 0)<<<,
       ],
       child: Container(),

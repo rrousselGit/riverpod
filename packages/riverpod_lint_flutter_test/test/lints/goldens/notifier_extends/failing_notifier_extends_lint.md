@@ -5,7 +5,7 @@ test/lints/notifier_extends/failing_notifier_extends.dart:6:7
 
 ```dart
 @riverpod
-// expect_lint: notifier_extends
+// ignore: riverpod_lint/notifier_extends
 class >>>NoExtends<<< {
   int build() => 0;
 }
@@ -20,7 +20,7 @@ test/lints/notifier_extends/failing_notifier_extends.dart:12:28
 
 ```dart
 @riverpod
-// expect_lint: notifier_extends
+// ignore: riverpod_lint/notifier_extends
 class WrongExtends extends >>>AsyncNotifier<int><<< {
   int build() => 0;
 }

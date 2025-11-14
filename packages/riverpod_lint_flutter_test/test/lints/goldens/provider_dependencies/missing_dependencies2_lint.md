@@ -16,7 +16,7 @@ test/lints/provider_dependencies/missing_dependencies2.dart:32:1
 
 ```dart
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 >>>@riverpod<<<
 int watchGeneratedScopedButNoDependencies(
   Ref ref,
@@ -42,7 +42,7 @@ test/lints/provider_dependencies/missing_dependencies2.dart:58:25
 
 ```dart
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 @Riverpod(dependencies: >>>[]<<<)
 int watchGeneratedScopedButEmptyDependencies(
   Ref ref,
@@ -68,7 +68,7 @@ test/lints/provider_dependencies/missing_dependencies2.dart:88:25
 
 ```dart
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 @Riverpod(dependencies: >>>[dep]<<<)
 int watchGeneratedScopedButMissingDependencies(
   Ref ref,
@@ -83,7 +83,7 @@ test/lints/provider_dependencies/missing_dependencies2.dart:122:3
 
 ```dart
   // The dependency is redundant because it is not a scoped provider
-  // expect_lint: provider_dependencies
+  // ignore: riverpod_lint/provider_dependencies
   >>>[
     generatedRoot,
   ]<<<,
@@ -100,7 +100,7 @@ test/lints/provider_dependencies/missing_dependencies2.dart:138:3
 
 ```dart
   // generatedRoot is extra
-  // expect_lint: provider_dependencies
+  // ignore: riverpod_lint/provider_dependencies
   >>>[
     dep,
     generatedRoot,
@@ -118,7 +118,7 @@ test/lints/provider_dependencies/missing_dependencies2.dart:219:17
 
 ```dart
 class MemberDependencies {
-  // expect_lint: provider_dependencies
+  // ignore: riverpod_lint/provider_dependencies
   @Dependencies(>>>[dep]<<<)
   int build() => 0;
 }
@@ -144,7 +144,7 @@ test/lints/provider_dependencies/missing_dependencies2.dart:227:17
 
 ```dart
 class CanUpdateMultipleDependenciesAtOnce {
-  // expect_lint: provider_dependencies
+  // ignore: riverpod_lint/provider_dependencies
   @Dependencies(>>>[]<<<)
   int build(WidgetRef ref) {
     ref.watch(depProvider);
@@ -170,10 +170,10 @@ test/lints/provider_dependencies/missing_dependencies2.dart:224:15
 
 ```dart
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 @Dependencies(>>>[]<<<)
 class CanUpdateMultipleDependenciesAtOnce {
-  // expect_lint: provider_dependencies
+  // ignore: riverpod_lint/provider_dependencies
 ```
 
 =======
@@ -185,7 +185,7 @@ test/lints/provider_dependencies/missing_dependencies2.dart:247:15
 
 ```dart
 // Handle identifiers with dependencies
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 @Dependencies(>>>[dep]<<<)
 void fn() {}
 
@@ -200,7 +200,7 @@ contextMessages:
   test/lints/provider_dependencies/missing_dependencies2.dart:252:3
 
   ```dart
-  // expect_lint: provider_dependencies
+  // ignore: riverpod_lint/provider_dependencies
   void fn2() {
     >>>fn<<<();
   }
@@ -211,7 +211,7 @@ test/lints/provider_dependencies/missing_dependencies2.dart:251:1
 
 ```dart
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 >>>void fn2() {
   fn();
 }<<<
@@ -239,7 +239,7 @@ test/lints/provider_dependencies/missing_dependencies2.dart:259:1
 
 ```dart
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 >>>@riverpod<<<
 int foo(Ref ref) {
   fn();
@@ -265,7 +265,7 @@ test/lints/provider_dependencies/missing_dependencies2.dart:276:1
 
 ```dart
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 >>>class WidgetDependencies2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -296,7 +296,7 @@ test/lints/provider_dependencies/missing_dependencies2.dart:307:15
 
 ```dart
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 @Dependencies(>>>[]<<<)
 class Stateful2 extends StatefulWidget {
   const Stateful2({super.key});
@@ -322,7 +322,7 @@ test/lints/provider_dependencies/missing_dependencies2.dart:323:1
 
 ```dart
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 >>>class FindStateFromClassList extends StatefulWidget {
   const FindStateFromClassList({super.key});
 
@@ -353,7 +353,7 @@ test/lints/provider_dependencies/missing_dependencies2.dart:336:1
 
 ```dart
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 >>>@riverpod<<<
 int crossFileDependency(Ref ref) {
   ref.watch(anotherNonEmptyScopedProvider);

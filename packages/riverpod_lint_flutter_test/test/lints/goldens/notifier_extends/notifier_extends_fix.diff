@@ -3,7 +3,7 @@ Priority: 90
 Diff for file `test/lints/notifier_extends/notifier_extends.dart:26`:
 ```
 @riverpod
-// expect_lint: notifier_extends
+// ignore: riverpod_lint/notifier_extends
 - class NoGenerics<A extends num, B> extends _$NoGenerics {
 + class NoGenerics<A extends num, B> extends _$NoGenerics<A, B> {
   int build() => 0;
@@ -15,7 +15,7 @@ Priority: 90
 Diff for file `test/lints/notifier_extends/notifier_extends.dart:32`:
 ```
 @riverpod
-// expect_lint: notifier_extends
+// ignore: riverpod_lint/notifier_extends
 - class MissingGenerics<A, B> extends _$MissingGenerics<A> {
 + class MissingGenerics<A, B> extends _$MissingGenerics<A, B> {
   int build() => 0;
@@ -27,7 +27,7 @@ Priority: 90
 Diff for file `test/lints/notifier_extends/notifier_extends.dart:38`:
 ```
 @riverpod
-// expect_lint: notifier_extends
+// ignore: riverpod_lint/notifier_extends
 - class WrongOrder<A, B> extends _$WrongOrder<B, A> {
 + class WrongOrder<A, B> extends _$WrongOrder<A, B> {
   int build() => 0;

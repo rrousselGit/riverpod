@@ -62,31 +62,31 @@ class B extends _$B {
 
     this.state = 42;
 
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(aProvider.notifier).state = 42;
 
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(aProvider.notifier).state++;
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(a2Provider.notifier).state++;
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(a3Provider(42).notifier).state++;
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(a4Provider(42).notifier).state++;
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(a5Provider(42).notifier).state = AsyncData(42);
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(a6Provider(42).notifier).state = AsyncData(42);
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(a7Provider(42).notifier).state = AsyncData(42);
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(a8Provider(42).notifier).state = AsyncData(42);
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(a8Provider(42).notifier).state;
 
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(a8Provider(42).notifier).future;
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(a8Provider(42).notifier).ref;
   }
 }
@@ -102,21 +102,21 @@ class B2 extends _$B2 {
 
     this.state = 42;
 
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(aProvider.notifier).state++;
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(a2Provider.notifier).state++;
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(a3Provider(42).notifier).state++;
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(a4Provider(42).notifier).state++;
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(a5Provider(42).notifier).state = AsyncData(42);
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(a6Provider(42).notifier).state = AsyncData(42);
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(a7Provider(42).notifier).state = AsyncData(42);
-    // expect_lint: protected_notifier_properties
+    // ignore: riverpod_lint/protected_notifier_properties
     ref.read(a8Provider(42).notifier).state = AsyncData(42);
   }
 }

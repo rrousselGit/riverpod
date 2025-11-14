@@ -5,7 +5,7 @@ test/lints/avoid_public_notifier_properties.dart:33:3
 
 ```dart
 
-  // expect_lint: avoid_public_notifier_properties
+  // ignore: riverpod_lint/avoid_public_notifier_properties
   >>>int get publicGetter => _privateGetter;<<<
 
   // Public setters are OK
@@ -20,7 +20,7 @@ test/lints/avoid_public_notifier_properties.dart:41:3
 
 ```dart
 
-  // expect_lint: avoid_public_notifier_properties
+  // ignore: riverpod_lint/avoid_public_notifier_properties
   >>>int publicProperty = 0;<<<
 
   @protected
@@ -35,7 +35,7 @@ test/lints/avoid_public_notifier_properties.dart:67:3
 
 ```dart
 
-  // expect_lint: avoid_public_notifier_properties
+  // ignore: riverpod_lint/avoid_public_notifier_properties
   >>>int get publicGetter => _privateGetter;<<<
 
   @override
@@ -50,7 +50,7 @@ test/lints/avoid_public_notifier_properties.dart:80:3
 
 ```dart
 
-  // expect_lint: avoid_public_notifier_properties
+  // ignore: riverpod_lint/avoid_public_notifier_properties
   >>>int get publicGetter => _privateGetter;<<<
 
   @override
@@ -65,7 +65,7 @@ test/lints/avoid_public_notifier_properties.dart:90:3
 
 ```dart
 
-  // expect_lint: avoid_public_notifier_properties
+  // ignore: riverpod_lint/avoid_public_notifier_properties
   >>>int get publicGetter => _privateGetter;<<<
 
   @override
@@ -80,7 +80,7 @@ test/lints/avoid_public_notifier_properties.dart:100:3
 
 ```dart
 
-  // expect_lint: avoid_public_notifier_properties
+  // ignore: riverpod_lint/avoid_public_notifier_properties
   >>>int get publicGetter => _privateGetter;<<<
 
   @override
@@ -95,7 +95,7 @@ test/lints/avoid_public_notifier_properties.dart:113:3
 
 ```dart
 
-  // expect_lint: avoid_public_notifier_properties
+  // ignore: riverpod_lint/avoid_public_notifier_properties
   >>>int get publicGetter => _privateGetter;<<<
 
   @override

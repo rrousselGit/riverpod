@@ -8,7 +8,7 @@ typedef _$ExampleProvider1 = Object;
 typedef _$ExampleProvider = Notifier<int>;
 
 @riverpod
-// expect_lint: notifier_build
+// ignore: riverpod_lint/notifier_build
 class ExampleProvider1 extends _$ExampleProvider1 {}
 
 @riverpod

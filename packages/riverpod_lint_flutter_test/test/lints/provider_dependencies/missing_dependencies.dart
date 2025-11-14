@@ -17,11 +17,11 @@ int dep2(Ref ref) => 0;
 @Riverpod(dependencies: [])
 int depFamily(Ref ref, int id) => 0;
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 @Dependencies([dep])
 void depFn() {}
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 @Dependencies([depFamily])
 void depFamilyFn() {}
 
@@ -37,7 +37,7 @@ class DepWidget extends StatelessWidget {
   }
 }
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 @Dependencies([dep])
 class UnusedDepWidget extends ConsumerWidget {
   const UnusedDepWidget({super.key});
@@ -74,21 +74,21 @@ class DepFamily extends StatelessWidget {
 
 ////////////
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 @riverpod
 int plainAnnotation(Ref ref) {
   ref.watch(depProvider);
   return 0;
 }
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 @Riverpod(keepAlive: false)
 int customAnnotation(Ref ref) {
   ref.watch(depProvider);
   return 0;
 }
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 @Riverpod(
   keepAlive: false,
 )
@@ -101,7 +101,7 @@ int customAnnotationWithTrailingComma(
 
 @Riverpod(
   keepAlive: false,
-  // expect_lint: provider_dependencies
+  // ignore: riverpod_lint/provider_dependencies
   dependencies: [],
 )
 int existingDep(Ref ref) {
@@ -111,7 +111,7 @@ int existingDep(Ref ref) {
 
 @Riverpod(
   keepAlive: false,
-  // expect_lint: provider_dependencies
+  // ignore: riverpod_lint/provider_dependencies
   dependencies: [],
 )
 int multipleDeps(Ref ref) {
@@ -130,7 +130,7 @@ class Scope extends ConsumerWidget {
   }
 }
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 class AboveScope extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -143,7 +143,7 @@ class AboveScope extends ConsumerWidget {
   }
 }
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 class Scope2 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -154,7 +154,7 @@ class Scope2 extends ConsumerWidget {
   }
 }
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 class ConditionalScope extends ConsumerWidget {
   ConditionalScope({super.key, required this.condition});
   final bool condition;
@@ -219,7 +219,7 @@ class SupportsMultipleScopes extends ConsumerWidget {
   }
 }
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 class SupportsMultipleScopes2 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -250,7 +250,7 @@ class SupportsNestedScopes extends ConsumerWidget {
   }
 }
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 class IncompleteFamilyOverride extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {

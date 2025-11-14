@@ -22,19 +22,19 @@ class Generics<A extends num, B> extends _$Generics<A, B> {
 }
 
 @riverpod
-// expect_lint: notifier_extends
+// ignore: riverpod_lint/notifier_extends
 class NoGenerics<A extends num, B> extends _$NoGenerics {
   int build() => 0;
 }
 
 @riverpod
-// expect_lint: notifier_extends
+// ignore: riverpod_lint/notifier_extends
 class MissingGenerics<A, B> extends _$MissingGenerics<A> {
   int build() => 0;
 }
 
 @riverpod
-// expect_lint: notifier_extends
+// ignore: riverpod_lint/notifier_extends
 class WrongOrder<A, B> extends _$WrongOrder<B, A> {
   int build() => 0;
 }
