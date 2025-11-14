@@ -8,6 +8,7 @@ import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/listener.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:analyzer/src/dart/ast/ast.dart';
 import 'package:analyzer/src/dart/error/lint_codes.dart';
@@ -20,6 +21,8 @@ import 'package:riverpod_lint/main.dart';
 import 'package:test/test.dart';
 
 import 'io_utils.dart';
+import 'registry.dart';
+import 'context.dart';
 
 Future<void> main() async {
   final registry = _PluginRegistry();
@@ -28,7 +31,7 @@ Future<void> main() async {
   final filesToAnalyze = await _findFilesToAnalyze().toList();
 
   for (final file in filesToAnalyze) {
-    group(p.basenameWithoutExtension(file.path), () {
+    group(p.basename(file.path), () {
       late final ResolvedUnitResult unit;
       late final ResolvedLibraryResult library;
       late final Iterable<int> uniqueOffsets;
@@ -76,7 +79,67 @@ Future<void> main() async {
         groupName: 'fix',
         id: (producer) => producer.fixKind!.id,
       );
+
+      _testRules(
+        registry.rules,
+        () => (unit: unit, library: library),
+        file,
+      );
     });
+  }
+}
+
+void _testRules(
+  Iterable<(AbstractAnalysisRule, RuleType)> rules,
+  ({
+    ResolvedUnitResult unit,
+    ResolvedLibraryResult library,
+  })
+  Function()
+  results,
+  File file,
+) {
+  for (final (rule, _) in rules) {
+    test('Rule ${rule.name}', () async {
+      final (
+        :unit,
+        :library,
+      ) = results();
+
+      final diagosticsListener = RecordingDiagnosticListener();
+      rule.reporter = DiagnosticReporter(
+        diagosticsListener,
+        unit.libraryFragment.source,
+      );
+
+      final registry = Registry();
+      final context = Context.fromResolvedUnitResult(
+        unit,
+        library,
+        diagosticsListener,
+      );
+
+      rule.registerNodeProcessors(registry, context);
+
+      unit.unit.accept(_InvokeVisitor(registry));
+
+      print(diagosticsListener.diagnostics);
+    });
+  }
+}
+
+class _InvokeVisitor extends GeneralizingAstVisitor<void> {
+  final Registry registry;
+
+  _InvokeVisitor(this.registry);
+
+  @override
+  void visitNode(AstNode node) {
+    super.visitNode(node);
+
+    for (final (_, visitor) in registry.visitors) {
+      node.accept(visitor);
+    }
   }
 }
 
@@ -93,48 +156,46 @@ void _testProducers(
   required String groupName,
   required String Function(CorrectionProducer<ParsedUnitResult> producer) id,
 }) {
-  group(groupName, () {
-    for (final producerFactory in producerFactories) {
-      final stubProducer = producerFactory(
-        context: StubCorrectionProducerContext.instance,
-      );
-      final producerId = id(stubProducer);
+  for (final producerFactory in producerFactories) {
+    final stubProducer = producerFactory(
+      context: StubCorrectionProducerContext.instance,
+    );
+    final producerId = id(stubProducer);
 
-      test(producerId, () async {
-        final uniqueSourceOutputs = <String, List<({int offset, String id})>>{};
-        final (:unit, :library, :uniqueOffsets) = results();
+    test('$groupName $producerId', () async {
+      final uniqueSourceOutputs = <String, List<({int offset, String id})>>{};
+      final (:unit, :library, :uniqueOffsets) = results();
 
-        for (final offset in uniqueOffsets) {
-          final changeBuilder = ChangeBuilder(session: unit.session);
-          final context = CorrectionProducerContext.createResolved(
-            libraryResult: library,
-            unitResult: unit,
-            selectionOffset: offset,
-          );
-          final producer = producerFactory(context: context);
-          await producer.compute(changeBuilder);
-
-          if (changeBuilder.sourceChange.edits.isEmpty) continue;
-
-          final editedSources = changeBuilder.sourceChange.edits.map(
-            (e) => SourceEdit.applySequence(unit.content, e.edits),
-          );
-
-          for (final editedSource in editedSources) {
-            final offsets = uniqueSourceOutputs[editedSource] ??= [];
-            offsets.add((offset: offset, id: producerId));
-          }
-        }
-
-        await _writeProducerResultToFile(
-          uniqueSourceOutputs,
-          file,
-          producerId: producerId,
-          groupName: groupName,
+      for (final offset in uniqueOffsets) {
+        final changeBuilder = ChangeBuilder(session: unit.session);
+        final context = CorrectionProducerContext.createResolved(
+          libraryResult: library,
+          unitResult: unit,
+          selectionOffset: offset,
         );
-      });
-    }
-  });
+        final producer = producerFactory(context: context);
+        await producer.compute(changeBuilder);
+
+        if (changeBuilder.sourceChange.edits.isEmpty) continue;
+
+        final editedSources = changeBuilder.sourceChange.edits.map(
+          (e) => SourceEdit.applySequence(unit.content, e.edits),
+        );
+
+        for (final editedSource in editedSources) {
+          final offsets = uniqueSourceOutputs[editedSource] ??= [];
+          offsets.add((offset: offset, id: producerId));
+        }
+      }
+
+      await _writeProducerResultToFile(
+        uniqueSourceOutputs,
+        file,
+        producerId: producerId,
+        groupName: groupName,
+      );
+    });
+  }
 }
 
 Future<void> _writeProducerResultToFile(
@@ -189,6 +250,7 @@ Stream<File> _findFilesToAnalyze() {
         (e) =>
             e.path.endsWith('.dart') &&
             !e.path.endsWith('.g.dart') &&
+            !e.path.endsWith('.freezed.dart') &&
             !e.path.contains('.assist') &&
             !e.path.contains('.fix') &&
             !e.path.contains('.rule'),
@@ -208,11 +270,12 @@ class _VisitAllNodes<T> extends GeneralizingAstVisitor<void> {
   }
 }
 
+enum RuleType { lint, warning }
+
 class _PluginRegistry extends PluginRegistry {
   final List<ProducerGenerator> assists = [];
   final List<({LintCode code, ProducerGenerator generator})> fixes = [];
-  final List<AbstractAnalysisRule> lintRules = [];
-  final List<AbstractAnalysisRule> warningRules = [];
+  final List<(AbstractAnalysisRule, RuleType)> rules = [];
 
   @override
   void registerAssist(ProducerGenerator generator) {
@@ -226,11 +289,11 @@ class _PluginRegistry extends PluginRegistry {
 
   @override
   void registerLintRule(AbstractAnalysisRule rule) {
-    lintRules.add(rule);
+    rules.add((rule, RuleType.lint));
   }
 
   @override
   void registerWarningRule(AbstractAnalysisRule rule) {
-    warningRules.add(rule);
+    rules.add((rule, RuleType.warning));
   }
 }
