@@ -14,32 +14,18 @@ import 'package:analyzer/src/dart/error/lint_codes.dart';
 import 'package:analyzer_plugin/protocol/protocol_common.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
+import 'package:dart_style/dart_style.dart';
 import 'package:path/path.dart' as p;
-import 'package:cli_util/cli_logging.dart';
 import 'package:riverpod_lint/main.dart';
 import 'package:test/test.dart';
 
 import 'io_utils.dart';
 
-final _logger = Logger.standard();
-
-Future<R> progress<R>(String message, Future<R> Function() body) async {
-  final progress = _logger.progress(message);
-  try {
-    return await body();
-  } finally {
-    progress.finish(showTiming: true);
-  }
-}
-
 Future<void> main() async {
   final registry = _PluginRegistry();
   plugin.register(registry);
 
-  final filesToAnalyze = await progress(
-    'Finding files to analyze',
-    () async => await _findFilesToAnalyze().toList(),
-  );
+  final filesToAnalyze = await _findFilesToAnalyze().toList();
 
   for (final file in filesToAnalyze) {
     group(p.basenameWithoutExtension(file.path), () {
@@ -139,7 +125,7 @@ void _testProducers(
           }
         }
 
-        await _writeAssistResultToFile(
+        await _writeProducerResultToFile(
           uniqueSourceOutputs,
           file,
           producerId: producerId,
@@ -150,7 +136,7 @@ void _testProducers(
   });
 }
 
-Future<void> _writeAssistResultToFile(
+Future<void> _writeProducerResultToFile(
   Map<String, List<({String id, int offset})>> uniqueSourceOutputs,
   File file, {
   required String producerId,
@@ -182,6 +168,11 @@ Future<void> _writeAssistResultToFile(
           '$baseName',
           '$baseName${index}.$groupName',
         );
+
+        // Format the content using dart_style
+        content = DartFormatter(
+          languageVersion: DartFormatter.latestLanguageVersion,
+        ).format(content);
 
         await outputFile.writeAsString('$header\n$content');
       }),

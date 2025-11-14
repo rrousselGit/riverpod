@@ -30,3 +30,4 @@ dev_dependencies:
   riverpod_lint:
     path: ../riverpod_lint
   analysis_server_plugin: ^0.3.3
+  dart_style: ^3.1.3
