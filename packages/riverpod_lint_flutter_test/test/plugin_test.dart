@@ -31,7 +31,7 @@ Future<void> main() async {
     group(p.basenameWithoutExtension(file.path), () {
       late final ResolvedUnitResult unit;
       late final ResolvedLibraryResult library;
-      late final Iterable<SourceRange> uniqueRanges;
+      late final Iterable<int> uniqueOffsets;
 
       setUpAll(() async {
         final unitResult = await resolveFile2(path: file.path);
@@ -58,19 +58,20 @@ Future<void> main() async {
           tokensRanges.add(range.token(token));
         }
 
-        uniqueRanges = astRanges.followedBy(tokensRanges).toSet();
+        uniqueOffsets =
+            astRanges.followedBy(tokensRanges).map((e) => e.offset).toSet();
       });
 
       _testProducers(
         registry.assists,
-        () => (unit: unit, library: library, uniqueRanges: uniqueRanges),
+        () => (unit: unit, library: library, uniqueOffsets: uniqueOffsets),
         file,
         groupName: 'assist',
         id: (producer) => producer.assistKind!.id,
       );
       _testProducers(
         registry.fixes.map((e) => e.generator),
-        () => (unit: unit, library: library, uniqueRanges: uniqueRanges),
+        () => (unit: unit, library: library, uniqueOffsets: uniqueOffsets),
         file,
         groupName: 'fix',
         id: (producer) => producer.fixKind!.id,
@@ -84,7 +85,7 @@ void _testProducers(
   ({
     ResolvedUnitResult unit,
     ResolvedLibraryResult library,
-    Iterable<SourceRange> uniqueRanges,
+    Iterable<int> uniqueOffsets,
   })
   Function()
   results,
@@ -101,9 +102,9 @@ void _testProducers(
 
       test(producerId, () async {
         final uniqueSourceOutputs = <String, List<({int offset, String id})>>{};
-        final (:unit, :library, :uniqueRanges) = results();
+        final (:unit, :library, :uniqueOffsets) = results();
 
-        for (final offset in uniqueRanges.map((e) => e.offset)) {
+        for (final offset in uniqueOffsets) {
           final changeBuilder = ChangeBuilder(session: unit.session);
           final context = CorrectionProducerContext.createResolved(
             libraryResult: library,
