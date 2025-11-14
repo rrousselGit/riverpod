@@ -9,6 +9,7 @@ import 'src/assists/consumers/convert_to_stateless_base_widget.dart';
 import 'src/assists/providers/class_based_to_functional_provider.dart';
 import 'src/assists/providers/functional_to_class_based_provider.dart';
 import 'src/assists/wrap/wrap_with_consumer.dart';
+import 'src/assists/wrap/wrap_with_provider_scope.dart';
 import 'src/lints/async_value_nullable_pattern.dart';
 
 final plugin = _RiverpodPlugin();
@@ -32,6 +33,7 @@ class _RiverpodPlugin extends Plugin {
     );
 
     registry.registerAssist(WrapWithConsumer.new);
+    registry.registerAssist(WrapWithProviderScope.new);
 
     registry.registerAssist(ClassBasedToFunctionalProvider.new);
     registry.registerAssist(FunctionalToClassBasedProvider.new);

@@ -1,8 +1,8 @@
+import 'package:analysis_server_plugin/edit/dart/correction_producer.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element2.dart';
-import 'package:analysis_server_plugin/edit/dart/correction_producer.dart';
 import 'package:analyzer_plugin/utilities/assist/assist.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
@@ -11,7 +11,6 @@ import 'package:collection/collection.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../../imports.dart';
-import '../../riverpod_custom_lint.dart';
 import 'convert_to_widget_utils.dart';
 
 /// Base class for converting to stateful base widgets
@@ -44,10 +43,6 @@ abstract class ConvertToStatefulBaseWidget extends ResolvedCorrectionProducer {
     node.accept(visitor);
     final extendsClause = visitor.extendsClause;
     if (extendsClause == null) return;
-
-    // Only offer the assist if hovering the extended type
-    if (!range.node(extendsClause.superclass).intersects(range.node(node)))
-      return;
 
     final type = extendsClause.superclass.type;
     if (type == null) return;
