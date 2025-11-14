@@ -177,7 +177,7 @@ void main() {
 
       // No value were emitted, so the future will fail. Catching the error to
       // avoid false positive.
-      // ignore: unawaited_futures, avoid_types_on_closure_parameters
+      // ignore: unawaited_futures
       container.read(provider.future).catchError((Object _) => 0);
     },
   );

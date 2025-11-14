@@ -92,7 +92,6 @@ void main() {
     await expectLater(sub.read(), throwsA(0));
 
     container.read(dep.notifier).state += 2;
-    // ignore: avoid_types_on_closure_parameters, conflict with implicit_dynamic
     await container.read(provider.future).catchError((Object? _) => 0);
 
     await expectLater(sub.read(), throwsA(2));

@@ -363,7 +363,6 @@ extension ClassBaseX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
   }
 
   @internal
-  // ignore: library_private_types_in_public_api, not public
   $Ref<StateT, ValueT> get $ref {
     final ref = _element?.ref;
     if (ref == null) throw StateError(uninitializedElementError);
@@ -537,7 +536,7 @@ abstract class $ClassProviderElement<
   @mustCallSuper
   @override
   WhenComplete create(
-    // ignore: library_private_types_in_public_api, not public
+    // ignore: not public
     $Ref<StateT, ValueT> ref,
   ) {
     final result =

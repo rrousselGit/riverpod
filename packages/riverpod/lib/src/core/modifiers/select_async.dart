@@ -140,17 +140,13 @@ final class _AsyncSelector<InputT, OutputT>
       onError: onError,
     );
 
-    playValue(
-      // ignore: unused_result, https://github.com/dart-lang/sdk/issues/60831
-      switch (sub.readSafe()) {
-        $ResultData<AsyncValue<InputT>>() && final d => d.value,
-        $ResultError<AsyncValue<InputT>>() && final d => AsyncError(
-          d.error,
-          d.stackTrace,
-        ),
-      },
-      callListeners: false,
-    );
+    playValue(switch (sub.readSafe()) {
+      $ResultData<AsyncValue<InputT>>() && final d => d.value,
+      $ResultError<AsyncValue<InputT>>() && final d => AsyncError(
+        d.error,
+        d.stackTrace,
+      ),
+    }, callListeners: false);
 
     return providerSub = ExternalProviderSubscription<
       AsyncValue<InputT>,

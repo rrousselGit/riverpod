@@ -165,7 +165,7 @@ void main() {
       ) {
         final controller = StreamController<int>();
 
-        int counter = 0;
+        var counter = 0;
         final timer = Timer.periodic(const Duration(milliseconds: 10), (_) {
           if (!controller.isClosed) controller.sink.add(counter++);
         });

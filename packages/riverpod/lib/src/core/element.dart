@@ -420,9 +420,9 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   @visibleForTesting
   final weakDependents = <ProviderSubscriptionImpl<Object?>>[];
 
-  bool _mustRecomputeState = false;
-  bool _dependencyMayHaveChanged = false;
-  bool _didChangeDependency = false;
+  var _mustRecomputeState = false;
+  var _dependencyMayHaveChanged = false;
+  var _didChangeDependency = false;
 
   var _retryCount = 0;
   Timer? _pendingRetryTimer;
@@ -432,8 +432,8 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   @visibleForOverriding
   bool get debugAssertDidSetStateEnabled => true;
 
-  bool _debugDidSetState = false;
-  bool _didBuild = false;
+  var _debugDidSetState = false;
+  var _didBuild = false;
   var _didMount = false;
 
   /* STATE */
@@ -611,7 +611,7 @@ depending on itself.
   /// state. Then, reading this provider will rethrow the thrown exception.
   @visibleForOverriding
   WhenComplete create(
-    // ignore: library_private_types_in_public_api, not public
+    // ignore: not public
     $Ref<StateT, ValueT> ref,
   );
 
@@ -654,10 +654,7 @@ depending on itself.
 
   /// Invokes [create] and handles errors.
   @internal
-  void buildState(
-    // ignore: library_private_types_in_public_api, not public
-    $Ref<StateT, ValueT> ref,
-  ) {
+  void buildState($Ref<StateT, ValueT> ref) {
     if (_didChangeDependency) _retryCount = 0;
 
     _didChangeDependency = false;
@@ -1211,7 +1208,7 @@ $this''',
     }
   }
 
-  bool _disposed = false;
+  var _disposed = false;
 
   /// Release the resources associated to this [ProviderElement].
   ///

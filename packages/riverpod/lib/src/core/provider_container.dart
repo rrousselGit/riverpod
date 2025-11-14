@@ -677,7 +677,6 @@ extension InternalProviderContainer on ProviderContainer {
   /// Run a function while catching errors and reporting possible errors to the zone.
   @internal
   void runBinaryGuarded<FirstT, SecondT>(
-    // ignore: require_trailing_commas
     void Function(FirstT, SecondT) cb,
     FirstT value,
     SecondT value2,
@@ -852,7 +851,7 @@ final class ProviderContainer implements Node, MutationTarget {
 
   /// The object that handles when providers are refreshed and disposed.
   /// @nodoc
-  late final ProviderScheduler _scheduler = ProviderScheduler();
+  late final _scheduler = ProviderScheduler();
 
   @internal
   @override
@@ -886,7 +885,7 @@ final class ProviderContainer implements Node, MutationTarget {
   ///
   /// This disables the different methods of [ProviderContainer], resulting in
   /// a [StateError] when attempting to use them.
-  bool _disposed = false;
+  var _disposed = false;
 
   /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
   ///

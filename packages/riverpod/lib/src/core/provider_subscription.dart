@@ -341,7 +341,7 @@ mixin _OnPauseMixin {
   bool get _isPaused => _pauseCount > 0;
   var _pauseCount = 0;
 
-  int _deactivateCount = 0;
+  var _deactivateCount = 0;
   bool get active => _deactivateCount == 0;
 
   bool get pausedOrDeactivated => _isPaused || !active;
