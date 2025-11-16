@@ -126,7 +126,7 @@ void testSource(
           '$packageName|lib/foo.g.dart': 'part of "foo.dart";$generated',
         ...otherSources,
       },
-      (resolver) async {
+      (resolver) {
         try {
           final originalZone = Zone.current;
           return runZoned(

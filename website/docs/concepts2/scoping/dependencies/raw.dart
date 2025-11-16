@@ -1,3 +1,4 @@
+// ignore_for_file: unnecessary_async
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,9 +16,10 @@ final currentItemProvider = FutureProvider<Item?>(
   // highlight-next-line
   dependencies: [currentItemIdProvider],
   (ref) async {
-  final currentItemId = ref.watch(currentItemIdProvider);
-  if (currentItemId == null) return null;
+    final currentItemId = ref.watch(currentItemIdProvider);
+    if (currentItemId == null) return null;
 
-  // Fetch the item from a database or API
-  return fetchItem(id: currentItemId);
-});
+    // Fetch the item from a database or API
+    return fetchItem(id: currentItemId);
+  },
+);

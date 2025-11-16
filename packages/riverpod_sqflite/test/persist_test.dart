@@ -23,7 +23,7 @@ void main() {
   });
 
   group('JsonSqFliteStorage', () {
-    test('Clears expired keys on creation', () async {
+    test('Clears expired keys on creation', () {
       return fakeAsync((async) async {
         await persist.write('expired', 'value', const StorageOptions());
         await persist.write(

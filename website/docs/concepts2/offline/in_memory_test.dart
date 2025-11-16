@@ -40,7 +40,7 @@ void main() {
     );
   });
 
-  test('Pure dart example', () async {
+  test('Pure dart example', () {
     final container = ProviderContainer.test(
       // Same as above, we override the `storageProvider`
       overrides: [

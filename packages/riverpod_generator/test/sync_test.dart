@@ -53,7 +53,7 @@ void main() {
     });
   });
 
-  test('Supports Raw', () async {
+  test('Supports Raw', () {
     final container = ProviderContainer.test();
 
     expect(container.read(rawFutureProvider), isA<Future<String>>());
