@@ -25,6 +25,9 @@ analyzer:
 
 linter:
   rules:
+    # No good way to "fix" the diagnostic. Cf https://github.com/dart-lang/sdk/issues/61976
+    unsafe_variance: false
+
     # Conflicts with having to specify types on public properties
     omit_obvious_property_types: false
 
