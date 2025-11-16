@@ -25,6 +25,12 @@ analyzer:
 
 linter:
   rules:
+    # Conflicts with having to specify types on public properties
+    omit_obvious_property_types: false
+
+    # Using it on purpose for signaling that an API can be both async and sync
+    avoid_futureor_void: false
+
     # I hate it
     specify_nonobvious_property_types: false
     specify_nonobvious_local_variable_types: false
