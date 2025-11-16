@@ -109,7 +109,6 @@ void main() {
         fourth: false,
         fifth: const ['x42'],
       );
-      // ignore: invalid_use_of_internal_member // Just checking
       final ProviderBase<AsyncValue<String>> futureProvider = provider;
 
       final sub = container.listen(

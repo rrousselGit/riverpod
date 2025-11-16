@@ -139,12 +139,13 @@ class OnDisposeMock extends Mock {
 }
 
 class TestNotifier extends ChangeNotifier {
-  bool mounted = true;
+  // ignore: type_annotate_public_apis
+  var mounted = true;
 
   @override
   bool get hasListeners => super.hasListeners;
 
-  int _count = 0;
+  var _count = 0;
   int get count => _count;
   set count(int count) {
     _count = count;

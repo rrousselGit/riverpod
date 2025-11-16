@@ -381,8 +381,8 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   /// The [$ProviderPointer] associated with this [ProviderElement].
   final $ProviderPointer pointer;
 
-  bool unsafeCheckIfMounted = true;
-  // ignore: library_private_types_in_public_api, not public
+  // ignore: type_annotate_public_apis, false positive
+  var unsafeCheckIfMounted = true;
   $Ref<StateT, ValueT>? ref;
 
   /// Whether this [ProviderElement] is actively in use.
@@ -396,7 +396,8 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
 
   int get listenerCount => dependents?.length ?? 0;
 
-  int pausedActiveSubscriptionCount = 0;
+  // ignore: type_annotate_public_apis, false positive
+  var pausedActiveSubscriptionCount = 0;
   var _didCancelOnce = false;
 
   /// Whether this [ProviderElement] is currently listened to or not.

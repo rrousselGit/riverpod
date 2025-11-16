@@ -158,7 +158,7 @@ void main() {
 extension _StringX on String {
   String toSnakeCase() {
     return replaceAllMapped(
-      RegExp(r'([A-Z])'),
+      RegExp('([A-Z])'),
       (match) => '_${match.group(1)!.toLowerCase()}',
     );
   }

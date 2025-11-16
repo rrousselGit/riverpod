@@ -85,7 +85,7 @@ void _writeDiagnostic(
 }) {
   buffer.writeln('${indent}severity: ${diagnostic.severity}');
   if (diagnostic.correctionMessage case final correctionMessage?) {
-    buffer.writeln('${indent}correctionMessage: ${correctionMessage}');
+    buffer.writeln('${indent}correctionMessage: $correctionMessage');
   }
   if (diagnostic.contextMessages.isNotEmpty) {
     buffer.writeln('${indent}contextMessages:');
@@ -120,7 +120,7 @@ void _writeDiagnosticMessage(
   );
 
   if (error.url case final url?) {
-    buffer.writeln('${indent}url: ${url}');
+    buffer.writeln('${indent}url: $url');
   }
 
   _highlight(
@@ -149,7 +149,7 @@ void _highlight(
   final end = lineInfo.getLocation(offset + length);
 
   buffer.writeln(
-    '${indent}${p.normalize(p.relative(file.path))}:${start.lineNumber}:${start.columnNumber}',
+    '$indent${p.normalize(p.relative(file.path))}:${start.lineNumber}:${start.columnNumber}',
   );
   buffer.writeln();
 
