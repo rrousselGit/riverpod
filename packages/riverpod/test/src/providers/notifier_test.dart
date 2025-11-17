@@ -132,7 +132,7 @@ void main() {
         });
         final container = ProviderContainer.test();
 
-        final sub = container.listen(provider.notifier, (_, __) {});
+        final sub = container.listen(provider.notifier, (_, _) {});
 
         expect(stateInBuild, [null]);
 
@@ -145,7 +145,7 @@ void main() {
         );
         final container = ProviderContainer.test();
 
-        final sub = container.listen(provider.notifier, (_, __) {});
+        final sub = container.listen(provider.notifier, (_, _) {});
 
         expect(sub.read().stateOrNull, null);
       });
@@ -163,7 +163,7 @@ void main() {
         });
         final container = ProviderContainer.test();
 
-        final sub = container.listen(provider.notifier, (_, __) {});
+        final sub = container.listen(provider.notifier, (_, _) {});
 
         sub.read().state = 42;
         container.refresh(provider);
@@ -175,7 +175,7 @@ void main() {
         final provider = factory.simpleTestProvider<int>((ref, _) => 0);
         final container = ProviderContainer.test();
 
-        final sub = container.listen(provider.notifier, (_, __) {});
+        final sub = container.listen(provider.notifier, (_, _) {});
 
         expect(sub.read().stateOrNull, 0);
 
@@ -190,7 +190,7 @@ void main() {
           final provider = factory.simpleTestProvider<int>((ref, _) => 0);
           final container = ProviderContainer.test();
 
-          final sub = container.listen(provider.notifier, (_, __) {});
+          final sub = container.listen(provider.notifier, (_, _) {});
 
           sub.read().state = 42;
 

@@ -8,7 +8,7 @@ void main() {
     'test/assists/goldens/convert_class_based_provider_to_functional/convert_class_based_provider_to_functional.diff',
     sourcePath:
         'test/assists/convert_class_based_provider_to_functional/convert_class_based_provider_to_functional.dart',
-    (result, helper) async {
+    (result, helper) {
       final assist = ClassBasedToFunctionalProvider();
 
       final cursors = helper.rangesForString(r'''

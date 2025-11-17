@@ -56,7 +56,7 @@ final class $Observable<ValueT> extends _ValueListenable<ValueT> {
 final class _ValueListenable<ValueT> {
   void Function()? onCancel;
 
-  int _count = 0;
+  var _count = 0;
   // The _listeners is intentionally set to a fixed-length _GrowableList instead
   // of const [].
   //
@@ -69,9 +69,9 @@ final class _ValueListenable<ValueT> {
       List<_Listener<ValueT>?>.filled(0, null);
 
   List<_Listener<ValueT>?> _listeners = _emptyListeners();
-  int _notificationCallStackDepth = 0;
-  int _reentrantlyRemovedListeners = 0;
-  bool _debugDisposed = false;
+  var _notificationCallStackDepth = 0;
+  var _reentrantlyRemovedListeners = 0;
+  var _debugDisposed = false;
 
   /// The accumulated skipped notification while it was locked by [lockNotification].
   ({

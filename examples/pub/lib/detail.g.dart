@@ -61,7 +61,7 @@ final class FetchPackageDetailsProvider
 }
 
 String _$fetchPackageDetailsHash() =>
-    r'16ad07d6f69412f6d456c6d482f15dc53421df74';
+    r'5a9efadea302d6127f629d240bf469dec4c51d69';
 
 final class FetchPackageDetailsFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<Package>, String> {
@@ -118,7 +118,7 @@ final class LikedPackagesProvider
   }
 }
 
-String _$likedPackagesHash() => r'8debee8d8fa48334d1de21fa9bbf03224265d29d';
+String _$likedPackagesHash() => r'25a2bfafd29a094d3fbc81cee275a54e28cd2ce2';
 
 @ProviderFor(pubRepository)
 final pubRepositoryProvider = PubRepositoryProvider._();

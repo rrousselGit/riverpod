@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS $_tableName(
   int _currentTimestamp() => clock.now().toUtc().millisecondsSinceEpoch;
 
   @override
-  Future<PersistedData<String>?> read(String key) async {
+  Future<PersistedData<String>?> read(String key) {
     return _db.transaction((transaction) async {
       final result = await transaction.query(
         _tableName,

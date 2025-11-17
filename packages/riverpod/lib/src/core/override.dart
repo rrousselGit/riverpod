@@ -141,7 +141,6 @@ class TransitiveFamilyOverride implements $FamilyOverride {
 /// An [Override] for families
 class _FamilyOverrideImpl implements $FamilyOverride {
   /// An [Override] for families
-  // ignore: library_private_types_in_public_api
   _FamilyOverrideImpl({
     required ProviderElement Function($ProviderPointer pointer) createElement,
     required this.from,

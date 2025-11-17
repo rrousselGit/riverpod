@@ -6,7 +6,7 @@ import '../combine/combine.dart';
 /* SNIPPET START */
 
 void main() {
-  test('it doubles the value correctly', () async {
+  test('it doubles the value correctly', () {
     final container = ProviderContainer(
       overrides: [numberProvider.overrideWith((ref) => 9)],
     );

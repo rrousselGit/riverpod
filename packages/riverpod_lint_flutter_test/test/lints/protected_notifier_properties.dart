@@ -60,7 +60,7 @@ class B extends _$B {
     final obj = Obj();
     obj.state++;
 
-    this.state = 42;
+    state = 42;
 
     // expect_lint: protected_notifier_properties
     ref.read(aProvider.notifier).state = 42;
@@ -100,7 +100,7 @@ class B2 extends _$B2 {
     final obj = Obj();
     obj.state++;
 
-    this.state = 42;
+    state = 42;
 
     // expect_lint: protected_notifier_properties
     ref.read(aProvider.notifier).state++;

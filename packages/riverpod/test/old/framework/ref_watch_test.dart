@@ -192,7 +192,7 @@ void main() {
       final depNotifier = container.read(dep.notifier);
       final dep2Notifier = container.read(dep2.notifier);
 
-      container.listen(provider, (_, __) {});
+      container.listen(provider, (_, _) {});
 
       depNotifier.state++;
 
@@ -559,7 +559,7 @@ void main() {
       yield ref.watch(provider);
     });
 
-    final sub = container.listen(computed, (_, __) {});
+    final sub = container.listen(computed, (_, _) {});
 
     expect(callCount, 0);
     expect(sub.read(), const AsyncValue<int>.loading());

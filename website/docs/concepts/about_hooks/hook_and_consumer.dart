@@ -1,4 +1,4 @@
-// ignore_for_file: use_key_in_widget_constructors, unused_local_variable
+// ignore_for_file: use_key_in_widget_constructors
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -19,12 +19,14 @@ class Example extends StatelessWidget {
     // We can use the builders provided by both packages
     return Consumer(
       builder: (context, ref, child) {
-        return HookBuilder(builder: (context) {
-          final counter = useState(0);
-          final value = ref.watch(myProvider);
+        return HookBuilder(
+          builder: (context) {
+            final counter = useState(0);
+            final value = ref.watch(myProvider);
 
-          return Text('Hello $counter $value');
-        },);
+            return Text('Hello $counter $value');
+          },
+        );
       },
     );
   }

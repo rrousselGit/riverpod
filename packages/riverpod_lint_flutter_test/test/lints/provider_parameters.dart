@@ -100,9 +100,11 @@ class ClassThatOverridesEqual implements Factory {
   const ClassThatOverridesEqual();
 
   @override
+  // ignore: unnecessary_overrides, used for analyzer test
   bool operator ==(Object other) => super == other;
 
   @override
+  // ignore: unnecessary_overrides, used for analyzer test
   int get hashCode => super.hashCode;
 }
 

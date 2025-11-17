@@ -80,7 +80,7 @@ void main() {
               if (err == null) return 42;
               Error.throwWithStackTrace(err, stack);
             }),
-            retry: (retryCount, __) {
+            retry: (retryCount, _) {
               if (retryCount >= 2) return null;
 
               return const Duration(seconds: 1);

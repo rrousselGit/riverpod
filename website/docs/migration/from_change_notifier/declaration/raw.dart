@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, avoid_unused_constructor_parameters
+// ignore_for_file: avoid_unused_constructor_parameters
 
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

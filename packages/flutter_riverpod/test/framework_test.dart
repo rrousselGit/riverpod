@@ -716,7 +716,7 @@ void main() {
     unawaited(
       key.currentState!.pushReplacement<void, void>(
         PageRouteBuilder<void>(
-          pageBuilder: (_, __, ___) {
+          pageBuilder: (_, _, _) {
             return Consumer(
               builder: (context, ref, _) {
                 final count = ref.watch(counterProvider);

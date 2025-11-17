@@ -304,7 +304,7 @@ void main() {
   });
 
   test('Loading to error', () {
-    final container = ProviderContainer.test(retry: (_, __) => null);
+    final container = ProviderContainer.test(retry: (_, _) => null);
     final controller = StreamController<int>(sync: true);
     addTearDown(() => controller.close);
     final provider = StreamProvider((ref) => controller.stream);
@@ -479,7 +479,7 @@ void main() {
     addTearDown(() => controller.close);
     final provider = StreamProvider((ref) => controller.stream);
 
-    final sub = container.listen(provider, (_, __) {});
+    final sub = container.listen(provider, (_, _) {});
 
     expect(sub.read(), const AsyncValue<int>.loading());
 
@@ -743,7 +743,7 @@ void main() {
         final controller = StreamController<int>();
         final provider = StreamProvider<int>(
           (_) => controller.stream,
-          retry: (_, __) => null,
+          retry: (_, _) => null,
         );
 
         controller.addError(42);
