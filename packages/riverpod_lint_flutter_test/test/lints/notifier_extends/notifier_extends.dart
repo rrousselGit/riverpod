@@ -1,3 +1,4 @@
+// ignore_for_file: internal_lint/generic_name
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'notifier_extends.g.dart';

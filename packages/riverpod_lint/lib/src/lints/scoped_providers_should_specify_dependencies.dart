@@ -61,13 +61,13 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitCompilationUnit(CompilationUnit node) {
     final registry = RiverpodAstRegistry();
 
-    registry.addProviderContainerInstanceCreationExpression((node) {
-      handleProviderContainerInstanceCreation(node);
-    });
+    registry.addProviderContainerInstanceCreationExpression(
+      handleProviderContainerInstanceCreation,
+    );
 
-    registry.addProviderScopeInstanceCreationExpression((node) {
-      handleProviderScopeInstanceCreation(node);
-    });
+    registry.addProviderScopeInstanceCreationExpression(
+      handleProviderScopeInstanceCreation,
+    );
 
     registry.run(node);
   }
