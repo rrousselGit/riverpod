@@ -1,13 +1,10 @@
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart'
-    hide
-        // ignore: undefined_hidden_name, necessary to support broad analyzer versions
-        LintCode;
-import 'package:analyzer/error/listener.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
-
-import '../riverpod_custom_lint.dart';
 
 extension SimpleIdentifierX on SimpleIdentifier {
   bool get isFlutterRunApp {
@@ -31,35 +28,51 @@ extension SimpleIdentifierX on SimpleIdentifier {
   }
 }
 
-class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
-  const ScopedProvidersShouldSpecifyDependencies() : super(code: _code);
+class ScopedProvidersShouldSpecifyDependencies extends AnalysisRule {
+  ScopedProvidersShouldSpecifyDependencies()
+    : super(name: code.name, description: code.problemMessage);
 
-  static const _code = LintCode(
-    name: 'scoped_providers_should_specify_dependencies',
-    problemMessage:
-        'Providers which are overridden in a non-root ProviderContainer/ProviderScope should specify dependencies.',
-    errorSeverity: ErrorSeverity.WARNING,
+  static const code = LintCode(
+    'scoped_providers_should_specify_dependencies',
+    'Scoped providers must specify a list of dependencies.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
   ) {
-    riverpodRegistry(context)
-      ..addProviderContainerInstanceCreationExpression((node) {
-        handleProviderContainerInstanceCreation(node, reporter);
-      })
-      ..addProviderScopeInstanceCreationExpression((node) {
-        handleProviderScopeInstanceCreation(node, reporter);
-      });
+    final visitor = _Visitor(this, context);
+    registry.addCompilationUnit(this, visitor);
+  }
+}
+
+class _Visitor extends SimpleAstVisitor<void> {
+  _Visitor(this.rule, this.context);
+
+  final AnalysisRule rule;
+  final RuleContext context;
+
+  @override
+  void visitCompilationUnit(CompilationUnit node) {
+    final registry = RiverpodAstRegistry();
+
+    registry.addProviderContainerInstanceCreationExpression((node) {
+      handleProviderContainerInstanceCreation(node);
+    });
+
+    registry.addProviderScopeInstanceCreationExpression((node) {
+      handleProviderScopeInstanceCreation(node);
+    });
+
+    registry.run(node);
   }
 
-  void checkScopedOverrideList(
-    ProviderOverrideList? overrideList,
-    ErrorReporter reporter,
-  ) {
+  void checkScopedOverrideList(ProviderOverrideList? overrideList) {
     final overrides = overrideList?.overrides;
     if (overrides == null) return;
 
@@ -69,24 +82,22 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
       // We can only know statically if a provider is scoped on generator providers
       if (provider is! GeneratorProviderDeclarationElement) continue;
       if (!provider.isScoped) {
-        reporter.atNode(override.node, code);
+        rule.reportAtNode(override.node);
       }
     }
   }
 
   void handleProviderScopeInstanceCreation(
     ProviderScopeInstanceCreationExpression expression,
-    ErrorReporter reporter,
   ) {
     final isScoped = isProviderScopeScoped(expression);
     if (!isScoped) return;
 
-    checkScopedOverrideList(expression.overrides, reporter);
+    checkScopedOverrideList(expression.overrides);
   }
 
   void handleProviderContainerInstanceCreation(
     ProviderContainerInstanceCreationExpression expression,
-    ErrorReporter reporter,
   ) {
     // This might be doable by checking that the expression's
     // static type is non-nullable
@@ -95,7 +106,7 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
     // No parent: parameter found, therefore ProviderContainer is never scoped
     if (!hasParent) return;
 
-    checkScopedOverrideList(expression.overrides, reporter);
+    checkScopedOverrideList(expression.overrides);
   }
 
   bool isProviderScopeScoped(

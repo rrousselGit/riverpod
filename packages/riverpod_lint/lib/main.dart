@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:analysis_server_plugin/plugin.dart';
@@ -11,11 +10,25 @@ import 'src/assists/providers/functional_to_class_based_provider.dart';
 import 'src/assists/wrap/wrap_with_consumer.dart';
 import 'src/assists/wrap/wrap_with_provider_scope.dart';
 import 'src/lints/async_value_nullable_pattern.dart';
+import 'src/lints/avoid_build_context_in_providers.dart';
+import 'src/lints/avoid_public_notifier_properties.dart';
+import 'src/lints/avoid_ref_inside_state_dispose.dart';
+import 'src/lints/functional_ref.dart';
+import 'src/lints/missing_provider_scope.dart';
+import 'src/lints/notifier_build.dart';
+import 'src/lints/notifier_extends.dart';
+import 'src/lints/only_use_keep_alive_inside_keep_alive.dart';
+import 'src/lints/protected_notifier_properties.dart';
+import 'src/lints/provider_dependencies.dart';
+import 'src/lints/provider_parameters.dart';
+import 'src/lints/riverpod_syntax_error.dart';
+import 'src/lints/scoped_providers_should_specify_dependencies.dart';
+import 'src/lints/unsupported_provider_value.dart';
 
 final plugin = _RiverpodPlugin();
 
 void log(Object obj) {
-  File('/Users/ext-remi.rousselet/dev/rrousselGit/riverpod/log.txt')
+  File('/Users/remirousselet/dev/rrousselGit/riverpod/log.txt')
     ..createSync(recursive: true)
     ..writeAsStringSync('$obj\n', mode: FileMode.append);
 }
@@ -25,12 +38,39 @@ class _RiverpodPlugin extends Plugin {
   String get name => 'riverpod_lint';
 
   @override
-  FutureOr<void> register(PluginRegistry registry) {
+  void register(PluginRegistry registry) {
     registry.registerWarningRule(AsyncValueNullablePattern());
     registry.registerFixForRule(
       AsyncValueNullablePattern.code,
       RemoveNullCheckPatternAndAddHasDataCheck.new,
     );
+
+    registry.registerWarningRule(AvoidBuildContextInProviders());
+    registry.registerWarningRule(AvoidPublicNotifierProperties());
+    registry.registerWarningRule(AvoidRefInsideStateDispose());
+    
+    registry.registerWarningRule(FunctionalRef());
+    registry.registerFixForRule(FunctionalRef.code, FunctionalRefFix.new);
+
+    registry.registerWarningRule(MissingProviderScope());
+    registry.registerFixForRule(MissingProviderScope.code, AddProviderScope.new);
+
+    registry.registerWarningRule(NotifierBuild());
+    registry.registerFixForRule(NotifierBuild.code, AddBuildMethodFix.new);
+
+    registry.registerWarningRule(NotifierExtends());
+    registry.registerFixForRule(NotifierExtends.code, NotifierExtendsFix.new);
+
+    registry.registerWarningRule(OnlyUseKeepAliveInsideKeepAlive());
+    registry.registerWarningRule(ProtectedNotifierProperties());
+
+    registry.registerWarningRule(ProviderDependencies());
+    registry.registerFixForRule(ProviderDependencies.code, ProviderDependenciesFix.new);
+
+    registry.registerWarningRule(ProviderParameters());
+    registry.registerWarningRule(RiverpodSyntaxError());
+    registry.registerWarningRule(ScopedProvidersShouldSpecifyDependencies());
+    registry.registerWarningRule(UnsupportedProviderValue());
 
     registry.registerAssist(WrapWithConsumer.new);
     registry.registerAssist(WrapWithProviderScope.new);
@@ -50,38 +90,4 @@ class _RiverpodPlugin extends Plugin {
     registry.registerAssist(ConvertToConsumerStatefulWidget.new);
     registry.registerAssist(ConvertToStatefulWidget.new);
   }
-
-  // @override
-  // List<RiverpodLintRule> getLintRules(CustomLintConfigs configs) => [
-  //   const AsyncValueNullablePattern(),
-  //   const AvoidBuildContextInProviders(),
-  //   const OnlyUseKeepAliveInsideKeepAlive(),
-  //   const AvoidPublicNotifierProperties(),
-  //   const AvoidRefInsideStateDispose(),
-  //   const FunctionalRef(),
-  //   const MissingProviderScope(),
-  //   const NotifierBuild(),
-  //   const NotifierExtends(),
-  //   const ProtectedNotifierProperties(),
-  //   const ProviderDependencies(),
-  //   const ProviderParameters(),
-  //   const RiverpodSyntaxError(),
-  //   const ScopedProvidersShouldSpecifyDependencies(),
-  //   const UnsupportedProviderValue(),
-  // ];
-
-  // @override
-  // List<Assist> getAssists() => [
-  //   WrapWithConsumer(),
-  //   WrapWithProviderScope(),
-  //   ...StatelessBaseWidgetType.values.map(
-  //     (targetWidget) =>
-  //         ConvertToStatelessBaseWidget(targetWidget: targetWidget),
-  //   ),
-  //   ...StatefulBaseWidgetType.values.map(
-  //     (targetWidget) => ConvertToStatefulBaseWidget(targetWidget: targetWidget),
-  //   ),
-  //   FunctionalToClassBasedProvider(),
-  //   ClassBasedToFunctionalProvider(),
-  // ];
 }

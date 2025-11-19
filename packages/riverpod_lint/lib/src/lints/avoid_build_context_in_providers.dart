@@ -2,13 +2,11 @@ import 'package:analyzer/analysis_rule/analysis_rule.dart';
 import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
-import 'package:analyzer/error/listener.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
-import '../riverpod_custom_lint.dart';
-
-const TypeChecker buildContextType = TypeChecker.fromName(
+const buildContextType = TypeChecker.fromName(
   'BuildContext',
   packageName: 'flutter',
 );
@@ -31,44 +29,49 @@ class AvoidBuildContextInProviders extends AnalysisRule {
     RuleContext context,
   ) {
     final visitor = _Visitor(this, context);
-    registry.addMethodDeclaration(this, visitor);
+    registry.addFunctionDeclaration(this, visitor);
+    registry.addClassDeclaration(this, visitor);
+  }
+}
+
+class _Visitor extends SimpleAstVisitor<void> {
+  _Visitor(this.rule, this.context);
+
+  final AnalysisRule rule;
+  final RuleContext context;
+
+  @override
+  void visitFunctionDeclaration(FunctionDeclaration node) {
+    final declaration = node.provider;
+    if (declaration == null) return;
+
+    final parameters = declaration.node.functionExpression.parameters;
+    if (parameters == null) return;
+
+    _emitWarningsForBuildContext(parameters);
   }
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
-    riverpodRegistry(context).addFunctionalProviderDeclaration((declaration) {
-      final parameters = declaration.node.functionExpression.parameters;
-      if (parameters == null) return;
-      _emitWarningsForBuildContext(reporter, parameters);
-    });
+  void visitClassDeclaration(ClassDeclaration node) {
+    final declaration = node.provider;
+    if (declaration == null) return;
 
-    riverpodRegistry(context).addClassBasedProviderDeclaration((declaration) {
-      final methods = declaration.node.members.whereType<MethodDeclaration>();
+    final methods = declaration.node.members.whereType<MethodDeclaration>();
 
-      for (final method in methods) {
-        final parameters = method.parameters;
-        if (parameters == null) continue;
-        _emitWarningsForBuildContext(reporter, parameters);
-      }
-    });
+    for (final method in methods) {
+      final parameters = method.parameters;
+      if (parameters == null) continue;
+      _emitWarningsForBuildContext(parameters);
+    }
   }
 
-  void _emitWarningsForBuildContext(
-    ErrorReporter reporter,
-    FormalParameterList parameters,
-  ) {
+  void _emitWarningsForBuildContext(FormalParameterList parameters) {
     final buildContextParameters = parameters.parameters.where(
       (e) =>
           e.declaredFragment?.element.type != null &&
           buildContextType.isExactlyType(e.declaredFragment!.element.type),
     );
 
-    for (final contextParameter in buildContextParameters) {
-      reporter.atNode(contextParameter, _code);
-    }
+    buildContextParameters.forEach(rule.reportAtNode);
   }
 }
