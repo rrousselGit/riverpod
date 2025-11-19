@@ -4,9 +4,7 @@ import 'package:analyzer_plugin/utilities/assist/assist.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
-import '../../../main.dart';
 import '../../imports.dart';
-import '../../object_utils.dart';
 
 /// Right above "wrap in builder"
 const wrapPriority = 30;

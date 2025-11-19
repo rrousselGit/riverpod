@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:analysis_server_plugin/plugin.dart';
 import 'package:analysis_server_plugin/registry.dart';
@@ -11,12 +10,6 @@ import 'src/lints/visitors.dart';
 
 /// Enables internal lints
 final plugin = _Plugin();
-
-void log(Object obj) {
-  File('/Users/remirousselet/dev/rrousselGit/riverpod/log.txt')
-    ..createSync(recursive: true)
-    ..writeAsStringSync('$obj\n', mode: FileMode.append);
-}
 
 class _Plugin extends Plugin {
   @override

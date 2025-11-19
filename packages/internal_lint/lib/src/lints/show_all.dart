@@ -42,6 +42,7 @@ class ShowAll extends AnalysisRule {
   }
 }
 
+@internal
 extension IsInSrc on RuleContext {
   bool get isInSrc => p.split(definingUnit.file.path).contains('src');
 }

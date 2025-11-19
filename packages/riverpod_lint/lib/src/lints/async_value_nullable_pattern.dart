@@ -18,7 +18,7 @@ class AsyncValueNullablePattern extends AnalysisRule {
     : super(name: code.name, description: code.problemMessage);
 
   static const code = LintCode(
-    'riverpod.async_value_nullable_pattern',
+    'async_value_nullable_pattern',
     'Using AsyncValue(:final value?) on possibly nullable value is unsafe. '
         'Use AsyncValue(:final value, hasValue: true) instead.',
     severity: DiagnosticSeverity.WARNING,
