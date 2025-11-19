@@ -273,7 +273,7 @@ void main() {
           final stack = StackTrace.current;
           final provider = factory.simpleTestProvider<int>(
             (ref, self) => Error.throwWithStackTrace(err, stack),
-            retry: (_, __) => const Duration(seconds: 1),
+            retry: (_, _) => const Duration(seconds: 1),
           );
           final eventController = StreamController<AsyncValue<int>>();
           addTearDown(eventController.close);
@@ -311,7 +311,7 @@ void main() {
           var retryCount = 0;
           final provider = factory.simpleTestProvider<int>(
             (ref, self) => 0,
-            retry: (_, __) {
+            retry: (_, _) {
               retryCount++;
               return const Duration(seconds: 1);
             },
@@ -610,11 +610,11 @@ void main() {
       );
 
       test('performs seamless data > loading > error transition', () async {
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(retry: (_, _) => null);
         var result = Future.value(42);
         final provider = FutureProvider((ref) => result);
 
-        final sub = container.listen(provider.future, (_, __) {});
+        final sub = container.listen(provider.future, (_, _) {});
 
         expect(container.read(provider), const AsyncLoading<int>());
         expect(await sub.read(), 42);
@@ -709,7 +709,7 @@ void main() {
           self.listenSelf(listener.call, onError: onError.call);
           Error.throwWithStackTrace(42, StackTrace.empty);
         });
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(retry: (_, _) => null);
 
         container.listen(provider, (previous, next) {});
 
@@ -771,7 +771,7 @@ void main() {
         final provider = factory.simpleTestProvider<int>(
           (ref, _) => Future.error(0, StackTrace.empty),
         );
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(retry: (_, _) => null);
         final listener = Listener<AsyncValue<int>>();
 
         container.listen(provider, listener.call, fireImmediately: true);
@@ -799,7 +799,7 @@ void main() {
       final provider = factory.provider<int>(
         () => Error.throwWithStackTrace(0, StackTrace.empty),
       );
-      final container = ProviderContainer.test(retry: (_, __) => null);
+      final container = ProviderContainer.test(retry: (_, _) => null);
       final listener = Listener<AsyncValue<int>>();
 
       container.listen(provider, listener.call, fireImmediately: true);
@@ -837,7 +837,7 @@ void main() {
         final provider = factory.simpleTestProvider<int>(
           (ref, _) => Error.throwWithStackTrace(42, StackTrace.empty),
         );
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(retry: (_, _) => null);
         final listener = Listener<AsyncValue<int>>();
 
         container.listen(provider, listener.call, fireImmediately: true);
@@ -895,7 +895,7 @@ void main() {
     test(
       'stops listening to the previous future error when the provider rebuilds',
       () async {
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(retry: (_, _) => null);
         final dep = StateProvider((ref) => 0);
         final completers = {0: Completer<int>.sync(), 1: Completer<int>.sync()};
         final provider = factory.simpleTestProvider<int>(
@@ -1230,7 +1230,7 @@ void main() {
       });
 
       test('can specify onError to handle error scenario', () async {
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(retry: (_, _) => null);
         final provider = factory.simpleTestProvider<int>(
           (ref, _) => Error.throwWithStackTrace(42, StackTrace.empty),
         );
@@ -1286,7 +1286,7 @@ void main() {
       test(
         'executes immediately with current state if an error is available',
         () async {
-          final container = ProviderContainer.test(retry: (_, __) => null);
+          final container = ProviderContainer.test(retry: (_, _) => null);
           final provider = factory.simpleTestProvider<int>(
             (ref, _) => Error.throwWithStackTrace(42, StackTrace.empty),
           );

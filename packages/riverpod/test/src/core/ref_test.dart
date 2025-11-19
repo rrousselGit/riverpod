@@ -116,7 +116,7 @@ void main() {
           throwsA(isA<UnmountedRefException>()),
         );
         expect(
-          () => ref.listen(another, (_, __) {}),
+          () => ref.listen(another, (_, _) {}),
           throwsA(isA<UnmountedRefException>()),
         );
         expect(
@@ -243,7 +243,7 @@ void main() {
       );
       expect(
         () => container.read(
-          provider.select((_) => ref.listen(another, (_, __) {})),
+          provider.select((_) => ref.listen(another, (_, _) {})),
         ),
         throwsProviderException(isA<AssertionError>()),
       );
@@ -3154,7 +3154,7 @@ void main() {
           final container = ProviderContainer();
           addTearDown(container.dispose);
 
-          container.listen(provider, (_, __) {});
+          container.listen(provider, (_, _) {});
 
           verifyZeroInteractions(onDispose);
           verifyZeroInteractions(onDispose2);
@@ -3184,7 +3184,7 @@ void main() {
           final container = ProviderContainer();
           addTearDown(container.dispose);
 
-          container.listen(provider, (_, __) {});
+          container.listen(provider, (_, _) {});
 
           verifyZeroInteractions(onDispose);
 
@@ -3211,7 +3211,7 @@ void main() {
           final container = ProviderContainer();
           addTearDown(container.dispose);
 
-          container.listen(provider, (_, __) {});
+          container.listen(provider, (_, _) {});
           expect(buildCount, 1);
 
           verifyZeroInteractions(onDispose);

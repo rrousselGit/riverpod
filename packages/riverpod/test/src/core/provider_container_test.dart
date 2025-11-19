@@ -1128,24 +1128,24 @@ void main() {
           final c = Provider((_) => 0, name: 'c', dependencies: const []);
           final cOverride = c.overrideWithValue(3);
           final aFamily = Provider.family<int, int>(
-            (_, __) => 0,
+            (_, _) => 0,
             name: 'aFamily',
           );
-          final aFamilyOverride = aFamily.overrideWith((_, __) => 1);
+          final aFamilyOverride = aFamily.overrideWith((_, _) => 1);
           final aValueOverride = aFamily(1).overrideWith((_) => 2);
           final bFamily = Provider.family<int, int>(
-            (_, __) => 0,
+            (_, _) => 0,
             name: 'bFamily',
             dependencies: const [],
           );
-          final bFamilyOverride = bFamily.overrideWith((_, __) => 2);
+          final bFamilyOverride = bFamily.overrideWith((_, _) => 2);
           final bValueOverride = bFamily(2).overrideWith((_) => 3);
           final cFamily = Provider.family<int, int>(
-            (_, __) => 0,
+            (_, _) => 0,
             name: 'cFamily',
             dependencies: const [],
           );
-          final cFamilyOverride = cFamily.overrideWith((_, __) => 3);
+          final cFamilyOverride = cFamily.overrideWith((_, _) => 3);
           final cValueOverride = cFamily(3).overrideWith((_) => 4);
 
           final root = ProviderContainer.test(
@@ -2543,7 +2543,7 @@ void main() {
           throw Error();
         });
 
-        final sub = container.listen(provider, (_, __) {});
+        final sub = container.listen(provider, (_, _) {});
 
         expect(sub, isA<ProviderSubscription<Object?>>());
       });

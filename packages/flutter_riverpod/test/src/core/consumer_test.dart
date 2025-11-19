@@ -97,9 +97,9 @@ void main() {
             children: [
               Consumer(
                 builder: (c, ref, _) {
-                  ref.listen(expectActive, (_, __) {});
+                  ref.listen(expectActive, (_, _) {});
                   ref.watch(expectActive);
-                  ref.listenManual(expectActive, (_, __) {});
+                  ref.listenManual(expectActive, (_, _) {});
 
                   return const SizedBox();
                 },
@@ -108,9 +108,9 @@ void main() {
                 enabled: false,
                 child: Consumer(
                   builder: (c, ref, _) {
-                    ref.listen(expectActive, (_, __) {});
+                    ref.listen(expectActive, (_, _) {});
                     ref.watch(expectPaused);
-                    ref.listenManual(expectActive, (_, __) {});
+                    ref.listenManual(expectActive, (_, _) {});
 
                     return const SizedBox();
                   },
@@ -228,8 +228,8 @@ void main() {
     expect(() => ref.watch(provider), throwsDisposeError);
     expect(() => ref.refresh(provider), throwsDisposeError);
     expect(() => ref.invalidate(provider), throwsDisposeError);
-    expect(() => ref.listen(provider, (_, __) {}), throwsDisposeError);
-    expect(() => ref.listenManual(provider, (_, __) {}), throwsDisposeError);
+    expect(() => ref.listen(provider, (_, _) {}), throwsDisposeError);
+    expect(() => ref.listenManual(provider, (_, _) {}), throwsDisposeError);
   });
 
   group('WidgetRef.exists', () {

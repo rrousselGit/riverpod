@@ -16,7 +16,7 @@ void main() {
       container.read(provider);
       final sub = container.listen(
         provider.select((value) => throw StateError('Foo')),
-        (_, __) {},
+        (_, _) {},
         onError: (err, stack) => errors.add(err),
       );
 

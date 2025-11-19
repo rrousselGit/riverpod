@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_final_locals
+// ignore_for_file: omit_obvious_local_variable_types, prefer_final_locals
 
 import 'dart:async';
 
@@ -207,7 +207,7 @@ void main() {
           (ref, self) => 0,
           storage: DelegatingStorage(
             read: (_) => throw StateError('read'),
-            write: (_, __, ___) => throw StateError('write'),
+            write: (_, _, _) => throw StateError('write'),
             delete: (_) => throw StateError('delete'),
           ),
         );
@@ -906,7 +906,7 @@ final class DelegatingStorage<KeyT, EncodedT> extends Storage<KeyT, EncodedT> {
     write,
     FutureOr<void> Function(KeyT key)? delete,
   }) : _read = read,
-       _write = write ?? ((_, __, ___) {}),
+       _write = write ?? ((_, _, _) {}),
        _delete = delete ?? ((_) {});
 
   final FutureOr<PersistedData<EncodedT>?> Function(KeyT key) _read;

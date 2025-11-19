@@ -183,7 +183,7 @@ void main() {
     );
   });
 
-  test('Regression for Future<void> providers', () async {
+  test('Regression for Future<void> providers', () {
     // https://github.com/rrousselGit/riverpod/issues/4282
     final container = ProviderContainer.test();
 

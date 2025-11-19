@@ -626,7 +626,7 @@ final class BProvider extends $NotifierProvider<B, int> {
   }
 }
 
-String _$bHash() => r'44288285e9c28f846d609ba892520f577ecf7867';
+String _$bHash() => r'741d6fd19e802d37fc20ec16e9fd3d8a2030b613';
 
 abstract class _$B extends $Notifier<int> {
   int build();
@@ -677,7 +677,7 @@ final class B2Provider extends $NotifierProvider<B2, int> {
   }
 }
 
-String _$b2Hash() => r'292925c285c6975ed6585d541c5a9ae18977d73c';
+String _$b2Hash() => r'38dae6c94ee1643194279c4e944effcc7e7696b5';
 
 abstract class _$B2 extends $Notifier<int> {
   int build();

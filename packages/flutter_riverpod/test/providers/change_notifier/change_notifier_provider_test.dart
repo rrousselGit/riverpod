@@ -1,4 +1,4 @@
-// ignore_for_file: invalid_use_of_internal_member, avoid_types_on_closure_parameters, deprecated_member_use_from_same_package, deprecated_member_use
+// ignore_for_file: invalid_use_of_internal_member, avoid_types_on_closure_parameters
 
 import 'dart:async';
 
@@ -256,7 +256,7 @@ void main() {
     addTearDown(container.dispose);
 
     var callCount = 0;
-    final sub = container.listen(provider.notifier, (_, __) => callCount++);
+    final sub = container.listen(provider.notifier, (_, _) => callCount++);
 
     expect(sub.read(), notifier);
     expect(callCount, 0);
@@ -343,13 +343,13 @@ class TestNotifier extends ChangeNotifier {
 
   final String? debugLabel;
 
-  bool mounted = true;
+  // ignore: type_annotate_public_apis, false positive
+  var mounted = true;
 
   @override
-  // ignore: unnecessary_overrides
   bool get hasListeners => super.hasListeners;
 
-  int _count = 0;
+  var _count = 0;
   int get count => _count;
   set count(int count) {
     _count = count;

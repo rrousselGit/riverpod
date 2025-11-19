@@ -106,7 +106,6 @@ void main() {
         fourth: false,
         fifth: const ['x42'],
       );
-      // ignore: invalid_use_of_internal_member //
       final ProviderBase<String> futureProvider = provider;
 
       final String result = container.read(

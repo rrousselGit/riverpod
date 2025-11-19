@@ -44,7 +44,7 @@ void main() async {
     ...familyFields,
   ];
 
-  test('Includes dartdoc', () async {
+  test('Includes dartdoc', () {
     for (final target in annotationTargets) {
       expect(
         target.doc,

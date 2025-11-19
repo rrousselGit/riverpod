@@ -80,7 +80,6 @@ extension<InT, StateT, ValueT>
 
     late final ProviderSubscription<InT> sub;
     late final context = ProviderTransformerContext<InT, ValueT>._(
-      // ignore: unused_result, false positive
       sourceState: switch (sub.readSafe()) {
         $ResultData(:final value) => AsyncData(value),
         $ResultError(:final error, :final stackTrace) => AsyncError(

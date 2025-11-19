@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable
+// ignore_for_file: unnecessary_async
 
 import 'package:http/http.dart' as http;
 import 'package:riverpod/riverpod.dart';

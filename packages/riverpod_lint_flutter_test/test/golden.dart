@@ -9,10 +9,10 @@ import 'package:custom_lint_core/custom_lint_core.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:path/path.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
-import 'package:test/test.dart';
 import 'package:riverpod_lint/src/riverpod_custom_lint.dart';
+import 'package:test/test.dart';
 
-final _goldenWrite = bool.parse(Platform.environment[r'goldens'] ?? 'false');
+final _goldenWrite = bool.parse(Platform.environment['goldens'] ?? 'false');
 
 /// Expects that a value matches a golden file.
 @visibleForTesting

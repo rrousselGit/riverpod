@@ -24,7 +24,7 @@ import 'package:meta/meta.dart';
 ///  * [kDebugMode], which is true in debug builds.
 ///  * [kProfileMode], which is true in profile builds.
 @internal
-const bool kReleaseMode = bool.fromEnvironment('dart.vm.product');
+const kReleaseMode = bool.fromEnvironment('dart.vm.product');
 
 /// A constant that is true if the application was compiled in profile mode.
 ///
@@ -40,7 +40,7 @@ const bool kReleaseMode = bool.fromEnvironment('dart.vm.product');
 ///  * [kDebugMode], which is true in debug builds.
 ///  * [kReleaseMode], which is true in release builds.
 @internal
-const bool kProfileMode = bool.fromEnvironment('dart.vm.profile');
+const kProfileMode = bool.fromEnvironment('dart.vm.profile');
 
 /// A constant that is true if the application was compiled in debug mode.
 ///
