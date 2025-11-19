@@ -17,4 +17,4 @@ formatter:
 
 plugins:
   riverpod_lint:
-    path: /Users/ext-remi.rousselet/dev/rrousselGit/riverpod/packages/riverpod_lint
+    path: /Users/remirousselet/dev/rrousselGit/riverpod/packages/riverpod_lint

@@ -11,7 +11,7 @@ dependencies:
   analyzer: ^8.0.0
   analyzer_plugin: ^0.13.10
   riverpod_analyzer_utils:
-    path: /Users/ext-remi.rousselet/dev/rrousselGit/riverpod/packages/riverpod_analyzer_utils
+    path: /Users/remirousselet/dev/rrousselGit/riverpod/packages/riverpod_analyzer_utils
   meta: ^1.15.0
   path: ^1.8.1
   pubspec_parse: ^1.5.0

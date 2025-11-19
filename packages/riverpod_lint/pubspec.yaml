@@ -27,7 +27,7 @@ dependencies:
   path: ^1.8.1
   riverpod: 3.0.3
   riverpod_analyzer_utils:
-    path: /Users/ext-remi.rousselet/dev/rrousselGit/riverpod/packages/riverpod_analyzer_utils
+    path: /Users/remirousselet/dev/rrousselGit/riverpod/packages/riverpod_analyzer_utils
   source_span: ^1.8.0
   yaml: ^3.1.1
 

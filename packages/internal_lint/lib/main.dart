@@ -13,7 +13,7 @@ import 'src/lints/visitors.dart';
 final plugin = _Plugin();
 
 void log(Object obj) {
-  File('/Users/ext-remi.rousselet/dev/rrousselGit/riverpod/log.txt')
+  File('/Users/remirousselet/dev/rrousselGit/riverpod/log.txt')
     ..createSync(recursive: true)
     ..writeAsStringSync('$obj\n', mode: FileMode.append);
 }
