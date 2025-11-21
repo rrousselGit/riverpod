@@ -285,8 +285,7 @@ Future<void> _verifyGoldensMatchProducers(
             _encodeProducerOutput(
               sourceFile: file,
               source: entry.key,
-              index: e.$1,
-              groupName: groupName,
+              goldenFile: goldenFile,
               producerId: producerId,
               offsets: entry.value.map((e) => e.offset),
             ),
@@ -335,14 +334,11 @@ Future<void> _verifyGoldensMatchProducers(
 
 String _encodeProducerOutput({
   required File sourceFile,
+  required File goldenFile,
   required String source,
-  required int index,
-  required String groupName,
   required String producerId,
   required Iterable<int> offsets,
 }) {
-  final baseName = p.basenameWithoutExtension(sourceFile.path);
-
   final offsetsForKind = <String, List<int>>{};
   for (final offset in offsets) {
     final offsets = offsetsForKind[producerId] ??= [];
@@ -356,8 +352,8 @@ String _encodeProducerOutput({
 
   var content = source;
   content = content.replaceAll(
-    '$baseName',
-    '$baseName${index}.$groupName',
+    '${p.basenameWithoutExtension(sourceFile.path)}',
+    '${p.basenameWithoutExtension(goldenFile.path)}',
   );
 
   // Format the content using dart_style
@@ -403,8 +399,7 @@ Future<void> _writeProducerResultToFile(
           _encodeProducerOutput(
             sourceFile: sourceFile,
             source: entry.key,
-            index: index,
-            groupName: groupName,
+            goldenFile: outputFile,
             producerId: producerId,
             offsets: entry.value.map((e) => e.offset),
           ),
