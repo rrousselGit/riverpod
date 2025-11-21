@@ -18,7 +18,7 @@ class ClassBasedToFunctionalProvider extends ResolvedCorrectionProducer {
 
   @override
   AssistKind get assistKind => const AssistKind(
-    'riverpod.class_based_to_functional_provider',
+    'class_based_to_functional_provider',
     convertPriority,
     'Convert to functional provider',
   );

@@ -85,7 +85,7 @@ class FunctionalRefFix extends ResolvedCorrectionProducer {
   FunctionalRefFix({required super.context});
 
   static const fix = FixKind(
-    'riverpod.functional_ref',
+    'functional_ref',
     DartFixKindPriority.standard,
     'Fix functional ref parameter',
   );

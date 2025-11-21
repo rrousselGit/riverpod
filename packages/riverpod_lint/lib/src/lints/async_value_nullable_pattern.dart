@@ -97,7 +97,7 @@ class RemoveNullCheckPatternAndAddHasDataCheck
   RemoveNullCheckPatternAndAddHasDataCheck({required super.context});
 
   static const fix = FixKind(
-    'riverpod.remove_null_check_pattern_and_add_has_data_check',
+    'remove_null_check_pattern_and_add_has_data_check',
     DartFixKindPriority.standard,
     'Replace null check with hasData:true pattern',
   );

@@ -18,7 +18,7 @@ class WrapWithConsumer extends ResolvedCorrectionProducer {
 
   @override
   AssistKind get assistKind => const AssistKind(
-    'riverpod.wrap_with_consumer',
+    'wrap_with_consumer',
     wrapPriority,
     'Wrap with Consumer',
   );

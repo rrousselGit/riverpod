@@ -322,7 +322,7 @@ class ProviderDependenciesFix extends ResolvedCorrectionProducer {
   ProviderDependenciesFix({required super.context});
 
   static const fix = FixKind(
-    'riverpod.provider_dependencies',
+    'provider_dependencies',
     DartFixKindPriority.standard,
     'Fix dependencies',
   );

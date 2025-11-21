@@ -70,7 +70,7 @@ class AddProviderScope extends ResolvedCorrectionProducer {
   AddProviderScope({required super.context});
 
   static const fix = FixKind(
-    'riverpod.missing_provider_scope',
+    'missing_provider_scope',
     DartFixKindPriority.standard,
     'Add ProviderScope',
   );

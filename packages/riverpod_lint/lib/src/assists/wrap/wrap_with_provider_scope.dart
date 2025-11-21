@@ -16,7 +16,7 @@ class WrapWithProviderScope extends ResolvedCorrectionProducer {
 
   @override
   AssistKind get assistKind => const AssistKind(
-    'riverpod.wrap_with_provider_scope',
+    'wrap_with_provider_scope',
     wrapPriority - 1,
     'Wrap with ProviderScope',
   );

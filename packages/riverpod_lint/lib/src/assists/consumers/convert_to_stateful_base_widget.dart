@@ -32,7 +32,7 @@ abstract class ConvertToStatefulBaseWidget extends ResolvedCorrectionProducer {
 
   @override
   AssistKind get assistKind => AssistKind(
-    'riverpod.convert_to_${targetWidget.name}',
+    'convert_to_${targetWidget.name}',
     targetWidget.priority,
     'Convert to ${targetWidget.widgetAssistName}',
   );

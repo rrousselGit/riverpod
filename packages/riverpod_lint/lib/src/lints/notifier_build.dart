@@ -75,7 +75,7 @@ class AddBuildMethodFix extends ResolvedCorrectionProducer {
   AddBuildMethodFix({required super.context});
 
   static const fix = FixKind(
-    'riverpod.notifier_build',
+    'notifier_build',
     DartFixKindPriority.standard,
     'Add build method',
   );

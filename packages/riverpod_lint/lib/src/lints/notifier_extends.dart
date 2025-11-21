@@ -123,7 +123,7 @@ class NotifierExtendsFix extends ResolvedCorrectionProducer {
   NotifierExtendsFix({required super.context});
 
   static const fix = FixKind(
-    'riverpod.notifier_extends',
+    'notifier_extends',
     DartFixKindPriority.standard,
     'Extend generated class',
   );
