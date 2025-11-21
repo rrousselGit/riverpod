@@ -32,6 +32,9 @@ class WrapWithConsumer extends ResolvedCorrectionProducer {
         node.ancestors.whereType<InstanceCreationExpression>().firstOrNull;
     if (instanceCreationExpr == null) return;
 
+    final type = instanceCreationExpr.staticType;
+    if (type == null || !widgetType.isAssignableFromType(type)) return;
+
     await builder.addDartFileEdit(file, (builder) {
       final consumer = builder.importConsumer();
 
