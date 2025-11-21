@@ -20,7 +20,8 @@ class ExampleFamily extends _$ExampleFamily {
 }
 
 @riverpod
-class Generic<A, /* comment */ B> extends _$Generic<A, B> {
+class Generic<FirstT, /* comment */ SecondT>
+    extends _$Generic<FirstT, SecondT> {
   @override
   int build() => 0;
 }

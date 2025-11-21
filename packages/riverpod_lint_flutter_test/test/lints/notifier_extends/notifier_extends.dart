@@ -18,24 +18,24 @@ class _PrivateClass extends _$PrivateClass {
 }
 
 @riverpod
-class Generics<A extends num, B> extends _$Generics<A, B> {
+class Generics<FirstT extends num, SecondT> extends _$Generics<FirstT, SecondT> {
   int build() => 0;
 }
 
 @riverpod
 // ignore: riverpod_lint/notifier_extends
-class NoGenerics<A extends num, B> extends _$NoGenerics {
+class NoGenerics<FirstT extends num, SecondT> extends _$NoGenerics {
   int build() => 0;
 }
 
 @riverpod
 // ignore: riverpod_lint/notifier_extends
-class MissingGenerics<A, B> extends _$MissingGenerics<A> {
+class MissingGenerics<FirstT, SecondT> extends _$MissingGenerics<FirstT> {
   int build() => 0;
 }
 
 @riverpod
 // ignore: riverpod_lint/notifier_extends
-class WrongOrder<A, B> extends _$WrongOrder<B, A> {
+class WrongOrder<FirstT, SecondT> extends _$WrongOrder<SecondT, FirstT> {
   int build() => 0;
 }

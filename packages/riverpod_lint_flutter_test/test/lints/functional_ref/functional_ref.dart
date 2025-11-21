@@ -11,7 +11,7 @@ int nameless(
 }
 
 @riverpod
-int generics<A extends num, B>(Ref ref) => 0;
+int generics<FirstT extends num, SecondT>(Ref ref) => 0;
 
 @riverpod
 int valid(Ref ref) => 0;

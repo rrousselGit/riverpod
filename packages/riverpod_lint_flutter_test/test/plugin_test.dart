@@ -424,11 +424,11 @@ Stream<File> _findFilesToAnalyze() {
       );
 }
 
-class _VisitAllNodes<T> extends GeneralizingAstVisitor<void> {
+class _VisitAllNodes<AccumulatedT> extends GeneralizingAstVisitor<void> {
   _VisitAllNodes(this.cb);
-  final T Function(AstNode node) cb;
+  final AccumulatedT Function(AstNode node) cb;
 
-  final _result = <T>[];
+  final _result = <AccumulatedT>[];
 
   @override
   void visitNode(AstNode node) {
