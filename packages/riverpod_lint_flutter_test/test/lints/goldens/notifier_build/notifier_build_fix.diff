@@ -3,7 +3,7 @@ Priority: 80
 Diff for file `test/lints/notifier_build.dart:12`:
 ```
 @riverpod
-// expect_lint: notifier_build
+// ignore: riverpod_lint/notifier_build
 - class ExampleProvider1 extends _$ExampleProvider1 {}
 + class ExampleProvider1 extends _$ExampleProvider1 {
 +   @override

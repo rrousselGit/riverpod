@@ -8,8 +8,6 @@ import 'package:analyzer_plugin/protocol/protocol_generated.dart';
 import 'package:custom_lint_core/custom_lint_core.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:path/path.dart';
-import 'package:pubspec_parse/pubspec_parse.dart';
-import 'package:riverpod_lint/src/riverpod_custom_lint.dart';
 import 'package:test/test.dart';
 
 final _goldenWrite = bool.parse(Platform.environment['goldens'] ?? 'false');
@@ -172,19 +170,6 @@ class OffsetHelper {
       final actualCursorStart = cursor.start - 2 * index;
       yield SourceRange(start + actualCursorStart, 0);
     }
-  }
-
-  Future<Iterable<PrioritizedSourceChange>> runAssist(
-    RiverpodAssist assist,
-    ResolvedUnitResult result,
-    Iterable<SourceRange> cursorRanges, {
-    Pubspec? pubspec,
-  }) async {
-    return Future.wait(
-      cursorRanges.map(
-        (range) => assist.testRun(result, range, pubspec: pubspec),
-      ),
-    ).then((value) => value.expand((e) => e));
   }
 
   void debugOffset(List<int> offsets) {

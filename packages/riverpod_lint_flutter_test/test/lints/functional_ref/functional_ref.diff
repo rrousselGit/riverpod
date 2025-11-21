@@ -3,7 +3,7 @@ Priority: 90
 Diff for file `test/lints/functional_ref/functional_ref.dart:8`:
 ```
 int nameless(
-  // expect_lint: functional_ref
+  // ignore: riverpod_lint/functional_ref
 -   ref,
 +   NamelessRef ref,
 ) {
@@ -15,7 +15,7 @@ Priority: 90
 Diff for file `test/lints/functional_ref/functional_ref.dart:18`:
 ```
 @riverpod
-// expect_lint: functional_ref
+// ignore: riverpod_lint/functional_ref
 - int noGenerics<A extends num, B>(NoGenericsRef ref) => 0;
 + int noGenerics<A extends num, B>(NoGenericsRef<A, B> ref) => 0;
 
@@ -27,7 +27,7 @@ Priority: 90
 Diff for file `test/lints/functional_ref/functional_ref.dart:22`:
 ```
 @riverpod
-// expect_lint: functional_ref
+// ignore: riverpod_lint/functional_ref
 - int missingGenerics<A, B>(MissingGenericsRef ref) => 0;
 + int missingGenerics<A, B>(MissingGenericsRef<A, B> ref) => 0;
 
@@ -39,7 +39,7 @@ Priority: 90
 Diff for file `test/lints/functional_ref/functional_ref.dart:26`:
 ```
 @riverpod
-// expect_lint: functional_ref
+// ignore: riverpod_lint/functional_ref
 - int wrongOrder<B, A>(WrongOrderRef ref) => 0;
 + int wrongOrder<B, A>(WrongOrderRef<B, A> ref) => 0;
 ```

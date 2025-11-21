@@ -4,7 +4,7 @@ part 'functional_ref.g.dart';
 
 @riverpod
 int nameless(
-  // expect_lint: functional_ref
+  // ignore: riverpod_lint/functional_ref
   ref,
 ) {
   return 0;

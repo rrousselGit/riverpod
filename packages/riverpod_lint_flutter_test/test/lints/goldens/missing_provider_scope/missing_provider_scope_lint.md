@@ -5,7 +5,7 @@ test/lints/missing_provider_scope.dart:6:3
 
 ```dart
 void main() {
-  // expect_lint: missing_provider_scope
+  // ignore: riverpod_lint/missing_provider_scope
   >>>runApp<<<(
     MyApp(),
   );
@@ -20,7 +20,7 @@ test/lints/missing_provider_scope.dart:20:3
 
 ```dart
 void definitelyNotAMain() {
-  // expect_lint: missing_provider_scope
+  // ignore: riverpod_lint/missing_provider_scope
   >>>runApp<<<(
     MyApp(),
   );

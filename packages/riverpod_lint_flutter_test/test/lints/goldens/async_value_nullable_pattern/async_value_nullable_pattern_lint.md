@@ -5,7 +5,7 @@ test/lints/async_value_nullable_pattern.dart:8:8
 
 ```dart
     case AsyncValue<int?>(
-      // expect_lint: async_value_nullable_pattern
+      // ignore: riverpod_lint/async_value_nullable_pattern
       :>>>final value?<<<,
     ):
       print(value);
@@ -20,7 +20,7 @@ test/lints/async_value_nullable_pattern.dart:32:8
 
 ```dart
     case AsyncError<int?>(
-      // expect_lint: async_value_nullable_pattern
+      // ignore: riverpod_lint/async_value_nullable_pattern
       :>>>final value?<<<,
     ):
       print(value);
@@ -35,7 +35,7 @@ test/lints/async_value_nullable_pattern.dart:37:8
 
 ```dart
     case AsyncLoading<int?>(
-      // expect_lint: async_value_nullable_pattern
+      // ignore: riverpod_lint/async_value_nullable_pattern
       :>>>final value?<<<,
     ):
       print(value);
@@ -50,7 +50,7 @@ test/lints/async_value_nullable_pattern.dart:62:25
 
 ```dart
   switch (obj) {
-    // expect_lint: async_value_nullable_pattern
+    // ignore: riverpod_lint/async_value_nullable_pattern
     case AsyncValue<T>(:>>>final value?<<<):
       print(value);
   }
@@ -65,7 +65,7 @@ test/lints/async_value_nullable_pattern.dart:77:25
 
 ```dart
   switch (obj) {
-    // expect_lint: async_value_nullable_pattern
+    // ignore: riverpod_lint/async_value_nullable_pattern
     case AsyncValue<T>(:>>>final value?<<<):
       print(value);
   }

@@ -3,7 +3,7 @@ Priority: 100
 Diff for file `test/lints/async_value_nullable_pattern.dart:8`:
 ```
     case AsyncValue<int?>(
-      // expect_lint: async_value_nullable_pattern
+      // ignore: riverpod_lint/async_value_nullable_pattern
 -       :final value?,
 +       :final value, hasValue: true,
     ):
@@ -15,7 +15,7 @@ Priority: 100
 Diff for file `test/lints/async_value_nullable_pattern.dart:32`:
 ```
     case AsyncError<int?>(
-      // expect_lint: async_value_nullable_pattern
+      // ignore: riverpod_lint/async_value_nullable_pattern
 -       :final value?,
 +       :final value, hasValue: true,
     ):
@@ -27,7 +27,7 @@ Priority: 100
 Diff for file `test/lints/async_value_nullable_pattern.dart:37`:
 ```
     case AsyncLoading<int?>(
-      // expect_lint: async_value_nullable_pattern
+      // ignore: riverpod_lint/async_value_nullable_pattern
 -       :final value?,
 +       :final value, hasValue: true,
     ):
@@ -39,7 +39,7 @@ Priority: 100
 Diff for file `test/lints/async_value_nullable_pattern.dart:62`:
 ```
   switch (obj) {
-    // expect_lint: async_value_nullable_pattern
+    // ignore: riverpod_lint/async_value_nullable_pattern
 -     case AsyncValue<T>(:final value?):
 +     case AsyncValue<T>(:final value, hasValue: true):
       print(value);
@@ -51,7 +51,7 @@ Priority: 100
 Diff for file `test/lints/async_value_nullable_pattern.dart:77`:
 ```
   switch (obj) {
-    // expect_lint: async_value_nullable_pattern
+    // ignore: riverpod_lint/async_value_nullable_pattern
 -     case AsyncValue<T>(:final value?):
 +     case AsyncValue<T>(:final value, hasValue: true):
       print(value);

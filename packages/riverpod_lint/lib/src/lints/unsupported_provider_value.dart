@@ -1,8 +1,10 @@
-import 'package:analyzer/error/listener.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
-
-import '../riverpod_custom_lint.dart';
 
 extension on ClassBasedProviderDeclaration {
   /// Returns whether the value exposed by the provider is the newly created
@@ -13,60 +15,76 @@ extension on ClassBasedProviderDeclaration {
   }
 }
 
-class UnsupportedProviderValue extends RiverpodLintRule {
-  const UnsupportedProviderValue() : super(code: _code);
+class UnsupportedProviderValue extends AnalysisRule {
+  UnsupportedProviderValue()
+    : super(name: code.name, description: code.problemMessage);
 
-  static const _code = LintCode(
-    name: 'unsupported_provider_value',
-    problemMessage:
-        'The riverpod_generator package does not support {0} values.',
-    correctionMessage:
-        'If using {0} even though riverpod_generator does not support it, '
-        'you can wrap the type in "Raw" to silence the warning. For example by returning Raw<{0}>.',
+  static const code = LintCode(
+    'unsupported_provider_value',
+    'The value returned by the provider is not supported.',
+    correctionMessage: 'Try wrapping the value in a Future or Stream.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
   ) {
-    void checkCreatedType(GeneratorProviderDeclaration declaration) {
-      final valueType = declaration.providerElement.valueTypeNode;
-      if (valueType.isRaw) return;
+    final visitor = _Visitor(this, context);
+    registry.addCompilationUnit(this, visitor);
+  }
+}
 
-      String? invalidValueName;
-      if (notifierBaseType.isAssignableFromType(valueType)) {
-        invalidValueName = 'Notifier';
-      } else if (asyncNotifierBaseType.isAssignableFromType(valueType)) {
-        invalidValueName = 'AsyncNotifier';
-      }
+class _Visitor extends SimpleAstVisitor<void> {
+  _Visitor(this.rule, this.context);
 
-      /// If a provider returns itself, we allow it. This is to enable
-      /// ChangeNotifier-like mutable state.
-      if (invalidValueName != null &&
-          declaration is ClassBasedProviderDeclaration &&
-          declaration.returnsSelf) {
-        return;
-      }
+  final AnalysisRule rule;
+  final RuleContext context;
 
-      if (stateNotifierType.isAssignableFromType(valueType)) {
-        invalidValueName = 'StateNotifier';
-      } else if (changeNotifierType.isAssignableFromType(valueType)) {
-        invalidValueName = 'ChangeNotifier';
-      }
+  @override
+  void visitCompilationUnit(CompilationUnit node) {
+    final registry = RiverpodAstRegistry();
 
-      if (invalidValueName != null) {
-        reporter.atToken(
-          declaration.name,
-          _code,
-          arguments: [invalidValueName],
-        );
-      }
+    registry.addFunctionalProviderDeclaration(checkCreatedType);
+    registry.addClassBasedProviderDeclaration(checkCreatedType);
+
+    registry.run(node);
+  }
+
+  void checkCreatedType(GeneratorProviderDeclaration declaration) {
+    final valueType = declaration.providerElement.valueTypeNode;
+    if (valueType.isRaw) return;
+
+    String? invalidValueName;
+    if (notifierBaseType.isAssignableFromType(valueType)) {
+      invalidValueName = 'Notifier';
+    } else if (asyncNotifierBaseType.isAssignableFromType(valueType)) {
+      invalidValueName = 'AsyncNotifier';
     }
 
-    riverpodRegistry(context)
-      ..addFunctionalProviderDeclaration(checkCreatedType)
-      ..addClassBasedProviderDeclaration(checkCreatedType);
+    /// If a provider returns itself, we allow it. This is to enable
+    /// ChangeNotifier-like mutable state.
+    if (invalidValueName != null &&
+        declaration is ClassBasedProviderDeclaration &&
+        declaration.returnsSelf) {
+      return;
+    }
+
+    if (stateNotifierType.isAssignableFromType(valueType)) {
+      invalidValueName = 'StateNotifier';
+    } else if (changeNotifierType.isAssignableFromType(valueType)) {
+      invalidValueName = 'ChangeNotifier';
+    }
+
+    if (invalidValueName != null) {
+      rule.reportAtToken(
+        declaration.name,
+        arguments: [invalidValueName],
+      );
+    }
   }
 }

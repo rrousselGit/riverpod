@@ -28,7 +28,7 @@ int watchScopedButNoDependencies(Ref ref) {
   return ref.watch(scoped);
 }
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 @riverpod
 int watchGeneratedScopedButNoDependencies(
   Ref ref,
@@ -54,7 +54,7 @@ int watchScopedButEmptyDependencies(Ref ref) {
   return ref.watch(scoped);
 }
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 @Riverpod(dependencies: [])
 int watchGeneratedScopedButEmptyDependencies(
   Ref ref,
@@ -84,7 +84,7 @@ int watchScopedButMissingDependencies(
   return ref.watch(scoped);
 }
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 @Riverpod(dependencies: [dep])
 int watchGeneratedScopedButMissingDependencies(
   Ref ref,
@@ -118,7 +118,7 @@ int watchGeneratedScopedAndContainsDependency(
 @Riverpod(
   dependencies:
   // The dependency is redundant because it is not a scoped provider
-  // expect_lint: provider_dependencies
+  // ignore: riverpod_lint/provider_dependencies
   [
     generatedRoot,
   ],
@@ -134,7 +134,7 @@ int watchGeneratedRootAndContainsDependency(
 @Riverpod(
   dependencies:
   // generatedRoot is extra
-  // expect_lint: provider_dependencies
+  // ignore: riverpod_lint/provider_dependencies
   [
     dep,
     generatedRoot,
@@ -215,15 +215,15 @@ class RootDependenciesClass {
 // Specifying @Dependencies on class members requires specifying them on
 // the class too:
 class MemberDependencies {
-  // expect_lint: provider_dependencies
+  // ignore: riverpod_lint/provider_dependencies
   @Dependencies([dep])
   int build() => 0;
 }
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 @Dependencies([])
 class CanUpdateMultipleDependenciesAtOnce {
-  // expect_lint: provider_dependencies
+  // ignore: riverpod_lint/provider_dependencies
   @Dependencies([])
   int build(WidgetRef ref) {
     ref.watch(depProvider);
@@ -243,11 +243,11 @@ class RiverpodDependencies extends _$RiverpodDependencies {
 }
 
 // Handle identifiers with dependencies
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 @Dependencies([dep])
 void fn() {}
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 void fn2() {
   fn();
 }
@@ -255,7 +255,7 @@ void fn2() {
 @Dependencies([dep])
 void fn3() => fn();
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 @riverpod
 int foo(Ref ref) {
   fn();
@@ -272,7 +272,7 @@ class WidgetDependencies extends StatelessWidget {
   }
 }
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 class WidgetDependencies2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -303,7 +303,7 @@ class _StatefulState extends State<Stateful> {
   }
 }
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 @Dependencies([])
 class Stateful2 extends StatefulWidget {
   const Stateful2({super.key});
@@ -319,7 +319,7 @@ class _Stateful2State extends State<Stateful2> {
   }
 }
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 class FindStateFromClassList extends StatefulWidget {
   const FindStateFromClassList({super.key});
 
@@ -332,7 +332,7 @@ class _Stateful3State extends State<FindStateFromClassList> {
   Widget build(BuildContext context) => WidgetDependencies();
 }
 
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 @riverpod
 int crossFileDependency(Ref ref) {
   ref.watch(anotherNonEmptyScopedProvider);

@@ -118,8 +118,8 @@ class _HookConsumerStatefulState extends ConsumerState<HookConsumerStateful> {
   }
 }
 
-class Consumer extends ConsumerWidget {
-  const Consumer({super.key});
+class MyConsumer extends ConsumerWidget {
+  const MyConsumer({super.key});
 
   @override
   Widget build(

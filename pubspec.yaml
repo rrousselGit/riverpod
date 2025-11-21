@@ -4,12 +4,6 @@ publish_to: none
 environment:
   sdk: ^3.7.0
 
-dev_dependencies:
-  custom_lint:
-  internal_lint:
-    path: packages/internal_lint
-  riverpod_lint:
-
 workspace:
   - benchmarks
   - examples/first_app
