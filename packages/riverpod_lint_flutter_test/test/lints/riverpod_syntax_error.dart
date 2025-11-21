@@ -1,3 +1,7 @@
+@TestFor('riverpod_syntax_error')
+library;
+
+import '../test_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 /// Fake Provider
