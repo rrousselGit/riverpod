@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:analysis_server_plugin/edit/dart/correction_producer.dart';
@@ -370,9 +371,13 @@ String _encodeProducerOutput({
   );
 
   // Format the content using dart_style
-  content = DartFormatter(
-    languageVersion: DartFormatter.latestLanguageVersion,
-  ).format(content);
+  try {
+    content = DartFormatter(
+      languageVersion: DartFormatter.latestLanguageVersion,
+    ).format(content);
+  } catch (err, stack) {
+    Zone.current.handleUncaughtError(err, stack);
+  }
 
   return ('$header\n$content');
 }
