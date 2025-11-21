@@ -378,9 +378,7 @@ Future<void> _writeProducerResultToFile(
   required String producerId,
   required String groupName,
 }) async {
-  final goldens =
-      sourceFile.goldensForFile().toList()
-        ..sort((a, b) => a.path.compareTo(b.path));
+  final goldens = sourceFile.goldensForFile();
 
   try {
     await Future.wait(
@@ -393,8 +391,11 @@ Future<void> _writeProducerResultToFile(
   await Future.wait([
     for (final (index, entry) in uniqueSourceOutputs.entries.indexed)
       Future(() async {
-        final outputFile = goldens[index];
-        assert(outputFile.path.contains('$producerId-$index'));
+        final outputFile = sourceFile.goldenFile(
+          id: producerId,
+          groupName: groupName,
+          index: index,
+        );
 
         await outputFile.create(recursive: true);
 
