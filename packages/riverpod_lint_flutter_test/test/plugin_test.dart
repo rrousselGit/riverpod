@@ -213,25 +213,23 @@ void _testProducers(
 }
 
 extension on File {
-  Directory goldensDir({
+  File goldenFile({
     required String id,
     required String groupName,
+    required int index,
   }) {
     final baseName = p.basenameWithoutExtension(path);
-    return parent.dir(baseName).dir(id);
+
+    return parent.file(
+      '$baseName.$id-$index.$groupName.dart',
+    );
   }
-}
 
-extension on Directory {
-  File goldensFile(
-    File source, {
-    required int index,
-    required String groupName,
-  }) {
-    final baseName = p.basenameWithoutExtension(source.path);
+  String get _goldensPattern => '${p.basenameWithoutExtension(path)}.';
 
-    return file(
-      '$baseName$index.$groupName.dart',
+  Iterable<File> goldensForFile() {
+    return parent.listSync().whereType<File>().where(
+      (e) => e.path.startsWith(_goldensPattern) && e != this,
     );
   }
 }
@@ -268,25 +266,15 @@ Future<void> _verifyGoldensMatchProducers(
   required String producerId,
   required String groupName,
 }) async {
-  final goldensDir = file.goldensDir(
-    id: producerId,
-    groupName: groupName,
-  );
-
-  final goldens =
-      goldensDir
-          .listSync(recursive: true)
-          .whereType<File>()
-          .map((e) => e.path)
-          .toSet();
+  final goldens = file.goldensForFile().map((e) => e.path).toSet();
   final mismatch = <({String? expected, String actual})>[];
   final missing = <({String filePath})>[];
 
   final actualFiles =
       uniqueSourceOutputs.entries.indexed.map(
         (e) {
-          final goldenFile = goldensDir.goldensFile(
-            file,
+          final goldenFile = file.goldenFile(
+            id: producerId,
             index: e.$1,
             groupName: groupName,
           );
@@ -390,13 +378,14 @@ Future<void> _writeProducerResultToFile(
   required String producerId,
   required String groupName,
 }) async {
-  final goldensDir = sourceFile.goldensDir(
-    id: producerId,
-    groupName: groupName,
-  );
+  final goldens =
+      sourceFile.goldensForFile().toList()
+        ..sort((a, b) => a.path.compareTo(b.path));
 
   try {
-    await goldensDir.delete(recursive: true);
+    await Future.wait(
+      goldens.map((e) => e.delete()),
+    );
   } on PathNotFoundException {
     // Silence not-found errors
   }
@@ -404,11 +393,9 @@ Future<void> _writeProducerResultToFile(
   await Future.wait([
     for (final (index, entry) in uniqueSourceOutputs.entries.indexed)
       Future(() async {
-        final outputFile = goldensDir.goldensFile(
-          sourceFile,
-          index: index,
-          groupName: groupName,
-        );
+        final outputFile = goldens[index];
+        assert(outputFile.path.contains('$producerId-$index'));
+
         await outputFile.create(recursive: true);
 
         await outputFile.writeAsString(
