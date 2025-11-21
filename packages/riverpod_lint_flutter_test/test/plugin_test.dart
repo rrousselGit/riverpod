@@ -414,13 +414,28 @@ Stream<File> _findFilesToAnalyze() {
       .where((e) => e is File)
       .cast<File>()
       .where(
-        (e) =>
-            e.path.endsWith('.dart') &&
-            !e.path.endsWith('.g.dart') &&
-            !e.path.endsWith('.freezed.dart') &&
-            !e.path.contains('.assist') &&
-            !e.path.contains('.fix') &&
-            !e.path.contains('.rule'),
+        (e) {
+          switch (e.uri.pathSegments
+              .skipWhile((e) => e != 'riverpod_lint_flutter_test')
+              .skip(1)
+              .toList()) {
+            case ['test', _, _, ...]:
+              return true;
+
+            case _:
+              return false;
+          }
+        },
+      )
+      .where(
+        (e) {
+          return e.path.endsWith('.dart') &&
+              !e.path.endsWith('.g.dart') &&
+              !e.path.endsWith('.freezed.dart') &&
+              !e.path.contains('.assist') &&
+              !e.path.contains('.fix') &&
+              !e.path.contains('.rule');
+        },
       );
 }
 
