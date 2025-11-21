@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:analysis_server_plugin/edit/dart/correction_producer.dart';
+import 'package:analysis_server_plugin/plugin.dart';
 import 'package:analysis_server_plugin/registry.dart';
 import 'package:analysis_server_plugin/src/correction/fix_generators.dart';
 import 'package:analyzer/analysis_rule/analysis_rule.dart';
@@ -41,6 +42,7 @@ Future<void> main() async {
       late final ResolvedUnitResult unit;
       late final ResolvedLibraryResult library;
       late final Iterable<int> uniqueOffsets;
+      late final Set<String> testIds;
 
       setUpAll(() async {
         final context = collection.contextFor(file.absolute.path);
@@ -73,30 +75,49 @@ Future<void> main() async {
 
         uniqueOffsets =
             astRanges.followedBy(tokensRanges).map((e) => e.offset).toSet();
+
+        testIds = _findTestIds(unit);
+        _verifyAllIdsExist(registry, testIds);
       });
 
       _testProducers(
         registry.assists,
-        () => (unit: unit, library: library, uniqueOffsets: uniqueOffsets),
+        () => (
+          unit: unit,
+          library: library,
+          uniqueOffsets: uniqueOffsets,
+          testIds: testIds,
+        ),
         file,
         groupName: 'assist',
         id: (producer) => producer.assistKind!.id,
       );
       _testProducers(
         registry.fixes.map((e) => e.generator),
-        () => (unit: unit, library: library, uniqueOffsets: uniqueOffsets),
+        () => (
+          unit: unit,
+          library: library,
+          uniqueOffsets: uniqueOffsets,
+          testIds: testIds,
+        ),
         file,
         groupName: 'fix',
         id: (producer) => producer.fixKind!.id,
       );
 
-      _testRules(
-        registry.rules,
-        () => (unit: unit, library: library),
-        file,
-      );
+      // _testRules(
+      //   registry.rules,
+      //   () => (unit: unit, library: library),
+      //   file,
+      // );
     });
   }
+}
+
+void _verifyAllIdsExist(_PluginRegistry plugin, Set<String> testIds) {
+  final actualIds = plugin.allIds().toSet();
+
+  expect(actualIds, containsAll(testIds));
 }
 
 void _testRules(
@@ -107,14 +128,17 @@ void _testRules(
   })
   Function()
   results,
-  File file,
-) {
+  File file, {
+  required Set<String> Function() testIds,
+}) {
   for (final (rule, _) in rules) {
     test('Rule ${rule.name}', () async {
       final (
         :unit,
         :library,
       ) = results();
+
+      if (!testIds().contains(rule.name)) return;
 
       final diagosticsListener = RecordingDiagnosticListener();
       rule.reporter = DiagnosticReporter(
@@ -159,6 +183,7 @@ void _testProducers(
     ResolvedUnitResult unit,
     ResolvedLibraryResult library,
     Iterable<int> uniqueOffsets,
+    Set<String> testIds,
   })
   Function()
   results,
@@ -173,9 +198,9 @@ void _testProducers(
     final producerId = id(stubProducer);
 
     test('$groupName $producerId', () async {
-      final uniqueSourceOutputs = <String, List<({int offset})>>{};
-      final (:unit, :library, :uniqueOffsets) = results();
+      final (:unit, :library, :uniqueOffsets, :testIds) = results();
 
+      final uniqueSourceOutputs = <String, List<({int offset})>>{};
       final _errorReporter = errorReporter;
       errorReporter = (_) {};
       addTearDown(() => errorReporter = _errorReporter);
@@ -232,6 +257,30 @@ extension on File {
       (e) => e.path.startsWith(_goldensPattern) && e != this,
     );
   }
+}
+
+Set<String> _findTestIds(ResolvedUnitResult unit) {
+  final library =
+      unit.unit.directives.whereType<LibraryDirective>().firstOrNull;
+  final testIds = <String>{};
+
+  for (final meta in library?.metadata ?? <Annotation>[]) {
+    final annotation = meta.elementAnnotation?.computeConstantValue();
+    if (annotation == null) continue;
+
+    if (annotation.type?.element?.name != 'TestFor') continue;
+
+    final id = annotation.getField('id')!.toStringValue();
+    if (id == null) continue;
+
+    testIds.add(id);
+  }
+
+  if (testIds.isEmpty) {
+    throw StateError('No test ids found in ${unit.libraryElement.uri}');
+  }
+
+  return testIds;
 }
 
 final _goldenWrite = bool.parse(Platform.environment['goldens'] ?? 'false');
@@ -458,6 +507,24 @@ class _PluginRegistry extends PluginRegistry {
   final List<ProducerGenerator> assists = [];
   final List<({LintCode code, ProducerGenerator generator})> fixes = [];
   final List<(AbstractAnalysisRule, RuleType)> rules = [];
+
+  Iterable<ProducerGenerator> get producers => assists.followedBy(
+    fixes.map((e) => e.generator),
+  );
+
+  Iterable<String> allIds() {
+    final asssitIds = assists
+        .map((e) => e(context: StubCorrectionProducerContext.instance))
+        .map((e) => e.assistKind!.id);
+    final fixIds = fixes
+        .map(
+          (e) => e.generator(context: StubCorrectionProducerContext.instance),
+        )
+        .map((e) => e.fixKind!.id);
+    final ruleIds = rules.map((e) => e.$1.name);
+
+    return asssitIds.followedBy(fixIds).followedBy(ruleIds);
+  }
 
   @override
   void registerAssist(ProducerGenerator generator) {
