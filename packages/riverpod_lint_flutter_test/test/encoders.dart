@@ -4,44 +4,7 @@ import 'dart:math';
 import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/source/line_info.dart';
-import 'package:analyzer_plugin/protocol/protocol_generated.dart';
-import 'package:custom_lint_core/custom_lint_core.dart';
-import 'package:matcher/matcher.dart';
 import 'package:path/path.dart' as p;
-import 'package:test/test.dart';
-
-import 'golden.dart';
-
-Matcher matchesPrioritizedSourceChangesGolden(
-  File file, {
-  required String source,
-  required String sourcePath,
-}) {
-  return matchersGoldenFile<Iterable<PrioritizedSourceChange>>(
-    file,
-    isEmpty: (value) => value.isEmpty,
-    encode: (changes) {
-      return encodePrioritizedSourceChanges(
-        changes,
-        sources: {'**': source},
-        relativePath: Directory.current.path,
-      );
-    },
-  );
-}
-
-Matcher matchesAnalysisErrorGoldens(String fileName) {
-  return matchersGoldenFile<Iterable<AnalysisError>>(
-    File(fileName),
-    isEmpty: (value) => value.isEmpty,
-    encode: (changes) {
-      return _encodeAnalysisErrors(
-        changes,
-        relativePath: Directory.current.path,
-      );
-    },
-  );
-}
 
 String _encodeAnalysisErrors(
   Iterable<AnalysisError> errors, {
