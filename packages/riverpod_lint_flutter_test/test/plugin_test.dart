@@ -223,11 +223,12 @@ extension on File {
 }
 
 extension on Directory {
-  File goldensFile({
+  File goldensFile(
+    File source, {
     required int index,
     required String groupName,
   }) {
-    final baseName = p.basenameWithoutExtension(path);
+    final baseName = p.basenameWithoutExtension(source.path);
 
     return file(
       '$baseName$index.$groupName.dart',
@@ -246,7 +247,7 @@ Future<void> _expectGoldensMatchProducers(
   if (_goldenWrite) {
     await _writeProducerResultToFile(
       uniqueSourceOutputs,
-      file,
+      sourceFile: file,
       producerId: producerId,
       groupName: groupName,
     );
@@ -284,16 +285,17 @@ Future<void> _verifyGoldensMatchProducers(
   final actualFiles =
       uniqueSourceOutputs.entries.indexed.map(
         (e) {
-          final file = goldensDir.goldensFile(
+          final goldenFile = goldensDir.goldensFile(
+            file,
             index: e.$1,
             groupName: groupName,
           );
           final entry = e.$2;
 
           return (
-            file,
+            goldenFile,
             _encodeProducerOutput(
-              file: file,
+              sourceFile: file,
               source: entry.key,
               index: e.$1,
               groupName: groupName,
@@ -344,14 +346,14 @@ Future<void> _verifyGoldensMatchProducers(
 }
 
 String _encodeProducerOutput({
-  required File file,
+  required File sourceFile,
   required String source,
   required int index,
   required String groupName,
   required String producerId,
   required Iterable<int> offsets,
 }) {
-  final baseName = p.basenameWithoutExtension(file.path);
+  final baseName = p.basenameWithoutExtension(sourceFile.path);
 
   final offsetsForKind = <String, List<int>>{};
   for (final offset in offsets) {
@@ -383,12 +385,12 @@ String _encodeProducerOutput({
 }
 
 Future<void> _writeProducerResultToFile(
-  Map<String, List<({int offset})>> uniqueSourceOutputs,
-  File file, {
+  Map<String, List<({int offset})>> uniqueSourceOutputs, {
+  required File sourceFile,
   required String producerId,
   required String groupName,
 }) async {
-  final goldensDir = file.goldensDir(
+  final goldensDir = sourceFile.goldensDir(
     id: producerId,
     groupName: groupName,
   );
@@ -403,6 +405,7 @@ Future<void> _writeProducerResultToFile(
     for (final (index, entry) in uniqueSourceOutputs.entries.indexed)
       Future(() async {
         final outputFile = goldensDir.goldensFile(
+          sourceFile,
           index: index,
           groupName: groupName,
         );
@@ -410,7 +413,7 @@ Future<void> _writeProducerResultToFile(
 
         await outputFile.writeAsString(
           _encodeProducerOutput(
-            file: file,
+            sourceFile: sourceFile,
             source: entry.key,
             index: index,
             groupName: groupName,
