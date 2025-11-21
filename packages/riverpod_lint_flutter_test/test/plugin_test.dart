@@ -18,6 +18,7 @@ import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:path/path.dart' as p;
 import 'package:riverpod_lint/main.dart';
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:test/test.dart';
 
 import 'io_utils.dart';
@@ -171,8 +172,12 @@ void _testProducers(
     final producerId = id(stubProducer);
 
     test('$groupName $producerId', () async {
-      final uniqueSourceOutputs = <String, List<({int offset, String id})>>{};
+      final uniqueSourceOutputs = <String, List<({int offset})>>{};
       final (:unit, :library, :uniqueOffsets) = results();
+
+      final _errorReporter = errorReporter;
+      errorReporter = (_) {};
+      addTearDown(() => errorReporter = _errorReporter);
 
       for (final offset in uniqueOffsets) {
         final changeBuilder = ChangeBuilder(session: unit.session);
@@ -192,11 +197,11 @@ void _testProducers(
 
         for (final editedSource in editedSources) {
           final offsets = uniqueSourceOutputs[editedSource] ??= [];
-          offsets.add((offset: offset, id: producerId));
+          offsets.add((offset: offset));
         }
       }
 
-      await _writeProducerResultToFile(
+      await _expectGoldensMatchProducers(
         uniqueSourceOutputs,
         file,
         producerId: producerId,
@@ -206,45 +211,208 @@ void _testProducers(
   }
 }
 
-Future<void> _writeProducerResultToFile(
-  Map<String, List<({String id, int offset})>> uniqueSourceOutputs,
+extension on File {
+  Directory goldensDir({
+    required String id,
+    required String groupName,
+  }) {
+    final baseName = p.basenameWithoutExtension(path);
+    return parent.dir(baseName).dir(id);
+  }
+}
+
+extension on Directory {
+  File goldensFile({
+    required int index,
+    required String groupName,
+  }) {
+    final baseName = p.basenameWithoutExtension(path);
+
+    return file(
+      '$baseName$index.$groupName.dart',
+    );
+  }
+}
+
+final _goldenWrite = bool.parse(Platform.environment['goldens'] ?? 'false');
+
+Future<void> _expectGoldensMatchProducers(
+  Map<String, List<({int offset})>> uniqueSourceOutputs,
   File file, {
   required String producerId,
   required String groupName,
 }) async {
-  await Future.wait([
-    for (final (index, entry) in uniqueSourceOutputs.entries.indexed)
-      Future(() async {
-        final baseName = p.basenameWithoutExtension(file.path);
-        final outputFile = file.parent
-            .dir(baseName)
-            .dir(producerId)
-            .file('$baseName$index.$groupName.dart');
-        await outputFile.create(recursive: true);
+  if (_goldenWrite) {
+    await _writeProducerResultToFile(
+      uniqueSourceOutputs,
+      file,
+      producerId: producerId,
+      groupName: groupName,
+    );
+    return;
+  }
 
-        final offsetsForKind = <String, List<int>>{};
-        for (final (:id, :offset) in entry.value) {
-          final offsets = offsetsForKind[id] ??= [];
-          offsets.add(offset);
-        }
+  await _verifyGoldensMatchProducers(
+    uniqueSourceOutputs,
+    file,
+    producerId: producerId,
+    groupName: groupName,
+  );
+}
 
-        final header = '''
+Future<void> _verifyGoldensMatchProducers(
+  Map<String, List<({int offset})>> uniqueSourceOutputs,
+  File file, {
+  required String producerId,
+  required String groupName,
+}) async {
+  final goldensDir = file.goldensDir(
+    id: producerId,
+    groupName: groupName,
+  );
+
+  final goldens =
+      goldensDir
+          .listSync(recursive: true)
+          .whereType<File>()
+          .map((e) => e.path)
+          .toSet();
+  final mismatch = <({String? expected, String actual})>[];
+  final missing = <({String filePath})>[];
+
+  final actualFiles =
+      uniqueSourceOutputs.entries.indexed.map(
+        (e) {
+          final file = goldensDir.goldensFile(
+            index: e.$1,
+            groupName: groupName,
+          );
+          final entry = e.$2;
+
+          return (
+            file,
+            _encodeProducerOutput(
+              file: file,
+              source: entry.key,
+              index: e.$1,
+              groupName: groupName,
+              producerId: producerId,
+              offsets: entry.value.map((e) => e.offset),
+            ),
+          );
+        },
+      ).toList();
+
+  for (final (file, actual) in actualFiles) {
+    try {
+      final expected = file.readAsStringSync();
+
+      if (actual != expected) {
+        mismatch.add((expected: expected, actual: actual));
+      }
+    } on PathNotFoundException {
+      mismatch.add((expected: null, actual: actual));
+    }
+  }
+
+  for (final golden in goldens) {
+    if (!actualFiles.any((e) => e.$1.path == golden)) {
+      missing.add((filePath: golden));
+    }
+  }
+
+  if (mismatch.isNotEmpty || missing.isNotEmpty) {
+    final buffer = StringBuffer();
+
+    if (missing.isNotEmpty) {
+      buffer.writeAll(
+        missing.map((e) => 'Missing golden: ${e.filePath}'),
+        '\n',
+      );
+    }
+
+    if (mismatch.isNotEmpty) {
+      buffer.writeAll(
+        mismatch.map((e) => 'Mismatch: ${e.actual}'),
+        '\n',
+      );
+    }
+
+    throw TestFailure(buffer.toString());
+  }
+}
+
+String _encodeProducerOutput({
+  required File file,
+  required String source,
+  required int index,
+  required String groupName,
+  required String producerId,
+  required Iterable<int> offsets,
+}) {
+  final baseName = p.basenameWithoutExtension(file.path);
+
+  final offsetsForKind = <String, List<int>>{};
+  for (final offset in offsets) {
+    final offsets = offsetsForKind[producerId] ??= [];
+    offsets.add(offset);
+  }
+
+  final header = '''
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ${offsetsForKind.entries.map((e) => '[${e.key}?offset=${e.value.join(',')}]').join(' ')}
 ''';
 
-        var content = entry.key;
-        content = content.replaceAll(
-          '$baseName',
-          '$baseName${index}.$groupName',
+  var content = source;
+  content = content.replaceAll(
+    '$baseName',
+    '$baseName${index}.$groupName',
+  );
+
+  // Format the content using dart_style
+  content = DartFormatter(
+    languageVersion: DartFormatter.latestLanguageVersion,
+  ).format(content);
+
+  return ('$header\n$content');
+}
+
+Future<void> _writeProducerResultToFile(
+  Map<String, List<({int offset})>> uniqueSourceOutputs,
+  File file, {
+  required String producerId,
+  required String groupName,
+}) async {
+  final goldensDir = file.goldensDir(
+    id: producerId,
+    groupName: groupName,
+  );
+
+  try {
+    await goldensDir.delete(recursive: true);
+  } on PathNotFoundException {
+    // Silence not-found errors
+  }
+
+  await Future.wait([
+    for (final (index, entry) in uniqueSourceOutputs.entries.indexed)
+      Future(() async {
+        final outputFile = goldensDir.goldensFile(
+          index: index,
+          groupName: groupName,
         );
+        await outputFile.create(recursive: true);
 
-        // Format the content using dart_style
-        content = DartFormatter(
-          languageVersion: DartFormatter.latestLanguageVersion,
-        ).format(content);
-
-        await outputFile.writeAsString('$header\n$content');
+        await outputFile.writeAsString(
+          _encodeProducerOutput(
+            file: file,
+            source: entry.key,
+            index: index,
+            groupName: groupName,
+            producerId: producerId,
+            offsets: entry.value.map((e) => e.offset),
+          ),
+        );
       }),
   ]);
 }
