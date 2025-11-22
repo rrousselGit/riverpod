@@ -1,9 +1,12 @@
-// ignore_for_file: internal_lint/generic_name
+@TestFor.notifier_extends
+library;
+
+// ignore_for_file: internal_lint/generic_name, wrong_number_of_type_arguments
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'notifier_extends.g.dart';
+import '../../test_annotation.dart';
 
-// ignore_for_file: wrong_number_of_type_arguments
+part 'notifier_extends.g.dart';
 
 @riverpod
 class MyNotifier extends _$MyNotifier {
@@ -18,7 +21,8 @@ class _PrivateClass extends _$PrivateClass {
 }
 
 @riverpod
-class Generics<FirstT extends num, SecondT> extends _$Generics<FirstT, SecondT> {
+class Generics<FirstT extends num, SecondT>
+    extends _$Generics<FirstT, SecondT> {
   int build() => 0;
 }
 

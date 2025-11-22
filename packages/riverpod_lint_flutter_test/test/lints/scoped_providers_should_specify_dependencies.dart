@@ -1,3 +1,6 @@
+@TestFor.scoped_providers_should_specify_dependencies
+library;
+
 // ignore_for_file: unused_local_variable
 
 import 'package:flutter/material.dart' as flutter;
@@ -5,6 +8,8 @@ import 'package:flutter/material.dart' hide runApp;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../test_annotation.dart';
 
 part 'scoped_providers_should_specify_dependencies.g.dart';
 

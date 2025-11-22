@@ -1,7 +1,12 @@
+@TestFor.avoid_build_context_in_providers
+library;
+
 // ignore_for_file: unused_element
 
 import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../test_annotation.dart';
 
 part 'avoid_build_context_in_providers.g.dart';
 

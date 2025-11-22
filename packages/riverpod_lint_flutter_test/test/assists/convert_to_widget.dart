@@ -1,6 +1,18 @@
+@TestFor.convert_to_hookWidget
+@TestFor.convert_to_hookConsumerWidget
+@TestFor.convert_to_consumerWidget
+@TestFor.convert_to_consumerStatefulWidget
+@TestFor.convert_to_statefulWidget
+@TestFor.convert_to_statefulHookConsumerWidget
+@TestFor.convert_to_statefulHookWidget
+@TestFor.convert_to_statelessWidget
+library;
+
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+
+import '../test_annotation.dart';
 
 class Stateless extends StatelessWidget {
   const Stateless({super.key});

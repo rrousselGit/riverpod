@@ -1,5 +1,10 @@
+@TestFor.protected_notifier_properties
+library;
+
 // ignore_for_file: riverpod_lint/only_use_keep_alive_inside_keep_alive
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../test_annotation.dart';
 
 part 'protected_notifier_properties.g.dart';
 

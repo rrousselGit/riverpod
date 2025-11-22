@@ -1,7 +1,12 @@
+@TestFor.unsupported_provider_value
+library;
+
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/legacy.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../test_annotation.dart';
 
 part 'unsupported_provider_value.g.dart';
 

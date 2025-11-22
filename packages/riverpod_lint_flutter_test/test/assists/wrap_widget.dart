@@ -1,5 +1,11 @@
+@TestFor.wrap_with_consumer
+@TestFor.wrap_with_provider_scope
+library;
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import '../test_annotation.dart';
 
 class MyWidget extends StatelessWidget {
   const MyWidget({super.key});

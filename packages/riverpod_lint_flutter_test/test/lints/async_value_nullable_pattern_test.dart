@@ -1,4 +1,9 @@
+@TestFor.async_value_nullable_pattern
+library;
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import '../test_annotation.dart';
 
 void main() {
   switch (Object()) {

@@ -1,4 +1,9 @@
+@TestFor.class_based_to_functional_provider
+library;
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../test_annotation.dart';
 
 part 'convert_class_based_provider_to_functional.g.dart';
 

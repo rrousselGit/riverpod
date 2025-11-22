@@ -1,4 +1,9 @@
+@TestFor.only_use_keep_alive_inside_keep_alive
+library;
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../test_annotation.dart';
 
 part 'only_use_keep_alive_inside_keep_alive.g.dart';
 

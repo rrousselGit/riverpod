@@ -1,7 +1,12 @@
+@TestFor.provider_parameters
+library;
+
 import 'package:flutter/widgets.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../test_annotation.dart';
 
 part 'provider_parameters.freezed.dart';
 part 'provider_parameters.g.dart';

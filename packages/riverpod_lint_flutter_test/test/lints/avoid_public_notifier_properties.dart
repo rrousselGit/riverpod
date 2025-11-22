@@ -1,6 +1,11 @@
+@TestFor.avoid_public_notifier_properties
+library;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../test_annotation.dart';
 
 part 'avoid_public_notifier_properties.g.dart';
 

@@ -1,7 +1,12 @@
+@TestFor.provider_dependencies
+library;
+
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/experimental/scope.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../test_annotation.dart';
 
 part 'missing_dependencies.g.dart';
 

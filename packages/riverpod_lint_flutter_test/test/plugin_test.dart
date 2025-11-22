@@ -117,7 +117,18 @@ Future<void> main() async {
 void _verifyAllIdsExist(_PluginRegistry plugin, Set<String> testIds) {
   final actualIds = plugin.allIds().toSet();
 
-  expect(actualIds, containsAll(testIds));
+  expect(
+    actualIds,
+    containsAll(testIds),
+    reason: '''
+class TestFor {
+  const TestFor(this.id);
+  ${actualIds.map((e) => "static const $e = TestFor('$e');").join('\n')}
+
+  final String id;
+}
+''',
+  );
 }
 
 void _testRules(
@@ -402,8 +413,8 @@ String _encodeProducerOutput({
 
   var content = source;
   content = content.replaceAll(
-    '${p.basenameWithoutExtension(sourceFile.path)}',
-    '${p.basenameWithoutExtension(goldenFile.path)}',
+    "part '${p.basenameWithoutExtension(sourceFile.path)}",
+    "part '${p.basenameWithoutExtension(goldenFile.path)}",
   );
 
   // Format the content using dart_style

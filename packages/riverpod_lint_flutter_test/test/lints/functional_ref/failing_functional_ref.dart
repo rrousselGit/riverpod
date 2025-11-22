@@ -1,4 +1,9 @@
+@TestFor.functional_ref
+library;
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../test_annotation.dart';
 
 @riverpod
 // ignore: riverpod_lint/functional_ref

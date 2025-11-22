@@ -1,5 +1,10 @@
+@TestFor.missing_provider_scope
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../test_annotation.dart';
 
 void main() {
   // ignore: riverpod_lint/missing_provider_scope
