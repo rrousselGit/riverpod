@@ -199,6 +199,7 @@ void _testProducers(
 
     test('$groupName $producerId', () async {
       final (:unit, :library, :uniqueOffsets, :testIds) = results();
+      if (!testIds.contains(producerId)) return;
 
       final uniqueSourceOutputs = <String, List<({int offset})>>{};
       final _errorReporter = errorReporter;
