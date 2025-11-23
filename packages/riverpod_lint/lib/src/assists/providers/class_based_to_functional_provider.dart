@@ -77,7 +77,7 @@ class ClassBasedToFunctionalProvider extends ResolvedCorrectionProducer {
       // Add ref parameter to the build method
       builder.addSimpleInsertion(
         parameters.leftParenthesis.end,
-        '${refNameFor(declaration)}$typeParametersSource ref$trailingRefParameter',
+        '${refNameFor(declaration)} ref$trailingRefParameter',
       );
 
       // Remove anything after the build method
