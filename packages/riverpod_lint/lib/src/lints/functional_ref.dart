@@ -126,19 +126,16 @@ class FunctionalRefFix extends ResolvedCorrectionProducer {
 
     if (refNode is! SimpleFormalParameter) return;
 
-    // No type specified, adding it.
     await builder.addDartFileEdit(file, (builder) {
       final ref = builder.importRef();
-      if (!refNode.isExplicitlyTyped) {
+      final typeAnnotation = typeAnnotationFor(refNode);
+      // No type specified, adding it.
+      if (typeAnnotation == null) {
         builder.addSimpleInsertion(refNode.name!.offset, '$ref ');
         return;
       }
 
-      final type = typeAnnotationFor(refNode);
-      builder.addSimpleReplacement(
-        range.startEnd(type, refNode.name!),
-        '$ref ',
-      );
+      builder.addSimpleReplacement(range.node(typeAnnotation), '$ref ');
     });
   }
 }
@@ -147,12 +144,12 @@ extension LibraryForNode on AstNode {
   LibraryElement2 get library => (root as CompilationUnit).library;
 }
 
-TypeAnnotation typeAnnotationFor(FormalParameter param) {
+TypeAnnotation? typeAnnotationFor(FormalParameter param) {
   if (param is DefaultFormalParameter) {
     return typeAnnotationFor(param.parameter);
   }
   if (param is SimpleFormalParameter) {
-    return param.type!;
+    return param.type;
   }
 
   throw UnimplementedError('Unknown parameter type: $param');
