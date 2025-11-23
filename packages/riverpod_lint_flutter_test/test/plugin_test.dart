@@ -265,7 +265,10 @@ extension on File {
 
   Iterable<File> goldensForFile() {
     return parent.listSync().whereType<File>().where(
-      (e) => e.path.startsWith(_goldensPattern) && e != this,
+      (e) {
+        final fileName = p.basenameWithoutExtension(e.path);
+        return fileName.startsWith(_goldensPattern) && e != this;
+      },
     );
   }
 }
@@ -365,7 +368,9 @@ Future<void> _verifyGoldensMatchProducers(
     }
   }
 
+  print('goldens for file:');
   for (final golden in goldens) {
+    print(golden);
     if (!actualFiles.any((e) => e.$1.path == golden)) {
       missing.add((filePath: golden));
     }
