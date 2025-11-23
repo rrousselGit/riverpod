@@ -407,6 +407,7 @@ String _encodeProducerOutput({
 
   final header = '''
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 // ${offsetsForKind.entries.map((e) => '[${e.key}?offset=${e.value.join(',')}]').join(' ')}
 ''';
 
