@@ -9,6 +9,7 @@ import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:analyzer/src/dart/ast/ast.dart';
@@ -91,8 +92,9 @@ Future<void> main() async {
         groupName: 'assist',
         id: (producer) => producer.assistKind!.id,
       );
-      _testProducers(
-        registry.fixes.map((e) => e.generator),
+
+      _testFixes(
+        registry,
         () => (
           unit: unit,
           library: library,
@@ -100,7 +102,6 @@ Future<void> main() async {
           testIds: testIds,
         ),
         file,
-        groupName: 'fix',
         id: (producer) => producer.fixKind!.id,
       );
 
@@ -110,6 +111,63 @@ Future<void> main() async {
       //   file,
       // );
     });
+  }
+}
+
+void _testFixes(
+  _PluginRegistry pluginRegistry,
+  ({
+    ResolvedLibraryResult library,
+    Set<String> testIds,
+    Iterable<int> uniqueOffsets,
+    ResolvedUnitResult unit,
+  })
+  Function()
+  result,
+  File file, {
+  required Function(CorrectionProducer<ParsedUnitResult> producer) id,
+}) {
+  for (final fix in pluginRegistry.fixes) {
+    _testProducers(
+      [fix.generator],
+      () {
+        final (
+          :unit,
+          :library,
+          :uniqueOffsets,
+          :testIds,
+        ) = result();
+
+        final rules =
+            pluginRegistry.rules
+                .where(
+                  (e) => e.$1.diagnosticCodes.contains(fix.code),
+                )
+                .single;
+
+        final diagostics = _runRules(
+          unit: unit,
+          library: library,
+          rules: [rules.$1],
+        );
+
+        final offsetsOverlappingDiagnostics = uniqueOffsets.where(
+          (offset) => diagostics.any(
+            (e) => range.startOffsetLength(e.offset, e.length).contains(offset),
+          ),
+        );
+
+        return (
+          unit: unit,
+          library: library,
+          uniqueOffsets: offsetsOverlappingDiagnostics,
+          testIds: testIds,
+        );
+      },
+      file,
+      groupName: 'fix',
+      id: (producer) => producer.fixKind!.id,
+    );
   }
 }
 
@@ -150,26 +208,43 @@ void _testRules(
 
       if (!testIds().contains(rule.name)) return;
 
-      final diagosticsListener = RecordingDiagnosticListener();
-      rule.reporter = DiagnosticReporter(
-        diagosticsListener,
-        unit.libraryFragment.source,
+      final diagostics = _runRules(
+        unit: unit,
+        library: library,
+        rules: [rule],
       );
 
-      final registry = Registry();
-      final context = Context.fromResolvedUnitResult(
-        unit,
-        library,
-        diagosticsListener,
-      );
-
-      rule.registerNodeProcessors(registry, context);
-
-      unit.unit.accept(_InvokeVisitor(registry));
-
-      print(diagosticsListener.diagnostics);
+      print(diagostics);
     });
   }
+}
+
+List<Diagnostic> _runRules({
+  required ResolvedUnitResult unit,
+  required ResolvedLibraryResult library,
+  required Iterable<AbstractAnalysisRule> rules,
+}) {
+  final diagosticsListener = RecordingDiagnosticListener();
+
+  final registry = Registry();
+  final context = Context.fromResolvedUnitResult(
+    unit,
+    library,
+    diagosticsListener,
+  );
+
+  for (final rule in rules) {
+    rule.reporter = DiagnosticReporter(
+      diagosticsListener,
+      unit.libraryFragment.source,
+    );
+
+    rule.registerNodeProcessors(registry, context);
+  }
+
+  unit.unit.accept(_InvokeVisitor(registry));
+
+  return diagosticsListener.diagnostics;
 }
 
 class _InvokeVisitor extends GeneralizingAstVisitor<void> {
