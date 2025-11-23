@@ -16,8 +16,6 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import '../imports.dart';
 import '../object_utils.dart';
 
-const _fixDependenciesPriority = 100;
-
 class _LocatedProvider {
   _LocatedProvider(this.provider, this.node);
 

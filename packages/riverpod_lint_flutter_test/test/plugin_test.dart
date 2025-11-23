@@ -107,12 +107,6 @@ Future<void> main() async {
         file,
         id: (producer) => producer.fixKind!.id,
       );
-
-      // _testRules(
-      //   registry.rules,
-      //   () => (unit: unit, library: library),
-      //   file,
-      // );
     });
   }
 }
@@ -189,37 +183,6 @@ class TestFor {
 }
 ''',
   );
-}
-
-void _testRules(
-  Iterable<(AbstractAnalysisRule, RuleType)> rules,
-  ({
-    ResolvedUnitResult unit,
-    ResolvedLibraryResult library,
-  })
-  Function()
-  results,
-  File file, {
-  required Set<String> Function() testIds,
-}) {
-  for (final (rule, _) in rules) {
-    test('Rule ${rule.name}', () async {
-      final (
-        :unit,
-        :library,
-      ) = results();
-
-      if (!testIds().contains(rule.name)) return;
-
-      final diagostics = _runRules(
-        unit: unit,
-        library: library,
-        rules: [rule],
-      );
-
-      print(diagostics);
-    });
-  }
 }
 
 List<Diagnostic> _runRules({
