@@ -1,7 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // [functional_ref?offset=293]
-
+// ```
+// int incorrectlyTyped(
+//   // ignore: riverpod_lint/functional_ref
+// -   int ref,
+// +   Ref  ref,
+// ) {
+//   return 0;
+// ```
 @TestFor.functional_ref
 library;
 

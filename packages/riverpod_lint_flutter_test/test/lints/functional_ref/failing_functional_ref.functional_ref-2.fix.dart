@@ -1,7 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // [functional_ref?offset=468]
-
+// ```
+// @riverpod
+// // ignore: riverpod_lint/functional_ref
+// - int noRefButArgs({int a = 42}) {
+// + int noRefButArgs(Ref ref, {int a = 42}) {
+//   return 0;
+// }
+// ```
 @TestFor.functional_ref
 library;
 
