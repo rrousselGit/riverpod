@@ -11,10 +11,12 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:analyzer/error/listener.dart';
+import 'package:analyzer/source/line_info.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:analyzer/src/dart/ast/ast.dart';
 import 'package:analyzer/src/dart/error/lint_codes.dart';
 import 'package:analyzer_plugin/protocol/protocol_common.dart';
+import 'package:analyzer_plugin/protocol/protocol_generated.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:dart_style/dart_style.dart';
@@ -23,9 +25,11 @@ import 'package:riverpod_lint/main.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:test/test.dart';
 
+import 'encoders.dart';
 import 'io_utils.dart';
 import 'registry.dart';
 import 'context.dart';
+import 'string.dart';
 
 Future<void> main() async {
   final registry = _PluginRegistry();
@@ -286,7 +290,8 @@ void _testProducers(
       final (:unit, :library, :uniqueOffsets, :testIds) = results();
       if (!testIds.contains(producerId)) return;
 
-      final uniqueSourceOutputs = <String, List<({int offset})>>{};
+      final uniqueSourceOutputs =
+          <({String header, String editedSource}), List<({int offset})>>{};
       final _errorReporter = errorReporter;
       errorReporter = (_) {};
       addTearDown(() => errorReporter = _errorReporter);
@@ -303,14 +308,28 @@ void _testProducers(
 
         if (changeBuilder.sourceChange.edits.isEmpty) continue;
 
-        final editedSources = changeBuilder.sourceChange.edits.map(
-          (e) => SourceEdit.applySequence(unit.content, e.edits),
+        final edit = changeBuilder.sourceChange.edits.single;
+
+        final editedSource = SourceEdit.applySequence(
+          unit.content,
+          edit.edits,
+        );
+        final editedLineInfo = LineInfo.fromContent(editedSource);
+
+        final header = encodePrioritizedSourceChanges(
+          unmodifiedSource: unit.content,
+          editedSource: editedSource,
+          unmodifiedLineInfo: unit.lineInfo,
+          editedLineInfo: editedLineInfo,
         );
 
-        for (final editedSource in editedSources) {
-          final offsets = uniqueSourceOutputs[editedSource] ??= [];
-          offsets.add((offset: offset));
-        }
+        final offsetsForEdit =
+            uniqueSourceOutputs[(
+                  header: header,
+                  editedSource: editedSource,
+                )] ??=
+                [];
+        offsetsForEdit.add((offset: offset));
       }
 
       await _expectGoldensMatchProducers(
@@ -375,7 +394,8 @@ Set<String> _findTestIds(ResolvedUnitResult unit) {
 final _goldenWrite = bool.parse(Platform.environment['goldens'] ?? 'false');
 
 Future<void> _expectGoldensMatchProducers(
-  Map<String, List<({int offset})>> uniqueSourceOutputs,
+  Map<({String header, String editedSource}), List<({int offset})>>
+  uniqueSourceOutputs,
   File file, {
   required String producerId,
   required String groupName,
@@ -399,7 +419,8 @@ Future<void> _expectGoldensMatchProducers(
 }
 
 Future<void> _verifyGoldensMatchProducers(
-  Map<String, List<({int offset})>> uniqueSourceOutputs,
+  Map<({String header, String editedSource}), List<({int offset})>>
+  uniqueSourceOutputs,
   File file, {
   required String producerId,
   required String groupName,
@@ -475,7 +496,7 @@ Future<void> _verifyGoldensMatchProducers(
 String _encodeProducerOutput({
   required File sourceFile,
   required File goldenFile,
-  required String source,
+  required ({String header, String editedSource}) source,
   required String producerId,
   required Iterable<int> offsets,
 }) {
@@ -485,13 +506,17 @@ String _encodeProducerOutput({
     offsets.add(offset);
   }
 
-  final header = '''
+  final buffer = StringBuffer('''
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // ${offsetsForKind.entries.map((e) => '[${e.key}?offset=${e.value.join(',')}]').join(' ')}
-''';
+''');
 
-  var content = source;
+  if (source.header.isNotEmpty) {
+    buffer.write(source.header.indentWith('// '));
+  }
+
+  var content = source.editedSource;
   content = content.replaceAll(
     "part '${p.basenameWithoutExtension(sourceFile.path)}",
     "part '${p.basenameWithoutExtension(goldenFile.path)}",
@@ -506,11 +531,14 @@ String _encodeProducerOutput({
     Zone.current.handleUncaughtError(err, stack);
   }
 
-  return ('$header\n$content');
+  buffer.write(content);
+
+  return buffer.toString();
 }
 
 Future<void> _writeProducerResultToFile(
-  Map<String, List<({int offset})>> uniqueSourceOutputs, {
+  Map<({String header, String editedSource}), List<({int offset})>>
+  uniqueSourceOutputs, {
   required File sourceFile,
   required String producerId,
   required String groupName,
