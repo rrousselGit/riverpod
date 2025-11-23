@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [functional_ref?offset=396,397,446,462,464,472,477,481,488,450,463,468,470,474,475,489,491]
+// [functional_ref?offset=468]
 
 @TestFor.functional_ref
 library;
