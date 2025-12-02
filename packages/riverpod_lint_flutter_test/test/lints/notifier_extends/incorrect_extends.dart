@@ -1,7 +1,6 @@
 @TestFor.notifier_extends
 library;
 
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../test_annotation.dart';
@@ -11,6 +10,6 @@ part 'incorrect_extends.g.dart';
 
 @riverpod
 // ignore: riverpod_lint/notifier_extends
-class WrongExtends extends AsyncNotifier<int> {
+class WrongExtends extends Object {
   int build() => 0;
 }
