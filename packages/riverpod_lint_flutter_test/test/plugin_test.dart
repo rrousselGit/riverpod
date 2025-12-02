@@ -190,27 +190,34 @@ List<Diagnostic> _runRules({
   required ResolvedLibraryResult library,
   required Iterable<AbstractAnalysisRule> rules,
 }) {
-  final diagosticsListener = RecordingDiagnosticListener();
+  final _errorReporter = errorReporter;
+  errorReporter = (_) {};
 
-  final registry = Registry();
-  final context = Context.fromResolvedUnitResult(
-    unit,
-    library,
-    diagosticsListener,
-  );
+  try {
+    final diagosticsListener = RecordingDiagnosticListener();
 
-  for (final rule in rules) {
-    rule.reporter = DiagnosticReporter(
+    final registry = Registry();
+    final context = Context.fromResolvedUnitResult(
+      unit,
+      library,
       diagosticsListener,
-      unit.libraryFragment.source,
     );
 
-    rule.registerNodeProcessors(registry, context);
+    for (final rule in rules) {
+      rule.reporter = DiagnosticReporter(
+        diagosticsListener,
+        unit.libraryFragment.source,
+      );
+
+      rule.registerNodeProcessors(registry, context);
+    }
+
+    unit.unit.accept(_InvokeVisitor(registry));
+
+    return diagosticsListener.diagnostics;
+  } finally {
+    errorReporter = _errorReporter;
   }
-
-  unit.unit.accept(_InvokeVisitor(registry));
-
-  return diagosticsListener.diagnostics;
 }
 
 class _InvokeVisitor extends GeneralizingAstVisitor<void> {
