@@ -21,6 +21,7 @@
 - Fixed a bug with scoping when specifying `dependencies: [...]`
 - Added `Override.origin`. This enables knowing which provider is associated with an override.
 - Fix a regression with `AsyncLoading.isRefreshing/isReloading`
+- Fix a regression that caused Notifiers to lose their state when one of their dependencies changed. (thanks to @yegair)
 
 ## 3.0.3 - 2025-10-09
 
