@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [provider_dependencies?offset=4111,4117,4188,4400]
+// [provider_dependencies?offset=5907,5913,5961,6159]
 // ```
-// }
 // 
-// - class OnlyNeedToOverrideProviderWithEmptyDependencies extends ConsumerWidget {
-// + @Dependencies([transitiveDep])
-// + class OnlyNeedToOverrideProviderWithEmptyDependencies extends ConsumerWidget {
+// // ignore: riverpod_lint/provider_dependencies
+// - class IncompleteFamilyOverride extends ConsumerWidget {
+// + @Dependencies([depFamily])
+// + class IncompleteFamilyOverride extends ConsumerWidget {
 //   @override
 //   Widget build(BuildContext context, WidgetRef ref) {
 // ```
@@ -191,7 +191,6 @@ class Scope4 extends ConsumerWidget {
   }
 }
 
-@Dependencies([transitiveDep])
 class OnlyNeedToOverrideProviderWithEmptyDependencies extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -257,6 +256,7 @@ class SupportsNestedScopes extends ConsumerWidget {
 }
 
 // ignore: riverpod_lint/provider_dependencies
+@Dependencies([depFamily])
 class IncompleteFamilyOverride extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {

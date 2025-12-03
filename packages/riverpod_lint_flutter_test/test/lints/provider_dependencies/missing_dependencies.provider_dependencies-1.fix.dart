@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [provider_dependencies?offset=2919,2925,2959,3181]
+// [provider_dependencies?offset=3231,3237,3267,3474]
 // ```
 // 
 // // ignore: riverpod_lint/provider_dependencies
-// - class AboveScope extends ConsumerWidget {
+// - class Scope2 extends ConsumerWidget {
 // + @Dependencies([dep])
-// + class AboveScope extends ConsumerWidget {
+// + class Scope2 extends ConsumerWidget {
 //   @override
 //   Widget build(BuildContext context, WidgetRef ref) {
 // ```
@@ -144,7 +144,6 @@ class Scope extends ConsumerWidget {
 }
 
 // ignore: riverpod_lint/provider_dependencies
-@Dependencies([dep])
 class AboveScope extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -158,6 +157,7 @@ class AboveScope extends ConsumerWidget {
 }
 
 // ignore: riverpod_lint/provider_dependencies
+@Dependencies([dep])
 class Scope2 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
