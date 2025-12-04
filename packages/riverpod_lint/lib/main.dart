@@ -35,7 +35,7 @@ void log(Object obj) {
 
 class _RiverpodPlugin extends Plugin {
   @override
-  String get name => 'riverpod';
+  String get name => 'riverpod_lint';
 
   @override
   void register(PluginRegistry registry) {

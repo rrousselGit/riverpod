@@ -1,4 +1,4 @@
-// ignore_for_file: provider_dependencies
+// ignore_for_file: riverpod_lint/provider_dependencies
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'dependencies.dart';

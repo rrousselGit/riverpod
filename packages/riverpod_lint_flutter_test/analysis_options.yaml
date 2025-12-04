@@ -14,3 +14,7 @@ analyzer:
 formatter:
   # Preserving commas for the sake of testing code with/without commas
   trailing_commas: preserve
+
+plugins:
+  riverpod_lint:
+    path: ../riverpod_lint

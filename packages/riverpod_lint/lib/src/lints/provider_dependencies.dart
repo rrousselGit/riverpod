@@ -13,6 +13,7 @@ import 'package:analyzer_plugin/utilities/fixes/fixes.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
+import '../../main.dart';
 import '../imports.dart';
 import '../object_utils.dart';
 
@@ -296,6 +297,7 @@ class _Visitor extends SimpleAstVisitor<void> {
       late final unit = list.node.thisOrAncestorOfType<CompilationUnit>();
       late final source = unit?.declaredFragment?.source;
 
+      log('Here // ${node.declaredFragment!.source.uri} // $message');
       rule.reportAtNode(
         list.target,
         arguments: [message.toString()],
