@@ -24,6 +24,7 @@ workspace:
   - packages/riverpod_analyzer_utils
   - packages/riverpod_analyzer_utils_tests
   - packages/riverpod_annotation
+  - packages/riverpod_lint_flutter_test
   - packages/riverpod_generator/integration/build_yaml
   - packages/riverpod_generator
   - packages/riverpod_lint

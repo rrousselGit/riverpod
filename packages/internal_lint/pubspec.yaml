@@ -13,5 +13,4 @@ dependencies:
   meta: ^1.15.0
   path: ^1.8.1
   pubspec_parse: ^1.5.0
-  riverpod_analyzer_utils:
-    path: /Users/remirousselet/dev/rrousselGit/riverpod/packages/riverpod_analyzer_utils
+  riverpod_analyzer_utils: 1.0.0-dev.8
