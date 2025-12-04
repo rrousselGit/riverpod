@@ -1,5 +1,3 @@
-import 'package:analyzer/dart/ast/ast.dart';
-
 extension ObjectUtils<ObjT> on ObjT? {
   NewT? safeCast<NewT>() {
     final that = this;
@@ -11,15 +9,5 @@ extension ObjectUtils<ObjT> on ObjT? {
     final that = this;
     if (that == null) return null;
     return cb?.call(that);
-  }
-}
-
-extension AstUtils on AstNode {
-  Iterable<AstNode> get ancestors sync* {
-    var parent = this.parent;
-    while (parent != null) {
-      yield parent;
-      parent = parent.parent;
-    }
   }
 }

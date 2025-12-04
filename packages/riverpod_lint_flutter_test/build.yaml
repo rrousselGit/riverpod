@@ -6,6 +6,8 @@ targets:
           exclude:
             # Those files voluntarily have the generation fail
             - test/lints/notifier_build.dart
+            - test/lints/notifier_build.*.fix.dart
             - test/lints/riverpod_syntax_error.dart
             - test/lints/functional_ref/failing_functional_ref.dart
-            - test/lints/notifier_extends/failing_notifier_extends.dart
+            - test/lints/notifier_extends/incorrect_extends.dart
+            - test/lints/notifier_extends/missing_extends.dart

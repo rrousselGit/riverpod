@@ -1,3 +1,7 @@
+## 1.0.0-dev.8
+
+Removed dependency on custom_lint_core
+
 ## 1.0.0-dev.7 - 2025-09-30
 
 - Now supports Dart 3.7.0

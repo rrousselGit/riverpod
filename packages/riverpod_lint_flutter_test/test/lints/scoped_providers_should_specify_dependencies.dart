@@ -1,3 +1,6 @@
+@TestFor.scoped_providers_should_specify_dependencies
+library;
+
 // ignore_for_file: unused_local_variable
 
 import 'package:flutter/material.dart' as flutter;
@@ -5,6 +8,8 @@ import 'package:flutter/material.dart' hide runApp;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../test_annotation.dart';
 
 part 'scoped_providers_should_specify_dependencies.g.dart';
 
@@ -41,7 +46,7 @@ void main() {
       unimplementedScopedProvider.overrideWith(
         () => throw UnimplementedError(),
       ),
-      // expect_lint: scoped_providers_should_specify_dependencies
+      // ignore: riverpod_lint/scoped_providers_should_specify_dependencies
       rootProvider.overrideWith((ref) => 0),
     ],
   );
@@ -67,7 +72,7 @@ void main() {
           () => throw UnimplementedError(),
         ),
         // This is not a Flutter's runApp, so the ProviderScope is considered scoped
-        // expect_lint: scoped_providers_should_specify_dependencies
+        // ignore: riverpod_lint/scoped_providers_should_specify_dependencies
         rootProvider.overrideWith((ref) => 0),
       ],
       child: Container(),
@@ -94,7 +99,7 @@ void definitelyNotAMain() {
       unimplementedScopedProvider.overrideWith(
         () => throw UnimplementedError(),
       ),
-      // expect_lint: scoped_providers_should_specify_dependencies
+      // ignore: riverpod_lint/scoped_providers_should_specify_dependencies
       rootProvider.overrideWith((ref) => 0),
     ],
   );
@@ -146,7 +151,7 @@ void someTestFunction() {
             unimplementedScopedProvider.overrideWith(
               () => throw UnimplementedError(),
             ),
-            // expect_lint: scoped_providers_should_specify_dependencies
+            // ignore: riverpod_lint/scoped_providers_should_specify_dependencies
             rootProvider.overrideWith((ref) => 0),
           ],
           child: Container(),
@@ -163,7 +168,7 @@ Widget fn() {
       unimplementedScopedProvider.overrideWith(
         () => throw UnimplementedError(),
       ),
-      // expect_lint: scoped_providers_should_specify_dependencies
+      // ignore: riverpod_lint/scoped_providers_should_specify_dependencies
       rootProvider.overrideWith((ref) => 0),
     ],
     child: Container(),
@@ -180,7 +185,7 @@ void showModal(BuildContext context) {
           unimplementedScopedProvider.overrideWith(
             () => throw UnimplementedError(),
           ),
-          // expect_lint: scoped_providers_should_specify_dependencies
+          // ignore: riverpod_lint/scoped_providers_should_specify_dependencies
           rootProvider.overrideWith((ref) => 0),
         ],
         child: Container(),
@@ -200,7 +205,7 @@ class MyWidget extends StatelessWidget {
         unimplementedScopedProvider.overrideWith(
           () => throw UnimplementedError(),
         ),
-        // expect_lint: scoped_providers_should_specify_dependencies
+        // ignore: riverpod_lint/scoped_providers_should_specify_dependencies
         rootProvider.overrideWith((ref) => 0),
       ],
       child: Container(),

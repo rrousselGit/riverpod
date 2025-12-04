@@ -14,3 +14,26 @@ File writeToTemporaryFile(String content) {
 
   return file;
 }
+
+/// Utilities to help dealing with paths to common package files.
+extension PackageIOUtils on Directory {
+  /// Creates a child [File] from a list of path segments.
+  File file(
+    String name, [
+    String? name2,
+    String? name3,
+    String? name4,
+    String? name5,
+    String? name6,
+  ]) => File(join(path, name, name2, name3, name4, name5, name6));
+
+  /// Creates a child [Directory] from a list of path segments.
+  Directory dir(
+    String name, [
+    String? name2,
+    String? name3,
+    String? name4,
+    String? name5,
+    String? name6,
+  ]) => Directory(join(path, name, name2, name3, name4, name5, name6));
+}

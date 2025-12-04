@@ -1,5 +1,0 @@
-import: ../../analysis_options.yaml
-analyzer:
-  # enable riverpod_lint
-  plugins:
-    - custom_lint

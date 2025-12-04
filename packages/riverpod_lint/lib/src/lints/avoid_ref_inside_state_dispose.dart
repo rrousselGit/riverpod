@@ -1,45 +1,60 @@
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart' hide LintCode;
-import 'package:analyzer/error/listener.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
-
-import '../riverpod_custom_lint.dart';
 
 const disposeMethod = 'dispose';
 
-class AvoidRefInsideStateDispose extends RiverpodLintRule {
-  const AvoidRefInsideStateDispose() : super(code: _code);
+class AvoidRefInsideStateDispose extends AnalysisRule {
+  AvoidRefInsideStateDispose()
+    : super(name: code.name, description: code.problemMessage);
 
-  static const _code = LintCode(
-    name: 'avoid_ref_inside_state_dispose',
-    problemMessage: "Avoid using 'Ref' inside State.dispose.",
-    errorSeverity: ErrorSeverity.WARNING,
+  static const code = LintCode(
+    'avoid_ref_inside_state_dispose',
+    'Avoid using ref in State.dispose. '
+        'Ref is already disposed when State.dispose is called.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
   ) {
-    context.registry.addMethodInvocation((node) {
-      final targetType = node.realTarget?.staticType;
-      if (targetType == null) return;
-      if (!widgetRefType.isAssignableFromType(targetType)) return;
+    final visitor = _Visitor(this, context);
+    registry.addMethodInvocation(this, visitor);
+  }
+}
 
-      final ancestor = node.thisOrAncestorMatching((method) {
-        final isDisposeMethod =
-            method is MethodDeclaration && method.name.lexeme == disposeMethod;
-        if (!isDisposeMethod) return false;
+class _Visitor extends SimpleAstVisitor<void> {
+  _Visitor(this.rule, this.context);
 
-        return _findConsumerStateClass(node) != null;
-      });
+  final AnalysisRule rule;
+  final RuleContext context;
 
-      if (ancestor != null) {
-        reporter.atNode(node, _code);
-      }
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    final targetType = node.realTarget?.staticType;
+    if (targetType == null) return;
+    if (!widgetRefType.isAssignableFromType(targetType)) return;
+
+    final ancestor = node.thisOrAncestorMatching((method) {
+      final isDisposeMethod =
+          method is MethodDeclaration && method.name.lexeme == disposeMethod;
+      if (!isDisposeMethod) return false;
+
+      return _findConsumerStateClass(node) != null;
     });
+
+    if (ancestor != null) {
+      rule.reportAtNode(node);
+    }
   }
 
   /// Looking for the ConsumerState class ancestor

@@ -209,18 +209,18 @@ final class DepFamilyFamily extends $Family
   String toString() => r'depFamilyProvider';
 }
 ////////////
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 
 @ProviderFor(plainAnnotation)
 final plainAnnotationProvider = PlainAnnotationProvider._();
 
 ////////////
-// expect_lint: provider_dependencies
+// ignore: riverpod_lint/provider_dependencies
 
 final class PlainAnnotationProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   ////////////
-  // expect_lint: provider_dependencies
+  // ignore: riverpod_lint/provider_dependencies
   PlainAnnotationProvider._()
     : super(
         from: null,

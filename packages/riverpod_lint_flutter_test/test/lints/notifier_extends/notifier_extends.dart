@@ -1,8 +1,12 @@
+@TestFor.notifier_extends
+library;
+
+// ignore_for_file: internal_lint/generic_name, wrong_number_of_type_arguments
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'notifier_extends.g.dart';
+import '../../test_annotation.dart';
 
-// ignore_for_file: wrong_number_of_type_arguments
+part 'notifier_extends.g.dart';
 
 @riverpod
 class MyNotifier extends _$MyNotifier {
@@ -17,24 +21,25 @@ class _PrivateClass extends _$PrivateClass {
 }
 
 @riverpod
-class Generics<A extends num, B> extends _$Generics<A, B> {
+class Generics<FirstT extends num, SecondT>
+    extends _$Generics<FirstT, SecondT> {
   int build() => 0;
 }
 
 @riverpod
-// expect_lint: notifier_extends
-class NoGenerics<A extends num, B> extends _$NoGenerics {
+// ignore: riverpod_lint/notifier_extends
+class NoGenerics<FirstT extends num, SecondT> extends _$NoGenerics {
   int build() => 0;
 }
 
 @riverpod
-// expect_lint: notifier_extends
-class MissingGenerics<A, B> extends _$MissingGenerics<A> {
+// ignore: riverpod_lint/notifier_extends
+class MissingGenerics<FirstT, SecondT> extends _$MissingGenerics<FirstT> {
   int build() => 0;
 }
 
 @riverpod
-// expect_lint: notifier_extends
-class WrongOrder<A, B> extends _$WrongOrder<B, A> {
+// ignore: riverpod_lint/notifier_extends
+class WrongOrder<FirstT, SecondT> extends _$WrongOrder<SecondT, FirstT> {
   int build() => 0;
 }

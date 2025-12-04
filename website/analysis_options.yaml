@@ -5,5 +5,3 @@ analyzer:
     - i18n/**
   errors:
     todo: ignore
-  plugins:
-    - custom_lint

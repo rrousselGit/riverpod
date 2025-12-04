@@ -1,10 +1,15 @@
+@TestFor.async_value_nullable_pattern
+library;
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import '../test_annotation.dart';
 
 void main() {
   switch (Object()) {
     // T is nullable, therefore we should check hasData
     case AsyncValue<int?>(
-      // expect_lint: async_value_nullable_pattern
+      // ignore: riverpod_lint/async_value_nullable_pattern
       :final value?,
     ):
       print(value);
@@ -28,12 +33,12 @@ void main() {
   switch (Object()) {
     // On AsyncError/AsyncLoading, we still need hasData
     case AsyncError<int?>(
-      // expect_lint: async_value_nullable_pattern
+      // ignore: riverpod_lint/async_value_nullable_pattern
       :final value?,
     ):
       print(value);
     case AsyncLoading<int?>(
-      // expect_lint: async_value_nullable_pattern
+      // ignore: riverpod_lint/async_value_nullable_pattern
       :final value?,
     ):
       print(value);
@@ -56,25 +61,25 @@ void main() {
   }
 }
 
-void fn<T>(T obj) {
+void fn<TestT>(TestT obj) {
   switch (obj) {
-    // expect_lint: async_value_nullable_pattern
-    case AsyncValue<T>(:final value?):
+    // ignore: riverpod_lint/async_value_nullable_pattern
+    case AsyncValue<TestT>(:final value?):
       print(value);
   }
 }
 
-void fn2<T extends Object>(T obj) {
+void fn2<TestT extends Object>(TestT obj) {
   switch (obj) {
-    case AsyncValue<T>(:final value?):
+    case AsyncValue<TestT>(:final value?):
       print(value);
   }
 }
 
-void fn3<T extends Object?>(T obj) {
+void fn3<TestT extends Object?>(TestT obj) {
   switch (obj) {
-    // expect_lint: async_value_nullable_pattern
-    case AsyncValue<T>(:final value?):
+    // ignore: riverpod_lint/async_value_nullable_pattern
+    case AsyncValue<TestT>(:final value?):
       print(value);
   }
 }

@@ -3,7 +3,7 @@ Priority: 90
 Diff for file `test/lints/functional_ref/functional_ref.dart:8`:
 ```
 int nameless(
-  // expect_lint: functional_ref
+  // ignore: riverpod_lint/functional_ref
 -   ref,
 +   Ref ref,
 ) {

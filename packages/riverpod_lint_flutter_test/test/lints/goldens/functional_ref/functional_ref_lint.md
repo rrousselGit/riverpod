@@ -5,7 +5,7 @@ test/lints/functional_ref/functional_ref.dart:8:3
 
 ```dart
 int nameless(
-  // expect_lint: functional_ref
+  // ignore: riverpod_lint/functional_ref
   >>>ref<<<,
 ) {
   return 0;
