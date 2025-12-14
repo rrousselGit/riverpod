@@ -1,5 +1,10 @@
+@TestFor.avoid_ref_inside_state_dispose
+library;
+
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import '../test_annotation.dart';
 
 final provider = Provider((ref) => 0);
 
@@ -13,9 +18,9 @@ class MyWidget extends ConsumerStatefulWidget {
 class _MyWidgetState extends ConsumerState<MyWidget> {
   @override
   void dispose() {
-    // expect_lint: avoid_ref_inside_state_dispose
+    // ignore: riverpod_lint/avoid_ref_inside_state_dispose
     ref.read(provider);
-    // expect_lint: avoid_ref_inside_state_dispose
+    // ignore: riverpod_lint/avoid_ref_inside_state_dispose
     ref.watch(provider);
 
     super.dispose();

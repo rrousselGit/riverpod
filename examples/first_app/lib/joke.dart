@@ -18,7 +18,7 @@ Future<Joke> fetchRandomJoke() async {
   return Joke.fromJson(response.data!);
 }
 
-final randomJokeProvider = FutureProvider<Joke>((ref) async {
+final randomJokeProvider = FutureProvider<Joke>((ref) {
   // Using the fetchRandomJoke function to get a random joke
   return fetchRandomJoke();
 });
