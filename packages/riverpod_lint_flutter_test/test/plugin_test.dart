@@ -327,12 +327,19 @@ extension on File {
   String get _goldensPattern => '${p.basenameWithoutExtension(path)}.';
 
   Iterable<File> goldensForFile() {
-    return parent.listSync().whereType<File>().where(
-      (e) {
-        final fileName = p.basenameWithoutExtension(e.path);
-        return fileName.startsWith(_goldensPattern) && e != this;
-      },
-    );
+    return parent
+        .listSync()
+        .whereType<File>()
+        .where(
+          (e) =>
+              !e.path.endsWith('.g.dart') && !e.path.endsWith('.freezed.dart'),
+        )
+        .where(
+          (e) {
+            final fileName = p.basenameWithoutExtension(e.path);
+            return fileName.startsWith(_goldensPattern) && e != this;
+          },
+        );
   }
 }
 
