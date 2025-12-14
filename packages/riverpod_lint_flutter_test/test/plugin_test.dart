@@ -491,18 +491,17 @@ String _encodeProducerOutput({
     "part '${p.basenameWithoutExtension(goldenFile.path)}",
   );
 
-  // Format the content using dart_style
-  try {
-    content = DartFormatter(
-      languageVersion: DartFormatter.latestLanguageVersion,
-    ).format(content);
-  } catch (err, stack) {
-    Zone.current.handleUncaughtError(err, stack);
-  }
-
   buffer.write(content);
 
-  return buffer.toString();
+  // Format the content using dart_style
+  try {
+    return DartFormatter(
+      languageVersion: DartFormatter.latestLanguageVersion,
+    ).format(buffer.toString());
+  } catch (err, stack) {
+    Zone.current.handleUncaughtError(err, stack);
+    return buffer.toString();
+  }
 }
 
 Future<void> _writeProducerResultToFile(
