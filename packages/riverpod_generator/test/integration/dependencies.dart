@@ -2,6 +2,24 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'dependencies.g.dart';
 
+@riverpod
+int empty(Ref ref) => 0;
+
+@riverpod
+int emptyFamily(Ref ref, int id) => 0;
+
+@riverpod
+class Empty2 extends _$Empty2 {
+  @override
+  int build() => 0;
+}
+
+@riverpod
+class EmptyFamily2 extends _$EmptyFamily2 {
+  @override
+  int build(int id) => 0;
+}
+
 @Riverpod(dependencies: [])
 int dep(Ref ref) => 0;
 

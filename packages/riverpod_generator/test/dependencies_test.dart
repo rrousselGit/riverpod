@@ -5,10 +5,15 @@ import 'integration/dependencies.dart';
 
 void main() {
   test('Supports specifying dependencies', () {
-    expect(depProvider.dependencies, null);
-    expect(dep2Provider.dependencies, null);
-    expect(familyProvider.dependencies, null);
-    expect(family2Provider.dependencies, null);
+    expect(emptyProvider.dependencies, null);
+    expect(empty2Provider.dependencies, null);
+    expect(emptyFamilyProvider.dependencies, null);
+    expect(emptyFamily2Provider.dependencies, null);
+
+    expect(depProvider.dependencies, <ProviderOrFamily>[]);
+    expect(dep2Provider.dependencies, <ProviderOrFamily>[]);
+    expect(familyProvider.dependencies, <ProviderOrFamily>[]);
+    expect(family2Provider.dependencies, <ProviderOrFamily>[]);
 
     expect(providerProvider.dependencies, [
       depProvider,
@@ -49,10 +54,15 @@ void main() {
   });
 
   test('Generates transitive dependencies', () {
-    expect(depProvider.$allTransitiveDependencies, null);
-    expect(dep2Provider.$allTransitiveDependencies, null);
-    expect(familyProvider.$allTransitiveDependencies, null);
-    expect(family2Provider.$allTransitiveDependencies, null);
+    expect(emptyProvider.$allTransitiveDependencies, null);
+    expect(empty2Provider.$allTransitiveDependencies, null);
+    expect(emptyFamilyProvider.$allTransitiveDependencies, null);
+    expect(emptyFamily2Provider.$allTransitiveDependencies, null);
+
+    expect(depProvider.$allTransitiveDependencies, <ProviderOrFamily>[]);
+    expect(dep2Provider.$allTransitiveDependencies, <ProviderOrFamily>[]);
+    expect(familyProvider.$allTransitiveDependencies, <ProviderOrFamily>[]);
+    expect(family2Provider.$allTransitiveDependencies, <ProviderOrFamily>[]);
 
     expect(providerProvider.$allTransitiveDependencies, [
       depProvider,

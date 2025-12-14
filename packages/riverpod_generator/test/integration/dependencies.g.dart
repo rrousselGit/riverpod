@@ -9,6 +9,262 @@ part of 'dependencies.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
+@ProviderFor(empty)
+final emptyProvider = EmptyProvider._();
+
+final class EmptyProvider extends $FunctionalProvider<int, int, int>
+    with $Provider<int> {
+  EmptyProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'emptyProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$emptyHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return empty(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+}
+
+String _$emptyHash() => r'21f2eeba368019ad48276bb269141be29c3e2597';
+
+@ProviderFor(emptyFamily)
+final emptyFamilyProvider = EmptyFamilyFamily._();
+
+final class EmptyFamilyProvider extends $FunctionalProvider<int, int, int>
+    with $Provider<int> {
+  EmptyFamilyProvider._({
+    required EmptyFamilyFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'emptyFamilyProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$emptyFamilyHash();
+
+  @override
+  String toString() {
+    return r'emptyFamilyProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    final argument = this.argument as int;
+    return emptyFamily(ref, argument);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is EmptyFamilyProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$emptyFamilyHash() => r'933f10da0fbe9ff1c057b5ef24fd0266f96e2640';
+
+final class EmptyFamilyFamily extends $Family
+    with $FunctionalFamilyOverride<int, int> {
+  EmptyFamilyFamily._()
+    : super(
+        retry: null,
+        name: r'emptyFamilyProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  EmptyFamilyProvider call(int id) =>
+      EmptyFamilyProvider._(argument: id, from: this);
+
+  @override
+  String toString() => r'emptyFamilyProvider';
+}
+
+@ProviderFor(Empty2)
+final empty2Provider = Empty2Provider._();
+
+final class Empty2Provider extends $NotifierProvider<Empty2, int> {
+  Empty2Provider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'empty2Provider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$empty2Hash();
+
+  @$internal
+  @override
+  Empty2 create() => Empty2();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+}
+
+String _$empty2Hash() => r'a082058775a226d4b873fcbf87e9b6df6413b7c2';
+
+abstract class _$Empty2 extends $Notifier<int> {
+  int build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<int, int>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<int, int>,
+              int,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(EmptyFamily2)
+final emptyFamily2Provider = EmptyFamily2Family._();
+
+final class EmptyFamily2Provider extends $NotifierProvider<EmptyFamily2, int> {
+  EmptyFamily2Provider._({
+    required EmptyFamily2Family super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'emptyFamily2Provider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$emptyFamily2Hash();
+
+  @override
+  String toString() {
+    return r'emptyFamily2Provider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  EmptyFamily2 create() => EmptyFamily2();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is EmptyFamily2Provider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$emptyFamily2Hash() => r'4a4ceadc9c06eeeb2e4173c21eafcbdf5b4de33b';
+
+final class EmptyFamily2Family extends $Family
+    with $ClassFamilyOverride<EmptyFamily2, int, int, int, int> {
+  EmptyFamily2Family._()
+    : super(
+        retry: null,
+        name: r'emptyFamily2Provider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  EmptyFamily2Provider call(int id) =>
+      EmptyFamily2Provider._(argument: id, from: this);
+
+  @override
+  String toString() => r'emptyFamily2Provider';
+}
+
+abstract class _$EmptyFamily2 extends $Notifier<int> {
+  late final _$args = ref.$arg as int;
+  int get id => _$args;
+
+  int build(int id);
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<int, int>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<int, int>,
+              int,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, () => build(_$args));
+  }
+}
+
 @ProviderFor(dep)
 final depProvider = DepProvider._();
 
