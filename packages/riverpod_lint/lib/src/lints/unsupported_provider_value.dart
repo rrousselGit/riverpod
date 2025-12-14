@@ -81,10 +81,7 @@ class _Visitor extends SimpleAstVisitor<void> {
     }
 
     if (invalidValueName != null) {
-      rule.reportAtToken(
-        declaration.name,
-        arguments: [invalidValueName],
-      );
+      rule.reportAtToken(declaration.name, arguments: [invalidValueName]);
     }
   }
 }

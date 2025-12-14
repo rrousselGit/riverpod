@@ -40,12 +40,15 @@ class _RiverpodPlugin extends Plugin {
     registry.registerWarningRule(AvoidBuildContextInProviders());
     registry.registerWarningRule(AvoidPublicNotifierProperties());
     registry.registerWarningRule(AvoidRefInsideStateDispose());
-    
+
     registry.registerWarningRule(FunctionalRef());
     registry.registerFixForRule(FunctionalRef.code, FunctionalRefFix.new);
 
     registry.registerWarningRule(MissingProviderScope());
-    registry.registerFixForRule(MissingProviderScope.code, AddProviderScope.new);
+    registry.registerFixForRule(
+      MissingProviderScope.code,
+      AddProviderScope.new,
+    );
 
     registry.registerWarningRule(NotifierBuild());
     registry.registerFixForRule(NotifierBuild.code, AddBuildMethodFix.new);
@@ -57,7 +60,10 @@ class _RiverpodPlugin extends Plugin {
     registry.registerWarningRule(ProtectedNotifierProperties());
 
     registry.registerWarningRule(ProviderDependencies());
-    registry.registerFixForRule(ProviderDependencies.code, ProviderDependenciesFix.new);
+    registry.registerFixForRule(
+      ProviderDependencies.code,
+      ProviderDependenciesFix.new,
+    );
 
     registry.registerWarningRule(ProviderParameters());
     registry.registerWarningRule(RiverpodSyntaxError());

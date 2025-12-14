@@ -94,7 +94,10 @@ class AddProviderScope extends ResolvedCorrectionProducer {
     await builder.addDartFileEdit(file, (builder) {
       final providerScope = builder.importProviderScope();
 
-      builder.addSimpleInsertion(firstArgument.offset, '$providerScope(child: ');
+      builder.addSimpleInsertion(
+        firstArgument.offset,
+        '$providerScope(child: ',
+      );
       builder.addSimpleInsertion(firstArgument.end, ')');
     });
   }

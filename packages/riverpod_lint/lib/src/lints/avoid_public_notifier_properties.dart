@@ -14,7 +14,7 @@ class AvoidPublicNotifierProperties extends AnalysisRule {
   static const code = LintCode(
     'avoid_public_notifier_properties',
     'Notifiers should not have public properties/getters. '
-    'Instead, all their public API should be exposed through the `state` property.',
+        'Instead, all their public API should be exposed through the `state` property.',
   );
 
   @override
