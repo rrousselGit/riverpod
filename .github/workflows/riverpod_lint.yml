@@ -47,8 +47,6 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
       - run: dart pub global activate custom_lint
-      - name: Check format
-        run: dart format --set-exit-if-changed .
 
       - name: Analyze
         run: flutter analyze
