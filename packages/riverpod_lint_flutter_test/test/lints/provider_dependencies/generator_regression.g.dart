@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'dependencies.dart';
+part of 'generator_regression.dart';
 
 // **************************************************************************
 // RiverpodGenerator

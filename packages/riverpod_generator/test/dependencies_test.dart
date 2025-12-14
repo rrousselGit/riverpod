@@ -1,22 +1,8 @@
-import 'package:riverpod_annotation/experimental/scope.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
 import 'integration/dependencies.dart';
 
-@Dependencies([
-  provider,
-  provider2,
-  Provider3,
-  Provider4,
-  transitiveDependencies,
-  emptyDependenciesFunctional,
-  EmptyDependenciesClassBased,
-  smallTransitiveDependencyCount,
-  duplicateDependencies,
-  transitiveDuplicateDependencies,
-  duplicateDependencies2,
-])
 void main() {
   test('Supports specifying dependencies', () {
     expect(depProvider.dependencies, null);

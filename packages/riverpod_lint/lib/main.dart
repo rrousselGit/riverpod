@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:analysis_server_plugin/plugin.dart';
 import 'package:analysis_server_plugin/registry.dart';
 
@@ -26,12 +24,6 @@ import 'src/lints/scoped_providers_should_specify_dependencies.dart';
 import 'src/lints/unsupported_provider_value.dart';
 
 final plugin = _RiverpodPlugin();
-
-void log(Object obj) {
-  File('/Users/remirousselet/dev/rrousselGit/riverpod/log.txt')
-    ..createSync(recursive: true)
-    ..writeAsStringSync('$obj\n', mode: FileMode.append);
-}
 
 class _RiverpodPlugin extends Plugin {
   @override

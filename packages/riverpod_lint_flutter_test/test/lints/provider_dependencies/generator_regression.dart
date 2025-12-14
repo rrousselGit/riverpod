@@ -1,6 +1,11 @@
+@TestFor.provider_dependencies
+library;
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'dependencies.g.dart';
+import '../../test_annotation.dart';
+
+part 'generator_regression.g.dart';
 
 @Riverpod(dependencies: [])
 int dep(Ref ref) => 0;
