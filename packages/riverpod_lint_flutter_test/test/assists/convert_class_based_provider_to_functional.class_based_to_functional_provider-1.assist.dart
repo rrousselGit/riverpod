@@ -9,7 +9,7 @@
 // -   int build() => 0;
 // - }
 // + int example(Ref ref) => 0;
-// 
+//
 // /// Some comment
 // ```
 @TestFor.class_based_to_functional_provider

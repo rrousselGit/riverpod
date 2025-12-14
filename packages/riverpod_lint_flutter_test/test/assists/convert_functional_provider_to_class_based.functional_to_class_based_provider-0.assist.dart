@@ -9,7 +9,7 @@
 // +   @override
 // +   int build() => 0;
 // + }
-// 
+//
 // /// Some comment
 // ```
 @TestFor.functional_to_class_based_provider

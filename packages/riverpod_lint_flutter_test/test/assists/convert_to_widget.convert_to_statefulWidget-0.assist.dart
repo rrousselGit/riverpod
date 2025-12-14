@@ -3,18 +3,18 @@
 // [convert_to_statefulWidget?offset=851,862,857,881,998]
 // ```
 // }
-// 
+//
 // - class Hook extends HookWidget {
 // -   const Hook({super.key});
-// - 
+// -
 // -   @override
 // + class Hook extends StatefulWidget {
 // +   const Hook({super.key});
-// + 
+// +
 // +   @override
 // +   State<Hook> createState() => _HookState();
 // + }
-// + 
+// +
 // + class _HookState extends State<Hook> {
 // @override
 //   Widget build(BuildContext context) {

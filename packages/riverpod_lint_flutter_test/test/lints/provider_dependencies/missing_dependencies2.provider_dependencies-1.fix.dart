@@ -2,7 +2,7 @@
 // ignore_for_file: type=lint, type=warning
 // [provider_dependencies?offset=6022,6028,6072,6162]
 // ```
-// 
+//
 // // ignore: riverpod_lint/provider_dependencies
 // - class WidgetDependencies2 extends StatelessWidget {
 // + @Dependencies([dep])

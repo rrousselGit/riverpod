@@ -2,7 +2,7 @@
 // ignore_for_file: type=lint, type=warning
 // [provider_dependencies?offset=5614,5611]
 // ```
-// 
+//
 // // ignore: riverpod_lint/provider_dependencies
 // - void fn2() {
 // + @Dependencies([dep])

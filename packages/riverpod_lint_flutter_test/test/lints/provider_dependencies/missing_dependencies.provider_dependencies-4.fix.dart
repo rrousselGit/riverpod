@@ -2,7 +2,7 @@
 // ignore_for_file: type=lint, type=warning
 // [provider_dependencies?offset=5907,5913,5961,6159]
 // ```
-// 
+//
 // // ignore: riverpod_lint/provider_dependencies
 // - class IncompleteFamilyOverride extends ConsumerWidget {
 // + @Dependencies([depFamily])

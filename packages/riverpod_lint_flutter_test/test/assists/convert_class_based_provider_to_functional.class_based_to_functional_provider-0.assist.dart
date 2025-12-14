@@ -2,7 +2,7 @@
 // ignore_for_file: type=lint, type=warning
 // [class_based_to_functional_provider?offset=505,492,498,576,610]
 // ```
-// 
+//
 // @riverpod
 // - class Generic<FirstT, /* comment */ SecondT>
 // -     extends _$Generic<FirstT, SecondT> {

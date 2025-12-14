@@ -3,11 +3,11 @@
 // [convert_to_statefulWidget?offset=1867,1886,1873,1913,2023]
 // ```
 // }
-// 
+//
 // - class HookStateful extends StatefulHookWidget {
 // + class HookStateful extends StatefulWidget {
 //   const HookStateful({super.key});
-// 
+//
 // ```
 @TestFor.convert_to_hookWidget
 @TestFor.convert_to_hookConsumerWidget

@@ -2,7 +2,7 @@
 // ignore_for_file: type=lint, type=warning
 // [provider_dependencies?offset=2919,2925,2959,3181]
 // ```
-// 
+//
 // // ignore: riverpod_lint/provider_dependencies
 // - class AboveScope extends ConsumerWidget {
 // + @Dependencies([dep])

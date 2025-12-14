@@ -3,25 +3,25 @@
 // [convert_to_statefulWidget?offset=3869,3901,3875,3932,4245]
 // ```
 // }
-// 
+//
 // - class ConsumerStatefulWithField extends ConsumerStatefulWidget {
 // -   const ConsumerStatefulWithField({
 // -     super.key,
 // -     required this.field,
 // -     required this.foo,
 // -   });
-// - 
+// -
 // -   final int field;
 // -   final FooClass foo;
 // -   static final int staticField = _constantNumber;
-// - 
+// -
 // -   @override
 // -   ConsumerState<ConsumerStatefulWithField> createState() =>
 // -       _ConsumerStatefulWithFieldState();
 // - }
-// - 
+// -
 // - const _constantNumber = 42;
-// - 
+// -
 // - class _ConsumerStatefulWithFieldState
 // -     extends ConsumerState<ConsumerStatefulWithField> {
 // + class ConsumerStatefulWithField extends StatefulWidget {
@@ -30,18 +30,18 @@
 // +     required this.field,
 // +     required this.foo,
 // +   });
-// + 
+// +
 // +   final int field;
 // +   final FooClass foo;
 // +   static final int staticField = _constantNumber;
-// + 
+// +
 // +   @override
 // +   State<ConsumerStatefulWithField> createState() =>
 // +       _ConsumerStatefulWithFieldState();
 // + }
-// + 
+// +
 // + const _constantNumber = 42;
-// + 
+// +
 // + class _ConsumerStatefulWithFieldState
 // +     extends State<ConsumerStatefulWithField> {
 //   void printFoo() {

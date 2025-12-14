@@ -2,7 +2,7 @@
 // ignore_for_file: type=lint, type=warning
 // [provider_dependencies?offset=3524,3530,3570,3870]
 // ```
-// 
+//
 // // ignore: riverpod_lint/provider_dependencies
 // - class ConditionalScope extends ConsumerWidget {
 // + @Dependencies([dep])

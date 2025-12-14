@@ -3,10 +3,10 @@
 // [convert_to_statefulWidget?offset=2902,2919,2908,2942,3093]
 // ```
 // }
-// 
+//
 // - class MyConsumer extends ConsumerWidget {
 // -   const MyConsumer({super.key});
-// - 
+// -
 // -   @override
 // -   Widget build(
 // -     BuildContext context,
@@ -14,11 +14,11 @@
 // -   ) {
 // + class MyConsumer extends StatefulWidget {
 // +   const MyConsumer({super.key});
-// + 
+// +
 // +   @override
 // +   State<MyConsumer> createState() => _MyConsumerState();
 // + }
-// + 
+// +
 // + class _MyConsumerState extends State<MyConsumer> {
 // + @override
 // +   Widget build(

@@ -3,24 +3,24 @@
 // [convert_to_statefulWidget?offset=2519,2546,2525,2581,2730]
 // ```
 // }
-// 
+//
 // - class HookConsumerStateful extends StatefulHookConsumerWidget {
 // -   const HookConsumerStateful({super.key});
-// - 
+// -
 // -   @override
 // -   ConsumerState<HookConsumerStateful> createState() =>
 // -       _HookConsumerStatefulState();
 // - }
-// - 
+// -
 // - class _HookConsumerStatefulState extends ConsumerState<HookConsumerStateful> {
 // + class HookConsumerStateful extends StatefulWidget {
 // +   const HookConsumerStateful({super.key});
-// + 
+// +
 // +   @override
 // +   State<HookConsumerStateful> createState() =>
 // +       _HookConsumerStatefulState();
 // + }
-// + 
+// +
 // + class _HookConsumerStatefulState extends State<HookConsumerStateful> {
 //   @override
 //   Widget build(BuildContext context) {

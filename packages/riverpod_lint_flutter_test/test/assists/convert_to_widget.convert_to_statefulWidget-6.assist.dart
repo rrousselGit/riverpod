@@ -3,16 +3,16 @@
 // [convert_to_statefulWidget?offset=3445,3473,3451,3500,3828]
 // ```
 // }
-// 
+//
 // - class HookConsumerWithField extends HookConsumerWidget {
 // -   const HookConsumerWithField({
 // -     super.key,
 // -     required this.field,
 // -   });
-// - 
+// -
 // -   final int field;
 // -   static final int staticField = 42;
-// - 
+// -
 // -   @override
 // -   Widget build(
 // -     BuildContext context,
@@ -27,14 +27,14 @@
 // +     super.key,
 // +     required this.field,
 // +   });
-// + 
+// +
 // +   final int field;
 // +   static final int staticField = 42;
-// + 
+// +
 // +   @override
 // +   State<HookConsumerWithField> createState() => _HookConsumerWithFieldState();
 // + }
-// + 
+// +
 // + class _HookConsumerWithFieldState extends State<HookConsumerWithField> {
 // + @override
 // +   Widget build(

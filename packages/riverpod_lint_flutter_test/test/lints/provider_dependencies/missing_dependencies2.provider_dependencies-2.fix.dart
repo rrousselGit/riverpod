@@ -2,13 +2,13 @@
 // ignore_for_file: type=lint, type=warning
 // [provider_dependencies?offset=7022,7028,7074,7202]
 // ```
-// 
+//
 // // ignore: riverpod_lint/provider_dependencies
 // - class FindStateFromClassList extends StatefulWidget {
 // + @Dependencies([dep])
 // + class FindStateFromClassList extends StatefulWidget {
 //   const FindStateFromClassList({super.key});
-// 
+//
 // ```
 // ignore_for_file: unused_field
 

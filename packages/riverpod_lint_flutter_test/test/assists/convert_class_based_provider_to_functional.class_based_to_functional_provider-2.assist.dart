@@ -14,7 +14,7 @@
 // +     // Hello world
 // +     return 0;
 // +   }
-// 
+//
 // @riverpod
 // ```
 @TestFor.class_based_to_functional_provider
