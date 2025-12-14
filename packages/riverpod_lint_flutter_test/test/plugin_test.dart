@@ -326,7 +326,9 @@ extension on File {
 
   String get _goldensPattern => '${p.basenameWithoutExtension(path)}.';
 
-  Iterable<File> goldensForFile() {
+  Iterable<File> goldensForFile({
+    required String id,
+  }) {
     return parent
         .listSync()
         .whereType<File>()
@@ -337,7 +339,14 @@ extension on File {
         .where(
           (e) {
             final fileName = p.basenameWithoutExtension(e.path);
-            return fileName.startsWith(_goldensPattern) && e != this;
+
+            if (!fileName.startsWith(_goldensPattern) || e == this)
+              return false;
+
+            final [_, idAndIndex, _] = fileName.split('.');
+            final [fileId, index] = idAndIndex.split('-');
+
+            return fileId == id;
           },
         );
   }
@@ -401,7 +410,8 @@ Future<void> _verifyGoldensMatchProducers(
   required String producerId,
   required String groupName,
 }) async {
-  final goldens = file.goldensForFile().map((e) => e.path).toSet();
+  final goldens =
+      file.goldensForFile(id: producerId).map((e) => e.path).toSet();
   final mismatch = <({String? expected, String actual})>[];
   final missing = <({String filePath})>[];
 
@@ -440,9 +450,7 @@ Future<void> _verifyGoldensMatchProducers(
     }
   }
 
-  print('goldens for file:');
   for (final golden in goldens) {
-    print(golden);
     if (!actualFiles.any((e) => e.$1.path == golden)) {
       missing.add((filePath: golden));
     }
@@ -453,15 +461,13 @@ Future<void> _verifyGoldensMatchProducers(
 
     if (missing.isNotEmpty) {
       buffer.writeAll(
-        missing.map((e) => 'Missing golden: ${e.filePath}'),
-        '\n',
+        missing.map((e) => 'Missing golden: ${e.filePath}\n'),
       );
     }
 
     if (mismatch.isNotEmpty) {
       buffer.writeAll(
-        mismatch.map((e) => 'Mismatch: ${e.actual}'),
-        '\n',
+        mismatch.map((e) => 'Mismatch: ${e.actual}\n'),
       );
     }
 
@@ -518,7 +524,7 @@ Future<void> _writeProducerResultToFile(
   required String producerId,
   required String groupName,
 }) async {
-  final goldens = sourceFile.goldensForFile();
+  final goldens = sourceFile.goldensForFile(id: producerId);
 
   try {
     await Future.wait(
