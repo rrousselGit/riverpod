@@ -18,7 +18,7 @@ analyzer:
     # Remove once we require analyzer 8.0.0
     # We currently support both 7.0 and 8.0, so we can't migrate yet.
     deprecated_member_use: ignore
-    # Analyzer API is experimental, but kind of necessary for custom_lint plugins
+    # Analyzer API is experimental, but kind of necessary for analyzer plugins
     experimental_member_use: ignore
 
 linter:

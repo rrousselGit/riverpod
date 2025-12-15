@@ -46,15 +46,8 @@ jobs:
         run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
       - name: Install dependencies
         run: flutter pub get
-      - run: dart pub global activate custom_lint
-
       - name: Analyze
         run: flutter analyze
-
-      - name: Run custom_lint
-        run: custom_lint
-        # Workaround to https://github.com/invertase/dart_custom_lint/issues/77
-        if: matrix.package_path == 'packages/riverpod_lint_flutter_test'
 
       - name: Run tests
         run: |
