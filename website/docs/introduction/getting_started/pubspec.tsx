@@ -3,7 +3,6 @@ import {
   hooksRiverpodVersion,
   riverpodAnnotationVersion,
   riverpodGeneratorVersion,
-  riverpodLintVersion,
 } from "../../../src/versions";
 
 function plain(riverpod: string) {
@@ -16,10 +15,6 @@ dependencies:
   flutter:
     sdk: flutter
   ${riverpod}
-
-dev_dependencies:
-  custom_lint:
-  riverpod_lint: ^${riverpodLintVersion}
 `;
 }
 
@@ -37,9 +32,7 @@ dependencies:
 
 dev_dependencies:
   build_runner:
-  custom_lint:
   riverpod_generator: ^${riverpodGeneratorVersion}
-  riverpod_lint: ^${riverpodLintVersion}
 `;
 }
 
@@ -47,5 +40,7 @@ export default {
   raw: plain(`flutter_riverpod: ^${flutterRiverpodVersion}`),
   hooks: plain(`hooks_riverpod: ^${hooksRiverpodVersion}\n  flutter_hooks:`),
   codegen: codegen(`flutter_riverpod: ^${flutterRiverpodVersion}`),
-  hooksCodegen: codegen(`hooks_riverpod: ^${hooksRiverpodVersion}\n  flutter_hooks:`),
+  hooksCodegen: codegen(
+    `hooks_riverpod: ^${hooksRiverpodVersion}\n  flutter_hooks:`
+  ),
 };

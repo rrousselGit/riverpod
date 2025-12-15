@@ -10,7 +10,7 @@ export function buildDeps({
     result += `dart pub add ${dep}\n`;
   }
 
-  for (const dep of [...devDeps, "custom_lint", "riverpod_lint"]) {
+  for (const dep of devDeps) {
     result += `dart pub add dev:${dep}\n`;
   }
 
