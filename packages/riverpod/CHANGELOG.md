@@ -21,6 +21,7 @@
 - Fixed a bug with scoping when specifying `dependencies: [...]`
 - Added `Override.origin`. This enables knowing which provider is associated with an override.
 - Fix a regression with `AsyncLoading.isRefreshing/isReloading`
+- Fix retry counter resetting infinitely when calling `invalidate(asReload: true)` multiple times
 
 ## 3.0.3 - 2025-10-09
 

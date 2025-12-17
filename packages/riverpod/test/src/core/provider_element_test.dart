@@ -482,6 +482,55 @@ void main() {
         );
 
         test(
+          'second invalidate with asReload:true should not cause infinite retry reset',
+          () => fakeAsync((fake) {
+            final retry = RetryMock();
+            when(retry(any, any)).thenReturn(const Duration(milliseconds: 200));
+            final container = ProviderContainer.test(retry: retry.call);
+            final provider = Provider((ref) => throw StateError(''));
+
+            container.listen(
+              provider,
+              (prev, next) {},
+              fireImmediately: true,
+              onError: (e, s) {},
+            );
+
+            // First build: retry(0)
+            verifyOnly(retry, retry(0, isStateError));
+
+            // First retry: retry(1)
+            fake.elapse(const Duration(milliseconds: 200));
+            verifyOnly(retry, retry(1, isStateError));
+
+            // Second retry: retry(2)
+            fake.elapse(const Duration(milliseconds: 200));
+            verifyOnly(retry, retry(2, isStateError));
+
+            // First invalidate with asReload: true - resets to 0
+            container.invalidate(provider, asReload: true);
+            fake.elapse(const Duration(milliseconds: 50));
+            verifyOnly(retry, retry(0, isStateError));
+
+            // Retry should increment: retry(1)
+            fake.elapse(const Duration(milliseconds: 200));
+            verifyOnly(retry, retry(1, isStateError));
+
+            // Second invalidate with asReload: true - should reset to 0 again
+            container.invalidate(provider, asReload: true);
+            fake.elapse(const Duration(milliseconds: 50));
+            verifyOnly(retry, retry(0, isStateError));
+
+            // After second invalidate, retry should still increment properly
+            fake.elapse(const Duration(milliseconds: 200));
+            verifyOnly(retry, retry(1, isStateError));
+
+            fake.elapse(const Duration(milliseconds: 200));
+            verifyOnly(retry, retry(2, isStateError));
+          }),
+        );
+
+        test(
           'delays by the duration returned',
           () => fakeAsync((fake) {
             final container = ProviderContainer.test(
