@@ -179,6 +179,7 @@ class _StateNotifierProviderElement<
 
   @override
   bool updateShouldNotify(ValueT previous, ValueT next) {
+    if (previous == next) return false;
     return _notifierNotifier.result!.valueOrProviderException
     // ignore: invalid_use_of_protected_member
     .updateShouldNotify(previous, next);
