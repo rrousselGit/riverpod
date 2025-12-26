@@ -3270,6 +3270,56 @@ void main() {
 
         expect(ref.mounted, true);
       });
+
+      test(
+        'is false for previous ref when FutureProvider is invalidated during async build',
+        () async {
+          final container = ProviderContainer.test();
+          final completer1 = Completer<String>();
+          final completer2 = Completer<String>();
+          var buildCount = 0;
+          late Ref firstRef;
+          late Ref secondRef;
+
+          final provider = FutureProvider<String>((ref) async {
+            buildCount++;
+            if (buildCount == 1) {
+              firstRef = ref;
+              return completer1.future;
+            } else {
+              secondRef = ref;
+              return completer2.future;
+            }
+          });
+
+          final sub = container.listen(provider.future, (prev, next) {});
+
+          // First build starts
+          expect(buildCount, 1);
+          expect(firstRef.mounted, true);
+
+          // Invalidate while first build is still pending, then read to trigger rebuild
+          container.invalidate(provider);
+          container.read(provider);
+
+          // Second build starts
+          expect(buildCount, 2);
+
+          // The first ref should now be unmounted since a new build started
+          expect(firstRef.mounted, false);
+          expect(secondRef.mounted, true);
+
+          // Complete the futures
+          completer2.complete('data2');
+          await sub.read();
+
+          expect(firstRef.mounted, false);
+          expect(secondRef.mounted, true);
+
+          sub.close();
+          container.dispose();
+        },
+      );
     });
   });
 }
