@@ -1,6 +1,6 @@
 name: riverpod_generator
 description: A code generator for Riverpod. This both simplifies the syntax empowers it, such as allowing stateful hot-reload.
-version: 3.0.3
+version: 4.0.0
 repository: https://github.com/rrousselGit/riverpod
 issue_tracker: https://github.com/rrousselGit/riverpod/issues
 funding:
@@ -37,5 +37,5 @@ dev_dependencies:
   freezed: ^3.2.0
   freezed_annotation: ^3.0.0
   package_config: ^2.2.0
-  riverpod: 3.0.3
+  riverpod: 3.1.0
   test: ^1.21.0

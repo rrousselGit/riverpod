@@ -1,4 +1,4 @@
-## Unreleased minor
+## 3.1.0 - 2025-12-26
 
 - Added an alternative way to combine asynchronous providers.
   This can be done by using `AsyncValue.requireValue` inside `FutureProvider`/`AsyncNotifier`
