@@ -1,5 +1,10 @@
+@TestFor.notifier_build
+library;
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../test_annotation.dart';
 
 /// Fake Provider
 typedef _$ExampleProvider1 = Object;
@@ -8,7 +13,7 @@ typedef _$ExampleProvider1 = Object;
 typedef _$ExampleProvider = Notifier<int>;
 
 @riverpod
-// expect_lint: notifier_build
+// ignore: riverpod_lint/notifier_build
 class ExampleProvider1 extends _$ExampleProvider1 {}
 
 @riverpod

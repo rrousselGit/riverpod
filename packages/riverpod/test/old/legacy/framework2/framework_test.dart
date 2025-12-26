@@ -260,7 +260,7 @@ void main() {
     final firstElement = container.readProviderElement(first);
     final secondElement = container.readProviderElement(second);
     final computedElement = container.readProviderElement(computed);
-    final sub = container.listen(computed, (_, __) {});
+    final sub = container.listen(computed, (_, _) {});
 
     expect(sub.read(), '0');
     var firstDependents = <ProviderElement>[];
@@ -299,7 +299,7 @@ void main() {
 
       addTearDown(container.dispose);
 
-      final sub = container.listen(provider, (_, __) {});
+      final sub = container.listen(provider, (_, _) {});
 
       expect(callCount, 0);
       expect(sub.read(), const AsyncValue.data(42));
@@ -313,7 +313,7 @@ void main() {
     });
     final firstElement = container.readProviderElement(first);
     final computedElement = container.readProviderElement(computed);
-    final sub = container.listen(computed, (_, __) {});
+    final sub = container.listen(computed, (_, _) {});
 
     expect(sub.read(), 0);
     var firstDependents = <ProviderElement>[];
@@ -442,7 +442,7 @@ void main() {
         final error = Error();
         final provider = Provider<int>((ref) => throw error, name: 'hello');
 
-        final sub = container.listen(provider, (_, __) {});
+        final sub = container.listen(provider, (_, _) {});
 
         expect(sub.read, throwsProviderException(error));
       });
@@ -455,7 +455,7 @@ void main() {
 
           final sub = container.listen(
             provider.select((value) => value),
-            (_, __) {},
+            (_, _) {},
           );
 
           expect(sub.read, throwsProviderException(error));
@@ -467,7 +467,7 @@ void main() {
         final first = StateNotifierProvider<Counter, int>((ref) => counter);
         final provider = Provider((ref) => ref.watch(first));
 
-        final sub = container.listen(provider, (_, __) {});
+        final sub = container.listen(provider, (_, _) {});
 
         expect(sub.read(), 0);
 
@@ -483,7 +483,7 @@ void main() {
 
         final sub = container.listen(
           provider.select((value) => value),
-          (_, __) {},
+          (_, _) {},
         );
 
         expect(sub.read(), 0);

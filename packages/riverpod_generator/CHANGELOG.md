@@ -1,4 +1,4 @@
-## Unreleased major
+## 4.0.0 - 2025-12-26
 
 - Generated providers are no-longer constant
 - Fix a bug when using `Class.staticVariable` as parameter to `@Riverpod(retry: ...)`

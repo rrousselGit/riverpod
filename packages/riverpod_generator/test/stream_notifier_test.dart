@@ -15,7 +15,7 @@ void main() {
       final ProviderBase<AsyncValue<String>> provider = publicClassProvider;
 
       expect(
-        await container.listen(publicClassProvider.future, (_, __) {}).read(),
+        await container.listen(publicClassProvider.future, (_, _) {}).read(),
         'Hello world',
       );
     },
@@ -120,7 +120,7 @@ void main() {
                 fourth: false,
                 fifth: const ['x42'],
               ).future,
-              (_, __) {},
+              (_, _) {},
             )
             .read(),
         '(first: 42, second: x42, third: 0.42, fourth: false, fifth: [x42])',

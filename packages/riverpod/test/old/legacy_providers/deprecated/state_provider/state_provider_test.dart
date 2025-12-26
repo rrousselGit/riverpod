@@ -223,7 +223,7 @@ void main() {
     final otherController = container.read(other.notifier);
     final firstController = container.read(provider.notifier);
 
-    final sub = container.listen(provider.notifier, (_, __) {});
+    final sub = container.listen(provider.notifier, (_, _) {});
 
     expect(sub.read(), firstController);
     expect(firstController.mounted, true);
@@ -247,7 +247,7 @@ void main() {
       });
 
       var callCount = 0;
-      final sub = container.listen(provider.notifier, (_, __) => callCount++);
+      final sub = container.listen(provider.notifier, (_, _) => callCount++);
 
       final controller = container.read(provider.notifier);
 
@@ -280,7 +280,7 @@ void main() {
       });
 
       var callCount = 0;
-      final sub = container.listen(provider.notifier, (_, __) => callCount++);
+      final sub = container.listen(provider.notifier, (_, _) => callCount++);
 
       final controller = container.read(provider.notifier);
 
@@ -306,7 +306,7 @@ void main() {
       final container = ProviderContainer.test();
       final provider = StateProvider.autoDispose((ref) => 0);
 
-      final sub = container.listen(provider.notifier, (_, __) {});
+      final sub = container.listen(provider.notifier, (_, _) {});
       final first = sub.read();
 
       first.state++;
@@ -337,8 +337,8 @@ void main() {
         (ref, id) => id,
       );
 
-      final sub = container.listen(provider(0).notifier, (_, __) {});
-      final sub2 = container.listen(provider(42).notifier, (_, __) {});
+      final sub = container.listen(provider(0).notifier, (_, _) {});
+      final sub2 = container.listen(provider(42).notifier, (_, _) {});
       final first = sub.read();
 
       first.state++;

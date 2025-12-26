@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_dynamic_calls
+// ignore_for_file: unnecessary_async
 
 import 'package:flutter_riverpod/experimental/persist.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -42,5 +42,6 @@ class TodoList extends _$TodoList {
 
     return fetchTodosFromServer();
   }
+
   /* SNIPPET END */
 }

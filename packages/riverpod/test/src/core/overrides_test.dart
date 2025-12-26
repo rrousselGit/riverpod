@@ -18,9 +18,9 @@ void main() {
     group('overrideWith', () {
       test('toString', () {
         final namelessProvider = Provider<int>((_) => 42);
-        final namelessFamily = Provider.family<int, int>((_, __) => 42);
+        final namelessFamily = Provider.family<int, int>((_, _) => 42);
         final provider = Provider<int>((_) => 42, name: 'myName');
-        final family = Provider.family<int, int>((_, __) => 42, name: 'myName');
+        final family = Provider.family<int, int>((_, _) => 42, name: 'myName');
 
         expect(
           namelessProvider.overrideWith((ref) => 42).toString(),
@@ -52,9 +52,9 @@ void main() {
     group('overrideWithValue', () {
       test('toString', () {
         final namelessProvider = Provider<int>((_) => 42);
-        final namelessFamily = Provider.family<int, int>((_, __) => 42);
+        final namelessFamily = Provider.family<int, int>((_, _) => 42);
         final provider = Provider<int>((_) => 42, name: 'myName');
-        final family = Provider.family<int, int>((_, __) => 42, name: 'myName');
+        final family = Provider.family<int, int>((_, _) => 42, name: 'myName');
 
         expect(
           namelessProvider.overrideWithValue(21).toString(),
@@ -101,8 +101,8 @@ void main() {
 
     group('overrideWith', () {
       test('toString', () {
-        final namelessFamily = Provider.family<int, int>((_, __) => 42);
-        final family = Provider.family<int, int>((_, __) => 42, name: 'myName');
+        final namelessFamily = Provider.family<int, int>((_, _) => 42);
+        final family = Provider.family<int, int>((_, _) => 42, name: 'myName');
 
         expect(
           namelessFamily.overrideWith((ref, arg) => 42).toString(),
@@ -118,7 +118,7 @@ void main() {
       });
 
       test('exposes origin in tests', () {
-        final family = Provider.family<int, int>((_, __) => 42);
+        final family = Provider.family<int, int>((_, _) => 42);
         final override = family.overrideWith((ref, _) => 42);
 
         expect(override.origin, family);

@@ -1,47 +1,48 @@
-import 'package:analyzer/source/source_range.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analysis_server_plugin/edit/dart/correction_producer.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer_plugin/utilities/assist/assist.dart';
+import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../../imports.dart';
-import '../../riverpod_custom_lint.dart';
 
 /// Right above "wrap in builder"
-const wrapPriority = 28;
+const wrapPriority = 30;
 
-class WrapWithConsumer extends RiverpodAssist {
-  WrapWithConsumer();
+class WrapWithConsumer extends ResolvedCorrectionProducer {
+  WrapWithConsumer({required super.context});
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ChangeReporter reporter,
-    CustomLintContext context,
-    SourceRange target,
-  ) {
-    context.registry.addInstanceCreationExpression((node) {
-      // Select from "new" to the opening bracket
-      if (!target.intersects(node.constructorName.sourceRange)) return;
+  CorrectionApplicability get applicability =>
+      CorrectionApplicability.singleLocation;
 
-      final createdType = node.constructorName.type.type;
-      if (createdType == null ||
-          !widgetType.isAssignableFromType(createdType)) {
-        return;
-      }
+  @override
+  AssistKind get assistKind => const AssistKind(
+    'wrap_with_consumer',
+    wrapPriority,
+    'Wrap with Consumer',
+  );
 
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Wrap with Consumer',
-        priority: wrapPriority,
+  @override
+  Future<void> compute(ChangeBuilder builder) async {
+    final node = this.node;
+    if (node is! NamedType) return;
+
+    final instanceCreationExpr =
+        node.ancestors.whereType<InstanceCreationExpression>().firstOrNull;
+    if (instanceCreationExpr == null) return;
+
+    final type = instanceCreationExpr.staticType;
+    if (type == null || !widgetType.isAssignableFromType(type)) return;
+
+    await builder.addDartFileEdit(file, (builder) {
+      final consumer = builder.importConsumer();
+
+      builder.addSimpleInsertion(
+        instanceCreationExpr.offset,
+        '$consumer(builder: (context, ref, child) { return ',
       );
-
-      changeBuilder.addDartFileEdit((builder) {
-        final consumer = builder.importConsumer();
-
-        builder.addSimpleInsertion(
-          node.offset,
-          '$consumer(builder: (context, ref, child) { return ',
-        );
-        builder.addSimpleInsertion(node.end, '; },)');
-      });
+      builder.addSimpleInsertion(instanceCreationExpr.end, '; },)');
     });
   }
 }

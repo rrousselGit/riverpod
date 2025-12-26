@@ -125,7 +125,7 @@ class _EqualsIgnoringHashCodes extends Matcher {
 
   final String _value;
 
-  static final Object _mismatchedValueKey = Object();
+  static final _mismatchedValueKey = Object();
 
   static String _normalize(String s) {
     return s.replaceAll(RegExp('#[0-9a-fA-F]{5}'), '#00000');

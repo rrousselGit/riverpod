@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_dynamic_calls
+// ignore_for_file: unnecessary_async, avoid_dynamic_calls
 
 import 'package:flutter_riverpod/experimental/persist.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,9 +30,11 @@ class TodoList extends AsyncNotifier<List<Todo>> {
       // Persist as usual
       key: 'todo_list',
       encode: (todos) => todos.map((todo) => {'task': todo.task}).toList(),
-      decode: (json) => (json as List)
-          .map((todo) => Todo(task: todo['task'] as String))
-          .toList(),
+      decode:
+          (json) =>
+              (json as List)
+                  .map((todo) => Todo(task: todo['task'] as String))
+                  .toList(),
     );
 
     return fetchTodosFromServer();

@@ -1,4 +1,3 @@
-// ignore_for_file: unused_local_variable, avoid_print
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:riverpod/riverpod.dart';
@@ -9,7 +8,7 @@ void main() {
   test('Some description', () {
     final container = ProviderContainer.test();
     /* SNIPPET START */
-    final subscription = container.listen<String>(provider, (_, __) {});
+    final subscription = container.listen<String>(provider, (_, _) {});
 
     expect(
       // {@template read}

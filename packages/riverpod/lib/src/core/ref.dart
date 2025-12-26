@@ -704,7 +704,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   }
 }
 
-int _debugCallbackStack = 0;
+var _debugCallbackStack = 0;
 void _runCallbacks(
   ProviderContainer container,
   List<void Function()>? callbacks,

@@ -1,20 +1,20 @@
+import 'package:analysis_server_plugin/edit/dart/correction_producer.dart';
+import 'package:analysis_server_plugin/edit/dart/dart_fix_kind_priority.dart';
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/diagnostic/diagnostic.dart';
-import 'package:analyzer/error/error.dart'
-    hide
-        // ignore: undefined_hidden_name, necessary to support lower analyzer version
-        LintCode;
-import 'package:analyzer/error/listener.dart';
+import 'package:analyzer/error/error.dart';
+import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
+import 'package:analyzer_plugin/utilities/fixes/fixes.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../imports.dart';
 import '../object_utils.dart';
-import '../riverpod_custom_lint.dart';
-
-const _fixDependenciesPriority = 100;
 
 class _LocatedProvider {
   _LocatedProvider(this.provider, this.node);
@@ -191,22 +191,40 @@ extension on AccumulatedDependencyList {
       node;
 }
 
-class ProviderDependencies extends RiverpodLintRule {
-  const ProviderDependencies() : super(code: _code);
+class ProviderDependencies extends AnalysisRule {
+  ProviderDependencies()
+    : super(name: code.name, description: code.problemMessage);
 
-  static const _code = LintCode(
-    name: 'provider_dependencies',
-    problemMessage: '{0}',
-    errorSeverity: ErrorSeverity.WARNING,
+  static const code = LintCode(
+    'provider_dependencies',
+    '{0}',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
   ) {
-    riverpodRegistry(context).addAccumulatedDependencyList((list) {
+    final visitor = _Visitor(this, context);
+    registry.addCompilationUnit(this, visitor);
+  }
+}
+
+class _Visitor extends SimpleAstVisitor<void> {
+  _Visitor(this.rule, this.context);
+
+  final AnalysisRule rule;
+  final RuleContext context;
+
+  @override
+  void visitCompilationUnit(CompilationUnit node) {
+    final registry = RiverpodAstRegistry();
+
+    registry.addAccumulatedDependencyList((list) {
       // Ignore ProviderScopes. We only check annotations
       if (list.overrides != null) return;
 
@@ -278,9 +296,8 @@ class ProviderDependencies extends RiverpodLintRule {
       late final unit = list.node.thisOrAncestorOfType<CompilationUnit>();
       late final source = unit?.declaredFragment?.source;
 
-      reporter.atNode(
+      rule.reportAtNode(
         list.target,
-        _code,
         arguments: [message.toString()],
         contextMessages: [
           for (final dependency in missingDependencies)
@@ -292,26 +309,59 @@ class ProviderDependencies extends RiverpodLintRule {
                 length: dependency.node.length,
               ),
         ],
-        data: _Data(usedDependencies: usedDependencies, list: list),
       );
     });
-  }
 
-  @override
-  List<DartFix> getFixes() => [_ProviderDependenciesFix()];
+    registry.run(node);
+  }
 }
 
-class _ProviderDependenciesFix extends RiverpodFix {
+class ProviderDependenciesFix extends ResolvedCorrectionProducer {
+  ProviderDependenciesFix({required super.context});
+
+  static const fix = FixKind(
+    'provider_dependencies',
+    DartFixKindPriority.standard,
+    'Fix dependencies',
+  );
+
   @override
-  void run(
-    CustomLintResolver resolver,
-    ChangeReporter reporter,
-    CustomLintContext context,
-    AnalysisError analysisError,
-    List<AnalysisError> others,
-  ) {
-    final data = analysisError.data;
-    if (data is! _Data) return;
+  FixKind get fixKind => fix;
+
+  @override
+  CorrectionApplicability get applicability =>
+      CorrectionApplicability.singleLocation;
+
+  @override
+  Future<void> compute(ChangeBuilder builder) async {
+    final node = this.node;
+    final accumulatedDependencyList = node.accumulatedDependencies;
+
+    if (accumulatedDependencyList == null) return;
+
+    final list = accumulatedDependencyList;
+
+    // Recompute used dependencies
+    final usedDependencies = <_LocatedProvider>[];
+
+    final visitor = _FindNestedDependency(
+      list,
+      onProvider: (locatedProvider, list, {required checkOverrides}) {
+        final provider = locatedProvider.provider;
+        if (provider is! GeneratorProviderDeclarationElement) return;
+        if (!provider.isScoped) return;
+
+        if (checkOverrides && list.isSafelyAccessibleAfterOverrides(provider)) {
+          return;
+        }
+
+        usedDependencies.add(locatedProvider);
+      },
+    );
+
+    list.node.accept(visitor);
+
+    final data = _Data(list: list, usedDependencies: usedDependencies);
 
     final scopedDependencies =
         data.usedDependencies.map((e) => e.provider).toSet();
@@ -330,15 +380,11 @@ class _ProviderDependenciesFix extends RiverpodFix {
         return;
       }
 
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Remove "dependencies"',
-        priority: _fixDependenciesPriority,
-      );
-      changeBuilder.addDartFileEdit((builder) {
+      await builder.addDartFileEdit(file, (builder) {
         if (riverpodAnnotation case final riverpod?) {
           _riverpodRemoveDependencies(builder, riverpod);
         } else if (dependencies != null) {
-          builder.addDeletion(data.list.dependencies!.node.sourceRange);
+          builder.addDeletion(range.node(data.list.dependencies!.node));
         }
       });
 
@@ -350,11 +396,7 @@ class _ProviderDependenciesFix extends RiverpodFix {
         data.list.dependencies?.dependencies;
 
     if (dependencyList == null) {
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Specify "dependencies"',
-        priority: _fixDependenciesPriority,
-      );
-      changeBuilder.addDartFileEdit((builder) {
+      await builder.addDartFileEdit(file, (builder) {
         if (riverpodAnnotation case final riverpod?) {
           _riverpodSpecifyDependencies(builder, riverpod, newDependencies);
         } else {
@@ -374,21 +416,18 @@ class _ProviderDependenciesFix extends RiverpodFix {
       // This shouldn't happen but prevents errors in case of bad states.
       return;
     }
-    final changeBuilder = reporter.createChangeBuilder(
-      message: 'Update "dependencies"',
-      priority: _fixDependenciesPriority,
-    );
-    changeBuilder.addDartFileEdit((builder) {
+
+    await builder.addDartFileEdit(file, (builder) {
       if (riverpodAnnotation != null) {
         final dependencies = scopedDependencies.map((e) => e.name).join(', ');
         builder.addSimpleReplacement(
-          dependencyList.node!.sourceRange,
+          range.node(dependencyList.node!),
           '[$dependencies]',
         );
       } else {
         final dep = builder.importDependenciesClass();
         builder.addSimpleReplacement(
-          data.list.dependencies!.node.sourceRange,
+          range.node(data.list.dependencies!.node),
           '@$dep($newDependencies)',
         );
       }
@@ -404,7 +443,7 @@ class _ProviderDependenciesFix extends RiverpodFix {
       // Only "dependencies" is specified in the annotation.
       // So instead of @Riverpod(dependencies: []) -> @Riverpod(),
       // we can do @Riverpod(dependencies: []) -> @riverpod
-      builder.addSimpleReplacement(riverpod.node.sourceRange, '@$_riverpod');
+      builder.addSimpleReplacement(range.node(riverpod.node), '@$_riverpod');
       return;
     }
 
@@ -428,7 +467,7 @@ class _ProviderDependenciesFix extends RiverpodFix {
       final _riverpod = builder.importRiverpodClass();
       // No argument list found. We are using the @riverpod annotation.
       builder.addSimpleReplacement(
-        riverpod.node.sourceRange,
+        range.node(riverpod.node),
         '@$_riverpod(dependencies: $newDependencies)',
       );
     } else {

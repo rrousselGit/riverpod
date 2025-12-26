@@ -52,7 +52,7 @@ String _$namelessHash() => r'1a2aa61445a64c65301051820b159c5998195606';
 @ProviderFor(generics)
 final genericsProvider = GenericsFamily._();
 
-final class GenericsProvider<A extends num, B>
+final class GenericsProvider<FirstT extends num, SecondT>
     extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   GenericsProvider._({required GenericsFamily super.from})
@@ -71,7 +71,7 @@ final class GenericsProvider<A extends num, B>
   @override
   String toString() {
     return r'genericsProvider'
-        '<${A}, ${B}>'
+        '<${FirstT}, ${SecondT}>'
         '()';
   }
 
@@ -82,11 +82,11 @@ final class GenericsProvider<A extends num, B>
 
   @override
   int create(Ref ref) {
-    return generics<A, B>(ref);
+    return generics<FirstT, SecondT>(ref);
   }
 
-  $R _captureGenerics<$R>($R Function<A extends num, B>() cb) {
-    return cb<A, B>();
+  $R _captureGenerics<$R>($R Function<FirstT extends num, SecondT>() cb) {
+    return cb<FirstT, SecondT>();
   }
 
   /// {@macro riverpod.override_with_value}
@@ -110,7 +110,7 @@ final class GenericsProvider<A extends num, B>
   }
 }
 
-String _$genericsHash() => r'dddbd6460e73b1f20343bbadee6666311c5ac0ea';
+String _$genericsHash() => r'1be04375e21867a7ee12713e088b8aea9e820d73';
 
 final class GenericsFamily extends $Family {
   GenericsFamily._()
@@ -122,24 +122,27 @@ final class GenericsFamily extends $Family {
         isAutoDispose: true,
       );
 
-  GenericsProvider<A, B> call<A extends num, B>() =>
-      GenericsProvider<A, B>._(from: this);
+  GenericsProvider<FirstT, SecondT> call<FirstT extends num, SecondT>() =>
+      GenericsProvider<FirstT, SecondT>._(from: this);
 
   @override
   String toString() => r'genericsProvider';
 
   /// {@macro riverpod.override_with}
-  Override overrideWith(int Function<A extends num, B>(Ref ref) create) =>
-      $FamilyOverride(
-        from: this,
-        createElement: (pointer) {
-          final provider = pointer.origin as GenericsProvider;
-          return provider._captureGenerics(<A extends num, B>() {
-            provider as GenericsProvider<A, B>;
-            return provider.$view(create: create<A, B>).$createElement(pointer);
-          });
-        },
-      );
+  Override overrideWith(
+    int Function<FirstT extends num, SecondT>(Ref ref) create,
+  ) => $FamilyOverride(
+    from: this,
+    createElement: (pointer) {
+      final provider = pointer.origin as GenericsProvider;
+      return provider._captureGenerics(<FirstT extends num, SecondT>() {
+        provider as GenericsProvider<FirstT, SecondT>;
+        return provider
+            .$view(create: create<FirstT, SecondT>)
+            .$createElement(pointer);
+      });
+    },
+  );
 }
 
 @ProviderFor(valid)
