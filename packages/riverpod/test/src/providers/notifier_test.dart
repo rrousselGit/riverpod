@@ -636,6 +636,104 @@ void main() {
       );
     });
   });
+
+  // see https://github.com/rrousselGit/riverpod/issues/4417
+  test('keeps state alive when watched notifier changes', () async {
+    final container = ProviderContainer.test();
+
+    final notifierB = NotifierProvider(
+      () => DeferredNotifier<int>((ref, self) {
+        return 42;
+      }),
+      name: 'notifierB',
+    );
+
+    final notifierA = NotifierProvider(
+      () => DeferredNotifier<int>((ref, self) {
+        return self.stateOrNull ?? ref.watch(notifierB);
+      }),
+      name: 'notifierA',
+    );
+
+    final subA = container.listen(notifierA, (prev, next) {});
+    final subB = container.listen(notifierB, (prev, next) {});
+
+    expect(
+      subA.read(),
+      42,
+      reason: 'notifierA should initialize its state from notifierB',
+    );
+    expect(
+      subB.read(),
+      42,
+      reason: 'notifierB should initialize its state to 42',
+    );
+
+    container.read(notifierB.notifier).state = 21;
+
+    await container.pump();
+
+    expect(
+      subA.read(),
+      42,
+      reason: 'notifierA should keep its current state when notifierB changes',
+    );
+    expect(subB.read(), 21, reason: 'notifierB should update its state to 21');
+  });
+
+  test('keeps nullable state alive when watched notifier changes', () async {
+    final container = ProviderContainer.test();
+
+    final notifierB = NotifierProvider(
+      () => DeferredNotifier<int>((ref, self) {
+        return 42;
+      }),
+      name: 'notifierB',
+    );
+
+    final notifierA = NotifierProvider(
+      () => DeferredNotifier<int?>((ref, self) {
+        final stateB = ref.watch(notifierB);
+
+        if (ref.isFirstBuild && stateB == 21) {
+          self.state = stateB;
+        } else if (ref.isFirstBuild) {
+          // simulate a condition that causes the state to be set to null
+          self.state = null;
+        }
+
+        // directly access the state
+        return self.state;
+      }),
+      name: 'notifierA',
+    );
+
+    final subA = container.listen(notifierA, (prev, next) {});
+    final subB = container.listen(notifierB, (prev, next) {});
+
+    expect(
+      subA.read(),
+      null,
+      reason: 'notifierA should initialize its state from notifierB',
+    );
+    expect(
+      subB.read(),
+      42,
+      reason: 'notifierB should initialize its state to 42',
+    );
+
+    container.read(notifierB.notifier).state = 21;
+    container.invalidate(notifierA);
+
+    await container.pump();
+
+    expect(
+      subA.read(),
+      null,
+      reason: 'notifierA should keep its current state when notifierB changes',
+    );
+    expect(subB.read(), 21, reason: 'notifierB should update its state to 21');
+  });
 }
 
 @immutable
