@@ -25,7 +25,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_hooks: ^0.21.0
-  flutter_riverpod: 3.0.3
+  flutter_riverpod: 3.1.0
   flutter_test:
     sdk: flutter
   riverpod: 3.1.0

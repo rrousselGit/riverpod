@@ -19,7 +19,7 @@ resolution: workspace
 
 dependencies:
   meta: ^1.15.0
-  riverpod: 3.0.3
+  riverpod: 3.1.0
 
 dev_dependencies:
   test: ^1.21.0
