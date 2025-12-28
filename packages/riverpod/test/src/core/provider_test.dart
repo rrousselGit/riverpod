@@ -33,5 +33,16 @@ void main() {
         );
       });
     });
+
+    group('ref.isPaused', () {
+      test('isPaused is false in sync-Provider', () {
+        final container = ProviderContainer.test();
+
+        final provider = Provider((ref) => ref.isPaused);
+
+        final sub = container.listen(provider, (previous, next) {});
+        expect(sub.read(), false);
+      });
+    });
   });
 }
