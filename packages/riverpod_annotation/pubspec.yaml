@@ -1,6 +1,6 @@
 name: riverpod_annotation
 description: A package exposing annotations for riverpod_generator
-version: 3.0.3
+version: 4.0.0
 repository: https://github.com/rrousselGit/riverpod
 issue_tracker: https://github.com/rrousselGit/riverpod/issues
 funding:
