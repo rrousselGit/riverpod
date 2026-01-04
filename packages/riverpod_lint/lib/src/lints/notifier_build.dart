@@ -5,7 +5,7 @@ import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:analyzer_plugin/utilities/fixes/fixes.dart';
@@ -45,10 +45,10 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitClassDeclaration(ClassDeclaration node) {
     final hasRiverpodAnnotation =
         node.metadata.where((element) {
-          final annotationElement = element.element2;
+          final annotationElement = element.element;
 
           if (annotationElement == null ||
-              annotationElement is! ExecutableElement2) {
+              annotationElement is! ExecutableElement) {
             return false;
           }
 

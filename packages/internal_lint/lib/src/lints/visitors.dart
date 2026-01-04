@@ -3,7 +3,7 @@ import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:meta/meta.dart';
@@ -55,7 +55,7 @@ class _Visitor extends SimpleAstVisitor<void> {
     final visitorVar = body.block.statements
         .whereType<VariableDeclarationStatement>()
         .map((e) {
-          final type = e.variables.variables.firstOrNull?.declaredElement?.type;
+          final type = e.variables.variables.firstOrNull?.declaredFragment?.element.type;
           if (type == null) return null;
           return (type: type, node: e);
         })
@@ -137,7 +137,7 @@ class _Visitor extends SimpleAstVisitor<void> {
   }
 
   Set<String> _visitorVisits(DartType visitorType) {
-    final element = visitorType.element3;
+    final element = visitorType.element;
     if (element == null || element is! ClassElement) return <String>{};
 
     final visitorVisits = <String>{};
