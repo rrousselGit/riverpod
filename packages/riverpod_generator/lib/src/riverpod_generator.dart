@@ -37,7 +37,7 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
   String generateForUnit(List<CompilationUnit> compilationUnits) {
     if (compilationUnits.isEmpty) return '';
 
-    final buffer = AnalyzerBuffer.part2(
+    final buffer = AnalyzerBuffer.part(
       compilationUnits.first.declaredFragment!.element,
       header: '// ignore_for_file: type=lint, type=warning',
     );

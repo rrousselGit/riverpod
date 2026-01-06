@@ -79,8 +79,8 @@ class _Visitor extends SimpleAstVisitor<void> {
       final unit = node.thisOrAncestorOfType<CompilationUnit>()!;
 
       genericType =
-          genericType.element3.bound ??
-          unit.declaredFragment!.element.library2.typeProvider.dynamicType;
+          genericType.element.bound ??
+          unit.declaredFragment!.element.library.typeProvider.dynamicType;
     }
 
     if (genericType is! DynamicType &&

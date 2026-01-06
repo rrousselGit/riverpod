@@ -5,7 +5,7 @@ import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
@@ -57,7 +57,7 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitExportDirective(ExportDirective export) {
     if (export.libraryExport?.metadata.hasDeprecated ?? true) return;
 
-    final exportedLibrary = export.libraryExport?.exportedLibrary2;
+    final exportedLibrary = export.libraryExport?.exportedLibrary;
     if (exportedLibrary == null) return;
 
     final meta = _computeExportDiff(export);
@@ -90,21 +90,21 @@ class _Visitor extends SimpleAstVisitor<void> {
   }
 }
 
-extension on LibraryElement2 {
-  Set<Element2> get exportedElements {
+extension on LibraryElement {
+  Set<Element> get exportedElements {
     return exportNamespace.definedNames2.values
-        .map((e) => e.nonSynthetic2)
+        .map((e) => e.nonSynthetic)
         .toSet();
   }
 }
 
 ({
-  Iterable<Element2> missing,
+  Iterable<Element> missing,
   Iterable<SimpleIdentifier> extra,
-  List<Element2> toExport,
+  List<Element> toExport,
 })?
 _computeExportDiff(ExportDirective export) {
-  final exportedLibrary = export.libraryExport!.exportedLibrary2;
+  final exportedLibrary = export.libraryExport!.exportedLibrary;
   final exportedPackageName = exportedLibrary?.packageName;
   if (exportedPackageName == null) {
     return null;
@@ -112,12 +112,10 @@ _computeExportDiff(ExportDirective export) {
 
   final exportedIdentifiers = exportedLibrary!.exportedElements
       .where((e) {
-        final annotatable = e as Annotatable;
+        var targets = _Public.of(e);
+        if (targets.isEmpty && e.metadata.hasInternal) return false;
 
-        var targets = _Public.of(annotatable);
-        if (targets.isEmpty && annotatable.metadata2.hasInternal) return false;
-
-        if (targets.isEmpty) targets = _Public.of(e.library2!);
+        if (targets.isEmpty) targets = _Public.of(e.library!);
         if (targets.isEmpty) targets = _Public.defaultOf(export, e);
         if (targets.isEmpty) return false;
 
@@ -134,11 +132,11 @@ _computeExportDiff(ExportDirective export) {
 
   final missing = exportedIdentifiers.where(
     (e) =>
-        show == null || !show.shownNames.map((e) => e.name).contains(e.name3),
+        show == null || !show.shownNames.map((e) => e.name).contains(e.name),
   );
 
   final extra = show?.shownNames.where(
-    (e) => !exportedIdentifiers.map((e) => e.name3).contains(e.name),
+    (e) => !exportedIdentifiers.map((e) => e.name).contains(e.name),
   );
 
   return (
@@ -182,7 +180,7 @@ class ShowAllFix extends ResolvedCorrectionProducer {
       if (show == null) {
         builder.addInsertion(export.semicolon.offset, (builder) {
           builder.write('show ');
-          final allExported = toExport.map((e) => e.name3).join(', ');
+          final allExported = toExport.map((e) => e.name).join(', ');
           builder.write(allExported);
         });
         return;
@@ -202,7 +200,7 @@ class ShowAllFix extends ResolvedCorrectionProducer {
       if (missing.isNotEmpty) {
         builder.addInsertion(export.semicolon.offset, (builder) {
           builder.write(', ');
-          final unexportedElements = missing.map((e) => e.name3).join(', ');
+          final unexportedElements = missing.map((e) => e.name).join(', ');
           builder.write(unexportedElements);
         });
       }
@@ -296,7 +294,7 @@ class _Public {
   static const type = TypeChecker.fromName('Public', packageName: 'riverpod');
   static const allOf = TypeChecker.fromName('AllOf', packageName: 'riverpod');
 
-  static List<_Public> of(Annotatable element) {
+  static List<_Public> of(Element element) {
     final annotations = type.annotationsOfExact(
       element,
       throwOnUnresolved: false,
@@ -326,7 +324,7 @@ class _Public {
   bool hasMatch(LibraryExport e) {
     final uri = e.libraryFragment.source.uri;
 
-    if (packageName != null && packageName != e.exportedLibrary2!.packageName) {
+    if (packageName != null && packageName != e.exportedLibrary!.packageName) {
       return false;
     }
 
@@ -337,8 +335,8 @@ class _Public {
   @override
   String toString() => 'Public(library: $library, packageName: $packageName)';
 
-  static List<_Public> defaultOf(ExportDirective export, Element2 element) {
-    final definingPackageName = element.library2!.packageName;
+  static List<_Public> defaultOf(ExportDirective export, Element element) {
+    final definingPackageName = element.library!.packageName;
     if (definingPackageName == 'riverpod' ||
         definingPackageName == 'flutter_riverpod' ||
         definingPackageName == 'hooks_riverpod') {
@@ -350,7 +348,7 @@ class _Public {
     }
 
     if (definingPackageName == 'state_notifier' &&
-        element.name3 == 'StateNotifier') {
+        element.name == 'StateNotifier') {
       return [
         _Public(library: 'legacy', packageName: 'riverpod'),
         _Public(library: 'legacy', packageName: 'flutter_riverpod'),
@@ -359,7 +357,7 @@ class _Public {
     }
 
     final exportedPackageName =
-        export.libraryExport!.exportedLibrary2!.packageName;
+        export.libraryExport!.exportedLibrary!.packageName;
     return [
       if (exportedPackageName != null)
         _Public(library: exportedPackageName, packageName: exportedPackageName),
@@ -367,7 +365,7 @@ class _Public {
   }
 }
 
-extension on LibraryElement2 {
+extension on LibraryElement {
   String? get packageName {
     if (uri.scheme != 'package') return null;
 

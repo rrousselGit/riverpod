@@ -18,7 +18,7 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
   FutureOr<String> generateForUnit(List<CompilationUnit> compilationUnits) {
     if (compilationUnits.isEmpty) return '';
 
-    final buffer = AnalyzerBuffer.part2(
+    final buffer = AnalyzerBuffer.part(
       compilationUnits.first.declaredFragment!.element,
     );
 
@@ -51,7 +51,7 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
         'Encoding generic notifiers is currently not supported',
         element:
             provider.node.declaredFragment!.libraryFragment.element.classes
-                .where((e) => e.name3 == provider.name.lexeme)
+                .where((e) => e.name == provider.name.lexeme)
                 .firstOrNull,
         node: provider.node,
       );
