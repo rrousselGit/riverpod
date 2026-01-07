@@ -59,7 +59,6 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [Convert widget to `ConsumerStatefulWidget`](#convert-widget-to-consumerstatefulwidget)
   - [Convert functional `@riverpod` to class variant](#convert-functional-riverpod-to-class-variant)
   - [Convert class `@riverpod` to functional variant](#convert-class-riverpod-to-functional-variant)
-- [Migrations](#migrations)
 
 ## Installing riverpod_lint
 
