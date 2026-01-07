@@ -35,9 +35,6 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
 
 - [Table of content](#table-of-content)
 - [Installing riverpod\_lint](#installing-riverpod_lint)
-- [Enabling/disabling lints.](#enablingdisabling-lints)
-  - [Disable one specific rule](#disable-one-specific-rule)
-  - [Disable all lints by default](#disable-all-lints-by-default)
 - [Running riverpod\_lint in the terminal/CI](#running-riverpod_lint-in-the-terminalci)
 - [All the lints](#all-the-lints)
   - [missing\_provider\_scope](#missing_provider_scope)
