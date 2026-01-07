@@ -51,7 +51,7 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [notifier\_build (riverpod\_generator only)](#notifier_build-riverpod_generator-only)
   - [riverpod\_syntax\_error (riverpod\_generator only)](#riverpod_syntax_error-riverpod_generator-only)
   - [async\_value\_nullable\_pattern](#async_value_nullable_pattern)
-- [protected\_notifier\_properties](#protected_notifier_properties)
+  - [protected\_notifier\_properties](#protected_notifier_properties)
 - [All assists](#all-assists)
   - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
   - [Wrap widgets with a `ProviderScope`](#wrap-widgets-with-a-providerscope)
@@ -616,7 +616,7 @@ switch (...) {
 }
 ```
 
-## protected_notifier_properties
+### protected_notifier_properties
 
 Notifiers should not access the state of other notifiers.
 
