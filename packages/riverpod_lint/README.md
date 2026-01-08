@@ -35,9 +35,6 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
 
 - [Table of content](#table-of-content)
 - [Installing riverpod\_lint](#installing-riverpod_lint)
-- [Enabling/disabling lints.](#enablingdisabling-lints)
-  - [Disable one specific rule](#disable-one-specific-rule)
-  - [Disable all lints by default](#disable-all-lints-by-default)
 - [Running riverpod\_lint in the terminal/CI](#running-riverpod_lint-in-the-terminalci)
 - [All the lints](#all-the-lints)
   - [missing\_provider\_scope](#missing_provider_scope)
@@ -54,7 +51,7 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [notifier\_build (riverpod\_generator only)](#notifier_build-riverpod_generator-only)
   - [riverpod\_syntax\_error (riverpod\_generator only)](#riverpod_syntax_error-riverpod_generator-only)
   - [async\_value\_nullable\_pattern](#async_value_nullable_pattern)
-- [protected\_notifier\_properties](#protected_notifier_properties)
+  - [protected\_notifier\_properties](#protected_notifier_properties)
 - [All assists](#all-assists)
   - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
   - [Wrap widgets with a `ProviderScope`](#wrap-widgets-with-a-providerscope)
@@ -62,7 +59,6 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [Convert widget to `ConsumerStatefulWidget`](#convert-widget-to-consumerstatefulwidget)
   - [Convert functional `@riverpod` to class variant](#convert-functional-riverpod-to-class-variant)
   - [Convert class `@riverpod` to functional variant](#convert-class-riverpod-to-functional-variant)
-- [Migrations](#migrations)
 
 ## Installing riverpod_lint
 
@@ -620,7 +616,7 @@ switch (...) {
 }
 ```
 
-## protected_notifier_properties
+### protected_notifier_properties
 
 Notifiers should not access the state of other notifiers.
 
