@@ -1336,6 +1336,8 @@ mixin SyncProviderElement<ValueT> on ProviderElement<ValueT, ValueT> {
       case AsyncLoading(:final error?, :final stackTrace?) when value.retrying:
       case AsyncError(:final error, :final stackTrace):
         return $ResultError(error, stackTrace);
+      case AsyncLoading(:final value, hasValue: true):
+        return $ResultData(value as ValueT);
       case AsyncLoading():
         return null;
     }
