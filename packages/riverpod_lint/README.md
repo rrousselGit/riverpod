@@ -35,9 +35,6 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
 
 - [Table of content](#table-of-content)
 - [Installing riverpod\_lint](#installing-riverpod_lint)
-- [Enabling/disabling lints.](#enablingdisabling-lints)
-  - [Disable one specific rule](#disable-one-specific-rule)
-  - [Disable all lints by default](#disable-all-lints-by-default)
 - [Running riverpod\_lint in the terminal/CI](#running-riverpod_lint-in-the-terminalci)
 - [All the lints](#all-the-lints)
   - [missing\_provider\_scope](#missing_provider_scope)
@@ -54,7 +51,7 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [notifier\_build (riverpod\_generator only)](#notifier_build-riverpod_generator-only)
   - [riverpod\_syntax\_error (riverpod\_generator only)](#riverpod_syntax_error-riverpod_generator-only)
   - [async\_value\_nullable\_pattern](#async_value_nullable_pattern)
-- [protected\_notifier\_properties](#protected_notifier_properties)
+  - [protected\_notifier\_properties](#protected_notifier_properties)
 - [All assists](#all-assists)
   - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
   - [Wrap widgets with a `ProviderScope`](#wrap-widgets-with-a-providerscope)
@@ -62,107 +59,33 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [Convert widget to `ConsumerStatefulWidget`](#convert-widget-to-consumerstatefulwidget)
   - [Convert functional `@riverpod` to class variant](#convert-functional-riverpod-to-class-variant)
   - [Convert class `@riverpod` to functional variant](#convert-class-riverpod-to-functional-variant)
-- [Migrations](#migrations)
 
 ## Installing riverpod_lint
 
-Riverpod_lint is implemented using [custom_lint]. As such, it uses custom_lint's installation logic.  
-Long story short:
+Riverpod_lint is implemented using [analysis_server_plugin]. As such, it is installed through `analysis_options.yaml`
 
-- Add both riverpod_lint and custom_lint to your `pubspec.yaml`:
-  ```yaml
-  dev_dependencies:
-    custom_lint:
-    riverpod_lint:
-  ```
-- Enable `custom_lint`'s plugin in your `analysis_options.yaml`:
-
-  ```yaml
-  analyzer:
-    plugins:
-      - custom_lint
-  ```
-
-## Enabling/disabling lints.
-
-By default when installing riverpod_lint, most of the lints will be enabled.
-To change this, you have a few options.
-
-### Disable one specific rule
-
-You may dislike one of the various lint rules offered by riverpod_lint.
-In that event, you can explicitly disable this lint rule for your project
-by modifying the `analysis_options.yaml`
+Long story short, create an `analysis_options.yaml` next to your `pubspec.yaml` and add:
 
 ```yaml
 analyzer:
   plugins:
-    - custom_lint
+    - riverpod_lint
 
-custom_lint:
-  rules:
-    # Explicitly disable one lint rule
-    - missing_provider_scope: false
-```
-
-Note that you can both enable and disable lint rules at once.
-This can be useful if your `analysis_options.yaml` includes another one:
-
-```yaml
-include: path/to/another/analysis_options.yaml
-analyzer:
-  plugins:
-    - custom_lint
-
-custom_lint:
-  rules:
-    # Enable one rule
-    - provider_parameters
-    # Disable another
-    - missing_provider_scope: false
-```
-
-### Disable all lints by default
-
-Instead of having all lints on by default and manually disabling lints of your choice,
-you can switch to the opposite logic:  
-Have lints off by default, and manually enable lints.
-
-This can be done in your `analysis_options.yaml` with the following:
-
-```yaml
-analyzer:
-  plugins:
-    - custom_lint
-
-custom_lint:
-  # Forcibly disable lint rules by default
-  enable_all_lint_rules: false
-  rules:
-    # You can now enable one specific rule in the "rules" list
-    - missing_provider_scope
+plugins:
+  riverpod_lint: <version number>
 ```
 
 ## Running riverpod_lint in the terminal/CI
 
-Custom lint rules created by riverpod_lint may not show-up in `dart analyze`.
-To fix this, you can run a custom command line: `custom_lint`.
+Once `riverpod_lint` is installed, `dart analyze` will show warnings
+from the lint rules created by riverpod_lint.
 
-Since your project should already have custom_lint installed
+Since your project should already have `riverpod_lint` installed
 (cf [installing riverpod_lint](#installing-riverpod_lint)), then you should be
 able to run:
 
 ```sh
-dart run custom_lint
-```
-
-Alternatively, you can globally install `custom_lint`:
-
-```sh
-# Install custom_lint for all projects
-dart pub global activate custom_lint
-# run custom_lint's command line in a project
-custom_lint
+dart analyze
 ```
 
 ## All the lints
@@ -693,7 +616,7 @@ switch (...) {
 }
 ```
 
-## protected_notifier_properties
+### protected_notifier_properties
 
 Notifiers should not access the state of other notifiers.
 
@@ -771,17 +694,4 @@ class B extends _$B {
 
 ![Convert provider to functional variant sample](https://raw.githubusercontent.com/rrousselGit/riverpod/master/packages/riverpod_lint/resources/convert_to_functional_provider.gif)
 
-## Migrations
-
-Migrations are a list of warnings with an automatic quick-fix, to help
-upgrading to higher Riverpod versions.
-They are designed to be used only once.
-
-As a general rule, it is recommended to apply migration by running the following
-in your terminal:
-
-```sh
-dart run custom_lint --fix
-```
-
-[custom_lint]: https://pub.dev/packages/custom_lint
+[analysis_server_plugin]: https://pub.dev/packages/analysis_server_plugin

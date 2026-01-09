@@ -1,4 +1,4 @@
-include: ../../analysis_options.yaml
+include: ../../analysis_options_without_plugins.yaml
 linter:
   rules:
     # We don't really have public API

@@ -1,48 +1,61 @@
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart' hide LintCode;
-import 'package:analyzer/error/listener.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
-import '../riverpod_custom_lint.dart';
+class OnlyUseKeepAliveInsideKeepAlive extends AnalysisRule {
+  OnlyUseKeepAliveInsideKeepAlive()
+    : super(name: code.name, description: code.problemMessage);
 
-class OnlyUseKeepAliveInsideKeepAlive extends RiverpodLintRule {
-  const OnlyUseKeepAliveInsideKeepAlive() : super(code: _code);
-
-  static const _code = LintCode(
-    name: 'only_use_keep_alive_inside_keep_alive',
-    problemMessage:
-        'If a provider is declared as `keepAlive`, '
-        'it can only use providers that are also declared as `keepAlive.',
+  static const code = LintCode(
+    'only_use_keep_alive_inside_keep_alive',
+    'KeepAliveLink can only be used inside providers that are kept alive.',
     correctionMessage:
         'Either stop marking this provider as `keepAlive` or '
         'remove `keepAlive` from the used provider.',
-    errorSeverity: ErrorSeverity.WARNING,
+    severity: DiagnosticSeverity.WARNING,
   );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
   ) {
-    riverpodRegistry(context).addRefInvocation((node) {
-      if (node is! RefDependencyInvocation) return;
-      final dependencyElement = node.listenable.provider?.providerElement;
-      // This only applies if the watched provider is a generated one.
-      if (dependencyElement is! GeneratorProviderDeclarationElement) return;
-      if (!dependencyElement.isAutoDispose) return;
+    final visitor = _Visitor(this, context);
+    registry.addMethodInvocation(this, visitor);
+  }
+}
 
-      final provider =
-          node.node
-              .thisOrAncestorOfType<NamedCompilationUnitMember>()
-              ?.provider;
-      if (provider == null) return;
+class _Visitor extends SimpleAstVisitor<void> {
+  _Visitor(this.rule, this.context);
 
-      // The enclosing provider is "autoDispose", so it is allowed to use other "autoDispose" providers
-      if (provider.providerElement.isAutoDispose) return;
+  final AnalysisRule rule;
+  final RuleContext context;
 
-      reporter.atNode(node.node, _code);
-    });
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    final refInvocation = node.refInvocation;
+    if (refInvocation is! RefDependencyInvocation) return;
+
+    final dependencyElement =
+        refInvocation.listenable.provider?.providerElement;
+    // This only applies if the watched provider is a generated one.
+    if (dependencyElement is! GeneratorProviderDeclarationElement) return;
+    if (!dependencyElement.isAutoDispose) return;
+
+    final provider =
+        node.thisOrAncestorOfType<NamedCompilationUnitMember>()?.provider;
+    if (provider == null) return;
+
+    // The enclosing provider is "autoDispose", so it is allowed to use other "autoDispose" providers
+    if (provider.providerElement.isAutoDispose) return;
+
+    rule.reportAtNode(node);
   }
 }

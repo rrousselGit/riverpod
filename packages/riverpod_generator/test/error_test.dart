@@ -146,7 +146,7 @@ dependency_overrides:
 
   await runPubGet(pubspec.parent);
 
-  final result = await resolveFile2(path: main.absolute.path);
+  final result = await resolveFile(path: main.absolute.path);
 
   result as ResolvedUnitResult;
 

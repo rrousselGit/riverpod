@@ -1,45 +1,58 @@
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/listener.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
-import '../riverpod_custom_lint.dart';
+class ProtectedNotifierProperties extends AnalysisRule {
+  ProtectedNotifierProperties()
+    : super(name: code.name, description: code.problemMessage);
 
-class ProtectedNotifierProperties extends RiverpodLintRule {
-  const ProtectedNotifierProperties() : super(code: _code);
-
-  static const _code = LintCode(
-    name: 'protected_notifier_properties',
-    problemMessage:
-        'Notifier.state should not be used outside of its own class.',
+  static const code = LintCode(
+    'protected_notifier_properties',
+    'Notifier.state should not be used outside of its own class.',
   );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
+  DiagnosticCode get diagnosticCode => code;
+
+  @override
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
   ) {
-    context.registry.addPropertyAccess((propertyAccess) {
-      const protectedProperties = {'state', 'stateOrNull', 'future', 'ref'};
+    final visitor = _Visitor(this, context);
+    registry.addPropertyAccess(this, visitor);
+  }
+}
 
-      if (!protectedProperties.contains(propertyAccess.propertyName.name)) {
-        return;
-      }
+class _Visitor extends SimpleAstVisitor<void> {
+  _Visitor(this.rule, this.context);
 
-      final enclosingClass =
-          propertyAccess.thisOrAncestorOfType<ClassDeclaration>();
-      final enclosingClassElement = enclosingClass?.declaredFragment?.element;
-      if (enclosingClass == null || enclosingClassElement == null) return;
+  final AnalysisRule rule;
+  final RuleContext context;
 
-      if (enclosingClass.riverpod == null) return;
+  @override
+  void visitPropertyAccess(PropertyAccess node) {
+    const protectedProperties = {'state', 'stateOrNull', 'future', 'ref'};
 
-      final targetType = propertyAccess.target?.staticType;
-      if (targetType == null) return;
-      if (targetType == enclosingClassElement.thisType) return;
-      if (!anyNotifierType.isAssignableFromType(targetType)) return;
+    if (!protectedProperties.contains(node.propertyName.name)) {
+      return;
+    }
 
-      reporter.atNode(propertyAccess.propertyName, _code);
-    });
+    final enclosingClass = node.thisOrAncestorOfType<ClassDeclaration>();
+    final enclosingClassElement = enclosingClass?.declaredFragment?.element;
+    if (enclosingClass == null || enclosingClassElement == null) return;
+
+    if (enclosingClass.riverpod == null) return;
+
+    final targetType = node.target?.staticType;
+    if (targetType == null) return;
+    if (targetType == enclosingClassElement.thisType) return;
+    if (!anyNotifierType.isAssignableFromType(targetType)) return;
+
+    rule.reportAtNode(node.propertyName);
   }
 }

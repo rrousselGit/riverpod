@@ -5,12 +5,12 @@ export function buildDeps({
   deps?: string[];
   devDeps?: string[];
 }) {
-  var result = '';
+  var result = "";
   for (const dep of deps) {
     result += `flutter pub add ${dep}\n`;
   }
 
-  for (const dep of [...devDeps, "custom_lint", "riverpod_lint"]) {
+  for (const dep of devDeps) {
     result += `flutter pub add dev:${dep}\n`;
   }
 

@@ -1,6 +1,4 @@
 analyzer:
-  plugins:
-    - custom_lint
   exclude:
     # Files with errors on purpose
     - test/lints/notifier_extends/notifier_extends.g.dart
@@ -11,9 +9,6 @@ analyzer:
     # Remove once we require analyzer 8.0.0
     # We currently support both 7.0 and 8.0, so we can't migrate yet.
     deprecated_member_use: ignore
-
-custom_lint:
-  debug: true
 
 # analysis_options.yaml
 formatter:

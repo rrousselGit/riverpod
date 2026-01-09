@@ -8,17 +8,6 @@ class Box<BoxedT> {
 }
 
 @internal
-extension AstUtils on AstNode {
-  Iterable<AstNode> get ancestors sync* {
-    var parent = this.parent;
-    while (parent != null) {
-      yield parent;
-      parent = parent.parent;
-    }
-  }
-}
-
-@internal
 extension ExpandoUtils<NodeT> on Expando<Box<NodeT>> {
   NodeT upsert(AstNode key, NodeT Function() create) {
     // Using a record to differentiate "null value" from "no value".
