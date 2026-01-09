@@ -1,4 +1,9 @@
+@TestFor.only_use_keep_alive_inside_keep_alive
+library;
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../test_annotation.dart';
 
 part 'only_use_keep_alive_inside_keep_alive.g.dart';
 
@@ -23,9 +28,9 @@ int fn(Ref ref) {
   ref.watch(keepAliveProvider);
   ref.watch(keepAliveClassProvider);
 
-  // expect_lint: only_use_keep_alive_inside_keep_alive
+  // ignore: riverpod_lint/only_use_keep_alive_inside_keep_alive
   ref.watch(autoDisposeProvider);
-  // expect_lint: only_use_keep_alive_inside_keep_alive
+  // ignore: riverpod_lint/only_use_keep_alive_inside_keep_alive
   ref.watch(autoDisposeClassProvider);
 
   return 0;

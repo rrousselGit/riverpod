@@ -9,6 +9,262 @@ part of 'dependencies.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
+@ProviderFor(empty)
+final emptyProvider = EmptyProvider._();
+
+final class EmptyProvider extends $FunctionalProvider<int, int, int>
+    with $Provider<int> {
+  EmptyProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'emptyProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$emptyHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return empty(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+}
+
+String _$emptyHash() => r'21f2eeba368019ad48276bb269141be29c3e2597';
+
+@ProviderFor(emptyFamily)
+final emptyFamilyProvider = EmptyFamilyFamily._();
+
+final class EmptyFamilyProvider extends $FunctionalProvider<int, int, int>
+    with $Provider<int> {
+  EmptyFamilyProvider._({
+    required EmptyFamilyFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'emptyFamilyProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$emptyFamilyHash();
+
+  @override
+  String toString() {
+    return r'emptyFamilyProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    final argument = this.argument as int;
+    return emptyFamily(ref, argument);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is EmptyFamilyProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$emptyFamilyHash() => r'933f10da0fbe9ff1c057b5ef24fd0266f96e2640';
+
+final class EmptyFamilyFamily extends $Family
+    with $FunctionalFamilyOverride<int, int> {
+  EmptyFamilyFamily._()
+    : super(
+        retry: null,
+        name: r'emptyFamilyProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  EmptyFamilyProvider call(int id) =>
+      EmptyFamilyProvider._(argument: id, from: this);
+
+  @override
+  String toString() => r'emptyFamilyProvider';
+}
+
+@ProviderFor(Empty2)
+final empty2Provider = Empty2Provider._();
+
+final class Empty2Provider extends $NotifierProvider<Empty2, int> {
+  Empty2Provider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'empty2Provider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$empty2Hash();
+
+  @$internal
+  @override
+  Empty2 create() => Empty2();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+}
+
+String _$empty2Hash() => r'a082058775a226d4b873fcbf87e9b6df6413b7c2';
+
+abstract class _$Empty2 extends $Notifier<int> {
+  int build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<int, int>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<int, int>,
+              int,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(EmptyFamily2)
+final emptyFamily2Provider = EmptyFamily2Family._();
+
+final class EmptyFamily2Provider extends $NotifierProvider<EmptyFamily2, int> {
+  EmptyFamily2Provider._({
+    required EmptyFamily2Family super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'emptyFamily2Provider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$emptyFamily2Hash();
+
+  @override
+  String toString() {
+    return r'emptyFamily2Provider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  EmptyFamily2 create() => EmptyFamily2();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is EmptyFamily2Provider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$emptyFamily2Hash() => r'4a4ceadc9c06eeeb2e4173c21eafcbdf5b4de33b';
+
+final class EmptyFamily2Family extends $Family
+    with $ClassFamilyOverride<EmptyFamily2, int, int, int, int> {
+  EmptyFamily2Family._()
+    : super(
+        retry: null,
+        name: r'emptyFamily2Provider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  EmptyFamily2Provider call(int id) =>
+      EmptyFamily2Provider._(argument: id, from: this);
+
+  @override
+  String toString() => r'emptyFamily2Provider';
+}
+
+abstract class _$EmptyFamily2 extends $Notifier<int> {
+  late final _$args = ref.$arg as int;
+  int get id => _$args;
+
+  int build(int id);
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<int, int>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<int, int>,
+              int,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, () => build(_$args));
+  }
+}
+
 @ProviderFor(dep)
 final depProvider = DepProvider._();
 
@@ -21,8 +277,8 @@ final class DepProvider extends $FunctionalProvider<int, int, int>
         retry: null,
         name: r'depProvider',
         isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
+        dependencies: <ProviderOrFamily>[],
+        $allTransitiveDependencies: <ProviderOrFamily>[],
       );
 
   @override
@@ -47,7 +303,7 @@ final class DepProvider extends $FunctionalProvider<int, int, int>
   }
 }
 
-String _$depHash() => r'1b3ec5231cd2328602151de9ceacdcd102a1d2e2';
+String _$depHash() => r'578a350a40cda46444ecd9fa3ea2fd7bd0994692';
 
 @ProviderFor(family)
 final familyProvider = FamilyFamily._();
@@ -105,7 +361,7 @@ final class FamilyProvider extends $FunctionalProvider<int, int, int>
   }
 }
 
-String _$familyHash() => r'940eb87eb11206499f73f05791a6266b38cda88a';
+String _$familyHash() => r'ffb627fd3584515ea855b8b9c6468fe4e362293f';
 
 final class FamilyFamily extends $Family
     with $FunctionalFamilyOverride<int, int> {
@@ -113,8 +369,8 @@ final class FamilyFamily extends $Family
     : super(
         retry: null,
         name: r'familyProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
+        dependencies: <ProviderOrFamily>[],
+        $allTransitiveDependencies: <ProviderOrFamily>[],
         isAutoDispose: true,
       );
 
@@ -135,8 +391,8 @@ final class Dep2Provider extends $NotifierProvider<Dep2, int> {
         retry: null,
         name: r'dep2Provider',
         isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
+        dependencies: <ProviderOrFamily>[],
+        $allTransitiveDependencies: <ProviderOrFamily>[],
       );
 
   @override
@@ -155,7 +411,7 @@ final class Dep2Provider extends $NotifierProvider<Dep2, int> {
   }
 }
 
-String _$dep2Hash() => r'2778537df77f6431148c2ce400724da3e2ab4b94';
+String _$dep2Hash() => r'029d32c758a8af63194193e01b04d7a8240c0053';
 
 abstract class _$Dep2 extends $Notifier<int> {
   int build();
@@ -223,7 +479,7 @@ final class Family2Provider extends $NotifierProvider<Family2, int> {
   }
 }
 
-String _$family2Hash() => r'ce727b262aae067b0d4f703f03670abb70ad8977';
+String _$family2Hash() => r'328ff9faf39a29b8d0da15dd5bb215e4c33e9dc3';
 
 final class Family2Family extends $Family
     with $ClassFamilyOverride<Family2, int, int, int, int> {
@@ -231,8 +487,8 @@ final class Family2Family extends $Family
     : super(
         retry: null,
         name: r'family2Provider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
+        dependencies: <ProviderOrFamily>[],
+        $allTransitiveDependencies: <ProviderOrFamily>[],
         isAutoDispose: true,
       );
 
@@ -316,7 +572,7 @@ final class ProviderProvider extends $FunctionalProvider<int, int, int>
   }
 }
 
-String _$providerHash() => r'1be7ae7ac2100d39b949af50ec50fce48b26cdd1';
+String _$providerHash() => r'c1b2db25d69b2c833eaf60bf49544b8db9e3b8b4';
 
 @ProviderFor(provider2)
 final provider2Provider = Provider2Provider._();
@@ -371,7 +627,7 @@ final class Provider2Provider extends $FunctionalProvider<int, int, int>
   }
 }
 
-String _$provider2Hash() => r'30f81430b57f0116f621a4a309c458fce0536378';
+String _$provider2Hash() => r'54652bf3cc2cbf7b70f95f8635ecc423f7e0c502';
 
 @ProviderFor(Provider3)
 final provider3Provider = Provider3Provider._();
@@ -419,7 +675,7 @@ final class Provider3Provider extends $NotifierProvider<Provider3, int> {
   }
 }
 
-String _$provider3Hash() => r'dfdd6dec6cfee543c73d99593ce98d68f4db385c';
+String _$provider3Hash() => r'4991c48a5026b8aa2ac4ebcbc9537de3cd893d3d';
 
 abstract class _$Provider3 extends $Notifier<int> {
   int build();
@@ -492,7 +748,7 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
   }
 }
 
-String _$provider4Hash() => r'1c955214d99695bb694c96374b277aac58e734df';
+String _$provider4Hash() => r'c6f19ea7f8b8e095f73a91ed019118150d2f9d23';
 
 final class Provider4Family extends $Family
     with $ClassFamilyOverride<Provider4, int, int, int, int> {
@@ -599,7 +855,7 @@ final class TransitiveDependenciesProvider
 }
 
 String _$transitiveDependenciesHash() =>
-    r'909d45403831b521177ec15b1dd78554e261d3be';
+    r'75f3934b0adc2234d2d914c4edfafd512b21d2f0';
 
 @ProviderFor(smallTransitiveDependencyCount)
 final smallTransitiveDependencyCountProvider =
@@ -654,7 +910,7 @@ final class SmallTransitiveDependencyCountProvider
 }
 
 String _$smallTransitiveDependencyCountHash() =>
-    r'f67b369dd99e35a6e6211004b45c87c5ba4ac1c7';
+    r'cace8c2f2c52e7b0be30f24a3b0fdc720996c387';
 
 @ProviderFor(emptyDependenciesFunctional)
 final emptyDependenciesFunctionalProvider =
@@ -802,7 +1058,7 @@ final class ProviderWithDependenciesProvider
 }
 
 String _$providerWithDependenciesHash() =>
-    r'7d40c994fc2d4ba9e6a0bb4a3d100f8da874eb5e';
+    r'36bdbad7b38d2885e2de0eb23356f60fbfc96446';
 
 @ProviderFor(_privateDep)
 final _privateDepProvider = _PrivateDepProvider._();
@@ -816,8 +1072,8 @@ final class _PrivateDepProvider extends $FunctionalProvider<int, int, int>
         retry: null,
         name: r'_privateDepProvider',
         isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
+        dependencies: <ProviderOrFamily>[],
+        $allTransitiveDependencies: <ProviderOrFamily>[],
       );
 
   @override
@@ -842,7 +1098,7 @@ final class _PrivateDepProvider extends $FunctionalProvider<int, int, int>
   }
 }
 
-String _$_privateDepHash() => r'92ff5cc515ecf2455cb04773f1b49f23b17ea2e2';
+String _$_privateDepHash() => r'31ca72b16ab288f9e786d629e6d86b29d4ea1cbc';
 
 @ProviderFor(publicDep)
 final publicDepProvider = PublicDepProvider._();
@@ -856,8 +1112,8 @@ final class PublicDepProvider extends $FunctionalProvider<int, int, int>
         retry: null,
         name: r'publicDepProvider',
         isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
+        dependencies: <ProviderOrFamily>[],
+        $allTransitiveDependencies: <ProviderOrFamily>[],
       );
 
   @override
@@ -882,7 +1138,7 @@ final class PublicDepProvider extends $FunctionalProvider<int, int, int>
   }
 }
 
-String _$publicDepHash() => r'a9c461ae174577183ab4c0ff8d8267cc7a64a2c5';
+String _$publicDepHash() => r'd331a446354abfee78cd8b452feb63a19a25d4d0';
 
 @ProviderFor(duplicateDependencies)
 final duplicateDependenciesProvider = DuplicateDependenciesProvider._();
@@ -930,7 +1186,7 @@ final class DuplicateDependenciesProvider
 }
 
 String _$duplicateDependenciesHash() =>
-    r'ad48ecca57899ee55c69793c84a01235d6a49834';
+    r'7b939d97fa85cc936c02706f135d1952fb4886f5';
 
 @ProviderFor(duplicateDependencies2)
 final duplicateDependencies2Provider = DuplicateDependencies2Provider._();
@@ -978,7 +1234,7 @@ final class DuplicateDependencies2Provider
 }
 
 String _$duplicateDependencies2Hash() =>
-    r'6e065325922dc36f408f85998cf2d7ba7a80ba56';
+    r'a525dd6d10ae5b1cc78f26bb5a4e5e92473fde2e';
 
 @ProviderFor(transitiveDuplicateDependencies)
 final transitiveDuplicateDependenciesProvider =
@@ -1042,4 +1298,4 @@ final class TransitiveDuplicateDependenciesProvider
 }
 
 String _$transitiveDuplicateDependenciesHash() =>
-    r'be6a85098fc66be440b6b201f58a6ce1c526caf6';
+    r'dbd17facce57b38386d0544d19816bb45a54b6c4';

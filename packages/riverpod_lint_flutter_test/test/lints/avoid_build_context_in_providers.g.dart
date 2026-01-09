@@ -172,7 +172,7 @@ final class MyNotifierFamily extends $Family
 abstract class _$MyNotifier extends $Notifier<int> {
   late final _$args = ref.$arg as (BuildContext, {BuildContext context2});
   BuildContext get context1 =>
-      _$args.$1; // expect_lint: avoid_build_context_in_providers
+      _$args.$1; // ignore: riverpod_lint/avoid_build_context_in_providers
   BuildContext get context2 => _$args.context2;
 
   int build(BuildContext context1, {required BuildContext context2});

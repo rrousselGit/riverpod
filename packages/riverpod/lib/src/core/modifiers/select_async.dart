@@ -180,7 +180,7 @@ final class _AsyncSelector<InputT, OutputT>
             ),
           };
 
-          // ignore: avoid_sub_read, We are handling errors
+          // ignore: internal_lint/avoid_sub_read, We are handling errors
           sub
               .read()
               .then((v) => _select(v).valueOrProviderException)

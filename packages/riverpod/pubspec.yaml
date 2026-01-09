@@ -2,7 +2,7 @@ name: riverpod
 description: >
   A reactive caching and data-binding framework.
   Riverpod makes working with asynchronous code a breeze.
-version: 3.0.3
+version: 3.1.0
 homepage: https://riverpod.dev
 repository: https://github.com/rrousselGit/riverpod
 issue_tracker: https://github.com/rrousselGit/riverpod/issues
@@ -28,7 +28,7 @@ dependencies:
   test: ^1.0.0
 
 dev_dependencies:
-  analyzer: ">=7.0.0 <9.0.0"
+  analyzer: ^9.0.0
   expect_error: ^1.0.0
   mockito: ^5.0.0
   path: ^1.9.0

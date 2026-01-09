@@ -5,7 +5,6 @@ import 'main.dart';
 part 'dependencies.g.dart';
 
 @Riverpod(
-  // ignore: provider_dependencies
   dependencies: [
     count,
     countFuture,
