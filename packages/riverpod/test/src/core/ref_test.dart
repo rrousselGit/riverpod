@@ -7,13 +7,19 @@ import 'package:riverpod/misc.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart'
     show
-        UnmountedRefException,
-        InternalProviderContainer,
-        ProviderElement,
-        CircularDependencyError,
-        ProviderContainerTest,
+        $FunctionalProvider,
+        $Provider,
+        $ProviderElement,
+        $ProviderOverride,
+        $ProviderPointer,
+        $SyncValueProvider,
         AsyncValueInternals,
-        DataSource;
+        CircularDependencyError,
+        DataSource,
+        InternalProviderContainer,
+        ProviderContainerTest,
+        ProviderElement,
+        UnmountedRefException;
 import 'package:test/test.dart';
 
 import '../matrix.dart';
@@ -1177,6 +1183,33 @@ void main() {
 
           verifyZeroInteractions(listener);
         });
+
+        test(
+          'hot reload does not trigger weak listeners on unmounted providers',
+          () async {
+            final container = ProviderContainer.test();
+            var buildCountB = 0;
+            final providerB = _ChangingHashProvider<int>((ref) {
+              return buildCountB++;
+            });
+
+            final providerA = _ChangingHashProvider<int>((ref) {
+              ref.listen(providerB, weak: true, (previous, next) {});
+              return 0;
+            });
+
+            container.read(providerA);
+            expect(buildCountB, 0);
+
+            container.debugReassemble();
+            await container.pump();
+
+            expect(buildCountB, 0);
+
+            container.read(providerB);
+            expect(buildCountB, 1);
+          },
+        );
       });
 
       test('ref.listen on outdated provider causes it to rebuild', () {
@@ -3322,4 +3355,39 @@ void main() {
       );
     });
   });
+}
+
+final class _ChangingHashProvider<ValueT>
+    extends $FunctionalProvider<ValueT, ValueT, ValueT>
+    with $Provider<ValueT> {
+  _ChangingHashProvider(this._create)
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: '_changingHashProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  final ValueT Function(Ref ref) _create;
+
+  @override
+  String debugGetCreateSourceHash() =>
+      DateTime.now().microsecondsSinceEpoch.toString();
+
+  @override
+  $ProviderElement<ValueT> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  ValueT create(Ref ref) => _create(ref);
+
+  Override overrideWithValue(ValueT value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ValueT>(value),
+    );
+  }
 }
