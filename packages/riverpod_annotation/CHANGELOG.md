@@ -1,3 +1,7 @@
+## 4.0.0
+
+Updated to match `riverpod_generator`
+
 ## 3.0.3 - 2025-10-09
 
 - `riverpod` upgraded to `3.0.3`

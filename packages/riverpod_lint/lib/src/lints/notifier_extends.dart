@@ -96,7 +96,7 @@ class _Visitor extends SimpleAstVisitor<void> {
     }
 
     final expectedClassName = _generatedClassName(declaration);
-    if (extendsClause.superclass.name2.lexeme != expectedClassName) {
+    if (extendsClause.superclass.name.lexeme != expectedClassName) {
       // No type specified. Underlining the ref name
       rule.reportAtNode(extendsClause.superclass, arguments: []);
       return;

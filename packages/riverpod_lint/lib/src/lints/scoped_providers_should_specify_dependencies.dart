@@ -10,7 +10,7 @@ extension SimpleIdentifierX on SimpleIdentifier {
   bool get isFlutterRunApp {
     if (name != 'runApp') return false;
 
-    final library = element?.library2;
+    final library = element?.library;
     if (library == null) return false;
 
     return library.uri.scheme == 'package' &&
@@ -20,7 +20,7 @@ extension SimpleIdentifierX on SimpleIdentifier {
   bool get isPumpWidget {
     if (name != 'pumpWidget') return false;
 
-    final library = element?.library2;
+    final library = element?.library;
     if (library == null) return false;
 
     return library.uri.scheme == 'package' &&

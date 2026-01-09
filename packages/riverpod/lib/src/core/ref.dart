@@ -107,7 +107,7 @@ sealed class Ref implements MutationTarget {
   /// In both of the examples above, [onDispose] will stop the network request
   /// while it is in progress. While [mounted] will let the network request
   /// complete, and stop its logic after it is done.
-  bool get mounted => !_element._disposed;
+  bool get mounted => !_element._disposed && identical(_element.ref, this);
 
   /// Whether this [Ref] is currently **paused** (no active, non-paused listeners).
   ///

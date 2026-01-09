@@ -1,5 +1,3 @@
-// ignore_for_file: remove_deprecations_in_breaking_versions, not applicable
-
 import 'package:meta/meta.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

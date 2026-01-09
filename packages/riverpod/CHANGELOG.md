@@ -21,6 +21,8 @@
 - Fixed a bug with scoping when specifying `dependencies: [...]`
 - Added `Override.origin`. This enables knowing which provider is associated with an override.
 - Fix a regression with `AsyncLoading.isRefreshing/isReloading`
+- Fix a regression that caused Notifiers to lose their state when one of their dependencies changed. (thanks to @yegair)
+- Fixed `ref.mounted` returning `true` for stale refs after provider rebuild, causing race conditions in async providers.
 
 ### Unreleased patch
 
@@ -103,7 +105,7 @@ Some docs/internal changes
 
 ## 3.0.0-dev.12 - 2025-04-30
 
-Say hello to Riverpod 3.0.0!  
+Say hello to Riverpod 3.0.0!
 This major version is a transition version, to unblock the development of the project.
 It is quite possible that a 4.0.0 will be released relatively soon in the future, so keep
 that in mind when migrating.
@@ -118,7 +120,7 @@ Here are some highlights about this version:
 - Improved testing with the new `ProviderContainer.test()` and the ability to
   mock a Notifier's `build` method without mocking the whole object using `provider.overrideWithBuild(...)`
 
-**Note about experimental features**:  
+**Note about experimental features**:
 Anything imported with `package:riverpod/experimental/....dart` are not stable features.
 They may be modified in breaking ways without a major version. Use with care!
 
@@ -161,7 +163,7 @@ They may be modified in breaking ways without a major version. Use with care!
   of its listeners are also paused. So if a provider `A` is watched _only_ by a provider `B`, and `B` is currently unused,
   then `A` will be paused.
 - **Breaking**: When an asynchronous provider rebuilds, it doesn't immediately stops
-  listening to its previous providers. Instead, those subscriptions are removed when the rebuild completes.  
+  listening to its previous providers. Instead, those subscriptions are removed when the rebuild completes.
   This impacts how "auto-dispose" behaves. See https://github.com/rrousselGit/riverpod/issues/1253
 - Fix `StreamProvider` not cancelling the `StreamSubscription` if the stream is never emitted any value.
 - All `Ref` life-cycles (such as `Ref.onDispose`) and `Notifier.listenSelf`

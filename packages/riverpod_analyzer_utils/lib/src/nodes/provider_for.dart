@@ -5,7 +5,7 @@ part of '../nodes.dart';
   ElementAnnotation annotation, {
   required AstNode from,
 }) {
-  final type = annotation.element2.cast<ExecutableElement2>()?.returnType;
+  final type = annotation.element.cast<ExecutableElement>()?.returnType;
 
   if (type == null || !providerForType.isExactlyType(type)) return null;
 
@@ -17,10 +17,10 @@ part of '../nodes.dart';
 
 @internal
 (ProviderDeclarationElement?,)? parseFirstProviderFor(
-  Annotatable annotation,
+  Element element,
   AstNode from,
 ) {
-  return annotation.metadata2.annotations
+  return element.metadata.annotations
       .map((e) => parseProviderFor(e, from: from))
       .nonNulls
       .firstOrNull;

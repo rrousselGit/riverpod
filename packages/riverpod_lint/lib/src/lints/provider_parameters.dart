@@ -3,7 +3,7 @@ import 'package:analyzer/analysis_rule/rule_context.dart';
 import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
@@ -79,7 +79,7 @@ class _Visitor extends SimpleAstVisitor<void> {
         final instantiatedObject =
             value.constructorName.element?.applyRedirectedConstructors();
 
-        final operatorEqual = instantiatedObject?.enclosingElement2
+        final operatorEqual = instantiatedObject?.enclosingElement
             .recursiveGetMethod('==');
 
         if (operatorEqual == null) {
@@ -91,25 +91,25 @@ class _Visitor extends SimpleAstVisitor<void> {
   }
 }
 
-extension on ConstructorElement2 {
-  ConstructorElement2 applyRedirectedConstructors() {
-    final redirected = redirectedConstructor2;
+extension on ConstructorElement {
+  ConstructorElement applyRedirectedConstructors() {
+    final redirected = redirectedConstructor;
     if (redirected != null) return redirected.applyRedirectedConstructors();
     return this;
   }
 }
 
-extension on InterfaceElement2 {
-  MethodElement2? recursiveGetMethod(String name) {
+extension on InterfaceElement {
+  MethodElement? recursiveGetMethod(String name) {
     if (thisType.isDartCoreObject) return null;
 
-    final thisMethod = getMethod2(name);
+    final thisMethod = getMethod(name);
     if (thisMethod != null) return thisMethod;
 
     for (final superType in allSupertypes) {
       if (superType.isDartCoreObject) continue;
 
-      final superMethod = superType.getMethod2(name);
+      final superMethod = superType.getMethod(name);
       if (superMethod != null) return superMethod;
     }
 

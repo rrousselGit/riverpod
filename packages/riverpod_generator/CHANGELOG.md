@@ -1,3 +1,7 @@
+## 4.0.0+1
+
+Fixed dependency issue
+
 ## 4.0.0 - 2025-12-26
 
 - Generated providers are no-longer constant
