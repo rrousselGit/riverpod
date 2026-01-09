@@ -1,3 +1,7 @@
+### Unreleased minor
+
+- Added `Ref.isPaused` to check if there are any active/non-paused listeners.
+
 ## 3.1.0 - 2025-12-26
 
 - Added an alternative way to combine asynchronous providers.
@@ -23,10 +27,6 @@
 - Fix a regression with `AsyncLoading.isRefreshing/isReloading`
 - Fix a regression that caused Notifiers to lose their state when one of their dependencies changed. (thanks to @yegair)
 - Fixed `ref.mounted` returning `true` for stale refs after provider rebuild, causing race conditions in async providers.
-
-### Unreleased patch
-
-- Added `Ref.isPaused` to check if there are any active/non-paused listeners.
 
 ## 3.0.3 - 2025-10-09
 
