@@ -33,5 +33,46 @@ void main() {
         );
       });
     });
+
+    group('ref.isPaused', () {
+      test('isPaused always starts as false', () {
+        final container = ProviderContainer.test();
+
+        final a = Provider((ref) => ref.isPaused);
+        final b = Provider((ref) => ref.isPaused);
+
+        expect(container.read(a), isFalse);
+        expect(container.listen(b, (_, _) {}).read(), isFalse);
+      });
+
+      test('isPaused follows ProviderSubscription.pause/resume', () {
+        final container = ProviderContainer.test();
+
+        final a = Provider((ref) => ref);
+
+        final sub = container.listen(a, (_, _) {});
+
+        sub.pause();
+        expect(sub.read().isPaused, isTrue);
+
+        sub.resume();
+        expect(sub.read().isPaused, isFalse);
+      });
+
+      test('isPaused follows listener count', () {
+        final container = ProviderContainer.test();
+
+        final a = Provider((ref) => ref);
+
+        final sub = container.listen(a, (_, _) {});
+        final ref = sub.read();
+
+        expect(ref.isPaused, isFalse);
+
+        sub.close();
+
+        expect(ref.isPaused, isTrue);
+      });
+    });
   });
 }

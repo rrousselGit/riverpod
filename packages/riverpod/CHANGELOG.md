@@ -1,5 +1,6 @@
-## Unreleased minor
+### Unreleased minor
 
+- Added `Ref.isPaused` to check if there are any active/non-paused listeners.
 - Fix a regression that caused Notifiers to lose their state when one of their dependencies changed. (thanks to @yegair)
 - Fixed `ref.mounted` returning `true` for stale refs after provider rebuild, causing race conditions in async providers.
 
