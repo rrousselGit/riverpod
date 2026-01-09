@@ -3,6 +3,7 @@
 - Added `Ref.isPaused` to check if there are any active/non-paused listeners.
 - Fix a regression that caused Notifiers to lose their state when one of their dependencies changed. (thanks to @yegair)
 - Fixed `ref.mounted` returning `true` for stale refs after provider rebuild, causing race conditions in async providers.
+- Fixed a bug where providers with only weak listeners (`ref.listen(..., weak: true)`) would incorrectly initialize during hot reload (thanks to @tguerin)
 
 ## 3.1.0 - 2025-12-26
 
@@ -27,7 +28,6 @@
 - Fixed a bug with scoping when specifying `dependencies: [...]`
 - Added `Override.origin`. This enables knowing which provider is associated with an override.
 - Fix a regression with `AsyncLoading.isRefreshing/isReloading`
-- Fixed a bug where providers with only weak listeners (`ref.listen(..., weak: true)`) would incorrectly initialize during hot reload (thanks to @tguerin)
 
 ## 3.0.3 - 2025-10-09
 
