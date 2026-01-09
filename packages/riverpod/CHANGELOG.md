@@ -1,3 +1,8 @@
+## Unreleased minor
+
+- Fix a regression that caused Notifiers to lose their state when one of their dependencies changed. (thanks to @yegair)
+- Fixed `ref.mounted` returning `true` for stale refs after provider rebuild, causing race conditions in async providers.
+
 ## 3.1.0 - 2025-12-26
 
 - Added an alternative way to combine asynchronous providers.
@@ -21,8 +26,6 @@
 - Fixed a bug with scoping when specifying `dependencies: [...]`
 - Added `Override.origin`. This enables knowing which provider is associated with an override.
 - Fix a regression with `AsyncLoading.isRefreshing/isReloading`
-- Fix a regression that caused Notifiers to lose their state when one of their dependencies changed. (thanks to @yegair)
-- Fixed `ref.mounted` returning `true` for stale refs after provider rebuild, causing race conditions in async providers.
 
 ## 3.0.3 - 2025-10-09
 
