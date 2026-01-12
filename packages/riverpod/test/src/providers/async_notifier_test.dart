@@ -1364,15 +1364,17 @@ void main() {
         );
     final container = ProviderContainer.test(
       overrides: [
-        family.overrideWith(() => DeferredAsyncNotifier<int>((ref, _) => 42)),
-        autoDisposeFamily.overrideWith(
-          () => DeferredAsyncNotifier<int>((ref, _) => 84),
+        family.overrideWith2(
+          (arg) => DeferredAsyncNotifier<int>((ref, _) => 42 + arg),
+        ),
+        autoDisposeFamily.overrideWith2(
+          (arg) => DeferredAsyncNotifier<int>((ref, _) => 84 + arg),
         ),
       ],
     );
 
-    expect(container.read(family(10)).value, 42);
-    expect(container.read(autoDisposeFamily(10)).value, 84);
+    expect(container.read(family(10)).value, 52);
+    expect(container.read(autoDisposeFamily(10)).value, 94);
   });
 
   group('modifiers', () {
