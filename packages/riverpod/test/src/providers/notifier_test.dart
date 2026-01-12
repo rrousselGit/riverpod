@@ -548,7 +548,9 @@ void main() {
         );
     final container = ProviderContainer.test(
       overrides: [
-        family.overrideWith2((arg) => DeferredNotifier<int>((ref, _) => 42 + arg)),
+        family.overrideWith2(
+          (arg) => DeferredNotifier<int>((ref, _) => 42 + arg),
+        ),
         autoDisposeFamily.overrideWith2(
           (arg) => DeferredNotifier<int>((ref, _) => 84 + arg),
         ),

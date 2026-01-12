@@ -1045,10 +1045,12 @@ void main() {
     final container = ProviderContainer.test(
       overrides: [
         family.overrideWith2(
-          (arg) => DeferredStreamNotifier<int>((ref, _) => Stream.value(42 + arg)),
+          (arg) =>
+              DeferredStreamNotifier<int>((ref, _) => Stream.value(42 + arg)),
         ),
         autoDisposeFamily.overrideWith2(
-          (arg) => DeferredStreamNotifier<int>((ref, _) => Stream.value(84 + arg)),
+          (arg) =>
+              DeferredStreamNotifier<int>((ref, _) => Stream.value(84 + arg)),
         ),
       ],
     );
