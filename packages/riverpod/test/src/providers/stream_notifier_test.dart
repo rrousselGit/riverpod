@@ -1044,11 +1044,11 @@ void main() {
         );
     final container = ProviderContainer.test(
       overrides: [
-        family.overrideWith(
-          () => DeferredStreamNotifier<int>((ref, _) => Stream.value(42)),
+        family.overrideWith2(
+          (arg) => DeferredStreamNotifier<int>((ref, _) => Stream.value(42 + arg)),
         ),
-        autoDisposeFamily.overrideWith(
-          () => DeferredStreamNotifier<int>((ref, _) => Stream.value(84)),
+        autoDisposeFamily.overrideWith2(
+          (arg) => DeferredStreamNotifier<int>((ref, _) => Stream.value(84 + arg)),
         ),
       ],
     );
@@ -1059,8 +1059,8 @@ void main() {
         .listen(autoDisposeFamily(10).future, (previous, next) {})
         .read();
 
-    expect(container.read(family(10)).value, 42);
-    expect(container.read(autoDisposeFamily(10)).value, 84);
+    expect(container.read(family(10)).value, 52);
+    expect(container.read(autoDisposeFamily(10)).value, 94);
   });
 
   group('AutoDispose variant', () {

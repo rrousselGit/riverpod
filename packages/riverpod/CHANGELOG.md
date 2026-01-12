@@ -1,6 +1,9 @@
 ### Unreleased minor
 
 - Added `Ref.isPaused` to check if there are any active/non-paused listeners.
+- Deprecated `family.overrideWith` in favour of `family.overrideWith2`
+  The behaviour is the same, but the callback now takes the argument as a parameter.
+  In 4.0.0, `overrideWith2` will be renamed to `overrideWith`.
 - Fix a regression that caused Notifiers to lose their state when one of their dependencies changed. (thanks to @yegair)
 - Fixed `ref.mounted` returning `true` for stale refs after provider rebuild, causing race conditions in async providers.
 - Fixed a bug where providers with only weak listeners (`ref.listen(..., weak: true)`) would incorrectly initialize during hot reload (thanks to @tguerin)
