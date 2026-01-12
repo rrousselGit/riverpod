@@ -298,19 +298,12 @@ final class _UncontrolledProviderScopeState
           // Checks for race conditions where a task has been completed in a different scope.
           // If so, it then becomes possible for another task to be scheduled
           // before this scoped had the opportunity to run its task.
-          // TODO find a way to test this.
           ||
           _task!.completed,
       'Only one task can be scheduled at a time',
     );
     assert(mounted, 'Cannot schedule a task on an unmounted element');
     _task = task;
-
-    try {
-      setState(() {});
-    } catch (e) {
-      // Ignore assertion errors, as we're doing it safely.
-    }
 
     _vsyncTimer?.cancel();
     _vsyncTimer = Timer(Duration.zero, () {
@@ -364,6 +357,13 @@ To fix this problem, you have one of two solutions:
   @override
   Widget build(BuildContext context) {
     _callTask();
+
+    /// At the start of every frame, we schedule all ProviderScopes to build.
+    /// This is for scoped providers to correctly update without causing a
+    /// markNeedsBuild error.
+    WidgetsBinding.instance.scheduleFrameCallback(scheduleNewFrame: false, (_) {
+      setState(() {});
+    });
 
     return _UncontrolledProviderScope(
       container: widget.container,
