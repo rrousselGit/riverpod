@@ -1,3 +1,7 @@
+## Unreleased minor
+
+Fix the IDE pausing on "markNeedsBuild" exceptions when checking "pause on all exceptions".
+
 ## 3.1.0 - 2025-12-26
 
 - Added an alternative way to combine asynchronous providers.
