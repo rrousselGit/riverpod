@@ -304,6 +304,49 @@ void main() {
 
     group('retry', () {
       test(
+        'Calling invalidate(asReload: true) after a retry does not cause an infinite retry loop',
+        () => fakeAsync((fake) async {
+          final container = ProviderContainer.test();
+          const retryDelay = Duration(milliseconds: 200);
+          final onRetry = RetryMock();
+          when(onRetry.call(any, any)).thenAnswer((i) => retryDelay);
+          var shouldThrow = false;
+          const awaitDelay = Duration(milliseconds: 100);
+          var buildCount = 0;
+          late Ref ref;
+          final provider = FutureProvider.family<Object?, Object?>((
+            r,
+            _,
+          ) async {
+            ref = r;
+            buildCount++;
+            await Future<void>.delayed(awaitDelay);
+            if (shouldThrow) throw Exception('message');
+
+            return Object();
+          }, retry: onRetry.call);
+
+          final sub = container.listen(
+            provider(false).future,
+            (prev, next) {},
+            onError: (e, s) {},
+          );
+
+          fake.elapse(awaitDelay);
+          expect(buildCount, 1);
+
+          shouldThrow = true;
+
+          container.invalidate(provider, asReload: true);
+
+          fake.elapse(awaitDelay + retryDelay * 2);
+          verify(onRetry(0, isA<Exception>()));
+          verify(onRetry(1, isA<Exception>()));
+          verifyNoMoreInteractions(onRetry);
+        }),
+      );
+
+      test(
         'does not start retry if error is emitted after element dispose',
         () async {
           final container = ProviderContainer.test();
