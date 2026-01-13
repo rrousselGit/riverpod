@@ -10,11 +10,11 @@ part of 'unsupported_provider_value.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(integer)
-const integerProvider = IntegerProvider._();
+final integerProvider = IntegerProvider._();
 
 final class IntegerProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const IntegerProvider._()
+  IntegerProvider._()
     : super(
         from: null,
         argument: null,
@@ -50,13 +50,13 @@ final class IntegerProvider extends $FunctionalProvider<int, int, int>
 String _$integerHash() => r'8ad63bb35c89ffcf2ef281d7c39539760afff303';
 
 @ProviderFor(stateNotifier)
-const stateProvider = StateNotifierProvider._();
+final stateProvider = StateNotifierProvider._();
 
 final class StateNotifierProvider
     extends
         $FunctionalProvider<MyStateNotifier, MyStateNotifier, MyStateNotifier>
     with $Provider<MyStateNotifier> {
-  const StateNotifierProvider._()
+  StateNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -92,7 +92,7 @@ final class StateNotifierProvider
 String _$stateNotifierHash() => r'2505b564fd3a623976548c715b1623dea507f6d3';
 
 @ProviderFor(asyncStateNotifier)
-const asyncStateProvider = AsyncStateNotifierProvider._();
+final asyncStateProvider = AsyncStateNotifierProvider._();
 
 final class AsyncStateNotifierProvider
     extends
@@ -102,7 +102,7 @@ final class AsyncStateNotifierProvider
           FutureOr<MyStateNotifier>
         >
     with $FutureModifier<MyStateNotifier>, $FutureProvider<MyStateNotifier> {
-  const AsyncStateNotifierProvider._()
+  AsyncStateNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -132,11 +132,11 @@ String _$asyncStateNotifierHash() =>
     r'5c5954eb030f5688abdf881e047c8893c864b1a2';
 
 @ProviderFor(StateNotifierClass)
-const stateNotifierClassProvider = StateNotifierClassProvider._();
+final stateNotifierClassProvider = StateNotifierClassProvider._();
 
 final class StateNotifierClassProvider
     extends $NotifierProvider<StateNotifierClass, MyStateNotifier> {
-  const StateNotifierClassProvider._()
+  StateNotifierClassProvider._()
     : super(
         from: null,
         argument: null,
@@ -171,7 +171,6 @@ abstract class _$StateNotifierClass extends $Notifier<MyStateNotifier> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<MyStateNotifier, MyStateNotifier>;
     final element =
         ref.element
@@ -181,12 +180,12 @@ abstract class _$StateNotifierClass extends $Notifier<MyStateNotifier> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(stateNotifierAsync)
-const stateNotifierAsyncProvider = StateNotifierAsyncProvider._();
+final stateNotifierAsyncProvider = StateNotifierAsyncProvider._();
 
 final class StateNotifierAsyncProvider
     extends
@@ -196,7 +195,7 @@ final class StateNotifierAsyncProvider
           FutureOr<MyStateNotifier>
         >
     with $FutureModifier<MyStateNotifier>, $FutureProvider<MyStateNotifier> {
-  const StateNotifierAsyncProvider._()
+  StateNotifierAsyncProvider._()
     : super(
         from: null,
         argument: null,
@@ -226,11 +225,11 @@ String _$stateNotifierAsyncHash() =>
     r'ce67cf8c6f4bda46835042c17ea01186b5b399a5';
 
 @ProviderFor(SelfNotifier)
-const selfProvider = SelfNotifierProvider._();
+final selfProvider = SelfNotifierProvider._();
 
 final class SelfNotifierProvider
     extends $AsyncNotifierProvider<SelfNotifier, SelfNotifier> {
-  const SelfNotifierProvider._()
+  SelfNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -256,7 +255,6 @@ abstract class _$SelfNotifier extends $AsyncNotifier<SelfNotifier> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<SelfNotifier>, SelfNotifier>;
     final element =
         ref.element
@@ -266,16 +264,16 @@ abstract class _$SelfNotifier extends $AsyncNotifier<SelfNotifier> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(SyncSelfNotifier)
-const syncSelfProvider = SyncSelfNotifierProvider._();
+final syncSelfProvider = SyncSelfNotifierProvider._();
 
 final class SyncSelfNotifierProvider
     extends $NotifierProvider<SyncSelfNotifier, SyncSelfNotifier> {
-  const SyncSelfNotifierProvider._()
+  SyncSelfNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -309,7 +307,6 @@ abstract class _$SyncSelfNotifier extends $Notifier<SyncSelfNotifier> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<SyncSelfNotifier, SyncSelfNotifier>;
     final element =
         ref.element
@@ -319,16 +316,16 @@ abstract class _$SyncSelfNotifier extends $Notifier<SyncSelfNotifier> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(StreamSelfNotifier)
-const streamSelfProvider = StreamSelfNotifierProvider._();
+final streamSelfProvider = StreamSelfNotifierProvider._();
 
 final class StreamSelfNotifierProvider
     extends $StreamNotifierProvider<StreamSelfNotifier, StreamSelfNotifier> {
-  const StreamSelfNotifierProvider._()
+  StreamSelfNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -356,7 +353,6 @@ abstract class _$StreamSelfNotifier
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref =
         this.ref as $Ref<AsyncValue<StreamSelfNotifier>, StreamSelfNotifier>;
     final element =
@@ -367,16 +363,16 @@ abstract class _$StreamSelfNotifier
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(StateNotifierClassAsync)
-const stateNotifierClassAsyncProvider = StateNotifierClassAsyncProvider._();
+final stateNotifierClassAsyncProvider = StateNotifierClassAsyncProvider._();
 
 final class StateNotifierClassAsyncProvider
     extends $AsyncNotifierProvider<StateNotifierClassAsync, MyStateNotifier> {
-  const StateNotifierClassAsyncProvider._()
+  StateNotifierClassAsyncProvider._()
     : super(
         from: null,
         argument: null,
@@ -404,7 +400,6 @@ abstract class _$StateNotifierClassAsync
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<MyStateNotifier>, MyStateNotifier>;
     final element =
         ref.element
@@ -414,12 +409,12 @@ abstract class _$StateNotifierClassAsync
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(changeNotifier)
-const changeProvider = ChangeNotifierProvider._();
+final changeProvider = ChangeNotifierProvider._();
 
 final class ChangeNotifierProvider
     extends
@@ -429,7 +424,7 @@ final class ChangeNotifierProvider
           MyChangeNotifier
         >
     with $Provider<MyChangeNotifier> {
-  const ChangeNotifierProvider._()
+  ChangeNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -465,11 +460,11 @@ final class ChangeNotifierProvider
 String _$changeNotifierHash() => r'1686043b72e25b3143c5131906924f1393569400';
 
 @ProviderFor(ChangeNotifierClass)
-const changeNotifierClassProvider = ChangeNotifierClassProvider._();
+final changeNotifierClassProvider = ChangeNotifierClassProvider._();
 
 final class ChangeNotifierClassProvider
     extends $NotifierProvider<ChangeNotifierClass, MyChangeNotifier> {
-  const ChangeNotifierClassProvider._()
+  ChangeNotifierClassProvider._()
     : super(
         from: null,
         argument: null,
@@ -504,7 +499,6 @@ abstract class _$ChangeNotifierClass extends $Notifier<MyChangeNotifier> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<MyChangeNotifier, MyChangeNotifier>;
     final element =
         ref.element
@@ -514,17 +508,17 @@ abstract class _$ChangeNotifierClass extends $Notifier<MyChangeNotifier> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(notifier)
-const notifierProvider = NotifierProvider._();
+final notifierProvider = NotifierProvider._();
 
 final class NotifierProvider
     extends $FunctionalProvider<MyNotifier, MyNotifier, MyNotifier>
     with $Provider<MyNotifier> {
-  const NotifierProvider._()
+  NotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -560,7 +554,7 @@ final class NotifierProvider
 String _$notifierHash() => r'5ad63d9ccd05ab78e7a6ba5c763cacf0b1decb7b';
 
 @ProviderFor(autoDisposeNotifier)
-const autoDisposeProvider = AutoDisposeNotifierProvider._();
+final autoDisposeProvider = AutoDisposeNotifierProvider._();
 
 final class AutoDisposeNotifierProvider
     extends
@@ -570,7 +564,7 @@ final class AutoDisposeNotifierProvider
           MyAutoDisposeNotifier
         >
     with $Provider<MyAutoDisposeNotifier> {
-  const AutoDisposeNotifierProvider._()
+  AutoDisposeNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -608,11 +602,11 @@ String _$autoDisposeNotifierHash() =>
     r'6aecd9dee1e2734c3acf8eab05145418d10656e1';
 
 @ProviderFor(NotifierClass)
-const notifierClassProvider = NotifierClassProvider._();
+final notifierClassProvider = NotifierClassProvider._();
 
 final class NotifierClassProvider
     extends $NotifierProvider<NotifierClass, MyNotifier> {
-  const NotifierClassProvider._()
+  NotifierClassProvider._()
     : super(
         from: null,
         argument: null,
@@ -646,7 +640,6 @@ abstract class _$NotifierClass extends $Notifier<MyNotifier> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<MyNotifier, MyNotifier>;
     final element =
         ref.element
@@ -656,18 +649,18 @@ abstract class _$NotifierClass extends $Notifier<MyNotifier> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(asyncNotifier)
-const asyncProvider = AsyncNotifierProvider._();
+final asyncProvider = AsyncNotifierProvider._();
 
 final class AsyncNotifierProvider
     extends
         $FunctionalProvider<MyAsyncNotifier, MyAsyncNotifier, MyAsyncNotifier>
     with $Provider<MyAsyncNotifier> {
-  const AsyncNotifierProvider._()
+  AsyncNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -703,11 +696,11 @@ final class AsyncNotifierProvider
 String _$asyncNotifierHash() => r'8800a97f6bf80a56caf5d968d4b4ab91f7f0a64e';
 
 @ProviderFor(AsyncNotifierClass)
-const asyncNotifierClassProvider = AsyncNotifierClassProvider._();
+final asyncNotifierClassProvider = AsyncNotifierClassProvider._();
 
 final class AsyncNotifierClassProvider
     extends $NotifierProvider<AsyncNotifierClass, MyAsyncNotifier> {
-  const AsyncNotifierClassProvider._()
+  AsyncNotifierClassProvider._()
     : super(
         from: null,
         argument: null,
@@ -742,7 +735,6 @@ abstract class _$AsyncNotifierClass extends $Notifier<MyAsyncNotifier> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<MyAsyncNotifier, MyAsyncNotifier>;
     final element =
         ref.element
@@ -752,12 +744,12 @@ abstract class _$AsyncNotifierClass extends $Notifier<MyAsyncNotifier> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(rawNotifier)
-const rawProvider = RawNotifierProvider._();
+final rawProvider = RawNotifierProvider._();
 
 final class RawNotifierProvider
     extends
@@ -767,7 +759,7 @@ final class RawNotifierProvider
           Raw<MyChangeNotifier>
         >
     with $Provider<Raw<MyChangeNotifier>> {
-  const RawNotifierProvider._()
+  RawNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -804,7 +796,7 @@ final class RawNotifierProvider
 String _$rawNotifierHash() => r'c667d10419c9ce1fdd227e2afd1f3aaf63c3380b';
 
 @ProviderFor(rawFutureNotifier)
-const rawFutureProvider = RawFutureNotifierProvider._();
+final rawFutureProvider = RawFutureNotifierProvider._();
 
 final class RawFutureNotifierProvider
     extends
@@ -814,7 +806,7 @@ final class RawFutureNotifierProvider
           Raw<Future<MyChangeNotifier>>
         >
     with $Provider<Raw<Future<MyChangeNotifier>>> {
-  const RawFutureNotifierProvider._()
+  RawFutureNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -853,7 +845,7 @@ final class RawFutureNotifierProvider
 String _$rawFutureNotifierHash() => r'ff2744c369ebd96615f19451eae416d7afeef03f';
 
 @ProviderFor(rawStreamNotifier)
-const rawStreamProvider = RawStreamNotifierProvider._();
+final rawStreamProvider = RawStreamNotifierProvider._();
 
 final class RawStreamNotifierProvider
     extends
@@ -863,7 +855,7 @@ final class RawStreamNotifierProvider
           Raw<Stream<MyChangeNotifier>>
         >
     with $Provider<Raw<Stream<MyChangeNotifier>>> {
-  const RawStreamNotifierProvider._()
+  RawStreamNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -902,7 +894,7 @@ final class RawStreamNotifierProvider
 String _$rawStreamNotifierHash() => r'9a13efb8fbcef6c4388d5a2535b1b0aec6e46a9a';
 
 @ProviderFor(futureRawNotifier)
-const futureRawProvider = FutureRawNotifierProvider._();
+final futureRawProvider = FutureRawNotifierProvider._();
 
 final class FutureRawNotifierProvider
     extends
@@ -914,7 +906,7 @@ final class FutureRawNotifierProvider
     with
         $FutureModifier<Raw<MyChangeNotifier>>,
         $FutureProvider<Raw<MyChangeNotifier>> {
-  const FutureRawNotifierProvider._()
+  FutureRawNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -943,7 +935,7 @@ final class FutureRawNotifierProvider
 String _$futureRawNotifierHash() => r'87103845bce1f4cae4ad62ae3b7da6ca3539581f';
 
 @ProviderFor(streamRawNotifier)
-const streamRawProvider = StreamRawNotifierProvider._();
+final streamRawProvider = StreamRawNotifierProvider._();
 
 final class StreamRawNotifierProvider
     extends
@@ -955,7 +947,7 @@ final class StreamRawNotifierProvider
     with
         $FutureModifier<Raw<MyChangeNotifier>>,
         $StreamProvider<Raw<MyChangeNotifier>> {
-  const StreamRawNotifierProvider._()
+  StreamRawNotifierProvider._()
     : super(
         from: null,
         argument: null,

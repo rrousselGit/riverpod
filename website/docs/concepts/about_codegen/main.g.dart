@@ -12,12 +12,12 @@ part of 'main.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(fetchUser)
-const fetchUserProvider = FetchUserFamily._();
+final fetchUserProvider = FetchUserFamily._();
 
 final class FetchUserProvider
     extends $FunctionalProvider<AsyncValue<User>, User, FutureOr<User>>
     with $FutureModifier<User>, $FutureProvider<User> {
-  const FetchUserProvider._({
+  FetchUserProvider._({
     required FetchUserFamily super.from,
     required int super.argument,
   }) : super(
@@ -64,7 +64,7 @@ String _$fetchUserHash() => r'0ea61464a124f8af2cf15b830a1a012d4272eb47';
 
 final class FetchUserFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<User>, int> {
-  const FetchUserFamily._()
+  FetchUserFamily._()
     : super(
         retry: null,
         name: r'fetchUserProvider',

@@ -12,7 +12,7 @@ part of 'codegen.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(storage)
-const storageProvider = StorageProvider._();
+final storageProvider = StorageProvider._();
 
 final class StorageProvider
     extends
@@ -24,7 +24,7 @@ final class StorageProvider
     with
         $FutureModifier<Storage<String, String>>,
         $FutureProvider<Storage<String, String>> {
-  const StorageProvider._()
+  StorageProvider._()
     : super(
         from: null,
         argument: null,

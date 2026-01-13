@@ -1,28 +1,19 @@
-import 'package:riverpod_annotation/experimental/scope.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
 import 'integration/dependencies.dart';
 
-@Dependencies([
-  provider,
-  provider2,
-  Provider3,
-  Provider4,
-  transitiveDependencies,
-  emptyDependenciesFunctional,
-  EmptyDependenciesClassBased,
-  smallTransitiveDependencyCount,
-  duplicateDependencies,
-  transitiveDuplicateDependencies,
-  duplicateDependencies2,
-])
 void main() {
   test('Supports specifying dependencies', () {
-    expect(depProvider.dependencies, null);
-    expect(dep2Provider.dependencies, null);
-    expect(familyProvider.dependencies, null);
-    expect(family2Provider.dependencies, null);
+    expect(emptyProvider.dependencies, null);
+    expect(empty2Provider.dependencies, null);
+    expect(emptyFamilyProvider.dependencies, null);
+    expect(emptyFamily2Provider.dependencies, null);
+
+    expect(depProvider.dependencies, <ProviderOrFamily>[]);
+    expect(dep2Provider.dependencies, <ProviderOrFamily>[]);
+    expect(familyProvider.dependencies, <ProviderOrFamily>[]);
+    expect(family2Provider.dependencies, <ProviderOrFamily>[]);
 
     expect(providerProvider.dependencies, [
       depProvider,
@@ -53,20 +44,25 @@ void main() {
 
     expect(
       emptyDependenciesFunctionalProvider.dependencies,
-      same(const <ProviderOrFamily>[]),
+      const <ProviderOrFamily>[],
     );
 
     expect(
       emptyDependenciesClassBasedProvider.dependencies,
-      same(const <ProviderOrFamily>[]),
+      const <ProviderOrFamily>[],
     );
   });
 
   test('Generates transitive dependencies', () {
-    expect(depProvider.$allTransitiveDependencies, null);
-    expect(dep2Provider.$allTransitiveDependencies, null);
-    expect(familyProvider.$allTransitiveDependencies, null);
-    expect(family2Provider.$allTransitiveDependencies, null);
+    expect(emptyProvider.$allTransitiveDependencies, null);
+    expect(empty2Provider.$allTransitiveDependencies, null);
+    expect(emptyFamilyProvider.$allTransitiveDependencies, null);
+    expect(emptyFamily2Provider.$allTransitiveDependencies, null);
+
+    expect(depProvider.$allTransitiveDependencies, <ProviderOrFamily>[]);
+    expect(dep2Provider.$allTransitiveDependencies, <ProviderOrFamily>[]);
+    expect(familyProvider.$allTransitiveDependencies, <ProviderOrFamily>[]);
+    expect(family2Provider.$allTransitiveDependencies, <ProviderOrFamily>[]);
 
     expect(providerProvider.$allTransitiveDependencies, [
       depProvider,
@@ -103,12 +99,12 @@ void main() {
 
     expect(
       emptyDependenciesFunctionalProvider.$allTransitiveDependencies,
-      same(const <ProviderOrFamily>[]),
+      const <ProviderOrFamily>[],
     );
 
     expect(
       emptyDependenciesClassBasedProvider.$allTransitiveDependencies,
-      same(const <ProviderOrFamily>[]),
+      const <ProviderOrFamily>[],
     );
   });
 
@@ -170,25 +166,25 @@ void main() {
   });
 
   test('remove duplicate dependencies', () {
-    expect(
-      duplicateDependenciesProvider.dependencies,
-      same(const <ProviderOrFamily>[depProvider, dep2Provider]),
-    );
+    expect(duplicateDependenciesProvider.dependencies, <ProviderOrFamily>[
+      depProvider,
+      dep2Provider,
+    ]);
     expect(
       duplicateDependenciesProvider.$allTransitiveDependencies,
-      same(const <ProviderOrFamily>[depProvider, dep2Provider]),
+      <ProviderOrFamily>[depProvider, dep2Provider],
     );
 
     expect(
       transitiveDuplicateDependenciesProvider.$allTransitiveDependencies,
-      same(const <ProviderOrFamily>{
+      <ProviderOrFamily>{
         duplicateDependenciesProvider,
         depProvider,
         dep2Provider,
         duplicateDependencies2Provider,
         familyProvider,
         family2Provider,
-      }),
+      },
     );
   });
 

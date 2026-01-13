@@ -12,12 +12,12 @@ part of 'main.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(helloWorld)
-const helloWorldProvider = HelloWorldProvider._();
+final helloWorldProvider = HelloWorldProvider._();
 
 final class HelloWorldProvider
     extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const HelloWorldProvider._()
+  HelloWorldProvider._()
     : super(
         from: null,
         argument: null,

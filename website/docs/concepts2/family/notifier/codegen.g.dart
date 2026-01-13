@@ -12,11 +12,11 @@ part of 'codegen.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(UserNotifier)
-const userProvider = UserNotifierFamily._();
+final userProvider = UserNotifierFamily._();
 
 final class UserNotifierProvider
     extends $AsyncNotifierProvider<UserNotifier, User> {
-  const UserNotifierProvider._({
+  UserNotifierProvider._({
     required UserNotifierFamily super.from,
     required String super.argument,
   }) : super(
@@ -63,7 +63,7 @@ final class UserNotifierFamily extends $Family
           FutureOr<User>,
           String
         > {
-  const UserNotifierFamily._()
+  UserNotifierFamily._()
     : super(
         retry: null,
         name: r'userProvider',
@@ -87,7 +87,6 @@ abstract class _$UserNotifier extends $AsyncNotifier<User> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref = this.ref as $Ref<AsyncValue<User>, User>;
     final element =
         ref.element
@@ -97,6 +96,6 @@ abstract class _$UserNotifier extends $AsyncNotifier<User> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }

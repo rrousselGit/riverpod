@@ -12,11 +12,11 @@ part of 'from_state_provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(CounterNotifier)
-const counterProvider = CounterNotifierProvider._();
+final counterProvider = CounterNotifierProvider._();
 
 final class CounterNotifierProvider
     extends $NotifierProvider<CounterNotifier, int> {
-  const CounterNotifierProvider._()
+  CounterNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -50,7 +50,6 @@ abstract class _$CounterNotifier extends $Notifier<int> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -60,6 +59,6 @@ abstract class _$CounterNotifier extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

@@ -12,10 +12,10 @@ part of 'sync_class.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(Example)
-const exampleProvider = ExampleProvider._();
+final exampleProvider = ExampleProvider._();
 
 final class ExampleProvider extends $NotifierProvider<Example, String> {
-  const ExampleProvider._()
+  ExampleProvider._()
     : super(
         from: null,
         argument: null,
@@ -49,7 +49,6 @@ abstract class _$Example extends $Notifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -59,6 +58,6 @@ abstract class _$Example extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

@@ -12,11 +12,11 @@ part of 'migrated.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(MyNotifier)
-const myProvider = MyNotifierProvider._();
+final myProvider = MyNotifierProvider._();
 
 final class MyNotifierProvider
     extends $AsyncNotifierProvider<MyNotifier, List<Todo>> {
-  const MyNotifierProvider._()
+  MyNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -42,7 +42,6 @@ abstract class _$MyNotifier extends $AsyncNotifier<List<Todo>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<List<Todo>>, List<Todo>>;
     final element =
         ref.element
@@ -52,6 +51,6 @@ abstract class _$MyNotifier extends $AsyncNotifier<List<Todo>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

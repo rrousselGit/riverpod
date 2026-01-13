@@ -357,7 +357,7 @@ abstract class ConsumerStatefulWidget extends StatefulWidget {
 abstract class ConsumerState<WidgetT extends ConsumerStatefulWidget>
     extends State<WidgetT> {
   /// {@macro flutter_riverpod.widget_ref}
-  late final WidgetRef ref = context as WidgetRef;
+  late final ref = context as WidgetRef;
 }
 
 /// The [Element] for a [ConsumerStatefulWidget]
@@ -474,7 +474,7 @@ base class ConsumerStatefulElement extends StatefulElement
 
               final sub = container.listen<StateT>(
                 target,
-                (_, __) => markNeedsBuild(),
+                (_, _) => markNeedsBuild(),
               );
               _applyTickerMode(sub);
               return sub;
@@ -568,7 +568,6 @@ base class ConsumerStatefulElement extends StatefulElement
       listener,
       onError: onError,
       fireImmediately: fireImmediately,
-      // ignore: invalid_use_of_internal_member, from riverpod
     );
 
     // Hook-up on onClose to avoid memory leaks.

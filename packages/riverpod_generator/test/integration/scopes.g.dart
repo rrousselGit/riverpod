@@ -10,18 +10,18 @@ part of 'scopes.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(ScopedClass)
-const scopedClassProvider = ScopedClassProvider._();
+final scopedClassProvider = ScopedClassProvider._();
 
 final class ScopedClassProvider extends $NotifierProvider<ScopedClass, int> {
-  const ScopedClassProvider._()
+  ScopedClassProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'scopedClassProvider',
         isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[],
-        $allTransitiveDependencies: const <ProviderOrFamily>[],
+        dependencies: <ProviderOrFamily>[],
+        $allTransitiveDependencies: <ProviderOrFamily>[],
       );
 
   @override
@@ -47,7 +47,6 @@ abstract class _$ScopedClass extends $Notifier<int> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -57,16 +56,16 @@ abstract class _$ScopedClass extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(ScopedClassFamily)
-const scopedClassFamilyProvider = ScopedClassFamilyFamily._();
+final scopedClassFamilyProvider = ScopedClassFamilyFamily._();
 
 final class ScopedClassFamilyProvider
     extends $NotifierProvider<ScopedClassFamily, int> {
-  const ScopedClassFamilyProvider._({
+  ScopedClassFamilyProvider._({
     required ScopedClassFamilyFamily super.from,
     required int super.argument,
   }) : super(
@@ -114,12 +113,12 @@ String _$scopedClassFamilyHash() => r'04aeb0bbfdc363e2c8714c7a5967368a7f990d58';
 
 final class ScopedClassFamilyFamily extends $Family
     with $ClassFamilyOverride<ScopedClassFamily, int, int, int, int> {
-  const ScopedClassFamilyFamily._()
+  ScopedClassFamilyFamily._()
     : super(
         retry: null,
         name: r'scopedClassFamilyProvider',
-        dependencies: const <ProviderOrFamily>[],
-        $allTransitiveDependencies: const <ProviderOrFamily>[],
+        dependencies: <ProviderOrFamily>[],
+        $allTransitiveDependencies: <ProviderOrFamily>[],
         isAutoDispose: true,
       );
 
@@ -138,7 +137,6 @@ abstract class _$ScopedClassFamily extends $Notifier<int> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -148,6 +146,6 @@ abstract class _$ScopedClassFamily extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }

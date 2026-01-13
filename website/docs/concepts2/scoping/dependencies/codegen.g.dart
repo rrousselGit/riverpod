@@ -12,25 +12,25 @@ part of 'codegen.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(currentItem)
-const currentItemProvider = CurrentItemProvider._();
+final currentItemProvider = CurrentItemProvider._();
 
 final class CurrentItemProvider
     extends $FunctionalProvider<AsyncValue<Item?>, Item?, FutureOr<Item?>>
     with $FutureModifier<Item?>, $FutureProvider<Item?> {
-  const CurrentItemProvider._()
+  CurrentItemProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'currentItemProvider',
         isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[currentItemIdProvider],
-        $allTransitiveDependencies: const <ProviderOrFamily>[
+        dependencies: <ProviderOrFamily>[currentItemIdProvider],
+        $allTransitiveDependencies: <ProviderOrFamily>[
           CurrentItemProvider.$allTransitiveDependencies0,
         ],
       );
 
-  static const $allTransitiveDependencies0 = currentItemIdProvider;
+  static final $allTransitiveDependencies0 = currentItemIdProvider;
 
   @override
   String debugGetCreateSourceHash() => _$currentItemHash();

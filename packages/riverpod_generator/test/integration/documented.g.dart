@@ -13,7 +13,7 @@ part of 'documented.dart';
 
 @ProviderFor(functional)
 @annotation
-const functionalProvider = FunctionalProvider._();
+final functionalProvider = FunctionalProvider._();
 
 /// Hello world
 // Foo
@@ -24,7 +24,7 @@ final class FunctionalProvider
     with $Provider<String> {
   /// Hello world
   // Foo
-  const FunctionalProvider._()
+  FunctionalProvider._()
     : super(
         from: null,
         argument: null,
@@ -64,7 +64,7 @@ String _$functionalHash() => r'483ddb9ce91e80912574bc3f64456eea5b6c7b0e';
 
 @ProviderFor(ClassBased)
 @annotation
-const classBasedProvider = ClassBasedProvider._();
+final classBasedProvider = ClassBasedProvider._();
 
 /// Hello world
 // Foo
@@ -72,7 +72,7 @@ const classBasedProvider = ClassBasedProvider._();
 final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
   /// Hello world
   // Foo
-  const ClassBasedProvider._()
+  ClassBasedProvider._()
     : super(
         from: null,
         argument: null,
@@ -110,7 +110,6 @@ abstract class _$ClassBased extends $Notifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -120,7 +119,7 @@ abstract class _$ClassBased extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -129,7 +128,7 @@ abstract class _$ClassBased extends $Notifier<String> {
 
 @ProviderFor(family)
 @annotation
-const familyProvider = FamilyFamily._();
+final familyProvider = FamilyFamily._();
 
 /// Hello world
 // Foo
@@ -139,7 +138,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   /// Hello world
   // Foo
-  const FamilyProvider._({
+  FamilyProvider._({
     required FamilyFamily super.from,
     required int super.argument,
   }) : super(
@@ -198,7 +197,7 @@ String _$familyHash() => r'13354dca1ecbd172ae0627e9ba644d52cd9cfaaf';
 @annotation
 final class FamilyFamily extends $Family
     with $FunctionalFamilyOverride<String, int> {
-  const FamilyFamily._()
+  FamilyFamily._()
     : super(
         retry: null,
         name: r'familyProvider',
@@ -222,7 +221,7 @@ final class FamilyFamily extends $Family
 
 @ProviderFor(ClassFamilyBased)
 @annotation
-const classFamilyBasedProvider = ClassFamilyBasedFamily._();
+final classFamilyBasedProvider = ClassFamilyBasedFamily._();
 
 /// Hello world
 // Foo
@@ -231,7 +230,7 @@ final class ClassFamilyBasedProvider
     extends $NotifierProvider<ClassFamilyBased, String> {
   /// Hello world
   // Foo
-  const ClassFamilyBasedProvider._({
+  ClassFamilyBasedProvider._({
     required ClassFamilyBasedFamily super.from,
     required int super.argument,
   }) : super(
@@ -283,7 +282,7 @@ String _$classFamilyBasedHash() => r'4681ad76c671518ac72ca40fa532126bc041dc2f';
 @annotation
 final class ClassFamilyBasedFamily extends $Family
     with $ClassFamilyOverride<ClassFamilyBased, String, String, String, int> {
-  const ClassFamilyBasedFamily._()
+  ClassFamilyBasedFamily._()
     : super(
         retry: null,
         name: r'classFamilyBasedProvider',
@@ -319,7 +318,6 @@ abstract class _$ClassFamilyBased extends $Notifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -329,6 +327,6 @@ abstract class _$ClassFamilyBased extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }

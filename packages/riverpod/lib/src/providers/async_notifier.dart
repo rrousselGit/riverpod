@@ -36,7 +36,7 @@ abstract base class $AsyncNotifierProvider<
     with $FutureModifier<ValueT> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use.
-  const $AsyncNotifierProvider({
+  $AsyncNotifierProvider({
     required super.name,
     required super.from,
     required super.argument,
@@ -85,7 +85,7 @@ class $AsyncNotifierProviderElement<
   $AsyncNotifierProviderElement(super.pointer);
 
   @override
-  void handleValue(Ref ref, FutureOr<ValueT> created) {
-    handleFuture(ref, () => created);
+  void handleCreate(Ref ref, FutureOr<ValueT> Function() created) {
+    handleFuture(ref, created);
   }
 }

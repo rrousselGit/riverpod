@@ -12,11 +12,11 @@ part of 'async_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(AsyncTodosNotifier)
-const asyncTodosProvider = AsyncTodosNotifierProvider._();
+final asyncTodosProvider = AsyncTodosNotifierProvider._();
 
 final class AsyncTodosNotifierProvider
     extends $AsyncNotifierProvider<AsyncTodosNotifier, List<Todo>> {
-  const AsyncTodosNotifierProvider._()
+  AsyncTodosNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -43,7 +43,6 @@ abstract class _$AsyncTodosNotifier extends $AsyncNotifier<List<Todo>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<List<Todo>>, List<Todo>>;
     final element =
         ref.element
@@ -53,6 +52,6 @@ abstract class _$AsyncTodosNotifier extends $AsyncNotifier<List<Todo>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

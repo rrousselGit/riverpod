@@ -12,10 +12,10 @@ part of 'declare.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(Count)
-const countProvider = CountProvider._();
+final countProvider = CountProvider._();
 
 final class CountProvider extends $NotifierProvider<Count, int> {
-  const CountProvider._()
+  CountProvider._()
     : super(
         from: null,
         argument: null,
@@ -49,7 +49,6 @@ abstract class _$Count extends $Notifier<int> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -59,6 +58,6 @@ abstract class _$Count extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

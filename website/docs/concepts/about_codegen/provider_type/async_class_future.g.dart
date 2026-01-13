@@ -12,10 +12,10 @@ part of 'async_class_future.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(Example)
-const exampleProvider = ExampleProvider._();
+final exampleProvider = ExampleProvider._();
 
 final class ExampleProvider extends $AsyncNotifierProvider<Example, String> {
-  const ExampleProvider._()
+  ExampleProvider._()
     : super(
         from: null,
         argument: null,
@@ -41,7 +41,6 @@ abstract class _$Example extends $AsyncNotifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -51,6 +50,6 @@ abstract class _$Example extends $AsyncNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_mixin
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

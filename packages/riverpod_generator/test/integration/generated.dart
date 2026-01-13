@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api, inference_failure_on_function_return_type, always_declare_return_types, type_annotate_public_apis //
+// ignore_for_file: strict_top_level_inference, inference_failure_on_function_return_type, always_declare_return_types, type_annotate_public_apis //
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -22,7 +22,7 @@ class $DynamicClassFamily extends _$$DynamicClassFamily {
   build(test) => Object();
 }
 
-const dynamicProvider = _dynamicProvider;
+final dynamicProvider = _dynamicProvider;
 
 @riverpod
 _dynamic(Ref ref, test) => 0;

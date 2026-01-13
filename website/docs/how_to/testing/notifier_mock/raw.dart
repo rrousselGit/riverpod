@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_mixin
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mockito/mockito.dart';

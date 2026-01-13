@@ -186,12 +186,12 @@ class FakeAsync {
     () => withClock(_clock, () => callback(this)),
     zoneSpecification: ZoneSpecification(
       createTimer:
-          (_, __, ___, duration, callback) =>
+          (_, _, _, duration, callback) =>
               _createTimer(duration, callback, false),
       createPeriodicTimer:
-          (_, __, ___, duration, callback) =>
+          (_, _, _, duration, callback) =>
               _createTimer(duration, callback, true),
-      // scheduleMicrotask: (_, __, ___, microtask) =>
+      // scheduleMicrotask: (_, _, _, microtask) =>
       //     _microtasks.add(microtask)
     ),
   );

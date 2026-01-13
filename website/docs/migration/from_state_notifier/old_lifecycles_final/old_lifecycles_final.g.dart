@@ -12,12 +12,12 @@ part of 'old_lifecycles_final.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(duration)
-const durationProvider = DurationProvider._();
+final durationProvider = DurationProvider._();
 
 final class DurationProvider
     extends $FunctionalProvider<Duration, Duration, Duration>
     with $Provider<Duration> {
-  const DurationProvider._()
+  DurationProvider._()
     : super(
         from: null,
         argument: null,
@@ -53,12 +53,12 @@ final class DurationProvider
 String _$durationHash() => r'997cacfb78da8107053428dfc5515497354b50c6';
 
 @ProviderFor(repository)
-const repositoryProvider = RepositoryProvider._();
+final repositoryProvider = RepositoryProvider._();
 
 final class RepositoryProvider
     extends $FunctionalProvider<_MyRepo, _MyRepo, _MyRepo>
     with $Provider<_MyRepo> {
-  const RepositoryProvider._()
+  RepositoryProvider._()
     : super(
         from: null,
         argument: null,
@@ -94,10 +94,10 @@ final class RepositoryProvider
 String _$repositoryHash() => r'8c1b035ba722660550674e92444db7b6f25ac2a3';
 
 @ProviderFor(MyNotifier)
-const myProvider = MyNotifierProvider._();
+final myProvider = MyNotifierProvider._();
 
 final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
-  const MyNotifierProvider._()
+  MyNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -131,7 +131,6 @@ abstract class _$MyNotifier extends $Notifier<int> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -141,6 +140,6 @@ abstract class _$MyNotifier extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

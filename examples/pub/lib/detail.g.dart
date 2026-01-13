@@ -12,12 +12,12 @@ part of 'detail.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(fetchPackageDetails)
-const fetchPackageDetailsProvider = FetchPackageDetailsFamily._();
+final fetchPackageDetailsProvider = FetchPackageDetailsFamily._();
 
 final class FetchPackageDetailsProvider
     extends $FunctionalProvider<AsyncValue<Package>, Package, FutureOr<Package>>
     with $FutureModifier<Package>, $FutureProvider<Package> {
-  const FetchPackageDetailsProvider._({
+  FetchPackageDetailsProvider._({
     required FetchPackageDetailsFamily super.from,
     required String super.argument,
   }) : super(
@@ -61,11 +61,11 @@ final class FetchPackageDetailsProvider
 }
 
 String _$fetchPackageDetailsHash() =>
-    r'16ad07d6f69412f6d456c6d482f15dc53421df74';
+    r'5a9efadea302d6127f629d240bf469dec4c51d69';
 
 final class FetchPackageDetailsFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<Package>, String> {
-  const FetchPackageDetailsFamily._()
+  FetchPackageDetailsFamily._()
     : super(
         retry: null,
         name: r'fetchPackageDetailsProvider',
@@ -82,7 +82,7 @@ final class FetchPackageDetailsFamily extends $Family
 }
 
 @ProviderFor(likedPackages)
-const likedPackagesProvider = LikedPackagesProvider._();
+final likedPackagesProvider = LikedPackagesProvider._();
 
 final class LikedPackagesProvider
     extends
@@ -92,7 +92,7 @@ final class LikedPackagesProvider
           FutureOr<List<String>>
         >
     with $FutureModifier<List<String>>, $FutureProvider<List<String>> {
-  const LikedPackagesProvider._()
+  LikedPackagesProvider._()
     : super(
         from: null,
         argument: null,
@@ -118,15 +118,15 @@ final class LikedPackagesProvider
   }
 }
 
-String _$likedPackagesHash() => r'8debee8d8fa48334d1de21fa9bbf03224265d29d';
+String _$likedPackagesHash() => r'25a2bfafd29a094d3fbc81cee275a54e28cd2ce2';
 
 @ProviderFor(pubRepository)
-const pubRepositoryProvider = PubRepositoryProvider._();
+final pubRepositoryProvider = PubRepositoryProvider._();
 
 final class PubRepositoryProvider
     extends $FunctionalProvider<PubRepository, PubRepository, PubRepository>
     with $Provider<PubRepository> {
-  const PubRepositoryProvider._()
+  PubRepositoryProvider._()
     : super(
         from: null,
         argument: null,
@@ -168,7 +168,7 @@ String _$pubRepositoryHash() => r'fd358feb202d2c34ad507ebf0a40bddbebc8ea98';
 /// is logged-in.
 
 @ProviderFor(PackageMetrics)
-const packageMetricsProvider = PackageMetricsFamily._();
+final packageMetricsProvider = PackageMetricsFamily._();
 
 /// A provider that fetches the likes count, popularity score and pub points
 /// for a given package.
@@ -182,7 +182,7 @@ final class PackageMetricsProvider
   ///
   /// It also exposes utilities to like/unlike a package, assuming the user
   /// is logged-in.
-  const PackageMetricsProvider._({
+  PackageMetricsProvider._({
     required PackageMetricsFamily super.from,
     required String super.argument,
   }) : super(
@@ -235,7 +235,7 @@ final class PackageMetricsFamily extends $Family
           FutureOr<PackageMetricsScore>,
           String
         > {
-  const PackageMetricsFamily._()
+  PackageMetricsFamily._()
     : super(
         retry: null,
         name: r'packageMetricsProvider',
@@ -271,7 +271,6 @@ abstract class _$PackageMetrics extends $AsyncNotifier<PackageMetricsScore> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(packageName: _$args);
     final ref =
         this.ref as $Ref<AsyncValue<PackageMetricsScore>, PackageMetricsScore>;
     final element =
@@ -282,6 +281,6 @@ abstract class _$PackageMetrics extends $AsyncNotifier<PackageMetricsScore> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(packageName: _$args));
   }
 }

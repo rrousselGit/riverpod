@@ -26,7 +26,7 @@ FutureOr<String> public(Ref ref) {
   return 'Hello world';
 }
 
-const privateProvider = _privateProvider;
+final privateProvider = _privateProvider;
 
 @riverpod
 Future<String> _private(Ref ref) async {
@@ -62,7 +62,7 @@ class PublicClass extends _$PublicClass {
   }
 }
 
-const privateClassProvider = _privateClassProvider;
+final privateClassProvider = _privateClassProvider;
 
 //
 @riverpod
@@ -116,4 +116,10 @@ class Regression3490<ModelT, SortT, CursorT>
     required Regression3490Cb<ModelT, SortT, CursorT> getData,
     String? parentId,
   }) {}
+}
+
+@riverpod
+class VoidClass extends _$VoidClass {
+  @override
+  Future<void> build() async {}
 }

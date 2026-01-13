@@ -45,9 +45,15 @@ void main() {
         3.14,
       ]);
     });
+
+    test('Using class+family', () {
+      final container = ProviderContainer.test();
+
+      expect(container.read(genericClassProvider<int>(42)), <int>[42]);
+    });
   });
 
-  test('Supports Raw', () async {
+  test('Supports Raw', () {
     final container = ProviderContainer.test();
 
     expect(container.read(rawFutureProvider), isA<Future<String>>());
@@ -162,7 +168,7 @@ void main() {
     () async {
       final container = ProviderContainer.test();
 
-      const ProviderBase<Stream<String>> provider = rawStreamProvider;
+      final ProviderBase<Stream<String>> provider = rawStreamProvider;
       final Stream<String> result = container.read(rawStreamProvider);
 
       await expectLater(result, emits('Hello world'));
@@ -174,7 +180,7 @@ void main() {
     () {
       final container = ProviderContainer.test();
 
-      const ProviderBase<String> provider = publicProvider;
+      final ProviderBase<String> provider = publicProvider;
       final String result = container.read(publicProvider);
 
       expect(result, 'Hello world');
@@ -200,7 +206,7 @@ void main() {
     () {
       final container = ProviderContainer.test();
 
-      const FamilyFamily family = familyProvider;
+      final FamilyFamily family = familyProvider;
 
       expect(familyProvider(42, third: .42).from, familyProvider);
 

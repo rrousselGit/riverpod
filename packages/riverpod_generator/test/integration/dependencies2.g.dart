@@ -10,24 +10,24 @@ part of 'dependencies2.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(providerWithDependencies2)
-const providerWithDependencies2Provider = ProviderWithDependencies2Provider._();
+final providerWithDependencies2Provider = ProviderWithDependencies2Provider._();
 
 final class ProviderWithDependencies2Provider
     extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const ProviderWithDependencies2Provider._()
+  ProviderWithDependencies2Provider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'providerWithDependencies2Provider',
         isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[
+        dependencies: <ProviderOrFamily>[
           providerWithDependenciesProvider,
           _private2Provider,
           public2Provider,
         ],
-        $allTransitiveDependencies: const <ProviderOrFamily>{
+        $allTransitiveDependencies: <ProviderOrFamily>{
           ProviderWithDependencies2Provider.$allTransitiveDependencies0,
           ProviderWithDependencies2Provider.$allTransitiveDependencies1,
           ProviderWithDependencies2Provider.$allTransitiveDependencies2,
@@ -36,13 +36,13 @@ final class ProviderWithDependencies2Provider
         },
       );
 
-  static const $allTransitiveDependencies0 = providerWithDependenciesProvider;
-  static const $allTransitiveDependencies1 =
+  static final $allTransitiveDependencies0 = providerWithDependenciesProvider;
+  static final $allTransitiveDependencies1 =
       ProviderWithDependenciesProvider.$allTransitiveDependencies0;
-  static const $allTransitiveDependencies2 =
+  static final $allTransitiveDependencies2 =
       ProviderWithDependenciesProvider.$allTransitiveDependencies1;
-  static const $allTransitiveDependencies3 = _private2Provider;
-  static const $allTransitiveDependencies4 = public2Provider;
+  static final $allTransitiveDependencies3 = _private2Provider;
+  static final $allTransitiveDependencies4 = public2Provider;
 
   @override
   String debugGetCreateSourceHash() => _$providerWithDependencies2Hash();
@@ -67,15 +67,15 @@ final class ProviderWithDependencies2Provider
 }
 
 String _$providerWithDependencies2Hash() =>
-    r'3a6100929120a9cf1ef7f1e0a5e9b8e4d4030ae2';
+    r'7babaab4c3a5db6c727705f7c72e07bdbadcade5';
 
 @ProviderFor(familyWithDependencies2)
-const familyWithDependencies2Provider = FamilyWithDependencies2Family._();
+final familyWithDependencies2Provider = FamilyWithDependencies2Family._();
 
 final class FamilyWithDependencies2Provider
     extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const FamilyWithDependencies2Provider._({
+  FamilyWithDependencies2Provider._({
     required FamilyWithDependencies2Family super.from,
     required int? super.argument,
   }) : super(
@@ -86,13 +86,13 @@ final class FamilyWithDependencies2Provider
          $allTransitiveDependencies: null,
        );
 
-  static const $allTransitiveDependencies0 = providerWithDependenciesProvider;
-  static const $allTransitiveDependencies1 =
+  static final $allTransitiveDependencies0 = providerWithDependenciesProvider;
+  static final $allTransitiveDependencies1 =
       ProviderWithDependenciesProvider.$allTransitiveDependencies0;
-  static const $allTransitiveDependencies2 =
+  static final $allTransitiveDependencies2 =
       ProviderWithDependenciesProvider.$allTransitiveDependencies1;
-  static const $allTransitiveDependencies3 = _private2Provider;
-  static const $allTransitiveDependencies4 = public2Provider;
+  static final $allTransitiveDependencies3 = _private2Provider;
+  static final $allTransitiveDependencies4 = public2Provider;
 
   @override
   String debugGetCreateSourceHash() => _$familyWithDependencies2Hash();
@@ -136,20 +136,20 @@ final class FamilyWithDependencies2Provider
 }
 
 String _$familyWithDependencies2Hash() =>
-    r'd064c06ca5a85a62cbe2b47943e98fc2e858fb03';
+    r'14a3fd032920e0a72318f440eb39b7dfe937f07f';
 
 final class FamilyWithDependencies2Family extends $Family
     with $FunctionalFamilyOverride<int, int?> {
-  const FamilyWithDependencies2Family._()
+  FamilyWithDependencies2Family._()
     : super(
         retry: null,
         name: r'familyWithDependencies2Provider',
-        dependencies: const <ProviderOrFamily>[
+        dependencies: <ProviderOrFamily>[
           providerWithDependenciesProvider,
           _private2Provider,
           public2Provider,
         ],
-        $allTransitiveDependencies: const <ProviderOrFamily>{
+        $allTransitiveDependencies: <ProviderOrFamily>{
           FamilyWithDependencies2Provider.$allTransitiveDependencies0,
           FamilyWithDependencies2Provider.$allTransitiveDependencies1,
           FamilyWithDependencies2Provider.$allTransitiveDependencies2,
@@ -167,23 +167,23 @@ final class FamilyWithDependencies2Family extends $Family
 }
 
 @ProviderFor(NotifierWithDependencies)
-const notifierWithDependenciesProvider = NotifierWithDependenciesProvider._();
+final notifierWithDependenciesProvider = NotifierWithDependenciesProvider._();
 
 final class NotifierWithDependenciesProvider
     extends $NotifierProvider<NotifierWithDependencies, int> {
-  const NotifierWithDependenciesProvider._()
+  NotifierWithDependenciesProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'notifierWithDependenciesProvider',
         isAutoDispose: true,
-        dependencies: const <ProviderOrFamily>[
+        dependencies: <ProviderOrFamily>[
           providerWithDependenciesProvider,
           _private2Provider,
           public2Provider,
         ],
-        $allTransitiveDependencies: const <ProviderOrFamily>{
+        $allTransitiveDependencies: <ProviderOrFamily>{
           NotifierWithDependenciesProvider.$allTransitiveDependencies0,
           NotifierWithDependenciesProvider.$allTransitiveDependencies1,
           NotifierWithDependenciesProvider.$allTransitiveDependencies2,
@@ -192,13 +192,13 @@ final class NotifierWithDependenciesProvider
         },
       );
 
-  static const $allTransitiveDependencies0 = providerWithDependenciesProvider;
-  static const $allTransitiveDependencies1 =
+  static final $allTransitiveDependencies0 = providerWithDependenciesProvider;
+  static final $allTransitiveDependencies1 =
       ProviderWithDependenciesProvider.$allTransitiveDependencies0;
-  static const $allTransitiveDependencies2 =
+  static final $allTransitiveDependencies2 =
       ProviderWithDependenciesProvider.$allTransitiveDependencies1;
-  static const $allTransitiveDependencies3 = _private2Provider;
-  static const $allTransitiveDependencies4 = public2Provider;
+  static final $allTransitiveDependencies3 = _private2Provider;
+  static final $allTransitiveDependencies4 = public2Provider;
 
   @override
   String debugGetCreateSourceHash() => _$notifierWithDependenciesHash();
@@ -217,14 +217,13 @@ final class NotifierWithDependenciesProvider
 }
 
 String _$notifierWithDependenciesHash() =>
-    r'becc68e5a54b0cc2b8277a6d54b74edef93bfe89';
+    r'f35d441f9a3b2750446560c1b7edbb28033f3317';
 
 abstract class _$NotifierWithDependencies extends $Notifier<int> {
   int build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -234,17 +233,17 @@ abstract class _$NotifierWithDependencies extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(NotifierFamilyWithDependencies)
-const notifierFamilyWithDependenciesProvider =
+final notifierFamilyWithDependenciesProvider =
     NotifierFamilyWithDependenciesFamily._();
 
 final class NotifierFamilyWithDependenciesProvider
     extends $NotifierProvider<NotifierFamilyWithDependencies, int> {
-  const NotifierFamilyWithDependenciesProvider._({
+  NotifierFamilyWithDependenciesProvider._({
     required NotifierFamilyWithDependenciesFamily super.from,
     required int? super.argument,
   }) : super(
@@ -255,13 +254,13 @@ final class NotifierFamilyWithDependenciesProvider
          $allTransitiveDependencies: null,
        );
 
-  static const $allTransitiveDependencies0 = providerWithDependenciesProvider;
-  static const $allTransitiveDependencies1 =
+  static final $allTransitiveDependencies0 = providerWithDependenciesProvider;
+  static final $allTransitiveDependencies1 =
       ProviderWithDependenciesProvider.$allTransitiveDependencies0;
-  static const $allTransitiveDependencies2 =
+  static final $allTransitiveDependencies2 =
       ProviderWithDependenciesProvider.$allTransitiveDependencies1;
-  static const $allTransitiveDependencies3 = _private2Provider;
-  static const $allTransitiveDependencies4 = public2Provider;
+  static final $allTransitiveDependencies3 = _private2Provider;
+  static final $allTransitiveDependencies4 = public2Provider;
 
   @override
   String debugGetCreateSourceHash() => _$notifierFamilyWithDependenciesHash();
@@ -298,7 +297,7 @@ final class NotifierFamilyWithDependenciesProvider
 }
 
 String _$notifierFamilyWithDependenciesHash() =>
-    r'b185ba93857cd028964c1412e748ee887dbd45c8';
+    r'facbc4b2cdf49bc296cbe530e0b6c3e5dbf7d4d3';
 
 final class NotifierFamilyWithDependenciesFamily extends $Family
     with
@@ -309,16 +308,16 @@ final class NotifierFamilyWithDependenciesFamily extends $Family
           int,
           int?
         > {
-  const NotifierFamilyWithDependenciesFamily._()
+  NotifierFamilyWithDependenciesFamily._()
     : super(
         retry: null,
         name: r'notifierFamilyWithDependenciesProvider',
-        dependencies: const <ProviderOrFamily>[
+        dependencies: <ProviderOrFamily>[
           providerWithDependenciesProvider,
           _private2Provider,
           public2Provider,
         ],
-        $allTransitiveDependencies: const <ProviderOrFamily>{
+        $allTransitiveDependencies: <ProviderOrFamily>{
           NotifierFamilyWithDependenciesProvider.$allTransitiveDependencies0,
           NotifierFamilyWithDependenciesProvider.$allTransitiveDependencies1,
           NotifierFamilyWithDependenciesProvider.$allTransitiveDependencies2,
@@ -343,7 +342,6 @@ abstract class _$NotifierFamilyWithDependencies extends $Notifier<int> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(id: _$args);
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -353,24 +351,24 @@ abstract class _$NotifierFamilyWithDependencies extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(id: _$args));
   }
 }
 
 @ProviderFor(_private2)
-const _private2Provider = _Private2Provider._();
+final _private2Provider = _Private2Provider._();
 
 final class _Private2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const _Private2Provider._()
+  _Private2Provider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'_private2Provider',
         isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
+        dependencies: <ProviderOrFamily>[],
+        $allTransitiveDependencies: <ProviderOrFamily>[],
       );
 
   @override
@@ -395,22 +393,22 @@ final class _Private2Provider extends $FunctionalProvider<int, int, int>
   }
 }
 
-String _$_private2Hash() => r'e420875c8fbd9bf33eff945f2b7276b585032a38';
+String _$_private2Hash() => r'8d345b2f0b27412ff238ff5141b8c4c47cffb514';
 
 @ProviderFor(public2)
-const public2Provider = Public2Provider._();
+final public2Provider = Public2Provider._();
 
 final class Public2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const Public2Provider._()
+  Public2Provider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'public2Provider',
         isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
+        dependencies: <ProviderOrFamily>[],
+        $allTransitiveDependencies: <ProviderOrFamily>[],
       );
 
   @override
@@ -435,4 +433,4 @@ final class Public2Provider extends $FunctionalProvider<int, int, int>
   }
 }
 
-String _$public2Hash() => r'20eb4f82e5f25fafc72775e7b86021d70ebb5579';
+String _$public2Hash() => r'c17ee9fe9814dbdb73f4bf1d28d01d530c170b13';

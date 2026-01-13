@@ -12,11 +12,11 @@ part of 'auto_dispose.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(example1)
-const example1Provider = Example1Provider._();
+final example1Provider = Example1Provider._();
 
 final class Example1Provider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const Example1Provider._()
+  Example1Provider._()
     : super(
         from: null,
         argument: null,
@@ -52,11 +52,11 @@ final class Example1Provider extends $FunctionalProvider<String, String, String>
 String _$example1Hash() => r'6a361ee6f9dd1d0cdbb42f967f6356aa058f7041';
 
 @ProviderFor(example2)
-const example2Provider = Example2Provider._();
+final example2Provider = Example2Provider._();
 
 final class Example2Provider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const Example2Provider._()
+  Example2Provider._()
     : super(
         from: null,
         argument: null,

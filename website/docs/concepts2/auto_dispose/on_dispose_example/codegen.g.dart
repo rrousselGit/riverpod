@@ -12,11 +12,11 @@ part of 'codegen.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(other)
-const otherProvider = OtherProvider._();
+final otherProvider = OtherProvider._();
 
 final class OtherProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const OtherProvider._()
+  OtherProvider._()
     : super(
         from: null,
         argument: null,
@@ -52,12 +52,12 @@ final class OtherProvider extends $FunctionalProvider<int, int, int>
 String _$otherHash() => r'5d27b2b1b1c6bd17ba0844f74ade2088611be371';
 
 @ProviderFor(example)
-const exampleProvider = ExampleProvider._();
+final exampleProvider = ExampleProvider._();
 
 final class ExampleProvider
     extends $FunctionalProvider<AsyncValue<int>, int, Stream<int>>
     with $FutureModifier<int>, $StreamProvider<int> {
-  const ExampleProvider._()
+  ExampleProvider._()
     : super(
         from: null,
         argument: null,

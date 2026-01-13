@@ -10,11 +10,11 @@ part of 'avoid_build_context_in_providers.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(fn)
-const fnProvider = FnFamily._();
+final fnProvider = FnFamily._();
 
 final class FnProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const FnProvider._({
+  FnProvider._({
     required FnFamily super.from,
     required (BuildContext, {BuildContext context2}) super.argument,
   }) : super(
@@ -73,7 +73,7 @@ final class FnFamily extends $Family
           int,
           (BuildContext, {BuildContext context2})
         > {
-  const FnFamily._()
+  FnFamily._()
     : super(
         retry: null,
         name: r'fnProvider',
@@ -90,10 +90,10 @@ final class FnFamily extends $Family
 }
 
 @ProviderFor(MyNotifier)
-const myProvider = MyNotifierFamily._();
+final myProvider = MyNotifierFamily._();
 
 final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
-  const MyNotifierProvider._({
+  MyNotifierProvider._({
     required MyNotifierFamily super.from,
     required (BuildContext, {BuildContext context2}) super.argument,
   }) : super(
@@ -148,7 +148,7 @@ final class MyNotifierFamily extends $Family
           int,
           (BuildContext, {BuildContext context2})
         > {
-  const MyNotifierFamily._()
+  MyNotifierFamily._()
     : super(
         retry: null,
         name: r'myProvider',
@@ -172,14 +172,13 @@ final class MyNotifierFamily extends $Family
 abstract class _$MyNotifier extends $Notifier<int> {
   late final _$args = ref.$arg as (BuildContext, {BuildContext context2});
   BuildContext get context1 =>
-      _$args.$1; // expect_lint: avoid_build_context_in_providers
+      _$args.$1; // ignore: riverpod_lint/avoid_build_context_in_providers
   BuildContext get context2 => _$args.context2;
 
   int build(BuildContext context1, {required BuildContext context2});
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args.$1, context2: _$args.context2);
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -189,16 +188,19 @@ abstract class _$MyNotifier extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(
+      ref,
+      () => build(_$args.$1, context2: _$args.context2),
+    );
   }
 }
 
 @ProviderFor(Regression2959)
-const regression2959Provider = Regression2959Provider._();
+final regression2959Provider = Regression2959Provider._();
 
 final class Regression2959Provider
     extends $NotifierProvider<Regression2959, void> {
-  const Regression2959Provider._()
+  Regression2959Provider._()
     : super(
         from: null,
         argument: null,
@@ -232,7 +234,6 @@ abstract class _$Regression2959 extends $Notifier<void> {
   @$mustCallSuper
   @override
   void runBuild() {
-    build();
     final ref = this.ref as $Ref<void, void>;
     final element =
         ref.element
@@ -242,6 +243,6 @@ abstract class _$Regression2959 extends $Notifier<void> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, null);
+    element.handleCreate(ref, build);
   }
 }

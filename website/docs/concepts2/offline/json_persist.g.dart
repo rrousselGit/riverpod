@@ -24,12 +24,12 @@ Map<String, dynamic> _$TodoToJson(_Todo instance) => <String, dynamic>{
 
 @ProviderFor(TodoList)
 @JsonPersist()
-const todoListProvider = TodoListProvider._();
+final todoListProvider = TodoListProvider._();
 
 @JsonPersist()
 final class TodoListProvider
     extends $AsyncNotifierProvider<TodoList, List<Todo>> {
-  const TodoListProvider._()
+  TodoListProvider._()
     : super(
         from: null,
         argument: null,
@@ -56,7 +56,6 @@ abstract class _$TodoListBase extends $AsyncNotifier<List<Todo>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<List<Todo>>, List<Todo>>;
     final element =
         ref.element
@@ -66,7 +65,7 @@ abstract class _$TodoListBase extends $AsyncNotifier<List<Todo>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 

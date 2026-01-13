@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:path/path.dart' as p;
 import 'package:source_gen/source_gen.dart';
@@ -15,34 +15,35 @@ abstract class ParserGenerator<AnnotationT>
     extends GeneratorForAnnotation<AnnotationT> {
   @override
   Future<String> generate(LibraryReader library, BuildStep buildStep) async {
-    final firstAnnotatedElementFromUniqueSource = <Uri, Element2>{};
+    final fragmentsBySourceFile = <Uri, Fragment>{};
 
-    for (final annotated in library.annotatedWithExact(
+    for (final annotatedElement in library.annotatedWithExact(
       typeChecker,
       throwOnUnresolved: false,
     )) {
-      firstAnnotatedElementFromUniqueSource.putIfAbsent(
-        annotated.element.library2!.uri,
-        () => annotated.element,
-      );
+      for (final fragment in annotatedElement.element.fragments) {
+        final sourceUri = fragment.libraryFragment?.source.uri;
+        if (sourceUri == null) continue;
+        fragmentsBySourceFile.putIfAbsent(sourceUri, () => fragment);
+      }
     }
 
-    final ast = await Future.wait(
-      firstAnnotatedElementFromUniqueSource.values.map(
-        (e) => buildStep.resolver
-            .astNodeFor(e.firstFragment, resolve: true)
-            .then((value) => value!.root as CompilationUnit),
+    final compilationUnits = await Future.wait(
+      fragmentsBySourceFile.values.map(
+        (fragment) => buildStep.resolver
+            .astNodeFor(fragment, resolve: true)
+            .then((ast) => ast?.root as CompilationUnit?),
       ),
-    );
+    ).then((units) => units.nonNulls.toList());
 
-    return generateForUnit(ast);
+    return generateForUnit(compilationUnits);
   }
 
   FutureOr<String> generateForUnit(List<CompilationUnit> compilationUnits);
 
   @override
   Stream<String> generateForAnnotatedElement(
-    Element2 element,
+    Element element,
     ConstantReader annotation,
     BuildStep buildStep,
   ) async* {

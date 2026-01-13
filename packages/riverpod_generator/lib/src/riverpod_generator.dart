@@ -37,7 +37,7 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
   String generateForUnit(List<CompilationUnit> compilationUnits) {
     if (compilationUnits.isEmpty) return '';
 
-    final buffer = AnalyzerBuffer.part2(
+    final buffer = AnalyzerBuffer.part(
       compilationUnits.first.declaredFragment!.element,
       header: '// ignore_for_file: type=lint, type=warning',
     );
@@ -190,7 +190,7 @@ extension ProviderElementNames on GeneratorProviderDeclarationElement {
     if (dependencies == null && !isScoped) return 'null';
     dependencies ??= {};
 
-    final buffer = StringBuffer('const <ProviderOrFamily>');
+    final buffer = StringBuffer('<ProviderOrFamily>');
     buffer.write('[');
 
     buffer.writeAll(dependencies.map((e) => e.providerName(options)), ',');
@@ -204,7 +204,7 @@ extension ProviderElementNames on GeneratorProviderDeclarationElement {
     if (deps == null && !isScoped) return 'null';
     allTransitiveDependencies ??= [];
 
-    final buffer = StringBuffer('const <ProviderOrFamily>');
+    final buffer = StringBuffer('<ProviderOrFamily>');
     if (allTransitiveDependencies.length < 4) {
       buffer.write('[');
     } else {

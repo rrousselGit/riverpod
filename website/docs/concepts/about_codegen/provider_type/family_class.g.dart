@@ -12,10 +12,10 @@ part of 'family_class.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(Example)
-const exampleProvider = ExampleFamily._();
+final exampleProvider = ExampleFamily._();
 
 final class ExampleProvider extends $NotifierProvider<Example, String> {
-  const ExampleProvider._({
+  ExampleProvider._({
     required ExampleFamily super.from,
     required (int, {String param2}) super.argument,
   }) : super(
@@ -70,7 +70,7 @@ final class ExampleFamily extends $Family
           String,
           (int, {String param2})
         > {
-  const ExampleFamily._()
+  ExampleFamily._()
     : super(
         retry: null,
         name: r'exampleProvider',
@@ -95,7 +95,6 @@ abstract class _$Example extends $Notifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args.$1, param2: _$args.param2);
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -105,6 +104,6 @@ abstract class _$Example extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args.$1, param2: _$args.param2));
   }
 }

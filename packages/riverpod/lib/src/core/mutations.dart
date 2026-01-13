@@ -59,7 +59,7 @@ final class _MutationProvider<ValueT>
           _MutationNotifier<ValueT>,
           _MutationNotifier<ValueT>
         > {
-  const _MutationProvider(this.mutation)
+  _MutationProvider(this.mutation)
     : super(
         from: null,
         argument: null,
@@ -86,11 +86,13 @@ final class _MutationProvider<ValueT>
   String? debugGetCreateSourceHash() => null;
 
   @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) {
     return other is _MutationProvider<ValueT> && mutation == other.mutation;
   }
 
   @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => mutation.hashCode;
 }
 
@@ -423,7 +425,7 @@ final class MutationImpl<ResultT>
       final mut = impl;
       final sub = container.listen<_MutationNotifier<ResultT>>(
         _MutationProvider(this),
-        (_, __) {},
+        (_, _) {},
       );
       final ref = MutationTransaction._(container);
 

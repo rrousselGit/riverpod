@@ -36,7 +36,7 @@ abstract base class $StreamNotifierProvider<
     with $FutureModifier<ValueT> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use.
-  const $StreamNotifierProvider({
+  $StreamNotifierProvider({
     required super.name,
     required super.from,
     required super.argument,
@@ -81,7 +81,7 @@ class $StreamNotifierProviderElement<
   $StreamNotifierProviderElement(super.pointer);
 
   @override
-  void handleValue(Ref ref, Stream<ValueT> created) {
-    handleStream(ref, () => created);
+  void handleCreate(Ref ref, Stream<ValueT> Function() created) {
+    handleStream(ref, created);
   }
 }

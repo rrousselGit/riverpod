@@ -12,10 +12,10 @@ part of 'codegen.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(MyNotifier)
-const myProvider = MyNotifierProvider._();
+final myProvider = MyNotifierProvider._();
 
 final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
-  const MyNotifierProvider._()
+  MyNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -49,7 +49,6 @@ abstract class _$MyNotifier extends $Notifier<int> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -59,6 +58,6 @@ abstract class _$MyNotifier extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

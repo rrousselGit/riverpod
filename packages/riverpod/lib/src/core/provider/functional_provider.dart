@@ -14,7 +14,7 @@ abstract base class $FunctionalProvider<
     extends $ProviderBaseImpl<StateT> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use, as this can be removed at any time.
-  const $FunctionalProvider({
+  $FunctionalProvider({
     required super.name,
     required super.from,
     required super.argument,

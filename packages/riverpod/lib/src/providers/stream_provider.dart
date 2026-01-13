@@ -149,8 +149,7 @@ class $StreamProviderElement<ValueT>
   $StreamProviderElement(super.pointer);
 
   final _streamNotifier = $Observable<Stream<ValueT>>();
-  final StreamController<ValueT> _streamController =
-      StreamController<ValueT>.broadcast();
+  final _streamController = StreamController<ValueT>.broadcast();
 
   @override
   WhenComplete create(Ref ref) {

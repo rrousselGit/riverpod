@@ -14,7 +14,7 @@ part of 'main.dart';
 /// and exposing ways to modify it (cf [increment]).
 
 @ProviderFor(Counter)
-const counterProvider = CounterProvider._();
+final counterProvider = CounterProvider._();
 
 /// Annotating a class by `@riverpod` defines a new shared state for your application,
 /// accessible using the generated [counterProvider].
@@ -25,7 +25,7 @@ final class CounterProvider extends $NotifierProvider<Counter, int> {
   /// accessible using the generated [counterProvider].
   /// This class is both responsible for initializing the state (through the [build] method)
   /// and exposing ways to modify it (cf [increment]).
-  const CounterProvider._()
+  CounterProvider._()
     : super(
         from: null,
         argument: null,
@@ -64,7 +64,6 @@ abstract class _$Counter extends $Notifier<int> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -74,6 +73,6 @@ abstract class _$Counter extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

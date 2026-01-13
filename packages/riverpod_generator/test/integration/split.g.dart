@@ -10,11 +10,11 @@ part of 'split.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(counter2)
-const counter2Provider = Counter2Provider._();
+final counter2Provider = Counter2Provider._();
 
 final class Counter2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const Counter2Provider._()
+  Counter2Provider._()
     : super(
         from: null,
         argument: null,
@@ -48,3 +48,43 @@ final class Counter2Provider extends $FunctionalProvider<int, int, int>
 }
 
 String _$counter2Hash() => r'ab7bef7da79217c780c76761a5ae0c0172ca097e';
+
+@ProviderFor(counter)
+final counterProvider = CounterProvider._();
+
+final class CounterProvider extends $FunctionalProvider<int, int, int>
+    with $Provider<int> {
+  CounterProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'counterProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$counterHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return counter(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+}
+
+String _$counterHash() => r'784ece48cb20fcfdec1553774ecfbd381d1e081f';

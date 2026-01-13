@@ -161,7 +161,7 @@ void main() {
         final dep = StateProvider((ref) => 0);
         final provider = FutureProvider((ref) => Future.value(ref.watch(dep)));
 
-        container.listen(provider, (_, __) {});
+        container.listen(provider, (_, _) {});
         await expectLater(container.read(provider.future), completion(0));
         expect(container.read(provider), const AsyncData(0));
 
@@ -375,7 +375,7 @@ void main() {
     final provider = FutureProvider<int>(
       // ignore: only_throw_errors
       (ref) => throw 42,
-      retry: (_, __) => null,
+      retry: (_, _) => null,
     );
     final container = ProviderContainer.test();
 
@@ -504,7 +504,7 @@ void main() {
         return ref.watch(provider.future);
       });
 
-      final sub = container.listen(dependent, (_, __) {});
+      final sub = container.listen(dependent, (_, _) {});
 
       final future = sub.read();
       expect(callCount, 1);
@@ -561,7 +561,7 @@ void main() {
 
       final futureController = container.read(futureProvider.notifier);
 
-      final sub = container.listen(dependent, (_, __) {});
+      final sub = container.listen(dependent, (_, _) {});
 
       await expectLater(sub.read(), completion(42));
       expect(callCount, 1);
@@ -582,7 +582,7 @@ void main() {
         return ref.watch(provider.future);
       });
 
-      final sub = container.listen(dependent, (_, __) {});
+      final sub = container.listen(dependent, (_, _) {});
 
       final future = sub.read();
       expect(callCount, 1);
@@ -604,7 +604,7 @@ void main() {
         return Future.value(42);
       });
       final container = ProviderContainer.test();
-      final sub = container.listen(provider.future, (_, __) {});
+      final sub = container.listen(provider.future, (_, _) {});
 
       expect(didDispose, false);
 
@@ -676,7 +676,7 @@ void main() {
 
       await expectLater(container.read(provider.future), completion(42));
 
-      final sub = container.listen(provider, (_, __) {});
+      final sub = container.listen(provider, (_, _) {});
 
       expect(sub.read(), const AsyncValue.data(42));
 
@@ -696,7 +696,7 @@ void main() {
 
       await expectLater(container.read(provider.future), completion(42));
 
-      final sub = container.listen(provider, (_, __) {});
+      final sub = container.listen(provider, (_, _) {});
 
       expect(sub.read(), const AsyncValue.data(42));
 
@@ -726,7 +726,7 @@ void main() {
 
       await expectLater(future, completion(42));
 
-      final sub = container.listen(provider, (_, __) {});
+      final sub = container.listen(provider, (_, _) {});
 
       expect(sub.read(), const AsyncValue<int>.data(42));
 
@@ -751,7 +751,7 @@ void main() {
 
       final future = container.read(provider.future);
 
-      final sub = container.listen(provider, (_, __) {});
+      final sub = container.listen(provider, (_, _) {});
 
       expect(sub.read(), const AsyncValue<int>.loading());
 
@@ -772,7 +772,7 @@ void main() {
 
       final future = container.read(provider.future);
 
-      final sub = container.listen(provider, (_, __) {});
+      final sub = container.listen(provider, (_, _) {});
 
       expect(sub.read(), const AsyncValue<int>.loading());
 
@@ -828,7 +828,7 @@ void main() {
 
       await expectLater(container.read(provider.future), throwsA(42));
 
-      final sub = container.listen(provider, (_, __) {});
+      final sub = container.listen(provider, (_, _) {});
 
       expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
 
@@ -853,7 +853,7 @@ void main() {
 
       await expectLater(future, throwsA(42));
 
-      final sub = container.listen(provider, (_, __) {});
+      final sub = container.listen(provider, (_, _) {});
 
       expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
 
@@ -879,7 +879,7 @@ void main() {
 
       await expectLater(container.read(provider.future), throwsA(42));
 
-      final sub = container.listen(provider, (_, __) {});
+      final sub = container.listen(provider, (_, _) {});
 
       expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
 
@@ -908,7 +908,7 @@ void main() {
       final future = container.read(provider.future);
       await expectLater(future, throwsA(42));
 
-      final sub = container.listen(provider, (_, __) {});
+      final sub = container.listen(provider, (_, _) {});
 
       expect(sub.read(), AsyncValue<int>.error(42, stackTrace));
 

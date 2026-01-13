@@ -21,8 +21,8 @@ List<ItemT> complexGeneric<ItemT extends num, OtherT extends String?>(
 class GenericClass<ValueT extends num> extends _$GenericClass<ValueT>
     with MyMixin<List<ValueT>, List<ValueT>> {
   @override
-  List<ValueT> build() {
-    return <ValueT>[];
+  List<ValueT> build(ValueT param) {
+    return <ValueT>[param];
   }
 }
 
@@ -102,7 +102,7 @@ String family(
   return '(first: $first, second: $second, third: $third, fourth: $fourth, fifth: $fifth)';
 }
 
-const privateProvider = _privateProvider;
+final privateProvider = _privateProvider;
 
 @riverpod
 String _private(Ref ref) {
@@ -124,7 +124,7 @@ class PublicClass extends _$PublicClass with MyMixin<String, String> {
   }
 }
 
-const privateClassProvider = _privateClassProvider;
+final privateClassProvider = _privateClassProvider;
 
 @riverpod
 class _PrivateClass extends _$PrivateClass with MyMixin<String, String> {
@@ -245,18 +245,18 @@ void issue4113(Ref ref) {}
 @riverpod
 void _issue4113(Ref ref) {}
 
-const prov = issue4113Provider;
-const prov2 = _issue4113Provider;
+final prov = issue4113Provider;
+final prov2 = _issue4113Provider;
 
 @Riverpod(name: 'manualRename')
 String fn(Ref ref) => '';
 
-const fnProv = manualRename;
+final fnProv = manualRename;
 
 @Riverpod(name: 'manualRename2')
 String fn2(Ref ref, int a) => '';
 
-const fn2Prov = manualRename2;
+final fn2Prov = manualRename2;
 
 @riverpod
 void voidFunctional(Ref ref) {}

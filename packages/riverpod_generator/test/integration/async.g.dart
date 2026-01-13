@@ -10,7 +10,7 @@ part of 'async.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(generic)
-const genericProvider = GenericFamily._();
+final genericProvider = GenericFamily._();
 
 final class GenericProvider<ObjT extends num>
     extends
@@ -20,7 +20,7 @@ final class GenericProvider<ObjT extends num>
           FutureOr<List<ObjT>>
         >
     with $FutureModifier<List<ObjT>>, $FutureProvider<List<ObjT>> {
-  const GenericProvider._({required GenericFamily super.from})
+  GenericProvider._({required GenericFamily super.from})
     : super(
         argument: null,
         retry: null,
@@ -70,7 +70,7 @@ final class GenericProvider<ObjT extends num>
 String _$genericHash() => r'f530516182a22020b12fb9c3868245ad003fe8bc';
 
 final class GenericFamily extends $Family {
-  const GenericFamily._()
+  GenericFamily._()
     : super(
         retry: null,
         name: r'genericProvider',
@@ -101,11 +101,11 @@ final class GenericFamily extends $Family {
 }
 
 @ProviderFor(GenericClass)
-const genericClassProvider = GenericClassFamily._();
+final genericClassProvider = GenericClassFamily._();
 
 final class GenericClassProvider<ObjT extends num>
     extends $AsyncNotifierProvider<GenericClass<ObjT>, List<ObjT>> {
-  const GenericClassProvider._({required GenericClassFamily super.from})
+  GenericClassProvider._({required GenericClassFamily super.from})
     : super(
         argument: null,
         retry: null,
@@ -149,7 +149,7 @@ final class GenericClassProvider<ObjT extends num>
 String _$genericClassHash() => r'1ee74c45e7f5efac4db7e959f75fcf29b033c1d9';
 
 final class GenericClassFamily extends $Family {
-  const GenericClassFamily._()
+  GenericClassFamily._()
     : super(
         retry: null,
         name: r'genericClassProvider',
@@ -205,7 +205,6 @@ abstract class _$GenericClass<ObjT extends num>
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<List<ObjT>>, List<ObjT>>;
     final element =
         ref.element
@@ -215,16 +214,16 @@ abstract class _$GenericClass<ObjT extends num>
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(GenericArg)
-const genericArgProvider = GenericArgFamily._();
+final genericArgProvider = GenericArgFamily._();
 
 final class GenericArgProvider<ObjT extends num>
     extends $AsyncNotifierProvider<GenericArg<ObjT>, String> {
-  const GenericArgProvider._({
+  GenericArgProvider._({
     required GenericArgFamily super.from,
     required ObjT super.argument,
   }) : super(
@@ -269,7 +268,7 @@ final class GenericArgProvider<ObjT extends num>
 String _$genericArgHash() => r'cd3043cae4ddbb54b11b76599098b07301b7a33a';
 
 final class GenericArgFamily extends $Family {
-  const GenericArgFamily._()
+  GenericArgFamily._()
     : super(
         retry: null,
         name: r'genericArgProvider',
@@ -326,7 +325,6 @@ abstract class _$GenericArg<ObjT extends num> extends $AsyncNotifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -336,17 +334,17 @@ abstract class _$GenericArg<ObjT extends num> extends $AsyncNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }
 
 @ProviderFor(public)
-const publicProvider = PublicProvider._();
+final publicProvider = PublicProvider._();
 
 final class PublicProvider
     extends $FunctionalProvider<AsyncValue<String>, String, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String> {
-  const PublicProvider._()
+  PublicProvider._()
     : super(
         from: null,
         argument: null,
@@ -374,12 +372,12 @@ final class PublicProvider
 String _$publicHash() => r'19bceccf795e4c3a26ad1e613fd6f41aad949e2b';
 
 @ProviderFor(_private)
-const _privateProvider = _PrivateProvider._();
+final _privateProvider = _PrivateProvider._();
 
 final class _PrivateProvider
     extends $FunctionalProvider<AsyncValue<String>, String, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String> {
-  const _PrivateProvider._()
+  _PrivateProvider._()
     : super(
         from: null,
         argument: null,
@@ -407,12 +405,12 @@ final class _PrivateProvider
 String _$_privateHash() => r'7f0d1ff55a21e520b8471bbabc4649b5336221d4';
 
 @ProviderFor(familyOr)
-const familyOrProvider = FamilyOrFamily._();
+final familyOrProvider = FamilyOrFamily._();
 
 final class FamilyOrProvider
     extends $FunctionalProvider<AsyncValue<String>, String, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String> {
-  const FamilyOrProvider._({
+  FamilyOrProvider._({
     required FamilyOrFamily super.from,
     required int super.argument,
   }) : super(
@@ -459,7 +457,7 @@ String _$familyOrHash() => r'97cce80a626e228202fa30b87c07ae8319b48023';
 
 final class FamilyOrFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<String>, int> {
-  const FamilyOrFamily._()
+  FamilyOrFamily._()
     : super(
         retry: null,
         name: r'familyOrProvider',
@@ -476,12 +474,12 @@ final class FamilyOrFamily extends $Family
 }
 
 @ProviderFor(family)
-const familyProvider = FamilyFamily._();
+final familyProvider = FamilyFamily._();
 
 final class FamilyProvider
     extends $FunctionalProvider<AsyncValue<String>, String, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String> {
-  const FamilyProvider._({
+  FamilyProvider._({
     required FamilyFamily super.from,
     required (
       int, {
@@ -560,7 +558,7 @@ final class FamilyFamily extends $Family
             List<String>? fifth,
           })
         > {
-  const FamilyFamily._()
+  FamilyFamily._()
     : super(
         retry: null,
         name: r'familyProvider',
@@ -591,11 +589,11 @@ final class FamilyFamily extends $Family
 }
 
 @ProviderFor(PublicClass)
-const publicClassProvider = PublicClassProvider._();
+final publicClassProvider = PublicClassProvider._();
 
 final class PublicClassProvider
     extends $AsyncNotifierProvider<PublicClass, String> {
-  const PublicClassProvider._()
+  PublicClassProvider._()
     : super(
         from: null,
         argument: null,
@@ -621,7 +619,6 @@ abstract class _$PublicClass extends $AsyncNotifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -631,16 +628,16 @@ abstract class _$PublicClass extends $AsyncNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(_PrivateClass)
-const _privateClassProvider = _PrivateClassProvider._();
+final _privateClassProvider = _PrivateClassProvider._();
 
 final class _PrivateClassProvider
     extends $AsyncNotifierProvider<_PrivateClass, String> {
-  const _PrivateClassProvider._()
+  _PrivateClassProvider._()
     : super(
         from: null,
         argument: null,
@@ -666,7 +663,6 @@ abstract class _$PrivateClass extends $AsyncNotifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -676,16 +672,16 @@ abstract class _$PrivateClass extends $AsyncNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(FamilyOrClass)
-const familyOrClassProvider = FamilyOrClassFamily._();
+final familyOrClassProvider = FamilyOrClassFamily._();
 
 final class FamilyOrClassProvider
     extends $AsyncNotifierProvider<FamilyOrClass, String> {
-  const FamilyOrClassProvider._({
+  FamilyOrClassProvider._({
     required FamilyOrClassFamily super.from,
     required int super.argument,
   }) : super(
@@ -732,7 +728,7 @@ final class FamilyOrClassFamily extends $Family
           FutureOr<String>,
           int
         > {
-  const FamilyOrClassFamily._()
+  FamilyOrClassFamily._()
     : super(
         retry: null,
         name: r'familyOrClassProvider',
@@ -756,7 +752,6 @@ abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(_$args);
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -766,16 +761,16 @@ abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(_$args));
   }
 }
 
 @ProviderFor(FamilyClass)
-const familyClassProvider = FamilyClassFamily._();
+final familyClassProvider = FamilyClassFamily._();
 
 final class FamilyClassProvider
     extends $AsyncNotifierProvider<FamilyClass, String> {
-  const FamilyClassProvider._({
+  FamilyClassProvider._({
     required FamilyClassFamily super.from,
     required (
       int, {
@@ -835,7 +830,7 @@ final class FamilyClassFamily extends $Family
             List<String>? fifth,
           })
         > {
-  const FamilyClassFamily._()
+  FamilyClassFamily._()
     : super(
         retry: null,
         name: r'familyClassProvider',
@@ -891,13 +886,6 @@ abstract class _$FamilyClass extends $AsyncNotifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args.$1,
-      second: _$args.second,
-      third: _$args.third,
-      fourth: _$args.fourth,
-      fifth: _$args.fifth,
-    );
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -907,16 +895,25 @@ abstract class _$FamilyClass extends $AsyncNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(
+      ref,
+      () => build(
+        _$args.$1,
+        second: _$args.second,
+        third: _$args.third,
+        fourth: _$args.fourth,
+        fifth: _$args.fifth,
+      ),
+    );
   }
 }
 
 @ProviderFor(Regression3490)
-const regression3490Provider = Regression3490Family._();
+final regression3490Provider = Regression3490Family._();
 
 final class Regression3490Provider<ModelT, SortT, CursorT>
     extends $NotifierProvider<Regression3490<ModelT, SortT, CursorT>, void> {
-  const Regression3490Provider._({
+  Regression3490Provider._({
     required Regression3490Family super.from,
     required ({
       String type,
@@ -975,7 +972,7 @@ final class Regression3490Provider<ModelT, SortT, CursorT>
 String _$regression3490Hash() => r'1e22e082b06069c176814aea015c20723959b1f8';
 
 final class Regression3490Family extends $Family {
-  const Regression3490Family._()
+  Regression3490Family._()
     : super(
         retry: null,
         name: r'regression3490Provider',
@@ -1055,11 +1052,6 @@ abstract class _$Regression3490<ModelT, SortT, CursorT>
   @$mustCallSuper
   @override
   void runBuild() {
-    build(
-      type: _$args.type,
-      getData: _$args.getData,
-      parentId: _$args.parentId,
-    );
     final ref = this.ref as $Ref<void, void>;
     final element =
         ref.element
@@ -1069,6 +1061,56 @@ abstract class _$Regression3490<ModelT, SortT, CursorT>
               Object?,
               Object?
             >;
-    element.handleValue(ref, null);
+    element.handleCreate(
+      ref,
+      () => build(
+        type: _$args.type,
+        getData: _$args.getData,
+        parentId: _$args.parentId,
+      ),
+    );
+  }
+}
+
+@ProviderFor(VoidClass)
+final voidClassProvider = VoidClassProvider._();
+
+final class VoidClassProvider extends $AsyncNotifierProvider<VoidClass, void> {
+  VoidClassProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'voidClassProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$voidClassHash();
+
+  @$internal
+  @override
+  VoidClass create() => VoidClass();
+}
+
+String _$voidClassHash() => r'3c3109f3474209a42efd97c7315171f74669aa49';
+
+abstract class _$VoidClass extends $AsyncNotifier<void> {
+  FutureOr<void> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<void>, void>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<void>, void>,
+              AsyncValue<void>,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
   }
 }

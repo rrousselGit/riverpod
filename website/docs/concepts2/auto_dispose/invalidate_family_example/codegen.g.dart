@@ -12,11 +12,11 @@ part of 'codegen.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(label)
-const labelProvider = LabelFamily._();
+final labelProvider = LabelFamily._();
 
 final class LabelProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const LabelProvider._({
+  LabelProvider._({
     required LabelFamily super.from,
     required String super.argument,
   }) : super(
@@ -71,7 +71,7 @@ String _$labelHash() => r'c53d17dd111313633bd7ca6d6cf6b48dded58ca5';
 
 final class LabelFamily extends $Family
     with $FunctionalFamilyOverride<String, String> {
-  const LabelFamily._()
+  LabelFamily._()
     : super(
         retry: null,
         name: r'labelProvider',

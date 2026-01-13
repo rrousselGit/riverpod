@@ -10,11 +10,11 @@ part of 'hash1.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(simple)
-const simpleProvider = SimpleProvider._();
+final simpleProvider = SimpleProvider._();
 
 final class SimpleProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const SimpleProvider._()
+  SimpleProvider._()
     : super(
         from: null,
         argument: null,
@@ -50,11 +50,11 @@ final class SimpleProvider extends $FunctionalProvider<String, String, String>
 String _$simpleHash() => r'f916b37e39d654e9acfc9c2bd7a244902197b306';
 
 @ProviderFor(simple2)
-const simple2Provider = Simple2Provider._();
+final simple2Provider = Simple2Provider._();
 
 final class Simple2Provider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const Simple2Provider._()
+  Simple2Provider._()
     : super(
         from: null,
         argument: null,
@@ -90,10 +90,10 @@ final class Simple2Provider extends $FunctionalProvider<String, String, String>
 String _$simple2Hash() => r'a60a8496fc391f5adf7ad45a12d0723f14f3127c';
 
 @ProviderFor(SimpleClass)
-const simpleClassProvider = SimpleClassProvider._();
+final simpleClassProvider = SimpleClassProvider._();
 
 final class SimpleClassProvider extends $NotifierProvider<SimpleClass, String> {
-  const SimpleClassProvider._()
+  SimpleClassProvider._()
     : super(
         from: null,
         argument: null,
@@ -127,7 +127,6 @@ abstract class _$SimpleClass extends $Notifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -137,6 +136,6 @@ abstract class _$SimpleClass extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

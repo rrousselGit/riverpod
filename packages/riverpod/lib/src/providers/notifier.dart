@@ -42,7 +42,7 @@ abstract base class $NotifierProvider //
   /// An internal base class for [Notifier].
   ///
   /// Not meant for public consumption.
-  const $NotifierProvider({
+  $NotifierProvider({
     required super.name,
     required super.from,
     required super.argument,
@@ -89,5 +89,6 @@ class $NotifierProviderElement<
       value = AsyncError<ValueT>(error, stackTrace);
 
   @override
-  void handleValue(Ref ref, ValueT created) => value = AsyncData(created);
+  void handleCreate(Ref ref, ValueT Function() created) =>
+      value = AsyncData(created());
 }

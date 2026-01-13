@@ -1,19 +1,22 @@
+import 'package:analysis_server_plugin/edit/dart/correction_producer.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/dart/element/element2.dart';
-import 'package:analyzer/source/source.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/source/source_range.dart';
+import 'package:analyzer_plugin/utilities/assist/assist.dart';
+import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
+import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:collection/collection.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 import '../../imports.dart';
-import '../../riverpod_custom_lint.dart';
 import 'convert_to_widget_utils.dart';
 
-class ConvertToStatelessBaseWidget extends RiverpodAssist {
-  ConvertToStatelessBaseWidget({required this.targetWidget});
-  final StatelessBaseWidgetType targetWidget;
+/// Base class for converting to stateless base widgets
+abstract class ConvertToStatelessBaseWidget extends ResolvedCorrectionProducer {
+  ConvertToStatelessBaseWidget({required super.context});
+
+  StatelessBaseWidgetType get targetWidget;
   late final statelessBaseType = getStatelessBaseType(exclude: targetWidget);
   late final statefulBaseType = getStatefulBaseType(
     exclude:
@@ -23,62 +26,55 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
   );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ChangeReporter reporter,
-    CustomLintContext context,
-    SourceRange target,
-  ) {
-    if (targetWidget.requiredPackage != null &&
-        !context.pubspec.dependencies.keys.contains(
-          targetWidget.requiredPackage,
-        )) {
+  CorrectionApplicability get applicability =>
+      CorrectionApplicability.singleLocation;
+
+  @override
+  AssistKind get assistKind => AssistKind(
+    'convert_to_${targetWidget.name}',
+    targetWidget.priority,
+    'Convert to ${targetWidget.assistName}',
+  );
+
+  @override
+  Future<void> compute(ChangeBuilder builder) async {
+    final visitor = _ExtendsClauseVisitor();
+    node.accept(visitor);
+    final extendsClause = visitor.extendsClause;
+    if (extendsClause == null) return;
+
+    final type = extendsClause.superclass.type;
+    if (type == null) return;
+
+    if (statelessBaseType.isExactlyType(type)) {
+      await _convertStatelessToStatelessWidget(builder, extendsClause);
       return;
     }
 
-    context.registry.addExtendsClause((node) {
-      // Only offer the assist if hovering the extended type
-      if (!node.superclass.sourceRange.intersects(target)) return;
+    if (statefulBaseType.isExactlyType(type)) {
+      final isExactlyStatefulWidget = StatefulBaseWidgetType
+          .statefulWidget
+          .typeChecker
+          .isExactlyType(type);
 
-      final type = node.superclass.type;
-      if (type == null) return;
-
-      if (statelessBaseType.isExactlyType(type)) {
-        _convertStatelessToStatelessWidget(reporter, node);
-        return;
-      }
-
-      if (statefulBaseType.isExactlyType(type)) {
-        final isExactlyStatefulWidget = StatefulBaseWidgetType
-            .statefulWidget
-            .typeChecker
-            .isExactlyType(type);
-
-        _convertStatefulToStatelessWidget(
-          reporter,
-          node,
-          resolver.source,
-          // This adjustment assumes that the priority of the standard "Convert to StatelessWidget" is 30.
-          priorityAdjustment: isExactlyStatefulWidget ? -4 : 0,
-        );
-        return;
-      }
-    });
+      await _convertStatefulToStatelessWidget(
+        builder,
+        extendsClause,
+        // This adjustment assumes that the priority of the standard "Convert to StatelessWidget" is 30.
+        priorityAdjustment: isExactlyStatefulWidget ? -4 : 0,
+      );
+      return;
+    }
   }
 
-  void _convertStatelessToStatelessWidget(
-    ChangeReporter reporter,
+  Future<void> _convertStatelessToStatelessWidget(
+    ChangeBuilder builder,
     ExtendsClause node,
-  ) {
-    final changeBuilder = reporter.createChangeBuilder(
-      message: 'Convert to ${targetWidget.assistName}',
-      priority: targetWidget.priority,
-    );
-
-    changeBuilder.addDartFileEdit((builder) {
+  ) async {
+    await builder.addDartFileEdit(file, (builder) {
       // Change the extended base class
       builder.addSimpleReplacement(
-        node.superclass.sourceRange,
+        range.node(node.superclass),
         targetWidget.widgetName(builder),
       );
 
@@ -110,9 +106,9 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
           // If the build method has a ref, remove it
           if (buildParams.parameters.length == 2) {
             builder.addDeletion(
-              sourceRangeFrom(
-                start: buildParams.parameters.first.end,
-                end: buildParams.rightParenthesis.offset,
+              range.endStart(
+                buildParams.parameters.first,
+                buildParams.rightParenthesis,
               ),
             );
           }
@@ -120,21 +116,15 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
     });
   }
 
-  void _convertStatefulToStatelessWidget(
-    ChangeReporter reporter,
-    ExtendsClause node,
-    Source source, {
+  Future<void> _convertStatefulToStatelessWidget(
+    ChangeBuilder builder,
+    ExtendsClause node, {
     required int priorityAdjustment,
-  }) {
-    final changeBuilder = reporter.createChangeBuilder(
-      message: 'Convert to ${targetWidget.assistName}',
-      priority: targetWidget.priority + priorityAdjustment,
-    );
-
-    changeBuilder.addDartFileEdit((builder) {
+  }) async {
+    await builder.addDartFileEdit(file, (builder) {
       // Change the extended base class
       builder.addSimpleReplacement(
-        node.superclass.sourceRange,
+        range.node(node.superclass),
         targetWidget.widgetName(builder),
       );
 
@@ -146,7 +136,12 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
           .whereType<MethodDeclaration>()
           .firstWhereOrNull((element) => element.name.lexeme == 'createState');
       if (createStateMethod != null) {
-        builder.addDeletion(createStateMethod.sourceRange.getExpanded(1));
+        builder.addDeletion(
+          range.startOffsetEndOffset(
+            createStateMethod.offset - 1,
+            createStateMethod.end + 1,
+          ),
+        );
       }
 
       // Search for the associated State class
@@ -166,25 +161,25 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
 
       // Prepare nodes to move.
       final nodesToMove = <ClassMember>[];
-      final elementsToMove = <Element2>{};
+      final elementsToMove = <Element>{};
       for (final member in stateClass.members) {
         if (member is FieldDeclaration) {
           if (member.isStatic) {
             return;
           }
           for (final fieldNode in member.fields.variables) {
-            final fieldElement = fieldNode.declaredElement2 as FieldElement2?;
+            final fieldElement = fieldNode.declaredFragment?.element as FieldElement?;
             if (fieldElement == null) continue;
             if (!fieldsAssignedInConstructors.contains(fieldElement)) {
               nodesToMove.add(member);
               elementsToMove.add(fieldElement);
 
-              final getter = fieldElement.getter2;
+              final getter = fieldElement.getter;
               if (getter != null) {
                 elementsToMove.add(getter);
               }
 
-              final setter = fieldElement.setter2;
+              final setter = fieldElement.setter;
               if (setter != null) {
                 elementsToMove.add(setter);
               }
@@ -217,9 +212,10 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
           .firstWhereOrNull((element) => element.name.lexeme == 'build');
       if (buildMethod == null) return;
 
+      final source = unit.declaredFragment!.source;
       final outsideRange = SourceRange(
-        widgetClass.sourceRange.end,
-        stateClass.sourceRange.offset - widgetClass.sourceRange.end,
+        widgetClass.end,
+        stateClass.offset - widgetClass.end,
       );
       final outsideLines = source.contents.data.substring(
         outsideRange.offset,
@@ -227,7 +223,7 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
       );
       if (outsideLines.trim().isNotEmpty) {
         builder.addSimpleInsertion(
-          stateClass.sourceRange.end,
+          stateClass.end,
           '${outsideLines.trimRight()}\n',
         );
       }
@@ -238,10 +234,7 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
       }
 
       builder.addDeletion(
-        SourceRange(
-          widgetClass.rightBracket.offset,
-          stateClass.leftBracket.end - widgetClass.rightBracket.offset,
-        ),
+        range.startEnd(widgetClass.rightBracket, stateClass.leftBracket),
       );
 
       final parameterRange = _generateBuildMethodParameterRange(buildMethod);
@@ -266,23 +259,34 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
   SourceRange _generateBuildMethodParameterRange(
     MethodDeclaration buildMethod,
   ) {
-    final offset = buildMethod.parameters?.leftParenthesis.end ?? 0;
-    final end = buildMethod.parameters?.rightParenthesis.offset ?? 0;
+    final params = buildMethod.parameters;
+    if (params == null) return SourceRange.EMPTY;
+    final offset = params.leftParenthesis.end;
+    final end = params.rightParenthesis.offset;
     return SourceRange(offset, end - offset);
+  }
+}
+
+class _ExtendsClauseVisitor extends RecursiveAstVisitor<void> {
+  ExtendsClause? extendsClause;
+
+  @override
+  void visitExtendsClause(ExtendsClause node) {
+    extendsClause = node;
   }
 }
 
 // Original implementation in
 // package:analysis_server/lib/src/services/correction/dart/flutter_convert_to_stateless_widget.dart
 class _FieldFinder extends RecursiveAstVisitor<void> {
-  final fieldsAssignedInConstructors = <FieldElement2>{};
+  final fieldsAssignedInConstructors = <FieldElement>{};
 
   @override
   void visitSimpleIdentifier(SimpleIdentifier node) {
     if (node.parent is FieldFormalParameter) {
       final element = node.element;
-      if (element is FieldFormalParameterElement2) {
-        final field = element.field2;
+      if (element is FieldFormalParameterElement) {
+        final field = element.field;
         if (field != null) {
           fieldsAssignedInConstructors.add(field);
         }
@@ -291,16 +295,16 @@ class _FieldFinder extends RecursiveAstVisitor<void> {
 
     if (node.parent is ConstructorFieldInitializer) {
       final element = node.element;
-      if (element is FieldElement2) {
+      if (element is FieldElement) {
         fieldsAssignedInConstructors.add(element);
       }
     }
 
     if (node.inSetterContext()) {
       final element = node.writeOrReadElement;
-      if (element is PropertyAccessorElement2) {
-        final field = element.variable3;
-        if (field is FieldElement2) {
+      if (element is PropertyAccessorElement) {
+        final field = element.variable;
+        if (field is FieldElement) {
           fieldsAssignedInConstructors.add(field);
         }
       }
@@ -311,8 +315,8 @@ class _FieldFinder extends RecursiveAstVisitor<void> {
 class _ReplacementEditBuilder extends RecursiveAstVisitor<void> {
   _ReplacementEditBuilder(this.widgetClassElement, this.elementsToMove);
 
-  final ClassElement2 widgetClassElement;
-  final Set<Element2> elementsToMove;
+  final ClassElement widgetClassElement;
+  final Set<Element> elementsToMove;
 
   List<SourceRange> deleteRanges = [];
 
@@ -322,8 +326,8 @@ class _ReplacementEditBuilder extends RecursiveAstVisitor<void> {
       return;
     }
     final element = node.element;
-    if (element is ExecutableElement2 &&
-        element.enclosingElement2 == widgetClassElement &&
+    if (element is ExecutableElement &&
+        element.enclosingElement == widgetClassElement &&
         !elementsToMove.contains(element)) {
       final parent = node.parent;
       if (parent is PrefixedIdentifier) {
@@ -387,4 +391,37 @@ bool _isDefaultOverride(MethodDeclaration? methodDeclaration) {
     }
   }
   return false;
+}
+
+// Concrete implementations for each widget type
+class ConvertToHookConsumerWidget extends ConvertToStatelessBaseWidget {
+  ConvertToHookConsumerWidget({required super.context});
+
+  @override
+  StatelessBaseWidgetType get targetWidget =>
+      StatelessBaseWidgetType.hookConsumerWidget;
+}
+
+class ConvertToHookWidget extends ConvertToStatelessBaseWidget {
+  ConvertToHookWidget({required super.context});
+
+  @override
+  StatelessBaseWidgetType get targetWidget =>
+      StatelessBaseWidgetType.hookWidget;
+}
+
+class ConvertToConsumerWidget extends ConvertToStatelessBaseWidget {
+  ConvertToConsumerWidget({required super.context});
+
+  @override
+  StatelessBaseWidgetType get targetWidget =>
+      StatelessBaseWidgetType.consumerWidget;
+}
+
+class ConvertToStatelessWidget extends ConvertToStatelessBaseWidget {
+  ConvertToStatelessWidget({required super.context});
+
+  @override
+  StatelessBaseWidgetType get targetWidget =>
+      StatelessBaseWidgetType.statelessWidget;
 }

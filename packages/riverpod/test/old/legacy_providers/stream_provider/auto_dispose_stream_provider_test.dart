@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_types_on_closure_parameters
-
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
@@ -78,7 +76,7 @@ void main() {
         (ref) => Stream.value(result),
       );
 
-      container.listen(provider, (_, __) {});
+      container.listen(provider, (_, _) {});
 
       expect(await container.read(provider.future), 0);
       expect(container.read(provider), const AsyncValue.data(0));
