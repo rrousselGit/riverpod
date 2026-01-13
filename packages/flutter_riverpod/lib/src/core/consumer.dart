@@ -378,10 +378,42 @@ base class ConsumerStatefulElement extends StatefulElement
   _oldDependencies;
   final _listeners = <ProviderSubscription<Object?>>[];
   List<ProviderSubscription<Object?>>? _manualListeners;
+  ValueListenable<bool>? _tickerModeNotifier;
   bool? _isActive;
+
+  @override
+  void activate() {
+    super.activate();
+    _updateTickerModeNotifier();
+  }
 
   void _applyTickerMode(ProviderSubscription sub) {
     if (_isActive == false) sub.pause();
+  }
+
+  void _updateTickerModeNotifier() {
+    final newTickerModeNotifier = TickerMode.getNotifier(context);
+
+    if (_tickerModeNotifier != newTickerModeNotifier) {
+      _tickerModeNotifier?.removeListener(_updateTickerMode);
+      newTickerModeNotifier.addListener(_updateTickerMode);
+      _tickerModeNotifier = newTickerModeNotifier;
+      _updateTickerMode();
+    }
+  }
+
+  void _updateTickerMode() {
+    final isActive = _tickerModeNotifier!.value;
+    if (isActive != _isActive) {
+      _isActive = isActive;
+      for (final sub in _dependencies.values) {
+        if (isActive) {
+          sub.resume();
+        } else {
+          sub.pause();
+        }
+      }
+    }
   }
 
   @override
@@ -399,16 +431,8 @@ base class ConsumerStatefulElement extends StatefulElement
 
   @override
   Widget build() {
-    final isActive = TickerMode.of(context);
-    if (isActive != _isActive) {
-      _isActive = isActive;
-      for (final sub in _dependencies.values) {
-        if (isActive) {
-          sub.resume();
-        } else {
-          sub.pause();
-        }
-      }
+    if (_tickerModeNotifier == null) {
+      _updateTickerModeNotifier();
     }
 
     try {
@@ -465,6 +489,7 @@ base class ConsumerStatefulElement extends StatefulElement
     /// Calling `super.unmount()` will call `dispose` on the state
     /// And [ListenManual] subscriptions should be closed after `dispose`
     super.unmount();
+    _tickerModeNotifier?.removeListener(_updateTickerMode);
 
     for (final dependency in _dependencies.values) {
       dependency.close();

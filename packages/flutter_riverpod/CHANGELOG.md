@@ -1,6 +1,7 @@
 ## Unreleased minor
 
-Fix the IDE pausing on "markNeedsBuild" exceptions when checking "pause on all exceptions".
+- Fix the IDE pausing on "markNeedsBuild" exceptions when checking "pause on all exceptions".
+- `ConsumerWidget`'s now uses the TickerMode notifier instead of TickerMode.of to avoid unnecessary rebuilds when widgets are hidden (thanks to @Colton127)
 
 ## 3.1.0 - 2025-12-26
 

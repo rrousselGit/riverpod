@@ -12,6 +12,30 @@ import 'package:riverpod/src/internals.dart'
 
 void main() {
   group('Handles TickerMode', () {
+    testWidgets('Does not rebuild widgets when TickerMode changes', (
+      tester,
+    ) async {
+      var buildCount = 0;
+      final consumer = Consumer(
+        builder: (context, ref, child) {
+          buildCount++;
+          return Container();
+        },
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(child: TickerMode(enabled: true, child: consumer)),
+      );
+
+      expect(buildCount, 1);
+
+      await tester.pumpWidget(
+        ProviderScope(child: TickerMode(enabled: false, child: consumer)),
+      );
+
+      expect(buildCount, 1);
+    });
+
     testWidgets('e2e navigation', (tester) async {
       final provider = Provider((ref) => 0);
 
