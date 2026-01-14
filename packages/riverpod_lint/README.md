@@ -67,10 +67,6 @@ Riverpod_lint is implemented using [analysis_server_plugin]. As such, it is inst
 Long story short, create an `analysis_options.yaml` next to your `pubspec.yaml` and add:
 
 ```yaml
-analyzer:
-  plugins:
-    - riverpod_lint
-
 plugins:
   riverpod_lint: <version number>
 ```

@@ -1930,21 +1930,49 @@ void main() {
     });
 
     group('invalidate', () {
-      group('invalidate', () {
-        test('can disposes of the element if not used anymore', () async {
-          final provider = Provider.autoDispose((r) {
-            r.keepAlive();
-            return 0;
-          });
-          final container = ProviderContainer.test();
+      test(
+        'can invalidate non-scoped family from a scoped container with overrides',
+        () {
+          final root = ProviderContainer.test();
+          final family = Provider.family<Object?, int>(
+            (ref, arg) => Object(),
+            name: 'family',
+          );
+          final scoped = Provider(
+            (ref) => 0,
+            dependencies: const [],
+            name: 'scoped',
+          );
+          final provider = Provider(
+            (ref) => ref.watch(family(0)),
+            name: 'provider',
+          );
+          final leaf = ProviderContainer.test(
+            parent: root,
+            overrides: [scoped.overrideWithValue(42)],
+          );
 
-          container.read(provider);
-          container.invalidate(provider);
+          final initial = leaf.read(provider);
+          leaf.invalidate(family);
+          final afterInvalidate = leaf.read(provider);
 
-          await container.pump();
+          expect(initial, isNot(same(afterInvalidate)));
+        },
+      );
 
-          expect(container.getAllProviderElements(), isEmpty);
+      test('can disposes of the element if not used anymore', () async {
+        final provider = Provider.autoDispose((r) {
+          r.keepAlive();
+          return 0;
         });
+        final container = ProviderContainer.test();
+
+        container.read(provider);
+        container.invalidate(provider);
+
+        await container.pump();
+
+        expect(container.getAllProviderElements(), isEmpty);
       });
 
       test('supports asReload', () async {
