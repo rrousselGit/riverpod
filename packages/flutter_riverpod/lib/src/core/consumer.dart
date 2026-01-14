@@ -511,6 +511,7 @@ base class ConsumerStatefulElement extends StatefulElement
     ProviderListenable<StateT> provider,
     void Function(StateT? previous, StateT value) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
+    bool weak = false,
   }) {
     _assertNotDisposed();
     assert(
@@ -521,7 +522,12 @@ base class ConsumerStatefulElement extends StatefulElement
     // We can't implement a fireImmediately flag because we wouldn't know
     // which listen call was preserved between widget rebuild, and we wouldn't
     // want to call the listener on every rebuild.
-    final sub = container.listen<StateT>(provider, listener, onError: onError);
+    final sub = container.listen<StateT>(
+      provider,
+      listener,
+      onError: onError,
+      weak: weak,
+    );
     _listeners.add(sub);
   }
 
@@ -555,6 +561,7 @@ base class ConsumerStatefulElement extends StatefulElement
     void Function(ValueT? previous, ValueT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately = false,
+    bool weak = false,
   }) {
     _assertNotDisposed();
     final listeners = _manualListeners ??= [];
@@ -568,6 +575,7 @@ base class ConsumerStatefulElement extends StatefulElement
       listener,
       onError: onError,
       fireImmediately: fireImmediately,
+      weak: weak,
     );
 
     // Hook-up on onClose to avoid memory leaks.

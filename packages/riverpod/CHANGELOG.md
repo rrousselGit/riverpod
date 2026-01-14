@@ -1,5 +1,6 @@
 ### Unreleased minor
 
+- Added missing `weak` flags to `WidgetRef.listen/listenManual`
 - Added `Ref.isPaused` to check if there are any active/non-paused listeners.
 - Deprecated `family.overrideWith` in favour of `family.overrideWith2`
   The behaviour is the same, but the callback now takes the argument as a parameter.

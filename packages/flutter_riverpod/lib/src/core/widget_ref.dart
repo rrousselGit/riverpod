@@ -223,6 +223,7 @@ sealed class WidgetRef implements MutationTarget {
     ProviderListenable<StateT> provider,
     void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
+    bool weak = false,
   });
 
   /// Listen to a provider and call `listener` whenever its value changes.
@@ -244,6 +245,7 @@ sealed class WidgetRef implements MutationTarget {
     void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately,
+    bool weak = false,
   });
 
   /// Reads a provider without listening to it.
