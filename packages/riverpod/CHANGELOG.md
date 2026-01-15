@@ -1,4 +1,4 @@
-### Unreleased minor
+## Unreleased minor
 
 - Added missing `weak` flags to `WidgetRef.listen/listenManual`
 - Added `Ref.isPaused` to check if there are any active/non-paused listeners.
