@@ -8,6 +8,7 @@
 - Fix a regression that caused Notifiers to lose their state when one of their dependencies changed. (thanks to @yegair)
 - Fixed `ref.mounted` returning `true` for stale refs after provider rebuild, causing race conditions in async providers.
 - Fixed a bug where providers with only weak listeners (`ref.listen(..., weak: true)`) would incorrectly initialize during hot reload (thanks to @tguerin)
+- Fixes `selectAsync` sometimes throwing an exception when unsubscribed to.
 
 ## 3.1.0 - 2025-12-26
 

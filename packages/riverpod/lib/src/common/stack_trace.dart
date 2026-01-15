@@ -7,7 +7,7 @@ import '../internals.dart';
 /// Rethrows as a [ProviderException] with the given stack trace.
 @internal
 Never throwProviderException(Object error, StackTrace stackTrace) {
-  throw ProviderException._(error, stackTrace);
+  throw ProviderException(error, stackTrace);
 }
 
 @internal
@@ -38,7 +38,9 @@ extension ProviderExceptionX on ProviderException {
 ///   This avoids reporting the same error twice.
 @publicInMisc
 final class ProviderException implements Exception {
-  ProviderException._(this.exception, this.stackTrace);
+  /// Creates a [ProviderException].
+  @internal
+  ProviderException(this.exception, this.stackTrace);
 
   /// The exception that was thrown by the provider.
   final Object exception;
