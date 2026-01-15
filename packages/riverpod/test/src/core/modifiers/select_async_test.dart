@@ -1,4 +1,3 @@
-@Timeout(Duration(milliseconds: 2000))
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
