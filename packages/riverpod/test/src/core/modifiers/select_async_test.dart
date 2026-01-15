@@ -10,6 +10,56 @@ import '../../utils.dart';
 
 void main() {
   group('If disposed before a value could be emitted', () {
+    test('.selectAsync disposes smoothly on a simple .read', () async {
+      // regression test for #4316
+      final container = ProviderContainer.test(
+        retry: (retryCount, error) => null,
+      );
+
+      final someProvider = FutureProvider.autoDispose<String>((ref) {
+        return Future.value('test');
+      });
+      final selectAsyncProvider = FutureProvider.autoDispose((ref) {
+        return ref.watch(
+          someProvider.selectAsync((e) {
+            return e;
+          }),
+        );
+      });
+
+      final indexNotifierProvider =
+          NotifierProvider.autoDispose<DeferredNotifier<int>, int>(
+            () => DeferredNotifier((ref, self) => 0),
+          );
+
+      final isZeroProvider = Provider.autoDispose(
+        (ref) => ref.watch(indexNotifierProvider.select((value) => value == 0)),
+      );
+
+      final future = container.listen(someProvider.future, (_, _) {}).read();
+      await future;
+
+      final future2 =
+          container.listen(selectAsyncProvider.future, (_, _) {}).read();
+
+      final sub = container.listen(isZeroProvider, (previous, next) {});
+
+      // all of following pass
+      expect(sub.read(), isTrue);
+      expect(container.read(indexNotifierProvider), equals(0));
+
+      container.read(indexNotifierProvider.notifier).state = 1;
+      expect(container.read(indexNotifierProvider), equals(1));
+      expect(sub.read(), isFalse);
+
+      container.read(indexNotifierProvider.notifier).state = 0;
+      expect(container.read(indexNotifierProvider), equals(0));
+      expect(sub.read(), isTrue);
+
+      // timeout exception
+      await expectLater(future2, completion('test')); // passes
+    });
+
     test('resolves values with `sub.read()`', () async {
       final container = ProviderContainer.test();
       final controller = StreamController<int>();
@@ -18,8 +68,8 @@ void main() {
       final dep = StreamProvider<int>((ref) => controller.stream);
 
       container.listen(dep, (p, n) {});
-      final ref = container.listen(provider, (a, b) {});
-      final future = ref.read().watch(dep.selectAsync((data) => data * 2));
+      final sub = container.listen(provider, (a, b) {});
+      final future = sub.read().watch(dep.selectAsync((data) => data * 2));
 
       container.invalidate(provider);
       controller.add(21);
@@ -44,7 +94,7 @@ void main() {
       container.invalidate(provider);
       controller.addError('err');
 
-      await expectLater(future, throwsA('err'));
+      await expectLater(future, throwsProviderException('err'));
     });
   });
 
@@ -89,12 +139,12 @@ void main() {
       },
     );
 
-    await expectLater(sub.read(), throwsA(0));
+    await expectLater(sub.read(), throwsProviderException(0));
 
     container.read(dep.notifier).state += 2;
     await container.read(provider.future).catchError((Object? _) => 0);
 
-    await expectLater(sub.read(), throwsA(2));
+    await expectLater(sub.read(), throwsProviderException(2));
   });
 
   test('when selector throws, returns a failing future', () async {
@@ -112,12 +162,12 @@ void main() {
         next.ignore();
       },
     );
-    await expectLater(sub.read(), throwsA(0));
+    await expectLater(sub.read(), throwsProviderException(0));
 
     container.read(dep.notifier).state += 2;
     await container.read(provider.future);
 
-    await expectLater(sub.read(), throwsA(2));
+    await expectLater(sub.read(), throwsProviderException(2));
   });
 
   test('handles fireImmediately: true on AsyncLoading', () async {
@@ -171,7 +221,7 @@ void main() {
         verify(listener(argThat(isNull), captureAny)).captured.single
             as Future<bool>;
     verifyNoMoreInteractions(listener);
-    await expectLater(result, throwsStateError);
+    await expectLater(result, throwsProviderException(isStateError));
   });
 
   test('handles fireImmediately: false', () async {
@@ -386,7 +436,7 @@ void main() {
 
       expect(
         container.read(provider.selectAsync((data) => data)),
-        throwsStateError,
+        throwsProviderException(isStateError),
       );
     });
 

@@ -39,7 +39,7 @@ final class _AsyncSelector<InputT, OutputT>
     required void Function()? onDependencyMayHaveChanged,
     required bool weak,
   }) {
-    late final ExternalProviderSubscription<AsyncValue<InputT>, Future<OutputT>>
+    late final ExternalProviderSubscription<Future<InputT>, Future<OutputT>>
     providerSub;
 
     $Result<OutputT>? lastSelectedValue;
@@ -61,23 +61,25 @@ final class _AsyncSelector<InputT, OutputT>
 
     void emitError(
       Object err,
-      StackTrace? stack, {
+      StackTrace stack, {
       required bool callListeners,
     }) {
+      final error = ProviderException(err, stack);
       final previousFuture = selectedFuture;
       if (selectedCompleter != null) {
-        selectedCompleter!.completeError(err, stack);
+        selectedCompleter!.completeError(error, stack);
         selectedCompleter = null;
       } else {
-        selectedFuture = Future.error(err, stack);
+        selectedFuture = Future.error(error, stack);
         if (callListeners) {
           providerSub._notifyData(previousFuture, selectedFuture!);
         }
       }
     }
 
-    void playValue(AsyncValue<InputT> value, {bool callListeners = true}) {
-      void onLoading(AsyncValue<void> loading) {
+    Future<InputT> listenedFuture;
+    void playValue(Future<InputT> newFuture, {bool callListeners = true}) {
+      void onLoading() {
         if (selectedFuture == null) {
           // The first time a future is emitted
 
@@ -89,15 +91,15 @@ final class _AsyncSelector<InputT, OutputT>
         // they want to filter rebuilds based on the result
       }
 
-      value.map(
-        loading: onLoading,
-        data: (value) {
-          if (value.isRefreshing) {
-            onLoading(value);
-            return;
-          }
+      onLoading();
 
-          final newSelectedValue = _select(value.value);
+      listenedFuture = newFuture;
+      listenedFuture.then(
+        (value) {
+          // A new future has been emitted since, ignore
+          if (listenedFuture != newFuture) return;
+
+          final newSelectedValue = _select(value);
           switch (newSelectedValue) {
             case $ResultData():
               if (newSelectedValue != lastSelectedValue) {
@@ -113,17 +115,10 @@ final class _AsyncSelector<InputT, OutputT>
 
           lastSelectedValue = newSelectedValue;
         },
-        error: (value) {
-          if (value.isRefreshing) {
-            onLoading(value);
-            return;
-          }
-
-          emitError(
-            value.error,
-            value.stackTrace,
-            callListeners: callListeners,
-          );
+        onError: (Object err, StackTrace stack) {
+          // A new future has been emitted since, ignore
+          if (listenedFuture != newFuture) return;
+          emitError(err, stack, callListeners: callListeners);
 
           // Error in the provider, it should've already been propagated
           // so no need to pollute the stack
@@ -132,7 +127,7 @@ final class _AsyncSelector<InputT, OutputT>
       );
     }
 
-    final sub = provider._addListener(
+    final sub = future._addListener(
       node,
       (prev, input) => playValue(input),
       weak: weak,
@@ -141,64 +136,62 @@ final class _AsyncSelector<InputT, OutputT>
     );
 
     playValue(switch (sub.readSafe()) {
-      $ResultData<AsyncValue<InputT>>() && final d => d.value,
-      $ResultError<AsyncValue<InputT>>() && final d => AsyncError(
+      $ResultData<Future<InputT>>() && final d => d.value,
+      $ResultError<Future<InputT>>() && final d => Future.error(
         d.error,
         d.stackTrace,
-      ),
+      )..ignore(),
     }, callListeners: false);
 
-    return providerSub = ExternalProviderSubscription<
-      AsyncValue<InputT>,
-      Future<OutputT>
-    >.fromSub(
-      innerSubscription: sub,
-      listener: listener,
-      onError: onError,
-      read: () {
-        // Flush
-        final result = sub.readSafe();
-        if (result case $ResultError(:final error, :final stackTrace)) {
-          return $Result.error(error, stackTrace);
-        }
+    return providerSub =
+        ExternalProviderSubscription<Future<InputT>, Future<OutputT>>.fromSub(
+          innerSubscription: sub,
+          listener: listener,
+          onError: onError,
+          read: () {
+            // Flush
+            final result = sub.readSafe();
+            if (result case $ResultError(:final error, :final stackTrace)) {
+              return $Result.error(error, stackTrace);
+            }
 
-        return $ResultData(selectedFuture!);
-      },
-      onClose: () {
-        final completer = selectedCompleter;
-        if (completer != null && !completer.isCompleted) {
-          final sub = switch (node) {
-            ProviderElement() => node.listen(
-              future,
-              (prev, next) {},
-              onError: onError,
-            ),
-            ProviderContainer() => node.listen(
-              future,
-              (prev, next) {},
-              onError: onError,
-            ),
-          };
+            return $ResultData(selectedFuture!);
+          },
+          onClose: () {
+            // final completer = selectedCompleter;
+            // if (completer != null && !completer.isCompleted) {
+            //   final sub = switch (node) {
+            //     ProviderElement() => node.listen(
+            //       future,
+            //       (prev, next) {},
+            //       onError: onError,
+            //     ),
+            //     ProviderContainer() => node.listen(
+            //       future,
+            //       (prev, next) {},
+            //       onError: onError,
+            //     ),
+            //   };
 
-          // ignore: internal_lint/avoid_sub_read, We are handling errors
-          sub
-              .read()
-              .then((v) => _select(v).valueOrProviderException)
-              .then(
-                (value) {
-                  // Avoid possible race condition
-                  if (!completer.isCompleted) completer.complete(value);
-                },
-                onError: (Object err, StackTrace stack) {
-                  // Avoid possible race condition
-                  if (!completer.isCompleted) {
-                    completer.completeError(err, stack);
-                  }
-                },
-              )
-              .whenComplete(sub.close);
-        }
-      },
-    );
+            //   // ignore: internal_lint/avoid_sub_read, We are handling errors
+            //   sub
+            //       .read()
+            //       .then((v) => _select(v).valueOrProviderException)
+            //       .then(
+            //         (value) {
+            //           // Avoid possible race condition
+            //           if (!completer.isCompleted) completer.complete(value);
+            //         },
+            //         onError: (Object err, StackTrace stack) {
+            //           // Avoid possible race condition
+            //           if (!completer.isCompleted) {
+            //             completer.completeError(err, stack);
+            //           }
+            //         },
+            //       )
+            //       .whenComplete(sub.close);
+            // }
+          },
+        );
   }
 }
