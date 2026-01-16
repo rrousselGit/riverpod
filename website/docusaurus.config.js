@@ -25,6 +25,7 @@ module.exports = {
       "it",
       "ru",
       "tr",
+      "ar",
       "zh-Hans",
     ],
   },

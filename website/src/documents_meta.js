@@ -329,6 +329,9 @@ export const documentTitles = {
     "getting_started": "Getting started",
     "cookbooks/refresh": "Pull-to-refresh / Retry-on-error",
   },
+  'ar': {
+    "first_app": "Your first Riverpod app",
+  },
 };
 export const outdatedTranslations = [
 {"countryCode":"bn","id":"migration/0.13.0_to_0.14.0","englishPath":"/docs/migration/0.13.0_to_0.14.0"},
