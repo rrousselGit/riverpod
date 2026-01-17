@@ -33,3 +33,6 @@ dependencies:
 dev_dependencies:
   mockito: ^5.0.0
   stack_trace: ^1.0.0
+
+bound_to:
+  - riverpod
