@@ -1,8 +1,3 @@
-## 4.0.1 - 2026-01-17
-### Dependency changes
-
-- `riverpod` upgraded to `3.2.0`
-
 ## 4.0.0
 
 Updated to match `riverpod_generator`
@@ -332,4 +327,3 @@ Upgrade Riverpod version
 ## 1.0.0
 
 Initial release
-
