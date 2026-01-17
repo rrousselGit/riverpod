@@ -28,7 +28,7 @@
     "description": "The label for category Containers/Scopes in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.Refs": {
-    "message": "المراجع",
+    "message": "Refs",
     "description": "The label for category Refs in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.Consumers": {

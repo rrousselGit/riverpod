@@ -28,6 +28,11 @@ module.exports = {
       "ar",
       "zh-Hans",
     ],
+    localeConfigs: {
+      ar: {
+        direction: "rtl",
+      },
+    },
   },
   themeConfig: {
     algolia: {

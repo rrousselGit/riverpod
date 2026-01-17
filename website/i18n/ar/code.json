@@ -28,7 +28,7 @@
     "message": "تم تنفيذ قواعد فحص جديدة خاصة بـ Riverpod ويتم إضافة المزيد بشكل مستمر.\nهذا يضمن بقاء الكود في أفضل الظروف. اطلع على {warnings}."
   },
   "home.lint_rules_list_link": {
-    "message": "قائمة قواعس الفحص"
+    "message": "قائمة قواعد الفحص"
   },
   "home.safe_read_title": {
     "message": "اقرأ الموفرين بأمان"
@@ -172,7 +172,7 @@
     "description": "The blog post button label to navigate to the older/next post"
   },
   "theme.blog.post.plurals": {
-    "message": "منشور واحد|{count} منشورات",
+    "message": "منشور واحد|منشورين|{count} منشورات|{count} منشور",
     "description": "Pluralized label for \"{count} posts\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
   },
   "theme.blog.tagTitle": {

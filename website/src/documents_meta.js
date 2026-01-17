@@ -330,7 +330,8 @@ export const documentTitles = {
     "cookbooks/refresh": "Pull-to-refresh / Retry-on-error",
   },
   'ar': {
-    "first_app": "Your first Riverpod app",
+    "introduction/getting_started": "Getting started",
+    "tutorials/first_app": "تطبيقك الأول مع Riverpod",
   },
 };
 export const outdatedTranslations = [

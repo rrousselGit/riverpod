@@ -136,7 +136,7 @@ plugins:
 
 ### إضافة ProviderScope داخل وظيفة main داخل ملف `main.dart`
 
-لكي تستطيع حزمة  Riverpod العمل بشكل صحيح,نحتاض لتحديث وظيفة `main` لكي تتظمن  [ProviderScope].  
+لكي تستطيع حزمة  Riverpod العمل بشكل صحيح,نحتاج لتحديث وظيفة `main` لكي تتظمن  [ProviderScope].  
 يمكنك الحصول على معلومات اكثر داخل قسم  <Link documentID="concepts2/containers" /> .
 
 النص البرمجي التالي هو وظيفة `main` بعد تحديثها:
@@ -215,8 +215,8 @@ class Joke {
 سوف نقوم بإستخدام حزمة [Dio] هنا, لأنه يُصدر خطأً تلقائيًا في حال فشل الطلب، وهو أمرٌ مناسبٌ لحالتنا.
 لكن يمكنك استخدام أي عميل HTTP تفضله.
 
-We can place that logic in the `joke.dart` file we just created,
-as this logic is closely related to the `Joke` class.
+يمكننا وضع هذه السطور البرمجية في داخل ملف  `joke.dart` الذي أنشأناه سابقًا،,
+بما ان هذه السطور البرمجية مرتبطة إرتباطا وثيقا بكائن `Joke`.
 
 <AutoSnippet
   title="lib/joke.dart"
@@ -276,14 +276,14 @@ final randomJokeProvider = FutureProvider<Joke>((ref) async {
 
 ## عرض البيانات في واجهة المستخدم
 
-### تظمين واجهة المسخدم الخاصة بنا داخل [Consumer]
+### تضمين واجهة المسخدم الخاصة بنا داخل [Consumer]
 
 الآن وقد أصبح لدينا provider، فقد حان الوقت لتحديث عنصر واجهة المستخدم `HomeView` لتحميل البيانات ديناميكيًا.
 وللقيام بذلك، سنحتاج إلى ميزة أخرى من Riverpod: الا وهي أداة [Consumer].  
 تتيح لنا هذه الأداة قراءة قيمة provider وإعادة بناء واجهة المستخدم عند تغيير القيمة.
 يُستخدم بطريقة تذكرنا بالأدوات مثل [StreamBuilder].
 
-بشكل أدق , نحتاج لتظمين `Stack` داخل اداة `Consumer`.  
+بشكل أدق , نحتاج لتضمين `Stack` داخل اداة `Consumer`.  
 إذا قمت بتثبيت [riverpod_lint] في الخطوة السابقة، فيمكنك استخدام إحدى عمليات إعادة البناء المضمنة:
 
 ![Wrap in Consumer refactor in action](/img/tutorials/first_app/wrap_in_consumer.gif)
