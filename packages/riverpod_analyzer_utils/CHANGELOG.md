@@ -1,3 +1,7 @@
+## 1.0.0-dev.9 - 2026-01-17
+
+Fix out of date dependency version.
+
 ## 1.0.0-dev.8
 
 Removed dependency on custom_lint_core
@@ -165,3 +169,4 @@ the `@riverpod external int value()` syntax.
 ## 0.0.1
 
 - Initial version.
+

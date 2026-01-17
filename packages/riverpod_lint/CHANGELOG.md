@@ -1,4 +1,10 @@
+## 3.1.2 - 2026-01-17
+### Dependency changes
+
+- `riverpod_analyzer_utils` upgraded to `1.0.0-dev.9`
+
 ## 3.1.1 - 2026-01-17
+
 ### Dependency changes
 
 - `riverpod` upgraded to `3.2.0`
