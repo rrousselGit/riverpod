@@ -1110,8 +1110,6 @@ Removed an assert that could cause issues when an application is partially migra
   They allow obtaining the notifier associated with the provider, without causing widgets/providers to rebuild when the state updates.
 - fix: overriding a `StateNotifierProvider`/`ChangeNotifierProvider` with `overrideWithValue` now correctly listens to the notifier.
 
-## 0.1
-
 ## 0.13.1+1
 
 Fixed an issue where `context.read` and `ProviderListener` were unable to read providers that return a nullable value
