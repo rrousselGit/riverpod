@@ -1,4 +1,4 @@
-## Unreleased minor
+## 3.2.0 - 2026-01-17
 
 - Added missing `weak` flags to `WidgetRef.listen/listenManual`
 - Added `Ref.isPaused` to check if there are any active/non-paused listeners.
@@ -1492,3 +1492,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+
