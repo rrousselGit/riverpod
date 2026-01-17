@@ -1,3 +1,8 @@
+## 3.1.1 - 2026-01-17
+### Dependency changes
+
+- `riverpod` upgraded to `3.2.0`
+
 ## Unrelease patch
 
 Require Dart 3.10.0
@@ -327,3 +332,4 @@ Fix quick-fix for provider_dependencies
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+
