@@ -1,3 +1,17 @@
+## Unreleased minor
+
+- Fix the IDE pausing on "markNeedsBuild" exceptions when checking "pause on all exceptions".
+- `ConsumerWidget`'s now uses the TickerMode notifier instead of TickerMode.of to avoid unnecessary rebuilds when widgets are hidden (thanks to @Colton127)
+- Added missing `weak` flags to `WidgetRef.listen/listenManual`
+- Added `Ref.isPaused` to check if there are any active/non-paused listeners.
+- Deprecated `family.overrideWith` in favour of `family.overrideWith2`
+  The behaviour is the same, but the callback now takes the argument as a parameter.
+  In 4.0.0, `overrideWith2` will be renamed to `overrideWith`.
+- Fix a regression that caused Notifiers to lose their state when one of their dependencies changed. (thanks to @yegair)
+- Fixed `ref.mounted` returning `true` for stale refs after provider rebuild, causing race conditions in async providers.
+- Fixed a bug where providers with only weak listeners (`ref.listen(..., weak: true)`) would incorrectly initialize during hot reload (thanks to @tguerin)
+- Fixes `selectAsync` sometimes throwing an exception when unsubscribed to.
+
 ## 3.1.0 - 2025-12-26
 
 - Added an alternative way to combine asynchronous providers.
