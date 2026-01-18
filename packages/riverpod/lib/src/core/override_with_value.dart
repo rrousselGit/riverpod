@@ -27,7 +27,6 @@ abstract base class _ValueProvider<StateT, ValueT>
   /// @nodoc
   @internal
   @override
-  // ignore: library_private_types_in_public_api, not public API
   _ValueProviderElement<StateT, ValueT> $createElement(
     $ProviderPointer pointer,
   );

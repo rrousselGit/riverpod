@@ -47,7 +47,6 @@ abstract class _$MyNotifier extends $Notifier<int> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -57,7 +56,7 @@ abstract class _$MyNotifier extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -100,7 +99,6 @@ abstract class _$PrivateClass extends $Notifier<String> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -110,15 +108,15 @@ abstract class _$PrivateClass extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(Generics)
 final genericsProvider = GenericsFamily._();
 
-final class GenericsProvider<A extends num, B>
-    extends $NotifierProvider<Generics<A, B>, int> {
+final class GenericsProvider<FirstT extends num, SecondT>
+    extends $NotifierProvider<Generics<FirstT, SecondT>, int> {
   GenericsProvider._({required GenericsFamily super.from})
     : super(
         argument: null,
@@ -135,16 +133,16 @@ final class GenericsProvider<A extends num, B>
   @override
   String toString() {
     return r'genericsProvider'
-        '<${A}, ${B}>'
+        '<${FirstT}, ${SecondT}>'
         '()';
   }
 
   @$internal
   @override
-  Generics<A, B> create() => Generics<A, B>();
+  Generics<FirstT, SecondT> create() => Generics<FirstT, SecondT>();
 
-  $R _captureGenerics<$R>($R Function<A extends num, B>() cb) {
-    return cb<A, B>();
+  $R _captureGenerics<$R>($R Function<FirstT extends num, SecondT>() cb) {
+    return cb<FirstT, SecondT>();
   }
 
   /// {@macro riverpod.override_with_value}
@@ -168,7 +166,7 @@ final class GenericsProvider<A extends num, B>
   }
 }
 
-String _$genericsHash() => r'0a1bf00e0610ccb1fb5615460e1bc4afb2555f69';
+String _$genericsHash() => r'e4bcfbaacabd977958663110d60b35ee5d04bdb8';
 
 final class GenericsFamily extends $Family {
   GenericsFamily._()
@@ -180,48 +178,54 @@ final class GenericsFamily extends $Family {
         isAutoDispose: true,
       );
 
-  GenericsProvider<A, B> call<A extends num, B>() =>
-      GenericsProvider<A, B>._(from: this);
+  GenericsProvider<FirstT, SecondT> call<FirstT extends num, SecondT>() =>
+      GenericsProvider<FirstT, SecondT>._(from: this);
 
   @override
   String toString() => r'genericsProvider';
 
   /// {@macro riverpod.override_with}
-  Override overrideWith(Generics<A, B> Function<A extends num, B>() create) =>
-      $FamilyOverride(
-        from: this,
-        createElement: (pointer) {
-          final provider = pointer.origin as GenericsProvider;
-          return provider._captureGenerics(<A extends num, B>() {
-            provider as GenericsProvider<A, B>;
-            return provider.$view(create: create<A, B>).$createElement(pointer);
-          });
-        },
-      );
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-    int Function<A extends num, B>(Ref ref, Generics<A, B> notifier) build,
+  Override overrideWith(
+    Generics<FirstT, SecondT> Function<FirstT extends num, SecondT>() create,
   ) => $FamilyOverride(
     from: this,
     createElement: (pointer) {
       final provider = pointer.origin as GenericsProvider;
-      return provider._captureGenerics(<A extends num, B>() {
-        provider as GenericsProvider<A, B>;
+      return provider._captureGenerics(<FirstT extends num, SecondT>() {
+        provider as GenericsProvider<FirstT, SecondT>;
         return provider
-            .$view(runNotifierBuildOverride: build<A, B>)
+            .$view(create: create<FirstT, SecondT>)
+            .$createElement(pointer);
+      });
+    },
+  );
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    int Function<FirstT extends num, SecondT>(
+      Ref ref,
+      Generics<FirstT, SecondT> notifier,
+    )
+    build,
+  ) => $FamilyOverride(
+    from: this,
+    createElement: (pointer) {
+      final provider = pointer.origin as GenericsProvider;
+      return provider._captureGenerics(<FirstT extends num, SecondT>() {
+        provider as GenericsProvider<FirstT, SecondT>;
+        return provider
+            .$view(runNotifierBuildOverride: build<FirstT, SecondT>)
             .$createElement(pointer);
       });
     },
   );
 }
 
-abstract class _$Generics<A extends num, B> extends $Notifier<int> {
+abstract class _$Generics<FirstT extends num, SecondT> extends $Notifier<int> {
   int build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -231,15 +235,15 @@ abstract class _$Generics<A extends num, B> extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(NoGenerics)
 final noGenericsProvider = NoGenericsFamily._();
 
-final class NoGenericsProvider<A extends num, B>
-    extends $NotifierProvider<NoGenerics<A, B>, int> {
+final class NoGenericsProvider<FirstT extends num, SecondT>
+    extends $NotifierProvider<NoGenerics<FirstT, SecondT>, int> {
   NoGenericsProvider._({required NoGenericsFamily super.from})
     : super(
         argument: null,
@@ -256,16 +260,16 @@ final class NoGenericsProvider<A extends num, B>
   @override
   String toString() {
     return r'noGenericsProvider'
-        '<${A}, ${B}>'
+        '<${FirstT}, ${SecondT}>'
         '()';
   }
 
   @$internal
   @override
-  NoGenerics<A, B> create() => NoGenerics<A, B>();
+  NoGenerics<FirstT, SecondT> create() => NoGenerics<FirstT, SecondT>();
 
-  $R _captureGenerics<$R>($R Function<A extends num, B>() cb) {
-    return cb<A, B>();
+  $R _captureGenerics<$R>($R Function<FirstT extends num, SecondT>() cb) {
+    return cb<FirstT, SecondT>();
   }
 
   /// {@macro riverpod.override_with_value}
@@ -289,7 +293,7 @@ final class NoGenericsProvider<A extends num, B>
   }
 }
 
-String _$noGenericsHash() => r'30d5d20092f43cb17ede1f619773757df7cecb30';
+String _$noGenericsHash() => r'9e9d850f6f4c06aa79da06fdbebf2dc715a2dd7d';
 
 final class NoGenericsFamily extends $Family {
   NoGenericsFamily._()
@@ -301,48 +305,55 @@ final class NoGenericsFamily extends $Family {
         isAutoDispose: true,
       );
 
-  NoGenericsProvider<A, B> call<A extends num, B>() =>
-      NoGenericsProvider<A, B>._(from: this);
+  NoGenericsProvider<FirstT, SecondT> call<FirstT extends num, SecondT>() =>
+      NoGenericsProvider<FirstT, SecondT>._(from: this);
 
   @override
   String toString() => r'noGenericsProvider';
 
   /// {@macro riverpod.override_with}
-  Override overrideWith(NoGenerics<A, B> Function<A extends num, B>() create) =>
-      $FamilyOverride(
-        from: this,
-        createElement: (pointer) {
-          final provider = pointer.origin as NoGenericsProvider;
-          return provider._captureGenerics(<A extends num, B>() {
-            provider as NoGenericsProvider<A, B>;
-            return provider.$view(create: create<A, B>).$createElement(pointer);
-          });
-        },
-      );
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-    int Function<A extends num, B>(Ref ref, NoGenerics<A, B> notifier) build,
+  Override overrideWith(
+    NoGenerics<FirstT, SecondT> Function<FirstT extends num, SecondT>() create,
   ) => $FamilyOverride(
     from: this,
     createElement: (pointer) {
       final provider = pointer.origin as NoGenericsProvider;
-      return provider._captureGenerics(<A extends num, B>() {
-        provider as NoGenericsProvider<A, B>;
+      return provider._captureGenerics(<FirstT extends num, SecondT>() {
+        provider as NoGenericsProvider<FirstT, SecondT>;
         return provider
-            .$view(runNotifierBuildOverride: build<A, B>)
+            .$view(create: create<FirstT, SecondT>)
+            .$createElement(pointer);
+      });
+    },
+  );
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    int Function<FirstT extends num, SecondT>(
+      Ref ref,
+      NoGenerics<FirstT, SecondT> notifier,
+    )
+    build,
+  ) => $FamilyOverride(
+    from: this,
+    createElement: (pointer) {
+      final provider = pointer.origin as NoGenericsProvider;
+      return provider._captureGenerics(<FirstT extends num, SecondT>() {
+        provider as NoGenericsProvider<FirstT, SecondT>;
+        return provider
+            .$view(runNotifierBuildOverride: build<FirstT, SecondT>)
             .$createElement(pointer);
       });
     },
   );
 }
 
-abstract class _$NoGenerics<A extends num, B> extends $Notifier<int> {
+abstract class _$NoGenerics<FirstT extends num, SecondT>
+    extends $Notifier<int> {
   int build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -352,15 +363,15 @@ abstract class _$NoGenerics<A extends num, B> extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(MissingGenerics)
 final missingGenericsProvider = MissingGenericsFamily._();
 
-final class MissingGenericsProvider<A, B>
-    extends $NotifierProvider<MissingGenerics<A, B>, int> {
+final class MissingGenericsProvider<FirstT, SecondT>
+    extends $NotifierProvider<MissingGenerics<FirstT, SecondT>, int> {
   MissingGenericsProvider._({required MissingGenericsFamily super.from})
     : super(
         argument: null,
@@ -377,16 +388,17 @@ final class MissingGenericsProvider<A, B>
   @override
   String toString() {
     return r'missingGenericsProvider'
-        '<${A}, ${B}>'
+        '<${FirstT}, ${SecondT}>'
         '()';
   }
 
   @$internal
   @override
-  MissingGenerics<A, B> create() => MissingGenerics<A, B>();
+  MissingGenerics<FirstT, SecondT> create() =>
+      MissingGenerics<FirstT, SecondT>();
 
-  $R _captureGenerics<$R>($R Function<A, B>() cb) {
-    return cb<A, B>();
+  $R _captureGenerics<$R>($R Function<FirstT, SecondT>() cb) {
+    return cb<FirstT, SecondT>();
   }
 
   /// {@macro riverpod.override_with_value}
@@ -410,7 +422,7 @@ final class MissingGenericsProvider<A, B>
   }
 }
 
-String _$missingGenericsHash() => r'b611c76d5fb87fdde78b5fc017912e0569762c23';
+String _$missingGenericsHash() => r'b5a92c5f59289c48b5a52c36e07bc65698905738';
 
 final class MissingGenericsFamily extends $Family {
   MissingGenericsFamily._()
@@ -422,48 +434,54 @@ final class MissingGenericsFamily extends $Family {
         isAutoDispose: true,
       );
 
-  MissingGenericsProvider<A, B> call<A, B>() =>
-      MissingGenericsProvider<A, B>._(from: this);
+  MissingGenericsProvider<FirstT, SecondT> call<FirstT, SecondT>() =>
+      MissingGenericsProvider<FirstT, SecondT>._(from: this);
 
   @override
   String toString() => r'missingGenericsProvider';
 
   /// {@macro riverpod.override_with}
-  Override overrideWith(MissingGenerics<A, B> Function<A, B>() create) =>
-      $FamilyOverride(
-        from: this,
-        createElement: (pointer) {
-          final provider = pointer.origin as MissingGenericsProvider;
-          return provider._captureGenerics(<A, B>() {
-            provider as MissingGenericsProvider<A, B>;
-            return provider.$view(create: create<A, B>).$createElement(pointer);
-          });
-        },
-      );
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-    int Function<A, B>(Ref ref, MissingGenerics<A, B> notifier) build,
+  Override overrideWith(
+    MissingGenerics<FirstT, SecondT> Function<FirstT, SecondT>() create,
   ) => $FamilyOverride(
     from: this,
     createElement: (pointer) {
       final provider = pointer.origin as MissingGenericsProvider;
-      return provider._captureGenerics(<A, B>() {
-        provider as MissingGenericsProvider<A, B>;
+      return provider._captureGenerics(<FirstT, SecondT>() {
+        provider as MissingGenericsProvider<FirstT, SecondT>;
         return provider
-            .$view(runNotifierBuildOverride: build<A, B>)
+            .$view(create: create<FirstT, SecondT>)
+            .$createElement(pointer);
+      });
+    },
+  );
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    int Function<FirstT, SecondT>(
+      Ref ref,
+      MissingGenerics<FirstT, SecondT> notifier,
+    )
+    build,
+  ) => $FamilyOverride(
+    from: this,
+    createElement: (pointer) {
+      final provider = pointer.origin as MissingGenericsProvider;
+      return provider._captureGenerics(<FirstT, SecondT>() {
+        provider as MissingGenericsProvider<FirstT, SecondT>;
+        return provider
+            .$view(runNotifierBuildOverride: build<FirstT, SecondT>)
             .$createElement(pointer);
       });
     },
   );
 }
 
-abstract class _$MissingGenerics<A, B> extends $Notifier<int> {
+abstract class _$MissingGenerics<FirstT, SecondT> extends $Notifier<int> {
   int build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -473,15 +491,15 @@ abstract class _$MissingGenerics<A, B> extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
 @ProviderFor(WrongOrder)
 final wrongOrderProvider = WrongOrderFamily._();
 
-final class WrongOrderProvider<A, B>
-    extends $NotifierProvider<WrongOrder<A, B>, int> {
+final class WrongOrderProvider<FirstT, SecondT>
+    extends $NotifierProvider<WrongOrder<FirstT, SecondT>, int> {
   WrongOrderProvider._({required WrongOrderFamily super.from})
     : super(
         argument: null,
@@ -498,16 +516,16 @@ final class WrongOrderProvider<A, B>
   @override
   String toString() {
     return r'wrongOrderProvider'
-        '<${A}, ${B}>'
+        '<${FirstT}, ${SecondT}>'
         '()';
   }
 
   @$internal
   @override
-  WrongOrder<A, B> create() => WrongOrder<A, B>();
+  WrongOrder<FirstT, SecondT> create() => WrongOrder<FirstT, SecondT>();
 
-  $R _captureGenerics<$R>($R Function<A, B>() cb) {
-    return cb<A, B>();
+  $R _captureGenerics<$R>($R Function<FirstT, SecondT>() cb) {
+    return cb<FirstT, SecondT>();
   }
 
   /// {@macro riverpod.override_with_value}
@@ -531,7 +549,7 @@ final class WrongOrderProvider<A, B>
   }
 }
 
-String _$wrongOrderHash() => r'7757670a2f67406ebc96c87edf088deb9cb248a1';
+String _$wrongOrderHash() => r'973b8e7d2e4ae6c15be96a924eb4715b7b7fd8b9';
 
 final class WrongOrderFamily extends $Family {
   WrongOrderFamily._()
@@ -543,48 +561,51 @@ final class WrongOrderFamily extends $Family {
         isAutoDispose: true,
       );
 
-  WrongOrderProvider<A, B> call<A, B>() =>
-      WrongOrderProvider<A, B>._(from: this);
+  WrongOrderProvider<FirstT, SecondT> call<FirstT, SecondT>() =>
+      WrongOrderProvider<FirstT, SecondT>._(from: this);
 
   @override
   String toString() => r'wrongOrderProvider';
 
   /// {@macro riverpod.override_with}
-  Override overrideWith(WrongOrder<A, B> Function<A, B>() create) =>
-      $FamilyOverride(
-        from: this,
-        createElement: (pointer) {
-          final provider = pointer.origin as WrongOrderProvider;
-          return provider._captureGenerics(<A, B>() {
-            provider as WrongOrderProvider<A, B>;
-            return provider.$view(create: create<A, B>).$createElement(pointer);
-          });
-        },
-      );
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-    int Function<A, B>(Ref ref, WrongOrder<A, B> notifier) build,
+  Override overrideWith(
+    WrongOrder<FirstT, SecondT> Function<FirstT, SecondT>() create,
   ) => $FamilyOverride(
     from: this,
     createElement: (pointer) {
       final provider = pointer.origin as WrongOrderProvider;
-      return provider._captureGenerics(<A, B>() {
-        provider as WrongOrderProvider<A, B>;
+      return provider._captureGenerics(<FirstT, SecondT>() {
+        provider as WrongOrderProvider<FirstT, SecondT>;
         return provider
-            .$view(runNotifierBuildOverride: build<A, B>)
+            .$view(create: create<FirstT, SecondT>)
+            .$createElement(pointer);
+      });
+    },
+  );
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    int Function<FirstT, SecondT>(Ref ref, WrongOrder<FirstT, SecondT> notifier)
+    build,
+  ) => $FamilyOverride(
+    from: this,
+    createElement: (pointer) {
+      final provider = pointer.origin as WrongOrderProvider;
+      return provider._captureGenerics(<FirstT, SecondT>() {
+        provider as WrongOrderProvider<FirstT, SecondT>;
+        return provider
+            .$view(runNotifierBuildOverride: build<FirstT, SecondT>)
             .$createElement(pointer);
       });
     },
   );
 }
 
-abstract class _$WrongOrder<A, B> extends $Notifier<int> {
+abstract class _$WrongOrder<FirstT, SecondT> extends $Notifier<int> {
   int build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -594,6 +615,6 @@ abstract class _$WrongOrder<A, B> extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

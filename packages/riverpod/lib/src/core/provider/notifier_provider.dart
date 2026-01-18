@@ -240,7 +240,7 @@ extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
     _debugAssertNoDuplicateKey(key, this);
 
     var didChange = false;
-    listenSelf((_, __) async {
+    listenSelf((_, _) {
       didChange = true;
 
       try {
@@ -363,7 +363,6 @@ extension ClassBaseX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
   }
 
   @internal
-  // ignore: library_private_types_in_public_api, not public
   $Ref<StateT, ValueT> get $ref {
     final ref = _element?.ref;
     if (ref == null) throw StateError(uninitializedElementError);
@@ -537,7 +536,7 @@ abstract class $ClassProviderElement<
   @mustCallSuper
   @override
   WhenComplete create(
-    // ignore: library_private_types_in_public_api, not public
+    // ignore: not public
     $Ref<StateT, ValueT> ref,
   ) {
     final result =
@@ -554,11 +553,11 @@ abstract class $ClassProviderElement<
     switch (result) {
       case $ResultData():
         try {
-          if (_runNotifierBuildOverride case final override?) {
-            final created = override(ref, result.value);
-            handleValue(ref, created);
-          } else {
-            result.value.runBuild();
+          switch (_runNotifierBuildOverride) {
+            case final override?:
+              handleCreate(ref, () => override(ref, result.value));
+            case null:
+              result.value.runBuild();
           }
         } catch (err, stack) {
           handleError(ref, err, stack);
@@ -570,7 +569,7 @@ abstract class $ClassProviderElement<
     return null;
   }
 
-  void handleValue(Ref ref, CreatedT created);
+  void handleCreate(Ref ref, CreatedT Function() created);
   void handleError(Ref ref, Object error, StackTrace stackTrace);
 
   @override

@@ -27,6 +27,59 @@ void main() {
   });
 
   asyncNotifierProviderFactory.createGroup((factory) {
+    test('Does not report AsyncValueIsLoadingException as uncaught', () async {
+      final container = ProviderContainer.test();
+      final completer = Completer<int>();
+      addTearDown(completer.dispose);
+
+      final dep = FutureProvider<int>((ref) => completer.future);
+      final provider = factory.simpleTestProvider<int>((ref, _) {
+        return ref.watch(dep).requireValue * 2;
+      });
+      final provider2 = factory.simpleTestProvider<int>((ref, _) async {
+        return ref.watch(dep).requireValue * 2;
+      });
+
+      final sub = container.listen(provider.future, (previous, next) {});
+      final sub2 = container.listen(provider2.future, (previous, next) {});
+
+      expect(container.read(provider), const AsyncLoading<int>());
+      expect(container.read(provider2), const AsyncLoading<int>());
+      final future = sub.read();
+      final future2 = sub2.read();
+
+      completer.complete(42);
+      await sub.read();
+      await sub2.read();
+
+      expect(container.read(provider), const AsyncData(84));
+      expect(container.read(provider2), const AsyncData(84));
+
+      await expectLater(future, completion(84));
+      await expectLater(future2, completion(84));
+    });
+
+    test('Can be refreshed after a reload', () async {
+      final container = ProviderContainer.test();
+      var count = 0;
+      final provider = factory.simpleTestProvider<int>(
+        (ref, _) => Future.value(count++),
+      );
+
+      // initial read
+      final sub = container.listen(provider, (previous, next) {});
+      await container.read(provider.future);
+
+      // reloading
+      container.invalidate(provider, asReload: true);
+      await container.read(provider.future);
+
+      // refreshing
+      container.refresh(provider);
+
+      expect(sub.read().isRefreshing, true);
+    });
+
     test(
       'Calling state= followed by returning .future does not cause a double notification',
       () async {
@@ -220,7 +273,7 @@ void main() {
           final stack = StackTrace.current;
           final provider = factory.simpleTestProvider<int>(
             (ref, self) => Error.throwWithStackTrace(err, stack),
-            retry: (_, __) => const Duration(seconds: 1),
+            retry: (_, _) => const Duration(seconds: 1),
           );
           final eventController = StreamController<AsyncValue<int>>();
           addTearDown(eventController.close);
@@ -258,7 +311,7 @@ void main() {
           var retryCount = 0;
           final provider = factory.simpleTestProvider<int>(
             (ref, self) => 0,
-            retry: (_, __) {
+            retry: (_, _) {
               retryCount++;
               return const Duration(seconds: 1);
             },
@@ -557,11 +610,11 @@ void main() {
       );
 
       test('performs seamless data > loading > error transition', () async {
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(retry: (_, _) => null);
         var result = Future.value(42);
         final provider = FutureProvider((ref) => result);
 
-        final sub = container.listen(provider.future, (_, __) {});
+        final sub = container.listen(provider.future, (_, _) {});
 
         expect(container.read(provider), const AsyncLoading<int>());
         expect(await sub.read(), 42);
@@ -656,7 +709,7 @@ void main() {
           self.listenSelf(listener.call, onError: onError.call);
           Error.throwWithStackTrace(42, StackTrace.empty);
         });
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(retry: (_, _) => null);
 
         container.listen(provider, (previous, next) {});
 
@@ -718,7 +771,7 @@ void main() {
         final provider = factory.simpleTestProvider<int>(
           (ref, _) => Future.error(0, StackTrace.empty),
         );
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(retry: (_, _) => null);
         final listener = Listener<AsyncValue<int>>();
 
         container.listen(provider, listener.call, fireImmediately: true);
@@ -746,7 +799,7 @@ void main() {
       final provider = factory.provider<int>(
         () => Error.throwWithStackTrace(0, StackTrace.empty),
       );
-      final container = ProviderContainer.test(retry: (_, __) => null);
+      final container = ProviderContainer.test(retry: (_, _) => null);
       final listener = Listener<AsyncValue<int>>();
 
       container.listen(provider, listener.call, fireImmediately: true);
@@ -784,7 +837,7 @@ void main() {
         final provider = factory.simpleTestProvider<int>(
           (ref, _) => Error.throwWithStackTrace(42, StackTrace.empty),
         );
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(retry: (_, _) => null);
         final listener = Listener<AsyncValue<int>>();
 
         container.listen(provider, listener.call, fireImmediately: true);
@@ -842,7 +895,7 @@ void main() {
     test(
       'stops listening to the previous future error when the provider rebuilds',
       () async {
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(retry: (_, _) => null);
         final dep = StateProvider((ref) => 0);
         final completers = {0: Completer<int>.sync(), 1: Completer<int>.sync()};
         final provider = factory.simpleTestProvider<int>(
@@ -1177,7 +1230,7 @@ void main() {
       });
 
       test('can specify onError to handle error scenario', () async {
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(retry: (_, _) => null);
         final provider = factory.simpleTestProvider<int>(
           (ref, _) => Error.throwWithStackTrace(42, StackTrace.empty),
         );
@@ -1233,7 +1286,7 @@ void main() {
       test(
         'executes immediately with current state if an error is available',
         () async {
-          final container = ProviderContainer.test(retry: (_, __) => null);
+          final container = ProviderContainer.test(retry: (_, _) => null);
           final provider = factory.simpleTestProvider<int>(
             (ref, _) => Error.throwWithStackTrace(42, StackTrace.empty),
           );
@@ -1311,15 +1364,17 @@ void main() {
         );
     final container = ProviderContainer.test(
       overrides: [
-        family.overrideWith(() => DeferredAsyncNotifier<int>((ref, _) => 42)),
-        autoDisposeFamily.overrideWith(
-          () => DeferredAsyncNotifier<int>((ref, _) => 84),
+        family.overrideWith2(
+          (arg) => DeferredAsyncNotifier<int>((ref, _) => 42 + arg),
+        ),
+        autoDisposeFamily.overrideWith2(
+          (arg) => DeferredAsyncNotifier<int>((ref, _) => 84 + arg),
         ),
       ],
     );
 
-    expect(container.read(family(10)).value, 42);
-    expect(container.read(autoDisposeFamily(10)).value, 84);
+    expect(container.read(family(10)).value, 52);
+    expect(container.read(autoDisposeFamily(10)).value, 94);
   });
 
   group('modifiers', () {

@@ -26,7 +26,7 @@ jobs:
       matrix:
         channel:
           - master
-          - stable
+          # - stable
         package_path:
           - packages/riverpod_analyzer_utils
           - packages/riverpod_analyzer_utils_tests
@@ -46,17 +46,8 @@ jobs:
         run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
       - name: Install dependencies
         run: flutter pub get
-      - run: dart pub global activate custom_lint
-      - name: Check format
-        run: dart format --set-exit-if-changed .
-
       - name: Analyze
         run: flutter analyze
-
-      - name: Run custom_lint
-        run: custom_lint
-        # Workaround to https://github.com/invertase/dart_custom_lint/issues/77
-        if: matrix.package_path == 'packages/riverpod_lint_flutter_test'
 
       - name: Run tests
         run: |

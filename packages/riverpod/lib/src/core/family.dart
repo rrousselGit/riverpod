@@ -58,6 +58,10 @@ final class Family extends ProviderOrFamily implements _FamilyOverride {
   @override
   Family get from => this;
 
+  @visibleForTesting
+  @override
+  Family get origin => from;
+
   @override
   String toString() => name ?? describeIdentity(this);
 }
@@ -175,6 +179,7 @@ base mixin $ClassFamilyOverride<
 >
     on Family {
   /// {@macro riverpod.override_with}
+  @Deprecated('Use overrideWith2 instead')
   Override overrideWith(NotifierT Function() create) {
     return $FamilyOverride(
       from: this,
@@ -184,6 +189,22 @@ base mixin $ClassFamilyOverride<
                 as $ClassProvider<NotifierT, StateT, ValueT, CreatedT>;
 
         return provider.$view(create: create).$createElement(pointer);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith2(NotifierT Function(ArgT arg) create) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider =
+            pointer.origin
+                as $ClassProvider<NotifierT, StateT, ValueT, CreatedT>;
+
+        return provider
+            .$view(create: () => create(provider.argument as ArgT))
+            .$createElement(pointer);
       },
     );
   }

@@ -117,3 +117,9 @@ class Regression3490<ModelT, SortT, CursorT>
     String? parentId,
   }) {}
 }
+
+@riverpod
+class VoidClass extends _$VoidClass {
+  @override
+  Future<void> build() async {}
+}

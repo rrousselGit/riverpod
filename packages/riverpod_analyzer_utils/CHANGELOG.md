@@ -1,3 +1,11 @@
+## 1.0.0-dev.9 - 2026-01-17
+
+Fix out of date dependency version.
+
+## 1.0.0-dev.8
+
+Removed dependency on custom_lint_core
+
 ## 1.0.0-dev.7 - 2025-09-30
 
 - Now supports Dart 3.7.0
@@ -161,3 +169,4 @@ the `@riverpod external int value()` syntax.
 ## 0.0.1
 
 - Initial version.
+

@@ -1,6 +1,6 @@
 ---
 title: Getting started
-version: 7
+version: 8
 ---
 
 import Tabs from "@theme/Tabs";
@@ -95,38 +95,25 @@ dart run build_runner watch -d
 
 That's it. You've added [Riverpod] to your app!
 
-## Enabling riverpod_lint/custom_lint
+## Enabling riverpod_lint
 
 Riverpod comes with an optional [riverpod_lint]
 package that provides lint rules to help you write better code, and
 provide custom refactoring options.
 
-The package should already be installed if you followed the previous steps, but a
-separate step is necessary to enable it.
+Riverpod_lint is implemented using [analysis_server_plugin]. As such, it is installed through `analysis_options.yaml`
 
-To enable [riverpod_lint], you need to add an `analysis_options.yaml` placed next to
-your `pubspec.yaml` and include the following:
+Long story short, create an `analysis_options.yaml` next to your `pubspec.yaml` and add:
 
-<CodeBlock language="yaml" title="analysis_options.yaml">
-  {`analyzer:
-  plugins:
-    - custom_lint`}
-</CodeBlock>
+```yaml title="analysis_options.yaml"
+plugins:
+  riverpod_lint: <latest version from https://pub.dev/packages/riverpod_lint>
+```
 
 You should now see warnings in your IDE if you made mistakes when using Riverpod
 in your codebase.
 
 To see the full list of warnings and refactorings, head to the [riverpod_lint] page.
-
-:::note
-Those warnings will not show-up in the `dart analyze` command.  
-If you want to check those warnings in the CI/terminal, you can run the following:
-
-```sh
-dart run custom_lint
-```
-
-:::
 
 ## Usage example: Hello world
 
@@ -183,3 +170,4 @@ If you are using `Flutter` and `Android Studio` or `IntelliJ`, consider using [F
 [flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
 [riverpod_lint]: https://pub.dev/packages/riverpod_lint
+[analysis_server_plugin]: https://pub.dev/packages/analysis_server_plugin

@@ -9,20 +9,18 @@ import 'package:analyzer/dart/ast/syntactic_entity.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/dart/element/type_provider.dart';
 import 'package:analyzer_buffer/analyzer_buffer.dart';
 import 'package:collection/collection.dart';
 import 'package:crypto/crypto.dart';
-import 'package:custom_lint_core/custom_lint_core.dart';
 import 'package:meta/meta.dart';
 
 import '../riverpod_analyzer_utils.dart';
 import 'analyzer_utils.dart';
 import 'argument_list_utils.dart';
 import 'object_extensions.dart';
-import 'riverpod_types.dart';
 
 part 'nodes/widgets/state.dart';
 part 'nodes/widgets/stateful_widget.dart';
@@ -51,13 +49,23 @@ part 'nodes.g.dart';
 
 const _ast = Object();
 
+extension AstX on AstNode {
+  Iterable<AstNode> get ancestors sync* {
+    var parent = this.parent;
+    while (parent != null) {
+      yield parent;
+      parent = parent.parent;
+    }
+  }
+}
+
 extension RawTypeX on DartType {
   /// Returns whether this type is a `Raw` typedef from `package:riverpod_annotation`.
   bool get isRaw {
     final alias = this.alias;
     if (alias == null) return false;
-    return alias.element2.name3 == 'Raw' &&
-        isFromRiverpodAnnotation.isExactly(alias.element2);
+    return alias.element.name == 'Raw' &&
+        isFromRiverpodAnnotation.isExactly(alias.element);
   }
 }
 

@@ -1,13 +1,15 @@
+import 'package:analysis_server_plugin/edit/dart/correction_producer.dart';
+import 'package:analysis_server_plugin/edit/dart/dart_fix_kind_priority.dart';
+import 'package:analyzer/analysis_rule/analysis_rule.dart';
+import 'package:analyzer/analysis_rule/rule_context.dart';
+import 'package:analyzer/analysis_rule/rule_visitor_registry.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart'
-    hide
-        // ignore: undefined_hidden_name, necessary to support broad analyzer versions
-        LintCode;
-import 'package:analyzer/error/listener.dart';
-import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/error/error.dart';
+import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
+import 'package:analyzer_plugin/utilities/fixes/fixes.dart';
+import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
-
-import '../riverpod_custom_lint.dart';
 
 String _generatedClassName(ProviderDeclaration declaration) {
   return '_\$${declaration.name.lexeme.public}';
@@ -52,101 +54,116 @@ String genericsDisplayStringFor(TypeParameterList? typeParameters) {
   return '<${typeParameters.typeParameters.map((e) => e.name).join(', ')}>';
 }
 
-class NotifierExtends extends RiverpodLintRule {
-  const NotifierExtends() : super(code: _code);
+class NotifierExtends extends AnalysisRule {
+  NotifierExtends() : super(name: code.name, description: code.problemMessage);
 
-  static const _code = LintCode(
-    name: 'notifier_extends',
-    problemMessage: r'Classes annotated by @riverpod must extend _$ClassName',
-    errorSeverity: ErrorSeverity.WARNING,
+  static const code = LintCode(
+    'notifier_extends',
+    'Notifiers must extend the correct class.',
+    severity: DiagnosticSeverity.WARNING,
   );
 
   @override
-  void run(
-    CustomLintResolver resolver,
-    ErrorReporter reporter,
-    CustomLintContext context,
-  ) {
-    riverpodRegistry(context).addClassBasedProviderDeclaration((declaration) {
-      final extendsClause = declaration.node.extendsClause;
-
-      if (extendsClause == null) {
-        // No ref parameter, underlining the function name
-        reporter.atToken(declaration.name, _code);
-        return;
-      }
-
-      final expectedClassName = _generatedClassName(declaration);
-      if (extendsClause.superclass.name2.lexeme != expectedClassName) {
-        // No type specified. Underlining the ref name
-        reporter.atNode(extendsClause.superclass, _code);
-        return;
-      }
-
-      final expectedTypeArguments =
-          declaration.node.typeParameters?.typeParameters ??
-          const <TypeParameter>[];
-      final actualTypeArguments =
-          extendsClause.superclass.typeArguments?.arguments ??
-          const <TypeAnnotation>[];
-      if (!areGenericTypeArgumentsMatching(
-        expectedTypeArguments,
-        actualTypeArguments,
-      )) {
-        // No type specified. Underlining the ref name
-        reporter.atNode(extendsClause.superclass, _code);
-        return;
-      }
-    });
-  }
+  DiagnosticCode get diagnosticCode => code;
 
   @override
-  List<DartFix> getFixes() => [NotifierExtendsFix()];
+  void registerNodeProcessors(
+    RuleVisitorRegistry registry,
+    RuleContext context,
+  ) {
+    final visitor = _Visitor(this, context);
+    registry.addClassDeclaration(this, visitor);
+  }
 }
 
-class NotifierExtendsFix extends RiverpodFix {
+class _Visitor extends SimpleAstVisitor<void> {
+  _Visitor(this.rule, this.context);
+
+  final AnalysisRule rule;
+  final RuleContext context;
+
   @override
-  void run(
-    CustomLintResolver resolver,
-    ChangeReporter reporter,
-    CustomLintContext context,
-    AnalysisError analysisError,
-    List<AnalysisError> others,
-  ) {
-    riverpodRegistry(context).addClassBasedProviderDeclaration((declaration) {
-      // This provider is not the one that triggered the error
-      if (!analysisError.sourceRange.intersects(declaration.node.sourceRange)) {
+  void visitClassDeclaration(ClassDeclaration node) {
+    final declaration = node.provider;
+    if (declaration == null) return;
+
+    final extendsClause = declaration.node.extendsClause;
+
+    if (extendsClause == null) {
+      // No ref parameter, underlining the function name
+      rule.reportAtToken(declaration.name, arguments: []);
+      return;
+    }
+
+    final expectedClassName = _generatedClassName(declaration);
+    if (extendsClause.superclass.name.lexeme != expectedClassName) {
+      // No type specified. Underlining the ref name
+      rule.reportAtNode(extendsClause.superclass, arguments: []);
+      return;
+    }
+
+    final expectedTypeArguments =
+        declaration.node.typeParameters?.typeParameters ??
+        const <TypeParameter>[];
+    final actualTypeArguments =
+        extendsClause.superclass.typeArguments?.arguments ??
+        const <TypeAnnotation>[];
+    if (!areGenericTypeArgumentsMatching(
+      expectedTypeArguments,
+      actualTypeArguments,
+    )) {
+      // No type specified. Underlining the ref name
+      rule.reportAtNode(extendsClause.superclass, arguments: []);
+      return;
+    }
+  }
+}
+
+class NotifierExtendsFix extends ResolvedCorrectionProducer {
+  NotifierExtendsFix({required super.context});
+
+  static const fix = FixKind(
+    'notifier_extends',
+    DartFixKindPriority.standard,
+    'Extend generated class',
+  );
+
+  @override
+  FixKind get fixKind => fix;
+
+  @override
+  CorrectionApplicability get applicability =>
+      CorrectionApplicability.singleLocation;
+
+  @override
+  Future<void> compute(ChangeBuilder builder) async {
+    final node = this.node;
+    final declaration = node.thisOrAncestorOfType<ClassDeclaration>()?.provider;
+    if (declaration == null) return;
+
+    final expectedGenerics = genericsDisplayStringFor(
+      declaration.node.typeParameters,
+    );
+    final expectedClassName = _generatedClassName(declaration);
+    final expectedExtends = '$expectedClassName$expectedGenerics';
+
+    final extendsClause = declaration.node.extendsClause;
+
+    await builder.addDartFileEdit(file, (builder) {
+      if (extendsClause == null) {
+        // No "extends" clause
+        builder.addSimpleInsertion(
+          declaration.name.end,
+          ' extends $expectedExtends',
+        );
         return;
       }
 
-      final expectedGenerics = genericsDisplayStringFor(
-        declaration.node.typeParameters,
+      // There is an "extends" clause but the extended type is wrong
+      builder.addSimpleReplacement(
+        range.node(extendsClause.superclass),
+        expectedExtends,
       );
-      final expectedClassName = _generatedClassName(declaration);
-      final expectedExtends = '$expectedClassName$expectedGenerics';
-
-      final extendsClause = declaration.node.extendsClause;
-      final changeBuilder = reporter.createChangeBuilder(
-        message: 'Extend $expectedExtends',
-        priority: 90,
-      );
-
-      changeBuilder.addDartFileEdit((builder) {
-        if (extendsClause == null) {
-          // No "extends" clause
-          builder.addSimpleInsertion(
-            declaration.name.end,
-            ' extends $expectedExtends',
-          );
-          return;
-        }
-
-        // There is an "extends" clause but the extended type is wrong
-        builder.addSimpleReplacement(
-          extendsClause.superclass.sourceRange,
-          expectedExtends,
-        );
-      });
     });
   }
 }

@@ -216,19 +216,24 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
         running = false;
       }
 
-      futureOr.then(
-        (value) {
-          if (!running) return;
-          data(value);
-          done();
-        },
-        // ignore: avoid_types_on_closure_parameters
-        onError: (Object err, StackTrace stackTrace) {
-          if (!running) return;
-          error(err, stackTrace);
-          done();
-        },
-      );
+      futureOr
+          .then((value) {
+            if (!running) return;
+            data(value);
+            done();
+          })
+          .catchError(test: (err) => err is AsyncValueIsLoadingException, (_) {
+            // Those are typically coming from `ref.watch(provider).requireValue`,
+            // which counts as an abort while the provider is still loading.
+            // We handle them outside of onError to avoid capturing the stacktrace
+            // if we do not need it.
+          })
+          .catchError((Object err, StackTrace stackTrace) {
+            if (!running) return;
+
+            error(err, stackTrace);
+            done();
+          });
 
       last(futureOr);
 
@@ -277,6 +282,11 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
           onDone?.call();
         },
       );
+    } on AsyncValueIsLoadingException {
+      // Those are typically coming from `ref.watch(provider).requireValue`,
+      // which counts as an abort while the provider is still loading.
+      // We purposefully want to keep `provider.future` pending when such an
+      // exception is thrown, instead of treating it as an error.
     } catch (error, stackTrace) {
       callOnError(error, stackTrace);
     }
@@ -371,8 +381,8 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   /// The [$ProviderPointer] associated with this [ProviderElement].
   final $ProviderPointer pointer;
 
-  bool unsafeCheckIfMounted = true;
-  // ignore: library_private_types_in_public_api, not public
+  // ignore: type_annotate_public_apis, false positive
+  var unsafeCheckIfMounted = true;
   $Ref<StateT, ValueT>? ref;
 
   /// Whether this [ProviderElement] is actively in use.
@@ -386,7 +396,8 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
 
   int get listenerCount => dependents?.length ?? 0;
 
-  int pausedActiveSubscriptionCount = 0;
+  // ignore: type_annotate_public_apis, false positive
+  var pausedActiveSubscriptionCount = 0;
   var _didCancelOnce = false;
 
   /// Whether this [ProviderElement] is currently listened to or not.
@@ -410,9 +421,9 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   @visibleForTesting
   final weakDependents = <ProviderSubscriptionImpl<Object?>>[];
 
-  bool _mustRecomputeState = false;
-  bool _dependencyMayHaveChanged = false;
-  bool _didChangeDependency = false;
+  var _mustRecomputeState = false;
+  var _dependencyMayHaveChanged = false;
+  var _didChangeDependency = false;
 
   var _retryCount = 0;
   Timer? _pendingRetryTimer;
@@ -424,6 +435,15 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
 
   bool _debugDidSetState = false;
   bool _didBuild = false;
+
+  /// Subscriptions for an element are only added after the first frame of the
+  /// `build()` is run.
+  /// In order to tell if an element was just created or has active
+  /// subscriptions this flag is needed.
+  ///
+  /// After the first async gap of an async `build()` we can check if there
+  /// are any active subscriptions.
+  bool _insideBuildFrame = false;
   var _didMount = false;
 
   /* STATE */
@@ -537,7 +557,7 @@ depending on itself.
   /// - `overrideWithValue`, which relies on [update] to handle
   ///   the scenario where the value changed.
   @visibleForOverriding
-  void update($ProviderBaseImpl<StateT> newProvider) {}
+  void update(ProviderBase<StateT> newProvider) {}
 
   /// Initialize a provider and track dependencies used during the initialization.
   ///
@@ -601,7 +621,7 @@ depending on itself.
   /// state. Then, reading this provider will rethrow the thrown exception.
   @visibleForOverriding
   WhenComplete create(
-    // ignore: library_private_types_in_public_api, not public
+    // ignore: not public
     $Ref<StateT, ValueT> ref,
   );
 
@@ -644,12 +664,10 @@ depending on itself.
 
   /// Invokes [create] and handles errors.
   @internal
-  void buildState(
-    // ignore: library_private_types_in_public_api, not public
-    $Ref<StateT, ValueT> ref,
-  ) {
+  void buildState($Ref<StateT, ValueT> ref) {
     if (_didChangeDependency) _retryCount = 0;
 
+    _didChangeDependency = false;
     if (kDebugMode) {
       container.scheduler.debugNotifyDidBuild(this);
 
@@ -660,6 +678,7 @@ depending on itself.
     }
 
     _didBuild = false;
+    _insideBuildFrame = true;
     initState(ref);
     try {
       final whenComplete = create(ref) ?? (cb) => cb();
@@ -670,6 +689,7 @@ depending on itself.
 
       value = triggerRetry(err, stack);
     } finally {
+      _insideBuildFrame = false;
       _didBuild = true;
     }
   }
@@ -727,6 +747,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void invalidateSelf({required bool asReload}) {
+    if (!_didMount) return;
+
     if (asReload) _didChangeDependency = true;
     if (_mustRecomputeState) return;
 
@@ -1201,7 +1223,7 @@ $this''',
     }
   }
 
-  bool _disposed = false;
+  var _disposed = false;
 
   late final ElementId _debugId = ElementId(const Uuid().v4());
 
@@ -1334,6 +1356,8 @@ mixin SyncProviderElement<ValueT> on ProviderElement<ValueT, ValueT> {
       case AsyncLoading(:final error?, :final stackTrace?) when value.retrying:
       case AsyncError(:final error, :final stackTrace):
         return $ResultError(error, stackTrace);
+      case AsyncLoading(:final value, hasValue: true):
+        return $ResultData(value as ValueT);
       case AsyncLoading():
         return null;
     }

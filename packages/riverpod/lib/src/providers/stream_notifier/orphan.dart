@@ -22,8 +22,7 @@ abstract class StreamNotifier<ValueT> extends $StreamNotifier<ValueT> {
   @mustCallSuper
   @override
   void runBuild() {
-    final created = build();
-    requireElement().handleValue(ref, created);
+    requireElement().handleCreate(ref, build);
   }
 }
 

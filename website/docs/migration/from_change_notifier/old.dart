@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, avoid_unused_constructor_parameters
+// ignore_for_file: avoid_unused_constructor_parameters
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/legacy.dart';

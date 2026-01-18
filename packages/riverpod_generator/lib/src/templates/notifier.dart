@@ -1,4 +1,3 @@
-import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer_buffer/analyzer_buffer.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
@@ -63,23 +62,19 @@ abstract class $notifierBaseName$genericsDefinition extends $baseClass {
 
     _writeBuild(buffer);
 
-    final buildVar =
-        provider.providerElement.valueTypeNode is VoidType
-            ? ''
-            : 'final created = ';
-
-    final buildVarUsage =
-        provider.providerElement.valueTypeNode is VoidType ? 'null' : 'created';
+    final buildVarUsage = switch (provider.parameters) {
+      [] => 'build',
+      [_, ...] => '() => build($paramsPassThrough)',
+    };
 
     buffer.writeln('''
   @\$mustCallSuper
   @override
   void runBuild() {
-    ${buildVar}build($paramsPassThrough);
     final ref = this.ref as \$Ref<${provider.providerElement.exposedTypeNode}, ${provider.providerElement.valueTypeNode.toCode()}>;
     final element = ref.element as \$ClassProviderElement<AnyNotifier<${provider.providerElement.exposedTypeNode}, ${provider.providerElement.valueTypeNode.toCode()}>,
           ${provider.providerElement.exposedTypeNode}, Object?, Object?>;
-    element.handleValue(ref, $buildVarUsage);
+    element.handleCreate(ref, $buildVarUsage);
   }
 }
 ''');

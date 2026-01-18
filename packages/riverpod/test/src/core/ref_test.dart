@@ -7,13 +7,19 @@ import 'package:riverpod/misc.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart'
     show
-        UnmountedRefException,
-        InternalProviderContainer,
-        ProviderElement,
-        CircularDependencyError,
-        ProviderContainerTest,
+        $FunctionalProvider,
+        $Provider,
+        $ProviderElement,
+        $ProviderOverride,
+        $ProviderPointer,
+        $SyncValueProvider,
         AsyncValueInternals,
-        DataSource;
+        CircularDependencyError,
+        DataSource,
+        InternalProviderContainer,
+        ProviderContainerTest,
+        ProviderElement,
+        UnmountedRefException;
 import 'package:test/test.dart';
 
 import '../matrix.dart';
@@ -116,7 +122,7 @@ void main() {
           throwsA(isA<UnmountedRefException>()),
         );
         expect(
-          () => ref.listen(another, (_, __) {}),
+          () => ref.listen(another, (_, _) {}),
           throwsA(isA<UnmountedRefException>()),
         );
         expect(
@@ -243,7 +249,7 @@ void main() {
       );
       expect(
         () => container.read(
-          provider.select((_) => ref.listen(another, (_, __) {})),
+          provider.select((_) => ref.listen(another, (_, _) {})),
         ),
         throwsProviderException(isA<AssertionError>()),
       );
@@ -1177,6 +1183,33 @@ void main() {
 
           verifyZeroInteractions(listener);
         });
+
+        test(
+          'hot reload does not trigger weak listeners on unmounted providers',
+          () async {
+            final container = ProviderContainer.test();
+            var buildCountB = 0;
+            final providerB = _ChangingHashProvider<int>((ref) {
+              return buildCountB++;
+            });
+
+            final providerA = _ChangingHashProvider<int>((ref) {
+              ref.listen(providerB, weak: true, (previous, next) {});
+              return 0;
+            });
+
+            container.read(providerA);
+            expect(buildCountB, 0);
+
+            container.debugReassemble();
+            await container.pump();
+
+            expect(buildCountB, 0);
+
+            container.read(providerB);
+            expect(buildCountB, 1);
+          },
+        );
       });
 
       test('ref.listen on outdated provider causes it to rebuild', () {
@@ -3154,7 +3187,7 @@ void main() {
           final container = ProviderContainer();
           addTearDown(container.dispose);
 
-          container.listen(provider, (_, __) {});
+          container.listen(provider, (_, _) {});
 
           verifyZeroInteractions(onDispose);
           verifyZeroInteractions(onDispose2);
@@ -3184,7 +3217,7 @@ void main() {
           final container = ProviderContainer();
           addTearDown(container.dispose);
 
-          container.listen(provider, (_, __) {});
+          container.listen(provider, (_, _) {});
 
           verifyZeroInteractions(onDispose);
 
@@ -3211,7 +3244,7 @@ void main() {
           final container = ProviderContainer();
           addTearDown(container.dispose);
 
-          container.listen(provider, (_, __) {});
+          container.listen(provider, (_, _) {});
           expect(buildCount, 1);
 
           verifyZeroInteractions(onDispose);
@@ -3270,6 +3303,91 @@ void main() {
 
         expect(ref.mounted, true);
       });
+
+      test(
+        'is false for previous ref when FutureProvider is invalidated during async build',
+        () async {
+          final container = ProviderContainer.test();
+          final completer1 = Completer<String>();
+          final completer2 = Completer<String>();
+          var buildCount = 0;
+          late Ref firstRef;
+          late Ref secondRef;
+
+          final provider = FutureProvider<String>((ref) async {
+            buildCount++;
+            if (buildCount == 1) {
+              firstRef = ref;
+              return completer1.future;
+            } else {
+              secondRef = ref;
+              return completer2.future;
+            }
+          });
+
+          final sub = container.listen(provider.future, (prev, next) {});
+
+          // First build starts
+          expect(buildCount, 1);
+          expect(firstRef.mounted, true);
+
+          // Invalidate while first build is still pending, then read to trigger rebuild
+          container.invalidate(provider);
+          container.read(provider);
+
+          // Second build starts
+          expect(buildCount, 2);
+
+          // The first ref should now be unmounted since a new build started
+          expect(firstRef.mounted, false);
+          expect(secondRef.mounted, true);
+
+          // Complete the futures
+          completer2.complete('data2');
+          await sub.read();
+
+          expect(firstRef.mounted, false);
+          expect(secondRef.mounted, true);
+
+          sub.close();
+          container.dispose();
+        },
+      );
     });
   });
+}
+
+final class _ChangingHashProvider<ValueT>
+    extends $FunctionalProvider<ValueT, ValueT, ValueT>
+    with $Provider<ValueT> {
+  _ChangingHashProvider(this._create)
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: '_changingHashProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  final ValueT Function(Ref ref) _create;
+
+  @override
+  String debugGetCreateSourceHash() =>
+      DateTime.now().microsecondsSinceEpoch.toString();
+
+  @override
+  $ProviderElement<ValueT> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  ValueT create(Ref ref) => _create(ref);
+
+  Override overrideWithValue(ValueT value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ValueT>(value),
+    );
+  }
 }

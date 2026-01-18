@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable, use_key_in_widget_constructors
+// ignore_for_file: unnecessary_async, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -21,4 +21,5 @@ class MyConsumer extends ConsumerWidget {
     return Text(result.requireValue);
   }
 }
+
 /* SNIPPET END */

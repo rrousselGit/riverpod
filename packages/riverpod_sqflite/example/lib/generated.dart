@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_async
+
 import 'dart:async';
 
 import 'package:freezed_annotation/freezed_annotation.dart';

@@ -126,7 +126,7 @@ void main() {
           addTearDown(queue.cancel);
           final provider = factory.deferredProvider<int>(
             (ref, _) => Error.throwWithStackTrace(err, stack),
-            retry: (_, __) => const Duration(seconds: 1),
+            retry: (_, _) => const Duration(seconds: 1),
           );
 
           final sub = container.listen(provider, fireImmediately: true, (a, b) {
@@ -160,7 +160,7 @@ void main() {
           var retryCount = 0;
           late Ref r;
           final provider = factory.simpleTestProvider<int>(
-            retry: (_, __) {
+            retry: (_, _) {
               retryCount++;
               return const Duration(seconds: 1);
             },
@@ -404,7 +404,7 @@ void main() {
           self.listenSelf(listener.call, onError: onError.call);
           Error.throwWithStackTrace(42, StackTrace.empty);
         });
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(retry: (_, _) => null);
 
         container.listen(provider, (previous, next) {});
 
@@ -466,7 +466,7 @@ void main() {
         final provider = factory.simpleTestProvider<int>(
           (ref, _) => Stream.error(0, StackTrace.empty),
         );
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(retry: (_, _) => null);
         final listener = Listener<AsyncValue<int>>();
 
         container.listen(provider, listener.call, fireImmediately: true);
@@ -496,7 +496,7 @@ void main() {
         final provider = factory.provider<int>(
           () => Error.throwWithStackTrace(0, StackTrace.empty),
         );
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(retry: (_, _) => null);
         final listener = Listener<AsyncValue<int>>();
 
         container.listen(provider, listener.call, fireImmediately: true);
@@ -520,7 +520,7 @@ void main() {
         final provider = factory.simpleTestProvider<int>(
           (ref, _) => Error.throwWithStackTrace(42, StackTrace.empty),
         );
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(retry: (_, _) => null);
         final listener = Listener<AsyncValue<int>>();
 
         container.listen(provider, listener.call, fireImmediately: true);
@@ -578,7 +578,7 @@ void main() {
     test(
       'stops listening to the previous future error when the provider rebuilds',
       () async {
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(retry: (_, _) => null);
         final dep = StateProvider((ref) => 0);
         final completers = {0: Completer<int>.sync(), 1: Completer<int>.sync()};
         final provider = factory.simpleTestProvider<int>(
@@ -897,7 +897,7 @@ void main() {
       });
 
       test('can specify onError to handle error scenario', () async {
-        final container = ProviderContainer.test(retry: (_, __) => null);
+        final container = ProviderContainer.test(retry: (_, _) => null);
         final provider = factory.simpleTestProvider<int>(
           (ref, _) => Error.throwWithStackTrace(42, StackTrace.empty),
         );
@@ -958,7 +958,7 @@ void main() {
       test(
         'executes immediately with current state if an error is available',
         () async {
-          final container = ProviderContainer.test(retry: (_, __) => null);
+          final container = ProviderContainer.test(retry: (_, _) => null);
           final provider = factory.simpleTestProvider<int>(
             (ref, _) => Error.throwWithStackTrace(42, StackTrace.empty),
           );
@@ -1044,11 +1044,13 @@ void main() {
         );
     final container = ProviderContainer.test(
       overrides: [
-        family.overrideWith(
-          () => DeferredStreamNotifier<int>((ref, _) => Stream.value(42)),
+        family.overrideWith2(
+          (arg) =>
+              DeferredStreamNotifier<int>((ref, _) => Stream.value(42 + arg)),
         ),
-        autoDisposeFamily.overrideWith(
-          () => DeferredStreamNotifier<int>((ref, _) => Stream.value(84)),
+        autoDisposeFamily.overrideWith2(
+          (arg) =>
+              DeferredStreamNotifier<int>((ref, _) => Stream.value(84 + arg)),
         ),
       ],
     );
@@ -1059,8 +1061,8 @@ void main() {
         .listen(autoDisposeFamily(10).future, (previous, next) {})
         .read();
 
-    expect(container.read(family(10)).value, 42);
-    expect(container.read(autoDisposeFamily(10)).value, 84);
+    expect(container.read(family(10)).value, 52);
+    expect(container.read(autoDisposeFamily(10)).value, 94);
   });
 
   group('AutoDispose variant', () {

@@ -229,7 +229,7 @@ void main() {
 
   test('Respect weak flag', () async {
     final container = ProviderContainer.test();
-    int callCount = 0;
+    var callCount = 0;
     final notifier = utils.DeferredNotifier<int>((self, ref) {
       callCount++;
       return 0;

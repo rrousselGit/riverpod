@@ -357,7 +357,7 @@ abstract class ConsumerStatefulWidget extends StatefulWidget {
 abstract class ConsumerState<WidgetT extends ConsumerStatefulWidget>
     extends State<WidgetT> {
   /// {@macro flutter_riverpod.widget_ref}
-  late final WidgetRef ref = context as WidgetRef;
+  late final ref = context as WidgetRef;
 }
 
 /// The [Element] for a [ConsumerStatefulWidget]
@@ -378,10 +378,42 @@ base class ConsumerStatefulElement extends StatefulElement
   _oldDependencies;
   final _listeners = <ProviderSubscription<Object?>>[];
   List<ProviderSubscription<Object?>>? _manualListeners;
+  ValueListenable<bool>? _tickerModeNotifier;
   bool? _isActive;
+
+  @override
+  void activate() {
+    super.activate();
+    _updateTickerModeNotifier();
+  }
 
   void _applyTickerMode(ProviderSubscription sub) {
     if (_isActive == false) sub.pause();
+  }
+
+  void _updateTickerModeNotifier() {
+    final newTickerModeNotifier = TickerMode.getNotifier(context);
+
+    if (_tickerModeNotifier != newTickerModeNotifier) {
+      _tickerModeNotifier?.removeListener(_updateTickerMode);
+      newTickerModeNotifier.addListener(_updateTickerMode);
+      _tickerModeNotifier = newTickerModeNotifier;
+      _updateTickerMode();
+    }
+  }
+
+  void _updateTickerMode() {
+    final isActive = _tickerModeNotifier!.value;
+    if (isActive != _isActive) {
+      _isActive = isActive;
+      for (final sub in _dependencies.values) {
+        if (isActive) {
+          sub.resume();
+        } else {
+          sub.pause();
+        }
+      }
+    }
   }
 
   @override
@@ -399,16 +431,8 @@ base class ConsumerStatefulElement extends StatefulElement
 
   @override
   Widget build() {
-    final isActive = TickerMode.of(context);
-    if (isActive != _isActive) {
-      _isActive = isActive;
-      for (final sub in _dependencies.values) {
-        if (isActive) {
-          sub.resume();
-        } else {
-          sub.pause();
-        }
-      }
+    if (_tickerModeNotifier == null) {
+      _updateTickerModeNotifier();
     }
 
     try {
@@ -450,7 +474,7 @@ base class ConsumerStatefulElement extends StatefulElement
 
               final sub = container.listen<StateT>(
                 target,
-                (_, __) => markNeedsBuild(),
+                (_, _) => markNeedsBuild(),
               );
               _applyTickerMode(sub);
               return sub;
@@ -465,6 +489,7 @@ base class ConsumerStatefulElement extends StatefulElement
     /// Calling `super.unmount()` will call `dispose` on the state
     /// And [ListenManual] subscriptions should be closed after `dispose`
     super.unmount();
+    _tickerModeNotifier?.removeListener(_updateTickerMode);
 
     for (final dependency in _dependencies.values) {
       dependency.close();
@@ -486,6 +511,7 @@ base class ConsumerStatefulElement extends StatefulElement
     ProviderListenable<StateT> provider,
     void Function(StateT? previous, StateT value) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
+    bool weak = false,
   }) {
     _assertNotDisposed();
     assert(
@@ -496,7 +522,12 @@ base class ConsumerStatefulElement extends StatefulElement
     // We can't implement a fireImmediately flag because we wouldn't know
     // which listen call was preserved between widget rebuild, and we wouldn't
     // want to call the listener on every rebuild.
-    final sub = container.listen<StateT>(provider, listener, onError: onError);
+    final sub = container.listen<StateT>(
+      provider,
+      listener,
+      onError: onError,
+      weak: weak,
+    );
     _listeners.add(sub);
   }
 
@@ -530,6 +561,7 @@ base class ConsumerStatefulElement extends StatefulElement
     void Function(ValueT? previous, ValueT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately = false,
+    bool weak = false,
   }) {
     _assertNotDisposed();
     final listeners = _manualListeners ??= [];
@@ -543,7 +575,7 @@ base class ConsumerStatefulElement extends StatefulElement
       listener,
       onError: onError,
       fireImmediately: fireImmediately,
-      // ignore: invalid_use_of_internal_member, from riverpod
+      weak: weak,
     );
 
     // Hook-up on onClose to avoid memory leaks.

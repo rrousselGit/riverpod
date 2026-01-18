@@ -1,7 +1,24 @@
-## Unreleased major
+## 4.0.2 - 2026-01-17
+### Dependency changes
+
+- `riverpod_analyzer_utils` upgraded to `1.0.0-dev.9`
+
+## 4.0.1 - 2026-01-17
+
+### Dependency changes
+
+- `riverpod_annotation` upgraded to `4.0.1`
+
+## 4.0.0+1
+
+Fixed dependency issue
+
+## 4.0.0 - 2025-12-26
 
 - Generated providers are no-longer constant
 - Fix a bug when using `Class.staticVariable` as parameter to `@Riverpod(retry: ...)`
+- Fix Notifiers returning a `Future<void>`
+- Fix providers from part files not being generated (thanks to @tguerin)
 
 ## 3.0.3 - 2025-10-09
 
@@ -436,3 +453,4 @@ Fix version conflict with Riverpod
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

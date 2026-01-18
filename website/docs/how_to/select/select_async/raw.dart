@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable, avoid_multiple_declarations_per_line, omit_local_variable_types, prefer_final_locals, use_key_in_widget_constructors
+// ignore_for_file: unused_local_variable, avoid_multiple_declarations_per_line
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

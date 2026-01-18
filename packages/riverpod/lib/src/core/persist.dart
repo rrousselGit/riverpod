@@ -202,7 +202,7 @@ final class StorageCacheTime {
   /// the responsibility of whatever Database you are using to handle this
   /// migration.
   // ignore: constant_identifier_names, voluntary for the sake of unsafeness.
-  static const StorageCacheTime unsafe_forever = StorageCacheTime._(null);
+  static const unsafe_forever = StorageCacheTime._(null);
 
   /// The time before the data expires.
   ///

@@ -18,9 +18,9 @@ void main() {
     group('overrideWith', () {
       test('toString', () {
         final namelessProvider = Provider<int>((_) => 42);
-        final namelessFamily = Provider.family<int, int>((_, __) => 42);
+        final namelessFamily = Provider.family<int, int>((_, _) => 42);
         final provider = Provider<int>((_) => 42, name: 'myName');
-        final family = Provider.family<int, int>((_, __) => 42, name: 'myName');
+        final family = Provider.family<int, int>((_, _) => 42, name: 'myName');
 
         expect(
           namelessProvider.overrideWith((ref) => 42).toString(),
@@ -40,14 +40,21 @@ void main() {
           'myName(42).overrideWith(...)',
         );
       });
+
+      test('exposes origin in tests', () {
+        final provider = Provider<int>((_) => 42);
+        final override = provider.overrideWith((ref) => 42);
+
+        expect(override.origin, provider);
+      });
     });
 
     group('overrideWithValue', () {
       test('toString', () {
         final namelessProvider = Provider<int>((_) => 42);
-        final namelessFamily = Provider.family<int, int>((_, __) => 42);
+        final namelessFamily = Provider.family<int, int>((_, _) => 42);
         final provider = Provider<int>((_) => 42, name: 'myName');
-        final family = Provider.family<int, int>((_, __) => 42, name: 'myName');
+        final family = Provider.family<int, int>((_, _) => 42, name: 'myName');
 
         expect(
           namelessProvider.overrideWithValue(21).toString(),
@@ -69,6 +76,13 @@ void main() {
           'myName(42).overrideWithValue(21)',
         );
       });
+
+      test('exposes origin in tests', () {
+        final provider = Provider<int>((_) => 42);
+        final override = provider.overrideWithValue(21);
+
+        expect(override.origin, provider);
+      });
     });
   });
 
@@ -87,8 +101,8 @@ void main() {
 
     group('overrideWith', () {
       test('toString', () {
-        final namelessFamily = Provider.family<int, int>((_, __) => 42);
-        final family = Provider.family<int, int>((_, __) => 42, name: 'myName');
+        final namelessFamily = Provider.family<int, int>((_, _) => 42);
+        final family = Provider.family<int, int>((_, _) => 42, name: 'myName');
 
         expect(
           namelessFamily.overrideWith((ref, arg) => 42).toString(),
@@ -101,6 +115,13 @@ void main() {
           family.overrideWith((ref, _) => 42).toString(),
           'myName.overrideWith(...)',
         );
+      });
+
+      test('exposes origin in tests', () {
+        final family = Provider.family<int, int>((_, _) => 42);
+        final override = family.overrideWith((ref, _) => 42);
+
+        expect(override.origin, family);
       });
     });
   });

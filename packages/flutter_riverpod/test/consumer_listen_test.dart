@@ -10,7 +10,57 @@ import 'package:riverpod/src/internals.dart' show NodeInternal;
 import 'utils.dart';
 
 void main() {
+  group('WidgetRef.listenManual', () {
+    testWidgets('Supports weak flag', (tester) async {
+      final provider = Provider((ref) => Object());
+      final listener = Listener<Object>();
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(
+            builder: (context, ref, _) {
+              ref.listenManual<Object>(provider, listener.call, weak: true);
+              return Container();
+            },
+          ),
+        ),
+      );
+
+      final container = tester.container();
+
+      verifyZeroInteractions(listener);
+
+      container.read(provider);
+
+      verifyOnly(listener, listener(null, isA<Object>()));
+    });
+  });
+
   group('WidgetRef.listen', () {
+    testWidgets('Supports weak flag', (tester) async {
+      final provider = Provider((ref) => Object());
+      final listener = Listener<Object>();
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(
+            builder: (context, ref, _) {
+              ref.listen<Object>(provider, listener.call, weak: true);
+              return Container();
+            },
+          ),
+        ),
+      );
+
+      final container = tester.container();
+
+      verifyZeroInteractions(listener);
+
+      container.read(provider);
+
+      verifyOnly(listener, listener(null, isA<Object>()));
+    });
+
     testWidgets('can downcast the value', (tester) async {
       final dep = StateProvider((ref) => 0);
       final provider = Provider((ref) => ref.watch(dep));
@@ -44,7 +94,7 @@ void main() {
       // should compile
       Consumer(
         builder: (context, ref, _) {
-          ref.listen<Object?>(nullProvider, (_, __) {});
+          ref.listen<Object?>(nullProvider, (_, _) {});
           return Container();
         },
       );

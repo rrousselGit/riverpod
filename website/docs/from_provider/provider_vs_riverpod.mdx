@@ -219,7 +219,7 @@ Such as:
 ```dart
 ProxyProvider<UserIdNotifier, String>(
   update: (context, userIdNotifier, _) {
-    return 'The user ID of the the user is ${userIdNotifier.userId}';
+    return 'The user ID of the user is ${userIdNotifier.userId}';
   }
 )
 ```
@@ -247,7 +247,7 @@ From there, to generate our `String` based on the `userId`, we could do:
 ```dart
 final labelProvider = Provider<String>((ref) {
   UserIdNotifier userIdNotifier = ref.watch(userIdNotifierProvider);
-  return 'The user ID of the the user is ${userIdNotifier.userId}';
+  return 'The user ID of the user is ${userIdNotifier.userId}';
 });
 ```
 

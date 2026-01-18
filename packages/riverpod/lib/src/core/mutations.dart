@@ -425,7 +425,7 @@ final class MutationImpl<ResultT>
       final mut = impl;
       final sub = container.listen<_MutationNotifier<ResultT>>(
         _MutationProvider(this),
-        (_, __) {},
+        (_, _) {},
       );
       final ref = MutationTransaction._(container);
 

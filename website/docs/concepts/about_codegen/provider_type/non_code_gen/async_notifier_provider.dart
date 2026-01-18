@@ -1,10 +1,12 @@
+// ignore_for_file: unnecessary_async
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /* SNIPPET START */
 final exampleProvider =
     AsyncNotifierProvider.autoDispose<ExampleNotifier, String>(
-  ExampleNotifier.new,
-);
+      ExampleNotifier.new,
+    );
 
 class ExampleNotifier extends AsyncNotifier<String> {
   @override

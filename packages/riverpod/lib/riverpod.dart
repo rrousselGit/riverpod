@@ -21,4 +21,5 @@ export 'src/internals.dart'
         StreamProvider,
         ProviderListenableSelect,
         AsyncResult,
-        AsyncValueExtensions;
+        AsyncValueExtensions,
+        AsyncValueIsLoadingException;

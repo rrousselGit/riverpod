@@ -1351,10 +1351,19 @@ void main() {
     );
   });
 
+  test('AsyncValueIsLoadingException', () {
+    try {} on AsyncValueIsLoadingException {
+      // Can catch AsyncValueIsLoadingException without triggering a warning.
+    }
+  });
+
   test('requireValue', () {
     expect(const AsyncData(42).requireValue, 42);
 
-    expect(() => const AsyncLoading<int>().requireValue, throwsStateError);
+    expect(
+      () => const AsyncLoading<int>().requireValue,
+      throwsA(isA<AsyncValueIsLoadingException>()),
+    );
     expect(
       const AsyncLoading<int>()
           .copyWithPrevious(const AsyncData(42), isRefresh: true)

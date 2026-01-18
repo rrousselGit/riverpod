@@ -62,7 +62,7 @@ class FunctionalProviderDeclarationElement
   static final _cache = _Cache<FunctionalProviderDeclarationElement?>();
 
   static FunctionalProviderDeclarationElement? _parse(
-    ExecutableElement2 element,
+    ExecutableElement element,
     AstNode from,
   ) {
     return _cache(element, () {
@@ -77,7 +77,7 @@ class FunctionalProviderDeclarationElement
       }
 
       return FunctionalProviderDeclarationElement._(
-        name: element.name3!,
+        name: element.name!,
         annotation: riverpodAnnotation,
         element: element,
         createdTypeNode: types.createdType,
@@ -94,7 +94,7 @@ class FunctionalProviderDeclarationElement
   @override
   bool get isFamily {
     return element.formalParameters.length > 1 ||
-        element.typeParameters2.isNotEmpty;
+        element.typeParameters.isNotEmpty;
   }
 
   @override
@@ -102,7 +102,7 @@ class FunctionalProviderDeclarationElement
   @override
   final String name;
   @override
-  final ExecutableElement2 element;
+  final ExecutableElement element;
   @override
   final String createdTypeNode;
   @override

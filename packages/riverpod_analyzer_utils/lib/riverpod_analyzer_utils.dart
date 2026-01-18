@@ -85,7 +85,13 @@ export 'src/nodes.dart'
         RecursiveRiverpodAstVisitor,
         SimpleRiverpodAstVisitor,
         UnimplementedRiverpodAstVisitor,
-        RiverpodAstRegistry;
+        RiverpodAstRegistry,
+        ConstantSymbol,
+        PropertyAccessConstantSymbol,
+        PrefixedIdentifierConstantSymbol,
+        SimpleIdentifierConstantSymbol,
+        AstX;
+
 export 'src/riverpod_types.dart'
     show
         providerSubscriptionType,
@@ -150,5 +156,7 @@ export 'src/riverpod_types.dart'
         statefulHookType,
         isState,
         isStatelessWidget,
-        isStatefulWidget;
+        isStatefulWidget,
+        asyncValueCode;
 export 'src/string_utils.dart' show CaseChangeExtension;
+export 'src/type_checker.dart' show TypeChecker;

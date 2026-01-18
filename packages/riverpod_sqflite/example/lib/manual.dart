@@ -41,7 +41,7 @@ final todosProvider = AsyncNotifierProvider<TodosNotifier, List<Todo>>(
 
 class TodosNotifier extends AsyncNotifier<List<Todo>> {
   @override
-  FutureOr<List<Todo>> build() async {
+  FutureOr<List<Todo>> build() {
     // We call persist at the start of our `build` method.
     // This will:
     // - Read the DB and update the state with the persisted value the first

@@ -1,6 +1,6 @@
 ---
 title: Your first Riverpod app
-version: 1
+version: 2
 ---
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -125,18 +125,13 @@ This will add the latest version of Riverpod to your project, along with Dio.
 To help you write better Riverpod code, you can install the [riverpod_lint] package.  
 This package provides a set of refactors to more easily write Riverpod code, as well as a set of lints to help you avoid common mistakes.
 
-You can install it by running the following command:
+Riverpod_lint is implemented using [analysis_server_plugin]. As such, it is installed through `analysis_options.yaml`
 
-```sh
-flutter pub add --dev riverpod_lint custom_lint
-```
+Long story short, create an `analysis_options.yaml` next to your `pubspec.yaml` and add:
 
-Then, you can enable it by updating the `analysis_options.yaml` file next to your `pubspec.yaml` to include the following:
-
-```yaml
-analyzer:
-  plugins:
-    - custom_lint
+```yaml title="analysis_options.yaml"
+plugins:
+  riverpod_lint: <latest version from https://pub.dev/packages/riverpod_lint>
 ```
 
 ### Adding ProviderScope in our main function
@@ -504,3 +499,4 @@ Notice how we never had to write a `try/catch` or write code such as `isLoading 
 [AsyncValue.isRefreshing]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/AsyncValueX/isRefreshing.html
 [riverpod_lint]: https://pub.dev/packages/riverpod_lint
 [ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[analysis_server_plugin]: https://pub.dev/packages/analysis_server_plugin

@@ -22,10 +22,7 @@ extension CancelTokenX on Ref {
 }
 
 @riverpod
-Future<Package> fetchPackageDetails(
-  Ref ref, {
-  required String packageName,
-}) async {
+Future<Package> fetchPackageDetails(Ref ref, {required String packageName}) {
   final cancelToken = ref.cancelToken();
 
   return ref
@@ -34,7 +31,7 @@ Future<Package> fetchPackageDetails(
 }
 
 @riverpod
-Future<List<String>> likedPackages(Ref ref) async {
+Future<List<String>> likedPackages(Ref ref) {
   final cancelToken = ref.cancelToken();
 
   return ref
@@ -155,7 +152,7 @@ class PackageDetailPage extends HookConsumerWidget {
         onPressed:
             isToggleLikeLoading
                 ? null
-                : () async {
+                : () {
                   final packageLikes = ref.read(
                     packageMetricsProvider(packageName: packageName).notifier,
                   );

@@ -171,7 +171,6 @@ abstract class _$StateNotifierClass extends $Notifier<MyStateNotifier> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<MyStateNotifier, MyStateNotifier>;
     final element =
         ref.element
@@ -181,7 +180,7 @@ abstract class _$StateNotifierClass extends $Notifier<MyStateNotifier> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -256,7 +255,6 @@ abstract class _$SelfNotifier extends $AsyncNotifier<SelfNotifier> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<SelfNotifier>, SelfNotifier>;
     final element =
         ref.element
@@ -266,7 +264,7 @@ abstract class _$SelfNotifier extends $AsyncNotifier<SelfNotifier> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -309,7 +307,6 @@ abstract class _$SyncSelfNotifier extends $Notifier<SyncSelfNotifier> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<SyncSelfNotifier, SyncSelfNotifier>;
     final element =
         ref.element
@@ -319,7 +316,7 @@ abstract class _$SyncSelfNotifier extends $Notifier<SyncSelfNotifier> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -356,7 +353,6 @@ abstract class _$StreamSelfNotifier
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref =
         this.ref as $Ref<AsyncValue<StreamSelfNotifier>, StreamSelfNotifier>;
     final element =
@@ -367,7 +363,7 @@ abstract class _$StreamSelfNotifier
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -404,7 +400,6 @@ abstract class _$StateNotifierClassAsync
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<MyStateNotifier>, MyStateNotifier>;
     final element =
         ref.element
@@ -414,7 +409,7 @@ abstract class _$StateNotifierClassAsync
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -504,7 +499,6 @@ abstract class _$ChangeNotifierClass extends $Notifier<MyChangeNotifier> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<MyChangeNotifier, MyChangeNotifier>;
     final element =
         ref.element
@@ -514,7 +508,7 @@ abstract class _$ChangeNotifierClass extends $Notifier<MyChangeNotifier> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -646,7 +640,6 @@ abstract class _$NotifierClass extends $Notifier<MyNotifier> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<MyNotifier, MyNotifier>;
     final element =
         ref.element
@@ -656,7 +649,7 @@ abstract class _$NotifierClass extends $Notifier<MyNotifier> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -742,7 +735,6 @@ abstract class _$AsyncNotifierClass extends $Notifier<MyAsyncNotifier> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<MyAsyncNotifier, MyAsyncNotifier>;
     final element =
         ref.element
@@ -752,7 +744,7 @@ abstract class _$AsyncNotifierClass extends $Notifier<MyAsyncNotifier> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 

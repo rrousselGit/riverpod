@@ -70,7 +70,7 @@ void main() {
     addTearDown(container.dispose);
 
     var callCount = 0;
-    final sub = container.listen(provider.notifier, (_, __) => callCount++);
+    final sub = container.listen(provider.notifier, (_, _) => callCount++);
 
     expect(sub.read(), notifier);
     expect(callCount, 0);
@@ -139,12 +139,13 @@ class OnDisposeMock extends Mock {
 }
 
 class TestNotifier extends ChangeNotifier {
-  bool mounted = true;
+  // ignore: type_annotate_public_apis
+  var mounted = true;
 
   @override
   bool get hasListeners => super.hasListeners;
 
-  int _count = 0;
+  var _count = 0;
   int get count => _count;
   set count(int count) {
     _count = count;

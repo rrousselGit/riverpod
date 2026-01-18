@@ -67,7 +67,7 @@ final class ProviderWithDependencies2Provider
 }
 
 String _$providerWithDependencies2Hash() =>
-    r'3a6100929120a9cf1ef7f1e0a5e9b8e4d4030ae2';
+    r'7babaab4c3a5db6c727705f7c72e07bdbadcade5';
 
 @ProviderFor(familyWithDependencies2)
 final familyWithDependencies2Provider = FamilyWithDependencies2Family._();
@@ -136,7 +136,7 @@ final class FamilyWithDependencies2Provider
 }
 
 String _$familyWithDependencies2Hash() =>
-    r'd064c06ca5a85a62cbe2b47943e98fc2e858fb03';
+    r'14a3fd032920e0a72318f440eb39b7dfe937f07f';
 
 final class FamilyWithDependencies2Family extends $Family
     with $FunctionalFamilyOverride<int, int?> {
@@ -217,14 +217,13 @@ final class NotifierWithDependenciesProvider
 }
 
 String _$notifierWithDependenciesHash() =>
-    r'becc68e5a54b0cc2b8277a6d54b74edef93bfe89';
+    r'f35d441f9a3b2750446560c1b7edbb28033f3317';
 
 abstract class _$NotifierWithDependencies extends $Notifier<int> {
   int build();
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -234,7 +233,7 @@ abstract class _$NotifierWithDependencies extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
 
@@ -298,7 +297,7 @@ final class NotifierFamilyWithDependenciesProvider
 }
 
 String _$notifierFamilyWithDependenciesHash() =>
-    r'b185ba93857cd028964c1412e748ee887dbd45c8';
+    r'facbc4b2cdf49bc296cbe530e0b6c3e5dbf7d4d3';
 
 final class NotifierFamilyWithDependenciesFamily extends $Family
     with
@@ -343,7 +342,6 @@ abstract class _$NotifierFamilyWithDependencies extends $Notifier<int> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(id: _$args);
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -353,7 +351,7 @@ abstract class _$NotifierFamilyWithDependencies extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(id: _$args));
   }
 }
 
@@ -369,8 +367,8 @@ final class _Private2Provider extends $FunctionalProvider<int, int, int>
         retry: null,
         name: r'_private2Provider',
         isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
+        dependencies: <ProviderOrFamily>[],
+        $allTransitiveDependencies: <ProviderOrFamily>[],
       );
 
   @override
@@ -395,7 +393,7 @@ final class _Private2Provider extends $FunctionalProvider<int, int, int>
   }
 }
 
-String _$_private2Hash() => r'e420875c8fbd9bf33eff945f2b7276b585032a38';
+String _$_private2Hash() => r'8d345b2f0b27412ff238ff5141b8c4c47cffb514';
 
 @ProviderFor(public2)
 final public2Provider = Public2Provider._();
@@ -409,8 +407,8 @@ final class Public2Provider extends $FunctionalProvider<int, int, int>
         retry: null,
         name: r'public2Provider',
         isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
+        dependencies: <ProviderOrFamily>[],
+        $allTransitiveDependencies: <ProviderOrFamily>[],
       );
 
   @override
@@ -435,4 +433,4 @@ final class Public2Provider extends $FunctionalProvider<int, int, int>
   }
 }
 
-String _$public2Hash() => r'20eb4f82e5f25fafc72775e7b86021d70ebb5579';
+String _$public2Hash() => r'c17ee9fe9814dbdb73f4bf1d28d01d530c170b13';
