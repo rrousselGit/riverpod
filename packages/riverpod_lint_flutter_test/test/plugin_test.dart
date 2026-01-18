@@ -18,6 +18,7 @@ import 'package:analyzer/src/dart/error/lint_codes.dart';
 import 'package:analyzer_plugin/protocol/protocol_common.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
+import 'package:collection/collection.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:path/path.dart' as p;
 import 'package:riverpod_lint/main.dart';
@@ -77,7 +78,12 @@ Future<void> main() async {
         }
 
         uniqueOffsets =
-            astRanges.followedBy(tokensRanges).map((e) => e.offset).toSet();
+            astRanges
+                .followedBy(tokensRanges)
+                .map((e) => e.offset)
+                .toSet()
+                .toList()
+              ..sortBy((a) => a);
 
         testIds = _findTestIds(unit);
         _verifyAllIdsExist(registry, testIds);
