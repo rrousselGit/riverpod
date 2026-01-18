@@ -14,10 +14,6 @@
 
 - `riverpod` upgraded to `3.2.0`
 
-## Unrelease patch
-
-Require Dart 3.10.0
-
 ## 3.1.0 - 2025-12-26
 
 `riverpod_lint` is no-longer implemented using `custom_lint`,
