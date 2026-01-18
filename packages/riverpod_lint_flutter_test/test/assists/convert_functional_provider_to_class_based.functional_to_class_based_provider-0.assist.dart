@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [functional_to_class_based_provider?offset=250,243]
+// [functional_to_class_based_provider?offset=243,250]
 // ```
 // /// Some comment
 // @riverpod

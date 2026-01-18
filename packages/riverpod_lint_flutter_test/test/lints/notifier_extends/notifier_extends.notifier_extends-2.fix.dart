@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [notifier_extends?offset=1011,1023,1024,1033,1031,1039]
+// [notifier_extends?offset=1011,1023,1024,1031,1033,1039]
 // ```
 // @riverpod
 // // ignore: riverpod_lint/notifier_extends

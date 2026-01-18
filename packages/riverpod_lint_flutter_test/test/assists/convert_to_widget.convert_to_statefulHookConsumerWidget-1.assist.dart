@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [convert_to_statefulHookConsumerWidget?offset=659,684,665,708,848]
+// [convert_to_statefulHookConsumerWidget?offset=659,665,684,708,848]
 // ```
 // }
 //

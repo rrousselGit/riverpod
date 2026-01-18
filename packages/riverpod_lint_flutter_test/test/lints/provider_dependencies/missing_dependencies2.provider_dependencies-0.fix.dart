@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [provider_dependencies?offset=5614,5611]
+// [provider_dependencies?offset=5611,5614]
 // ```
 //
 // // ignore: riverpod_lint/provider_dependencies

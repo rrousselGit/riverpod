@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [convert_to_statefulHookConsumerWidget?offset=494,510,500,534,656]
+// [convert_to_statefulHookConsumerWidget?offset=494,500,510,534,656]
 // ```
 // import '../test_annotation.dart';
 //
