@@ -142,14 +142,14 @@ void _testFixes(
                 )
                 .single;
 
-        final diagostics = _runRules(
+        final diagnostics = _runRules(
           unit: unit,
           library: library,
           rules: [rules.$1],
         );
 
         final offsetsOverlappingDiagnostics = uniqueOffsets.where(
-          (offset) => diagostics.any(
+          (offset) => diagnostics.any(
             (e) => range.startOffsetLength(e.offset, e.length).contains(offset),
           ),
         );
@@ -194,18 +194,18 @@ List<Diagnostic> _runRules({
   errorReporter = (_) {};
 
   try {
-    final diagosticsListener = RecordingDiagnosticListener();
+    final diagnosticsListener = RecordingDiagnosticListener();
 
     final registry = Registry();
     final context = Context.fromResolvedUnitResult(
       unit,
       library,
-      diagosticsListener,
+      diagnosticsListener,
     );
 
     for (final rule in rules) {
       rule.reporter = DiagnosticReporter(
-        diagosticsListener,
+        diagnosticsListener,
         unit.libraryFragment.source,
       );
 
@@ -214,7 +214,7 @@ List<Diagnostic> _runRules({
 
     unit.unit.accept(_InvokeVisitor(registry));
 
-    return diagosticsListener.diagnostics;
+    return diagnosticsListener.diagnostics;
   } finally {
     errorReporter = _errorReporter;
   }
@@ -614,7 +614,7 @@ class _PluginRegistry extends PluginRegistry {
   );
 
   Iterable<String> allIds() {
-    final asssitIds = assists
+    final assistIds = assists
         .map((e) => e(context: StubCorrectionProducerContext.instance))
         .map((e) => e.assistKind!.id);
     final fixIds = fixes
@@ -624,7 +624,7 @@ class _PluginRegistry extends PluginRegistry {
         .map((e) => e.fixKind!.id);
     final ruleIds = rules.map((e) => e.$1.name);
 
-    return asssitIds.followedBy(fixIds).followedBy(ruleIds);
+    return assistIds.followedBy(fixIds).followedBy(ruleIds);
   }
 
   @override
