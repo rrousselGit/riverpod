@@ -1,3 +1,8 @@
+## Unreleased fix
+
+- Assists to convert widgets to other widget types now correctly trigger on anything
+  between the `class` keyword and `{`
+
 ## 3.1.2 - 2026-01-17
 ### Dependency changes
 

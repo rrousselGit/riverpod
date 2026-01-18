@@ -10,13 +10,11 @@ part of 'convert_class_based_provider_to_functional.class_based_to_functional_pr
 // ignore_for_file: type=lint, type=warning
 /// Some comment
 
-@ProviderFor(example)
+@ProviderFor(Example)
 final exampleProvider = ExampleProvider._();
 
 /// Some comment
-
-final class ExampleProvider extends $FunctionalProvider<int, int, int>
-    with $Provider<int> {
+final class ExampleProvider extends $NotifierProvider<Example, int> {
   /// Some comment
   ExampleProvider._()
     : super(
@@ -34,13 +32,7 @@ final class ExampleProvider extends $FunctionalProvider<int, int, int>
 
   @$internal
   @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  int create(Ref ref) {
-    return example(ref);
-  }
+  Example create() => Example();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -51,16 +43,37 @@ final class ExampleProvider extends $FunctionalProvider<int, int, int>
   }
 }
 
-String _$exampleHash() => r'67898608b444d39a000852f647ca6d3326740c98';
+String _$exampleHash() => r'081776126bafed3e1583bba9c1fadef798215ad7';
 
 /// Some comment
 
-@ProviderFor(ExampleFamily)
+abstract class _$Example extends $Notifier<int> {
+  int build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final ref = this.ref as $Ref<int, int>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<int, int>,
+              int,
+              Object?,
+              Object?
+            >;
+    element.handleCreate(ref, build);
+  }
+}
+
+/// Some comment
+
+@ProviderFor(exampleFamily)
 final exampleFamilyProvider = ExampleFamilyFamily._();
 
 /// Some comment
-final class ExampleFamilyProvider
-    extends $NotifierProvider<ExampleFamily, int> {
+
+final class ExampleFamilyProvider extends $FunctionalProvider<int, int, int>
+    with $Provider<int> {
   /// Some comment
   ExampleFamilyProvider._({
     required ExampleFamilyFamily super.from,
@@ -85,7 +98,14 @@ final class ExampleFamilyProvider
 
   @$internal
   @override
-  ExampleFamily create() => ExampleFamily();
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    final argument = this.argument as ({int a, String b});
+    return exampleFamily(ref, a: argument.a, b: argument.b);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -106,19 +126,12 @@ final class ExampleFamilyProvider
   }
 }
 
-String _$exampleFamilyHash() => r'37d4a4fd66999562cd92051f91266270d5a1e5ea';
+String _$exampleFamilyHash() => r'70dfc6f4b2d7d251edbc3a66c3ac0f2c56aebf8b';
 
 /// Some comment
 
 final class ExampleFamilyFamily extends $Family
-    with
-        $ClassFamilyOverride<
-          ExampleFamily,
-          int,
-          int,
-          int,
-          ({int a, String b})
-        > {
+    with $FunctionalFamilyOverride<int, ({int a, String b})> {
   ExampleFamilyFamily._()
     : super(
         retry: null,
@@ -135,30 +148,6 @@ final class ExampleFamilyFamily extends $Family
 
   @override
   String toString() => r'exampleFamilyProvider';
-}
-
-/// Some comment
-
-abstract class _$ExampleFamily extends $Notifier<int> {
-  late final _$args = ref.$arg as ({int a, String b});
-  int get a => _$args.a;
-  String get b => _$args.b;
-
-  int build({required int a, String b = '42'});
-  @$mustCallSuper
-  @override
-  void runBuild() {
-    final ref = this.ref as $Ref<int, int>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<int, int>,
-              int,
-              Object?,
-              Object?
-            >;
-    element.handleCreate(ref, () => build(a: _$args.a, b: _$args.b));
-  }
 }
 
 @ProviderFor(Generic)

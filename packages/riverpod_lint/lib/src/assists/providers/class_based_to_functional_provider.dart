@@ -1,4 +1,5 @@
 import 'package:analysis_server_plugin/edit/dart/correction_producer.dart';
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer_plugin/utilities/assist/assist.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
@@ -25,9 +26,10 @@ class ClassBasedToFunctionalProvider extends ResolvedCorrectionProducer {
 
   @override
   Future<void> compute(ChangeBuilder builder) async {
-    final visitor = _Visitor();
-    node.accept(visitor);
-    final declaration = visitor.classBasedProviderDeclaration;
+    final enclosingClass = node.thisOrAncestorOfType<ClassDeclaration>();
+    if (enclosingClass == null) return;
+
+    final declaration = enclosingClass.provider;
     if (declaration == null) return;
 
     // Select from "class" to the opening bracket
@@ -85,16 +87,5 @@ class ClassBasedToFunctionalProvider extends ResolvedCorrectionProducer {
         range.endEnd(declaration.buildMethod, declaration.node),
       );
     });
-  }
-}
-
-class _Visitor extends SimpleRiverpodAstVisitor {
-  ClassBasedProviderDeclaration? classBasedProviderDeclaration;
-
-  @override
-  void visitClassBasedProviderDeclaration(
-    ClassBasedProviderDeclaration declaration,
-  ) {
-    classBasedProviderDeclaration = declaration;
   }
 }

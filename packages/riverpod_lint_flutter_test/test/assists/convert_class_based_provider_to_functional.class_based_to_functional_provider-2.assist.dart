@@ -1,21 +1,15 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [class_based_to_functional_provider?offset=335,341,379,479]
+// [class_based_to_functional_provider?offset=505,506,528,541,549,558,559,567,492,498,512,535,565,574,576,610]
 // ```
-// /// Some comment
-// @riverpod
-// - class ExampleFamily extends _$ExampleFamily {
-// -   @override
-// -   int build({required int a, String b = '42'}) {
-// -     // Hello world
-// -     return 0;
-// -   }
-// + int exampleFamily(Ref ref, {required int a, String b = '42'}) {
-// +     // Hello world
-// +     return 0;
-// +   }
 //
 // @riverpod
+// - class Generic<FirstT, /* comment */ SecondT>
+// -     extends _$Generic<FirstT, SecondT> {
+// -   @override
+// -   int build() => 0;
+// - }
+// + int generic<FirstT, /* comment */ SecondT>(Ref ref) => 0;
 // ```
 @TestFor.class_based_to_functional_provider
 library;
@@ -35,14 +29,13 @@ class Example extends _$Example {
 
 /// Some comment
 @riverpod
-int exampleFamily(Ref ref, {required int a, String b = '42'}) {
-  // Hello world
-  return 0;
+class ExampleFamily extends _$ExampleFamily {
+  @override
+  int build({required int a, String b = '42'}) {
+    // Hello world
+    return 0;
+  }
 }
 
 @riverpod
-class Generic<FirstT, /* comment */ SecondT>
-    extends _$Generic<FirstT, SecondT> {
-  @override
-  int build() => 0;
-}
+int generic<FirstT, /* comment */ SecondT>(Ref ref) => 0;

@@ -1,16 +1,21 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [class_based_to_functional_provider?offset=239,245,271,305]
+// [class_based_to_functional_provider?offset=355,363,335,341,379,479]
 // ```
 // /// Some comment
 // @riverpod
-// - class Example extends _$Example {
+// - class ExampleFamily extends _$ExampleFamily {
 // -   @override
-// -   int build() => 0;
-// - }
-// + int example(Ref ref) => 0;
+// -   int build({required int a, String b = '42'}) {
+// -     // Hello world
+// -     return 0;
+// -   }
+// + int exampleFamily(Ref ref, {required int a, String b = '42'}) {
+// +     // Hello world
+// +     return 0;
+// +   }
 //
-// /// Some comment
+// @riverpod
 // ```
 @TestFor.class_based_to_functional_provider
 library;
@@ -23,16 +28,16 @@ part 'convert_class_based_provider_to_functional.class_based_to_functional_provi
 
 /// Some comment
 @riverpod
-int example(Ref ref) => 0;
+class Example extends _$Example {
+  @override
+  int build() => 0;
+}
 
 /// Some comment
 @riverpod
-class ExampleFamily extends _$ExampleFamily {
-  @override
-  int build({required int a, String b = '42'}) {
-    // Hello world
-    return 0;
-  }
+int exampleFamily(Ref ref, {required int a, String b = '42'}) {
+  // Hello world
+  return 0;
 }
 
 @riverpod
