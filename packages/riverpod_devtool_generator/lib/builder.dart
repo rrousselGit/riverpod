@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer_buffer/analyzer_buffer.dart';
@@ -20,15 +20,14 @@ Builder riverpodDevtoolGenerator(BuilderOptions options) {
 class _RiverpodDevtoolGeneratorGenerator extends Generator {
   @override
   String generate(LibraryReader library, BuildStep buildStep) {
-    final annotatedClasses = library.element.firstFragment.importedLibraries2
+    final annotatedClasses = library.element.firstFragment.importedLibraries
         .expand((e) => e.exportNamespace.definedNames2.values)
-        .whereType<Annotatable>()
         .where((e) {
-          return e.metadata2.annotations.any((e) {
+          return e.metadata.annotations.any((e) {
             return e.toSource().contains('devtool');
           });
         })
-        .whereType<ClassElement2>()
+        .whereType<ClassElement>()
         .toList();
     if (annotatedClasses.isEmpty) return '';
 
@@ -44,9 +43,9 @@ class _RiverpodDevtoolGeneratorGenerator extends Generator {
   String _generateCodeExtension(
     LibraryReader library,
     BuildStep buildStep,
-    List<ClassElement2> annotatedClasses,
+    List<ClassElement> annotatedClasses,
   ) {
-    final buffer = AnalyzerBuffer.part2(library.element);
+    final buffer = AnalyzerBuffer.part(library.element);
 
     for (final clazz in annotatedClasses) {
       buffer.write(
@@ -62,7 +61,7 @@ class _RiverpodDevtoolGeneratorGenerator extends Generator {
                   'cases': () {
                     for (final subclass in subclasses) {
                       buffer.write(
-                        'case ${subclass.name3}(): return that.toBytes(path: path);',
+                        'case ${subclass.name}(): return that.toBytes(path: path);',
                       );
                     }
                   },
@@ -77,17 +76,17 @@ switch (that) {
             } else {
               final res = _varName('res');
               buffer.write(
-                "final $res = <String, Object?>{'\$path._type': '${clazz.name3}'};\n",
+                "final $res = <String, Object?>{'\$path._type': '${clazz.name}'};\n",
               );
 
-              for (final field in clazz.fields2) {
+              for (final field in clazz.fields) {
                 final type = _BuiltInType.from(
                   field.type,
                   annotatedClasses: annotatedClasses,
                 );
 
                 buffer.write(
-                  '${type.appendEncodedValueCode(mapSymbol: res, valueSymbol: field.name3!, path: '\$path.${field.name3!}')}\n',
+                  '${type.appendEncodedValueCode(mapSymbol: res, valueSymbol: field.name!, path: '\$path.${field.name!}')}\n',
                 );
               }
 
@@ -97,7 +96,7 @@ switch (that) {
         },
         '''
 @internal
-extension ${clazz.name3}ToBytes on ${clazz.name3} {
+extension ${clazz.name}ToBytes on ${clazz.name} {
   Map<String, Object?> toBytes({
     required String path
   }) {
@@ -114,9 +113,9 @@ extension ${clazz.name3}ToBytes on ${clazz.name3} {
   String _generateDevtoolChannel(
     LibraryReader library,
     BuildStep buildStep,
-    List<ClassElement2> annotatedClasses,
+    List<ClassElement> annotatedClasses,
   ) {
-    final buffer = AnalyzerBuffer.part2(library.element);
+    final buffer = AnalyzerBuffer.part(library.element);
 
     final sealedClasses = annotatedClasses.where((e) => e.isSealed).toList();
     final subClasses = annotatedClasses.where((e) => !e.isSealed).toList();
@@ -133,8 +132,8 @@ extension ${clazz.name3}ToBytes on ${clazz.name3} {
               subclasses
                   .map((e) {
                     return '''
-                case '${e.name3}':
-                  return ${e.name3}.from(events, path: path);
+                case '${e.name}':
+                  return ${e.name}.from(events, path: path);
                 ''';
                   })
                   .join('\n'),
@@ -143,10 +142,10 @@ extension ${clazz.name3}ToBytes on ${clazz.name3} {
         },
         '''
 /// Devtool code for [${root.thisType.toCode()}]
-sealed class ${root.name3} {
-  ${root.name3}();
+sealed class ${root.name} {
+  ${root.name}();
 
-  factory ${root.name3}.from(Map<String, Byte> events, {required String path}) {
+  factory ${root.name}.from(Map<String, Byte> events, {required String path}) {
     final type = events['\$path._type']!.ref.valueAsString;
 
     switch (type) {
@@ -169,13 +168,13 @@ sealed class ${root.name3} {
 
   void _writeSubclass(
     AnalyzerBuffer buffer,
-    ClassElement2 subclass, {
-    required List<ClassElement2> annotatedClasses,
+    ClassElement subclass, {
+    required List<ClassElement> annotatedClasses,
   }) {
-    final fields = subclass.fields2
+    final fields = subclass.fields
         .map(
           (e) => (
-            name: e.name3!,
+            name: e.name!,
             type: _BuiltInType.from(e.type, annotatedClasses: annotatedClasses),
           ),
         )
@@ -184,7 +183,7 @@ sealed class ${root.name3} {
     buffer.write(
       args: {
         'defaultCtor': () => buffer.write('''
-        ${subclass.name3}({
+        ${subclass.name}({
           ${fields.map((e) => 'required this.${e.name},').join()}
         });
         '''),
@@ -197,19 +196,19 @@ final ${field.name} = ${field.type.decodeBytes(mapSymbol: r'$events', path: '\$p
         },
         'fromCtor': () {
           buffer.write('''
-        factory ${subclass.name3}.from(
+        factory ${subclass.name}.from(
           Map<String, Byte> \$events, {
           required String path,
         }) {
           _validate(
             \$events,
-            name: '${subclass.name3}',
+            name: '${subclass.name}',
             path: path,
           );
 
           #{{ctorParameters}}
         
-          return ${subclass.name3}(
+          return ${subclass.name}(
             ${fields.map((e) => '  ${e.name}: ${e.name},').join('\n')}
           );
         }
@@ -222,13 +221,13 @@ final ${field.name} = ${field.type.decodeBytes(mapSymbol: r'$events', path: '\$p
         ),
         'superClass': () {
           if (!subclass.supertype!.isDartCoreObject) {
-            buffer.write('extends ${subclass.supertype!.element3.name3}');
+            buffer.write('extends ${subclass.supertype!.element.name}');
           }
         },
       },
       '''
 /// Devtool code for [${subclass.thisType.toCode()}]
-class ${subclass.name3} #{{superClass}} {
+class ${subclass.name} #{{superClass}} {
   #{{defaultCtor}}
   #{{fromCtor}}
   #{{fields}}
@@ -257,7 +256,7 @@ String formatStatement(String code) {
 sealed class _BuiltInType {
   static _BuiltInType from(
     DartType type, {
-    required List<ClassElement2> annotatedClasses,
+    required List<ClassElement> annotatedClasses,
   }) {
     const dateTimeChecker = TypeChecker.fromName(
       'DateTime',
@@ -281,7 +280,7 @@ sealed class _BuiltInType {
       packageName: 'riverpod',
     );
 
-    if (annotatedClasses.any((e) => e.name3 == type.element3?.name3)) {
+    if (annotatedClasses.any((e) => e.name == type.element?.name)) {
       return _OtherDevtoolType(type);
     } else if (containerIdChecker.isExactlyType(type)) {
       return _ContainerId();
@@ -423,9 +422,7 @@ final class _StringType extends _BuiltInType {
     required String valueSymbol,
     required String path,
   }) {
-    final fallback = nullable
-        ? "?? ''"
-        : '';
+    final fallback = nullable ? "?? ''" : '';
 
     return '''
   {
@@ -514,11 +511,11 @@ final class _OtherDevtoolType extends _BuiltInType {
   final DartType type;
 
   @override
-  String typeCode() => type.element3!.name3!;
+  String typeCode() => type.element!.name!;
 
   @override
   String decodeBytes({required String mapSymbol, required String path}) =>
-      "${type.element3!.name3!}.from($mapSymbol, path: '$path')";
+      "${type.element!.name!}.from($mapSymbol, path: '$path')";
 
   @override
   String appendEncodedValueCode({
@@ -526,7 +523,7 @@ final class _OtherDevtoolType extends _BuiltInType {
     required String valueSymbol,
     required String path,
   }) =>
-      "$mapSymbol.addAll(${type.element3!.name3}ToBytes($valueSymbol).toBytes(path: '$path'));";
+      "$mapSymbol.addAll(${type.element!.name}ToBytes($valueSymbol).toBytes(path: '$path'));";
 }
 
 final class _UnknownType extends _BuiltInType {
