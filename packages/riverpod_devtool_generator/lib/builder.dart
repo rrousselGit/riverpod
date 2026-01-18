@@ -329,11 +329,11 @@ final class _IdType extends _BuiltInType {
 
   final String typeName;
   @override
-  String typeCode() => '#{{riverpod/src/internals.dart|$typeName}}';
+  String typeCode() => '#{{riverpod/src/framework|$typeName}}';
 
   @override
   String decodeBytes({required String mapSymbol, required String path}) =>
-      "#{{riverpod/src/internals.dart|$typeName}}($mapSymbol['$path']!.ref.valueAsString!)";
+      "#{{riverpod/src/framework.dart|$typeName}}($mapSymbol['$path']!.ref.valueAsString!)";
 
   @override
   String appendEncodedValueCode({

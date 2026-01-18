@@ -8,7 +8,7 @@ import 'package:devtools_app_shared/utils.dart';
 import 'package:devtools_extensions/devtools_extensions.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 // ignore: implementation_imports
-import 'package:hooks_riverpod/src/internals.dart' as internals;
+import 'package:riverpod/src/internals.dart' as internals;
 import 'package:vm_service/vm_service.dart';
 
 part 'vm_service.g.dart';

@@ -177,8 +177,8 @@ class OriginMeta {
 class ProviderContainerAddEvent extends Event {
   ProviderContainerAddEvent({
     required this.container,
-    required this.parentIds,
     required this.containerId,
+    required this.parentIds,
   });
 
   factory ProviderContainerAddEvent.from(
@@ -188,6 +188,9 @@ class ProviderContainerAddEvent extends Event {
     _validate($events, name: 'ProviderContainerAddEvent', path: path);
 
     final container = Byte.of($events['$path.container']!.ref);
+    final containerId = internals.ContainerId(
+      $events['$path.containerId']!.ref.valueAsString!,
+    );
     final parentIds = List.generate(
       int.parse($events['$path.parentIds.length']!.ref.valueAsString!),
       (i) {
@@ -196,20 +199,17 @@ class ProviderContainerAddEvent extends Event {
         );
       },
     );
-    final containerId = internals.ContainerId(
-      $events['$path.containerId']!.ref.valueAsString!,
-    );
 
     return ProviderContainerAddEvent(
       container: container,
-      parentIds: parentIds,
       containerId: containerId,
+      parentIds: parentIds,
     );
   }
 
   final Byte container;
-  final List<internals.ContainerId> parentIds;
   final internals.ContainerId containerId;
+  final List<internals.ContainerId> parentIds;
 }
 
 /// Devtool code for [internals.ProviderContainerDisposeEvent]
