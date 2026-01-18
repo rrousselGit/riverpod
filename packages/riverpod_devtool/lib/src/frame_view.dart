@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/experimental/mutation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+// ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
 import 'package:stack_trace/stack_trace.dart';
 
-import 'core.dart';
 import 'frames.dart';
-import 'vm_service.dart';
 import 'providers.dart';
 import 'search.dart';
 import 'ui.dart';
+import 'vm_service.dart';
 
 class FrameView extends HookConsumerWidget {
   const FrameView({super.key});
@@ -88,7 +88,7 @@ class _FrameViewer extends HookConsumerWidget {
         _ProviderPickerPanel(
           searchController: searchController,
           originStates: originStates,
-          selectedId: selected?.elementId,
+          selectedId: selected?.element.provider.elementId,
           onSelected: (value) async {
             if (value?.origin.creationStackTrace case final trace?) {
               await openTraceInIDE(ref, Trace.parse(trace));
@@ -100,7 +100,7 @@ class _FrameViewer extends HookConsumerWidget {
 
         if (selected case final selected?)
           Panel(
-            child: _StateView(meta: selected, frame: frame),
+            child: _StateView(meta: selected.element.provider, frame: frame),
           )
         else
           const Panel(child: Text('No provider selected')),
@@ -144,9 +144,9 @@ class _StateView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = frame.state.providers[meta.elementId];
+    // final state = frame.state.providers[meta.elementId];
 
-    return Column(children: [Text('${state?.state ?? '<...>'}')]);
+    return Column(children: [Text('${ /*state?.state ??*/ '<...>'}')]);
   }
 }
 
@@ -199,31 +199,31 @@ class _ProviderPickerPanel extends HookConsumerWidget {
                     .provider
                     .containerHashValue,
                 associatedProviders.single.match,
-              )
-            else
-              _Heading(meta.value.toStringValue),
+              ),
+            // else
+            //   _Heading(meta.value.toStringValue),
 
-            if (associatedProviders.length > 1) ...[
-              for (final (index, providerState) in associatedProviders.indexed)
-                if (index == associatedProviders.length - 1)
-                  _Tile(
-                    onTap: () => onSelected(providerState),
-                    selected: providerState.isSelected(selectedId),
-                    hash: providerState.hashValue,
-                    creationStackTrace: providerState.creationStackTrace,
-                    containerHash: providerState.containerHashValue,
-                    '└─ ${providerState.toStringValue}',
-                  )
-                else
-                  _Tile(
-                    onTap: () => onSelected(providerState),
-                    selected: providerState.isSelected(selectedId),
-                    hash: providerState.hashValue,
-                    creationStackTrace: providerState.creationStackTrace,
-                    containerHash: providerState.containerHashValue,
-                    '├─ ${providerState.toStringValue}',
-                  ),
-            ],
+            // if (associatedProviders.length > 1) ...[
+            //   for (final (index, providerState) in associatedProviders.indexed)
+            //     if (index == associatedProviders.length - 1)
+            //       _Tile(
+            //         onTap: () => onSelected(providerState),
+            //         selected: providerState.isSelected(selectedId),
+            //         hash: providerState.hashValue,
+            //         creationStackTrace: providerState.creationStackTrace,
+            //         containerHash: providerState.containerHashValue,
+            //         '└─ ${providerState.toStringValue}',
+            //       )
+            //     else
+            //       _Tile(
+            //         onTap: () => onSelected(providerState),
+            //         selected: providerState.isSelected(selectedId),
+            //         hash: providerState.hashValue,
+            //         creationStackTrace: providerState.creationStackTrace,
+            //         containerHash: providerState.containerHashValue,
+            //         '├─ ${providerState.toStringValue}',
+            //       ),
+            // ],
           ],
         ],
       ),
