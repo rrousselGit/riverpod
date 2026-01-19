@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/src/internals.dart' as internals;
 import 'package:stack_trace/stack_trace.dart';
 
 import 'frames.dart';
+import 'inspector.dart';
 import 'providers.dart';
 import 'search.dart';
 import 'ui.dart';
@@ -99,9 +100,7 @@ class _FrameViewer extends HookConsumerWidget {
         ),
 
         if (selected case final selected?)
-          Panel(
-            child: _StateView(meta: selected.element.provider, frame: frame),
-          )
+          Panel(child: Inspector(variable: selected.element.state.state))
         else
           const Panel(child: Text('No provider selected')),
       ],
@@ -136,20 +135,6 @@ Future<void> openTraceInIDE(MutationTarget target, Trace trace) async {
   });
 }
 
-class _StateView extends StatelessWidget {
-  const _StateView({super.key, required this.meta, required this.frame});
-
-  final ProviderMeta meta;
-  final FoldedFrame frame;
-
-  @override
-  Widget build(BuildContext context) {
-    // final state = frame.state.providers[meta.elementId];
-
-    return Column(children: [Text('${ /*state?.state ??*/ '<...>'}')]);
-  }
-}
-
 class _ProviderPickerPanel extends HookConsumerWidget {
   const _ProviderPickerPanel({
     super.key,
@@ -181,6 +166,7 @@ class _ProviderPickerPanel extends HookConsumerWidget {
           for (final associatedProviders in originStates.values) ...[
             if (associatedProviders.length == 1)
               _Tile(
+                indent: '',
                 onTap: () {
                   onSelected(associatedProviders.single.element.provider);
                 },
@@ -199,31 +185,41 @@ class _ProviderPickerPanel extends HookConsumerWidget {
                     .provider
                     .containerHashValue,
                 associatedProviders.single.match,
-              ),
-            // else
-            //   _Heading(meta.value.toStringValue),
+              )
+            else
+              _Heading('Hello'), //meta.value.toStringValue),
 
-            // if (associatedProviders.length > 1) ...[
-            //   for (final (index, providerState) in associatedProviders.indexed)
-            //     if (index == associatedProviders.length - 1)
-            //       _Tile(
-            //         onTap: () => onSelected(providerState),
-            //         selected: providerState.isSelected(selectedId),
-            //         hash: providerState.hashValue,
-            //         creationStackTrace: providerState.creationStackTrace,
-            //         containerHash: providerState.containerHashValue,
-            //         '└─ ${providerState.toStringValue}',
-            //       )
-            //     else
-            //       _Tile(
-            //         onTap: () => onSelected(providerState),
-            //         selected: providerState.isSelected(selectedId),
-            //         hash: providerState.hashValue,
-            //         creationStackTrace: providerState.creationStackTrace,
-            //         containerHash: providerState.containerHashValue,
-            //         '├─ ${providerState.toStringValue}',
-            //       ),
-            // ],
+            if (associatedProviders.length > 1) ...[
+              for (final (index, providerState) in associatedProviders.indexed)
+                if (index == associatedProviders.length - 1)
+                  _Tile(
+                    onTap: () => onSelected(providerState.element.provider),
+                    selected: providerState.isSelected(selectedId),
+                    hash: providerState.element.provider.hashValue,
+                    creationStackTrace:
+                        providerState.element.provider.creationStackTrace,
+                    containerHash:
+                        providerState.element.provider.containerHashValue,
+                    indent: '└─',
+
+                    '${providerState.element.provider.toStringValue}'
+                        .fuzzyMatch(''),
+                  )
+                else
+                  _Tile(
+                    onTap: () => onSelected(providerState.element.provider),
+                    selected: providerState.isSelected(selectedId),
+                    hash: providerState.element.provider.hashValue,
+                    creationStackTrace:
+                        providerState.element.provider.creationStackTrace,
+                    containerHash:
+                        providerState.element.provider.containerHashValue,
+                    indent: '├─',
+
+                    '${providerState.element.provider.toStringValue}'
+                        .fuzzyMatch(''),
+                  ),
+            ],
           ],
         ],
       ),
@@ -251,12 +247,14 @@ class _Tile extends StatelessWidget {
     super.key,
     this.selected = false,
     required this.onTap,
+    required this.indent,
     required this.hash,
     required this.containerHash,
     required this.creationStackTrace,
   });
 
   final FuzzyMatch text;
+  final String indent;
   final bool selected;
   final void Function()? onTap;
   final String hash;
@@ -272,7 +270,19 @@ class _Tile extends StatelessWidget {
           onTap: onTap,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: FuzzyText(match: text),
+            child: Row(
+              // TODO
+              spacing: 10,
+              children: [
+                Text(
+                  indent,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyMedium!.color,
+                  ),
+                ),
+                FuzzyText(match: text),
+              ],
+            ),
           ),
         ),
       ),

@@ -31,6 +31,7 @@ class AllDiscoveredOriginsNotifier extends Notifier<Set<internals.OriginId>> {
   }
 
   void _handleFrame(FoldedFrame frame) {
+    print('Handle frame ${frame.frame.events}');
     final setBuilder = SetBuilder<internals.OriginId>(state);
 
     for (final event in frame.frame.events) {
