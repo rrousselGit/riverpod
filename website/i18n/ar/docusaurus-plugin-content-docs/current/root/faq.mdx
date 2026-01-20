@@ -1,0 +1,158 @@
+---
+title: FAQ
+version: 2
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
+
+Here are some commonly asked questions from the community:
+
+## What is the difference between `ref.refresh` and `ref.invalidate`?
+
+You may have noticed that `ref` has two methods to force a provider to recompute,
+and wonder how they differ.
+
+It's simpler than you think: `ref.refresh` is nothing but syntax sugar for
+`invalidate` + `read`:
+
+```dart
+T refresh<T>(provider) {
+  invalidate(provider);
+  return read(provider);
+}
+```
+
+If you do not care about the new value of a provider after recomputing it,
+then `invalidate` is the way to go.  
+If you do, use `refresh` instead.
+
+:::info
+This logic is automatically enforced through lint rules.  
+If you tried to use `ref.refresh` without using the returned value,
+you would get a warning.
+:::
+
+The main difference in behavior is by reading the provider right
+after invalidating it, the provider **immediately** recomputes.  
+Whereas if we call `invalidate` but don't read it right after,
+then the update will trigger _later_.
+
+That "later" update is generally at the start of the next frame.
+Yet, if a provider that is currently not being listened to is invalidated, 
+it will not be updated until it is listened to again.
+
+## Why is there no shared interface between Ref and WidgetRef?
+
+Riverpod voluntarily dissociates `Ref` and `WidgetRef`.  
+This is done on purpose to avoid writing code which conditionally
+depends on one or the other.
+
+One issue is that `Ref` and `WidgetRef`, although similar looking,
+have subtle differences.  
+Code relying on both would be unreliable in ways that are difficult to spot.
+
+At the same time, relying on `WidgetRef` is equivalent to relying on `BuildContext`.
+It is effectively putting your logic in the UI layer, which is not recommended.
+
+---
+
+Such code should be refactored to **always** use `Ref`.
+
+The solution to this problem is typically to move your logic
+into a `Notifier` (see <Link documentID="concepts2/providers" />), 
+and then have your logic be a method of that `Notifier`.
+
+This way, when your widgets want to invoke this logic, they can
+write something along the lines of:
+
+```dart
+ref.read(yourNotifierProvider.notifier).yourMethod();
+```
+
+`yourMethod` would use the `Notifier`'s `Ref` to interact with other providers.
+
+## Why do we need to extend ConsumerWidget instead of using the raw StatelessWidget?
+
+This is due to an unfortunate limitation in the API of `InheritedWidget`.
+
+There are a few problems:
+
+- It is not possible to implement an "on change" listener with `InheritedWidget`.
+  That means that something such as `ref.listen` cannot be used with `BuildContext`.
+
+  `State.didChangeDependencies` is the closest thing to it, but it is not reliable.
+  One issue is that the life-cycle can be triggered even if no dependency changed,
+  especially if your widget tree uses GlobalKeys (and some Flutter widgets already do so internally).
+
+- Widgets listening to an `InheritedWidget` never stop listening to it.
+  This is usually fine for pure metadata, such as "theme" or "media query".
+
+  For business logic, this is a problem.
+  Say you use a provider to represent a paginated API.
+  When the page offset changes, you wouldn't want your widget to keep listening
+  to the previously visible pages.
+
+- `InheritedWidget` has no way to track when widgets stop listening to them.
+  Riverpod sometimes relies on tracking whether or not a provider is being listened to.
+
+This functionality is crucial for both the auto dispose mechanism and the ability to
+pass arguments to providers.  
+Those features are what make Riverpod so powerful.
+
+Maybe in a distant future, those issues will be fixed. In that case,
+Riverpod would migrate to using `BuildContext` instead of `Ref`.
+This would enable using `StatelessWidget` instead of `ConsumerWidget`.  
+But that's for another time!
+
+## Why doesn't hooks_riverpod export flutter_hooks?
+
+This is to respect good versioning practices.
+
+While you cannot use `hooks_riverpod` without `flutter_hooks`,
+both packages are versioned independently. A breaking change could happen
+in one but not the other.
+
+## Is there a way to reset all providers at once?
+
+No, there is no way to reset all providers at once.
+
+This is on purpose, as it is considered an anti-pattern. Resetting all providers
+at once will often reset providers that you did not intend to reset.
+
+This is commonly asked by users who want to reset the state of their application
+when the user logs out.  
+If this is what you are after, you should instead have everything dependent on the
+user's state to `ref.watch` the "user" provider.
+
+Then, when the user logs out, all providers depending on it would automatically
+be reset but everything else would remain untouched.
+
+## I have the error "Using "ref" when a widget is about to or has been unmounted is unsafe." after the widget was disposed", what's wrong?
+
+You might also see "Bad state: No ProviderScope found", which is an older
+error message of the same issue.
+
+This error happens when you try to use `ref` in a widget that is no longer
+mounted. This generally happens after an `await`:
+
+```dart
+ElevatedButton(
+  onPressed: () async {
+    await future;
+    ref.read(...); // May throw "Using "ref" when a widget is about to or has been unmounted is unsafe."
+  }
+)
+```
+
+The solution is to, like with `BuildContext`, check `mounted` before using `ref`:
+
+```dart
+ElevatedButton(
+  onPressed: () async {
+    await future;
+    if (!context.mounted) return;
+    ref.read(...); // No longer throws
+  }
+)
+```
