@@ -5,6 +5,8 @@ extension AsyncTransition<ValueT> on AsyncValue<ValueT> {
   AsyncValue<NewT> cast<NewT>() => _cast<NewT>();
 }
 
+const _sentinel = Object();
+
 extension<BoxedT> on (BoxedT,)? {
   BoxedT unwrapSentinel(BoxedT fallback) {
     final that = this;
@@ -625,6 +627,106 @@ sealed class AsyncValue<ValueT> {
     AsyncValue<ValueT> previous, {
     bool isRefresh = true,
   });
+
+  /// Creates a copy of this [AsyncValue] with the given fields replaced with the new values.
+  AsyncValue<ValueT> copyWith({
+    bool? isLoading,
+    Object? value = _sentinel,
+    Object? error = _sentinel,
+    Object? stackTrace = _sentinel,
+  }) {
+    final newIsLoading = isLoading ?? this.isLoading;
+
+    final bool hasNewValue;
+    final ValueT? newValue;
+    if (value == _sentinel) {
+      hasNewValue = hasValue;
+      newValue = this.value;
+    } else if (value == null) {
+      hasNewValue = false;
+      newValue = null;
+    } else {
+      hasNewValue = true;
+      newValue = value as ValueT;
+    }
+
+    final bool hasNewError;
+    final Object? newError;
+    final StackTrace? newStackTrace;
+    if (error == _sentinel) {
+      hasNewError = hasError;
+      newError = this.error;
+      // If we are preserving the error, we preserve the stack trace too
+      // unless a new stack trace is explicitly provided.
+      newStackTrace = stackTrace == _sentinel
+          ? this.stackTrace
+          : stackTrace as StackTrace?;
+    } else if (error == null) {
+      hasNewError = false;
+      newError = null;
+      newStackTrace = null;
+    } else {
+      hasNewError = true;
+      newError = error;
+      newStackTrace = stackTrace == _sentinel
+          ? StackTrace.empty
+          : stackTrace as StackTrace?;
+    }
+
+    if (newIsLoading) {
+      return AsyncLoading._(
+        _loading ?? (progress: null),
+        value: hasNewValue
+            ? (
+                newValue as ValueT,
+                kind: _value?.kind,
+                source: _value?.source,
+              )
+            : null,
+        error: hasNewError
+            ? (
+                err: newError!,
+                stack: newStackTrace ?? StackTrace.empty,
+                retrying: _error?.retrying,
+              )
+            : null,
+      );
+    }
+
+    if (hasNewError) {
+      return AsyncError._(
+        (
+          err: newError!,
+          stack: newStackTrace ?? StackTrace.empty,
+          retrying: _error?.retrying,
+        ),
+        loading: null,
+        value: hasNewValue
+            ? (
+                newValue as ValueT,
+                kind: _value?.kind,
+                source: _value?.source,
+              )
+            : null,
+      );
+    }
+
+    if (hasNewValue) {
+      return AsyncData._(
+        (
+          newValue as ValueT,
+          kind: _value?.kind,
+          source: _value?.source,
+        ),
+        loading: null,
+        error: null,
+      );
+    }
+
+    throw StateError(
+      'Cannot copyWith to an invalid state (no value, no error, not loading)',
+    );
+  }
 
   @override
   String toString() {
