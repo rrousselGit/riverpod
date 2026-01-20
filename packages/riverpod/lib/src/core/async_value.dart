@@ -634,16 +634,23 @@ sealed class AsyncValue<ValueT> {
     Object? value = _sentinel,
     Object? error = _sentinel,
     Object? stackTrace = _sentinel,
+    bool clearValue = false,
   }) {
     final newIsLoading = isLoading ?? this.isLoading;
 
     final bool hasNewValue;
     final ValueT? newValue;
-    if (value == _sentinel) {
+    if (clearValue) {
+      hasNewValue = false;
+      newValue = null;
+    } else if (value == _sentinel) {
       hasNewValue = hasValue;
       newValue = this.value;
     } else if (value == null) {
-      hasNewValue = false;
+      // This path is reached if the user explicitly passed `value: null`.
+      // In that case, we set the value to null (if T is nullable).
+      // We do NOT clear the value (make hasValue false).
+      hasNewValue = true;
       newValue = null;
     } else {
       hasNewValue = true;

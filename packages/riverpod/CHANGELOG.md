@@ -1,3 +1,7 @@
+## Unreleased
+
+- feat: Added copyWith to AsyncValue to simplify state transitions and optimistic updates.
+
 ## 3.2.0 - 2026-01-17
 
 - Added missing `weak` flags to `WidgetRef.listen/listenManual`

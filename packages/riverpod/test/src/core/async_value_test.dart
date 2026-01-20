@@ -1781,12 +1781,33 @@ void main() {
         const AsyncLoading<int>(),
         isRefresh: false,
       );
-      // data is AsyncData with isReloading=true (if implemented that way? No, copyWithPrevious logic)
-      // Actually copyWithPrevious on AsyncData returns AsyncData.
 
-      // Let's test that copyWith preserves previous value's properties if not overridden.
-      // But copyWith creates new instances.
-      // We mainly care about value/error/loading.
+      expect(data.isReloading, true);
+      expect(data.valueFilled?.kind, DataKind.live);
+      expect(data.valueFilled?.source, DataSource.reload);
+
+      final copy = data.copyWith(isLoading: false);
+
+      expect(copy.isReloading, true);
+      expect(copy.valueFilled?.kind, DataKind.live);
+      expect(copy.valueFilled?.source, DataSource.reload);
+    });
+
+    test('copyWith(value: null) sets value to null', () {
+      const data = AsyncData<int?>(42);
+      final copy = data.copyWith(value: null);
+
+      expect(copy.hasValue, true);
+      expect(copy.value, null);
+    });
+
+    test('copyWith(clearValue: true) clears value', () {
+      const data = AsyncData<int>(42);
+      final copy = data.copyWith(clearValue: true, isLoading: true);
+
+      expect(copy.hasValue, false);
+      expect(copy.value, null);
+      expect(copy.isLoading, true);
     });
 
     test('throws if invalid state', () {
