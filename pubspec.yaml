@@ -2,7 +2,7 @@ name: workspace
 publish_to: none
 
 environment:
-  sdk: ^3.7.0
+  sdk: ^3.10.7
 
 workspace:
   - benchmarks
