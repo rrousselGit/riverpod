@@ -145,8 +145,8 @@ extension ${clazz.name}ToBytes on ${clazz.name} {
 sealed class ${root.name} {
   ${root.name}();
 
-  factory ${root.name}.from(Map<String, Byte> events, {required String path}) {
-    final type = events['\$path._type']!.ref.valueAsString;
+  factory ${root.name}.from(Map<String, InstanceRef> events, {required String path}) {
+    final type = events['\$path._type']?.valueAsString;
 
     switch (type) {
       #{{case}}
@@ -197,7 +197,7 @@ final ${field.name} = ${field.type.decodeBytes(mapSymbol: r'$events', path: '\$p
         'fromCtor': () {
           buffer.write('''
         factory ${subclass.name}.from(
-          Map<String, Byte> \$events, {
+          Map<String, InstanceRef> \$events, {
           required String path,
         }) {
           _validate(
@@ -333,7 +333,7 @@ final class _IdType extends _BuiltInType {
 
   @override
   String decodeBytes({required String mapSymbol, required String path}) =>
-      "#{{riverpod/src/framework.dart|$typeName}}($mapSymbol['$path']!.ref.valueAsString!)";
+      "#{{riverpod/src/framework.dart|$typeName}}($mapSymbol['$path']!.valueAsString!)";
 
   @override
   String appendEncodedValueCode({
@@ -371,7 +371,7 @@ final class _ListType extends _BuiltInType {
   String decodeBytes({required String mapSymbol, required String path}) {
     return '''
     List.generate(
-      int.parse($mapSymbol['$path.length']!.ref.valueAsString!),
+      int.parse($mapSymbol['$path.length']!.valueAsString!),
       (i) {
         return ${innerType.decodeBytes(mapSymbol: mapSymbol, path: '$path[\$i]')};
       },
@@ -410,8 +410,8 @@ final class _StringType extends _BuiltInType {
   String decodeBytes({required String mapSymbol, required String path}) {
     return '''
     List.generate(
-      int.parse($mapSymbol['$path.length']!.ref.valueAsString!),
-      (i) => $mapSymbol['$path.\$i']!.ref.valueAsString!,
+      int.parse($mapSymbol['$path.length']!.valueAsString!),
+      (i) => $mapSymbol['$path.\$i']!.valueAsString!,
     ).join()
     ''';
   }
@@ -447,7 +447,7 @@ final class _IntType extends _BuiltInType {
 
   @override
   String decodeBytes({required String mapSymbol, required String path}) =>
-      "int.parse($mapSymbol['$path']!.ref.valueAsString!)";
+      "int.parse($mapSymbol['$path']!.valueAsString!)";
 
   @override
   String appendEncodedValueCode({
@@ -463,7 +463,7 @@ final class _DoubleType extends _BuiltInType {
 
   @override
   String decodeBytes({required String mapSymbol, required String path}) =>
-      "double.parse($mapSymbol['$path']!.ref.valueAsString!)";
+      "double.parse($mapSymbol['$path']!.valueAsString!)";
 
   @override
   String appendEncodedValueCode({
@@ -479,7 +479,7 @@ final class _BoolType extends _BuiltInType {
 
   @override
   String decodeBytes({required String mapSymbol, required String path}) =>
-      "($mapSymbol['$path']!.ref.valueAsString! == 'true')";
+      "($mapSymbol['$path']!.valueAsString! == 'true')";
 
   @override
   String appendEncodedValueCode({
@@ -495,7 +495,7 @@ final class _DateTimeType extends _BuiltInType {
 
   @override
   String decodeBytes({required String mapSymbol, required String path}) =>
-      "DateTime.fromMillisecondsSinceEpoch(int.parse($mapSymbol['$path']!.ref.valueAsString!))";
+      "DateTime.fromMillisecondsSinceEpoch(int.parse($mapSymbol['$path']!.valueAsString!))";
 
   @override
   String appendEncodedValueCode({
@@ -532,11 +532,11 @@ final class _UnknownType extends _BuiltInType {
   final DartType type;
 
   @override
-  String typeCode() => 'Byte';
+  String typeCode() => 'Byte<VariableRef>';
 
   @override
   String decodeBytes({required String mapSymbol, required String path}) =>
-      "Byte.of($mapSymbol['$path']!.ref)";
+      "ByteVariable(VariableRef.fromInstanceRef($mapSymbol['$path']!))";
 
   @override
   String appendEncodedValueCode({

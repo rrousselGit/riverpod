@@ -1,9 +1,8 @@
-// ignore: implementation_imports
 // ignore_for_file: invalid_use_of_internal_member
 
 import 'dart:async';
 
-import 'package:devtools_app_shared/service.dart';
+import 'package:devtools_app_shared/service.dart' hide SentinelException;
 import 'package:devtools_app_shared/utils.dart';
 import 'package:devtools_extensions/devtools_extensions.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -13,34 +12,36 @@ import 'package:vm_service/vm_service.dart';
 
 part 'vm_service.g.dart';
 
-final class Byte {
-  Byte.of(Object? ref) : ref = ref! as InstanceRef;
-
-  final InstanceRef ref;
-
-  @override
-  String toString() {
-    switch (ref.kind) {
-      case InstanceKind.kString:
-        return "'${ref.valueAsString}'";
-      case InstanceKind.kInt:
-      case InstanceKind.kDouble:
-      case InstanceKind.kBool:
-        return ref.valueAsString!;
-      case InstanceKind.kNull:
-        return 'null';
-      default:
-        return 'Byte(...)';
+sealed class Byte<T> {
+  ByteVariable<T> get require {
+    switch (this) {
+      case final ByteVariable<T> that:
+        return that;
+      case ByteSentinel<T>(:final sentinel):
+        throw StateError('Expected VariableRef but got Sentinel: $sentinel');
     }
   }
 }
 
+final class ByteVariable<T> extends Byte<T> {
+  ByteVariable(this.instance);
+  final T instance;
+
+  @override
+  String toString() => 'ByteVariableRef($instance)';
+}
+
+final class ByteSentinel<T> extends Byte<T> {
+  ByteSentinel(this.sentinel);
+  final Sentinel sentinel;
+}
+
 Iterable<ItemT> decodeAll<ItemT>(
-  Map<String, Byte> events,
-  ItemT Function(Map<String, Byte>, {required String path}) fn, {
+  Map<String, InstanceRef> events,
+  ItemT Function(Map<String, InstanceRef>, {required String path}) fn, {
   required String path,
 }) sync* {
-  final length = int.parse(events['$path.length']!.ref.valueAsString!);
+  final length = int.parse(events['$path.length']!.valueAsString!);
 
   for (var i = 0; i < length; i++) {
     final itemPath = '$path[$i]';
@@ -66,20 +67,15 @@ String encodeList(
 }
 
 void _validate(
-  Map<String, Byte> events, {
+  Map<String, InstanceRef> events, {
   required String name,
   required String path,
 }) {
-  final startEvent = events['$path._type'];
-  switch (startEvent) {
-    case Byte(ref: InstanceRef(valueAsString: final actualName)):
-      if (actualName != name) {
-        throw ArgumentError(
-          'Invalid event type, expected "$name" but got $actualName',
-        );
-      }
-    case _:
-      throw ArgumentError('Invalid event data for $name: $events');
+  final startEvent = events['$path._type']?.valueAsString;
+  if (startEvent != name) {
+    throw ArgumentError(
+      'Invalid event type, expected "$name" but got $startEvent',
+    );
   }
 }
 
@@ -248,139 +244,216 @@ extension IsAlive on Ref {
 
 sealed class VariableRef {
   factory VariableRef.fromInstanceRef(InstanceRef ref) {
-    switch (_InstanceKind.fromString(ref.kind!)) {
-      case _InstanceKind.kString:
-        return StringVariableRef(
-          truncatedValue: ref.valueAsString!,
-          isTruncated: ref.valueAsStringIsTruncated!,
+    final kind = _SimplifiedInstanceKind.fromInstanceKind(
+      _SealedInstanceKind.fromString(ref.kind!),
+    );
+
+    switch (kind) {
+      case .string:
+        return StringVariableRef._(ref);
+      case .int:
+        return IntVariableRef._(ref);
+      case .double:
+        return DoubleVariableRef._(ref);
+      case .bool:
+        return BoolVariableRef._(ref);
+      case .nill:
+        return const NullVariableRef();
+      case .list:
+      case .map:
+      case .set:
+      case .type:
+      case .record:
+      // TODO
+
+      case .object:
+        return UnknownObjectVariableRef(ref);
+    }
+  }
+
+  Future<Byte<ResolvedVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  );
+}
+
+final class NullVariableRef implements VariableRef, NullVariable {
+  const NullVariableRef();
+
+  @override
+  Future<Byte<NullVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  ) async => ByteVariable(this);
+}
+
+final class BoolVariableRef implements VariableRef, BoolVariable {
+  BoolVariableRef._(InstanceRef ref) : value = ref.valueAsString! == 'true';
+  @override
+  final bool value;
+
+  @override
+  Future<Byte<BoolVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  ) async => ByteVariable(this);
+}
+
+base class _EvaluatedVariableRef {
+  _EvaluatedVariableRef(this._ref);
+  final InstanceRef _ref;
+
+  Future<Byte<T>> _resolveInstance<T extends ResolvedVariable>(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  ) async {
+    final evalInstance = await eval(_ref.classRef!.library!.uri!);
+
+    try {
+      final instance = await evalInstance.instance(_ref, isAlive: isAlive);
+      final variable = ResolvedVariable.fromInstance(instance);
+
+      if (variable is! T) {
+        throw StateError(
+          'Expected variable of type $T but got ${variable.runtimeType}',
         );
-      case _InstanceKind.kInt:
-      case _InstanceKind.kInt32x4:
-        return IntVariableRef(value: int.parse(ref.valueAsString!));
-      case _InstanceKind.kDouble:
-      case _InstanceKind.kFloat32x4:
-      case _InstanceKind.kFloat64x2:
-        return DoubleVariableRef(value: double.parse(ref.valueAsString!));
-      case _InstanceKind.kBool:
-        return BoolVariableRef(value: ref.valueAsString == 'true');
-      case _InstanceKind.kNull:
-        return NullVariableRef();
-      case _InstanceKind.kList:
-      case _InstanceKind.kUint8ClampedList:
-      case _InstanceKind.kUint8List:
-      case _InstanceKind.kUint16List:
-      case _InstanceKind.kUint32List:
-      case _InstanceKind.kUint64List:
-      case _InstanceKind.kInt8List:
-      case _InstanceKind.kInt16List:
-      case _InstanceKind.kInt32List:
-      case _InstanceKind.kInt64List:
-      case _InstanceKind.kFloat32List:
-      case _InstanceKind.kFloat64List:
-      case _InstanceKind.kInt32x4List:
-      case _InstanceKind.kFloat32x4List:
-      case _InstanceKind.kFloat64x2List:
-        return ListVariableRef(length: 0, items: []);
-      case _InstanceKind.kMap:
-        return MapVariableRef(entries: {});
-      case _InstanceKind.kSet:
-        return SetVariableRef(length: 0, items: []);
+      }
 
-      case _InstanceKind.kType:
-      case _InstanceKind.kTypeParameter:
-        return TypeVariableRef(name: ref.name!);
-
-      case _InstanceKind.kRecord:
-      case _InstanceKind.kStackTrace:
-      case _InstanceKind.kRecordType:
-
-      // TODO:
-
-      case _InstanceKind.kPlainInstance:
-
-      // Unsupported objects. We treat them as unknown.
-      case _InstanceKind.kClosure:
-      case _InstanceKind.kRegExp:
-      case _InstanceKind.kMirrorReference:
-      case _InstanceKind.kWeakProperty:
-      case _InstanceKind.kWeakReference:
-      case _InstanceKind.kTypeRef:
-      case _InstanceKind.kFunctionType:
-      case _InstanceKind.kBoundedType:
-      case _InstanceKind.kReceivePort:
-      case _InstanceKind.kUserTag:
-      case _InstanceKind.kFinalizer:
-      case _InstanceKind.kNativeFinalizer:
-      case _InstanceKind.kFinalizerEntry:
-        return UnknownObjectVariableRef();
+      return ByteVariable(variable);
+    } on SentinelException catch (e) {
+      return ByteSentinel(e.sentinel);
     }
   }
 }
 
-final class NullVariableRef implements VariableRef {}
-
-final class BoolVariableRef implements VariableRef {
-  BoolVariableRef({required this.value});
-  final bool value;
-}
-
-final class StringVariableRef implements VariableRef {
-  StringVariableRef({required this.truncatedValue, required this.isTruncated});
+final class StringVariableRef extends _EvaluatedVariableRef
+    implements VariableRef {
+  StringVariableRef._(super._ref)
+    : truncatedValue = _ref.valueAsString!,
+      isTruncated = _ref.valueAsStringIsTruncated!;
 
   final String truncatedValue;
   final bool isTruncated;
   String? get value => isTruncated ? null : truncatedValue;
+
+  @override
+  Future<Byte<StringVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  ) async {
+    if (!isTruncated) {
+      return ByteVariable(StringVariable._2(value: truncatedValue));
+    }
+
+    return _resolveInstance(eval, isAlive);
+  }
 }
 
-final class IntVariableRef implements VariableRef {
-  IntVariableRef({required this.value});
+final class IntVariableRef implements VariableRef, IntVariable {
+  IntVariableRef._(InstanceRef ref) : value = int.parse(ref.valueAsString!);
+  @override
   final int value;
+
+  @override
+  Future<Byte<IntVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  ) async => ByteVariable(this);
 }
 
-final class DoubleVariableRef implements VariableRef {
-  DoubleVariableRef({required this.value});
+final class DoubleVariableRef implements VariableRef, DoubleVariable {
+  DoubleVariableRef._(InstanceRef ref)
+    : value = double.parse(ref.valueAsString!);
+  @override
   final double value;
+
+  @override
+  Future<Byte<DoubleVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  ) async => ByteVariable(this);
 }
 
-final class RecordVariableRef implements VariableRef {
-  RecordVariableRef({required this.fields});
+final class UnknownObjectVariableRef extends _EvaluatedVariableRef
+    implements VariableRef {
+  UnknownObjectVariableRef(super._ref)
+    : libraryPath = _ref.classRef!.library!.uri!;
 
-  final Map<String, VariableRef> fields;
+  final String libraryPath;
+
+  @override
+  Future<Byte<UnknownObjectVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  ) {
+    return _resolveInstance(eval, isAlive);
+  }
 }
 
-final class ListVariableRef implements VariableRef {
-  ListVariableRef({required this.length, required this.items});
+sealed class ResolvedVariable {
+  factory ResolvedVariable.fromInstance(Instance instance) {
+    final kind = _SimplifiedInstanceKind.fromInstanceKind(
+      _SealedInstanceKind.fromString(instance.kind!),
+    );
 
-  final int length;
-  final List<VariableRef> items;
+    switch (kind) {
+      case .string:
+        return StringVariable._(instance);
+      case .int:
+        return IntVariableRef._(instance);
+      case .double:
+        return DoubleVariableRef._(instance);
+      case .bool:
+        return BoolVariableRef._(instance);
+      case .nill:
+        return const NullVariableRef();
+      case .list:
+      case .map:
+      case .set:
+      case .record:
+      case .type:
+      case .object:
+        return const NullVariableRef(); // Placeholder for unsupported types
+    }
+  }
 }
 
-final class MapVariableRef implements VariableRef {
-  MapVariableRef({required this.entries});
-
-  final Map<VariableRef, VariableRef> entries;
+abstract final class NullVariable implements ResolvedVariable {
+  NullVariable._();
 }
 
-final class SetVariableRef implements VariableRef {
-  SetVariableRef({required this.length, required this.items});
-
-  final int length;
-  final List<VariableRef> items;
+abstract final class BoolVariable implements ResolvedVariable {
+  bool get value;
 }
 
-final class TypeVariableRef implements VariableRef {
-  TypeVariableRef({required this.name});
+final class StringVariable implements ResolvedVariable {
+  StringVariable._2({required this.value});
+  StringVariable._(Instance instance) : value = instance.valueAsString! {
+    if (instance.valueAsStringIsTruncated!) {
+      throw StateError('String value is truncated');
+    }
+  }
 
-  final String name;
+  final String value;
 }
 
-final class UnknownObjectVariableRef implements VariableRef {}
+abstract final class IntVariable implements ResolvedVariable {
+  int get value;
+}
 
-sealed class ResolvedVariable {}
+abstract final class DoubleVariable implements ResolvedVariable {
+  double get value;
+}
 
-final class NullVariable extends ResolvedVariable {}
+final class UnknownObjectVariable implements ResolvedVariable {
+  UnknownObjectVariable(InstanceRef ref)
+    : libraryPath = ref.classRef!.library!.uri!;
 
-enum _InstanceKind {
+  final String libraryPath;
+}
+
+// Allow an exhaustive switch over InstanceKind
+enum _SealedInstanceKind {
   /// A general instance of the Dart class Object.
   kPlainInstance(InstanceKind.kPlainInstance),
 
@@ -489,10 +562,10 @@ enum _InstanceKind {
   /// An instance of the Dart class FinalizerEntry.
   kFinalizerEntry(InstanceKind.kFinalizerEntry);
 
-  const _InstanceKind(this.instanceKind);
+  const _SealedInstanceKind(this.instanceKind);
 
-  factory _InstanceKind.fromString(String instanceKind) {
-    return _InstanceKind.values.firstWhere(
+  factory _SealedInstanceKind.fromString(String instanceKind) {
+    return _SealedInstanceKind.values.firstWhere(
       (kind) => kind.instanceKind == instanceKind,
       orElse: () {
         throw ArgumentError('Unknown InstanceKind: $instanceKind');
@@ -501,4 +574,80 @@ enum _InstanceKind {
   }
 
   final String instanceKind;
+}
+
+enum _SimplifiedInstanceKind {
+  nill,
+  bool,
+  int,
+  double,
+  string,
+  list,
+  map,
+  set,
+  record,
+  type,
+  object;
+
+  factory _SimplifiedInstanceKind.fromInstanceKind(_SealedInstanceKind kind) {
+    switch (kind) {
+      case _SealedInstanceKind.kNull:
+        return _SimplifiedInstanceKind.nill;
+      case _SealedInstanceKind.kBool:
+        return _SimplifiedInstanceKind.bool;
+      case _SealedInstanceKind.kInt:
+      case _SealedInstanceKind.kInt32x4:
+        return _SimplifiedInstanceKind.int;
+      case _SealedInstanceKind.kDouble:
+      case _SealedInstanceKind.kFloat32x4:
+      case _SealedInstanceKind.kFloat64x2:
+        return _SimplifiedInstanceKind.double;
+      case _SealedInstanceKind.kString:
+        return _SimplifiedInstanceKind.string;
+      case _SealedInstanceKind.kList:
+      case _SealedInstanceKind.kUint8ClampedList:
+      case _SealedInstanceKind.kUint8List:
+      case _SealedInstanceKind.kUint16List:
+      case _SealedInstanceKind.kUint32List:
+      case _SealedInstanceKind.kUint64List:
+      case _SealedInstanceKind.kInt8List:
+      case _SealedInstanceKind.kInt16List:
+      case _SealedInstanceKind.kInt32List:
+      case _SealedInstanceKind.kInt64List:
+      case _SealedInstanceKind.kFloat32List:
+      case _SealedInstanceKind.kFloat64List:
+      case _SealedInstanceKind.kInt32x4List:
+      case _SealedInstanceKind.kFloat32x4List:
+      case _SealedInstanceKind.kFloat64x2List:
+        return _SimplifiedInstanceKind.list;
+      case _SealedInstanceKind.kMap:
+        return _SimplifiedInstanceKind.map;
+      case _SealedInstanceKind.kSet:
+        return _SimplifiedInstanceKind.set;
+      case _SealedInstanceKind.kRecord:
+        return _SimplifiedInstanceKind.record;
+      case _SealedInstanceKind.kType:
+      case _SealedInstanceKind.kTypeParameter:
+      case _SealedInstanceKind.kRecordType:
+        return _SimplifiedInstanceKind.type;
+
+      case _SealedInstanceKind.kPlainInstance:
+      // Treat unsupported objects as generic objects
+      case _SealedInstanceKind.kStackTrace:
+      case _SealedInstanceKind.kClosure:
+      case _SealedInstanceKind.kMirrorReference:
+      case _SealedInstanceKind.kRegExp:
+      case _SealedInstanceKind.kWeakProperty:
+      case _SealedInstanceKind.kWeakReference:
+      case _SealedInstanceKind.kTypeRef:
+      case _SealedInstanceKind.kFunctionType:
+      case _SealedInstanceKind.kBoundedType:
+      case _SealedInstanceKind.kReceivePort:
+      case _SealedInstanceKind.kUserTag:
+      case _SealedInstanceKind.kFinalizer:
+      case _SealedInstanceKind.kNativeFinalizer:
+      case _SealedInstanceKind.kFinalizerEntry:
+        return _SimplifiedInstanceKind.object;
+    }
+  }
 }

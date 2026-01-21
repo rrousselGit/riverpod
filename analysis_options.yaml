@@ -1,7 +1,7 @@
 include: analysis_options_without_plugins.yaml
 
-plugins:
-  internal_lint:
-    path: packages/internal_lint
-  riverpod_lint:
-    path: packages/riverpod_lint
+# plugins:
+#   internal_lint:
+#     path: packages/internal_lint
+#   riverpod_lint:
+#     path: packages/riverpod_lint

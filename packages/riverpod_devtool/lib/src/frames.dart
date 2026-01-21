@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/src/internals.dart' as internals;
+import 'package:vm_service/vm_service.dart' hide Frame;
 
 import 'collection.dart';
 import 'elements.dart';
@@ -129,12 +130,15 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
 
     final instance = await eval.evalInstance(code, isAlive: isAlive);
     final map = Map.fromEntries(
-      instance.associations!.map(
-        (e) => MapEntry(Byte.of(e.key).ref.valueAsString!, Byte.of(e.value)),
-      ),
+      instance.associations!.map((e) {
+        return MapEntry(
+          (e.key as InstanceRef).valueAsString!,
+          e.value as InstanceRef,
+        );
+      }),
     );
 
-    return decodeAll(map, Frame.from, path: 'root').toList();
+    return decodeAll<Frame>(map, Frame.from, path: 'root').toList();
   }
 
   Future<void> _fetchNewNotifications(
