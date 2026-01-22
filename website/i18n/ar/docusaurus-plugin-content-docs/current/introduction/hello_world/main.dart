@@ -30,7 +30,7 @@ void main() {
 }
 
 // {@template ConsumerWidget}
-// قم بالتوريث (Extend) من HookConsumerWidget بدلا من StatelessWidget, والذي يتم توفيره بواسطة Riverpod
+// قم بالتوريث (Extend) من ConsumerWidget بدلا من StatelessWidget, والذي يتم توفيره بواسطة Riverpod
 // {@endtemplate}
 class MyApp extends ConsumerWidget {
   @override

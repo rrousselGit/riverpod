@@ -331,7 +331,11 @@ export const documentTitles = {
   },
   'ar': {
     "introduction/getting_started": "الشروع في العمل مع Riverpod",
+    "whats_new": "ما الجديد في Riverpod 3.0",
+    "3.0_migration": "الانتقال من الإصدار 2.0 إلى 3.0",
     "tutorials/first_app": "تطبيقك الأول مع Riverpod",
+    "root/faq": "الأسئلة الشائعة",
+    "root/do_dont": "افعل/لا تفعل",
   },
 };
 export const outdatedTranslations = [
