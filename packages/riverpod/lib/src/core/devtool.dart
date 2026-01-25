@@ -1,13 +1,7 @@
 part of '../framework.dart';
 
-
-
 @internal
-void openInIDE({
-  required String uri,
-  required int line,
-  required int column,
-}) {
+void openInIDE({required String uri, required int line, required int column}) {
   developer.postEvent('navigate', stream: 'ToolEvent', {
     'fileUri': uri,
     'line': line,
@@ -131,7 +125,7 @@ final class ProviderMeta {
   ProviderMeta({
     required this.origin,
     required this.id,
-    required this.toStringValue,
+    required this.argToStringValue,
     required this.hashValue,
     required this.containerId,
     required this.elementId,
@@ -146,7 +140,7 @@ final class ProviderMeta {
 
     return ProviderMeta(
       origin: OriginMeta.from(element),
-      toStringValue: provider.argument?.toString() ?? '',
+      argToStringValue: provider.argument.toString(),
       hashValue: shortHash(provider),
       containerId: element.container.id,
       id: providerId,
@@ -159,7 +153,7 @@ final class ProviderMeta {
 
   final OriginMeta origin;
   final ProviderId id;
-  final String toStringValue;
+  final String argToStringValue;
   final String hashValue;
   final ContainerId containerId;
   final String containerHashValue;

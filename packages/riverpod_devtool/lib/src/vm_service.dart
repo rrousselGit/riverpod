@@ -13,12 +13,33 @@ import 'package:vm_service/vm_service.dart';
 part 'vm_service.g.dart';
 
 sealed class Byte<T> {
+  Byte();
+  factory Byte.of(Object? obj) {
+    switch (obj) {
+      case Sentinel():
+        return ByteSentinel(obj);
+      case T():
+        return ByteVariable(obj);
+      default:
+        throw ArgumentError('Object $obj is neither a Sentinel nor a $T');
+    }
+  }
+
   ByteVariable<T> get require {
     switch (this) {
       case final ByteVariable<T> that:
         return that;
       case ByteSentinel<T>(:final sentinel):
         throw StateError('Expected VariableRef but got Sentinel: $sentinel');
+    }
+  }
+
+  Byte<R> map<R>(R Function(T value) fn) {
+    switch (this) {
+      case final ByteVariable<T> that:
+        return ByteVariable(fn(that.instance));
+      case ByteSentinel<T>(:final sentinel):
+        return ByteSentinel<R>(sentinel);
     }
   }
 }
@@ -209,6 +230,11 @@ class Eval {
     final res = await _eval.getInstance(ref, isAlive);
     return res!;
   }
+
+  Future<Class> getClass(ClassRef ref, {required Disposable isAlive}) async {
+    final res = await _eval.getClass(ref, isAlive);
+    return res!;
+  }
 }
 
 final evalProvider = FutureProvider.autoDispose.family<Eval, String>(
@@ -235,7 +261,7 @@ final riverpodFrameworkEvalProvider = evalProvider(
 );
 
 extension IsAlive on Ref {
-  Disposable isAlive() {
+  Disposable disposable() {
     final disposable = Disposable();
     onDispose(disposable.dispose);
     return disposable;
@@ -250,15 +276,16 @@ sealed class VariableRef {
 
     switch (kind) {
       case .string:
-        return StringVariableRef._(ref);
+        return _StringVariableRefImpl._(ref);
       case .int:
-        return IntVariableRef._(ref);
+        return IntVariable._(ref);
       case .double:
-        return DoubleVariableRef._(ref);
+        return DoubleVariable._(ref);
       case .bool:
-        return BoolVariableRef._(ref);
+        return BoolVariable._(ref);
       case .nill:
-        return const NullVariableRef();
+        return NullVariable._();
+
       case .list:
       case .map:
       case .set:
@@ -267,7 +294,7 @@ sealed class VariableRef {
       // TODO
 
       case .object:
-        return UnknownObjectVariableRef(ref);
+        return _UnknownObjectVariableRefImpl(ref);
     }
   }
 
@@ -277,39 +304,31 @@ sealed class VariableRef {
   );
 }
 
-final class NullVariableRef implements VariableRef, NullVariable {
-  const NullVariableRef();
-
-  @override
-  Future<Byte<NullVariable>> resolve(
-    Future<Eval> Function(String uri) eval,
-    Disposable isAlive,
-  ) async => ByteVariable(this);
-}
-
-final class BoolVariableRef implements VariableRef, BoolVariable {
-  BoolVariableRef._(InstanceRef ref) : value = ref.valueAsString! == 'true';
-  @override
-  final bool value;
-
-  @override
-  Future<Byte<BoolVariable>> resolve(
-    Future<Eval> Function(String uri) eval,
-    Disposable isAlive,
-  ) async => ByteVariable(this);
-}
-
 base class _EvaluatedVariableRef {
   _EvaluatedVariableRef(this._ref);
   final InstanceRef _ref;
 
+  String get _evalUri => _ref.classRef!.library!.uri!;
+
+  Future<Byte<T>> _eval<T extends ResolvedVariable>(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+    Future<T> Function(Eval) run,
+  ) async {
+    final evalInstance = await eval(_evalUri);
+
+    try {
+      return ByteVariable(await run(evalInstance));
+    } on SentinelException catch (e) {
+      return ByteSentinel(e.sentinel);
+    }
+  }
+
   Future<Byte<T>> _resolveInstance<T extends ResolvedVariable>(
     Future<Eval> Function(String uri) eval,
     Disposable isAlive,
-  ) async {
-    final evalInstance = await eval(_ref.classRef!.library!.uri!);
-
-    try {
+  ) {
+    return _eval(eval, isAlive, (evalInstance) async {
       final instance = await evalInstance.instance(_ref, isAlive: isAlive);
       final variable = ResolvedVariable.fromInstance(instance);
 
@@ -319,16 +338,44 @@ base class _EvaluatedVariableRef {
         );
       }
 
-      return ByteVariable(variable);
-    } on SentinelException catch (e) {
-      return ByteSentinel(e.sentinel);
-    }
+      return variable;
+    });
   }
 }
 
-final class StringVariableRef extends _EvaluatedVariableRef
+abstract class NullVariableRef implements VariableRef {
+  @override
+  Future<Byte<NullVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  );
+}
+
+abstract class BoolVariableRef implements VariableRef {
+  bool get value;
+
+  @override
+  Future<Byte<BoolVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  );
+}
+
+abstract class StringVariableRef implements VariableRef {
+  String get truncatedValue;
+  bool get isTruncated;
+  String? get value;
+
+  @override
+  Future<Byte<StringVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  );
+}
+
+final class _StringVariableRefImpl extends _EvaluatedVariableRef
     implements VariableRef {
-  StringVariableRef._(super._ref)
+  _StringVariableRefImpl._(super._ref)
     : truncatedValue = _ref.valueAsString!,
       isTruncated = _ref.valueAsStringIsTruncated!;
 
@@ -349,37 +396,37 @@ final class StringVariableRef extends _EvaluatedVariableRef
   }
 }
 
-final class IntVariableRef implements VariableRef, IntVariable {
-  IntVariableRef._(InstanceRef ref) : value = int.parse(ref.valueAsString!);
-  @override
-  final int value;
+abstract class IntVariableRef implements VariableRef {
+  int get value;
 
   @override
   Future<Byte<IntVariable>> resolve(
     Future<Eval> Function(String uri) eval,
     Disposable isAlive,
-  ) async => ByteVariable(this);
+  );
 }
 
-final class DoubleVariableRef implements VariableRef, DoubleVariable {
-  DoubleVariableRef._(InstanceRef ref)
-    : value = double.parse(ref.valueAsString!);
-  @override
-  final double value;
+abstract class DoubleVariableRef implements VariableRef {
+  double get value;
 
   @override
   Future<Byte<DoubleVariable>> resolve(
     Future<Eval> Function(String uri) eval,
     Disposable isAlive,
-  ) async => ByteVariable(this);
+  );
 }
 
-final class UnknownObjectVariableRef extends _EvaluatedVariableRef
-    implements VariableRef {
-  UnknownObjectVariableRef(super._ref)
-    : libraryPath = _ref.classRef!.library!.uri!;
+abstract class UnknownObjectVariableRef implements VariableRef {
+  @override
+  Future<Byte<UnknownObjectVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  );
+}
 
-  final String libraryPath;
+final class _UnknownObjectVariableRefImpl extends _EvaluatedVariableRef
+    implements VariableRef {
+  _UnknownObjectVariableRefImpl(super._ref);
 
   @override
   Future<Byte<UnknownObjectVariable>> resolve(
@@ -390,7 +437,32 @@ final class UnknownObjectVariableRef extends _EvaluatedVariableRef
   }
 }
 
-sealed class ResolvedVariable {
+// abstract class FieldVariableRef implements VariableRef {
+//   @override
+//   Future<Byte<FieldVariable>> resolve(
+//     Future<Eval> Function(String uri) eval,
+//     Disposable isAlive,
+//   );
+// }
+
+// final class _FieldVariableRefImpl extends _EvaluatedVariableRef
+//     implements FieldVariableRef {
+//   _FieldVariableRefImpl(this._field) : super(_field.value);
+
+//   final BoundField _field;
+
+//   @override
+//   Future<Byte<FieldVariable>> resolve(
+//     Future<Eval> Function(String uri) eval,
+//     Disposable isAlive,
+//   ) {
+//     return _resolveInstance(eval, isAlive);
+//   }
+// }
+
+sealed class ResolvedVariable implements VariableRef {
+  const ResolvedVariable();
+
   factory ResolvedVariable.fromInstance(Instance instance) {
     final kind = _SimplifiedInstanceKind.fromInstanceKind(
       _SealedInstanceKind.fromString(instance.kind!),
@@ -400,33 +472,60 @@ sealed class ResolvedVariable {
       case .string:
         return StringVariable._(instance);
       case .int:
-        return IntVariableRef._(instance);
+        return IntVariable._(instance);
       case .double:
-        return DoubleVariableRef._(instance);
+        return DoubleVariable._(instance);
       case .bool:
-        return BoolVariableRef._(instance);
+        return BoolVariable._(instance);
       case .nill:
-        return const NullVariableRef();
+        return NullVariable._();
+
       case .list:
       case .map:
       case .set:
       case .record:
       case .type:
       case .object:
-        return const NullVariableRef(); // Placeholder for unsupported types
+        return UnknownObjectVariable._(instance);
     }
+  }
+
+  // TODO
+  List<Byte<VariableRef>> get children => const [];
+}
+
+mixin _SelfResolvedVariable<T extends _SelfResolvedVariable<T>> {
+  Future<Byte<T>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  ) async {
+    if (this is! T) {
+      throw StateError(
+        '_SelfResolvedVariable can only be extended by its generic type T',
+      );
+    }
+
+    return ByteVariable(this as T);
   }
 }
 
-abstract final class NullVariable implements ResolvedVariable {
+final class NullVariable extends ResolvedVariable
+    with _SelfResolvedVariable<NullVariable>
+    implements NullVariableRef {
   NullVariable._();
 }
 
-abstract final class BoolVariable implements ResolvedVariable {
-  bool get value;
+final class BoolVariable extends ResolvedVariable
+    with _SelfResolvedVariable<BoolVariable>
+    implements BoolVariableRef {
+  BoolVariable._(InstanceRef ref) : value = ref.valueAsString! == 'true';
+  @override
+  final bool value;
 }
 
-final class StringVariable implements ResolvedVariable {
+final class StringVariable extends ResolvedVariable
+    with _SelfResolvedVariable<StringVariable>
+    implements StringVariableRef {
   StringVariable._2({required this.value});
   StringVariable._(Instance instance) : value = instance.valueAsString! {
     if (instance.valueAsStringIsTruncated!) {
@@ -434,23 +533,67 @@ final class StringVariable implements ResolvedVariable {
     }
   }
 
+  @override
   final String value;
+  @override
+  bool get isTruncated => false;
+  @override
+  String get truncatedValue => value;
 }
 
-abstract final class IntVariable implements ResolvedVariable {
-  int get value;
+final class IntVariable extends ResolvedVariable
+    with _SelfResolvedVariable<IntVariable>
+    implements VariableRef, IntVariableRef {
+  IntVariable._(InstanceRef ref) : value = int.parse(ref.valueAsString!);
+  @override
+  final int value;
 }
 
-abstract final class DoubleVariable implements ResolvedVariable {
-  double get value;
+final class DoubleVariable extends ResolvedVariable
+    with _SelfResolvedVariable<DoubleVariable>
+    implements DoubleVariableRef, VariableRef {
+  DoubleVariable._(InstanceRef ref) : value = double.parse(ref.valueAsString!);
+
+  @override
+  final double value;
 }
 
-final class UnknownObjectVariable implements ResolvedVariable {
-  UnknownObjectVariable(InstanceRef ref)
-    : libraryPath = ref.classRef!.library!.uri!;
+final class UnknownObjectVariable extends ResolvedVariable
+    with _SelfResolvedVariable<UnknownObjectVariable>
+    implements UnknownObjectVariableRef {
+  UnknownObjectVariable._(Instance ref)
+    : type = ref.classRef!.name!,
+      identityHashCode = ref.identityHashCode;
+  // ,
+  // children = [for (final field in ref.fields ?? <BoundField>[]) 42];
 
-  final String libraryPath;
+  final String type;
+  final int? identityHashCode;
+
+  // @override
+  // final List<Byte<FieldVariableRef>> children;
 }
+
+// final class FieldVariable extends ResolvedVariable
+//     with _SelfResolvedVariable<FieldVariable>
+//     implements FieldVariableRef {
+//   FieldVariable._(BoundField);
+
+//   final FieldKey key;
+//   final Byte<ResolvedVariable> value;
+// }
+
+// sealed class FieldKey {}
+
+// final class PositionalFieldKey extends FieldKey {
+//   PositionalFieldKey(this.index);
+//   final int index;
+// }
+
+// final class NamedFieldKey extends FieldKey {
+//   NamedFieldKey(this.name);
+//   final String name;
+// }
 
 // Allow an exhaustive switch over InstanceKind
 enum _SealedInstanceKind {

@@ -1,9 +1,12 @@
+// ignore_for_file: invalid_use_of_internal_member
+
 import 'dart:math' as math;
 
 import 'package:devtools_app_shared/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+// ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
 import 'package:vm_service/vm_service.dart' hide Frame;
 
@@ -77,7 +80,7 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
     final service = await ref.watch(vmServiceProvider.future);
 
     final riverpodEval = await ref.watch(riverpodFrameworkEvalProvider.future);
-    final isAlive = ref.isAlive();
+    final isAlive = ref.disposable();
 
     final sub = service.onNotification
         // Using asyncMap to ensure that notifications are processed in order
@@ -85,7 +88,6 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
         .asyncMap((event) async {
           switch (event) {
             case internals.NewEventNotification():
-              print('Handle event $event // ${event.offset}');
               await _fetchNewNotifications(
                 event,
                 riverpodEval: riverpodEval,
@@ -97,9 +99,6 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
     ref.onDispose(sub.cancel);
 
     final rawFrames = await _evalFrames(riverpodEval, isAlive);
-    print(
-      'Build frames from scratch // ${rawFrames.map((e) => '${e.index} // ${e.timestamp}').join(', ')}',
-    );
     final firstFrame = rawFrames.firstOrNull;
     if (firstFrame == null) return const [];
 

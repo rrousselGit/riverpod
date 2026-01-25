@@ -1,14 +1,15 @@
+import 'dart:async';
+
 import 'package:devtools_app_shared/ui.dart';
-import 'package:devtools_app_shared/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/experimental/mutation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 // ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
 import 'package:stack_trace/stack_trace.dart';
 
 import 'frames.dart';
+import 'ide.dart';
 import 'inspector.dart';
 import 'providers.dart';
 import 'search.dart';
@@ -77,10 +78,18 @@ class _FrameViewer extends HookConsumerWidget {
 
     final selected =
         originStates.values
-            .expand((e) => e)
+            .expand((e) => e.elements)
             .where((e) => e.isSelected(selectedId.value))
             .firstOrNull ??
-        originStates.values.expand((e) => e).firstOrNull;
+        originStates.values.expand((e) => e.elements).firstOrNull;
+
+    useEffect(() {
+      if (selected?.origin.creationStackTrace case final trace?) {
+        Future(() => openTraceInIDE(ref, Trace.parse(trace)));
+      }
+
+      return null;
+    }, [selected?.origin.creationStackTrace]);
 
     return SplitPane(
       axis: Axis.horizontal,
@@ -90,11 +99,7 @@ class _FrameViewer extends HookConsumerWidget {
           searchController: searchController,
           originStates: originStates,
           selectedId: selected?.element.provider.elementId,
-          onSelected: (value) async {
-            if (value?.origin.creationStackTrace case final trace?) {
-              await openTraceInIDE(ref, Trace.parse(trace));
-            }
-
+          onSelected: (value) {
             selectedId.value = value?.elementId;
           },
         ),
@@ -106,33 +111,6 @@ class _FrameViewer extends HookConsumerWidget {
       ],
     );
   }
-}
-
-Future<void> openTraceInIDE(MutationTarget target, Trace trace) async {
-  const _riverpodPackages = {
-    'riverpod',
-    'hooks_riverpod',
-    'flutter_riverpod',
-    'riverpod_generator',
-  };
-
-  final mutation = Mutation<void>();
-  await mutation.run(target, (tsx) async {
-    final eval = await tsx.get(riverpodFrameworkEvalProvider.future);
-
-    final firstNonRiverpodFrame = trace.frames
-        .where((frame) => !_riverpodPackages.contains(frame.package))
-        .firstOrNull;
-    if (firstNonRiverpodFrame == null) return;
-
-    await eval.evalInstance(isAlive: Disposable(), '''
-        openInIDE(
-          uri: '${firstNonRiverpodFrame.uri}',
-          line: ${firstNonRiverpodFrame.line},
-          column: ${firstNonRiverpodFrame.column}
-        )
-      ''');
-  });
 }
 
 class _ProviderPickerPanel extends HookConsumerWidget {
@@ -164,61 +142,51 @@ class _ProviderPickerPanel extends HookConsumerWidget {
           ),
           const Divider(),
           for (final associatedProviders in originStates.values) ...[
-            if (associatedProviders.length == 1)
+            if (associatedProviders.foundCount == 1)
               _Tile(
-                indent: '',
+                indent: null,
                 onTap: () {
-                  onSelected(associatedProviders.single.element.provider);
+                  onSelected(
+                    associatedProviders.elements.single.element.provider,
+                  );
                 },
                 selected:
-                    associatedProviders.length == 1 &&
-                    associatedProviders.single.isSelected(selectedId),
-                hash: associatedProviders.single.origin.hashValue,
+                    associatedProviders.foundCount == 1 &&
+                    associatedProviders.elements.single.isSelected(selectedId),
+                hash: associatedProviders.elements.single.origin.hashValue,
                 creationStackTrace: associatedProviders
+                    .elements
                     .single
                     .element
                     .provider
                     .creationStackTrace,
                 containerHash: associatedProviders
+                    .elements
                     .single
                     .element
                     .provider
                     .containerHashValue,
-                associatedProviders.single.match,
+                associatedProviders.elements.single.originMatch,
               )
             else
-              _Heading('Hello'), //meta.value.toStringValue),
+              _Heading(associatedProviders.elements.first.originMatch),
 
-            if (associatedProviders.length > 1) ...[
-              for (final (index, providerState) in associatedProviders.indexed)
-                if (index == associatedProviders.length - 1)
-                  _Tile(
-                    onTap: () => onSelected(providerState.element.provider),
-                    selected: providerState.isSelected(selectedId),
-                    hash: providerState.element.provider.hashValue,
-                    creationStackTrace:
-                        providerState.element.provider.creationStackTrace,
-                    containerHash:
-                        providerState.element.provider.containerHashValue,
-                    indent: '└─',
-
-                    '${providerState.element.provider.toStringValue}'
-                        .fuzzyMatch(''),
-                  )
-                else
-                  _Tile(
-                    onTap: () => onSelected(providerState.element.provider),
-                    selected: providerState.isSelected(selectedId),
-                    hash: providerState.element.provider.hashValue,
-                    creationStackTrace:
-                        providerState.element.provider.creationStackTrace,
-                    containerHash:
-                        providerState.element.provider.containerHashValue,
-                    indent: '├─',
-
-                    '${providerState.element.provider.toStringValue}'
-                        .fuzzyMatch(''),
-                  ),
+            if (associatedProviders.foundCount > 1) ...[
+              for (final (index, providerState)
+                  in associatedProviders.elements.indexed)
+                _Tile(
+                  onTap: () => onSelected(providerState.element.provider),
+                  selected: providerState.isSelected(selectedId),
+                  hash: providerState.element.provider.hashValue,
+                  creationStackTrace:
+                      providerState.element.provider.creationStackTrace,
+                  containerHash:
+                      providerState.element.provider.containerHashValue,
+                  indent: index == associatedProviders.elements.length - 1
+                      ? '└─'
+                      : '├─',
+                  providerState.argMatch,
+                ),
             ],
           ],
         ],
@@ -230,13 +198,13 @@ class _ProviderPickerPanel extends HookConsumerWidget {
 class _Heading extends StatelessWidget {
   const _Heading(this.text, {super.key});
 
-  final String text;
+  final FuzzyMatch text;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Text(text),
+      child: FuzzyText(match: text),
     );
   }
 }
@@ -254,7 +222,7 @@ class _Tile extends StatelessWidget {
   });
 
   final FuzzyMatch text;
-  final String indent;
+  final String? indent;
   final bool selected;
   final void Function()? onTap;
   final String hash;
@@ -264,8 +232,13 @@ class _Tile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: selected
+          ? Theme.of(context).colorScheme.selectedRowBackgroundColor
+          : null,
       child: Tooltip(
-        message: creationStackTrace ?? 'Default tooltip',
+        message:
+            creationStackTrace ??
+            '<Failed to obtain the stacktrace for this provider>',
         child: InkWell(
           onTap: onTap,
           child: Padding(
@@ -274,13 +247,14 @@ class _Tile extends StatelessWidget {
               // TODO
               spacing: 10,
               children: [
-                Text(
-                  indent,
-                  style: TextStyle(
-                    color: Theme.of(context).textTheme.bodyMedium!.color,
+                if (indent case final indent?)
+                  Text(
+                    indent,
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyMedium!.color,
+                    ),
                   ),
-                ),
-                FuzzyText(match: text),
+                Expanded(child: FuzzyText(match: text)),
               ],
             ),
           ),

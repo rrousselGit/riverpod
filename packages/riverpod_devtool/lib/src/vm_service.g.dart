@@ -67,7 +67,7 @@ class ProviderMeta {
   ProviderMeta({
     required this.origin,
     required this.id,
-    required this.toStringValue,
+    required this.argToStringValue,
     required this.hashValue,
     required this.containerId,
     required this.containerHashValue,
@@ -84,9 +84,9 @@ class ProviderMeta {
 
     final origin = OriginMeta.from($events, path: '$path.origin');
     final id = internals.ProviderId($events['$path.id']!.valueAsString!);
-    final toStringValue = List.generate(
-      int.parse($events['$path.toStringValue.length']!.valueAsString!),
-      (i) => $events['$path.toStringValue.$i']!.valueAsString!,
+    final argToStringValue = List.generate(
+      int.parse($events['$path.argToStringValue.length']!.valueAsString!),
+      (i) => $events['$path.argToStringValue.$i']!.valueAsString!,
     ).join();
     final hashValue = List.generate(
       int.parse($events['$path.hashValue.length']!.valueAsString!),
@@ -113,7 +113,7 @@ class ProviderMeta {
     return ProviderMeta(
       origin: origin,
       id: id,
-      toStringValue: toStringValue,
+      argToStringValue: argToStringValue,
       hashValue: hashValue,
       containerId: containerId,
       containerHashValue: containerHashValue,
@@ -125,7 +125,7 @@ class ProviderMeta {
 
   final OriginMeta origin;
   final internals.ProviderId id;
-  final String toStringValue;
+  final String argToStringValue;
   final String hashValue;
   final internals.ContainerId containerId;
   final String containerHashValue;

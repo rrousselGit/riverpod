@@ -44,6 +44,7 @@ class AllDiscoveredOriginsNotifier extends Notifier<Set<internals.OriginId>> {
   }
 }
 
+// TODO
 // abstract class OriginState implements Built<OriginState, OriginStateBuilder> {
 //   factory OriginState({
 //     required OriginMeta2 value,
@@ -65,17 +66,28 @@ class AllDiscoveredOriginsNotifier extends Notifier<Set<internals.OriginId>> {
 extension ProviderMetaX on ProviderMeta {}
 
 class FilteredElement {
-  FilteredElement({required this.element, required this.match});
-
+  FilteredElement({
+    required this.element,
+    required this.argMatch,
+    required this.originMatch,
+  });
 
   OriginMeta get origin => element.provider.origin;
   final ElementMeta element;
-  final FuzzyMatch match;
+  final FuzzyMatch originMatch;
+  final FuzzyMatch argMatch;
 
   bool isSelected(internals.ElementId? id) => id == element.provider.elementId;
 }
 
-typedef OriginStates = Map<internals.OriginId, List<FilteredElement>>;
+typedef OriginStates = Map<internals.OriginId, AccumulatedFilter>;
+
+class AccumulatedFilter {
+  var _foundCount = 0;
+  int get foundCount => _foundCount;
+
+  final List<FilteredElement> elements = [];
+}
 
 final filteredProvidersProvider = Provider.autoDispose
     .family<
@@ -89,17 +101,38 @@ final filteredProvidersProvider = Provider.autoDispose
       final (:text, :frame) = args;
       final result = {
         for (final origin in ref.watch(allDiscoveredOriginsProvider))
-          origin: <FilteredElement>[],
+          origin: AccumulatedFilter(),
       };
 
       for (final element in frame.elements.values) {
-        result[element.provider.origin.id]!.add(
+        final acc = result[element.provider.origin.id];
+        if (acc == null) {
+          throw StateError(
+            'Element ${element.provider.elementId} has origin '
+            '${element.provider.origin.id}, which is not in the list of '
+            'discovered origins.',
+          );
+        }
+        acc._foundCount++;
+
+        final originMatch = element.provider.origin.toStringValue.fuzzyMatch(
+          text,
+        );
+        final argMatch = element.provider.argToStringValue.fuzzyMatch(text);
+
+        if (!originMatch.didMatch && !argMatch.didMatch) continue;
+
+        acc.elements.add(
           FilteredElement(
             element: element,
-            match: element.provider.toStringValue.fuzzyMatch(text),
+            originMatch: originMatch,
+            argMatch: argMatch,
           ),
         );
       }
+
+      // Remove origins with no matching providers.
+      result.removeWhere((key, value) => value.elements.isEmpty);
 
       return result;
     });

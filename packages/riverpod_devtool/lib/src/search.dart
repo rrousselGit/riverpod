@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 extension FuzzyMatchString on String {
   /// Checks if `this` contains all characters from [other], in order.
   FuzzyMatch fuzzyMatch(String other) {
     final charsToMatch = other.characters.indexed.iterator;
-    if (!charsToMatch.moveNext()) return FuzzyMatch._ko(this);
+    if (!charsToMatch.moveNext()) {
+      return FuzzyMatch._ok([MissCharacter(this)]);
+    }
 
     final result = List<FuzzyMatchCharacter>.generate(
       length,
@@ -13,16 +14,23 @@ extension FuzzyMatchString on String {
       growable: false,
     );
 
-    for (final char in characters) {
-      if (char == charsToMatch.current.$2) {
-        result.add(MatchCharacter(char));
-        if (!charsToMatch.moveNext()) return FuzzyMatch._ok(result);
+    var didMatch = false;
+
+    for (final (index, char) in characters.indexed) {
+      if (!didMatch &&
+          char.toLowerCase() == charsToMatch.current.$2.toLowerCase()) {
+        result[index] = MatchCharacter(char);
+        if (!charsToMatch.moveNext()) {
+          didMatch = true;
+        }
 
         continue;
       }
 
-      result.add(MissCharacter(char));
+      result[index] = MissCharacter(char);
     }
+
+    if (didMatch) return FuzzyMatch._ok(result);
 
     return FuzzyMatch._ko(this);
   }
@@ -68,19 +76,19 @@ class FuzzyText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final missStyle = DefaultTextStyle.of(context).style;
     final matchStyle = TextStyle(
-      color: Theme.of(context).primaryColor,
+      color: missStyle.color,
       fontWeight: FontWeight.bold,
     );
-    final missStyle = DefaultTextStyle.of(context).style;
 
     return RichText(
+      overflow: TextOverflow.ellipsis,
       text: TextSpan(
         children: [
           for (final char in match.characters)
             TextSpan(
               text: char.value,
-
               style: switch (char) {
                 MatchCharacter() => matchStyle,
                 MissCharacter() => missStyle,

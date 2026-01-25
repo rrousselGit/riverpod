@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -62,7 +64,7 @@ class _HomeState extends ConsumerState<Home> {
             },
             child: Text(show ? 'Hide' : 'Show'),
           ),
-          Text(ref.watch(another).toString()),
+          Text(ref.watch(complexProvider).value.toString()),
           Text(ref.watch(fam(42)).toString()),
           Text(ref.watch(fam(21)).toString()),
         ],
@@ -76,4 +78,9 @@ class _HomeState extends ConsumerState<Home> {
   }
 }
 
-final another = Provider<int>((ref) => 42);
+final complexProvider = Provider<Complex>((ref) => Complex(42));
+
+class Complex {
+  Complex(this.value);
+  final int value;
+}
