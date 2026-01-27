@@ -803,8 +803,8 @@ final class ProviderContainer implements Node, MutationTarget {
     // are not affected.
     parent?._children.add(this);
 
-    if (kDebugMode) {
-      RiverpodDevtool.instance.addEvent(ProviderContainerAddEvent(this));
+    for (final obs in this.observers) {
+      container.runUnaryGuarded(obs.didCreateProviderContainer, this);
     }
   }
 
@@ -1146,8 +1146,8 @@ final class ProviderContainer implements Node, MutationTarget {
       element.dispose();
     }
 
-    if (kDebugMode) {
-      RiverpodDevtool.instance.addEvent(ProviderContainerDisposeEvent(this));
+    for (final obs in observers) {
+      container.runUnaryGuarded(obs.didDisposeProviderContainer, this);
     }
   }
 
@@ -1259,6 +1259,12 @@ abstract base class ProviderObserver {
   /// This can be used for logging or making devtools.
   const ProviderObserver();
 
+  /// A new [ProviderContainer] was created.
+  void didCreateProviderContainer(ProviderContainer container) {}
+
+  /// A [ProviderContainer] was disposed.
+  void didDisposeProviderContainer(ProviderContainer container) {}
+
   /// A provider was initialized, and the value exposed is [value].
   ///
   /// [value] will be `null` if the provider threw during initialization.
@@ -1271,6 +1277,11 @@ abstract base class ProviderObserver {
     Object error,
     StackTrace stackTrace,
   ) {}
+
+  /// A provider was unmounted and fully removed from memory.
+  ///
+  /// See also [didDisposeProvider], for [Ref.onDispose] listeners being called.
+  void didUnmountProvider(ProviderObserverContext context) {}
 
   /// Called by providers when they emit a notification.
   ///
@@ -1301,7 +1312,10 @@ abstract base class ProviderObserver {
     Object? newValue,
   ) {}
 
-  /// A provider was disposed
+  /// A provider was disposed. This does not mean that the provider was fully
+  /// removed from memory, only that [Ref.onDispose] listeners were called.
+  ///
+  /// See also [didUnmountProvider], for full memory removal.
   void didDisposeProvider(ProviderObserverContext context) {}
 
   /// A mutation was reset.

@@ -1250,8 +1250,11 @@ $this''',
       notifier.dispose();
     });
 
-    if (kDebugMode) {
-      RiverpodDevtool.instance.addEvent(ProviderElementDisposeEvent(this));
+    for (final obs in container.observers) {
+      container.runUnaryGuarded(
+        obs.didUnmountProvider,
+        _currentObserverContext(),
+      );
     }
   }
 

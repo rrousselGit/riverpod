@@ -31,10 +31,12 @@ class _VariableNode extends Node<_VariableNode> {
     required this.byte,
     required this.variable,
     required this.children,
+    required this.level,
   });
 
   final Byte<VariableRef> byte;
   final Byte<ResolvedVariable>? variable;
+  final int level;
   @override
   final List<_VariableNode> children;
 }
@@ -55,27 +57,37 @@ class _OpenedVariableNodes extends Notifier<Set<Byte<VariableRef>>> {
 
   void remove(Byte<VariableRef> byte) {
     // We're only cleaning memory. No need to notify listeners.
-    state.remove(byte);
+    // TODO
+    // state.remove(byte);
   }
 }
 
-final ProviderFamily<_VariableNode, Byte<VariableRef>>
+final ProviderFamily<_VariableNode, (Byte<VariableRef>, int level)>
 _variableNodeForByteProvider = .new(
   name: '_variableNodeForByte',
   isAutoDispose: true,
-  (ref, byte) {
+  (ref, args) {
+    final (byte, level) = args;
+
     final variable = ref.watch(_resolvedVariableForRef(byte)).value;
+    final isOpen = ref.watch(
+      _openedVariableNodesProvider.select((nodes) => nodes.contains(byte)),
+    );
+
+    final children = switch (variable) {
+      null || ByteSentinel<ResolvedVariable>() => const <_VariableNode>[],
+      ByteVariable<ResolvedVariable>(:final instance) => [
+        for (final child in instance.children)
+          if (isOpen)
+            ref.watch(_variableNodeForByteProvider((child, level + 1))),
+      ],
+    };
 
     return _VariableNode(
       byte: byte,
       variable: variable,
-      children: switch (variable) {
-        null || ByteSentinel<ResolvedVariable>() => const [],
-        ByteVariable<ResolvedVariable>(:final instance) => [
-          for (final child in instance.children)
-            ref.watch(_variableNodeForByteProvider(child)),
-        ],
-      },
+      children: children,
+      level: level,
     );
   },
 );
@@ -102,7 +114,7 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
     assert(sub == null, 'Listener already exists for $byte');
 
     sub = ref.listenManual(
-      _variableNodeForByteProvider(byte),
+      _variableNodeForByteProvider((byte, 0)),
       fireImmediately: true,
       (_, resolvedVariableByte) {
         late final indexForNode = nodes.indexWhere((n) => n.byte == byte);
@@ -151,13 +163,75 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
     return SliverList.builder(
       itemCount: nodes.length,
       itemBuilder: (context, index) {
-        final node = nodes[index];
+        return Consumer(
+          builder: (context, ref, child) {
+            final node = nodes[index];
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          child: _NodeText(node: node),
+            final variable = node.variable;
+
+            switch (variable) {
+              case null:
+                // TODO
+                return Container();
+
+              case ByteVariable<ResolvedVariable>():
+                final openNotifier = ref.watch(
+                  _openedVariableNodesProvider.notifier,
+                );
+                final isOpen = ref.watch(
+                  _openedVariableNodesProvider.select(
+                    (nodes) => nodes.contains(node.byte),
+                  ),
+                );
+
+                Widget child = _NodeText(variable: variable.instance);
+                if (variable.instance.children.isNotEmpty) {
+                  child = _ExpansibleTile(
+                    isExpanded: isOpen,
+                    onPressed: () => openNotifier.toggle(node.byte),
+                    child: child,
+                  );
+                }
+
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 12) +
+                      EdgeInsets.only(left: 42.0 * node.level),
+                  child: child,
+                );
+
+              case ByteSentinel<ResolvedVariable>(:final sentinel):
+                return Text('Sentinel error ${sentinel.kind}');
+            }
+          },
         );
       },
+    );
+  }
+}
+
+class _ExpansibleTile extends StatelessWidget {
+  const _ExpansibleTile({
+    super.key,
+    required this.isExpanded,
+    required this.onPressed,
+    required this.child,
+  });
+
+  final bool isExpanded;
+  final void Function() onPressed;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        IconButton(
+          icon: Icon(isExpanded ? Icons.expand_more : Icons.chevron_right),
+          onPressed: onPressed,
+        ),
+        Expanded(child: child),
+      ],
     );
   }
 }
@@ -169,24 +243,17 @@ class _NodeTileTheme {
   static const numColor = Color.fromARGB(255, 181, 206, 168);
   static const stringColor = Color.fromARGB(255, 206, 145, 120);
   static const hashColor = Color.fromARGB(255, 128, 128, 128);
+  static const labelColor = Color.fromARGB(255, 220, 220, 170);
 }
 
 class _NodeText extends StatelessWidget {
-  const _NodeText({super.key, required this.node});
+  const _NodeText({super.key, required this.variable});
 
-  final _VariableNode node;
+  final ResolvedVariable variable;
 
   @override
   Widget build(BuildContext context) {
-    late final ResolvedVariable variable;
-    switch (node.variable) {
-      case null:
-        return Container();
-      case ByteSentinel<ResolvedVariable>(:final sentinel):
-        return Text('Sentinel error ${sentinel.kind}');
-      case ByteVariable<ResolvedVariable>(:final instance):
-        variable = instance;
-    }
+    final variable = this.variable;
 
     switch (variable) {
       case NullVariable():
@@ -210,21 +277,30 @@ class _NodeText extends StatelessWidget {
           '$value',
           style: const TextStyle(color: _NodeTileTheme.numColor),
         );
+      case FieldVariable():
+        return Row(
+          children: [
+            Text(
+              '${variable.name}: ',
+              style: const TextStyle(color: _NodeTileTheme.labelColor),
+            ),
+            Expanded(child: _NodeText(variable: variable.value)),
+          ],
+        );
+
       case UnknownObjectVariable(:final type):
-        return RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(
-                text: type,
-                style: const TextStyle(color: _NodeTileTheme.typeColor),
-              ),
-              if (variable.identityHashCode case final hash?)
-                TextSpan(
-                  text: '#${hash.toRadixString(16)}',
+        return Row(
+          children: [
+            Text(type, style: const TextStyle(color: _NodeTileTheme.typeColor)),
+            if (variable.identityHashCode case final hash?)
+              SelectableRegion(
+                selectionControls: materialTextSelectionControls,
+                child: Text(
+                  '#${hash.toRadixString(16)}',
                   style: const TextStyle(color: _NodeTileTheme.hashColor),
                 ),
-            ],
-          ),
+              ),
+          ],
         );
     }
   }

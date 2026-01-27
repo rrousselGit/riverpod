@@ -102,8 +102,11 @@ class ProviderMeta {
     final elementId = internals.ElementId(
       $events['$path.elementId']!.valueAsString!,
     );
-    final element = ByteVariable(
-      VariableRef.fromInstanceRef($events['$path.element']!),
+    final element = (
+      byte: ByteVariable(
+        VariableRef.fromInstanceRef($events['$path.element.byte']!),
+      ),
+      id: CacheId($events['$path.element.id']!.valueAsString!),
     );
     final creationStackTrace = List.generate(
       int.parse($events['$path.creationStackTrace.length']!.valueAsString!),
@@ -130,7 +133,7 @@ class ProviderMeta {
   final internals.ContainerId containerId;
   final String containerHashValue;
   final internals.ElementId elementId;
-  final Byte<VariableRef> element;
+  final ({Byte<VariableRef> byte, CacheId id}) element;
   final String? creationStackTrace;
 }
 
@@ -195,8 +198,11 @@ class ProviderContainerAddEvent extends Event {
   }) {
     _validate($events, name: 'ProviderContainerAddEvent', path: path);
 
-    final container = ByteVariable(
-      VariableRef.fromInstanceRef($events['$path.container']!),
+    final container = (
+      byte: ByteVariable(
+        VariableRef.fromInstanceRef($events['$path.container.byte']!),
+      ),
+      id: CacheId($events['$path.container.id']!.valueAsString!),
     );
     final containerId = internals.ContainerId(
       $events['$path.containerId']!.valueAsString!,
@@ -217,7 +223,7 @@ class ProviderContainerAddEvent extends Event {
     );
   }
 
-  final Byte<VariableRef> container;
+  final ({Byte<VariableRef> byte, CacheId id}) container;
   final internals.ContainerId containerId;
   final List<internals.ContainerId> parentIds;
 }
@@ -232,14 +238,17 @@ class ProviderContainerDisposeEvent extends Event {
   }) {
     _validate($events, name: 'ProviderContainerDisposeEvent', path: path);
 
-    final container = ByteVariable(
-      VariableRef.fromInstanceRef($events['$path.container']!),
+    final container = (
+      byte: ByteVariable(
+        VariableRef.fromInstanceRef($events['$path.container.byte']!),
+      ),
+      id: CacheId($events['$path.container.id']!.valueAsString!),
     );
 
     return ProviderContainerDisposeEvent(container: container);
   }
 
-  final Byte<VariableRef> container;
+  final ({Byte<VariableRef> byte, CacheId id}) container;
 }
 
 /// Devtool code for [internals.ProviderElementAddEvent]
@@ -290,14 +299,17 @@ class ProviderStateRef {
   }) {
     _validate($events, name: 'ProviderStateRef', path: path);
 
-    final state = ByteVariable(
-      VariableRef.fromInstanceRef($events['$path.state']!),
+    final state = (
+      byte: ByteVariable(
+        VariableRef.fromInstanceRef($events['$path.state.byte']!),
+      ),
+      id: CacheId($events['$path.state.id']!.valueAsString!),
     );
 
     return ProviderStateRef(state: state);
   }
 
-  final Byte<VariableRef> state;
+  final ({Byte<VariableRef> byte, CacheId id}) state;
 }
 
 /// Devtool code for [internals.ProviderElementUpdateEvent]

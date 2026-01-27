@@ -10,10 +10,10 @@ abstract class Node<T extends Node<T>> {
 }
 
 class _NodeEntry<T extends Node<T>> {
-  _NodeEntry({required this.node, required this.length});
+  _NodeEntry({required this.node});
 
   final T node;
-  final int Function() length;
+  late final int length;
 }
 
 extension type TreeList<T extends Node<T>>._(List<_NodeEntry<T>> _innerList) {
@@ -24,7 +24,8 @@ extension type TreeList<T extends Node<T>>._(List<_NodeEntry<T>> _innerList) {
 
   Iterable<_NodeEntry<T>> _toExpanded(T node) sync* {
     var length = 1;
-    yield _NodeEntry(node: node, length: () => length);
+    final entry = _NodeEntry(node: node);
+    yield entry;
 
     for (final directChild in node.children) {
       for (final item in _toExpanded(directChild)) {
@@ -32,6 +33,8 @@ extension type TreeList<T extends Node<T>>._(List<_NodeEntry<T>> _innerList) {
         length++;
       }
     }
+
+    entry.length = length;
   }
 
   void _callRemove(int start, int end) {
@@ -51,8 +54,8 @@ extension type TreeList<T extends Node<T>>._(List<_NodeEntry<T>> _innerList) {
     final entry = _innerList.elementAtOrNull(index);
     if (entry == null) return;
 
-    _callRemove(index, index + entry.length());
-    _innerList.removeAt(index);
+    _callRemove(index, index + entry.length);
+    _innerList.removeRange(index, index + entry.length);
   }
 
   void add(T value) {
@@ -63,7 +66,7 @@ extension type TreeList<T extends Node<T>>._(List<_NodeEntry<T>> _innerList) {
 
   void operator []=(int index, T value) {
     final previous = _innerList.elementAtOrNull(index);
-    final end = index + (previous?.length() ?? 1);
+    final end = index + (previous?.length ?? 1);
 
     _callRemove(index, end);
 

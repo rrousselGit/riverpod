@@ -1,5 +1,3 @@
-import 'dart:developer' as developer;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -78,7 +76,9 @@ class _HomeState extends ConsumerState<Home> {
   }
 }
 
-final complexProvider = Provider<Complex>((ref) => Complex(42));
+final complexProvider = Provider<Complex>((ref) {
+  return Complex(ref.watch(counterProvider) * 2);
+});
 
 class Complex {
   Complex(this.value);

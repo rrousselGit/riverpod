@@ -62,6 +62,7 @@ class ProviderScheduler {
 
   final _stateToDispose = <ProviderElement>[];
   final stateToRefresh = <ProviderElement>[];
+  void Function()? _debugPendingFrame;
 
   Completer<void>? _pendingTaskCompleter;
 
@@ -107,6 +108,11 @@ class ProviderScheduler {
     _performDispose();
     stateToRefresh.clear();
     _stateToDispose.clear();
+    if (kDebugMode) {
+      _debugPendingFrame?.call();
+      _debugPendingFrame = null;
+    }
+
     _pendingTaskCompleter = null;
   }
 
@@ -133,6 +139,13 @@ class ProviderScheduler {
     }
 
     if (kDebugMode) _builtWithinFrame = null;
+  }
+
+  void debugScheduleFrame(void Function() onEvent) {
+    if (!kDebugMode) return;
+
+    _debugPendingFrame = onEvent;
+    _scheduleTask();
   }
 
   /// Schedules a provider to be disposed.

@@ -105,7 +105,7 @@ class _FrameViewer extends HookConsumerWidget {
         ),
 
         if (selected case final selected?)
-          Panel(child: Inspector(variable: selected.element.state.state))
+          Panel(child: Inspector(variable: selected.element.state.state.byte))
         else
           const Panel(child: Text('No provider selected')),
       ],

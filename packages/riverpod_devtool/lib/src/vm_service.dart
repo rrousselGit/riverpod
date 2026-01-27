@@ -200,17 +200,48 @@ class VmServiceNotifier extends AsyncNotifier<VmService> {
   }
 }
 
+extension type CacheId(String value) {}
+
 class Eval {
   Eval._(this._eval);
   final EvalOnDartLibrary _eval;
 
   String _formatCode(String code) => code.replaceAll('\n', ' ');
 
+  Future<CacheId> cache(InstanceRef ref, {required Disposable isAlive}) async {
+    final idRef = await _eval.safeEval(
+      'RiverpodDevtool.instance.cache(that)',
+      scope: {'that': ref.id!},
+      isAlive: isAlive,
+    );
+
+    if (idRef.valueAsStringIsTruncated!) {
+      throw StateError('CacheId value is truncated');
+    }
+    return CacheId(idRef.valueAsString!);
+  }
+
+  Future<void> deleteCache(CacheId id, {required Disposable isAlive}) async {
+    await _eval.safeEval(
+      'RiverpodDevtool.instance.deleteCache(that)',
+      scope: {'that': id.value},
+      isAlive: isAlive,
+    );
+  }
+
+  Future<InstanceRef> getCache(CacheId id, {required Disposable isAlive}) {
+    return _eval.safeEval(
+      'RiverpodDevtool.instance.getCache(that)',
+      scope: {'that': id.value},
+      isAlive: isAlive,
+    );
+  }
+
   Future<InstanceRef> eval(
     String code, {
     required Disposable isAlive,
     Map<String, String>? scope,
-  }) async {
+  }) {
     return _eval.safeEval(_formatCode(code), isAlive: isAlive, scope: scope);
   }
 
@@ -437,28 +468,39 @@ final class _UnknownObjectVariableRefImpl extends _EvaluatedVariableRef
   }
 }
 
-// abstract class FieldVariableRef implements VariableRef {
-//   @override
-//   Future<Byte<FieldVariable>> resolve(
-//     Future<Eval> Function(String uri) eval,
-//     Disposable isAlive,
-//   );
-// }
+abstract class FieldVariableRef implements VariableRef {
+  @override
+  Future<Byte<FieldVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  );
+}
 
-// final class _FieldVariableRefImpl extends _EvaluatedVariableRef
-//     implements FieldVariableRef {
-//   _FieldVariableRefImpl(this._field) : super(_field.value);
+final class _FieldVariableRefImpl extends _EvaluatedVariableRef
+    implements FieldVariableRef {
+  _FieldVariableRefImpl(this._field, InstanceRef value) : super(value);
 
-//   final BoundField _field;
+  final BoundField _field;
 
-//   @override
-//   Future<Byte<FieldVariable>> resolve(
-//     Future<Eval> Function(String uri) eval,
-//     Disposable isAlive,
-//   ) {
-//     return _resolveInstance(eval, isAlive);
-//   }
-// }
+  @override
+  Future<Byte<FieldVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  ) {
+    return _eval(eval, isAlive, (eval) async {
+      final value = await eval.instance(_ref, isAlive: isAlive);
+      final name = switch (_field.name) {
+        final String value => value,
+        _ => throw StateError('Field name is not a String: ${_field.name}'),
+      };
+
+      return FieldVariable(
+        name: name,
+        value: ResolvedVariable.fromInstance(value),
+      );
+    });
+  }
+}
 
 sealed class ResolvedVariable implements VariableRef {
   const ResolvedVariable();
@@ -563,37 +605,48 @@ final class UnknownObjectVariable extends ResolvedVariable
     implements UnknownObjectVariableRef {
   UnknownObjectVariable._(Instance ref)
     : type = ref.classRef!.name!,
-      identityHashCode = ref.identityHashCode;
-  // ,
-  // children = [for (final field in ref.fields ?? <BoundField>[]) 42];
+      identityHashCode = ref.identityHashCode,
+      children = [
+        for (final field in ref.fields ?? <BoundField>[])
+          Byte<InstanceRef>.of(
+            field.value,
+          ).map((ref) => _FieldVariableRefImpl(field, ref)),
+      ];
 
   final String type;
   final int? identityHashCode;
-
-  // @override
-  // final List<Byte<FieldVariableRef>> children;
+  @override
+  final List<Byte<FieldVariableRef>> children;
 }
 
-// final class FieldVariable extends ResolvedVariable
-//     with _SelfResolvedVariable<FieldVariable>
-//     implements FieldVariableRef {
-//   FieldVariable._(BoundField);
+final class FieldVariable extends ResolvedVariable
+    with _SelfResolvedVariable<FieldVariable>
+    implements FieldVariableRef {
+  FieldVariable({required this.name, required this.value});
 
-//   final FieldKey key;
-//   final Byte<ResolvedVariable> value;
-// }
+  final String name;
+  final ResolvedVariable value;
+}
 
-// sealed class FieldKey {}
+sealed class FieldKey {
+  factory FieldKey.from(Object? key) {
+    return switch (key) {
+      final String value => NamedFieldKey(value),
+      final int value => PositionalFieldKey(value),
+      _ => throw StateError('Field name is neither String nor int: $key'),
+    };
+  }
+}
 
-// final class PositionalFieldKey extends FieldKey {
-//   PositionalFieldKey(this.index);
-//   final int index;
-// }
+final class PositionalFieldKey implements FieldKey {
+  PositionalFieldKey(this.index);
+  final int index;
+}
 
-// final class NamedFieldKey extends FieldKey {
-//   NamedFieldKey(this.name);
-//   final String name;
-// }
+final class NamedFieldKey implements FieldKey {
+  NamedFieldKey(this.name);
+  final String name;
+}
 
 // Allow an exhaustive switch over InstanceKind
 enum _SealedInstanceKind {

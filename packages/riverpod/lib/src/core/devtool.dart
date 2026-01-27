@@ -16,24 +16,36 @@ class RiverpodDevtool {
   static final instance = RiverpodDevtool._();
 
   Frame? _pendingFrame;
-  Timer? _pendingFrameTimer;
 
   final _uniqueOrigins = <ProviderOrFamily, OriginId>{};
   final _uniqueProviders = <ProviderOrFamily, ProviderId>{};
-
   final frames = <Frame>[];
-  void addEvent(Event event) {
+
+  final _cache = <String, Object?>{};
+
+  void deleteCache(String key) => _cache.remove(key);
+  Object? getCache(String key) => _cache[key];
+  String cache(Object? obj) {
+    final key = const Uuid().v4();
+    _cache[key] = obj;
+
+    return key;
+  }
+
+  void addEvent(ProviderContainer container, Event event) {
     if (_pendingFrame == null) {
       final newFrame = _pendingFrame = Frame();
-      _pendingFrameTimer = Timer(Duration.zero, () {
+
+      void onEvent() {
         frames.add(newFrame);
         newFrame.index = frames.length - 1;
         _pendingFrame = null;
-        _pendingFrameTimer = null;
 
         final notification = NewEventNotification(frames.length - 1);
         debugPostEvent(notification);
-      });
+      }
+
+      container.scheduler.debugScheduleFrame(onEvent);
     }
 
     _pendingFrame!.events.add(event);
@@ -262,15 +274,33 @@ final class _DevtoolObserver extends ProviderObserver {
   const _DevtoolObserver();
 
   @override
+  void didCreateProviderContainer(ProviderContainer container) {
+    RiverpodDevtool.instance.addEvent(
+      container,
+      ProviderContainerAddEvent(container),
+    );
+  }
+
+  @override
+  void didDisposeProviderContainer(ProviderContainer container) {
+    RiverpodDevtool.instance.addEvent(
+      container,
+      ProviderContainerDisposeEvent(container),
+    );
+  }
+
+  @override
   void didAddProvider(ProviderObserverContext context, Object? value) {
     RiverpodDevtool.instance.addEvent(
+      context.container,
       ProviderElementAddEvent(context._element),
     );
   }
 
   @override
-  void didDisposeProvider(ProviderObserverContext context) {
+  void didUnmountProvider(ProviderObserverContext context) {
     RiverpodDevtool.instance.addEvent(
+      context.container,
       ProviderElementDisposeEvent(context._element),
     );
   }
@@ -282,6 +312,7 @@ final class _DevtoolObserver extends ProviderObserver {
     Object? newValue,
   ) {
     RiverpodDevtool.instance.addEvent(
+      context.container,
       ProviderElementUpdateEvent(context._element),
     );
   }
