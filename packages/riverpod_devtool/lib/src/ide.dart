@@ -34,3 +34,19 @@ Future<void> openTraceInIDE(MutationTarget target, Trace trace) async {
       ''');
   });
 }
+
+Future<void> inspectInIDE(MutationTarget target, VariableRef variable) async {
+  final id = variable.ref?.id;
+  if (id == null) return;
+
+  final mutation = Mutation<void>();
+  await mutation.run(target, (tsx) async {
+    final eval = await tsx.get(riverpodFrameworkEvalProvider.future);
+
+    await eval.evalInstance(
+      isAlive: Disposable(),
+      'inspectInIDE(that)',
+      scope: {'that': id},
+    );
+  });
+}

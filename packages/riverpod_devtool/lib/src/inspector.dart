@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/misc.dart';
+import 'package:vm_service/vm_service.dart';
 
 import 'tree_list.dart';
 import 'vm_service.dart';
@@ -18,11 +19,8 @@ class Inspector extends ConsumerStatefulWidget {
 class _InspectorState extends ConsumerState<Inspector> {
   @override
   Widget build(BuildContext context) {
-    return SelectableRegion(
-      selectionControls: materialTextSelectionControls,
-      child: CustomScrollView(
-        slivers: [SliverVariableTree(byte: widget.variable)],
-      ),
+    return CustomScrollView(
+      slivers: [SliverVariableTree(byte: widget.variable)],
     );
   }
 }
@@ -98,6 +96,8 @@ _ClosingNode? _resolveClosingNode(
           return _resolveClosingNode(instance.value, isOpen, level);
         case ListVariable():
           return _ClosingNode(symbol: ']', variable: variable, level: level);
+        case SetVariable():
+          return _ClosingNode(symbol: '}', variable: variable, level: level);
         case UnknownObjectVariable():
         case NullVariable():
         case BoolVariable():
@@ -105,6 +105,8 @@ _ClosingNode? _resolveClosingNode(
         case IntVariable():
         case DoubleVariable():
         case TypeVariable():
+        case RecordVariable():
+          return null;
       }
   }
 }
@@ -123,15 +125,37 @@ _variableNodeForByteProvider = .new(
 
     final closingNode = _resolveClosingNode(variable, isOpen, level);
 
-    final children = switch (variable) {
-      null || ByteSentinel<ResolvedVariable>() => const <_VariableNode>[],
-      ByteVariable<ResolvedVariable>(:final instance) => [
-        for (final child in instance.children)
-          if (isOpen)
-            ref.watch(_variableNodeForByteProvider((child, level + 1))),
-        ?closingNode,
-      ],
-    };
+    List<_VariableNode> children;
+    switch (variable) {
+      case null || ByteSentinel<ResolvedVariable>():
+      case _ when !isOpen:
+        children = const <_VariableNode>[];
+      case ByteVariable<ResolvedVariable>(:final instance):
+        children = instance.children
+            .map((child) {
+              final childNode = ref.watch(
+                _variableNodeForByteProvider((child, level + 1)),
+              );
+
+              switch (childNode) {
+                case _ByteNode(variable: == null):
+                  return null;
+                case _ClosingNode():
+                case _ByteNode():
+                  return childNode;
+              }
+            })
+            .nonNulls
+            .toList();
+
+        // Wait for all children to be resolved before we show any.
+        // This avoids flickering when opening nodes
+        if (children.length != instance.children.length) children = const [];
+
+        if (children.isNotEmpty && closingNode != null) {
+          children.add(closingNode);
+        }
+    }
 
     return _ByteNode(
       byte: byte,
@@ -244,6 +268,9 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
                       (nodes) => nodes.contains(node.byte),
                     ),
                   ),
+                  initialize: () {
+                    // TODO
+                  },
                   open: () => openNotifier.toggle(node.byte),
                 ),
               },
@@ -261,18 +288,28 @@ class _ByteTile extends StatelessWidget {
     required this.byte,
     required this.isOpen,
     required this.open,
+    required this.initialize,
     required this.shouldShowExpansible,
   });
 
   final Byte<ResolvedVariable> byte;
   final bool isOpen;
   final void Function() open;
+  final void Function() initialize;
   final bool shouldShowExpansible;
 
   @override
   Widget build(BuildContext context) {
     return switch (byte) {
-      ByteSentinel<ResolvedVariable>(:final sentinel) => Text.rich(
+      ByteSentinel(sentinel: Sentinel(kind: SentinelKind.kNotInitialized)) =>
+        InkWell(
+          onTap: initialize,
+          child: const Text(
+            '<not initialized>',
+            style: TextStyle(color: _NodeTileTheme.sentinelColor),
+          ),
+        ),
+      ByteSentinel(:final sentinel) => Text.rich(
         TextSpan(
           text:
               sentinel.valueAsString ??
@@ -280,10 +317,11 @@ class _ByteTile extends StatelessWidget {
           style: const TextStyle(color: _NodeTileTheme.sentinelColor),
         ),
       ),
-      ByteVariable<ResolvedVariable>(:final instance) => _ResolvedVariableTile(
+      ByteVariable(:final instance) => _ResolvedVariableTile(
         variable: instance,
         isOpen: isOpen,
         open: open,
+        initialize: initialize,
         shouldShowExpansible: shouldShowExpansible,
       ),
     };
@@ -296,12 +334,14 @@ class _ResolvedVariableTile extends StatelessWidget {
     required this.variable,
     required this.isOpen,
     required this.open,
+    required this.initialize,
     required this.shouldShowExpansible,
   });
 
   final ResolvedVariable variable;
   final bool isOpen;
   final void Function() open;
+  final void Function() initialize;
   final bool shouldShowExpansible;
 
   @override
@@ -333,19 +373,28 @@ class _ResolvedVariableTile extends StatelessWidget {
           style: const TextStyle(color: _NodeTileTheme.numColor),
         );
 
-      case FieldVariable():
+      case FieldVariable(key: NamedFieldKey(:final name)):
         content = Row(
           children: [
-            Text('${variable.name}: '),
+            Text('$name: '),
             Expanded(
               child: _ByteTile(
                 byte: variable.value,
                 isOpen: isOpen,
                 open: open,
+                initialize: initialize,
                 shouldShowExpansible: false,
               ),
             ),
           ],
+        );
+      case FieldVariable(key: PositionalFieldKey()):
+        content = _ByteTile(
+          byte: variable.value,
+          isOpen: isOpen,
+          open: open,
+          initialize: initialize,
+          shouldShowExpansible: false,
         );
 
       case TypeVariable(:final name):
@@ -358,12 +407,26 @@ class _ResolvedVariableTile extends StatelessWidget {
         content = Text.rich(
           TextSpan(
             children: [
+              const TextSpan(text: '['),
               TextSpan(
-                text: 'length=${children.length} ',
+                text: ' length=${children.length} ',
                 style: const TextStyle(color: _NodeTileTheme.hashColor),
               ),
-              const TextSpan(text: '['),
-              if (!isOpen) const TextSpan(text: ' ]'),
+              if (!isOpen) const TextSpan(text: ']'),
+            ],
+          ),
+        );
+
+      case SetVariable(:final children):
+        content = Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(text: '{'),
+              TextSpan(
+                text: ' length=${children.length} ',
+                style: const TextStyle(color: _NodeTileTheme.hashColor),
+              ),
+              if (!isOpen) const TextSpan(text: '}'),
             ],
           ),
         );
@@ -384,11 +447,21 @@ class _ResolvedVariableTile extends StatelessWidget {
             ],
           ),
         );
+
+      case RecordVariable():
+        content = const Text(
+          'Record',
+          style: TextStyle(color: _NodeTileTheme.typeColor),
+        );
     }
 
     if (variable.children.isEmpty || !shouldShowExpansible) return content;
 
-    return _ExpansibleTile(isExpanded: isOpen, onPressed: open, child: content);
+    return _ExpansibleTile(
+      isExpanded: isOpen,
+      onPressed: open,
+      child: InkWell(onTap: open, child: content),
+    );
   }
 }
 

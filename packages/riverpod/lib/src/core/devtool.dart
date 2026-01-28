@@ -1,6 +1,13 @@
 part of '../framework.dart';
 
 @internal
+void inspectInIDE(Object? obj) {
+  // Hello there!
+  // Inspect "obj" in your IDE to view the content of whatever you're looking at.
+  dev.debugger();
+}
+
+@internal
 void openInIDE({required String uri, required int line, required int column}) {
   developer.postEvent('navigate', stream: 'ToolEvent', {
     'fileUri': uri,

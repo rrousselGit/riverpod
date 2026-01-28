@@ -357,22 +357,24 @@ sealed class VariableRef {
         return BoolVariable._(ref);
       case .nill:
         return NullVariable._();
-
       case .type:
         return _TypeVariableRefImpl(ref);
-
       case .list:
         return _ListVariableRefImpl(ref);
+      case .record:
+        return _RecordVariableRefImpl(ref);
+      case .set:
+        return _SetVariableRefImpl(ref);
 
       case .map:
-      case .set:
-      case .record:
       // TODO
 
       case .object:
         return _UnknownObjectVariableRefImpl(ref);
     }
   }
+
+  InstanceRef? get ref;
 
   Future<Byte<ResolvedVariable>> resolve(
     Future<Eval> Function(String uri) eval,
@@ -381,10 +383,10 @@ sealed class VariableRef {
 }
 
 base class _EvaluatedVariableRef {
-  _EvaluatedVariableRef(this._ref);
-  final InstanceRef _ref;
+  _EvaluatedVariableRef(this.ref);
+  final InstanceRef ref;
 
-  String get _evalUri => _ref.classRef!.library!.uri!;
+  String get _evalUri => ref.classRef!.library!.uri!;
 
   Future<Byte<T>> _eval<T extends ResolvedVariable>(
     Future<Eval> Function(String uri) eval,
@@ -405,7 +407,7 @@ base class _EvaluatedVariableRef {
     Disposable isAlive,
   ) {
     return _eval(eval, isAlive, (evalInstance) async {
-      final instance = await evalInstance.instance(_ref, isAlive: isAlive);
+      final instance = await evalInstance.instance(ref, isAlive: isAlive);
       final variable = ResolvedVariable.fromInstance(instance);
 
       if (variable is! T) {
@@ -465,7 +467,7 @@ final class _StringVariableRefImpl extends _EvaluatedVariableRef
     Disposable isAlive,
   ) async {
     if (!isTruncated) {
-      return ByteVariable(StringVariable._2(value: truncatedValue));
+      return ByteVariable(StringVariable._2(ref, value: truncatedValue));
     }
 
     return _resolveInstance(eval, isAlive);
@@ -534,6 +536,48 @@ final class _ListVariableRefImpl extends _EvaluatedVariableRef
   }
 }
 
+abstract class RecordVariableRef implements VariableRef {
+  @override
+  Future<Byte<RecordVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  );
+}
+
+final class _RecordVariableRefImpl extends _EvaluatedVariableRef
+    implements VariableRef {
+  _RecordVariableRefImpl(super._ref);
+
+  @override
+  Future<Byte<RecordVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  ) {
+    return _resolveInstance(eval, isAlive);
+  }
+}
+
+abstract class SetVariableRef implements VariableRef {
+  @override
+  Future<Byte<SetVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  );
+}
+
+final class _SetVariableRefImpl extends _EvaluatedVariableRef
+    implements VariableRef {
+  _SetVariableRefImpl(super._ref);
+
+  @override
+  Future<Byte<SetVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  ) {
+    return _resolveInstance(eval, isAlive);
+  }
+}
+
 abstract class UnknownObjectVariableRef implements VariableRef {
   @override
   Future<Byte<UnknownObjectVariable>> resolve(
@@ -576,15 +620,10 @@ final class _FieldVariableRefImpl extends _EvaluatedVariableRef
     Disposable isAlive,
   ) {
     return _eval(eval, isAlive, (eval) async {
-      final name = switch (_field.name) {
-        final String value => value,
-        _ => throw StateError('Field name is not a String: ${_field.name}'),
-      };
-
       final value = Byte.instanceRef(_field.value);
 
       return FieldVariable(
-        name: name,
+        key: FieldKey.from(_field.name),
         value: switch (value) {
           ByteVariable<InstanceRef>() => await eval.instance2(
             value.instance,
@@ -616,16 +655,17 @@ sealed class ResolvedVariable implements VariableRef {
         return BoolVariable._(instance);
       case .nill:
         return NullVariable._();
-
       case .type:
         return TypeVariable._(instance);
-
       case .list:
         return ListVariable._(instance);
-      case .map:
-      case .set:
       case .record:
+        return RecordVariable._(instance);
+      case .set:
+        return SetVariable._(instance);
+
       case .object:
+      case .map:
         return UnknownObjectVariable._(instance);
     }
   }
@@ -653,22 +693,27 @@ final class NullVariable extends ResolvedVariable
     with _SelfResolvedVariable<NullVariable>
     implements NullVariableRef {
   NullVariable._();
+
+  @override
+  InstanceRef? get ref => null;
 }
 
 final class BoolVariable extends ResolvedVariable
     with _SelfResolvedVariable<BoolVariable>
     implements BoolVariableRef {
-  BoolVariable._(InstanceRef ref) : value = ref.valueAsString! == 'true';
+  BoolVariable._(this.ref) : value = ref.valueAsString! == 'true';
   @override
   final bool value;
+  @override
+  final InstanceRef ref;
 }
 
 final class StringVariable extends ResolvedVariable
     with _SelfResolvedVariable<StringVariable>
     implements StringVariableRef {
-  StringVariable._2({required this.value});
-  StringVariable._(Instance instance) : value = instance.valueAsString! {
-    if (instance.valueAsStringIsTruncated ?? false) {
+  StringVariable._2(this.ref, {required this.value});
+  StringVariable._(this.ref) : value = ref.valueAsString! {
+    if (ref.valueAsStringIsTruncated ?? false) {
       throw StateError('String value is truncated');
     }
   }
@@ -679,51 +724,93 @@ final class StringVariable extends ResolvedVariable
   bool get isTruncated => false;
   @override
   String get truncatedValue => value;
+  @override
+  final InstanceRef ref;
 }
 
 final class IntVariable extends ResolvedVariable
     with _SelfResolvedVariable<IntVariable>
     implements VariableRef, IntVariableRef {
-  IntVariable._(InstanceRef ref) : value = int.parse(ref.valueAsString!);
+  IntVariable._(this.ref) : value = int.parse(ref.valueAsString!);
   @override
   final int value;
+  @override
+  final InstanceRef ref;
 }
 
 final class DoubleVariable extends ResolvedVariable
     with _SelfResolvedVariable<DoubleVariable>
     implements DoubleVariableRef, VariableRef {
-  DoubleVariable._(InstanceRef ref) : value = double.parse(ref.valueAsString!);
+  DoubleVariable._(this.ref) : value = double.parse(ref.valueAsString!);
 
   @override
   final double value;
+  @override
+  final InstanceRef ref;
 }
 
 final class ListVariable extends ResolvedVariable
     with _SelfResolvedVariable<ListVariable>
     implements ListVariableRef, VariableRef {
-  ListVariable._(Instance instance)
+  ListVariable._(this.ref)
     : children = [
-        ...instance.elements!
+        ...ref.elements!
             .map(Byte.instanceRef)
             .map((byte) => byte.map(VariableRef.fromInstanceRef)),
       ];
 
   @override
   final List<Byte<VariableRef>> children;
+  @override
+  final Instance ref;
+}
+
+final class RecordVariable extends ResolvedVariable
+    with _SelfResolvedVariable<RecordVariable>
+    implements RecordVariableRef {
+  RecordVariable._(this.ref)
+    : children = [
+        ...ref.fields!
+            .map((field) => _FieldVariableRefImpl(field, object: ref))
+            .map(ByteVariable.new),
+      ];
+
+  @override
+  final List<Byte<FieldVariableRef>> children;
+  @override
+  final Instance ref;
+}
+
+final class SetVariable extends ResolvedVariable
+    with _SelfResolvedVariable<SetVariable>
+    implements VariableRef {
+  SetVariable._(this.ref)
+    : children = [
+        ...ref.elements!
+            .map(Byte.instanceRef)
+            .map((byte) => byte.map(VariableRef.fromInstanceRef)),
+      ];
+
+  @override
+  final List<Byte<VariableRef>> children;
+  @override
+  final Instance ref;
 }
 
 final class TypeVariable extends ResolvedVariable
     with _SelfResolvedVariable<TypeVariable>
     implements TypeVariableRef {
-  TypeVariable._(Instance instance) : name = instance.name!;
+  TypeVariable._(this.ref) : name = ref.name!;
 
   final String name;
+  @override
+  final InstanceRef ref;
 }
 
 final class UnknownObjectVariable extends ResolvedVariable
     with _SelfResolvedVariable<UnknownObjectVariable>
     implements UnknownObjectVariableRef {
-  UnknownObjectVariable._(Instance ref)
+  UnknownObjectVariable._(this.ref)
     : type = ref.classRef!.name!,
       identityHashCode = ref.identityHashCode,
       children = [
@@ -735,15 +822,23 @@ final class UnknownObjectVariable extends ResolvedVariable
   final int? identityHashCode;
   @override
   final List<ByteVariable<FieldVariableRef>> children;
+  @override
+  final Instance ref;
 }
 
 final class FieldVariable extends ResolvedVariable
     with _SelfResolvedVariable<FieldVariable>
     implements FieldVariableRef {
-  FieldVariable({required this.name, required this.value});
+  FieldVariable({required this.key, required this.value});
 
-  final String name;
+  final FieldKey key;
   final Byte<ResolvedVariable> value;
+
+  @override
+  InstanceRef? get ref => switch (value) {
+    ByteVariable<ResolvedVariable>(:final instance) => instance.ref,
+    ByteSentinel<ResolvedVariable>() => null,
+  };
 
   @override
   List<Byte<VariableRef>> get children => switch (value) {
