@@ -31,6 +31,20 @@ or on [Zapp](https://zapp.run/new):
 
 Riverpod comes as a main "riverpod" package that’s self-sufficient, complemented by optional packages for using code generation (<Link documentID="concepts/about_code_generation" />) and hooks (<Link documentID="concepts/about_hooks" />).
 
+:::caution
+For the sake of being compatible with the latest [json_serializable](https://pub.dev/packages/json_serializable) package, some Riverpod packages
+are currently only compatible with Flutter's beta channel or later.
+
+If `pub get` is failing due to version solving issues, consider switching to the beta channel by running:
+
+```sh
+flutter channel beta
+```
+
+Or consider downgrading Riverpod to `<3.1.0`.
+:::
+
+
 Once you know what package(s) you want to install, proceed to add the dependency to your app in a single line like this:
 
 <Tabs
