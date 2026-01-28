@@ -16,7 +16,7 @@ part 'vm_service.g.dart';
 @immutable
 sealed class Byte<T> {
   const Byte();
-  factory Byte.of(Object? obj) {
+  factory Byte._of(Object? obj) {
     switch (obj) {
       case Sentinel():
         return ByteSentinel(obj);
@@ -26,6 +26,9 @@ sealed class Byte<T> {
         throw ArgumentError('Object $obj is neither a Sentinel nor a $T');
     }
   }
+
+  static Byte<InstanceRef> instanceRef(Object? ref) => Byte._of(ref);
+  static Byte<Instance> instance(Object? instance) => Byte._of(instance);
 
   ByteVariable<T> get require {
     switch (this) {
@@ -275,12 +278,29 @@ class Eval {
     return instance(ref, isAlive: isAlive);
   }
 
+  @Deprecated('use instance2')
   Future<Instance> instance(
     InstanceRef ref, {
     required Disposable isAlive,
   }) async {
     final res = await _eval.getInstance(ref, isAlive);
     return res!;
+  }
+
+  Future<Byte<ResolvedVariable>> instance2(
+    InstanceRef ref, {
+    required Disposable isAlive,
+  }) async {
+    try {
+      print('Get instance for $ref');
+      final res = await _eval.safeGetInstance(ref, isAlive);
+      print(' For $ref got $res');
+
+      return ByteVariable(ResolvedVariable.fromInstance(res));
+    } on SentinelException catch (e) {
+      print(' For $ref got sentinel ${e.sentinel}');
+      return ByteSentinel(e.sentinel);
+    }
   }
 
   Future<Class> getClass(ClassRef ref, {required Disposable isAlive}) async {
@@ -545,7 +565,8 @@ abstract class FieldVariableRef implements VariableRef {
 
 final class _FieldVariableRefImpl extends _EvaluatedVariableRef
     implements FieldVariableRef {
-  _FieldVariableRefImpl(this._field, InstanceRef value) : super(value);
+  _FieldVariableRefImpl(this._field, {required InstanceRef object})
+    : super(object);
 
   final BoundField _field;
 
@@ -555,15 +576,22 @@ final class _FieldVariableRefImpl extends _EvaluatedVariableRef
     Disposable isAlive,
   ) {
     return _eval(eval, isAlive, (eval) async {
-      final value = await eval.instance(_ref, isAlive: isAlive);
       final name = switch (_field.name) {
         final String value => value,
         _ => throw StateError('Field name is not a String: ${_field.name}'),
       };
 
+      final value = Byte.instanceRef(_field.value);
+
       return FieldVariable(
         name: name,
-        value: ResolvedVariable.fromInstance(value),
+        value: switch (value) {
+          ByteVariable<InstanceRef>() => await eval.instance2(
+            value.instance,
+            isAlive: isAlive,
+          ),
+          ByteSentinel<InstanceRef>() => ByteSentinel(value.sentinel),
+        },
       );
     });
   }
@@ -640,7 +668,7 @@ final class StringVariable extends ResolvedVariable
     implements StringVariableRef {
   StringVariable._2({required this.value});
   StringVariable._(Instance instance) : value = instance.valueAsString! {
-    if (instance.valueAsStringIsTruncated!) {
+    if (instance.valueAsStringIsTruncated ?? false) {
       throw StateError('String value is truncated');
     }
   }
@@ -674,17 +702,14 @@ final class ListVariable extends ResolvedVariable
     with _SelfResolvedVariable<ListVariable>
     implements ListVariableRef, VariableRef {
   ListVariable._(Instance instance)
-    : items = [
+    : children = [
         ...instance.elements!
-            .map(Byte<InstanceRef>.of)
+            .map(Byte.instanceRef)
             .map((byte) => byte.map(VariableRef.fromInstanceRef)),
-      ],
-      type = VariableRef.fromInstanceRef(
-        instance.classRef!.typeParameters!.single,
-      );
+      ];
 
-  final List<Byte<VariableRef>> items;
-  final VariableRef type;
+  @override
+  final List<Byte<VariableRef>> children;
 }
 
 final class TypeVariable extends ResolvedVariable
@@ -703,15 +728,13 @@ final class UnknownObjectVariable extends ResolvedVariable
       identityHashCode = ref.identityHashCode,
       children = [
         for (final field in ref.fields ?? <BoundField>[])
-          Byte<InstanceRef>.of(
-            field.value,
-          ).map((ref) => _FieldVariableRefImpl(field, ref)),
+          ByteVariable(_FieldVariableRefImpl(field, object: ref)),
       ];
 
   final String type;
   final int? identityHashCode;
   @override
-  final List<Byte<FieldVariableRef>> children;
+  final List<ByteVariable<FieldVariableRef>> children;
 }
 
 final class FieldVariable extends ResolvedVariable
@@ -720,7 +743,13 @@ final class FieldVariable extends ResolvedVariable
   FieldVariable({required this.name, required this.value});
 
   final String name;
-  final ResolvedVariable value;
+  final Byte<ResolvedVariable> value;
+
+  @override
+  List<Byte<VariableRef>> get children => switch (value) {
+    ByteVariable<ResolvedVariable>(:final instance) => instance.children,
+    ByteSentinel<ResolvedVariable>() => const [],
+  };
 }
 
 sealed class FieldKey {

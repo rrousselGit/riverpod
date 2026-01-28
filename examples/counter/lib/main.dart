@@ -62,7 +62,7 @@ class _HomeState extends ConsumerState<Home> {
             },
             child: Text(show ? 'Hide' : 'Show'),
           ),
-          Text(ref.watch(complexProvider).value.toString()),
+          Text(ref.watch(complexProvider).nbr.toString()),
           Text(ref.watch(fam(42)).toString()),
           Text(ref.watch(fam(21)).toString()),
         ],
@@ -81,8 +81,11 @@ final complexProvider = Provider<Complex>((ref) {
 });
 
 class Complex {
-  Complex(this.value);
-  final int value;
+  Complex(this.nbr);
+  final int nbr;
+  final String str = 'Hello "John" and Mary\'s friend';
+  final bool boolean = true;
+  final double decimal = 3.14;
 
   Complex get recursion => this;
 
