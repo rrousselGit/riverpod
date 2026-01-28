@@ -1,0 +1,371 @@
+---
+title: الانتقال من الإصدار 2.0 إلى 3.0
+---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import { AutoSnippet } from "/src/components/CodeSnippet";
+
+للحصول على قائمة التغييرات، يرجى الرجوع إلى صفحة [ما الجديد في Riverpod 3.0](https://www.google.com/search?q=whats_new).
+
+يقدم الإصدار Riverpod 3.0 عدداً من التغييرات الجذرية (breaking changes) التي قد تتطلب منك تحديث الكود الخاص بك.
+ينبغي أن تكون هذه التغييرات طفيفة نسبياً بشكل عام، لكننا نوصيك بقراءة هذه الصفحة بعناية.
+
+:::info
+من المفترض أن تكون عملية الانتقال هذه سلسة.
+إذا كان هناك أي شيء غير واضح، أو إذا واجهت سيناريو يصعب ترحيله، يرجى [فتح مشكلة](https://github.com/rrousselGit/riverpod/issues/new/choose).
+
+من المهم بالنسبة لنا أن يكون الانتقال سلساً قدر الإمكان، لذلك سنبذل قصارى جهدنا لمساعدتك، وتحسين دليل الانتقال، أو حتى تضمين أدوات مساعدة (helpers) لجعل العملية أسهل.
+:::
+
+## إعادة المحاولة التلقائية
+
+يقوم Riverpod 3.0 الآن [بإعادة المحاولة تلقائياً](https://www.google.com/search?q=./whats_new.mdx%23automatic-retry) للـ providers التي تفشل، وذلك بشكل افتراضي.
+هذا يعني أنه إذا فشل provider في حساب قيمته، فسيقوم بإعادة المحاولة تلقائياً حتى ينجح.
+
+بشكل عام، هذا أمر جيد لأنه يجعل تطبيقك أكثر مرونة في مواجهة الأخطاء العابرة (transient errors).
+ومع ذلك، قد ترغب في تعطيل أو تخصيص هذا السلوك في بعض الحالات.
+
+لتعطيل إعادة المحاولة التلقائية بشكل عام (globally)، يمكنك فعل ذلك في `ProviderContainer`/`ProviderScope`:
+
+
+<Tabs>
+<TabItem value="ProviderScope" label="ProviderScope" defaultValue>
+
+```dart
+void main() {
+  runApp(
+    ProviderScope(
+     // لا تقم بإعادة المحاولة لأي provider مطلقاً
+      retry: (retryCount, error) => null,
+      child: MyApp(),
+    ),
+  );
+}
+```
+
+</TabItem>
+<TabItem value="ProviderContainer" label="ProviderContainer" defaultValue>
+
+```dart
+void main() {
+  final container = ProviderContainer(
+    // لا تقم بإعادة المحاولة لأي provider مطلقاً
+    retry: (retryCount, error) => null,
+  );
+}
+```
+
+</TabItem>
+</Tabs>
+
+بدلاً من ذلك، يمكنك تعطيل إعادة المحاولة التلقائية لكل provider على حدة باستخدام المعامل `retry` الخاص بالـ provider:
+<AutoSnippet
+  language="dart"
+  codegen={`
+    // لا تقم بإعادة المحاولة لهذا الـ provider مطلقاً
+  Duration? retry(int retryCount, Object error) => null;
+  
+  @Riverpod(retry: retry)
+  class TodoList extends _$TodoList {
+    @override
+    List<Todo> build() => [];
+  }
+  `}
+  
+  raw={`
+  final todoListProvider = NotifierProvider<TodoList, List<Todo>>(
+    TodoList.new,
+    // لا تقم بإعادة المحاولة لهذا الـ provider مطلقاً
+    retry: (retryCount, error) => null,
+  );
+  `}
+></AutoSnippet>
+
+## إيقاف الـ providers غير الظاهرة مؤقتاً
+
+في Riverpod 3.0، [يتم إيقاف الـ providers غير الظاهرة مؤقتاً بشكل افتراضي](https://www.google.com/search?q=./whats_new.mdx%23listeners-inside-widgets-that-are-not-visible-are-now-paused).
+
+لا توجد حالياً طريقة لتعطيل هذا السلوك بشكل عام، ولكن يمكنك التحكم في سلوك الإيقاف المؤقت هذا على مستوى الـ consumer باستخدام الـ widget [TickerMode].
+
+```dart
+class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return TickerMode(
+      enabled: true, // لا تقم بإيقاف أي مستمع تابع (descendant) مؤقتاً أبداً.
+      child: Consumer(
+        builder: (context, ref, child) {
+        // عملية "watch" 
+        // هذه لن تتبع سلوك الإيقاف المؤقت التلقائي حتى تتم إزالة 
+        // `TickerMode`.
+          final value = ref.watch(myProvider);
+          return Text(value.toString());
+        },
+      ),
+    );
+  }
+}
+```
+
+## تم نقل StateProvider و StateNotifierProvider و ChangeNotifierProvider إلى مسار استيراد جديد
+
+في Riverpod 3.0، تُعتبر كل من `StateProvider` و `StateNotifierProvider` و `ChangeNotifierProvider` "إرثاً قديماً" (legacy).
+لم يتم حذفها، لكنها لم تعد جزءاً من الـ API الرئيسي. ويأتي هذا الإجراء لعدم التشجيع على استخدامها لصالح الـ API الجديد `Notifier`.
+
+للاستمرار في استخدامها، عليك تغيير جمل الاستيراد (imports) لديك إلى أحد الخيارات التالية:
+
+```dart
+import 'package:hooks_riverpod/legacy.dart';
+import 'package:flutter_riverpod/legacy.dart';
+import 'package:riverpod/legacy.dart';
+```
+
+## تستخدم جميع الـ providers الآن `==` لترشيح التحديثات
+
+في السابق، لم تكن Riverpod متسقة في كيفية ترشيح (filter) التحديثات للـ providers.
+فقد كانت بعض الـ providers تستخدم `==` لترشيح التحديثات، بينما كانت أخرى تستخدم `identical`.
+في Riverpod 3.0، [تستخدم جميع الـ providers الآن `==` لترشيح التحديثات](https://www.google.com/search?q=./whats_new.mdx%23all-updateshouldnotify-now-use-).
+
+السيناريو الأكثر احتمالاً لتأثرك بهذا التغيير هو عند استخدام [StreamProvider]/[StreamNotifier]، حيث سيتم الآن ترشيح قيم الـ stream بناءً على `==`.
+إذا لزم الأمر، يمكنك تجاوز (override) التابع `Notifier.updateShouldNotify` لتخصيص هذا السلوك.
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+  @riverpod
+  class TodoList extends _$TodoList {
+    @override
+    Stream<Todo> build() => Stream(...);
+  
+    @override
+    bool updateShouldNotify(AsyncValue<Todo> previous, AsyncValue<Todo> next) {
+      // تنفيذ مخصص      
+      return true;
+    }
+  }
+  `}
+  
+  raw={`
+  class TodoList extends StreamNotifier<Todo> {
+    @override
+    Stream<Todo> build() => Stream(...);
+  
+    @override
+    bool updateShouldNotify(AsyncValue<Todo> previous, AsyncValue<Todo> next) {
+      // تنفيذ مخصص      
+      return true;
+    }
+  }
+  `}
+></AutoSnippet>
+
+
+في الحالات التي لم تستخدم فيها `Notifier`، يمكنك إعادة هيكلة الـ provider إلى نظيره المكافئ من نوع Notifier (مثل تحويل [StreamProvider] إلى [StreamNotifierProvider]).
+
+
+## تم تغيير واجهة ProviderObserver قليلاً
+
+من أجل [التحورات (mutations)](https://www.google.com/search?q=./whats_new.mdx%23mutations)، شهدت واجهة [ProviderObserver] تغييراً طفيفاً.
+
+بدلاً من وجود وسيطين (parameters) منفصلين لكل من [ProviderContainer] و [ProviderBase]، يتم الآن تمرير كائن `ProviderObserverContext` واحد.
+يحتوي هذا الكائن على الحاوية (container)، والـ provider، ومعلومات إضافية (مثل الـ mutation المرتبط).
+
+لإجراء عملية الانتقال، تحتاج إلى تحديث جميع توابع (methods) المراقبين (observers) لديك على النحو التالي:
+
+```diff
+class MyObserver extends ProviderObserver {
+  @override
+-  void didAddProvider(ProviderBase provider, Object? value, ProviderContainer container) {
++  void didAddProvider(ProviderObserverContext context, Object? value) {
+    // ...
+  }
+}
+```
+
+## تبسيط Ref وإزالة الـ subclasses الخاصة به
+
+بهدف التبسيط، لم يعد [Ref] يحتوي على معامل النوع (type parameter)، وتم نقل جميع الخصائص/التوابع التي كانت تستخدم هذا المعامل إلى الـ [Notifier]s.
+
+على وجه التحديد، يجب استبدال `ProviderRef.state` و `Ref.listenSelf` و `FutureProviderRef.future` بـ `Notifier.state` و `Notifier.listenSelf` و `AsyncNotifier.future` على التوالي.
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+  // قبل:
+  @riverpod
+  Future<int> value(ValueRef ref) async {
+    ref.listen(anotherProvider, (previous, next) {
+      ref.state++;
+    });
+    
+    ref.listenSelf((previous, next) {
+      print('Log: $previous -> $next');
+    });
+    
+    ref.future.then((value) {
+      print('Future: $value');
+    });
+  
+    return 0;
+  }
+  
+  // بعد
+  @riverpod
+  class Value extends _$Value {
+    @override
+    Future<int> build() async {
+      ref.listen(anotherProvider, (previous, next) {
+        ref.state++;
+      });
+    
+      listenSelf((previous, next) {
+        print('Log: $previous -> $next');
+      });
+    
+      future.then((value) {
+        print('Future: $value');
+      });
+    
+      return 0;
+    }
+  }
+  `}
+  
+  raw={`
+  // قبل:
+  final valueProvider = FutureProvider<int>((ref) async {
+    ref.listen(anotherProvider, (previous, next) {
+      ref.state++;
+    });
+    
+    ref.listenSelf((previous, next) {
+      print('Log: $previous -> $next');
+    });
+    
+    ref.future.then((value) {
+      print('Future: $value');
+    });
+  
+    return 0;
+  });
+  
+  // بعد
+  class Value extends AsyncNotifier<int> {
+    @override
+    Future<int> build() async {
+      ref.listen(anotherProvider, (previous, next) {
+        ref.state++;
+      });
+    
+      listenSelf((previous, next) {
+        print('Log: $previous -> $next');
+      });
+    
+      future.then((value) {
+        print('Future: $value');
+      });
+    
+      return 0;
+    }
+  }
+  final valueProvider = AsyncNotifierProvider<Value, int>(Value.new);
+  `}
+></AutoSnippet>
+
+وبالمثل، تمت إزالة جميع الـ subclasses الخاصة بـ [Ref] (مثل `ProviderRef` و `FutureProviderRef` وغيرها).
+
+يؤثر هذا بشكل أساسي على توليد الكود (code-generation). فبدلاً من `MyProviderRef`، يمكنك الآن استخدام `Ref` مباشرة:
+
+```diff
+@riverpod
+-int example(ExampleRef ref) {
++int example(Ref ref) {
+  // ...
+}
+```
+
+## تمت إزالة واجهات AutoDispose
+
+تم تبسيط ميزة الـ auto-dispose. فبدلاً من الاعتماد على نسخ مكررة من جميع الواجهات، تم توحيد الواجهات. باختصار، بدلاً من `AutoDisposeProvider` و `AutoDisposeNotifier` وما إلى ذلك، أصبح لديك الآن `Provider` و `Notifier`، إلخ. السلوك هو نفسه، ولكن تم تبسيط الـ API.
+
+للانتقال بسهولة، يمكنك إجراء استبدال حساس لحالة الأحرف (case-sensitive) لـ `AutoDispose` بـ (نص فارغ).
+
+## تمت إزالة نسخ Family الخاصة بـ Notifiers
+
+على نفس المنوال كالنقطة السابقة، تمت إزالة نسخ الـ `Family` الخاصة بـ Notifiers.
+الآن، نستخدم فقط `Notifier`/`AsyncNotifier`/`StreamNotifier`، وقد تمت إزالة `FamilyNotifier`/....
+
+لإجراء عملية الانتقال، ستحتاج إلى استبدال:
+- `FamilyNotifier` -> `Notifier`
+- `FamilyAsyncNotifier` -> `AsyncNotifier`
+- `FamilyStreamNotifier` -> `StreamNotifier`
+
+بعد ذلك، ستحتاج إلى:
+
+* إزالة المعامل (parameter) من التابع `build`.
+* إضافة باني (constructor) إلى الـ Notifier الخاص بك.
+
+وفيما يلي مثال على عملية الانتقال هذه:
+
+```diff
+final provider = NotifierProvider.family<CounterNotifier, int, String>(CounterNotifier.new);
+
+-class CounterNotifier extends FamilyNotifier<int, String> {
++class CounterNotifier extends Notifier<int> {
++  CounterNotifier(this.arg);
++  final String arg;
+
+   @override
+-  int build(String arg) {
++  int build() {
+     // استخدم `arg` حسب الحاجة.
+      return 0;
+   }
+}
+```
+
+## أخطاء الـ Provider يُعاد طرحها الآن كـ ProviderExceptions
+
+في Riverpod 3.0، يتم [إعادة طرح جميع أخطاء الـ provider كـ `ProviderException`s](https://www.google.com/search?q=./whats_new.mdx%23when-reading-a-provider-results-in-an-exception-the-error-is-now-wrapped-in-a-providerexception).
+هذا يعني أنه إذا فشل provider في حساب قيمته، فإن قراءته ستؤدي إلى رمي `ProviderException` بدلاً من الخطأ الأصلي.
+
+قد يؤثر هذا عليك إذا كنت تعتمد على نوع الخطأ الأصلي لمعالجة أخطاء محددة.
+لإجراء عملية الانتقال، يمكنك التقاط (catch) الـ `ProviderException` واستخراج الخطأ الأصلي منه:
+
+```diff
+try {
+  await ref.read(myProvider.future);
+-} on NotFoundException {
+-  // معالجة NotFoundException
++} on ProviderException catch (e) {
++  if (e.exception is NotFoundException) {
++    // معالجة NotFoundException
++  }
+}
+```
+
+:::info
+هذا الأمر ضروري فقط إذا كنت تعتمد بشكل صريح على `try`/`catch` لمعالجة مثل هذا الخطأ.
+
+أما إذا كنت تستخدم [AsyncValue] للتحقق من الأخطاء، فلا داعي لتغيير أي شيء:
+
+```dart
+AsyncValue<int> value = ref.watch(myProvider);
+if (value.error is NotFoundException) {
+  // معالجة NotFoundException
+  // لا يزال هذا يعمل اليوم
+}
+```
+:::
+
+
+[TickerMode]: https://api.flutter.dev/flutter/widgets/TickerMode-class.html
+[StreamProvider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamProvider-class.html
+[StreamNotifier]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamNotifier-class.html
+[StreamNotifierProvider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamNotifierProvider.html
+[ProviderObserver]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderObserver-class.html
+[ProviderContainer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderContainer-class.html
+[ProviderBase]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderBase-class.html
+[Ref]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref-class.html
+[Notifier]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Notifier-class.html
+[ProviderException]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderException-class.html

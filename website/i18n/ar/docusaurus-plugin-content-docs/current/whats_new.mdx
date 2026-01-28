@@ -1,0 +1,1400 @@
+---
+title: ما الجديد في Riverpod 3.0
+version: 1
+---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+
+
+مرحباً بك في Riverpod 3.0!
+يتضمن هذا التحديث العديد من الميزات التي طال انتظارها، وإصلاحات للأخطاء، وتبسيطاً للـ API.
+
+تعتبر هذه النسخة مرحلة انتقالية نحو Riverpod أبسط وموحد.
+
+:::caution
+تتضمن هذه النسخة بضعة تغييرات في دورة الحياة (life-cycle). تلك التغييرات قد تؤدي إلى تعطل تطبيقك بطرق خفية، لذا يرجى الترقية بحذر.
+للحصول على دليل الانتقال، يرجى مراجعة [صفحة الانتقال](https://www.google.com/search?q=3.0_migration).
+:::
+
+تتضمن بعض أبرز النقاط الرئيسية ما يلي:
+
+* **[الاستمرارية دون اتصال (Offline persistence) (تجريبي)](https://www.google.com/search?q=%23offline-persistence-experimental)** - يمكن للـ providers الآن تفعيل خيار الحفظ في قاعدة بيانات.
+* **[التحورات (Mutations) (تجريبي)](https://www.google.com/search?q=%23mutations-experimental)** - آلية جديدة لتمكين الواجهات من التفاعل مع الآثار الجانبية (side-effects).
+* **[إعادة المحاولة التلقائية](https://www.google.com/search?q=%23automatic-retry)** - تقوم الـ Providers الآن بالتحديث (refresh) عند الفشل، مع تراجع أسي (exponential backoff).
+* **[`Ref.mounted`](https://www.google.com/search?q=%23refmounted)** - مشابه لـ `BuildContext.mounted`، ولكن خاص بـ `Ref`.
+* **[دعم الـ Generics (في توليد الكود)](https://www.google.com/search?q=%23generic-support-code-generation)** - يمكن للـ providers المُولّدة الآن تعريف معاملات النوع (type parameters).
+* **[دعم الإيقاف المؤقت/الاستئناف](https://www.google.com/search?q=%23pauseresume-support)** - إيقاف المستمع (listener) مؤقتاً عند استخدام `ref.listen`.
+* **[توحيد واجهات برمجة التطبيقات العامة](https://www.google.com/search?q=%23unification-of-the-public-apis)** - تم توحيد السلوكيات ودمج الواجهات المكررة.
+* **[تغييرات دورة حياة Provider](https://www.google.com/search?q=%23provider-life-cycle-changes)** - تعديلات طفيفة على كيفية تصرف الـ providers، لتلائم الكود الحديث بشكل أفضل.
+* **[أدوات اختبار جديدة](https://www.google.com/search?q=%23new-testing-utilities)**:
+* [`ProviderContainer.test`](https://www.google.com/search?q=%23providercontainertest) - أداة اختبار تُنشئ حاوية (container) وتقوم بالتخلص منها (dispose) تلقائياً بعد انتهاء الاختبار.
+* [`NotifierProvider.overrideWithBuild`](https://www.google.com/search?q=%23notifierprovideroverridewithbuild) - طريقة لمحاكاة (mock) `Notifier.build` فقط، دون محاكاة الـ notifier بالكامل.
+* [`Future/StreamProvider.overrideWithValue`](https://www.google.com/search?q=%23futurestreamprovideroverridewithvalue) - عودة الأدوات القديمة.
+* [`WidgetTester.container`](https://www.google.com/search?q=%23widgettestercontainer) - طريقة مساعدة (helper method) للحصول على `ProviderContainer` داخل اختبارات الـ widget.
+* **[تحديد النطاق الآمن (Statically safe scoping)](https://www.google.com/search?q=%23statically-safe-scoping-code-generation-only)** - تمت إضافة قواعد تدقيق (lint rules) جديدة لاكتشاف الحالات التي يكون فيها التجاوز (override) مفقوداً.
+
+
+## الاستمرارية دون اتصال (Offline persistence) (تجريبي)
+
+:::info
+هذه الميزة تجريبية وليست مستقرة بعد.
+إنها قابلة للاستخدام، لكن الـ API قد يتغير بطرق تؤدي لتعطيل الكود (breaking ways) دون إصدار نسخة رئيسية جديدة (major version bump).
+:::
+
+تُعد الاستمرارية دون اتصال ميزة جديدة تتيح تخزين الـ provider مؤقتاً (caching) محلياً على الجهاز.
+عندها، عند إغلاق التطبيق وإعادة فتحه، يمكن استعادة الـ provider من التخزين المؤقت.
+ميزة الاستمرارية دون اتصال اختيارية (opt-in)، وتدعمها جميع الـ providers من نوع "Notifier"، بغض النظر عما إذا كنت تستخدم توليد الكود أم لا.
+
+يتضمن Riverpod واجهات (interfaces) للتفاعل مع قاعدة البيانات فقط، ولا يتضمن قاعدة بيانات بحد ذاتها.
+يمكنك استخدام أي قاعدة بيانات تريدها، طالما أنها تطبق هذه الواجهات.
+يتم صيانة حزمة رسمية لـ SQLite وهي: [riverpod_sqflite](https://pub.dev/packages/riverpod_sqflite).
+
+كعرض توضيحي سريع، إليك كيفية استخدام الاستمرارية دون اتصال:
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+    @riverpod
+    Future<JsonSqFliteStorage> storage(Ref ref) async {
+      // تهيئة SQFlite. يجب علينا مشاركة نسخة الـ Storage بين الـ providers.
+      return JsonSqFliteStorage.open(
+        join(await getDatabasesPath(), 'riverpod.db'),
+      );
+    }
+    
+    /// فئة Todo قابلة للتسلسل (serializable). نحن نستخدم Freezed لتبسيط عملية التسلسل.
+    @freezed
+    abstract class Todo with _$Todo {
+      const factory Todo({
+        required int id,
+        required String description,
+        required bool completed,
+      }) = _Todo;
+    
+      factory Todo.fromJson(Map<String, dynamic> json) => _$TodoFromJson(json);
+    }
+    
+    @riverpod
+    @JsonPersist()
+    class TodosNotifier extends _$TodosNotifier {
+      @override
+      FutureOr<List<Todo>> build() async {
+        // نستدعي persist في بداية التابع build الخاص بنا.
+        // سيقوم هذا بـ:
+        // - قراءة قاعدة البيانات وتحديث الحالة بالقيمة المحفوظة (persisted value) عند تنفيذ هذا التابع للمرة الأولى.
+        // - الاستماع إلى التغييرات في هذا الـ provider وكتابة تلك التغييرات في قاعدة البيانات.
+        persist(
+          // نقوم بتمرير نسخة JsonSqFliteStorage الخاصة بنا. لا داعي لاستخدام "await" مع الـ Future.
+          // ستتولى Riverpod القيام بذلك.
+          ref.watch(storageProvider.future),
+          // بشكل افتراضي، يتم تخزين الحالة مؤقتاً دون اتصال لمدة يومين فقط.
+          // يمكننا اختيارياً إزالة التعليق عن السطر التالي لتغيير مدة التخزين المؤقت.
+          // options: const StorageOptions(cacheTime: StorageCacheTime.unsafe_forever),
+        );
+  
+        // نقوم بجلب المهام من الخادم بشكل غير متزامن.
+        // أثناء عملية الانتظار (await)، ستكون قائمة المهام المحفوظة متاحة.
+        // بعد اكتمال طلب الشبكة، ستكون لحالة الخادم الأولوية على الحالة المحفوظة.
+        final todos = await fetchTodos();
+        return todos;
+      }
+  
+      Future<void> add(Todo todo) async {
+        // عند تعديل الحالة، لا داعي لأي منطق إضافي لحفظ التغيير.
+        // ستقوم Riverpod بتخزين الحالة الجديدة مؤقتاً وكتابتها في قاعدة البيانات تلقائياً.
+        state = AsyncData([...await future, todo]);
+      }
+    }
+  `}
+  
+  raw={`
+  // مثال يوضح JsonSqFliteStorage بدون توليد الكود.
+  final storageProvider = FutureProvider<JsonSqFliteStorage>((ref) async {
+    // تهيئة SQFlite. يجب علينا مشاركة نسخة الـ Storage بين الـ providers.
+    return JsonSqFliteStorage.open(
+      join(await getDatabasesPath(), 'riverpod.db'),
+    );
+  });
+  
+  /// فئة Todo قابلة للتسلسل (serializable).
+  class Todo {
+    const Todo({
+      required this.id,
+      required this.description,
+      required this.completed,
+    });
+  
+    Todo.fromJson(Map<String, dynamic> json)
+        : id = json['id'] as int,
+          description = json['description'] as String,
+          completed = json['completed'] as bool;
+  
+    final int id;
+    final String description;
+    final bool completed;
+  
+    Map<String, dynamic> toJson() {
+      return {
+        'id': id,
+        'description': description,
+        'completed': completed,
+      };
+    }
+  }
+  
+  final todosProvider =
+      AsyncNotifierProvider<TodosNotifier, List<Todo>>(TodosNotifier.new);
+  
+  class TodosNotifier extends AsyncNotifier<List<Todo>>{
+    @override
+    FutureOr<List<Todo>> build() async {
+        // نستدعي persist في بداية التابع build الخاص بنا.
+        // سيقوم هذا بـ:
+        // - قراءة قاعدة البيانات وتحديث الحالة بالقيمة المحفوظة (persisted value) عند تنفيذ هذا التابع للمرة الأولى.
+        // - الاستماع إلى التغييرات في هذا الـ provider وكتابة تلك التغييرات في قاعدة البيانات.
+      persist(
+        // نقوم بتمرير نسخة JsonSqFliteStorage الخاصة بنا. لا داعي لاستخدام "await" مع الـ Future.
+        // ستتولى Riverpod القيام بذلك.
+        ref.watch(storageProvider.future),
+        // مفتاح فريد لهذه الحالة.
+        // لا ينبغي لأي provider آخر استخدام نفس المفتاح.
+        key: 'todos',
+        // بشكل افتراضي، يتم تخزين الحالة مؤقتاً دون اتصال لمدة يومين فقط.
+        // يمكننا اختيارياً إزالة التعليق عن السطر التالي لتغيير مدة التخزين المؤقت.
+        // options: const StorageOptions(cacheTime: StorageCacheTime.unsafe_forever),
+        encode: jsonEncode,
+        decode: (json) {
+          final decoded = jsonDecode(json) as List;
+          return decoded
+              .map((e) => Todo.fromJson(e as Map<String, Object?>))
+              .toList();
+        },
+      );
+  
+        // نقوم بجلب المهام من الخادم بشكل غير متزامن.
+        // أثناء عملية الانتظار (await)، ستكون قائمة المهام المحفوظة متاحة.
+        // بعد اكتمال طلب الشبكة، ستكون لحالة الخادم الأولوية على الحالة المحفوظة.
+        final todos = await fetchTodos();
+        return todos;
+    }
+  
+    Future<void> add(Todo todo) async {
+      // عند تعديل الحالة، لا داعي لأي منطق إضافي لحفظ التغيير.
+      // ستقوم Riverpod بتخزين الحالة الجديدة مؤقتاً وكتابتها في قاعدة البيانات تلقائياً.
+      state = AsyncData([...await future, todo]);
+    }
+  }
+  `}
+></AutoSnippet>
+
+
+## التحورات (Mutations) (تجريبي)
+
+:::info
+هذه الميزة تجريبية وليست مستقرة بعد.
+إنها قابلة للاستخدام، لكن الـ API قد يتغير بطرق تؤدي لتعطيل الكود (breaking ways) دون إصدار نسخة رئيسية جديدة (major version bump).
+:::
+
+تم تقديم ميزة جديدة تسمى "التحورات" (mutations) في Riverpod 3.0.
+تحل هذه الميزة مشكلتين:
+
+* تُمكّن واجهة المستخدم (UI) من التفاعل مع "الآثار الجانبية" (side-effects) (مثل تقديم النماذج، ونقر الأزرار، وما إلى ذلك)، لتتيح لها عرض رسائل التحميل/النجاح/الخطأ.
+فكّر في "عرض رسالة منبثقة (toast) عند إرسال نموذج بنجاح".
+* تحل مشكلة حيث يمكن أن تتسبب استدعاءات `onPressed` عند دمجها مع [Ref.read] و <Link documentID="concepts2/auto_dispose" /> في التخلص من الـ providers (disposed) بينما لا يزال الأثر الجانبي قيد التنفيذ.
+
+الخلاصة (TL;DR) هي أنه تمت إضافة كائن [Mutation] جديد. يتم تعريفه كمتغير `final` عالي المستوى (top-level)، تماماً مثل الـ providers:
+
+```dart
+final addTodoMutation = Mutation<void>();
+```
+
+بعد ذلك، يمكن لواجهة المستخدم استخدام `ref.listen`/`ref.watch` للاستماع إلى حالة التحورات:
+```dart
+class AddTodoButton extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // الاستماع إلى حالة الأثر الجانبي "addTodo"
+    final addTodo = ref.watch(addTodoMutation);
+
+    return switch (addTodo) {
+      // لا يوجد أثر جانبي قيد التنفيذ
+      // لنعرض زر الإرسال
+      MutationIdle() => ElevatedButton(
+        // تشغيل الأثر الجانبي عند النقر
+        onPressed: () {
+          // TODO انظر الشرح بعد مقتطف الكود
+        },
+        child: const Text('إرسال'),
+      ),
+      // الأثر الجانبي قيد التنفيذ. نعرض مؤشر التحميل
+      MutationPending() => const CircularProgressIndicator(),
+      // فشل الأثر الجانبي. نعرض زر إعادة المحاولة
+      MutationError() => ElevatedButton(
+        onPressed: () {
+          // TODO انظر الشرح بعد مقتطف الكود
+        },
+        child: const Text('إعادة المحاولة'),
+      ),
+      // الأثر الجانبي تم بنجاح. نقوم بعرض رسالة نجاح.
+      MutationSuccess() => const Text('تمت إضافة المهمة!'),
+    };
+  }
+}
+```
+
+أخيراً وليس آخراً، داخل الـ callback الخاص بـ `onPressed`، يمكننا تفعيل الأثر الجانبي كما يلي:
+
+```dart
+onPressed: () {
+  addTodoMutation.run(ref, (tsx) async {
+    // هذا هو المكان الذي نقوم فيه بتنفيذ الأثر الجانبي.
+    // هنا، عادةً ما نحصل على Notifier ونستدعي تابعاً (method) عليه.
+    await tsx.get(todoListProvider.notifier).addTodo('مهمة جديدة');
+  });
+}
+```
+
+:::note
+لاحظ كيف استدعينا [tsx.get] بدلاً من [Ref.read].  
+هذه ميزة فريدة للتحورات. أن [tsx.get] يحصل على حالة الـ provider،
+لكنه يبقيه حياً حتى يكتمل التحور.
+:::
+
+
+## إعادة المحاولة التلقائية
+
+بدءاً من الإصدار 3.0، ستقوم الـ providers التي تفشل أثناء التهيئة (initialization) بإعادة المحاولة تلقائياً.
+تتم عملية إعادة المحاولة باستخدام تراجع أسي (exponential backoff)، وسيستمر الـ provider في المحاولة حتى ينجح أو يتم التخلص منه (disposed). يساعد هذا الأمر عندما تفشل عملية ما بسبب مشكلة مؤقتة، مثل انقطاع الاتصال بالشبكة.
+
+يقوم السلوك الافتراضي بإعادة المحاولة عند حدوث أي خطأ، ويبدأ بتأخير قدره 200 مللي ثانية يتضاعف بعد كل محاولة ليصل بحد أقصى إلى 6.4 ثانية.
+يمكن تخصيص ذلك لجميع الـ providers في [ProviderContainer]/[ProviderScope] عن طريق تمرير المعامل `retry`:
+
+<Tabs>
+<TabItem value="ProviderScope" label="ProviderScope" defaultValue>
+
+```dart
+void main() {
+  runApp(
+    ProviderScope(
+      // يمكنك تخصيص منطق إعادة المحاولة، مثل تخطي
+      // أخطاء معينة أو إضافة حد لعدد مرات إعادة المحاولة
+      // أو تغيير التأخير
+      retry: (retryCount, error) {
+        if (error is SomeSpecificError) return null;
+        if (retryCount > 5) return null;
+
+        return Duration(seconds: retryCount * 2);
+      },
+      child: MyApp(),
+    ),
+  );
+}
+```
+
+</TabItem>
+<TabItem value="ProviderContainer" label="ProviderContainer" defaultValue>
+
+```dart
+void main() {
+  final container = ProviderContainer(
+      // يمكنك تخصيص منطق إعادة المحاولة، مثل تخطي
+      // أخطاء معينة أو إضافة حد لعدد مرات إعادة المحاولة
+      // أو تغيير التأخير
+    retry: (retryCount, error) {
+      if (error is SomeSpecificError) return null;
+      if (retryCount > 5) return null;
+
+      return Duration(seconds: retryCount * 2);
+    },
+  );
+}
+```
+
+</TabItem>
+</Tabs>
+
+بدلاً من ذلك، يمكن ضبط هذا الإعداد لكل provider على حدة عن طريق تمرير المعامل `retry` إلى الـ constructor الخاص بالـ provider:
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+  Duration retry(int retryCount, Object error) {
+    if (error is SomeSpecificError) return null;
+    if (retryCount > 5) return null;
+  
+    return Duration(seconds: retryCount * 2);
+  }
+  
+  @Riverpod(retry: retry)
+  class TodoList extends _$TodoList {
+    @override
+    List<Todo> build() => [];
+  }
+  `}
+  
+  raw={`
+  final todoListProvider = NotifierProvider<TodoList, List<Todo>>(
+    TodoList.new,
+    retry: (retryCount, error) {
+      if (error is SomeSpecificError) return null;
+      if (retryCount > 5) return null;
+    
+      return Duration(seconds: retryCount * 2);
+    },
+  );
+  `}
+></AutoSnippet>
+
+
+## `Ref.mounted`
+
+وأخيراً، أصبحت `Ref.mounted` التي طال انتظارها متاحة! إنها مشابهة لـ `BuildContext.mounted`، ولكنها خاصة بـ `Ref`.
+
+يمكنك استخدامها للتحقق مما إذا كان الـ provider لا يزال `mounted` بعد عملية غير متزامنة (async operation):
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+  @riverpod
+  class TodoList extends _$TodoList {
+    @override
+    List<Todo> build() => [];
+    
+    Future<void> addTodo(String title) async {
+      //// إرسال الـ todo الجديد إلى الخادم
+      final newTodo = await api.addTodo(title);
+      // التحقق مما إذا كان الـ provider 
+      // لا يزال mounted
+      // بعد العملية غير المتزامنة
+      if (!ref.mounted) return;
+    
+      // إذا كان كذلك، قم بتحديث الحالة
+      state = [...state, newTodo];
+    }
+  }
+  `}
+  
+  raw={`
+  class TodoList extends Notifier<List<Todo>> {
+    @override
+    List<Todo> build() => [];
+    
+    Future<void> addTodo(String title) async {
+      //// إرسال الـ todo الجديد إلى الخادم
+      final newTodo = await api.addTodo(title);
+      // التحقق مما إذا كان الـ provider 
+      // لا يزال mounted
+      // بعد العملية غير المتزامنة
+      if (!ref.mounted) return;
+    
+      // إذا كان كذلك، قم بتحديث الحالة
+      state = [...state, newTodo];
+    }
+  }
+  `}
+></AutoSnippet>
+
+لكي يعمل هذا، كان من الضروري إجراء عدة تغييرات في دورة الحياة.
+تأكد من قراءة قسم [تغييرات دورة الحياة](https://www.google.com/search?q=%23provider-life-cycle-changes).
+
+## دعم الـ Generics (توليد الكود)
+
+عند استخدام توليد الكود، يمكنك الآن تعريف معاملات النوع (type parameters) للـ providers المُولّدة الخاصة بك.
+تعمل معاملات النوع تماماً مثل أي معامل آخر للـ provider، ويجب تمريرها عند مراقبة (watching) الـ provider.
+
+```dart
+@riverpod
+T multiply<T extends num>(T a, T b) {
+  return a * b;
+}
+
+// ...
+
+int integer = ref.watch(multiplyProvider<int>(2, 3));
+double decimal = ref.watch(multiplyProvider<double>(2.5, 3.5));
+```
+
+## دعم الإيقاف المؤقت/الاستئناف
+
+في الإصدار 2.0، كان لدى Riverpod بالفعل شكل من أشكال دعم الإيقاف المؤقت/الاستئناف، ولكنه كان محدوداً نوعاً ما.
+مع الإصدار 3.0، يمكن إيقاف/استئناف جميع مستمعي `ref.listen` يدوياً عند الطلب:
+
+```dart
+final subscription = ref.listen(
+  todoListProvider,
+  (previous, next) {
+    // قم بعمل شيء ما مع القيمة الجديدة  },
+);
+
+subscription.pause();
+subscription.resume();
+```
+
+وبالتزامن مع ذلك، يقوم Riverpod الآن بإيقاف الـ providers مؤقتاً في حالات متنوعة:
+
+* عندما يصبح الـ provider غير مرئي، يتم إيقافه مؤقتاً (بناءً على [TickerMode]).
+* عندما تتم إعادة بناء (rebuilds) الـ provider، يتم إيقاف اشتراكاته مؤقتاً حتى تكتمل عملية إعادة البناء.
+* عندما يتم إيقاف الـ provider مؤقتاً، يتم إيقاف جميع اشتراكاته مؤقتاً أيضاً.
+
+راجع قسم [تغييرات دورة الحياة](https://www.google.com/search?q=%23provider-life-cycle-changes) لمزيد من التفاصيل.
+
+## توحيد واجهات برمجة التطبيقات العامة
+
+أحد أهداف Riverpod 3.0 هو تبسيط واجهة برمجة التطبيقات (API). ويشمل ذلك:
+
+* إبراز ما هو موصى به وما هو غير موصى به.
+* إزالة التكرارات غير الضرورية للواجهات.
+* التأكد من أن جميع الوظائف تعمل بطريقة متسقة.
+
+لهذا الغرض، تم إجراء بعض التغييرات:
+
+### [StateProvider]/[StateNotifierProvider] و [ChangeNotifierProvider] لم يعد يُنصح بها ونُقلت إلى استيراد مختلف
+
+لم يتم حذف هذه الـ providers، وإنما نُقلت ببساطة إلى استيراد مختلف.
+بدلاً من:
+
+```dart
+import 'package:riverpod/riverpod.dart';
+```
+عليك الآن استخدام:
+```dart
+import 'package:riverpod/legacy.dart';
+```
+
+الهدف من ذلك هو التنويه بأن هذه الـ providers لم يعد يُنصح باستخدامها.
+وفي الوقت نفسه، تم الاحتفاظ بها لضمان التوافق مع الإصدارات السابقة.
+
+### تم إزالة واجهات AutoDispose
+
+لا، لم يتم حذف ميزة "auto-dispose" نفسها. هذا الأمر يتعلق بالواجهات (interfaces) فقط.
+في الإصدار 2.0، كان يتم تكرار جميع الـ providers، و Refs، و Notifiers من أجل الـ auto-dispose (مثل `Ref` مقابل `AutoDisposeRef`، و `Notifier` مقابل `AutoDisposeNotifier`، إلخ).
+تم القيام بذلك لضمان وجود خطأ أثناء التجميع (compilation error) في بعض الحالات الطرفية (edge-cases)، لكن ذلك جاء على حساب تجربة استخدام الـ API التي أصبحت أسوأ.
+
+في الإصدار 3.0، تم توحيد الواجهات، وتم استبدال خطأ التجميع السابق بقاعدة lint (باستخدام [riverpod_lint]).
+ما يعنيه هذا بشكل ملموس هو أنه يمكنك استبدال جميع الإشارات إلى `AutoDisposeNotifier` بـ `Notifier`. ولن يتغير سلوك الكود الخاص بك.
+
+```diff
+final provider = NotifierProvider.autoDispose<MyNotifier, int>(
+  MyNotifier.new,
+);
+
+- class MyNotifier extends AutoDisposeNotifier<int> {
++ class MyNotifier extends Notifier<int> {
+}
+```
+
+### دمج `FamilyNotifier` و `Notifier`
+
+على غرار النقطة السابقة، تم الآن دمج واجهتي `FamilyNotifier` و `Notifier`.
+
+باختصار، بدلاً من:
+
+```dart
+final provider = NotifierProvider.family<CounterNotifier, int, Argument>(
+  MyNotifier.new,
+);
+
+class CounterNotifier extends FamilyNotifier<int, Argument> {
+  @override
+  int build(Argument arg) => 0;
+}
+```
+
+نقوم الآن بـ:
+
+```dart
+final provider = NotifierProvider.family<CounterNotifier, int, Argument>(
+  CounterNotifier.new,
+);
+
+class CounterNotifier extends Notifier<int> {
+  CounterNotifier(this.arg);
+  final Argument arg;
+  @override
+  int build() => 0;
+}
+```
+
+This means that instead of `Notifier`+`FamilyNotifier`+`AutoDisposeNotifier`+`AutoDisposeFamilyNotifier`,
+we always use the `Notifier` class.
+
+This change has no impact on code-generation.
+
+### One `Ref` to rule them all
+
+In Riverpod 2.0, each provider came with its own [Ref] subclass (`FutureProviderRef`, `StreamProviderRef`, etc).  
+Some `Ref` had `state` property, some a `future`, or a `notifier`, etc. 
+Although useful, this was a lot of complexity for not much gain. One of the reasons
+for that is because [Notifier]s already have the extra properties it had,
+so the interfaces were redundant.
+
+In 3.0, `Ref` is unified. No more generic parameter such as `Ref<T>`,
+no more `FutureProviderRef`. We only have one thing: `Ref`.
+What this means in practice is, the syntax for generated providers is simplified:
+
+```diff
+-Example example(ExampleRef ref) {
++Example example(Ref ref) {
+  return Example();
+}
+```
+
+
+:::info
+This does not concern [WidgetRef], which is intact.  
+[Ref] and [WidgetRef] are two different things.
+:::
+
+### All `updateShouldNotify` now use `==`
+
+`updateShouldNotify` is a method that is used to determine if a provider should
+notify its listeners when a state change occurs. 
+But in 2.0, the implementation of this method varied quite a bit between providers.
+Some providers used `==`, some `identical`, and some more complex logic.
+
+Starting 3.0, all providers use `==` to filter notifications.
+
+This can impact you in a few ways:
+- Some of your providers may not notify their listeners anymore
+  in certain situations.
+- Some listeners may be notified more often than before.
+- If you have a large data class that overrides `==`, you may see a small
+  performance impact.
+
+The most common case where you will be impacted is when using [StreamProvider]/[StreamNotifier],
+as events of the stream are now filtered using `==`.
+
+If you are impacted by those changes, you can override `updateShouldNotify` to
+use a custom implementation:
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+  @riverpod
+  class TodoList extends _$TodoList {
+    @override
+    Stream<Todo> build() => Stream(...);
+  
+    @override
+    bool updateShouldNotify(AsyncValue<Todo> previous, AsyncValue<Todo> next) {
+      // Custom implementation
+      return true;
+    }
+  }
+  `}
+  
+  raw={`
+  class TodoList extends StreamNotifier<Todo> {
+    @override
+    Stream<Todo> build() => Stream(...);
+  
+    @override
+    bool updateShouldNotify(AsyncValue<Todo> previous, AsyncValue<Todo> next) {
+      // Custom implementation
+      return true;
+    }
+  }
+  `}
+></AutoSnippet>
+
+## Provider life-cycle changes
+
+### Refs and Notifiers can no-longer be interacted with after they have been disposed
+
+In 2.0, in some edge-cases you could still interact with things like [Ref] or [Notifier]
+after they were disposed. This was not intended and caused various severe bugs.
+
+In 3.0, Riverpod will throw an error if you try to interact with a disposed Ref/Notifier.
+
+You can use [Ref.mounted] to check if a Ref/Notifier is still usable.
+
+```dart
+final provider = FutureProvider<int>((ref) async {
+  await Future.delayed(Duration(seconds: 1));
+  // Abort the provider if it has been disposed during the await.
+  // You can throw whatever you want and ignore this exception in your error reporting tools.
+  if (!ref.mounted) throw MyException();
+  return 42;
+});
+```
+
+### When reading a provider results in an exception, the error is now wrapped in a ProviderException
+
+Before, if a provider threw an error, Riverpod would sometimes rethrow that error directly:
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+  @riverpod
+  Future<int> example(Ref ref) async {
+    throw StateError('Error');
+  }
+  
+  // ...
+  ElevatedButton(
+    onPressed: () async {
+      // This will rethrow the StateError
+      ref.read(exampleProvider).requireValue;
+    
+      // This also rethrows the StateError
+      await ref.read(exampleProvider.future);
+    },
+    child: Text('Click me'),
+  );
+  `}
+  
+  raw={`
+  final exampleProvider = FutureProvider<int>((ref) async {
+    throw StateError('Error');
+  });
+  
+  // ...
+  ElevatedButton(
+    onPressed: () async {
+      // This will rethrow the StateError
+      ref.read(exampleProvider).requireValue;
+    
+      // This also rethrows the StateError
+      await ref.read(exampleProvider.future);
+    },
+    child: Text('Click me'),
+  );
+  `}
+></AutoSnippet>
+
+
+In 3.0, this is changed. Instead, the error will be encapsulated in a `ProviderException`
+that contains both the original error and its stack trace.
+
+:::info
+`AsyncValue.error`, `ref.listen(..., onError: ...)` and [ProviderObserver]s  are unaffected by this change,
+and will still receive the unaltered error.
+:::
+
+This has multiple benefits:
+- Debugging is improved, as we have a much better stack trace
+- It is now possible to determine if a provider failed, or
+  if it is in error state because it depends on another provider that failed.
+
+For example, a [ProviderObserver] can use this to avoid logging the same error twice:
+
+```dart
+class MyObserver extends ProviderObserver {
+  @override
+  void providerDidFail(ProviderObserverContext context, Object error, StackTrace stackTrace) {
+    if (error is ProviderException) {
+      // The provider didn't fail directly, but instead depends on a failed provider.
+      // The error was therefore already logged.
+      return;
+    }
+
+    // Log the error
+    print('Provider failed: $error');
+  }
+}
+```
+
+This is used internally by Riverpod in its automatic retry mechanism. The default automatic retry
+ignores `ProviderException`s:
+
+```dart
+ProviderContainer(
+  // Example of the default retry behavior
+  retry: (retryCount, error) {
+    if (error is ProviderException) return null;
+
+    // ...
+  },
+);
+```
+
+### Listeners inside widgets that are not visible are now paused
+
+Now that Riverpod has a way to [pause listeners](#pauseresume-support), Riverpod uses that to
+natively pauses listeners when the widget is not visible. In practice what this means is: Providers that are not used by the visible widget tree
+are paused.
+
+As a concrete example, consider an application with two routes:
+- A home page, listening to a websocket using a provider
+- A settings page, which does not rely on that websocket
+
+
+In typical applications, a user first opens the home page _and then_ opens the settings page.
+This means that while the settings page is open, the homepage is also open, but not visible.
+
+In 2.0, the homepage would actively keep listening to the websocket.  
+In 3.0, the websocket provider will instead be paused, possibly saving resources.
+
+**How it works:**  
+Riverpod relies on [TickerMode] to determine if a widget is visible or not. And when
+false, all listeners of a [Consumer] are paused.
+
+It also means that you can rely on [TickerMode] yourself to manually control
+the pause behavior of your consumers. You can voluntarily set the value to true/false
+to forcibly resume/pause listeners:
+
+```dart
+class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return TickerMode(
+      enabled: false, // This will pause the listeners
+      child: Consumer(
+        builder: (context, ref, child) {
+          // This "watch" will be paused
+          // until TickerMode is set to true
+          final value = ref.watch(myProvider);
+          return Text(value.toString());
+        },
+      ),
+    );
+  }
+}
+```
+
+### If a provider is only used by paused providers, it is paused too
+
+Riverpod 2.0 already had some form of pause/resume support. But it was limited and failed 
+to cover some edge-cases.  
+Consider:
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+  @riverpod
+  int example(Ref ref) {
+    ref.keepAlive();
+    ref.onCancel(() => print('paused'));
+    ref.onResume(() => print('resumed'));
+    return 0;
+  }
+  `}
+  
+  raw={`
+  final exampleProvider = Provider<int>((ref) {
+    ref.onCancel(() => print('paused'));
+    ref.onResume(() => print('resumed'));
+    return 0;
+  });
+  `}
+></AutoSnippet>
+
+In 2.0, if you were to call `ref.read` once on this provider,
+the state of the provider would be maintained, but 'paused' will be printed. This is because
+calling `ref.read` does not "listen" to the provider. And since the provider is not "listened"
+to, it is paused.
+
+This is useful to pause providers that are currently not used! 
+The problem is that in many cases, this optimization does not work.  
+For example, your provider could be used indirectly through another provider.
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+  @riverpod
+  int another(Ref ref) {
+    ref.keepAlive();
+    return ref.watch(exampleProvider);
+  }
+  
+  class MyWidget extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      return Button(
+        onPressed: () {
+          ref.read(anotherProvider);
+        },
+        child: Text('Click me'),
+      );
+    }
+  }
+  `}
+  
+  raw={`
+  final anotherProvider = Provider<int>((ref) {
+    return ref.watch(exampleProvider);
+  });
+   
+   class MyWidget extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      return Button(
+        onPressed: () {
+          ref.read(anotherProvider);
+        },
+        child: Text('Click me'),
+      );
+    }
+  }
+  `}
+></AutoSnippet>
+
+In this scenario, if we click on the button once,
+then `anotherProvider` will start listening to our `exampleProvider`. But `anotherProvider`
+is no-longer used and will be paused. Yet `exampleProvider` will not be paused,
+because it thinks that it is still being used.  
+As such, clicking on the button will not print 'paused' anymore. 
+
+In 3.0, this is fixed. If a provider is only used by paused providers, it is paused too.
+
+### When a provider rebuilds, its previous subscriptions now are kept until the rebuild completes
+
+In 2.0, there was a known inconvenience when using asynchronous providers
+combined with 'auto-dispose'.
+
+Specifically, when an asynchronous provider watches an auto-dispose provider
+after an `await`, the "auto dispose" could be triggered unexpectedly.
+
+Consider:  
+<AutoSnippet
+  language="dart"
+  codegen={`
+  @riverpod
+  Stream<int> autoDispose(Ref ref) {
+    ref.onDispose(() => print('disposed'));
+    ref.onCancel(() => print('paused'));
+    ref.onResume(() => print('resumed'));
+    // A stream that emits a value every second
+    return Stream.periodic(Duration(seconds: 1), (i) => i);
+  }
+  
+  @riverpod
+  Future<int> asynchronousExample(Ref ref) async {
+    print('Before async gap');
+    // An async gap inside a provider ; typically an API call.
+    // This will dispose the "autoDispose" provider
+    // before the async operation is completed
+    await null;
+    
+    print('after async gap');
+    // We listen to our auto-dispose provider
+    // after the async operation
+    return ref.watch(autoDisposeProvider.future);
+  }
+  
+  void main() {
+    final container = ProviderContainer();
+    // This will print 'disposed' every second,
+    // and will constantly print 0
+    container.listen(asynchronousExampleProvider, (_, value) {
+      if (value is AsyncData) print('\${value.value}\\n----');
+    });
+  }
+  `}
+  
+  raw={`
+  final autoDisposeProvider = StreamProvider.autoDispose<int>((ref) {
+    ref.onDispose(() => print('disposed'));
+    ref.onCancel(() => print('paused'));
+    ref.onResume(() => print('resumed'));
+    // A stream that emits a value every second
+    return Stream.periodic(Duration(seconds: 1), (i) => i);
+  });
+  
+  final asynchronousExampleProvider = FutureProvider<int>((ref) async {
+    print('Before async gap');
+    // An async gap inside a provider ; typically an API call.
+    // This will dispose the "autoDispose" provider
+    // before the async operation is completed
+    await null;
+    
+    print('after async gap');
+    // We listen to our auto-dispose provider
+    // after the async operation
+    return ref.watch(autoDisposeProvider.future);
+  });
+  
+  void main() {
+    final container = ProviderContainer();
+    // This will print 'disposed' every second,
+    // and will constantly print 0
+    container.listen(asynchronousExampleProvider, (_, value) {
+      if (value is AsyncData) print('\${value.value}\\n----');
+    });
+  }
+  `}
+></AutoSnippet>
+
+In you run this on [Dartpad](https://dartpad.dev/), you will see that its prints:
+
+```
+// First print
+Before async gap
+after async gap
+0
+---- // Second and after prints
+paused
+Before async gap
+disposed // The 'autoDispose' provider was disposed during the async gap!
+after async gap
+0
+----
+paused
+Before async gap
+disposed
+after async gap
+0
+----
+... // And so on every second
+```
+
+As you can see, this consistently prints `0` every second,
+because the `autoDispose` provider repeatedly gets disposed during the async gap. 
+A workaround was to move the `ref.watch` call before the `await` statement.
+But this is error prone, not very intuitive, and not always possible.
+
+In 3.0, this is fixed by delaying the disposal of listeners.  
+When a provider rebuilds, instead of immediately removing all of its listeners,
+it [pauses](#pauseresume-support) them.
+
+The exact same code will now instead print:
+
+```
+// First print
+Before async gap
+after async gap
+0
+----
+paused
+Before async gap
+after async gap
+resumed
+1
+----
+paused
+Before async gap
+after async gap
+resumed
+2
+----
+... // And so on every second
+```
+
+### Exceptions in providers are rethrown as a `ProviderException`.
+
+For the sake of differentiating between "a provider failed" from "a provider is depending on a failed provider",
+Riverpod 3.0 now wraps exceptions in a `ProviderException` that contains the original.
+
+This means that if you catch errors in your providers, you will need to update your try/catch to inspect
+the content of `ProviderException`:
+
+```dart
+try {
+  ref.watch(failingProvider);
+} on ProviderException catch (e) {
+  switch (e.exception) {
+    case SomeSpecificError():
+      // Handle the specific error
+    default:
+      // Handle other errors
+      rethrow;
+  }
+}
+```
+
+## New testing utilities
+
+### `ProviderContainer.test`
+
+In 2.0, typical testing code would rely on a custom-made utility called `createContainer`.  
+In 3.0, this utility is now part of Riverpod, and is called `ProviderContainer.test`.
+It creates a new container, and automatically disposes it after the test ends.
+
+```dart
+void main() {
+  test('My test', () {
+    final container = ProviderContainer.test();
+    // Use the container
+    // ...
+    // The container is automatically disposed after the test ends
+  });
+}
+```
+
+You can safely do a global search-and-replace for `createContainer` to `ProviderContainer.test`.
+
+### `NotifierProvider.overrideWithBuild`
+
+It is now possible to mock only the `Notifier.build` method, without mocking the whole notifier.
+This is useful when you want to initialize your notifier with a specific state, but still want to
+use the original implementation of the notifier.
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+    @riverpod
+    class MyNotifier extends _$MyNotifier {
+      @override
+      int build() => 0;
+    
+      void increment() {
+        state++;
+      }
+    }
+    
+    void main() {
+      final container = ProviderContainer.test(
+        overrides: [
+          myProvider.overrideWithBuild((ref) {
+            // Mock the build method to start at 42.
+            // The "increment" method is unaffected.
+            return 42;
+          }),
+        ],
+      );
+    }
+  `}
+  
+  raw={`
+    class MyNotifier extends Notifier<int> {
+      @override
+      int build() => 0;
+    
+      void increment() {
+        state++;
+      }
+    }
+    
+    final myProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
+    
+    void main() {
+      final container = ProviderContainer.test(
+        overrides: [
+          myProvider.overrideWithBuild((ref) {
+            // Mock the build method to start at 42.
+            // The "increment" method is unaffected.
+            return 42;
+          }),
+        ],
+      );
+    }
+  `}
+></AutoSnippet>
+
+### `Future/StreamProvider.overrideWithValue`
+
+A while back, `FutureProvider.overrideWithValue` and `StreamProvider.overrideWithValue`
+were removed "temporarily" from Riverpod.  
+They are finally back!
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+    @riverpod
+    Future<int> myFutureProvider() async {
+      return 42;
+    }
+    
+    void main() {
+      final container = ProviderContainer.test(
+        overrides: [
+          // Initializes the provider with a value.
+          // Changing the override will update the value.
+          myFutureProvider.overrideWithValue(AsyncValue.data(42)),
+        ],
+      );
+    }
+  `}
+  
+  raw={`
+    final myFutureProvider = FutureProvider<int>((ref) async {
+      return 42;
+    });
+    
+    void main() {
+      final container = ProviderContainer.test(
+        overrides: [
+          // Initializes the provider with a value.
+          // Changing the override will update the value.
+          myFutureProvider.overrideWithValue(AsyncValue.data(42)),
+        ],
+      );
+    }
+  `}
+></AutoSnippet>
+
+### `WidgetTester.container`
+
+A simple way to access the `ProviderContainer` in your widget tree.
+
+```dart
+void main() {
+  testWidgets('can access a ProviderContainer', (tester) async {
+    await tester.pumpWidget(const ProviderScope(child: MyWidget()));
+    ProviderContainer container = tester.container();
+  });
+}
+```
+
+See the [WidgetTester.container] extension for more information.
+
+## Custom ProviderListenables
+
+It is now possible to create custom [ProviderListenable]s in Riverpod 3.0.
+This is doable using [SyncProviderTransformerMixin].
+
+The following example implements a variable of `provider.select`,
+where the callback returns a boolean instead of the selected value.
+
+```dart
+final class Where<T> with SyncProviderTransformerMixin<T, T> {
+  Where(this.source, this.where);
+  @override
+  final ProviderListenable<T> source;
+  final bool Function(T previous, T value) where;
+
+  @override
+  ProviderTransformer<T, T> transform(
+    ProviderTransformerContext<T, T> context,
+  ) {
+     return ProviderTransformer(
+       initState: (_) => context.sourceState.requireValue,
+       listener: (self, previous, next) {
+         if (where(previous, next))
+           self.state = next;
+       },
+     );
+  }
+}
+
+extension<T> on ProviderListenable<T> {
+  ProviderListenable<T> where(
+    bool Function(T previous, T value) where,
+  ) => Where<T>(this, where);
+}
+```
+
+Used as `ref.watch(provider.where((previous, value) => value > 0))`.
+
+## Statically safe scoping (code-generation only)
+
+Through [riverpod_lint], Riverpod now includes a way to detect when scoping is used incorrectly.
+This lints detects when an override is missing, to avoid runtime errors.
+
+Consider:
+
+```dart
+// A typical "scoped provider"
+@Riverpod(dependencies: [])
+Future<int> myFutureProvider() => throw UnimplementedError();
+```
+
+To use this provider, you have two options.  
+If neither of the following options are used, the provider will throw an error at runtime.
+
+- Override the provider using `ProviderScope` before using it:
+  ```dart
+  class MyWidget extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return ProviderScope(
+        overrides: [
+          myFutureProvider.overrideWithValue(AsyncValue.data(42)),
+        ],
+        // A consumer is necessary to access the overridden provider
+        child: Consumer(
+          builder: (context, ref, child) {
+            // Use the provider
+            final value = ref.watch(myFutureProvider);
+            return Text(value.toString());
+          },
+        ),
+      );
+    }
+  }
+  ```
+- Specify `@Dependencies` on whatever uses the scoped provider to indicate that it 
+  depends on it.
+  ```dart
+  @Dependencies([myFuture])
+  class MyWidget extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      // Use the provider
+      final value = ref.watch(myFutureProvider);
+      return Text(value.toString());
+    }
+  }
+  ```
+  After specifying `@Dependencies`, all usages of `MyWidget` will
+  require the same two options as above:
+  - Either override the provider using `ProviderScope` before using `MyWidget`
+    ```dart
+    void main() {
+      runApp(
+        ProviderScope(
+          overrides: [
+            myFutureProvider.overrideWithValue(AsyncValue.data(42)),
+          ],
+          child: MyWidget(),
+        ),
+      );
+    }
+    ```
+  - Or specify `@Dependencies` on whatever uses `MyWidget` to indicate that it depends on it.
+    ```dart
+    @Dependencies([myFuture])
+    class MyApp extends ConsumerWidget {
+      @override
+      Widget build(BuildContext context, WidgetRef ref) {
+         // MyApp indirectly uses scoped providers through MyWidget
+         return MyWidget();
+      }
+    }
+    ```
+
+## Other changes
+
+### AsyncValue
+
+[AsyncValue] received various changes.
+
+* It is now "sealed". This enables exhaustive pattern matching:
+  ```dart
+  AsyncValue<int> value;
+  switch (value) {
+    case AsyncData():
+      print('data');
+    case AsyncError():
+      print('error');
+    case AsyncLoading():
+      print('loading');
+    // No default case needed
+  }
+  ```
+* `valueOrNull` has been renamed to `value`.
+  The old `value` is removed, as its behavior related to errors
+  was odd.
+  To migrate, do a global search-and-replace of `valueOrNull` -> `value`.
+* `AsyncValue.isFromCache` has been added.  
+  This flag is set when a value is obtained through offline persistence.
+  It enables your UI to differentiate state coming from the database
+  and state from the server.
+* An optional `progress` property is available on `AsyncLoading`.
+  This enables your providers to define the current progress for a
+  request:
+  <AutoSnippet
+    language="dart"
+    codegen={`
+      @riverpod
+      class MyNotifier extends _$MyNotifier {
+        @override
+        Future<User> build() async {
+          // You can optionally pass a "progress" to AsyncLoading
+          state = AsyncLoading(progress: .0);
+          await fetchSomething();
+          state = AsyncLoading(progress: 0.5);
+          
+          return User();
+        }
+      }
+    `}
+    
+    raw={`
+      class MyNotifier extends AsyncNotifier<User> {
+        @override
+        Future<User> build() async {
+          // You can optionally pass a "progress" to AsyncLoading
+          state = AsyncLoading(progress: .0);
+          await fetchSomething();
+          state = AsyncLoading(progress: 0.5);
+        
+          return User();
+        }
+      }
+    `}
+  ></AutoSnippet>
+
+### All Ref listeners now return a way to remove the listener
+
+It is now possible to "unsubscribe" to the various life-cycles listeners:
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+    @riverpod
+    Future<int> example(Ref ref) {
+      // onDispose and other life-cycle listeners return a function
+      // to remove the listener.
+      final removeListener = ref.onDispose(() => print('dispose));
+      // Simply call the function to remove the listener:
+      removeListener();
+      
+      // ...
+    }
+  `}
+  
+  raw={`
+    final exampleProvider = FutureProvider<int>((ref) {
+      // onDispose and other life-cycle listeners return a function
+      // to remove the listener.
+      final removeListener = ref.onDispose(() => print('dispose));
+      // Simply call the function to remove the listener:
+      removeListener();
+       
+      // ...
+    });
+  `}
+></AutoSnippet>
+
+### Weak listeners - listen to a provider without preventing auto-dispose.
+
+When using `Ref.listen`, you can optionally specify `weak: true`:
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+    @riverpod
+    Future<int> example(Ref ref) {
+      ref.listen(
+        anotherProvider,
+        // Specify the flag
+        weak: true,
+        (previous, next) {},
+      );
+      
+      // ...
+    }
+  `}
+  
+  raw={`
+    final exampleProvider = FutureProvider<int>((ref) {
+      ref.listen(
+        anotherProvider,
+        // Specify the flag
+        weak: true,
+        (previous, next) {},
+      );
+      
+      // ...
+    });
+  `}
+></AutoSnippet>
+
+Specifying this flag will tell Riverpod that it can still dispose
+the listened provider if it stops being used.
+
+This flag is an advanced feature to help with some niche use-cases
+regarding combining multiple "sources of truth" in a single provider.
+
+[ProviderContainer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderContainer-class.html
+[ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[Mutation]: https://pub.dev/documentation/riverpod/latest/experimental_mutation/Mutation-class.html
+[riverpod_lint]: https://pub.dev/packages/riverpod_lint
+[Ref]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref-class.html
+[Ref.read]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref/read.html
+[tsx.get]: https://pub.dev/documentation/riverpod/latest/experimental_mutation/MutationTransaction/get.html
+[WidgetRef]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef-class.html
+[TickerMode]: https://api.flutter.dev/flutter/widgets/TickerMode-class.html
+[Consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html
+[Notifier]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Notifier-class.html
+[AsyncValue]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/AsyncValue-class.html
+[ProviderObserver]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderObserver-class.html
+[WidgetTester.container]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/RiverpodWidgetTesterX/container.html
+[SyncProviderTransformerMixin]: https://pub.dev/documentation/riverpod/latest/misc/SyncProviderTransformerMixin-mixin.html
+[ProviderListenable]: https://pub.dev/documentation/riverpod/latest/misc/ProviderListenable-class.html
+[StreamProvider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamProvider-class.html
+[StreamNotifier]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamNotifier-class.html
+[Ref.mounted]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref/mounted.html
