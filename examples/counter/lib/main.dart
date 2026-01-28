@@ -83,4 +83,25 @@ final complexProvider = Provider<Complex>((ref) {
 class Complex {
   Complex(this.value);
   final int value;
+
+  Complex get recursion => this;
+
+  late final int lateValue;
+  late final int anotherLateValue = 42;
+  final list = [1, 2, 3];
+  final complexList = [
+    [1, 2],
+    [3, 4],
+  ];
+  final map = {'a': 1, 'b': 2};
+  final complexMap = {
+    [1]: [1],
+    [2]: [2],
+  };
+  final hashSet = <int>{1, 2, 3};
+  final complexHashSet = <List<int>>{
+    [1, 2],
+    [3, 4],
+  };
+  final record = (1, 'a', named: true);
 }

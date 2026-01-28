@@ -6,14 +6,16 @@ import 'package:devtools_app_shared/service.dart' hide SentinelException;
 import 'package:devtools_app_shared/utils.dart';
 import 'package:devtools_extensions/devtools_extensions.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:meta/meta.dart';
 // ignore: implementation_imports
 import 'package:riverpod/src/internals.dart' as internals;
 import 'package:vm_service/vm_service.dart';
 
 part 'vm_service.g.dart';
 
+@immutable
 sealed class Byte<T> {
-  Byte();
+  const Byte();
   factory Byte.of(Object? obj) {
     switch (obj) {
       case Sentinel():
@@ -45,16 +47,35 @@ sealed class Byte<T> {
 }
 
 final class ByteVariable<T> extends Byte<T> {
-  ByteVariable(this.instance);
+  const ByteVariable(this.instance);
   final T instance;
 
   @override
   String toString() => 'ByteVariableRef($instance)';
+
+  @override
+  bool operator ==(Object other) {
+    return other is ByteVariable<T> && other.instance == instance;
+  }
+
+  @override
+  int get hashCode => instance.hashCode;
 }
 
 final class ByteSentinel<T> extends Byte<T> {
-  ByteSentinel(this.sentinel);
+  const ByteSentinel(this.sentinel);
   final Sentinel sentinel;
+
+  @override
+  String toString() => 'ByteSentinel($sentinel)';
+
+  @override
+  bool operator ==(Object other) {
+    return other is ByteSentinel<T> && other.sentinel == sentinel;
+  }
+
+  @override
+  int get hashCode => sentinel.hashCode;
 }
 
 Iterable<ItemT> decodeAll<ItemT>(
@@ -317,10 +338,14 @@ sealed class VariableRef {
       case .nill:
         return NullVariable._();
 
+      case .type:
+        return _TypeVariableRefImpl(ref);
+
       case .list:
+        return _ListVariableRefImpl(ref);
+
       case .map:
       case .set:
-      case .type:
       case .record:
       // TODO
 
@@ -447,6 +472,48 @@ abstract class DoubleVariableRef implements VariableRef {
   );
 }
 
+abstract class TypeVariableRef implements VariableRef {
+  @override
+  Future<Byte<TypeVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  );
+}
+
+final class _TypeVariableRefImpl extends _EvaluatedVariableRef
+    implements VariableRef {
+  _TypeVariableRefImpl(super._ref);
+
+  @override
+  Future<Byte<TypeVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  ) {
+    return _resolveInstance(eval, isAlive);
+  }
+}
+
+abstract class ListVariableRef implements VariableRef {
+  @override
+  Future<Byte<ListVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  );
+}
+
+final class _ListVariableRefImpl extends _EvaluatedVariableRef
+    implements VariableRef {
+  _ListVariableRefImpl(super._ref);
+
+  @override
+  Future<Byte<ListVariable>> resolve(
+    Future<Eval> Function(String uri) eval,
+    Disposable isAlive,
+  ) {
+    return _resolveInstance(eval, isAlive);
+  }
+}
+
 abstract class UnknownObjectVariableRef implements VariableRef {
   @override
   Future<Byte<UnknownObjectVariable>> resolve(
@@ -522,11 +589,14 @@ sealed class ResolvedVariable implements VariableRef {
       case .nill:
         return NullVariable._();
 
+      case .type:
+        return TypeVariable._(instance);
+
       case .list:
+        return ListVariable._(instance);
       case .map:
       case .set:
       case .record:
-      case .type:
       case .object:
         return UnknownObjectVariable._(instance);
     }
@@ -598,6 +668,31 @@ final class DoubleVariable extends ResolvedVariable
 
   @override
   final double value;
+}
+
+final class ListVariable extends ResolvedVariable
+    with _SelfResolvedVariable<ListVariable>
+    implements ListVariableRef, VariableRef {
+  ListVariable._(Instance instance)
+    : items = [
+        ...instance.elements!
+            .map(Byte<InstanceRef>.of)
+            .map((byte) => byte.map(VariableRef.fromInstanceRef)),
+      ],
+      type = VariableRef.fromInstanceRef(
+        instance.classRef!.typeParameters!.single,
+      );
+
+  final List<Byte<VariableRef>> items;
+  final VariableRef type;
+}
+
+final class TypeVariable extends ResolvedVariable
+    with _SelfResolvedVariable<TypeVariable>
+    implements TypeVariableRef {
+  TypeVariable._(Instance instance) : name = instance.name!;
+
+  final String name;
 }
 
 final class UnknownObjectVariable extends ResolvedVariable

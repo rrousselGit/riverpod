@@ -243,7 +243,90 @@ class _NodeTileTheme {
   static const numColor = Color.fromARGB(255, 181, 206, 168);
   static const stringColor = Color.fromARGB(255, 206, 145, 120);
   static const hashColor = Color.fromARGB(255, 128, 128, 128);
-  static const labelColor = Color.fromARGB(255, 220, 220, 170);
+}
+
+extension on ResolvedVariable {
+  TextSpan toSpan() {
+    final variable = this;
+    switch (variable) {
+      case NullVariable():
+        return const TextSpan(
+          text: 'null',
+          style: TextStyle(color: _NodeTileTheme.nullColor),
+        );
+      case BoolVariable(:final Object value):
+        return TextSpan(
+          text: '$value',
+          style: const TextStyle(color: _NodeTileTheme.boolColor),
+        );
+      case StringVariable(:final Object value):
+        return TextSpan(
+          text: '"$value"',
+          style: const TextStyle(color: _NodeTileTheme.stringColor),
+        );
+      case IntVariable(:final Object value):
+      case DoubleVariable(:final Object value):
+        return TextSpan(
+          text: '$value',
+          style: const TextStyle(color: _NodeTileTheme.numColor),
+        );
+      case FieldVariable():
+        return TextSpan(
+          children: [
+            TextSpan(text: '${variable.name}: '),
+            variable.value.toSpan(),
+          ],
+        );
+
+      case TypeVariable(:final name):
+        return TextSpan(
+          text: name,
+          style: const TextStyle(color: _NodeTileTheme.typeColor),
+        );
+8
+      case ListVariable(:final items):
+        return Row(
+          children: [
+            Consumer(
+              builder: (context, ref, _) {
+                final type = ref
+                    .watch(_resolvedVariableForRef(ByteVariable(variable.type)))
+                    .value;
+                switch (type) {
+                  case null:
+                    return Container();
+                  case ByteSentinel<ResolvedVariable>():
+                    return const TextSpan('error');
+                  case ByteVariable<ResolvedVariable>(:final instance):
+                    return Row(
+                      children: [
+                        const TextSpan('<'),
+                        _NodeText(variable: instance),
+                        const TextSpan('>'),
+                      ],
+                    );
+                }
+              },
+            ),
+            TextSpan('[ length=${items.length} ]'),
+          ],
+        );
+
+      case UnknownObjectVariable(:final type):
+        return Row(
+          children: [
+            TextSpan(type, style: const TextStyle(color: _NodeTileTheme.typeColor)),
+            if (variable.identityHashCode case final hash?)
+              SelectableRegion(
+                selectionControls: materialTextSelectionControls,
+                child: Text(
+                  '#${hash.toRadixString(16)}',
+                  style: const TextStyle(color: _NodeTileTheme.hashColor),
+                ),
+              ),
+          ],
+        );
+  }
 }
 
 class _NodeText extends StatelessWidget {
@@ -280,11 +363,42 @@ class _NodeText extends StatelessWidget {
       case FieldVariable():
         return Row(
           children: [
-            Text(
-              '${variable.name}: ',
-              style: const TextStyle(color: _NodeTileTheme.labelColor),
-            ),
+            Text('${variable.name}: '),
             Expanded(child: _NodeText(variable: variable.value)),
+          ],
+        );
+
+      case TypeVariable(:final name):
+        return Text(
+          name,
+          style: const TextStyle(color: _NodeTileTheme.typeColor),
+        );
+
+      case ListVariable(:final items):
+        return Row(
+          children: [
+            Consumer(
+              builder: (context, ref, _) {
+                final type = ref
+                    .watch(_resolvedVariableForRef(ByteVariable(variable.type)))
+                    .value;
+                switch (type) {
+                  case null:
+                    return Container();
+                  case ByteSentinel<ResolvedVariable>():
+                    return const Text('error');
+                  case ByteVariable<ResolvedVariable>(:final instance):
+                    return Row(
+                      children: [
+                        const Text('<'),
+                        _NodeText(variable: instance),
+                        const Text('>'),
+                      ],
+                    );
+                }
+              },
+            ),
+            Text('[ length=${items.length} ]'),
           ],
         );
 
