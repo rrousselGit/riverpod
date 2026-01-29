@@ -6,19 +6,18 @@ import 'package:devtools_app_shared/service.dart' hide SentinelException;
 import 'package:devtools_app_shared/utils.dart';
 import 'package:devtools_extensions/devtools_extensions.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:meta/meta.dart';
 // ignore: implementation_imports
-import 'package:riverpod/src/internals.dart' as internals;
+import 'package:hooks_riverpod/src/internals.dart' as internals;
+import 'package:meta/meta.dart';
 import 'package:vm_service/vm_service.dart';
 
 part 'vm_service.g.dart';
-
+part 'vm_service/byte.dart';
 part 'vm_service/eval.dart';
-part 'vm_service/instance_ref.dart';
+part 'vm_service/hot_restart.dart';
 part 'vm_service/instance.dart';
 part 'vm_service/instance_kind.dart';
-part 'vm_service/byte.dart';
-part 'vm_service/hot_restart.dart';
+part 'vm_service/instance_ref.dart';
 
 
 Iterable<ItemT> decodeAll<ItemT>(
@@ -124,14 +123,11 @@ class ServiceManagerNotifier extends AsyncNotifier<ServiceManager> {
       // Changed service while in the async gap
       if (serviceManager != newService) return;
 
-      print('new service ${serviceManager.hashCode}');
       state = AsyncData(newService);
     });
     ref.onDispose(timer.cancel);
 
     await serviceManager.onServiceAvailable;
-
-    print('Initial service ${serviceManager.hashCode}');
 
     return serviceManager;
   }
