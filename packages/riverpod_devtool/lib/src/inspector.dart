@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/misc.dart';
 import 'package:vm_service/vm_service.dart';
 
+import 'ide.dart';
 import 'tree_list.dart';
 import 'vm_service.dart';
 
@@ -270,6 +271,11 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
                   ),
                   initialize: () {
                     // TODO
+
+                    final value = node.variable?.valueOrNull;
+                    if (value == null) return;
+
+                    inspectInIDE(value)?.call(ref);
                   },
                   open: () => openNotifier.toggle(node.byte),
                 ),

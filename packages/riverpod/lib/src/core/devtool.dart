@@ -2,9 +2,7 @@ part of '../framework.dart';
 
 @internal
 void inspectInIDE(Object? obj) {
-  // Hello there!
-  // Inspect "obj" in your IDE to view the content of whatever you're looking at.
-  dev.debugger();
+  dev.inspect(obj);
 }
 
 @internal
