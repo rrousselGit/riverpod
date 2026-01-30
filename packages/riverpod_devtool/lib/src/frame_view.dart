@@ -133,7 +133,7 @@ class ProviderViewer extends StatelessWidget {
             child: Inspector(variable: selected.element.state.state.byte),
           ),
         ),
-        const Terminal(),
+        Terminal(state: selected.element.state.state.byte),
       ],
     );
   }

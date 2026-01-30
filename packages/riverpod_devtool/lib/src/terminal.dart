@@ -10,7 +10,9 @@ import 'ui_primitives/panel.dart';
 import 'vm_service.dart';
 
 class Terminal extends ConsumerStatefulWidget {
-  const Terminal({super.key});
+  const Terminal({super.key, required this.state});
+
+  final Byte<VariableRef> state;
 
   @override
   ConsumerState<Terminal> createState() => _TerminalState();
@@ -71,6 +73,7 @@ class _TerminalState extends ConsumerState<Terminal> {
                         isAlive: Disposable(),
                         // TODO scope to expose $notifier and $state
                         // TODO maybe support $previous to refer to the last terminal result
+                        scope: {r'$state': ?widget.state.valueOrNull?.ref?.id},
                       );
                       result = ByteVariable(VariableRef.fromInstanceRef(ref));
                     } on SentinelException catch (e) {
