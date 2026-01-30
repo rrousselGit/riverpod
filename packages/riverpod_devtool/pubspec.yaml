@@ -9,11 +9,13 @@ environment:
 resolution: workspace
 
 dependencies:
+  collection: ^1.19.1
   devtools_app_shared: ^0.4.0
   devtools_extensions: ^0.4.0
   flutter:
     sdk: flutter
   flutter_hooks: ^0.21.3+1
+  freezed_annotation: ^3.1.0
   hooks_riverpod: 3.2.0
   intl: ^0.19.0
   meta: ^1.17.0
@@ -24,6 +26,7 @@ dev_dependencies:
   build_runner: ^2.7.0
   flutter_test:
     sdk: flutter
+  freezed: ^3.2.4
   riverpod_devtool_generator: ^0.0.0
 
 flutter:

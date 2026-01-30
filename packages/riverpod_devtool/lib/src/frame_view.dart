@@ -11,7 +11,7 @@ import 'package:stack_trace/stack_trace.dart';
 
 import 'frames.dart';
 import 'ide.dart';
-import 'inspector.dart';
+import 'state_inspector/inspector.dart';
 import 'providers/providers.dart';
 import 'search/fuzzy_match.dart';
 import 'terminal.dart';

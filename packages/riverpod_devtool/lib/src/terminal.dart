@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/experimental/mutation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:vm_service/vm_service.dart';
 
-import 'inspector.dart';
+import 'state_inspector/inspector.dart';
 import 'ui_primitives/panel.dart';
 import 'vm_service.dart';
 
