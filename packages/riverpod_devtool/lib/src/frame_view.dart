@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:devtools_app_shared/ui.dart';
+import 'package:devtools_app_shared/ui.dart' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -11,9 +12,11 @@ import 'package:stack_trace/stack_trace.dart';
 import 'frames.dart';
 import 'ide.dart';
 import 'inspector.dart';
-import 'providers.dart';
-import 'search.dart';
-import 'ui.dart';
+import 'providers/providers.dart';
+import 'search/fuzzy_match.dart';
+import 'terminal.dart';
+import 'ui_primitives/panel.dart';
+import 'ui_primitives/search_bar.dart';
 import 'vm_service.dart';
 
 class FrameView extends HookConsumerWidget {
@@ -105,14 +108,32 @@ class _FrameViewer extends HookConsumerWidget {
         ),
 
         if (selected case final selected?)
-          Panel(
-            child: Padding(
-              padding: const .symmetric(vertical: 8),
-              child: Inspector(variable: selected.element.state.state.byte),
-            ),
-          )
+          ProviderViewer(selected: selected)
         else
           const Panel(child: Text('No provider selected')),
+      ],
+    );
+  }
+}
+
+class ProviderViewer extends StatelessWidget {
+  const ProviderViewer({super.key, required this.selected});
+
+  final FilteredElement selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return SplitPane(
+      axis: .vertical,
+      initialFractions: const [0.8, 0.2],
+      children: [
+        Panel(
+          child: Padding(
+            padding: const .symmetric(vertical: 8),
+            child: Inspector(variable: selected.element.state.state.byte),
+          ),
+        ),
+        const Terminal(),
       ],
     );
   }

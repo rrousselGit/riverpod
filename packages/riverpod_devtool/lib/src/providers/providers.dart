@@ -1,11 +1,12 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+// ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
 
-import 'collection.dart';
-import 'elements.dart';
-import 'frames.dart';
-import 'search.dart';
-import 'vm_service.dart';
+import '../collection.dart';
+import '../elements.dart';
+import '../frames.dart';
+import '../search/fuzzy_match.dart';
+import '../vm_service.dart';
 
 final allDiscoveredOriginsProvider =
     NotifierProvider<AllDiscoveredOriginsNotifier, Set<internals.OriginId>>(
@@ -31,7 +32,6 @@ class AllDiscoveredOriginsNotifier extends Notifier<Set<internals.OriginId>> {
   }
 
   void _handleFrame(FoldedFrame frame) {
-    print('Handle frame ${frame.frame.events}');
     final setBuilder = SetBuilder<internals.OriginId>(state);
 
     for (final event in frame.frame.events) {
@@ -43,25 +43,6 @@ class AllDiscoveredOriginsNotifier extends Notifier<Set<internals.OriginId>> {
     state = setBuilder.build();
   }
 }
-
-// TODO
-// abstract class OriginState implements Built<OriginState, OriginStateBuilder> {
-//   factory OriginState({
-//     required OriginMeta2 value,
-//     required Map<internals.ElementId, ProviderState> associatedProviders,
-//   }) => _$OriginState((b) {
-//     b.value = value;
-//     b.associatedProviders = associatedProviders;
-//   });
-
-//   OriginState._();
-
-//   OriginMeta2 get value;
-//   Map<internals.ElementId, ProviderState> get associatedProviders;
-// }
-
-// extension type OriginMeta2(OriginMeta value) implements OriginMeta {}
-// extension type ProviderMeta2(ProviderMeta value) implements ProviderMeta {}
 
 extension ProviderMetaX on ProviderMeta {}
 
