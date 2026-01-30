@@ -1,32 +1,74 @@
 part of '../vm_service.dart';
 
-final dartCoreEvalProvider = evalProvider('dart:core');
-final dartAsyncEvalProvider = evalProvider('dart:async');
-final riverpodFrameworkEvalProvider = evalProvider(
-  'package:riverpod/src/framework.dart',
-);
+final riverpodEvalProvider = FutureProvider((ref) {
+  return ref.watch(
+    evalProvider.selectAsync((evalFactory) => evalFactory.riverpodFramework),
+  );
+});
 
-final evalProvider = FutureProvider.autoDispose.family<Eval, String>(
+final evalProvider = FutureProvider.autoDispose<EvalFactory>(
   name: 'evalProvider',
-  (ref, libraryName) async {
+  (ref) async {
     final vmService = await ref.watch(vmServiceProvider.future);
     final serviceManager = await ref.watch(serviceManagerProvider.future);
 
-    final eval = EvalOnDartLibrary(
-      libraryName,
-      vmService,
+    final eval = EvalFactory(
+      vmService: vmService,
       serviceManager: serviceManager,
     );
     ref.onDispose(eval.dispose);
 
-    return Eval._(eval);
+    return eval;
   },
 );
+
+class EvalFactory {
+  EvalFactory({required this.vmService, required this.serviceManager});
+
+  Eval get dartCore => forLibrary('dart:core');
+  Eval get dartAsync => forLibrary('dart:async');
+  Eval get riverpodFramework =>
+      forLibrary('package:riverpod/src/framework.dart');
+
+  final VmService vmService;
+  final ServiceManager serviceManager;
+
+  final _evalCache = <String, Eval>{};
+  Eval forLibrary(String libraryName) {
+    return _evalCache.putIfAbsent(
+      libraryName,
+      () => Eval._(
+        this,
+        libraryName,
+        vmService: vmService,
+        serviceManager: serviceManager,
+      ),
+    );
+  }
+
+  void dispose() {
+    for (final eval in _evalCache.values) {
+      eval.dispose();
+    }
+    _evalCache.clear();
+  }
+}
 
 class Eval {
   // TODO  handle  RPCError (also remove explicit try/catch)
 
-  Eval._(this._eval);
+  Eval._(
+    this.factory,
+    String libraryName, {
+    required VmService vmService,
+    required ServiceManager serviceManager,
+  }) : _eval = EvalOnDartLibrary(
+         libraryName,
+         vmService,
+         serviceManager: serviceManager,
+       );
+
+  final EvalFactory factory;
   final EvalOnDartLibrary _eval;
 
   String _formatCode(String code) => code.replaceAll('\n', ' ');
@@ -102,6 +144,11 @@ class Eval {
   Future<Class> getClass(ClassRef ref, {required Disposable isAlive}) async {
     final res = await _eval.getClass(ref, isAlive);
     return res!;
+  }
+
+  void dispose() {
+    _eval.dispose();
+    factory._evalCache.removeWhere((_, v) => v == this);
   }
 }
 

@@ -70,7 +70,7 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
     ref.listen(vmServiceProvider.future, (a, b) {
       print('VM service changed, clearing frames');
     });
-    ref.listen(riverpodFrameworkEvalProvider.future, (a, b) {
+    ref.listen(riverpodEvalProvider, (a, b) {
       print('Riverpod eval changed, clearing frames');
     });
 
@@ -79,7 +79,7 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
 
     final service = await ref.watch(vmServiceProvider.future);
 
-    final riverpodEval = await ref.watch(riverpodFrameworkEvalProvider.future);
+    final riverpodEval = await ref.watch(riverpodEvalProvider.future);
     final isAlive = ref.disposable();
 
     final sub = service.onNotification

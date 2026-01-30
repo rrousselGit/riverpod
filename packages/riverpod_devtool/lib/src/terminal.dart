@@ -64,7 +64,9 @@ class _TerminalState extends ConsumerState<Terminal> {
                   final mut = Mutation<void>();
                   mut.run(ref, (tsx) async {
                     // TODO use library from selected provider
-                    final eval = await tsx.get(dartCoreEvalProvider.future);
+                    final eval = await tsx.get(
+                      evalProvider.selectAsync((eval) => eval.dartCore),
+                    );
 
                     Byte<VariableRef> result;
                     try {

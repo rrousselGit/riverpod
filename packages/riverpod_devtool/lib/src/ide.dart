@@ -14,7 +14,7 @@ Future<void> openTraceInIDE(MutationTarget target, Trace trace) async {
 
   final mutation = Mutation<void>();
   await mutation.run(target, (tsx) async {
-    final eval = await tsx.get(riverpodFrameworkEvalProvider.future);
+    final eval = await tsx.get(riverpodEvalProvider.future);
 
     final firstNonRiverpodFrame = trace.frames
         .where(
@@ -44,7 +44,7 @@ Future<void> Function(MutationTarget target)? inspectInIDE(
   return (target) async {
     final mutation = Mutation<void>();
     await mutation.run(target, (tsx) async {
-      final eval = await tsx.get(riverpodFrameworkEvalProvider.future);
+      final eval = await tsx.get(riverpodEvalProvider.future);
 
       final instance = await eval.evalInstance(
         isAlive: Disposable(),
