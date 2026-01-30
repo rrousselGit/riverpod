@@ -69,7 +69,8 @@ class _TerminalState extends ConsumerState<Terminal> {
                       final ref = await eval.eval(
                         code,
                         isAlive: Disposable(),
-                        // TODO scope to expose $notifier
+                        // TODO scope to expose $notifier and $state
+                        // TODO maybe support $previous to refer to the last terminal result
                       );
                       result = ByteVariable(VariableRef.fromInstanceRef(ref));
                     } on SentinelException catch (e) {
