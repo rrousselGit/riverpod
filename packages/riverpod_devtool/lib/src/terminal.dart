@@ -8,9 +8,9 @@ class Terminal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Expanded(child: const Placeholder()),
+        const Expanded(child: Placeholder()),
         Padding(
-          padding: const EdgeInsets.only(top: 8.0),
+          padding: const EdgeInsets.only(top: 8),
           child: ui.DevToolsClearableTextField(
             hintText: 'Enter command',
             labelText: 'Terminal',

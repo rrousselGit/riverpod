@@ -113,9 +113,9 @@ abstract class StringVariableRef implements VariableRef {
 
 final class _StringVariableRefImpl extends _EvaluatedVariableRef
     implements VariableRef {
-  _StringVariableRefImpl._(super._ref)
-    : truncatedValue = _ref.valueAsString!,
-      isTruncated = _ref.valueAsStringIsTruncated!;
+  _StringVariableRefImpl._(super.ref)
+    : truncatedValue = ref.valueAsString!,
+      isTruncated = ref.valueAsStringIsTruncated!;
 
   final String truncatedValue;
   final bool isTruncated;
@@ -164,7 +164,7 @@ abstract class TypeVariableRef implements VariableRef {
 
 final class _TypeVariableRefImpl extends _EvaluatedVariableRef
     implements VariableRef {
-  _TypeVariableRefImpl(super._ref);
+  _TypeVariableRefImpl(super.ref);
 
   @override
   Future<Byte<TypeVariable>> resolve(
@@ -185,7 +185,7 @@ abstract class ListVariableRef implements VariableRef {
 
 final class _ListVariableRefImpl extends _EvaluatedVariableRef
     implements VariableRef {
-  _ListVariableRefImpl(super._ref);
+  _ListVariableRefImpl(super.ref);
 
   @override
   Future<Byte<ListVariable>> resolve(
@@ -206,7 +206,7 @@ abstract class RecordVariableRef implements VariableRef {
 
 final class _RecordVariableRefImpl extends _EvaluatedVariableRef
     implements VariableRef {
-  _RecordVariableRefImpl(super._ref);
+  _RecordVariableRefImpl(super.ref);
 
   @override
   Future<Byte<RecordVariable>> resolve(
@@ -227,7 +227,7 @@ abstract class SetVariableRef implements VariableRef {
 
 final class _SetVariableRefImpl extends _EvaluatedVariableRef
     implements VariableRef {
-  _SetVariableRefImpl(super._ref);
+  _SetVariableRefImpl(super.ref);
 
   @override
   Future<Byte<SetVariable>> resolve(
@@ -248,7 +248,7 @@ abstract class UnknownObjectVariableRef implements VariableRef {
 
 final class _UnknownObjectVariableRefImpl extends _EvaluatedVariableRef
     implements VariableRef {
-  _UnknownObjectVariableRefImpl(super._ref);
+  _UnknownObjectVariableRefImpl(super.ref);
 
   @override
   Future<Byte<UnknownObjectVariable>> resolve(

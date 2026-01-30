@@ -71,10 +71,6 @@ class RiverpodDevtool {
   }
 
   ProviderOrFamily? originFromId(OriginId id) {
-    print(
-      'Search origin ${_uniqueOrigins.containsValue(id)} // ${_uniqueProviders.containsValue(ProviderId(id._id))}',
-    );
-
     return _uniqueOrigins.entries
         .firstWhereOrNull((entry) => entry.value == id)
         ?.key;
