@@ -261,28 +261,22 @@ class _Tile extends StatelessWidget {
       color: selected
           ? Theme.of(context).colorScheme.selectedRowBackgroundColor
           : null,
-      child: Tooltip(
-        message:
-            creationStackTrace ??
-            '<Failed to obtain the stacktrace for this provider>',
-        child: InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Row(
-              // TODO
-              spacing: 10,
-              children: [
-                if (indent case final indent?)
-                  Text(
-                    indent,
-                    style: TextStyle(
-                      color: Theme.of(context).textTheme.bodyMedium!.color,
-                    ),
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Row(
+            spacing: 10,
+            children: [
+              if (indent case final indent?)
+                Text(
+                  indent,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyMedium!.color,
                   ),
-                Expanded(child: FuzzyText(match: text)),
-              ],
-            ),
+                ),
+              Expanded(child: FuzzyText(match: text)),
+            ],
           ),
         ),
       ),
