@@ -3,7 +3,7 @@ part of '../vm_service.dart';
 sealed class ResolvedVariable implements VariableRef {
   const ResolvedVariable();
 
-  factory ResolvedVariable.fromInstance(Instance instance) {
+  factory ResolvedVariable.fromInstance(Instance instance, EvalFactory eval) {
     final kind = _SimplifiedInstanceKind.fromInstanceKind(
       _SealedInstanceKind.fromString(instance.kind!),
     );
@@ -22,15 +22,14 @@ sealed class ResolvedVariable implements VariableRef {
       case .type:
         return TypeVariable._(instance);
       case .list:
-        return ListVariable._(instance);
+        return ListVariable._(instance, eval);
       case .record:
-        return RecordVariable._(instance);
+        return RecordVariable._(instance, eval);
       case .set:
-        return SetVariable._(instance);
-
+        return SetVariable._(instance, eval);
       case .object:
       case .map:
-        return UnknownObjectVariable._(instance);
+        return UnknownObjectVariable._(instance, eval);
     }
   }
 
@@ -39,10 +38,7 @@ sealed class ResolvedVariable implements VariableRef {
 }
 
 mixin _SelfResolvedVariable<T extends _SelfResolvedVariable<T>> {
-  Future<Byte<T>> resolve(
-    Future<Eval> Function(String uri) eval,
-    Disposable isAlive,
-  ) async {
+  Future<Byte<T>> resolve(Disposable isAlive) async {
     if (this is! T) {
       throw StateError(
         '_SelfResolvedVariable can only be extended by its generic type T',
@@ -116,11 +112,14 @@ final class DoubleVariable extends ResolvedVariable
 final class ListVariable extends ResolvedVariable
     with _SelfResolvedVariable<ListVariable>
     implements ListVariableRef, VariableRef {
-  ListVariable._(this.ref)
+  ListVariable._(this.ref, EvalFactory eval)
     : children = [
         ...ref.elements!
             .map(Byte.instanceRef)
-            .map((byte) => byte.map(VariableRef.fromInstanceRef)),
+            .map(
+              (byte) =>
+                  byte.map((val) => VariableRef.fromInstanceRef(val, eval)),
+            ),
       ];
 
   @override
@@ -132,10 +131,10 @@ final class ListVariable extends ResolvedVariable
 final class RecordVariable extends ResolvedVariable
     with _SelfResolvedVariable<RecordVariable>
     implements RecordVariableRef {
-  RecordVariable._(this.ref)
+  RecordVariable._(this.ref, EvalFactory eval)
     : children = [
         ...ref.fields!
-            .map((field) => _FieldVariableRefImpl(field, object: ref))
+            .map((field) => _FieldVariableRefImpl(field, eval, object: ref))
             .map(ByteVariable.new),
       ];
 
@@ -148,11 +147,14 @@ final class RecordVariable extends ResolvedVariable
 final class SetVariable extends ResolvedVariable
     with _SelfResolvedVariable<SetVariable>
     implements VariableRef {
-  SetVariable._(this.ref)
+  SetVariable._(this.ref, EvalFactory eval)
     : children = [
         ...ref.elements!
             .map(Byte.instanceRef)
-            .map((byte) => byte.map(VariableRef.fromInstanceRef)),
+            .map(
+              (byte) =>
+                  byte.map((val) => VariableRef.fromInstanceRef(val, eval)),
+            ),
       ];
 
   @override
@@ -174,12 +176,12 @@ final class TypeVariable extends ResolvedVariable
 final class UnknownObjectVariable extends ResolvedVariable
     with _SelfResolvedVariable<UnknownObjectVariable>
     implements UnknownObjectVariableRef {
-  UnknownObjectVariable._(this.ref)
+  UnknownObjectVariable._(this.ref, EvalFactory eval)
     : type = ref.classRef!.name!,
       identityHashCode = ref.identityHashCode,
       children = [
         for (final field in ref.fields ?? <BoundField>[])
-          ByteVariable(_FieldVariableRefImpl(field, object: ref)),
+          ByteVariable(_FieldVariableRefImpl(field, eval, object: ref)),
       ];
 
   final String type;

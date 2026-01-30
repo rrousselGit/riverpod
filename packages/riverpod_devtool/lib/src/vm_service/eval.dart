@@ -52,6 +52,13 @@ class EvalFactory {
     }
     _evalCache.clear();
   }
+
+  Eval? forRef(VariableRef? state) {
+    final libraryUri = state?.ref?.classRef?.library?.uri;
+    if (libraryUri == null) return null;
+
+    return forLibrary(libraryUri);
+  }
 }
 
 class Eval {
@@ -135,7 +142,7 @@ class Eval {
     try {
       final res = await _eval.safeGetInstance(ref, isAlive);
 
-      return ByteVariable(ResolvedVariable.fromInstance(res));
+      return ByteVariable(ResolvedVariable.fromInstance(res, factory));
     } on SentinelException catch (e) {
       return ByteSentinel(e.sentinel);
     }

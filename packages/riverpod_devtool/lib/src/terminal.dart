@@ -64,20 +64,24 @@ class _TerminalState extends ConsumerState<Terminal> {
                   final mut = Mutation<void>();
                   mut.run(ref, (tsx) async {
                     // TODO use library from selected provider
-                    final eval = await tsx.get(
-                      evalProvider.selectAsync((eval) => eval.dartCore),
-                    );
+                    final evalFactory = await tsx.get(evalProvider.future);
 
                     Byte<VariableRef> result;
                     try {
+                      final state = widget.state.valueOrNull;
+                      final eval =
+                          evalFactory.forRef(state) ?? evalFactory.dartCore;
+
                       final ref = await eval.eval(
                         code,
                         isAlive: Disposable(),
                         // TODO scope to expose $notifier and $state
                         // TODO maybe support $previous to refer to the last terminal result
-                        scope: {r'$state': ?widget.state.valueOrNull?.ref?.id},
+                        scope: {r'$state': ?state?.ref?.id},
                       );
-                      result = ByteVariable(VariableRef.fromInstanceRef(ref));
+                      result = ByteVariable(
+                        VariableRef.fromInstanceRef(ref, evalFactory),
+                      );
                     } on SentinelException catch (e) {
                       result = ByteSentinel(e.sentinel);
                     } on RPCError catch (e) {

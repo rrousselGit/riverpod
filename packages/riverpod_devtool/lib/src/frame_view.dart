@@ -74,6 +74,8 @@ class _FrameViewer extends HookConsumerWidget {
     final selectedId = useState<internals.ElementId?>(null);
     final searchController = useTextEditingController();
     final search = useValueListenable(searchController);
+    // Should be loaded by now.
+    final eval = ref.watch(evalProvider).requireValue;
 
     final originStates = ref.watch(
       filteredProvidersProvider((text: search.text, frame: frame)),
@@ -108,7 +110,11 @@ class _FrameViewer extends HookConsumerWidget {
         ),
 
         if (selected case final selected?)
-          ProviderViewer(selected: selected)
+          ProviderViewer(
+            selected: selected.element.state.state.byte.map(
+              (val) => VariableRef.fromInstanceRef(val, eval),
+            ),
+          )
         else
           const Panel(child: Text('No provider selected')),
       ],
@@ -119,7 +125,7 @@ class _FrameViewer extends HookConsumerWidget {
 class ProviderViewer extends StatelessWidget {
   const ProviderViewer({super.key, required this.selected});
 
-  final FilteredElement selected;
+  final Byte<VariableRef> selected;
 
   @override
   Widget build(BuildContext context) {
@@ -130,10 +136,10 @@ class ProviderViewer extends StatelessWidget {
         Panel(
           child: Padding(
             padding: const .symmetric(vertical: 8),
-            child: Inspector(variable: selected.element.state.state.byte),
+            child: Inspector(variable: selected),
           ),
         ),
-        Terminal(state: selected.element.state.state.byte),
+        Terminal(state: selected),
       ],
     );
   }

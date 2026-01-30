@@ -538,12 +538,7 @@ final _resolvedVariableForRef = FutureProvider.autoDispose
           case ByteSentinel<VariableRef>():
             return ByteSentinel<ResolvedVariable>(byte.sentinel);
           case ByteVariable<VariableRef>():
-            return byte.instance.resolve(
-              (uri) => ref.watch(
-                evalProvider.selectAsync((eval) => eval.forLibrary(uri)),
-              ),
-              ref.disposable(),
-            );
+            return byte.instance.resolve(ref.disposable());
         }
       },
     );

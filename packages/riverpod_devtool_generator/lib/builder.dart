@@ -532,13 +532,13 @@ final class _UnknownType extends _BuiltInType {
   final DartType type;
 
   @override
-  String typeCode() => '({Byte<VariableRef> byte, CacheId id,})';
+  String typeCode() => '({Byte<InstanceRef> byte, CacheId id,})';
 
   @override
   String decodeBytes({required String mapSymbol, required String path}) =>
       """
 (
-  byte: ByteVariable(VariableRef.fromInstanceRef($mapSymbol['$path.byte']!)),
+  byte: Byte.instanceRef($mapSymbol['$path.byte']!),
   id: CacheId($mapSymbol['$path.id']!.valueAsString!),
 )
 """;
