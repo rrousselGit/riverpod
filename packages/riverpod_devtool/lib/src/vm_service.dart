@@ -18,7 +18,7 @@ part 'vm_service/hot_restart.dart';
 part 'vm_service/instance.dart';
 part 'vm_service/instance_kind.dart';
 part 'vm_service/instance_ref.dart';
-
+part 'vm_service/cache.dart';
 
 Iterable<ItemT> decodeAll<ItemT>(
   Map<String, InstanceRef> events,
@@ -159,5 +159,3 @@ class VmServiceNotifier extends AsyncNotifier<VmService> {
     return future;
   }
 }
-
-extension type CacheId(String value) {}

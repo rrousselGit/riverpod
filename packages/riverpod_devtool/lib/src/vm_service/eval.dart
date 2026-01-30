@@ -22,13 +22,15 @@ final evalProvider = FutureProvider.autoDispose<EvalFactory>(
   },
 );
 
+extension type RiverpodEval._(Eval _eval) implements Eval {}
+
 class EvalFactory {
   EvalFactory({required this.vmService, required this.serviceManager});
 
   Eval get dartCore => forLibrary('dart:core');
   Eval get dartAsync => forLibrary('dart:async');
-  Eval get riverpodFramework =>
-      forLibrary('package:riverpod/src/framework.dart');
+  RiverpodEval get riverpodFramework =>
+      RiverpodEval._(forLibrary('package:riverpod/src/framework.dart'));
 
   final VmService vmService;
   final ServiceManager serviceManager;
@@ -79,35 +81,6 @@ class Eval {
   final EvalOnDartLibrary _eval;
 
   String _formatCode(String code) => code.replaceAll('\n', ' ');
-
-  Future<CacheId> cache(InstanceRef ref, {required Disposable isAlive}) async {
-    final idRef = await _eval.safeEval(
-      'RiverpodDevtool.instance.cache(that)',
-      scope: {'that': ref.id!},
-      isAlive: isAlive,
-    );
-
-    if (idRef.valueAsStringIsTruncated!) {
-      throw StateError('CacheId value is truncated');
-    }
-    return CacheId(idRef.valueAsString!);
-  }
-
-  Future<void> deleteCache(CacheId id, {required Disposable isAlive}) async {
-    await _eval.safeEval(
-      'RiverpodDevtool.instance.deleteCache(that)',
-      scope: {'that': id.value},
-      isAlive: isAlive,
-    );
-  }
-
-  Future<InstanceRef> getCache(CacheId id, {required Disposable isAlive}) {
-    return _eval.safeEval(
-      'RiverpodDevtool.instance.getCache(that)',
-      scope: {'that': id.value},
-      isAlive: isAlive,
-    );
-  }
 
   Future<InstanceRef> eval(
     String code, {
