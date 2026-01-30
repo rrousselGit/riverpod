@@ -1,3 +1,4 @@
+import 'package:devtools_app_shared/ui.dart' as ui;
 import 'package:flutter/material.dart';
 
 class DevtoolSearchBar extends StatelessWidget {
@@ -12,11 +13,11 @@ class DevtoolSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      decoration: InputDecoration(
-        prefixIcon: const Icon(Icons.search),
-        hintText: hintText,
-      ),
+    return ui.DevToolsClearableTextField(
+      prefixIcon: const Icon(Icons.search),
+      roundedBorder: true,
+
+      hintText: hintText,
       controller: controller,
     );
   }
