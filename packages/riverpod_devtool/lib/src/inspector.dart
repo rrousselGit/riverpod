@@ -168,9 +168,14 @@ _variableNodeForByteProvider = .new(
 );
 
 class SliverVariableTree extends ConsumerStatefulWidget {
-  const SliverVariableTree({super.key, required this.byte});
+  const SliverVariableTree({
+    super.key,
+    required this.byte,
+    this.reversed = false,
+  });
 
   final Byte<VariableRef> byte;
+  final bool reversed;
 
   @override
   ConsumerState<SliverVariableTree> createState() => _SliverVariableTreeState();
@@ -245,7 +250,9 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
       itemBuilder: (context, index) {
         return Consumer(
           builder: (context, ref, child) {
-            final node = nodes[index];
+            final node = widget.reversed
+                ? nodes[nodes.length - 1 - index]
+                : nodes[index];
 
             final padding =
                 const EdgeInsets.symmetric(horizontal: 12) +
@@ -311,6 +318,7 @@ class _ByteTile extends StatelessWidget {
         InkWell(
           onTap: initialize,
           child: const Text(
+            // TODO add a mean to init the variable
             '<not initialized>',
             style: TextStyle(color: _NodeTileTheme.sentinelColor),
           ),

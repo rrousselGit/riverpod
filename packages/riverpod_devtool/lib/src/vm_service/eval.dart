@@ -24,6 +24,8 @@ final evalProvider = FutureProvider.autoDispose.family<Eval, String>(
 );
 
 class Eval {
+  // TODO  handle  RPCError (also remove explicit try/catch)
+
   Eval._(this._eval);
   final EvalOnDartLibrary _eval;
 

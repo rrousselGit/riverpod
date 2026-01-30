@@ -115,7 +115,7 @@ final class _StringVariableRefImpl extends _EvaluatedVariableRef
     implements VariableRef {
   _StringVariableRefImpl._(super.ref)
     : truncatedValue = ref.valueAsString!,
-      isTruncated = ref.valueAsStringIsTruncated!;
+      isTruncated = ref.valueAsString!.length < ref.length!;
 
   final String truncatedValue;
   final bool isTruncated;
