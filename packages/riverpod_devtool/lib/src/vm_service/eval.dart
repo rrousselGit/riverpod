@@ -36,10 +36,6 @@ class EvalFactory {
   final ServiceManager serviceManager;
 
   final _disposable = Disposable();
-  late final _riverpodDevtoolRef = riverpodFramework._eval.eval(
-    'RiverpodDevtool.instance',
-    isAlive: _disposable,
-  );
 
   final _evalCache = <String, Eval>{};
 

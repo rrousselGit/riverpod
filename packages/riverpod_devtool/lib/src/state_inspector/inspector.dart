@@ -72,8 +72,7 @@ class _OpenedVariableNodes<T> extends Notifier<Set<T>> {
 
   void remove(T byte) {
     // We're only cleaning memory. No need to notify listeners.
-    // TODO
-    // state.remove(byte);
+    state.remove(byte);
   }
 }
 
