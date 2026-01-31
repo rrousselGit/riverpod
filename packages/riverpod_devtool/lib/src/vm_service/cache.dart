@@ -2,49 +2,231 @@ part of '../vm_service.dart';
 
 extension type CacheId(String value) {}
 
-@immutable
-class CachedObject {
-  const CachedObject(this.id);
+sealed class CachedObject {
+  CachedObject({required this.label});
 
-  static Future<CachedObject> create(
-    String code,
-    RiverpodEval eval, {
+  final String? label;
+
+  InstanceRef? _lastKnownRef;
+
+  Future<Byte<Instance>> read(
+    EvalFactory eval, {
     required Disposable isAlive,
   }) async {
-    final idRef = await eval.eval(
-      'RiverpodDevtool.instance.cache($code)',
+    InstanceRef ref;
+    if (_lastKnownRef case final lastKnownRef?) {
+      ref = lastKnownRef;
+    } else {
+      final byte = await _fetchInstance(eval, isAlive);
+      switch (byte) {
+        case ByteVariable():
+          ref = _lastKnownRef = byte.instance;
+        case ByteError():
+          return ByteError(byte.error);
+      }
+    }
+
+    const maxRetries = 5;
+    var i = 0;
+    while (true) {
+      i++;
+
+      final byte = await eval.dartCore.instance(ref, isAlive: isAlive);
+
+      _lastKnownRef = null;
+      switch (byte) {
+        case ByteVariable():
+          _lastKnownRef = byte.instance;
+          return byte;
+        // Non-expire error, return it
+        case ByteError(
+          error: SentinelExceptionType(
+            error: Sentinel(kind: != SentinelKind.kExpired),
+          ),
+        ):
+        // Out of retries, return last error
+        case ByteError() when i == maxRetries:
+          return byte;
+        // Retry
+        case _:
+          final newRef = await _fetchInstance(eval, isAlive);
+          switch (newRef) {
+            case ByteError():
+              return ByteError(newRef.error);
+            case ByteVariable():
+              _lastKnownRef = ref = newRef.instance;
+          }
+      }
+    }
+  }
+
+  Future<Byte<InstanceRef>> readRef(EvalFactory eval, Disposable isAlive) {
+    if (_lastKnownRef case final lastKnownRef?) {
+      return Future.value(ByteVariable(lastKnownRef));
+    }
+
+    return _fetchInstance(eval, isAlive);
+  }
+
+  Future<Byte<InstanceRef>> _fetchInstance(
+    EvalFactory eval,
+    Disposable isAlive,
+  );
+}
+
+class RootCachedObject extends CachedObject {
+  RootCachedObject(this.id, {super.label});
+
+  static Future<Byte<RootCachedObject>> create(
+    String code,
+    Eval eval, {
+    required Disposable isAlive,
+    Map<String, String>? scope,
+  }) async {
+    final idByte = await eval.eval(
+      '\$riverpodDevtool.cache($code)',
       isAlive: isAlive,
+      includeRiverpodDevtool: true,
+      scope: scope,
     );
 
-    if (idRef.valueAsStringIsTruncated!) {
+    switch (idByte) {
+      case ByteError():
+        return ByteError(idByte.error);
+      case ByteVariable():
+        break;
+    }
+
+    if (idByte.instance.length! < idByte.instance.valueAsString!.length) {
       throw StateError('CacheId value is truncated');
     }
-    return CachedObject(CacheId(idRef.valueAsString!));
+    return ByteVariable(
+      RootCachedObject(CacheId(idByte.instance.valueAsString!)),
+    );
   }
 
   final CacheId id;
 
-  Future<Instance> read(RiverpodEval eval, {required Disposable isAlive}) {
-    return eval.evalInstance(
-      'RiverpodDevtool.instance.getCache("$id")',
+  // TODO
+  // Future<Byte<ResolvedVariable>> read(
+  //   EvalFactory eval, {
+  //   required Disposable isAlive,
+  // }) async {
+  //   try {
+  //     final instance = await eval.dartCore.evalInstance(
+  //       _readCode,
+  //       isAlive: isAlive,
+  //       includeRiverpodDevtool: true,
+  //     );
+  //     _lastKnownInstance = instance;
+
+  //     return ByteVariable(ResolvedVariable.fromInstance(this, instance));
+  //   } on SentinelException catch (e) {
+  //     return ByteSentinel(e.sentinel);
+  //     // TODO RPCError
+  //   }
+  // }
+
+  @override
+  Future<Byte<InstanceRef>> _fetchInstance(
+    EvalFactory eval,
+    Disposable isAlive,
+  ) {
+    return eval.dartCore.eval(
+      '\$riverpodDevtool.getCache("$id")',
       isAlive: isAlive,
+      includeRiverpodDevtool: true,
     );
   }
 
-  Future<void> delete(RiverpodEval eval, {required Disposable isAlive}) async {
-    await eval.eval(
-      'RiverpodDevtool.instance.deleteCache("$id")',
+  Future<void> delete(EvalFactory eval, {required Disposable isAlive}) async {
+    await eval.dartCore.eval(
+      '\$riverpodDevtool.deleteCache("$id")',
       isAlive: isAlive,
+      includeRiverpodDevtool: true,
     );
   }
 
   @override
-  String toString() => 'CachedObject(id: ${id.value})';
+  String toString() => 'CachedObject(id: $id)';
+}
+
+final class DerivedCachedObject extends CachedObject {
+  DerivedCachedObject({
+    required this.from,
+    required this.obtainRefFromParentInstance,
+    super.label,
+  });
+
+  factory DerivedCachedObject.objectField(
+    CachedObject object,
+    BoundField field,
+  ) {
+    final name = FieldKey.from(field.name);
+
+    return DerivedCachedObject(
+      from: object,
+      label: switch (name) {
+        PositionalFieldKey() => null,
+        NamedFieldKey(:final name) => name,
+      },
+      obtainRefFromParentInstance: (obj) {
+        final field = obj.fields!
+            .whereIndexed((index, f) => FieldKey.from(f.name) == name)
+            .firstOrNull;
+        if (field == null) {
+          throw StateError(
+            'Field $name not found on object of type ${obj.classRef?.name}',
+          );
+        }
+
+        return Byte.instanceRef(field.value);
+      },
+    );
+  }
+
+  factory DerivedCachedObject.collectionElement(
+    CachedObject object,
+    int index,
+  ) {
+    return DerivedCachedObject(
+      from: object,
+      obtainRefFromParentInstance: (obj) {
+        final elements = obj.elements;
+        if (elements == null || index < 0 || index >= elements.length) {
+          throw StateError(
+            'Index $index out of bounds for object of type ${obj.classRef?.name}',
+          );
+        }
+
+        return Byte.instanceRef(elements[index]);
+      },
+    );
+  }
+
+  final CachedObject from;
+  final Byte<InstanceRef> Function(Instance parent) obtainRefFromParentInstance;
+
+  // TODO
+  // Future<Byte<ResolvedVariable>> read(
+  //   EvalFactory eval, {
+  //   required Disposable isAlive,
+  // }) async {
+  //   eval.forLibrary(libraryUri).eval('\$riverpodDevtool', isAlive: isAlive);
+  // }
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is CachedObject && id == other.id;
+  Future<Byte<InstanceRef>> _fetchInstance(
+    EvalFactory eval,
+    Disposable isAlive,
+  ) async {
+    final parentInstance = await from.read(eval, isAlive: isAlive);
 
-  @override
-  int get hashCode => id.hashCode;
+    switch (parentInstance) {
+      case ByteError():
+        return ByteError(parentInstance.error);
+      case ByteVariable():
+        return obtainRefFromParentInstance(parentInstance.instance);
+    }
+  }
 }

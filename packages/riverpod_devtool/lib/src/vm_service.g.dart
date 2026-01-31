@@ -102,9 +102,8 @@ class ProviderMeta {
     final elementId = internals.ElementId(
       $events['$path.elementId']!.valueAsString!,
     );
-    final element = (
-      byte: Byte.instanceRef($events['$path.element.byte']!),
-      id: CacheId($events['$path.element.id']!.valueAsString!),
+    final element = RootCachedObject(
+      CacheId($events['$path.element']!.valueAsString!),
     );
     final creationStackTrace = List.generate(
       int.parse($events['$path.creationStackTrace.length']!.valueAsString!),
@@ -131,7 +130,7 @@ class ProviderMeta {
   final internals.ContainerId containerId;
   final String containerHashValue;
   final internals.ElementId elementId;
-  final ({Byte<InstanceRef> byte, CacheId id}) element;
+  final RootCachedObject element;
   final String? creationStackTrace;
 }
 
@@ -196,9 +195,8 @@ class ProviderContainerAddEvent extends Event {
   }) {
     _validate($events, name: 'ProviderContainerAddEvent', path: path);
 
-    final container = (
-      byte: Byte.instanceRef($events['$path.container.byte']!),
-      id: CacheId($events['$path.container.id']!.valueAsString!),
+    final container = RootCachedObject(
+      CacheId($events['$path.container']!.valueAsString!),
     );
     final containerId = internals.ContainerId(
       $events['$path.containerId']!.valueAsString!,
@@ -219,7 +217,7 @@ class ProviderContainerAddEvent extends Event {
     );
   }
 
-  final ({Byte<InstanceRef> byte, CacheId id}) container;
+  final RootCachedObject container;
   final internals.ContainerId containerId;
   final List<internals.ContainerId> parentIds;
 }
@@ -234,15 +232,14 @@ class ProviderContainerDisposeEvent extends Event {
   }) {
     _validate($events, name: 'ProviderContainerDisposeEvent', path: path);
 
-    final container = (
-      byte: Byte.instanceRef($events['$path.container.byte']!),
-      id: CacheId($events['$path.container.id']!.valueAsString!),
+    final container = RootCachedObject(
+      CacheId($events['$path.container']!.valueAsString!),
     );
 
     return ProviderContainerDisposeEvent(container: container);
   }
 
-  final ({Byte<InstanceRef> byte, CacheId id}) container;
+  final RootCachedObject container;
 }
 
 /// Devtool code for [internals.ProviderElementAddEvent]
@@ -293,15 +290,14 @@ class ProviderStateRef {
   }) {
     _validate($events, name: 'ProviderStateRef', path: path);
 
-    final state = (
-      byte: Byte.instanceRef($events['$path.state.byte']!),
-      id: CacheId($events['$path.state.id']!.valueAsString!),
+    final state = RootCachedObject(
+      CacheId($events['$path.state']!.valueAsString!),
     );
 
     return ProviderStateRef(state: state);
   }
 
-  final ({Byte<InstanceRef> byte, CacheId id}) state;
+  final RootCachedObject state;
 }
 
 /// Devtool code for [internals.ProviderElementUpdateEvent]

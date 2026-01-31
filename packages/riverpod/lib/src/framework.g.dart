@@ -71,11 +71,8 @@ extension ProviderMetaToBytes on ProviderMeta {
     }
 
     res1['$path.elementId'] = elementId;
-    {
-      final _obj = element;
-      res1['$path.element.byte'] = _obj;
-      res1['$path.element.id'] = RiverpodDevtool.instance.cache(_obj);
-    }
+    res1['$path.element'] = RiverpodDevtool.instance.cache(element);
+
     {
       final $value = creationStackTrace ?? '';
       final length = ($value.length / 128).ceil();
@@ -165,11 +162,8 @@ extension EventToBytes on Event {
 extension ProviderContainerAddEventToBytes on ProviderContainerAddEvent {
   Map<String, Object?> toBytes({required String path}) {
     final res3 = <String, Object?>{'$path._type': 'ProviderContainerAddEvent'};
-    {
-      final _obj = container;
-      res3['$path.container.byte'] = _obj;
-      res3['$path.container.id'] = RiverpodDevtool.instance.cache(_obj);
-    }
+    res3['$path.container'] = RiverpodDevtool.instance.cache(container);
+
     res3['$path.containerId'] = containerId;
     {
       res3['$path.parentIds.length'] = parentIds.length;
@@ -189,11 +183,8 @@ extension ProviderContainerDisposeEventToBytes
     final res4 = <String, Object?>{
       '$path._type': 'ProviderContainerDisposeEvent',
     };
-    {
-      final _obj = container;
-      res4['$path.container.byte'] = _obj;
-      res4['$path.container.id'] = RiverpodDevtool.instance.cache(_obj);
-    }
+    res4['$path.container'] = RiverpodDevtool.instance.cache(container);
+
     return res4;
   }
 }
@@ -223,11 +214,8 @@ extension ProviderElementDisposeEventToBytes on ProviderElementDisposeEvent {
 extension ProviderStateRefToBytes on ProviderStateRef {
   Map<String, Object?> toBytes({required String path}) {
     final res7 = <String, Object?>{'$path._type': 'ProviderStateRef'};
-    {
-      final _obj = state;
-      res7['$path.state.byte'] = _obj;
-      res7['$path.state.id'] = RiverpodDevtool.instance.cache(_obj);
-    }
+    res7['$path.state'] = RiverpodDevtool.instance.cache(state);
+
     return res7;
   }
 }

@@ -9,9 +9,9 @@ import '../tree_list.dart';
 import '../vm_service.dart';
 
 class Inspector extends ConsumerStatefulWidget {
-  const Inspector({super.key, required this.variable});
+  const Inspector({super.key, required this.object});
 
-  final Byte<VariableRef> variable;
+  final RootCachedObject object;
 
   @override
   ConsumerState<Inspector> createState() => _InspectorState();
@@ -21,52 +21,48 @@ class _InspectorState extends ConsumerState<Inspector> {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
-      slivers: [SliverVariableTree(byte: widget.variable)],
+      slivers: [SliverVariableTree(object: widget.object)],
     );
   }
 }
 
 sealed class _VariableNode extends Node<_VariableNode> {
-  _VariableNode({
-    required this.variable,
-    required this.children,
-    required this.level,
-  });
+  _VariableNode({required this.children, required this.level});
 
-  final Byte<ResolvedVariable>? variable;
   final int level;
   @override
   final List<_VariableNode> children;
 }
 
-final class _ByteNode extends _VariableNode {
-  _ByteNode({
-    required this.byte,
-    required super.variable,
+final class _CachedObjectNode extends _VariableNode {
+  _CachedObjectNode({
+    required this.object,
+    required this.variable,
     required super.children,
     required super.level,
   });
 
-  final Byte<VariableRef> byte;
+  final CachedObject object;
+  final Byte<ResolvedVariable>? variable;
 }
 
 final class _ClosingNode extends _VariableNode {
-  _ClosingNode({
-    required this.symbol,
-    required super.variable,
-    required super.level,
-  }) : super(children: const []);
+  _ClosingNode({required this.symbol, required super.level})
+    : super(children: const []);
 
   final String symbol;
 }
 
-final _openedVariableNodesProvider = NotifierProvider(_OpenedVariableNodes.new);
+final _openedVariableNodesProvider =
+    NotifierProvider<_OpenedVariableNodes<CachedObject>, Set<CachedObject>>(
+      _OpenedVariableNodes.new,
+    );
 
-class _OpenedVariableNodes extends Notifier<Set<Byte<VariableRef>>> {
+class _OpenedVariableNodes<T> extends Notifier<Set<T>> {
   @override
-  Set<Byte<VariableRef>> build() => {};
+  Set<T> build() => {};
 
-  void toggle(Byte<VariableRef> byte) {
+  void toggle(T byte) {
     if (state.contains(byte)) {
       state = {...state}..remove(byte);
     } else {
@@ -74,7 +70,7 @@ class _OpenedVariableNodes extends Notifier<Set<Byte<VariableRef>>> {
     }
   }
 
-  void remove(Byte<VariableRef> byte) {
+  void remove(T byte) {
     // We're only cleaning memory. No need to notify listeners.
     // TODO
     // state.remove(byte);
@@ -89,16 +85,14 @@ _ClosingNode? _resolveClosingNode(
   switch (variable) {
     case _ when !isOpen:
     case null:
-    case ByteSentinel<ResolvedVariable>():
+    case ByteError<ResolvedVariable>():
       return null;
     case ByteVariable<ResolvedVariable>(:final instance):
       switch (instance) {
-        case FieldVariable():
-          return _resolveClosingNode(instance.value, isOpen, level);
         case ListVariable():
-          return _ClosingNode(symbol: ']', variable: variable, level: level);
+          return _ClosingNode(symbol: ']', level: level);
         case SetVariable():
-          return _ClosingNode(symbol: '}', variable: variable, level: level);
+          return _ClosingNode(symbol: '}', level: level);
         case UnknownObjectVariable():
         case NullVariable():
         case BoolVariable():
@@ -112,54 +106,54 @@ _ClosingNode? _resolveClosingNode(
   }
 }
 
-final ProviderFamily<_VariableNode, (Byte<VariableRef>, int level)>
-_variableNodeForByteProvider = .new(
+final ProviderFamily<_VariableNode, (CachedObject, int level)>
+_variableNodeForObjectProvider = .new(
   name: '_variableNodeForByte',
   isAutoDispose: true,
   (ref, args) {
-    final (byte, level) = args;
+    final (object, level) = args;
 
-    final variable = ref.watch(_resolvedVariableForRef(byte)).value;
+    final variable = ref.watch(_resolvedVariableForObject(object)).value;
     final isOpen = ref.watch(
-      _openedVariableNodesProvider.select((nodes) => nodes.contains(byte)),
+      _openedVariableNodesProvider.select((nodes) => nodes.contains(object)),
     );
 
     final closingNode = _resolveClosingNode(variable, isOpen, level);
 
     List<_VariableNode> children;
     switch (variable) {
-      case null || ByteSentinel<ResolvedVariable>():
+      case null || ByteError<ResolvedVariable>():
       case _ when !isOpen:
         children = const <_VariableNode>[];
       case ByteVariable<ResolvedVariable>(:final instance):
-        children = instance.children
-            .map((child) {
-              final childNode = ref.watch(
-                _variableNodeForByteProvider((child, level + 1)),
-              );
+        final _children = instance.children.map((child) {
+          final childNode = ref.watch(
+            _variableNodeForObjectProvider((child, level + 1)),
+          );
 
-              switch (childNode) {
-                case _ByteNode(variable: == null):
-                  return null;
-                case _ClosingNode():
-                case _ByteNode():
-                  return childNode;
-              }
-            })
-            .nonNulls
-            .toList();
+          switch (childNode) {
+            case _CachedObjectNode(variable: == null):
+              return null;
+            case _ClosingNode():
+            case _CachedObjectNode():
+              return childNode;
+          }
+        }).toList();
+        children = _children.nonNulls.toList();
 
         // Wait for all children to be resolved before we show any.
         // This avoids flickering when opening nodes
-        if (children.length != instance.children.length) children = const [];
+        if (children.length != instance.children.length) {
+          children = const [];
+        }
 
         if (children.isNotEmpty && closingNode != null) {
           children.add(closingNode);
         }
     }
 
-    return _ByteNode(
-      byte: byte,
+    return _CachedObjectNode(
+      object: object,
       variable: variable,
       children: children,
       level: level,
@@ -170,11 +164,11 @@ _variableNodeForByteProvider = .new(
 class SliverVariableTree extends ConsumerStatefulWidget {
   const SliverVariableTree({
     super.key,
-    required this.byte,
+    required this.object,
     this.reversed = false,
   });
 
-  final Byte<VariableRef> byte;
+  final RootCachedObject object;
   final bool reversed;
 
   @override
@@ -190,15 +184,15 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
   late final nodes = TreeList<_VariableNode>();
   ProviderSubscription<_VariableNode>? sub;
 
-  void _listen(Byte<VariableRef> byte) {
+  void _listen(RootCachedObject byte) {
     assert(sub == null, 'Listener already exists for $byte');
 
     sub = ref.listenManual(
-      _variableNodeForByteProvider((byte, 0)),
+      _variableNodeForObjectProvider((byte, 0)),
       fireImmediately: true,
       (_, resolvedVariableByte) {
         late final indexForNode = nodes.indexWhere(
-          (n) => n is _ByteNode && n.byte == byte,
+          (n) => n is _CachedObjectNode && n.object == byte,
         );
 
         setState(() {
@@ -216,15 +210,16 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
   void initState() {
     super.initState();
 
-    _listen(widget.byte);
+    _listen(widget.object);
   }
 
-  void _removeListener(Byte<VariableRef> byte) {
+  void _removeListener(RootCachedObject byte) {
     if (nodes.isEmpty) return;
 
     assert(
-      nodes[0] is _ByteNode && (nodes[0] as _ByteNode).byte == byte,
-      'Bad state: ${(nodes[0] as _ByteNode).byte} != $byte',
+      nodes[0] is _CachedObjectNode &&
+          (nodes[0] as _CachedObjectNode).object == byte,
+      'Bad state: ${(nodes[0] as _CachedObjectNode).object} != $byte',
     );
     nodes.removeAt(0);
     sub?.close();
@@ -237,9 +232,9 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
   void didUpdateWidget(covariant SliverVariableTree oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.byte != widget.byte) {
-      _removeListener(oldWidget.byte);
-      _listen(widget.byte);
+    if (oldWidget.object != widget.object) {
+      _removeListener(oldWidget.object);
+      _listen(widget.object);
     }
   }
 
@@ -266,25 +261,27 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
               padding: padding,
               child: switch (node) {
                 _ClosingNode(:final symbol) => Text(symbol),
-                // TODO
-                _ByteNode(variable: null) => Container(),
-                _ByteNode(:final variable?) => _ByteTile(
+                // TODO remove Container()
+                _CachedObjectNode(variable: null) => Container(),
+                _CachedObjectNode(:final variable?) => _ByteTile(
                   byte: variable,
                   shouldShowExpansible: true,
+                  label: node.object.label,
                   isOpen: ref.watch(
                     _openedVariableNodesProvider.select(
-                      (nodes) => nodes.contains(node.byte),
+                      (nodes) => nodes.contains(node.object),
                     ),
                   ),
                   initialize: () {
-                    // TODO
+                    // TODO implement initialization
 
                     final value = node.variable?.valueOrNull;
                     if (value == null) return;
 
-                    inspectInIDE(value)?.call(ref);
+                    // TODO
+                    // inspectInIDE(value)?.call(ref);
                   },
-                  open: () => openNotifier.toggle(node.byte),
+                  open: () => openNotifier.toggle(node.object),
                 ),
               },
             );
@@ -301,11 +298,13 @@ class _ByteTile extends StatelessWidget {
     required this.byte,
     required this.isOpen,
     required this.open,
+    required this.label,
     required this.initialize,
     required this.shouldShowExpansible,
   });
 
   final Byte<ResolvedVariable> byte;
+  final String? label;
   final bool isOpen;
   final void Function() open;
   final void Function() initialize;
@@ -314,31 +313,64 @@ class _ByteTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return switch (byte) {
-      ByteSentinel(sentinel: Sentinel(kind: SentinelKind.kNotInitialized)) =>
-        InkWell(
-          onTap: initialize,
-          child: const Text(
-            // TODO add a mean to init the variable
-            '<not initialized>',
-            style: TextStyle(color: _NodeTileTheme.sentinelColor),
-          ),
-        ),
-      ByteSentinel(:final sentinel) => Text.rich(
-        TextSpan(
-          text:
-              sentinel.valueAsString ??
-              '<unknown sentinel error ${sentinel.kind}>',
-          style: const TextStyle(color: _NodeTileTheme.sentinelColor),
-        ),
+      ByteError(:final error) => ByteErrorTile(
+        error: error,
+        initialize: initialize,
+        label: label,
       ),
       ByteVariable(:final instance) => _ResolvedVariableTile(
         variable: instance,
         isOpen: isOpen,
         open: open,
         initialize: initialize,
+        label: label,
         shouldShowExpansible: shouldShowExpansible,
       ),
     };
+  }
+}
+
+class ByteErrorTile extends StatelessWidget {
+  const ByteErrorTile({
+    super.key,
+    required this.error,
+    required this.initialize,
+    required this.label,
+  });
+
+  final ByteErrorType error;
+  final void Function() initialize;
+  final String? label;
+
+  @override
+  Widget build(BuildContext context) {
+    switch (error) {
+      case SentinelExceptionType(
+        error: Sentinel(kind: SentinelKind.kNotInitialized),
+      ):
+        return InkWell(
+          onTap: initialize,
+          child: Text.rich(
+            TextSpan(
+              children: [
+                if (label != null) TextSpan(text: '$label: '),
+                const TextSpan(
+                  // TODO add a mean to init the variable
+                  text: '<not initialized>',
+                  style: TextStyle(color: _NodeTileTheme.evalErrorColor),
+                ),
+              ],
+            ),
+          ),
+        );
+      case final error:
+        return Text.rich(
+          TextSpan(
+            text: error.toString(),
+            style: const TextStyle(color: _NodeTileTheme.evalErrorColor),
+          ),
+        );
+    }
   }
 }
 
@@ -349,10 +381,12 @@ class _ResolvedVariableTile extends StatelessWidget {
     required this.isOpen,
     required this.open,
     required this.initialize,
+    required this.label,
     required this.shouldShowExpansible,
   });
 
   final ResolvedVariable variable;
+  final String? label;
   final bool isOpen;
   final void Function() open;
   final void Function() initialize;
@@ -362,7 +396,7 @@ class _ResolvedVariableTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final variable = this.variable;
 
-    final Widget content;
+    Widget content;
 
     switch (variable) {
       case NullVariable():
@@ -380,35 +414,10 @@ class _ResolvedVariableTile extends StatelessWidget {
           '"${value.escape('"')}"',
           style: const TextStyle(color: _NodeTileTheme.stringColor),
         );
-      case IntVariable(:final Object value) ||
-          DoubleVariable(:final Object value):
+      case IntVariable(:final num value) || DoubleVariable(:final num value):
         content = Text(
           '$value',
           style: const TextStyle(color: _NodeTileTheme.numColor),
-        );
-
-      case FieldVariable(key: NamedFieldKey(:final name)):
-        content = Row(
-          children: [
-            Text('$name: '),
-            Expanded(
-              child: _ByteTile(
-                byte: variable.value,
-                isOpen: isOpen,
-                open: open,
-                initialize: initialize,
-                shouldShowExpansible: false,
-              ),
-            ),
-          ],
-        );
-      case FieldVariable(key: PositionalFieldKey()):
-        content = _ByteTile(
-          byte: variable.value,
-          isOpen: isOpen,
-          open: open,
-          initialize: initialize,
-          shouldShowExpansible: false,
         );
 
       case TypeVariable(:final name):
@@ -469,6 +478,15 @@ class _ResolvedVariableTile extends StatelessWidget {
         );
     }
 
+    if (label case final label?) {
+      content = Row(
+        children: [
+          Text('$label: '),
+          Expanded(child: content),
+        ],
+      );
+    }
+
     if (variable.children.isEmpty || !shouldShowExpansible) return content;
 
     return _ExpansibleTile(
@@ -523,22 +541,28 @@ class _NodeTileTheme {
   static const numColor = Color.fromARGB(255, 181, 206, 168);
   static const stringColor = Color.fromARGB(255, 206, 145, 120);
   static const hashColor = Color.fromARGB(255, 128, 128, 128);
-  static const sentinelColor = Color.fromARGB(255, 128, 128, 128);
+  static const evalErrorColor = Color.fromARGB(255, 128, 128, 128);
 }
 
 extension on String {
   String escape(String char) => replaceAll(char, '\\$char');
 }
 
-final _resolvedVariableForRef = FutureProvider.autoDispose
-    .family<Byte<ResolvedVariable>, Byte<VariableRef>>(
+final _resolvedVariableForObject = FutureProvider.autoDispose
+    .family<Byte<ResolvedVariable>, CachedObject>(
       name: '_variableInspectorProvider',
-      (ref, byte) {
+      (ref, object) async {
+        final eval = await ref.watch(evalProvider.future);
+
+        final byte = await object.read(eval, isAlive: ref.disposable());
+
         switch (byte) {
-          case ByteSentinel<VariableRef>():
-            return ByteSentinel<ResolvedVariable>(byte.sentinel);
-          case ByteVariable<VariableRef>():
-            return byte.instance.resolve(ref.disposable());
+          case ByteError():
+            return ByteError(byte.error);
+          case ByteVariable():
+            return ByteVariable(
+              ResolvedVariable.fromInstance(object, byte.instance),
+            );
         }
       },
     );

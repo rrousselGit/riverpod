@@ -532,14 +532,13 @@ final class _UnknownType extends _BuiltInType {
   final DartType type;
 
   @override
-  String typeCode() => '({Byte<InstanceRef> byte, CacheId id,})';
+  String typeCode() => 'RootCachedObject';
 
   @override
   String decodeBytes({required String mapSymbol, required String path}) =>
       """
-(
-  byte: Byte.instanceRef($mapSymbol['$path.byte']!),
-  id: CacheId($mapSymbol['$path.id']!.valueAsString!),
+RootCachedObject(
+  CacheId($mapSymbol['$path']!.valueAsString!),
 )
 """;
 
@@ -550,11 +549,8 @@ final class _UnknownType extends _BuiltInType {
     required String path,
   }) =>
       """
-{
-  final _obj = $valueSymbol;
-  $mapSymbol['$path.byte'] = _obj;
-  $mapSymbol['$path.id'] = RiverpodDevtool.instance.cache(_obj);
-}""";
+$mapSymbol['$path'] = RiverpodDevtool.instance.cache($valueSymbol);
+""";
 }
 
 int _varCount = 0;

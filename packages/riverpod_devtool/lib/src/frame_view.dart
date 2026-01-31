@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:devtools_app_shared/ui.dart';
 import 'package:devtools_app_shared/ui.dart' as ui;
+import 'package:devtools_app_shared/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -11,9 +11,9 @@ import 'package:stack_trace/stack_trace.dart';
 
 import 'frames.dart';
 import 'ide.dart';
-import 'state_inspector/inspector.dart';
 import 'providers/providers.dart';
 import 'search/fuzzy_match.dart';
+import 'state_inspector/inspector.dart';
 import 'terminal.dart';
 import 'ui_primitives/panel.dart';
 import 'ui_primitives/search_bar.dart';
@@ -110,11 +110,7 @@ class _FrameViewer extends HookConsumerWidget {
         ),
 
         if (selected case final selected?)
-          ProviderViewer(
-            selected: selected.element.state.state.byte.map(
-              (val) => VariableRef.fromInstanceRef(val, eval),
-            ),
-          )
+          ProviderViewer(selected: selected.element.state.state)
         else
           const Panel(child: Text('No provider selected')),
       ],
@@ -125,7 +121,7 @@ class _FrameViewer extends HookConsumerWidget {
 class ProviderViewer extends StatelessWidget {
   const ProviderViewer({super.key, required this.selected});
 
-  final Byte<VariableRef> selected;
+  final RootCachedObject selected;
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +132,7 @@ class ProviderViewer extends StatelessWidget {
         Panel(
           child: Padding(
             padding: const .symmetric(vertical: 8),
-            child: Inspector(variable: selected),
+            child: Inspector(object: selected),
           ),
         ),
         Terminal(state: selected),

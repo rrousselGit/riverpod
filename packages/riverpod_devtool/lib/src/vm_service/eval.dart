@@ -35,7 +35,14 @@ class EvalFactory {
   final VmService vmService;
   final ServiceManager serviceManager;
 
+  final _disposable = Disposable();
+  late final _riverpodDevtoolRef = riverpodFramework._eval.eval(
+    'RiverpodDevtool.instance',
+    isAlive: _disposable,
+  );
+
   final _evalCache = <String, Eval>{};
+
   Eval forLibrary(String libraryName) {
     return _evalCache.putIfAbsent(
       libraryName,
@@ -49,14 +56,15 @@ class EvalFactory {
   }
 
   void dispose() {
+    _disposable.dispose();
     for (final eval in _evalCache.values) {
       eval.dispose();
     }
     _evalCache.clear();
   }
 
-  Eval? forRef(VariableRef? state) {
-    final libraryUri = state?.ref?.classRef?.library?.uri;
+  Eval? forRef(InstanceRef? state) {
+    final libraryUri = state?.classRef?.library?.uri;
     if (libraryUri == null) return null;
 
     return forLibrary(libraryUri);
@@ -64,8 +72,6 @@ class EvalFactory {
 }
 
 class Eval {
-  // TODO  handle  RPCError (also remove explicit try/catch)
-
   Eval._(
     this.factory,
     String libraryName, {
@@ -82,48 +88,73 @@ class Eval {
 
   String _formatCode(String code) => code.replaceAll('\n', ' ');
 
-  Future<InstanceRef> eval(
-    String code, {
-    required Disposable isAlive,
-    Map<String, String>? scope,
-  }) {
-    return _eval.safeEval(_formatCode(code), isAlive: isAlive, scope: scope);
-  }
-
-  Future<Instance> evalInstance(
-    String code, {
-    required Disposable isAlive,
-    Map<String, String>? scope,
-  }) async {
-    final ref = await eval(code, isAlive: isAlive, scope: scope);
-    return instance(ref, isAlive: isAlive);
-  }
-
-  @Deprecated('use instance2')
-  Future<Instance> instance(
-    InstanceRef ref, {
-    required Disposable isAlive,
-  }) async {
-    final res = await _eval.getInstance(ref, isAlive);
-    return res!;
-  }
-
-  Future<Byte<ResolvedVariable>> instance2(
-    InstanceRef ref, {
-    required Disposable isAlive,
-  }) async {
+  Future<Byte<T>> _run<T>(Future<T> Function() cb) async {
     try {
-      final res = await _eval.safeGetInstance(ref, isAlive);
+      final ref = await cb();
 
-      return ByteVariable(ResolvedVariable.fromInstance(res, factory));
-    } on SentinelException catch (e) {
-      return ByteSentinel(e.sentinel);
+      return ByteVariable(ref);
+    } on EvalErrorException catch (e) {
+      return ByteError(EvalErrorType(e.toString()));
+    } on EvalSentinelException catch (e) {
+      return ByteError(SentinelExceptionType(e.sentinel));
+    } on UnknownEvalException catch (e) {
+      return ByteError(UnknownEvalErrorType(e.toString()));
+    } on RPCError catch (e) {
+      return ByteError(RPCErrorType(e.code, e.message));
     }
   }
 
-  Future<Class> getClass(ClassRef ref, {required Disposable isAlive}) async {
-    final res = await _eval.getClass(ref, isAlive);
-    return res!;
+  Future<Byte<InstanceRef>> eval(
+    String code, {
+    required Disposable isAlive,
+    Map<String, String>? scope,
+    bool includeRiverpodDevtool = false,
+  }) {
+    return _run(() async {
+      return _eval.safeEval(
+        _formatCode(code),
+        isAlive: isAlive,
+        scope: {
+          ...?scope,
+          if (includeRiverpodDevtool)
+            r'$riverpodDevtool': ?await factory._riverpodDevtoolRef.then(
+              (ref) => ref.valueOrNull?.id,
+            ),
+        },
+      );
+    });
+  }
+
+  Future<Byte<Instance>> evalInstance(
+    String code, {
+    required Disposable isAlive,
+    Map<String, String>? scope,
+    bool includeRiverpodDevtool = false,
+  }) async {
+    final ref = await eval(
+      code,
+      isAlive: isAlive,
+      scope: scope,
+      includeRiverpodDevtool: includeRiverpodDevtool,
+    );
+
+    switch (ref) {
+      case ByteError<InstanceRef>():
+        return ByteError(ref.error);
+      case ByteVariable<InstanceRef>():
+        return instance(ref.instance, isAlive: isAlive);
+    }
+  }
+
+  Future<Byte<Instance>> instance(
+    InstanceRef ref, {
+    required Disposable isAlive,
+  }) {
+    return _run(() => _eval.safeGetInstance(ref, isAlive));
+  }
+
+  Future<Byte<Class>> getClass(ClassRef ref, {required Disposable isAlive}) {
+    return _run(() => _eval.safeGetClass(ref, isAlive));
   }
 
   void dispose() {

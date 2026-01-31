@@ -6,7 +6,7 @@ sealed class Byte<T> {
   factory Byte._of(Object? obj) {
     switch (obj) {
       case Sentinel():
-        return ByteSentinel(obj);
+        return ByteError(SentinelExceptionType(obj));
       case T():
         return ByteVariable(obj);
       default:
@@ -21,8 +21,8 @@ sealed class Byte<T> {
     switch (this) {
       case final ByteVariable<T> that:
         return that;
-      case ByteSentinel<T>(:final sentinel):
-        throw StateError('Expected VariableRef but got Sentinel: $sentinel');
+      case ByteError<T>(:final error):
+        throw StateError('Expected value but got error: $error');
     }
   }
 
@@ -30,7 +30,7 @@ sealed class Byte<T> {
     switch (this) {
       case final ByteVariable<T> that:
         return that.instance;
-      case ByteSentinel<T>():
+      case ByteError<T>():
         return null;
     }
   }
@@ -39,8 +39,8 @@ sealed class Byte<T> {
     switch (this) {
       case final ByteVariable<T> that:
         return ByteVariable(fn(that.instance));
-      case ByteSentinel<T>(:final sentinel):
-        return ByteSentinel<R>(sentinel);
+      case ByteError<T>(:final error):
+        return ByteError<R>(error);
     }
   }
 }
@@ -50,7 +50,7 @@ final class ByteVariable<T> extends Byte<T> {
   final T instance;
 
   @override
-  String toString() => 'ByteVariableRef($instance)';
+  String toString() => 'ByteVariable($instance)';
 
   @override
   bool operator ==(Object other) {
@@ -61,18 +61,58 @@ final class ByteVariable<T> extends Byte<T> {
   int get hashCode => instance.hashCode;
 }
 
-final class ByteSentinel<T> extends Byte<T> {
-  const ByteSentinel(this.sentinel);
-  final Sentinel sentinel;
+final class ByteError<T> extends Byte<T> {
+  const ByteError(this.error);
+
+  final ByteErrorType error;
 
   @override
-  String toString() => 'ByteSentinel($sentinel)';
+  String toString() => 'ByteError($error)';
 
   @override
   bool operator ==(Object other) {
-    return other is ByteSentinel<T> && other.sentinel == sentinel;
+    return other is ByteError<T> && other.error == error;
   }
 
   @override
-  int get hashCode => sentinel.hashCode;
+  int get hashCode => error.hashCode;
+}
+
+@immutable
+sealed class ByteErrorType {
+  const ByteErrorType();
+}
+
+final class SentinelExceptionType extends ByteErrorType {
+  const SentinelExceptionType(this.error);
+  final Sentinel error;
+
+  @override
+  String toString() =>
+      error.valueAsString ?? '<unknown sentinel error ${error.kind}>';
+}
+
+final class EvalErrorType extends ByteErrorType {
+  const EvalErrorType(this.error);
+  final String error;
+
+  @override
+  String toString() => 'EvalError: $error';
+}
+
+final class UnknownEvalErrorType extends ByteErrorType {
+  const UnknownEvalErrorType(this.message);
+  final String message;
+
+  @override
+  String toString() => 'UnknownEvalError: $message';
+}
+
+final class RPCErrorType extends ByteErrorType {
+  const RPCErrorType(this.code, this.message);
+  final int code;
+  final String message;
+
+  @override
+  String toString() => 'RPCError(code: $code, message: $message)';
 }

@@ -65,6 +65,7 @@ class _HomeState extends ConsumerState<Home> {
           Text(ref.watch(complexProvider).nbr.toString()),
           Text(ref.watch(fam(42)).toString()),
           Text(ref.watch(fam(21)).toString()),
+          Text(ref.watch(booleanProvider).toString()),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -78,6 +79,10 @@ class _HomeState extends ConsumerState<Home> {
 
 final complexProvider = Provider<Complex>((ref) {
   return Complex(ref.watch(counterProvider) * 2);
+});
+
+final booleanProvider = Provider<bool>((ref) {
+  return true;
 });
 
 class Complex {

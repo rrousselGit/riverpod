@@ -9,17 +9,27 @@ import 'state_inspector/inspector.dart';
 import 'ui_primitives/panel.dart';
 import 'vm_service.dart';
 
+final _eval = Mutation<void>();
+
 class Terminal extends ConsumerStatefulWidget {
   const Terminal({super.key, required this.state});
 
-  final Byte<VariableRef> state;
+  final RootCachedObject state;
 
   @override
   ConsumerState<Terminal> createState() => _TerminalState();
 }
 
 class _TerminalState extends ConsumerState<Terminal> {
-  final List<({String code, Byte<VariableRef> ref})> history = [];
+  final List<({String code, Byte<RootCachedObject> byte})> history = [];
+
+  final _disposable = Disposable();
+
+  @override
+  void dispose() {
+    _disposable.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +43,21 @@ class _TerminalState extends ConsumerState<Terminal> {
                 reverse: true,
                 slivers: [
                   for (final entry in history) ...[
-                    SliverVariableTree(byte: entry.ref, reversed: true),
+                    switch (entry.byte) {
+                      ByteVariable<RootCachedObject>(:final instance) =>
+                        SliverVariableTree(object: instance, reversed: true),
+                      ByteError<RootCachedObject>(:final error) =>
+                        SliverToBoxAdapter(
+                          child: ByteErrorTile(
+                            error: error,
+                            // No label since we're at the root
+                            label: null,
+                            initialize: () {
+                              // TODO implement initialization. Share with other locations
+                            },
+                          ),
+                        ),
+                    },
                     // List is reversed, so we add it after
                     SliverToBoxAdapter(
                       child: Text.rich(
@@ -61,40 +85,38 @@ class _TerminalState extends ConsumerState<Terminal> {
                   final trim = code.trim();
                   if (trim.isEmpty) return;
 
-                  final mut = Mutation<void>();
-                  mut.run(ref, (tsx) async {
+                  _eval.run(ref, (tsx) async {
                     // TODO use library from selected provider
                     final evalFactory = await tsx.get(evalProvider.future);
 
-                    Byte<VariableRef> result;
-                    try {
-                      final state = widget.state.valueOrNull;
-                      final eval =
-                          evalFactory.forRef(state) ?? evalFactory.dartCore;
-
-                      final ref = await eval.eval(
-                        code,
-                        isAlive: Disposable(),
-                        // TODO scope to expose $notifier and $state
-                        // TODO maybe support $previous to refer to the last terminal result
-                        scope: {r'$state': ?state?.ref?.id},
-                      );
-                      result = ByteVariable(
-                        VariableRef.fromInstanceRef(ref, evalFactory),
-                      );
-                    } on SentinelException catch (e) {
-                      result = ByteSentinel(e.sentinel);
-                    } on RPCError catch (e) {
-                      result = ByteSentinel(
-                        Sentinel(
-                          kind: 'rpc-error',
-                          valueAsString: 'RPCError: $e',
-                        ),
-                      );
+                    Byte<RootCachedObject> result;
+                    final state = await widget.state.readRef(
+                      evalFactory,
+                      _disposable,
+                    );
+                    switch (state) {
+                      case ByteError(:final error):
+                        result = ByteError(error);
+                        return;
+                      case ByteVariable():
+                        break;
                     }
 
+                    final eval =
+                        evalFactory.forRef(state.instance) ??
+                        evalFactory.dartCore;
+
+                    result = await RootCachedObject.create(
+                      code,
+                      eval,
+                      isAlive: _disposable,
+                      // TODO scope to expose $notifier and $state
+                      // TODO maybe support $previous to refer to the last terminal result
+                      scope: {r'$state': ?state.instance.id},
+                    );
+
                     setState(
-                      () => history.insert(0, (code: trim, ref: result)),
+                      () => history.insert(0, (code: trim, byte: result)),
                     );
                   });
                 },

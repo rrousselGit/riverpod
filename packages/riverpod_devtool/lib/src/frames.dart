@@ -127,7 +127,9 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
       path: 'root',
     );
 
-    final instance = await eval.evalInstance(code, isAlive: isAlive);
+    final instanceByte = await eval.evalInstance(code, isAlive: isAlive);
+    // TODO
+    final instance = instanceByte.require.instance;
     final map = Map.fromEntries(
       instance.associations!.map((e) {
         return MapEntry(

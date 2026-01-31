@@ -8,7 +8,7 @@ import 'package:vm_service/vm_service.dart';
 // To update the generated files, temporarily add freezed/freezed_annotation/build_runner
 // as dependencies; replace the `fake_freezed_annotation.dart` import with the
 // real annotation package, then execute `pub run build_runner build`.
-part '../instance_details.freezed.dart';
+part 'instance_details.freezed.dart';
 
 sealed class Result<T> {
   const Result();

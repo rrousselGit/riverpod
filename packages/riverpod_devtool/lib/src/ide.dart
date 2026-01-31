@@ -35,23 +35,25 @@ Future<void> openTraceInIDE(MutationTarget target, Trace trace) async {
   });
 }
 
-Future<void> Function(MutationTarget target)? inspectInIDE(
-  VariableRef variable,
-) {
-  final id = variable.ref?.id;
-  if (id == null) return null;
 
-  return (target) async {
-    final mutation = Mutation<void>();
-    await mutation.run(target, (tsx) async {
-      final eval = await tsx.get(riverpodEvalProvider.future);
+// TODO
+// Future<void> Function(MutationTarget target)? inspectInIDE(
+//   VariableRef variable,
+// ) {
+//   final id = variable.ref?.id;
+//   if (id == null) return null;
 
-      final instance = await eval.evalInstance(
-        isAlive: Disposable(),
-        'inspectInIDE(that)',
-        scope: {'that': id},
-      );
-      print('Inspected $instance in IDE');
-    });
-  };
-}
+//   return (target) async {
+//     final mutation = Mutation<void>();
+//     await mutation.run(target, (tsx) async {
+//       final eval = await tsx.get(riverpodEvalProvider.future);
+
+//       final instance = await eval.evalInstance(
+//         isAlive: Disposable(),
+//         'inspectInIDE(that)',
+//         scope: {'that': id},
+//       );
+//       print('Inspected $instance in IDE');
+//     });
+//   };
+// }

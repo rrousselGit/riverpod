@@ -1,242 +1,266 @@
 part of '../vm_service.dart';
 
-sealed class VariableRef {
-  factory VariableRef.fromInstanceRef(InstanceRef ref, EvalFactory eval) {
-    final kind = _SimplifiedInstanceKind.fromInstanceKind(
-      _SealedInstanceKind.fromString(ref.kind!),
-    );
+// TODO
+// sealed class VariableRef {
+//   VariableRef(this.object);
 
-    switch (kind) {
-      case .string:
-        return _StringVariableRefImpl._(ref, eval);
-      case .int:
-        return IntVariable._(ref);
-      case .double:
-        return DoubleVariable._(ref);
-      case .bool:
-        return BoolVariable._(ref);
-      case .nill:
-        return NullVariable._();
-      case .type:
-        return _TypeVariableRefImpl(ref, eval);
-      case .list:
-        return _ListVariableRefImpl(ref, eval);
-      case .record:
-        return _RecordVariableRefImpl(ref, eval);
-      case .set:
-        return _SetVariableRefImpl(ref, eval);
+//   factory VariableRef.fromInstanceRef(
+//     CachedObject object,
+//     InstanceRef ref,
+//     EvalFactory eval,
+//   ) {
+//     final kind = _SimplifiedInstanceKind.fromInstanceKind(
+//       _SealedInstanceKind.fromString(ref.kind!),
+//     );
 
-      case .map:
-      // TODO
+//     switch (kind) {
+//       // case .string:
+//       // return _StringVariableRefImpl._(ref, eval);
+//       // case .int:
+//       //   return IntVariable._(ref);
+//       // case .double:
+//       //   return DoubleVariable._(ref);
+//       // case .bool:
+//       //   return _BoolVariableRefImpl(ref, eval);
+//       case .nill:
+//       // TODO
+//       case _:
+//         // return NullVariableRef._(object);
+//       // case .type:
+//       //   return _TypeVariableRefImpl(ref, eval);
+//       // case .list:
+//       //   return _ListVariableRefImpl(ref, eval);
+//       // case .record:
+//       //   return _RecordVariableRefImpl(ref, eval);
+//       // case .set:
+//       //   return _SetVariableRefImpl(ref, eval);
 
-      case .object:
-        return _UnknownObjectVariableRefImpl(ref, eval);
-    }
-  }
+//       // case .map:
+//       // // TODO
 
-  InstanceRef? get ref;
+//       // case .object:
+//       //   return _UnknownObjectVariableRefImpl(ref, eval);
+//     }
+//   }
 
-  Future<Byte<ResolvedVariable>> resolve(Disposable isAlive);
-}
+//   final CachedObject object;
 
-base class _EvaluatedVariableRef {
-  _EvaluatedVariableRef(this.ref, this.eval);
-  final InstanceRef ref;
-  final EvalFactory eval;
+//   FutureOr<Byte<ResolvedVariable>> resolve(Disposable isAlive);
+// }
 
-  String get _evalUri => ref.classRef!.library!.uri!;
+// base class _EvaluatedVariableRef {
+//   _EvaluatedVariableRef(this.ref, this.eval);
+//   final InstanceRef ref;
+//   final EvalFactory eval;
 
-  Future<Byte<T>> _eval<T extends ResolvedVariable>(
-    Disposable isAlive,
-    Future<T> Function(Eval) run,
-  ) async {
-    final evalInstance = eval.forLibrary(_evalUri);
+//   String get _evalUri => ref.classRef!.library!.uri!;
 
-    try {
-      return ByteVariable(await run(evalInstance));
-    } on SentinelException catch (e) {
-      return ByteSentinel(e.sentinel);
-    }
-  }
+//   Future<Byte<T>> _eval<T extends ResolvedVariable>(
+//     Disposable isAlive,
+//     Future<T> Function(Eval) run,
+//   ) async {
+//     final evalInstance = eval.forLibrary(_evalUri);
 
-  Future<Byte<T>> _resolveInstance<T extends ResolvedVariable>(
-    Disposable isAlive,
-  ) {
-    return _eval(isAlive, (evalInstance) async {
-      final instance = await evalInstance.instance(ref, isAlive: isAlive);
-      final variable = ResolvedVariable.fromInstance(instance, eval);
+//     try {
+//       return ByteVariable(await run(evalInstance));
+//     } on SentinelException catch (e) {
+//       return ByteSentinel(e.sentinel);
+//     }
+//   }
 
-      if (variable is! T) {
-        throw StateError(
-          'Expected variable of type $T but got ${variable.runtimeType}',
-        );
-      }
+//   Future<Byte<T>> _resolveInstance<T extends ResolvedVariable>(
+//     Disposable isAlive,
+//   ) {
+//     return _eval(isAlive, (evalInstance) async {
+//       final instance = await evalInstance.instance(ref, isAlive: isAlive);
+//       final variable = ResolvedVariable.fromInstance(instance, eval);
 
-      return variable;
-    });
-  }
-}
+//       if (variable is! T) {
+//         throw StateError(
+//           'Expected variable of type $T but got ${variable.runtimeType}',
+//         );
+//       }
 
-abstract class NullVariableRef implements VariableRef {
-  @override
-  Future<Byte<NullVariable>> resolve(Disposable isAlive);
-}
+//       return variable;
+//     });
+//   }
+// }
 
-abstract class BoolVariableRef implements VariableRef {
-  bool get value;
+// final class NullVariableRef extends VariableRef {
+//   NullVariableRef._(super.object);
 
-  @override
-  Future<Byte<BoolVariable>> resolve(Disposable isAlive);
-}
+//   @override
+//   Future<Byte<NullVariable>> resolve(Disposable isAlive) async {
+//     return ByteVariable(NullVariable._(object));
+//   }
+// }
 
-abstract class StringVariableRef implements VariableRef {
-  String get truncatedValue;
-  bool get isTruncated;
-  String? get value;
+// abstract class BoolVariableRef implements VariableRef {
+//   bool get value;
 
-  @override
-  Future<Byte<StringVariable>> resolve(Disposable isAlive);
-}
+//   @override
+//   Future<Byte<BoolVariable>> resolve(Disposable isAlive);
+// }
 
-final class _StringVariableRefImpl extends _EvaluatedVariableRef
-    implements VariableRef {
-  _StringVariableRefImpl._(super.ref, super.eval)
-    : truncatedValue = ref.valueAsString!,
-      isTruncated = ref.valueAsString!.length < ref.length!;
+// final class _BoolVariableRefImpl extends VariableRef {
+//   _BoolVariableRefImpl(super.object);
 
-  final String truncatedValue;
-  final bool isTruncated;
-  String? get value => isTruncated ? null : truncatedValue;
+//   @override
+//   Byte<BoolVariable> resolve(Disposable isAlive) {
+//     return ByteVariable(
+//       BoolVariable._(object, value: ref.valueAsString == 'true'),
+//     );
+//   }
+// }
 
-  @override
-  Future<Byte<StringVariable>> resolve(Disposable isAlive) async {
-    if (!isTruncated) {
-      return ByteVariable(StringVariable._2(ref, value: truncatedValue));
-    }
+// abstract class StringVariableRef implements VariableRef {
+//   String get truncatedValue;
+//   bool get isTruncated;
+//   String? get value;
 
-    return _resolveInstance(isAlive);
-  }
-}
+//   @override
+//   Future<Byte<StringVariable>> resolve(Disposable isAlive);
+// }
 
-abstract class IntVariableRef implements VariableRef {
-  int get value;
+// final class _StringVariableRefImpl extends _EvaluatedVariableRef
+//     implements VariableRef {
+//   _StringVariableRefImpl._(super.ref, super.eval)
+//     : truncatedValue = ref.valueAsString!,
+//       isTruncated = ref.valueAsString!.length < ref.length!;
 
-  @override
-  Future<Byte<IntVariable>> resolve(Disposable isAlive);
-}
+//   final String truncatedValue;
+//   final bool isTruncated;
+//   String? get value => isTruncated ? null : truncatedValue;
 
-abstract class DoubleVariableRef implements VariableRef {
-  double get value;
+//   @override
+//   Future<Byte<StringVariable>> resolve(Disposable isAlive) async {
+//     if (!isTruncated) {
+//       return ByteVariable(StringVariable._2(ref, value: truncatedValue));
+//     }
 
-  @override
-  Future<Byte<DoubleVariable>> resolve(Disposable isAlive);
-}
+//     return _resolveInstance(isAlive);
+//   }
+// }
 
-abstract class TypeVariableRef implements VariableRef {
-  @override
-  Future<Byte<TypeVariable>> resolve(Disposable isAlive);
-}
+// abstract class IntVariableRef implements VariableRef {
+//   int get value;
 
-final class _TypeVariableRefImpl extends _EvaluatedVariableRef
-    implements VariableRef {
-  _TypeVariableRefImpl(super.ref, super.eval);
+//   @override
+//   Future<Byte<IntVariable>> resolve(Disposable isAlive);
+// }
 
-  @override
-  Future<Byte<TypeVariable>> resolve(Disposable isAlive) {
-    return _resolveInstance(isAlive);
-  }
-}
+// abstract class DoubleVariableRef implements VariableRef {
+//   double get value;
 
-abstract class ListVariableRef implements VariableRef {
-  @override
-  Future<Byte<ListVariable>> resolve(Disposable isAlive);
-}
+//   @override
+//   Future<Byte<DoubleVariable>> resolve(Disposable isAlive);
+// }
 
-final class _ListVariableRefImpl extends _EvaluatedVariableRef
-    implements VariableRef {
-  _ListVariableRefImpl(super.ref, super.eval);
+// abstract class TypeVariableRef implements VariableRef {
+//   @override
+//   Future<Byte<TypeVariable>> resolve(Disposable isAlive);
+// }
 
-  @override
-  Future<Byte<ListVariable>> resolve(Disposable isAlive) {
-    return _resolveInstance(isAlive);
-  }
-}
+// final class _TypeVariableRefImpl extends _EvaluatedVariableRef
+//     implements VariableRef {
+//   _TypeVariableRefImpl(super.ref, super.eval);
 
-abstract class RecordVariableRef implements VariableRef {
-  @override
-  Future<Byte<RecordVariable>> resolve(Disposable isAlive);
-}
+//   @override
+//   Future<Byte<TypeVariable>> resolve(Disposable isAlive) {
+//     return _resolveInstance(isAlive);
+//   }
+// }
 
-final class _RecordVariableRefImpl extends _EvaluatedVariableRef
-    implements VariableRef {
-  _RecordVariableRefImpl(super.ref, super.eval);
+// abstract class ListVariableRef implements VariableRef {
+//   @override
+//   Future<Byte<ListVariable>> resolve(Disposable isAlive);
+// }
 
-  @override
-  Future<Byte<RecordVariable>> resolve(Disposable isAlive) {
-    return _resolveInstance(isAlive);
-  }
-}
+// final class _ListVariableRefImpl extends _EvaluatedVariableRef
+//     implements VariableRef {
+//   _ListVariableRefImpl(super.ref, super.eval);
 
-abstract class SetVariableRef implements VariableRef {
-  @override
-  Future<Byte<SetVariable>> resolve(Disposable isAlive);
-}
+//   @override
+//   Future<Byte<ListVariable>> resolve(Disposable isAlive) {
+//     return _resolveInstance(isAlive);
+//   }
+// }
 
-final class _SetVariableRefImpl extends _EvaluatedVariableRef
-    implements VariableRef {
-  _SetVariableRefImpl(super.ref, super.eval);
+// abstract class RecordVariableRef implements VariableRef {
+//   @override
+//   Future<Byte<RecordVariable>> resolve(Disposable isAlive);
+// }
 
-  @override
-  Future<Byte<SetVariable>> resolve(Disposable isAlive) {
-    return _resolveInstance(isAlive);
-  }
-}
+// final class _RecordVariableRefImpl extends _EvaluatedVariableRef
+//     implements VariableRef {
+//   _RecordVariableRefImpl(super.ref, super.eval);
 
-abstract class UnknownObjectVariableRef implements VariableRef {
-  @override
-  Future<Byte<UnknownObjectVariable>> resolve(Disposable isAlive);
-}
+//   @override
+//   Future<Byte<RecordVariable>> resolve(Disposable isAlive) {
+//     return _resolveInstance(isAlive);
+//   }
+// }
 
-final class _UnknownObjectVariableRefImpl extends _EvaluatedVariableRef
-    implements VariableRef {
-  _UnknownObjectVariableRefImpl(super.ref, super.eval);
+// abstract class SetVariableRef implements VariableRef {
+//   @override
+//   Future<Byte<SetVariable>> resolve(Disposable isAlive);
+// }
 
-  @override
-  Future<Byte<UnknownObjectVariable>> resolve(Disposable isAlive) {
-    return _resolveInstance(isAlive);
-  }
-}
+// final class _SetVariableRefImpl extends _EvaluatedVariableRef
+//     implements VariableRef {
+//   _SetVariableRefImpl(super.ref, super.eval);
 
-abstract class FieldVariableRef implements VariableRef {
-  @override
-  Future<Byte<FieldVariable>> resolve(Disposable isAlive);
-}
+//   @override
+//   Future<Byte<SetVariable>> resolve(Disposable isAlive) {
+//     return _resolveInstance(isAlive);
+//   }
+// }
 
-final class _FieldVariableRefImpl extends _EvaluatedVariableRef
-    implements FieldVariableRef {
-  _FieldVariableRefImpl(
-    this._field,
-    EvalFactory eval, {
-    required InstanceRef object,
-  }) : super(object, eval);
+// abstract class UnknownObjectVariableRef implements VariableRef {
+//   @override
+//   Future<Byte<UnknownObjectVariable>> resolve(Disposable isAlive);
+// }
 
-  final BoundField _field;
+// final class _UnknownObjectVariableRefImpl extends _EvaluatedVariableRef
+//     implements VariableRef {
+//   _UnknownObjectVariableRefImpl(super.ref, super.eval);
 
-  @override
-  Future<Byte<FieldVariable>> resolve(Disposable isAlive) {
-    return _eval(isAlive, (eval) async {
-      final value = Byte.instanceRef(_field.value);
+//   @override
+//   Future<Byte<UnknownObjectVariable>> resolve(Disposable isAlive) {
+//     return _resolveInstance(isAlive);
+//   }
+// }
 
-      return FieldVariable(
-        key: FieldKey.from(_field.name),
-        value: switch (value) {
-          ByteVariable<InstanceRef>() => await eval.instance2(
-            value.instance,
-            isAlive: isAlive,
-          ),
-          ByteSentinel<InstanceRef>() => ByteSentinel(value.sentinel),
-        },
-      );
-    });
-  }
-}
+// abstract class FieldVariableRef implements VariableRef {
+//   @override
+//   Future<Byte<FieldVariable>> resolve(Disposable isAlive);
+// }
+
+// final class _FieldVariableRefImpl extends _EvaluatedVariableRef
+//     implements FieldVariableRef {
+//   _FieldVariableRefImpl(
+//     this._field,
+//     EvalFactory eval, {
+//     required InstanceRef object,
+//   }) : super(object, eval);
+
+//   final BoundField _field;
+
+//   @override
+//   Future<Byte<FieldVariable>> resolve(Disposable isAlive) {
+//     return _eval(isAlive, (eval) async {
+//       final value = Byte.instanceRef(_field.value);
+
+//       return FieldVariable(
+//         key: FieldKey.from(_field.name),
+//         value: switch (value) {
+//           ByteVariable<InstanceRef>() => await eval.instance2(
+//             value.instance,
+//             isAlive: isAlive,
+//           ),
+//           ByteSentinel<InstanceRef>() => ByteSentinel(value.sentinel),
+//         },
+//       );
+//     });
+//   }
+// }
