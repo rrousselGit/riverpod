@@ -74,8 +74,6 @@ class _FrameViewer extends HookConsumerWidget {
     final selectedId = useState<internals.ElementId?>(null);
     final searchController = useTextEditingController();
     final search = useValueListenable(searchController);
-    // Should be loaded by now.
-    final eval = ref.watch(evalProvider).requireValue;
 
     final originStates = ref.watch(
       filteredProvidersProvider((text: search.text, frame: frame)),

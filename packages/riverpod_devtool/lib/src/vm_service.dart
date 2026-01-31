@@ -18,7 +18,6 @@ part 'vm_service/eval.dart';
 part 'vm_service/hot_restart.dart';
 part 'vm_service/instance.dart';
 part 'vm_service/instance_kind.dart';
-part 'vm_service/instance_ref.dart';
 part 'vm_service/cache.dart';
 
 Iterable<ItemT> decodeAll<ItemT>(

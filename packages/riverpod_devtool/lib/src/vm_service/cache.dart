@@ -107,26 +107,6 @@ class RootCachedObject extends CachedObject {
 
   final CacheId id;
 
-  // TODO
-  // Future<Byte<ResolvedVariable>> read(
-  //   EvalFactory eval, {
-  //   required Disposable isAlive,
-  // }) async {
-  //   try {
-  //     final instance = await eval.dartCore.evalInstance(
-  //       _readCode,
-  //       isAlive: isAlive,
-  //       includeRiverpodDevtool: true,
-  //     );
-  //     _lastKnownInstance = instance;
-
-  //     return ByteVariable(ResolvedVariable.fromInstance(this, instance));
-  //   } on SentinelException catch (e) {
-  //     return ByteSentinel(e.sentinel);
-  //     // TODO RPCError
-  //   }
-  // }
-
   @override
   Future<Byte<InstanceRef>> _fetchInstance(
     EvalFactory eval,
@@ -206,14 +186,6 @@ final class DerivedCachedObject extends CachedObject {
 
   final CachedObject from;
   final Byte<InstanceRef> Function(Instance parent) obtainRefFromParentInstance;
-
-  // TODO
-  // Future<Byte<ResolvedVariable>> read(
-  //   EvalFactory eval, {
-  //   required Disposable isAlive,
-  // }) async {
-  //   eval.forLibrary(libraryUri).eval('\$riverpodDevtool', isAlive: isAlive);
-  // }
 
   @override
   Future<Byte<InstanceRef>> _fetchInstance(
