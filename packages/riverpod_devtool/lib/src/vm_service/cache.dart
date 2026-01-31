@@ -26,38 +26,28 @@ sealed class CachedObject {
       }
     }
 
-    const maxRetries = 5;
-    var i = 0;
-    while (true) {
-      i++;
+    return runAndRetryOnExpired(
+      onRetry: () async {
+        final newRef = await _fetchInstance(eval, isAlive);
+        switch (newRef) {
+          case ByteError():
+            return newRef.error;
+          case ByteVariable():
+            _lastKnownRef = ref = newRef.instance;
+            return null;
+        }
+      },
+      () async {
+        final byte = await eval.dartCore.instance(ref, isAlive: isAlive);
 
-      final byte = await eval.dartCore.instance(ref, isAlive: isAlive);
+        _lastKnownRef = switch (byte) {
+          ByteVariable() => byte.instance,
+          ByteError() => null,
+        };
 
-      _lastKnownRef = null;
-      switch (byte) {
-        case ByteVariable():
-          _lastKnownRef = byte.instance;
-          return byte;
-        // Non-expire error, return it
-        case ByteError(
-          error: SentinelExceptionType(
-            error: Sentinel(kind: != SentinelKind.kExpired),
-          ),
-        ):
-        // Out of retries, return last error
-        case ByteError() when i == maxRetries:
-          return byte;
-        // Retry
-        case _:
-          final newRef = await _fetchInstance(eval, isAlive);
-          switch (newRef) {
-            case ByteError():
-              return ByteError(newRef.error);
-            case ByteVariable():
-              _lastKnownRef = ref = newRef.instance;
-          }
-      }
-    }
+        return byte;
+      },
+    );
   }
 
   Future<Byte<InstanceRef>> readRef(EvalFactory eval, Disposable isAlive) {
@@ -82,27 +72,38 @@ class RootCachedObject extends CachedObject {
     Eval eval, {
     required Disposable isAlive,
     Map<String, String>? scope,
-  }) async {
-    final idByte = await eval.eval(
-      '\$riverpodDevtool.cache($code)',
-      isAlive: isAlive,
-      includeRiverpodDevtool: true,
-      scope: scope,
-    );
+  }) {
+    return runAndRetryOnExpired(() async {
+      final devtoolRef = await eval.factory.riverpodFramework.eval(
+        'RiverpodDevtool.instance',
+        isAlive: isAlive,
+      );
+      switch (devtoolRef) {
+        case ByteError():
+          return ByteError(devtoolRef.error);
+        case ByteVariable():
+          break;
+      }
+      final idByte = await eval.eval(
+        'RiverpodDevtool.cache($code)',
+        isAlive: isAlive,
+        scope: {...?scope, 'RiverpodDevtool': devtoolRef.instance.id!},
+      );
 
-    switch (idByte) {
-      case ByteError():
-        return ByteError(idByte.error);
-      case ByteVariable():
-        break;
-    }
+      switch (idByte) {
+        case ByteError():
+          return ByteError(idByte.error);
+        case ByteVariable():
+          break;
+      }
 
-    if (idByte.instance.length! < idByte.instance.valueAsString!.length) {
-      throw StateError('CacheId value is truncated');
-    }
-    return ByteVariable(
-      RootCachedObject(CacheId(idByte.instance.valueAsString!)),
-    );
+      if (idByte.instance.length! < idByte.instance.valueAsString!.length) {
+        throw StateError('CacheId value is truncated');
+      }
+      return ByteVariable(
+        RootCachedObject(CacheId(idByte.instance.valueAsString!)),
+      );
+    });
   }
 
   final CacheId id;
@@ -112,18 +113,16 @@ class RootCachedObject extends CachedObject {
     EvalFactory eval,
     Disposable isAlive,
   ) {
-    return eval.dartCore.eval(
-      '\$riverpodDevtool.getCache("$id")',
+    return eval.riverpodFramework.eval(
+      'RiverpodDevtool.instance.getCache("$id")',
       isAlive: isAlive,
-      includeRiverpodDevtool: true,
     );
   }
 
   Future<void> delete(EvalFactory eval, {required Disposable isAlive}) async {
-    await eval.dartCore.eval(
-      '\$riverpodDevtool.deleteCache("$id")',
+    await eval.riverpodFramework.eval(
+      'RiverpodDevtool.instance.deleteCache("$id")',
       isAlive: isAlive,
-      includeRiverpodDevtool: true,
     );
   }
 

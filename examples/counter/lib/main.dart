@@ -51,21 +51,32 @@ class _HomeState extends ConsumerState<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Counter example')),
+      appBar: AppBar(
+        title: const Text(
+          'Counter example with lots of hidden weird providers',
+        ),
+      ),
       body: Column(
         children: [
           Text('${ref.watch(counterProvider)}'),
-          if (show) ProviderScope(child: Container(color: Colors.red)),
-          ElevatedButton(
-            onPressed: () {
-              setState(() => show = !show);
-            },
-            child: Text(show ? 'Hide' : 'Show'),
+          Opacity(
+            opacity: 0.01,
+            child: Column(
+              children: [
+                if (show) ProviderScope(child: Container(color: Colors.red)),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() => show = !show);
+                  },
+                  child: Text(show ? 'Hide' : 'Show'),
+                ),
+                Text(ref.watch(complexProvider).nbr.toString()),
+                Text(ref.watch(fam(42)).toString()),
+                Text(ref.watch(fam(21)).toString()),
+                Text(ref.watch(booleanProvider).toString()),
+              ],
+            ),
           ),
-          Text(ref.watch(complexProvider).nbr.toString()),
-          Text(ref.watch(fam(42)).toString()),
-          Text(ref.watch(fam(21)).toString()),
-          Text(ref.watch(booleanProvider).toString()),
         ],
       ),
       floatingActionButton: FloatingActionButton(

@@ -71,6 +71,33 @@ class EvalFactory {
   }
 }
 
+Future<Byte<T>> runAndRetryOnExpired<T>(
+  Future<Byte<T>> Function() cb, {
+  FutureOr<ByteErrorType?> Function()? onRetry,
+  int maxRetries = 5,
+}) async {
+  var i = 0;
+  while (true) {
+    i++;
+    final result = await cb();
+
+    switch (result) {
+      case _ when i == maxRetries:
+        return result;
+      case ByteError(error: SentinelExceptionType(:final error))
+          when error.kind == SentinelKind.kExpired:
+        if (onRetry != null) {
+          final error = await onRetry();
+          if (error != null) return ByteError(error);
+        }
+
+        continue;
+      case _:
+        continue;
+    }
+  }
+}
+
 class Eval {
   Eval._(
     this.factory,
@@ -108,20 +135,9 @@ class Eval {
     String code, {
     required Disposable isAlive,
     Map<String, String>? scope,
-    bool includeRiverpodDevtool = false,
   }) {
-    return _run(() async {
-      return _eval.safeEval(
-        _formatCode(code),
-        isAlive: isAlive,
-        scope: {
-          ...?scope,
-          if (includeRiverpodDevtool)
-            r'$riverpodDevtool': ?await factory._riverpodDevtoolRef.then(
-              (ref) => ref.valueOrNull?.id,
-            ),
-        },
-      );
+    return _run(() {
+      return _eval.safeEval(_formatCode(code), isAlive: isAlive, scope: scope);
     });
   }
 
@@ -129,14 +145,8 @@ class Eval {
     String code, {
     required Disposable isAlive,
     Map<String, String>? scope,
-    bool includeRiverpodDevtool = false,
   }) async {
-    final ref = await eval(
-      code,
-      isAlive: isAlive,
-      scope: scope,
-      includeRiverpodDevtool: includeRiverpodDevtool,
-    );
+    final ref = await eval(code, isAlive: isAlive, scope: scope);
 
     switch (ref) {
       case ByteError<InstanceRef>():

@@ -97,7 +97,7 @@ final class EvalErrorType extends ByteErrorType {
   final EvalErrorException error;
 
   @override
-  String toString() => 'EvalError: ${error.errorRef.message ?? '<no message>'}';
+  String toString() => 'EvalError: ${error}';
 }
 
 final class UnknownEvalErrorType extends ByteErrorType {
