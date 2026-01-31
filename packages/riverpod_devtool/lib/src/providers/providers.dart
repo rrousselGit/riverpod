@@ -71,21 +71,17 @@ class AccumulatedFilter {
 }
 
 final filteredProvidersProvider = Provider.autoDispose
-    .family<
-      OriginStates,
-      ({
-        String text,
-        // Frames are fully immutable, so it's safe to use them as keys.
-        FoldedFrame frame,
-      })
-    >((ref, args) {
-      final (:text, :frame) = args;
+    .family<OriginStates, String>((ref, text) {
+      final selectedFrame = ref.watch(selectedFrameProvider);
+
+      if (selectedFrame == null) return {};
+
       final result = {
         for (final origin in ref.watch(allDiscoveredOriginsProvider))
           origin: AccumulatedFilter(),
       };
 
-      for (final element in frame.elements.values) {
+      for (final element in selectedFrame.elements.values) {
         final acc = result[element.provider.origin.id];
         if (acc == null) {
           throw StateError(

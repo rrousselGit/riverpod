@@ -12,9 +12,57 @@ import 'package:vm_service/vm_service.dart' hide Frame;
 
 import 'collection.dart';
 import 'elements.dart';
+import 'riverpod.dart';
 import 'vm_service.dart';
 
 extension type FrameId(int value) {}
+
+final selectedFrameIdProvider =
+    NotifierProvider<StateNotifier<FrameId?>, FrameId?>(
+      name: 'selectedFrameIdProvider',
+      () => StateNotifier<FrameId?>((ref, self) {
+        // Clear selected frame on hot-restart, due to frames being cleared too
+        ref.watch(hotRestartEventProvider);
+
+        ref.listen(framesProvider, fireImmediately: true, (previous, next) {
+          late final wasLastSelectedFrame =
+              previous?.value?.lastOrNull?.id == self.state;
+          late final newFramesContainsId =
+              next.value?.map((frame) => frame.id).contains(self.state) ??
+              false;
+
+          if (self.state == null ||
+              wasLastSelectedFrame ||
+              !newFramesContainsId) {
+            self.state = next.value?.lastOrNull?.id;
+          }
+        });
+
+        return self.stateOrNull;
+      }),
+    );
+
+final selectedFrameProvider = Provider<FoldedFrame?>(
+  name: 'selectedFrameProvider',
+  (ref) {
+    final frames = ref.watch(framesProvider);
+    final selectedFrameId = ref.watch(selectedFrameIdProvider);
+
+    if (selectedFrameId == null) return null;
+
+    final frame = frames.value
+        ?.where((frame) => frame.id == selectedFrameId)
+        .firstOrNull;
+    if (frame == null) {
+      throw StateError(
+        'Selected frame with id ${selectedFrameId.value} not found among '
+        '${frames.value?.length ?? 0} available frames',
+      );
+    }
+
+    return frame;
+  },
+);
 
 final framesProvider =
     AsyncNotifierProvider.autoDispose<FramesNotifier, List<FoldedFrame>>(
@@ -166,19 +214,16 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
 }
 
 class FrameStepper extends HookConsumerWidget {
-  const FrameStepper({
-    super.key,
-    required this.selectedFrameIndex,
-    required this.onSelect,
-  });
+  const FrameStepper({super.key, required this.onSelect});
 
   static const _stepperHeight = 50.0;
 
-  final int? selectedFrameIndex;
-  final void Function(int index) onSelect;
+  final void Function(FrameId frame) onSelect;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final selectedFrame = ref.watch(selectedFrameProvider);
+
     final controller = useScrollController();
     final frames = ref.watch(framesProvider);
 
@@ -200,8 +245,8 @@ class FrameStepper extends HookConsumerWidget {
 
                 return _FrameStep(
                   frame: frame,
-                  isSelected: selectedFrameIndex == frame.frame.index,
-                  onTap: () => onSelect(frame.frame.index),
+                  isSelected: frame == selectedFrame,
+                  onTap: () => onSelect(frame.id),
                 );
               },
             ),

@@ -24,24 +24,15 @@ class FrameView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedFrameIndex = useState<int?>(null);
-
-    final selectedFrame = ref.watch(
-      framesProvider.select(
-        (frames) => selectedFrameIndex.value == null
-            ? frames.value?.lastOrNull
-            : frames.value?.elementAtOrNull(selectedFrameIndex.value!),
-      ),
-    );
+    final selectedFrameNotifier = ref.watch(selectedFrameIdProvider.notifier);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Expanded(child: _FramePanel(selectedFrame: selectedFrame)),
+        const Expanded(child: _FramePanel()),
         Center(
           child: FrameStepper(
-            selectedFrameIndex: selectedFrame?.frame.index,
-            onSelect: (index) => selectedFrameIndex.value = index,
+            onSelect: (frame) => selectedFrameNotifier.state = frame,
           ),
         ),
       ],
@@ -50,24 +41,20 @@ class FrameView extends HookConsumerWidget {
 }
 
 class _FramePanel extends ConsumerWidget {
-  const _FramePanel({super.key, required this.selectedFrame});
-
-  final FoldedFrame? selectedFrame;
+  const _FramePanel({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (selectedFrame case final selectedFrame?) {
-      return _FrameViewer(frame: selectedFrame);
-    }
+    final selectedFrame = ref.watch(selectedFrameProvider);
+
+    if (selectedFrame != null) return const _FrameViewer();
 
     return const Panel(child: Center(child: Text('No frame selected')));
   }
 }
 
 class _FrameViewer extends HookConsumerWidget {
-  const _FrameViewer({super.key, required this.frame});
-
-  final FoldedFrame frame;
+  const _FrameViewer({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -75,9 +62,7 @@ class _FrameViewer extends HookConsumerWidget {
     final searchController = useTextEditingController();
     final search = useValueListenable(searchController);
 
-    final originStates = ref.watch(
-      filteredProvidersProvider((text: search.text, frame: frame)),
-    );
+    final originStates = ref.watch(filteredProvidersProvider(search.text));
 
     final selected =
         originStates.values
