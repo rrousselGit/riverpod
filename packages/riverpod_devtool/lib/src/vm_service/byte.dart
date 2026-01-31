@@ -94,10 +94,10 @@ final class SentinelExceptionType extends ByteErrorType {
 
 final class EvalErrorType extends ByteErrorType {
   const EvalErrorType(this.error);
-  final String error;
+  final EvalErrorException error;
 
   @override
-  String toString() => 'EvalError: $error';
+  String toString() => 'EvalError: ${error.errorRef.message ?? '<no message>'}';
 }
 
 final class UnknownEvalErrorType extends ByteErrorType {

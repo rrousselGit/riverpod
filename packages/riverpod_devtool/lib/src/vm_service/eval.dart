@@ -94,7 +94,7 @@ class Eval {
 
       return ByteVariable(ref);
     } on EvalErrorException catch (e) {
-      return ByteError(EvalErrorType(e.toString()));
+      return ByteError(EvalErrorType(e));
     } on EvalSentinelException catch (e) {
       return ByteError(SentinelExceptionType(e.sentinel));
     } on UnknownEvalException catch (e) {
