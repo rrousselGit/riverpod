@@ -8,7 +8,7 @@ import 'state_inspector/inspector.dart';
 import 'ui_primitives/panel.dart';
 import 'vm_service.dart';
 
-final _eval = Mutation<void>();
+final _submit = Mutation<void>();
 
 class Terminal extends ConsumerStatefulWidget {
   const Terminal({super.key, required this.state});
@@ -23,10 +23,24 @@ class _TerminalState extends ConsumerState<Terminal> {
   final List<({String code, Byte<RootCachedObject> byte})> history = [];
 
   final _disposable = Disposable();
+  late final _eval = ref.listenManual(evalProvider.future, (_, _) {});
 
   @override
   void dispose() {
-    _disposable.dispose();
+    final eval = _eval.read();
+
+    // TODO wait for pending requests to complete, to avoid race condition on the delete loop?
+
+    final deleteAll = Future.wait<void>(
+      history.map(
+        (entry) async =>
+            entry.byte.valueOrNull?.delete(await eval, isAlive: _disposable),
+      ),
+    );
+
+    // Wait after deletion before canceling any pending requests.
+    // This avoids cancelling requests before we can remove their cache entries.
+    deleteAll.whenComplete(_disposable.dispose);
     super.dispose();
   }
 
@@ -51,9 +65,6 @@ class _TerminalState extends ConsumerState<Terminal> {
                             error: error,
                             // No label since we're at the root
                             label: null,
-                            initialize: () {
-                              // TODO implement initialization. Share with other locations
-                            },
                           ),
                         ),
                     },
@@ -84,7 +95,7 @@ class _TerminalState extends ConsumerState<Terminal> {
                   final trim = code.trim();
                   if (trim.isEmpty) return;
 
-                  _eval.run(ref, (tsx) async {
+                  _submit.run(ref, (tsx) async {
                     // TODO use library from selected provider
                     final evalFactory = await tsx.get(evalProvider.future);
 

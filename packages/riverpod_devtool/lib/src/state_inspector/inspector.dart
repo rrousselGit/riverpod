@@ -1,3 +1,4 @@
+import 'package:devtools_app_shared/utils.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -180,6 +181,7 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
     (_, _) {},
   );
 
+  final _disposable = Disposable();
   late final nodes = TreeList<_VariableNode>();
   ProviderSubscription<_VariableNode>? sub;
 
@@ -203,6 +205,12 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
         });
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _disposable.dispose();
+    super.dispose();
   }
 
   @override
@@ -244,6 +252,8 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
       itemBuilder: (context, index) {
         return Consumer(
           builder: (context, ref, child) {
+            final eval = ref.watch(evalProvider.future);
+
             final node = widget.reversed
                 ? nodes[nodes.length - 1 - index]
                 : nodes[index];
@@ -271,9 +281,6 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
                       (nodes) => nodes.contains(node.object),
                     ),
                   ),
-                  initialize: () {
-                    // TODO implement initialization
-                  },
                   open: () => openNotifier.toggle(node.object),
                 ),
               },
@@ -285,6 +292,8 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
   }
 }
 
+typedef Initialize = void Function();
+
 class _ByteTile extends StatelessWidget {
   const _ByteTile({
     super.key,
@@ -292,7 +301,6 @@ class _ByteTile extends StatelessWidget {
     required this.isOpen,
     required this.open,
     required this.label,
-    required this.initialize,
     required this.shouldShowExpansible,
   });
 
@@ -300,22 +308,16 @@ class _ByteTile extends StatelessWidget {
   final String? label;
   final bool isOpen;
   final void Function() open;
-  final void Function() initialize;
   final bool shouldShowExpansible;
 
   @override
   Widget build(BuildContext context) {
     return switch (byte) {
-      ByteError(:final error) => ByteErrorTile(
-        error: error,
-        initialize: initialize,
-        label: label,
-      ),
+      ByteError(:final error) => ByteErrorTile(error: error, label: label),
       ByteVariable(:final instance) => _ResolvedVariableTile(
         variable: instance,
         isOpen: isOpen,
         open: open,
-        initialize: initialize,
         label: label,
         shouldShowExpansible: shouldShowExpansible,
       ),
@@ -324,15 +326,9 @@ class _ByteTile extends StatelessWidget {
 }
 
 class ByteErrorTile extends StatelessWidget {
-  const ByteErrorTile({
-    super.key,
-    required this.error,
-    required this.initialize,
-    required this.label,
-  });
+  const ByteErrorTile({super.key, required this.error, required this.label});
 
   final ByteErrorType error;
-  final void Function() initialize;
   final String? label;
 
   @override
@@ -341,19 +337,16 @@ class ByteErrorTile extends StatelessWidget {
       case SentinelExceptionType(
         error: Sentinel(kind: SentinelKind.kNotInitialized),
       ):
-        return InkWell(
-          onTap: initialize,
-          child: Text.rich(
-            TextSpan(
-              children: [
-                if (label != null) TextSpan(text: '$label: '),
-                const TextSpan(
-                  // TODO add a mean to init the variable
-                  text: '<not initialized>',
-                  style: TextStyle(color: _NodeTileTheme.evalErrorColor),
-                ),
-              ],
-            ),
+        return Text.rich(
+          TextSpan(
+            children: [
+              if (label != null) TextSpan(text: '$label: '),
+              const TextSpan(
+                // TODO add a mean to init the variable
+                text: '<not initialized>',
+                style: TextStyle(color: _NodeTileTheme.evalErrorColor),
+              ),
+            ],
           ),
         );
       case final error:
@@ -373,7 +366,6 @@ class _ResolvedVariableTile extends StatelessWidget {
     required this.variable,
     required this.isOpen,
     required this.open,
-    required this.initialize,
     required this.label,
     required this.shouldShowExpansible,
   });
@@ -382,7 +374,6 @@ class _ResolvedVariableTile extends StatelessWidget {
   final String? label;
   final bool isOpen;
   final void Function() open;
-  final void Function() initialize;
   final bool shouldShowExpansible;
 
   @override
