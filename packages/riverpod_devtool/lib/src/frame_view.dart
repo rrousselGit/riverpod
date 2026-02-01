@@ -25,14 +25,24 @@ class FrameView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedFrameNotifier = ref.watch(selectedFrameIdProvider.notifier);
+    final searchController = useTextEditingController();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Expanded(child: _FramePanel()),
+        Expanded(child: _FramePanel(searchController: searchController)),
         Center(
-          child: FrameStepper(
-            onSelect: (frame) => selectedFrameNotifier.state = frame,
+          child: ValueListenableBuilder(
+            valueListenable: searchController,
+            builder: (context, search, child) {
+              return FrameStepper(
+                onSelect: (frame) => selectedFrameNotifier.state = frame,
+                selectedFrame: ref.watch(selectedFrameProvider),
+                selectedElementId: ref.watch(
+                  selectedProviderIdProvider(search.text),
+                ),
+              );
+            },
           ),
         ),
       ],
@@ -41,25 +51,30 @@ class FrameView extends HookConsumerWidget {
 }
 
 class _FramePanel extends ConsumerWidget {
-  const _FramePanel({super.key});
+  const _FramePanel({super.key, required this.searchController});
+
+  final TextEditingController searchController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedFrame = ref.watch(selectedFrameProvider);
 
-    if (selectedFrame != null) return const _FrameViewer();
+    if (selectedFrame != null) {
+      return _FrameViewer(searchController: searchController);
+    }
 
     return const Panel(child: Center(child: Text('No frame selected')));
   }
 }
 
 class _FrameViewer extends HookConsumerWidget {
-  const _FrameViewer({super.key});
+  const _FrameViewer({super.key, required this.searchController});
+
+  final TextEditingController searchController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedId = useState<internals.ElementId?>(null);
-    final searchController = useTextEditingController();
     final search = useValueListenable(searchController);
 
     final originStates = ref.watch(filteredProvidersProvider(search.text));

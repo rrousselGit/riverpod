@@ -5,8 +5,49 @@ import 'package:hooks_riverpod/src/internals.dart' as internals;
 import '../collection.dart';
 import '../elements.dart';
 import '../frames.dart';
+import '../riverpod.dart';
 import '../search/fuzzy_match.dart';
 import '../vm_service.dart';
+
+final selectedProviderIdProvider = NotifierProvider.autoDispose
+    .family<StateNotifier<internals.ElementId?>, internals.ElementId?, String>(
+      name: 'selectedProviderIdProvider',
+      (search) => StateNotifier<internals.ElementId?>((ref, self) {
+        // Clear selected provider on hot-restart, due to frames being cleared too
+        ref.watch(hotRestartEventProvider);
+
+        ref.listen(filteredProvidersProvider(search), fireImmediately: true, (
+          previous,
+          next,
+        ) {
+          late final wasLastSelectedProvider =
+              previous?.values
+                  .expand((e) => e.elements)
+                  .where((e) => e.isSelected(self.state))
+                  .firstOrNull !=
+              null;
+          late final newProvidersContainId =
+              next.values
+                  .expand((e) => e.elements)
+                  .where((e) => e.isSelected(self.state))
+                  .firstOrNull !=
+              null;
+
+          if (self.stateOrNull == null ||
+              wasLastSelectedProvider ||
+              !newProvidersContainId) {
+            self.state = next.values
+                .expand((e) => e.elements)
+                .firstOrNull
+                ?.element
+                .provider
+                .elementId;
+          }
+        });
+
+        return self.stateOrNull;
+      }),
+    );
 
 final allDiscoveredOriginsProvider =
     NotifierProvider<AllDiscoveredOriginsNotifier, Set<internals.OriginId>>(

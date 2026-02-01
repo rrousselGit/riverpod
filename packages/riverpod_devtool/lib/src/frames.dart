@@ -214,16 +214,21 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
 }
 
 class FrameStepper extends HookConsumerWidget {
-  const FrameStepper({super.key, required this.onSelect});
+  const FrameStepper({
+    super.key,
+    required this.onSelect,
+    required this.selectedFrame,
+    required this.selectedElementId,
+  });
 
   static const _stepperHeight = 50.0;
 
   final void Function(FrameId frame) onSelect;
+  final FoldedFrame? selectedFrame;
+  final internals.ElementId? selectedElementId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedFrame = ref.watch(selectedFrameProvider);
-
     final controller = useScrollController();
     final frames = ref.watch(framesProvider);
 
