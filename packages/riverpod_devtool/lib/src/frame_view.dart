@@ -82,6 +82,7 @@ class _FrameViewer extends HookConsumerWidget {
     return SplitPane(
       axis: Axis.horizontal,
       initialFractions: const [0.3, 0.7],
+      minSizes: const [100, 150],
       children: [
         _ProviderPickerPanel(
           searchController: searchController,
@@ -104,6 +105,12 @@ class _FrameViewer extends HookConsumerWidget {
   }
 }
 
+extension DevtoolTheme on ThemeData {
+  Color get panelBorderColor => focusColor;
+}
+
+const dividerHeight = 16.0;
+
 class ProviderViewer extends StatelessWidget {
   const ProviderViewer({
     super.key,
@@ -116,18 +123,25 @@ class ProviderViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SplitPane(
-      axis: .vertical,
-      initialFractions: const [0.8, 0.2],
-      children: [
-        Panel(
-          child: Padding(
+    return Panel(
+      child: SplitPane(
+        axis: .vertical,
+        initialFractions: const [0.8, 0.2],
+        minSizes: const [50, 60],
+        splitters: [
+          PreferredSize(
+            preferredSize: const Size(0, dividerHeight),
+            child: Divider(color: Theme.of(context).panelBorderColor),
+          ),
+        ],
+        children: [
+          Padding(
             padding: const .symmetric(vertical: 8),
             child: Inspector(object: state),
           ),
-        ),
-        Terminal(state: state, notifier: notifier),
-      ],
+          Terminal(state: state, notifier: notifier),
+        ],
+      ),
     );
   }
 }

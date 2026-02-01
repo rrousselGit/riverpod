@@ -47,109 +47,107 @@ class _TerminalState extends ConsumerState<Terminal> {
 
   @override
   Widget build(BuildContext context) {
-    return Panel(
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          children: [
-            Expanded(
-              child: CustomScrollView(
-                reverse: true,
-                slivers: [
-                  for (final entry in history) ...[
-                    switch (entry.byte) {
-                      ByteVariable<RootCachedObject>(:final instance) =>
-                        SliverVariableTree(object: instance, reversed: true),
-                      ByteError<RootCachedObject>(:final error) =>
-                        SliverToBoxAdapter(
-                          child: ByteErrorTile(
-                            error: error,
-                            // No label since we're at the root
-                            label: null,
-                          ),
-                        ),
-                    },
-                    // List is reversed, so we add it after
-                    SliverToBoxAdapter(
-                      child: Text.rich(
-                        TextSpan(
-                          children: [
-                            const TextSpan(
-                              text: r'$ ',
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            TextSpan(text: entry.code),
-                          ],
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        children: [
+          Expanded(
+            child: CustomScrollView(
+              reverse: true,
+              slivers: [
+                for (final entry in history) ...[
+                  switch (entry.byte) {
+                    ByteVariable<RootCachedObject>(:final instance) =>
+                      SliverVariableTree(object: instance, reversed: true),
+                    ByteError<RootCachedObject>(:final error) =>
+                      SliverToBoxAdapter(
+                        child: ByteErrorTile(
+                          error: error,
+                          // No label since we're at the root
+                          label: null,
                         ),
                       ),
+                  },
+                  // List is reversed, so we add it after
+                  SliverToBoxAdapter(
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          const TextSpan(
+                            text: r'$ ',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                          TextSpan(text: entry.code),
+                        ],
+                      ),
                     ),
-                  ],
+                  ),
                 ],
-              ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: ui.DevToolsClearableTextField(
-                hintText: r'$notifier.state = 21',
-                labelText: 'Terminal',
-                onSubmitted: (code) {
-                  final trim = code.trim();
-                  if (trim.isEmpty) return;
-
-                  _submit.run(ref, (tsx) async {
-                    // TODO use library from selected provider
-                    final evalFactory = await tsx.get(evalProvider.future);
-
-                    Byte<RootCachedObject> result;
-                    final state = await widget.state.readRef(
-                      evalFactory,
-                      _disposable,
-                    );
-                    final notifier = await widget.notifier.readRef(
-                      evalFactory,
-                      _disposable,
-                    );
-                    switch (state) {
-                      case ByteError(:final error):
-                        result = ByteError(error);
-                        return;
-                      case ByteVariable():
-                        break;
-                    }
-                    switch (notifier) {
-                      case ByteError(:final error):
-                        result = ByteError(error);
-                        return;
-                      case ByteVariable():
-                        break;
-                    }
-
-                    final eval =
-                        evalFactory.forRef(state.instance) ??
-                        evalFactory.dartCore;
-
-                    result = await RootCachedObject.create(
-                      code,
-                      eval,
-                      isAlive: _disposable,
-                      // TODO scope to expose $notifier and $state
-                      // TODO maybe support $previous to refer to the last terminal result
-                      scope: {
-                        r'$state': ?state.instance.id,
-                        r'$notifier': ?notifier.instance.id,
-                      },
-                    );
-
-                    setState(
-                      () => history.insert(0, (code: trim, byte: result)),
-                    );
-                  });
-                },
-                additionalSuffixActions: const [_TerminalHelp()],
-              ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: ui.DevToolsClearableTextField(
+              hintText: r'$notifier.state = 21',
+              labelText: 'Terminal',
+              onSubmitted: (code) {
+                final trim = code.trim();
+                if (trim.isEmpty) return;
+    
+                _submit.run(ref, (tsx) async {
+                  // TODO use library from selected provider
+                  final evalFactory = await tsx.get(evalProvider.future);
+    
+                  Byte<RootCachedObject> result;
+                  final state = await widget.state.readRef(
+                    evalFactory,
+                    _disposable,
+                  );
+                  final notifier = await widget.notifier.readRef(
+                    evalFactory,
+                    _disposable,
+                  );
+                  switch (state) {
+                    case ByteError(:final error):
+                      result = ByteError(error);
+                      return;
+                    case ByteVariable():
+                      break;
+                  }
+                  switch (notifier) {
+                    case ByteError(:final error):
+                      result = ByteError(error);
+                      return;
+                    case ByteVariable():
+                      break;
+                  }
+    
+                  final eval =
+                      evalFactory.forRef(state.instance) ??
+                      evalFactory.dartCore;
+    
+                  result = await RootCachedObject.create(
+                    code,
+                    eval,
+                    isAlive: _disposable,
+                    // TODO scope to expose $notifier and $state
+                    // TODO maybe support $previous to refer to the last terminal result
+                    scope: {
+                      r'$state': ?state.instance.id,
+                      r'$notifier': ?notifier.instance.id,
+                    },
+                  );
+    
+                  setState(
+                    () => history.insert(0, (code: trim, byte: result)),
+                  );
+                });
+              },
+              additionalSuffixActions: const [_TerminalHelp()],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
