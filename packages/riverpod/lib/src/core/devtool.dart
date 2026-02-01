@@ -237,10 +237,12 @@ final class ProviderContainerDisposeEvent extends Event {
 final class ProviderElementAddEvent extends Event {
   ProviderElementAddEvent(ProviderElement element)
     : provider = ProviderMeta.from(element),
-      state = ProviderStateRef(state: element.stateResult()?.value);
+      state = ProviderStateRef(state: element.stateResult()?.value),
+      notifier = ProviderStateRef.notifier(element);
 
   final ProviderMeta provider;
   final ProviderStateRef state;
+  final ProviderStateRef notifier;
 }
 
 @devtool
@@ -256,6 +258,14 @@ final class ProviderElementDisposeEvent extends Event {
 @internal
 final class ProviderStateRef {
   ProviderStateRef({required this.state});
+  factory ProviderStateRef.notifier(ProviderElement element) {
+    return switch (element) {
+      $ClassProviderElement() => ProviderStateRef(
+        state: element.classListenable.result?.value,
+      ),
+      _ => ProviderStateRef(state: null),
+    };
+  }
 
   final Object? state;
 }
@@ -265,10 +275,12 @@ final class ProviderStateRef {
 final class ProviderElementUpdateEvent extends Event {
   ProviderElementUpdateEvent(ProviderElement element)
     : provider = ProviderMeta.from(element),
-      next = ProviderStateRef(state: element.stateResult()?.value);
+      next = ProviderStateRef(state: element.stateResult()?.value),
+      notifier = ProviderStateRef.notifier(element);
 
   final ProviderMeta provider;
   final ProviderStateRef next;
+  final ProviderStateRef notifier;
 }
 
 final class _DevtoolObserver extends ProviderObserver {

@@ -20,6 +20,8 @@ Builder riverpodDevtoolGenerator(BuilderOptions options) {
 class _RiverpodDevtoolGeneratorGenerator extends Generator {
   @override
   String generate(LibraryReader library, BuildStep buildStep) {
+    _varCount = 0;
+
     final annotatedClasses = library.element.firstFragment.importedLibraries
         .expand((e) => e.exportNamespace.definedNames2.values)
         .where((e) {

@@ -244,7 +244,11 @@ class ProviderContainerDisposeEvent extends Event {
 
 /// Devtool code for [internals.ProviderElementAddEvent]
 class ProviderElementAddEvent extends Event {
-  ProviderElementAddEvent({required this.provider, required this.state});
+  ProviderElementAddEvent({
+    required this.provider,
+    required this.state,
+    required this.notifier,
+  });
 
   factory ProviderElementAddEvent.from(
     Map<String, InstanceRef> $events, {
@@ -254,12 +258,18 @@ class ProviderElementAddEvent extends Event {
 
     final provider = ProviderMeta.from($events, path: '$path.provider');
     final state = ProviderStateRef.from($events, path: '$path.state');
+    final notifier = ProviderStateRef.from($events, path: '$path.notifier');
 
-    return ProviderElementAddEvent(provider: provider, state: state);
+    return ProviderElementAddEvent(
+      provider: provider,
+      state: state,
+      notifier: notifier,
+    );
   }
 
   final ProviderMeta provider;
   final ProviderStateRef state;
+  final ProviderStateRef notifier;
 }
 
 /// Devtool code for [internals.ProviderElementDisposeEvent]
@@ -302,7 +312,11 @@ class ProviderStateRef {
 
 /// Devtool code for [internals.ProviderElementUpdateEvent]
 class ProviderElementUpdateEvent extends Event {
-  ProviderElementUpdateEvent({required this.provider, required this.next});
+  ProviderElementUpdateEvent({
+    required this.provider,
+    required this.next,
+    required this.notifier,
+  });
 
   factory ProviderElementUpdateEvent.from(
     Map<String, InstanceRef> $events, {
@@ -312,10 +326,16 @@ class ProviderElementUpdateEvent extends Event {
 
     final provider = ProviderMeta.from($events, path: '$path.provider');
     final next = ProviderStateRef.from($events, path: '$path.next');
+    final notifier = ProviderStateRef.from($events, path: '$path.notifier');
 
-    return ProviderElementUpdateEvent(provider: provider, next: next);
+    return ProviderElementUpdateEvent(
+      provider: provider,
+      next: next,
+      notifier: notifier,
+    );
   }
 
   final ProviderMeta provider;
   final ProviderStateRef next;
+  final ProviderStateRef notifier;
 }

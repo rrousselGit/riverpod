@@ -31,7 +31,7 @@ final selectedFrameIdProvider =
               next.value?.map((frame) => frame.id).contains(self.state) ??
               false;
 
-          if (self.state == null ||
+          if (self.stateOrNull == null ||
               wasLastSelectedFrame ||
               !newFramesContainsId) {
             self.state = next.value?.lastOrNull?.id;

@@ -109,10 +109,9 @@ final class UnknownEvalErrorType extends ByteErrorType {
 }
 
 final class RPCErrorType extends ByteErrorType {
-  const RPCErrorType(this.code, this.message);
-  final int code;
-  final String message;
+  const RPCErrorType(this.error);
+  final RPCError error;
 
   @override
-  String toString() => 'RPCError(code: $code, message: $message)';
+  String toString() => 'RPCError: $error';
 }

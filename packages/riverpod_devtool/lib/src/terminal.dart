@@ -11,9 +11,10 @@ import 'vm_service.dart';
 final _submit = Mutation<void>();
 
 class Terminal extends ConsumerStatefulWidget {
-  const Terminal({super.key, required this.state});
+  const Terminal({super.key, required this.state, required this.notifier});
 
   final RootCachedObject state;
+  final RootCachedObject notifier;
 
   @override
   ConsumerState<Terminal> createState() => _TerminalState();
@@ -104,7 +105,18 @@ class _TerminalState extends ConsumerState<Terminal> {
                       evalFactory,
                       _disposable,
                     );
+                    final notifier = await widget.notifier.readRef(
+                      evalFactory,
+                      _disposable,
+                    );
                     switch (state) {
+                      case ByteError(:final error):
+                        result = ByteError(error);
+                        return;
+                      case ByteVariable():
+                        break;
+                    }
+                    switch (notifier) {
                       case ByteError(:final error):
                         result = ByteError(error);
                         return;
@@ -122,7 +134,10 @@ class _TerminalState extends ConsumerState<Terminal> {
                       isAlive: _disposable,
                       // TODO scope to expose $notifier and $state
                       // TODO maybe support $previous to refer to the last terminal result
-                      scope: {r'$state': ?state.instance.id},
+                      scope: {
+                        r'$state': ?state.instance.id,
+                        r'$notifier': ?notifier.instance.id,
+                      },
                     );
 
                     setState(

@@ -123,7 +123,7 @@ class Eval {
     } on UnknownEvalException catch (e) {
       return ByteError(UnknownEvalErrorType(e.toString()));
     } on RPCError catch (e) {
-      return ByteError(RPCErrorType(e.code, e.message));
+      return ByteError(RPCErrorType(e));
     }
   }
 

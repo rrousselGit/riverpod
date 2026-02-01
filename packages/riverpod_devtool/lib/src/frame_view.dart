@@ -93,7 +93,10 @@ class _FrameViewer extends HookConsumerWidget {
         ),
 
         if (selected case final selected?)
-          ProviderViewer(selected: selected.element.state.state)
+          ProviderViewer(
+            state: selected.element.state.state,
+            notifier: selected.element.notifier.state,
+          )
         else
           const Panel(child: Text('No provider selected')),
       ],
@@ -102,9 +105,14 @@ class _FrameViewer extends HookConsumerWidget {
 }
 
 class ProviderViewer extends StatelessWidget {
-  const ProviderViewer({super.key, required this.selected});
+  const ProviderViewer({
+    super.key,
+    required this.state,
+    required this.notifier,
+  });
 
-  final RootCachedObject selected;
+  final RootCachedObject state;
+  final RootCachedObject notifier;
 
   @override
   Widget build(BuildContext context) {
@@ -115,10 +123,10 @@ class ProviderViewer extends StatelessWidget {
         Panel(
           child: Padding(
             padding: const .symmetric(vertical: 8),
-            child: Inspector(object: selected),
+            child: Inspector(object: state),
           ),
         ),
-        Terminal(state: selected),
+        Terminal(state: state, notifier: notifier),
       ],
     );
   }

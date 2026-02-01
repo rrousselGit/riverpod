@@ -72,38 +72,38 @@ class RootCachedObject extends CachedObject {
     Eval eval, {
     required Disposable isAlive,
     Map<String, String>? scope,
-  }) {
-    return runAndRetryOnExpired(() async {
-      final devtoolRef = await eval.factory.riverpodFramework.eval(
-        'RiverpodDevtool.instance',
-        isAlive: isAlive,
-      );
-      switch (devtoolRef) {
-        case ByteError():
-          return ByteError(devtoolRef.error);
-        case ByteVariable():
-          break;
-      }
-      final idByte = await eval.eval(
-        'RiverpodDevtool.cache($code)',
-        isAlive: isAlive,
-        scope: {...?scope, 'RiverpodDevtool': devtoolRef.instance.id!},
-      );
+  }) async {
+    // No retry because retrying <code> could have side-effects.
+    final devtoolRef = await eval.factory.riverpodFramework.eval(
+      'RiverpodDevtool.instance',
+      isAlive: isAlive,
+    );
+    switch (devtoolRef) {
+      case ByteError():
+        return ByteError(devtoolRef.error);
+      case ByteVariable():
+        break;
+    }
+    final idByte = await eval.eval(
+      // Casting to allow assigning `void`
+      'RiverpodDevtool.cache(($code) as Object?)',
+      isAlive: isAlive,
+      scope: {...?scope, 'RiverpodDevtool': devtoolRef.instance.id!},
+    );
 
-      switch (idByte) {
-        case ByteError():
-          return ByteError(idByte.error);
-        case ByteVariable():
-          break;
-      }
+    switch (idByte) {
+      case ByteError():
+        return ByteError(idByte.error);
+      case ByteVariable():
+        break;
+    }
 
-      if (idByte.instance.length! < idByte.instance.valueAsString!.length) {
-        throw StateError('CacheId value is truncated');
-      }
-      return ByteVariable(
-        RootCachedObject(CacheId(idByte.instance.valueAsString!)),
-      );
-    });
+    if (idByte.instance.length! < idByte.instance.valueAsString!.length) {
+      throw StateError('CacheId value is truncated');
+    }
+    return ByteVariable(
+      RootCachedObject(CacheId(idByte.instance.valueAsString!)),
+    );
   }
 
   final CacheId id;

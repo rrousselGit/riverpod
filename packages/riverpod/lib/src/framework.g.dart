@@ -195,6 +195,9 @@ extension ProviderElementAddEventToBytes on ProviderElementAddEvent {
     final res5 = <String, Object?>{'$path._type': 'ProviderElementAddEvent'};
     res5.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
     res5.addAll(ProviderStateRefToBytes(state).toBytes(path: '$path.state'));
+    res5.addAll(
+      ProviderStateRefToBytes(notifier).toBytes(path: '$path.notifier'),
+    );
     return res5;
   }
 }
@@ -226,6 +229,9 @@ extension ProviderElementUpdateEventToBytes on ProviderElementUpdateEvent {
     final res8 = <String, Object?>{'$path._type': 'ProviderElementUpdateEvent'};
     res8.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
     res8.addAll(ProviderStateRefToBytes(next).toBytes(path: '$path.next'));
+    res8.addAll(
+      ProviderStateRefToBytes(notifier).toBytes(path: '$path.notifier'),
+    );
     return res8;
   }
 }

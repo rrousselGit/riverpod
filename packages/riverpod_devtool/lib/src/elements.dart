@@ -8,10 +8,15 @@ import 'vm_service.dart';
 
 @immutable
 class ElementMeta {
-  const ElementMeta({required this.provider, required this.state});
+  const ElementMeta({
+    required this.provider,
+    required this.state,
+    required this.notifier,
+  });
 
   final ProviderMeta provider;
   final ProviderStateRef state;
+  final ProviderStateRef notifier;
 }
 
 Map<internals.ElementId, ElementMeta> computeElementsForFrame(
@@ -28,14 +33,20 @@ Map<internals.ElementId, ElementMeta> computeElementsForFrame(
         break;
       case ProviderElementDisposeEvent(:final provider):
         state.remove(provider.elementId);
-      case ProviderElementAddEvent(state: final currentState, :final provider):
+      case ProviderElementAddEvent(
+        state: final currentState,
+        :final provider,
+        :final notifier,
+      ):
       case ProviderElementUpdateEvent(
         next: final currentState,
         :final provider,
+        :final notifier,
       ):
         state[provider.elementId] = ElementMeta(
           provider: provider,
           state: currentState,
+          notifier: notifier,
         );
     }
   }
