@@ -16,7 +16,6 @@ import 'frame_view.dart';
 import 'provider_list.dart';
 import 'providers/providers.dart';
 import 'riverpod.dart';
-import 'ui_primitives/panel.dart';
 import 'vm_service.dart';
 
 enum ProviderStatusInFrame { added, modified, disposed }
