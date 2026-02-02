@@ -81,6 +81,7 @@ final class _TerminalState extends ConsumerState<Terminal> {
 
   @override
   void dispose() {
+    _terminalFocusNode.dispose();
     _terminalController.dispose();
     final eval = _eval.read();
 
