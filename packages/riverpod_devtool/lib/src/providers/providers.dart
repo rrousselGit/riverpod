@@ -41,12 +41,6 @@ final selectedProviderIdProvider = NotifierProvider.autoDispose
           filteredProvidersForCurrentFrameProvider(search),
           fireImmediately: true,
           (previous, next) {
-            late final wasLastSelectedProvider =
-                previous?.values
-                    .expand((e) => e.elements)
-                    .where((e) => e.isSelected(self.state))
-                    .firstOrNull !=
-                null;
             late final newProvidersContainId =
                 next.values
                     .expand((e) => e.elements)
@@ -54,9 +48,7 @@ final selectedProviderIdProvider = NotifierProvider.autoDispose
                     .firstOrNull !=
                 null;
 
-            if (self.stateOrNull == null ||
-                wasLastSelectedProvider ||
-                !newProvidersContainId) {
+            if (self.stateOrNull == null || !newProvidersContainId) {
               self.state = next.values
                   .expand((e) => e.elements)
                   .firstOrNull
@@ -91,24 +83,17 @@ class AllDiscoveredOriginsNotifier extends Notifier<Set<internals.OriginId>> {
       final frames = next.value ?? const [];
 
       for (final frame in frames) {
-        _handleFrame(frame, setBuilder);
+        for (final event in frame.frame.events) {
+          if (event case ProviderElementAddEvent(:final provider)) {
+            setBuilder.add(provider.origin.id);
+          }
+        }
       }
 
       state = setBuilder.build();
     });
 
     return state;
-  }
-
-  void _handleFrame(
-    FoldedFrame frame,
-    SetBuilder<internals.OriginId> setBuilder,
-  ) {
-    for (final event in frame.frame.events) {
-      if (event case ProviderElementAddEvent(:final provider)) {
-        setBuilder.add(provider.origin.id);
-      }
-    }
   }
 }
 
@@ -119,12 +104,14 @@ class FilteredElement {
     required this.element,
     required this.argMatch,
     required this.originMatch,
+    required this.status,
   });
 
   OriginMeta get origin => element.provider.origin;
   final ElementMeta element;
   final FuzzyMatch originMatch;
   final FuzzyMatch argMatch;
+  final ProviderStatusInFrame? status;
 
   bool isSelected(internals.ElementId? id) => id == element.provider.elementId;
 }
@@ -132,10 +119,14 @@ class FilteredElement {
 typedef OriginStates = Map<internals.OriginId, AccumulatedFilter>;
 
 class AccumulatedFilter {
+  AccumulatedFilter._();
+
   var _foundCount = 0;
   int get foundCount => _foundCount;
 
   final List<FilteredElement> elements = [];
+
+  AccumulatedFilter fork() => AccumulatedFilter._().._foundCount = _foundCount;
 }
 
 final filteredProvidersForCurrentFrameProvider = Provider.autoDispose
@@ -152,13 +143,17 @@ final filteredProvidersForCurrentFrameProvider = Provider.autoDispose
 final filteredProvidersProvider = Provider.autoDispose
     .family<OriginStates, ({String search, FrameId? frame})>((ref, args) {
       final (:search, :frame) = args;
-      final selectedFrame = ref.watch(selectedFrameProvider);
+      final selectedFrame = ref.watch(
+        framesProvider.select(
+          (frames) => frames.value?.where((f) => f.id == frame).firstOrNull,
+        ),
+      );
 
       if (selectedFrame == null) return {};
 
       final result = {
         for (final origin in ref.watch(allDiscoveredOriginsProvider))
-          origin: AccumulatedFilter(),
+          origin: AccumulatedFilter._(),
       };
 
       for (final element in selectedFrame.elements.values) {
@@ -184,12 +179,10 @@ final filteredProvidersProvider = Provider.autoDispose
             element: element,
             originMatch: originMatch,
             argMatch: argMatch,
+            status: selectedFrame.statusOf(element.provider.elementId),
           ),
         );
       }
-
-      // Remove origins with no matching providers.
-      result.removeWhere((key, value) => value.elements.isEmpty);
 
       return result;
     });

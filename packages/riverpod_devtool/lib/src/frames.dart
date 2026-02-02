@@ -127,8 +127,11 @@ final class FoldedFrame {
             when provider.elementId == id:
           return ProviderStatusInFrame.disposed;
         case _:
+          continue;
       }
     }
+
+    return null;
   }
 }
 
@@ -379,9 +382,8 @@ class _FrameTooltip extends StatelessWidget {
               child: Padding(
                 padding: const .symmetric(vertical: 8),
                 child: ProviderList(
-                  onSelected: null,
-                  selectedId: null,
                   shrinkWrap: true,
+                  showOthers: false,
                   originStates: originStates,
                 ),
               ),

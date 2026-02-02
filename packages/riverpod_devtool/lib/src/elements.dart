@@ -30,9 +30,10 @@ Map<internals.ElementId, ElementMeta> computeElementsForFrame(
     switch (event) {
       case ProviderContainerAddEvent():
       case ProviderContainerDisposeEvent():
+      // Unrelated events
+      case ProviderElementDisposeEvent():
+        // We keep the state on purpose
         break;
-      case ProviderElementDisposeEvent(:final provider):
-        state.remove(provider.elementId);
       case ProviderElementAddEvent(
         state: final currentState,
         :final provider,
