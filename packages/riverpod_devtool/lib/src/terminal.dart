@@ -1,4 +1,3 @@
-import 'package:devtools_app_shared/service.dart';
 import 'package:devtools_app_shared/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/experimental/mutation.dart';
