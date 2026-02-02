@@ -257,35 +257,101 @@ class FrameStepper extends HookConsumerWidget {
     final controller = useScrollController();
     final frames = ref.watch(framesProvider);
 
+    void select(FrameId frame) {
+      onSelect(frame);
+
+      // Scroll to selected frame
+      final framesValue = frames.value;
+      if (framesValue == null) return;
+
+      final index = framesValue.indexWhere((f) => f.id == frame);
+      if (index == -1) return;
+
+      final offset = index * 30.0; // itemExtent
+
+      final viewport = controller.position.viewportDimension;
+      final currentOffset = controller.offset;
+
+      if (offset < currentOffset) {
+        controller.animateTo(
+          offset,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+        );
+      } else if (offset + 30.0 > currentOffset + viewport) {
+        controller.animateTo(
+          offset - viewport + 30.0,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+        );
+      }
+    }
+
     switch (frames) {
       case AsyncValue(:final value?):
+        final currentIndex = value.indexOf(selectedFrame!);
+        final canGoFirst = currentIndex > 0;
+        final canGoPrevious = currentIndex > 0;
+        final canGoNext = currentIndex < value.length - 1;
+        final canGoLast = currentIndex < value.length - 1;
+
         return SizedBox(
           height: _stepperHeight,
-          child: Scrollbar(
-            controller: controller,
-            child: ListView.builder(
-              primary: false,
-              shrinkWrap: true,
-              controller: controller,
-              itemCount: value.length,
-              scrollDirection: Axis.horizontal,
-              itemExtent: 30,
-              itemBuilder: (context, index) {
-                final frame = value[index];
+          child: Row(
+            mainAxisAlignment: .center,
+            children: [
+              _NavigationButton(
+                icon: Icons.first_page,
+                tooltip: 'First frame',
+                onPressed: canGoFirst ? () => select(value.first.id) : null,
+              ),
+              _NavigationButton(
+                icon: Icons.chevron_left,
+                tooltip: 'Previous frame',
+                onPressed: canGoPrevious
+                    ? () => select(value[currentIndex - 1].id)
+                    : null,
+              ),
+              Flexible(
+                child: Scrollbar(
+                  child: ListView.builder(
+                    primary: false,
+                    shrinkWrap: true,
+                    controller: controller,
+                    itemCount: value.length,
+                    scrollDirection: Axis.horizontal,
+                    itemExtent: 30,
+                    itemBuilder: (context, index) {
+                      final frame = value[index];
 
-                return _FrameStep(
-                  frame: frame,
-                  isSelected: frame == selectedFrame,
-                  status: switch (selectedElement) {
-                    null => null,
-                    final element => frame.statusOf(
-                      element.element.provider.elementId,
-                    ),
-                  },
-                  onTap: () => onSelect(frame.id),
-                );
-              },
-            ),
+                      return _FrameStep(
+                        frame: frame,
+                        isSelected: frame == selectedFrame,
+                        status: switch (selectedElement) {
+                          null => null,
+                          final element => frame.statusOf(
+                            element.element.provider.elementId,
+                          ),
+                        },
+                        onTap: () => select(frame.id),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              _NavigationButton(
+                icon: Icons.chevron_right,
+                tooltip: 'Next frame',
+                onPressed: canGoNext
+                    ? () => select(value[currentIndex + 1].id)
+                    : null,
+              ),
+              _NavigationButton(
+                icon: Icons.last_page,
+                tooltip: 'Last frame',
+                onPressed: canGoLast ? () => select(value.last.id) : null,
+              ),
+            ],
           ),
         );
       case AsyncValue(error: != null):
@@ -443,6 +509,31 @@ class _Circle extends StatelessWidget {
         border: border,
         color: color,
       ),
+    );
+  }
+}
+
+class _NavigationButton extends StatelessWidget {
+  const _NavigationButton({
+    super.key,
+    required this.icon,
+    required this.tooltip,
+    required this.onPressed,
+  });
+
+  final IconData icon;
+  final String tooltip;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(icon),
+      tooltip: tooltip,
+      onPressed: onPressed,
+      iconSize: 20,
+      padding: const EdgeInsets.all(4),
+      constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
     );
   }
 }
