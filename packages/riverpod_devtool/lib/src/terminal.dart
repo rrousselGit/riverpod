@@ -1,9 +1,11 @@
+import 'package:devtools_app_shared/service.dart';
 import 'package:devtools_app_shared/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/experimental/mutation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:vm_service/vm_service.dart';
 
+import 'object.dart';
 import 'state_inspector/inspector.dart';
 import 'ui_primitives/borderless_text_field.dart';
 import 'vm_service.dart';
@@ -22,6 +24,8 @@ class Terminal extends ConsumerStatefulWidget {
 
 class _TerminalState extends ConsumerState<Terminal> {
   final List<({String code, Byte<RootCachedObject> byte})> history = [];
+  final _terminalFocusNode = FocusNode();
+  final _terminalController = TextEditingController();
 
   final _disposable = Disposable();
   late final ProviderSubscription<Future<EvalFactory>> _eval;
@@ -34,6 +38,8 @@ class _TerminalState extends ConsumerState<Terminal> {
 
   @override
   void dispose() {
+    _terminalController.dispose();
+    _terminalFocusNode.dispose();
     final eval = _eval.read();
 
     // TODO wait for pending requests to complete, to avoid race condition on the delete loop?
@@ -51,6 +57,7 @@ class _TerminalState extends ConsumerState<Terminal> {
     super.dispose();
   }
 
+  // 344678928
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -95,31 +102,44 @@ class _TerminalState extends ConsumerState<Terminal> {
         ),
         const Divider(height: 1),
         BorderlessTextField(
+          controller: _terminalController,
+          focusNode: _terminalFocusNode,
           hintText: r'$notifier.state = 21',
-          onSubmitted: (code) {
-            final trim = code.trim();
-            if (trim.isEmpty) return;
+          onEditingComplete: () {
+            final code = _terminalController.text.trim();
+            _terminalController.clear();
+
+            if (code.isEmpty) return;
 
             _submit.run(ref, (tsx) async {
               final evalFactory = await tsx.get(evalProvider.future);
 
               Byte<RootCachedObject> result;
-              final state = await widget.state.readRef(
+              final stateFuture = widget.state.readRef(
                 evalFactory,
                 _disposable,
               );
-              final notifier = await widget.notifier?.readRef(
+              final notifierFuture = widget.notifier?.readRef(
                 evalFactory,
                 _disposable,
+              );
+              final previousFuture = history.firstOrNull?.byte.let(
+                (byte) => byte.valueOrNull?.readRef(evalFactory, _disposable),
               );
 
-              switch ((state, notifier)) {
-                case (ByteError(:final error), _):
-                case (_, ByteError(:final error)):
+              final state = await stateFuture;
+              final notifier = await notifierFuture;
+              final previous = await previousFuture;
+
+              switch ((state, notifier, previous)) {
+                case (ByteError(:final error), _, _):
+                case (_, ByteError(:final error), _):
+                case (_, _, ByteError(:final error)):
                   result = ByteError(error);
                 case (
                   ByteVariable(instance: final state),
                   final ByteVariable<InstanceRef>? notifier,
+                  final ByteVariable<InstanceRef>? previous,
                 ):
                   final eval =
                       evalFactory.forRef(state) ?? evalFactory.dartCore;
@@ -128,15 +148,15 @@ class _TerminalState extends ConsumerState<Terminal> {
                     code,
                     eval,
                     isAlive: _disposable,
-                    // TODO maybe support $previous to refer to the last terminal result
                     scope: {
                       r'$state': ?state.id,
                       r'$notifier': ?notifier?.instance.id,
+                      r'$previous': ?previous?.instance.id,
                     },
                   );
               }
 
-              setState(() => history.insert(0, (code: trim, byte: result)));
+              setState(() => history.insert(0, (code: code, byte: result)));
             });
           },
           prefixIcon: const Icon(Icons.chevron_right),
@@ -174,7 +194,16 @@ class _TerminalHelp extends StatelessWidget {
           ),
           TextSpan(
             text:
-                ': direct state access\n\n'
+                ': direct state access\n'
+                '- ',
+          ),
+          TextSpan(
+            text: r'$previous',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+          TextSpan(
+            text:
+                ': the last value from history\n\n'
                 'Only types/variables that are accessible to the Notifier/Provider can be used here.',
           ),
         ],

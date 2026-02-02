@@ -21,6 +21,9 @@ final class BorderlessTextField extends StatelessWidget {
     this.autofocus = false,
     this.enabled,
     this.roundedBorder = false,
+    this.focusNode,
+    this.onEditingComplete,
+    this.textInputAction,
   }) : controller = controller ?? TextEditingController();
 
   final TextEditingController controller;
@@ -30,9 +33,12 @@ final class BorderlessTextField extends StatelessWidget {
   final String? labelText;
   final void Function(String)? onChanged;
   final void Function(String)? onSubmitted;
+  final void Function()? onEditingComplete;
+  final TextInputAction? textInputAction;
   final bool autofocus;
   final bool? enabled;
   final bool roundedBorder;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +46,9 @@ final class BorderlessTextField extends StatelessWidget {
     return SizedBox(
       height: defaultTextFieldHeight + densePadding,
       child: TextField(
+        onEditingComplete: onEditingComplete,
+        textInputAction: textInputAction,
+        focusNode: focusNode,
         textAlignVertical: TextAlignVertical.center,
         cursorHeight: defaultTextFieldHeight / 2,
         autofocus: autofocus,
