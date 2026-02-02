@@ -138,12 +138,10 @@ class _TerminalState extends ConsumerState<Terminal> {
                   );
               }
 
-              setState(() {
-                if (result case ByteVariable<RootCachedObject>(:final instance)) {
-                  _previousResultId = instance.id.value;
-                }
-                history.insert(0, (code: trim, byte: result));
-              });
+              if (result case ByteVariable<RootCachedObject>(:final instance)) {
+                _previousResultId = instance.id.value;
+              }
+              setState(() => history.insert(0, (code: trim, byte: result)));
             });
           },
           prefixIcon: const Icon(Icons.chevron_right),
