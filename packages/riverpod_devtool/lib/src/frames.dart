@@ -12,8 +12,14 @@ import 'package:vm_service/vm_service.dart' hide Frame;
 
 import 'collection.dart';
 import 'elements.dart';
+import 'frame_view.dart';
+import 'provider_list.dart';
+import 'providers/providers.dart';
 import 'riverpod.dart';
+import 'ui_primitives/panel.dart';
 import 'vm_service.dart';
+
+enum ProviderStatusInFrame { added, modified, disposed }
 
 extension type FrameId(int value) {}
 
@@ -107,6 +113,23 @@ final class FoldedFrame {
   final FoldedFrame? previous;
 
   late final elements = computeElementsForFrame(this);
+
+  ProviderStatusInFrame? statusOf(internals.ElementId id) {
+    for (final event in frame.events) {
+      switch (event) {
+        case ProviderElementAddEvent(:final provider)
+            when provider.elementId == id:
+          return ProviderStatusInFrame.added;
+        case ProviderElementUpdateEvent(:final provider)
+            when provider.elementId == id:
+          return ProviderStatusInFrame.modified;
+        case ProviderElementDisposeEvent(:final provider)
+            when provider.elementId == id:
+          return ProviderStatusInFrame.disposed;
+        case _:
+      }
+    }
+  }
 }
 
 class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
@@ -218,14 +241,14 @@ class FrameStepper extends HookConsumerWidget {
     super.key,
     required this.onSelect,
     required this.selectedFrame,
-    required this.selectedElementId,
+    required this.selectedElement,
   });
 
   static const _stepperHeight = 50.0;
 
   final void Function(FrameId frame) onSelect;
   final FoldedFrame? selectedFrame;
-  final internals.ElementId? selectedElementId;
+  final FilteredElement? selectedElement;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -251,6 +274,12 @@ class FrameStepper extends HookConsumerWidget {
                 return _FrameStep(
                   frame: frame,
                   isSelected: frame == selectedFrame,
+                  status: switch (selectedElement) {
+                    null => null,
+                    final element => frame.statusOf(
+                      element.element.provider.elementId,
+                    ),
+                  },
                   onTap: () => onSelect(frame.id),
                 );
               },
@@ -280,32 +309,138 @@ class _FrameStep extends StatelessWidget {
     required this.frame,
     required this.isSelected,
     required this.onTap,
+    required this.status,
   });
 
   final FoldedFrame frame;
   final bool isSelected;
+  final ProviderStatusInFrame? status;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final borderColor = isSelected
+        ? theme.colorScheme.primary
+        : theme.colorScheme.secondary;
 
-    final size = isSelected ? 20.0 : 15.0;
+    const borderWidth = 3.0;
+    final size = isSelected ? 20.0 + borderWidth * 2 : 15.0;
+
+    final color = switch (status) {
+      ProviderStatusInFrame.added ||
+      ProviderStatusInFrame.modified => theme.colorScheme.primary,
+      ProviderStatusInFrame.disposed => Colors.red,
+      null => theme.colorScheme.onSurface.withOpacity(0.5),
+    };
 
     return GestureDetector(
       onTap: onTap,
       child: Center(
-        child: Container(
-          width: size,
-          height: size,
-          margin: const EdgeInsets.symmetric(horizontal: 5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(size * 2),
-            color: isSelected
-                ? theme.colorScheme.primary
-                : theme.colorScheme.secondary,
+        child: _FrameTooltip(
+          frame: frame,
+          child: _Circle(
+            size: size,
+            color: color,
+            border: isSelected
+                ? .all(color: borderColor, width: borderWidth)
+                : null,
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _FrameTooltip extends StatelessWidget {
+  const _FrameTooltip({super.key, required this.child, required this.frame});
+
+  final Widget child;
+  final FoldedFrame frame;
+
+  @override
+  Widget build(BuildContext context) {
+    return RawTooltip(
+      positionDelegate: (position) {
+        return Offset(
+          math.max(position.target.dx - position.tooltipSize.width / 2, 10),
+          math.max(position.target.dy - position.tooltipSize.height - 20, 10),
+        );
+      },
+      semanticsTooltip: null,
+      tooltipBuilder: (context, animation) {
+        return HookConsumer(
+          builder: (context, ref, _) {
+            final originStates = ref.watch(
+              filteredProvidersProvider((search: '', frame: frame.id)),
+            );
+
+            return _FrameTooltipBody(
+              child: Padding(
+                padding: const .symmetric(vertical: 8),
+                child: ProviderList(
+                  onSelected: null,
+                  selectedId: null,
+                  shrinkWrap: true,
+                  originStates: originStates,
+                ),
+              ),
+            );
+          },
+        );
+      },
+      child: child,
+    );
+  }
+}
+
+class _FrameTooltipBody extends StatelessWidget {
+  const _FrameTooltipBody({super.key, required this.child});
+
+  final Widget child;
+  @override
+  Widget build(BuildContext context) {
+    const borderRadius = BorderRadius.all(Radius.circular(5));
+
+    return ConstrainedBox(
+      constraints: const .new(maxWidth: 400, maxHeight: 600),
+      child: Material(
+        elevation: 4,
+        borderRadius: borderRadius,
+        clipBehavior: .hardEdge,
+        child: Container(
+          foregroundDecoration: BoxDecoration(
+            borderRadius: borderRadius,
+            border: .all(color: Theme.of(context).panelBorderColor, width: 1),
+          ),
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
+class _Circle extends StatelessWidget {
+  const _Circle({
+    super.key,
+    required this.size,
+    required this.color,
+    this.border,
+  });
+
+  final double size;
+  final Color color;
+  final Border? border;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(size * 2),
+        border: border,
+        color: color,
       ),
     );
   }

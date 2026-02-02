@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -59,23 +61,20 @@ class _HomeState extends ConsumerState<Home> {
       body: Column(
         children: [
           Text('${ref.watch(counterProvider)}'),
-          Opacity(
-            opacity: 0.01,
-            child: Column(
-              children: [
-                if (show) ProviderScope(child: Container(color: Colors.red)),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() => show = !show);
-                  },
-                  child: Text(show ? 'Hide' : 'Show'),
-                ),
-                Text(ref.watch(complexProvider).nbr.toString()),
-                Text(ref.watch(fam(42)).toString()),
-                Text(ref.watch(fam(21)).toString()),
-                Text(ref.watch(booleanProvider).toString()),
-              ],
-            ),
+            Column(
+            children: [
+              if (show) ...[Text(ref.watch(autoDisposeProvider).toString())],
+              ElevatedButton(
+                onPressed: () {
+                  setState(() => show = !show);
+                },
+                child: Text(show ? 'Hide' : 'Show'),
+              ),
+              Text(ref.watch(complexProvider).nbr.toString()),
+              Text(ref.watch(fam(42)).toString()),
+              Text(ref.watch(fam(21)).toString()),
+              Text(ref.watch(booleanProvider).toString()),
+            ],
           ),
         ],
       ),
@@ -87,6 +86,12 @@ class _HomeState extends ConsumerState<Home> {
     );
   }
 }
+
+final _random = Random();
+final autoDisposeProvider = Provider.autoDispose<String>(
+  name: 'autoDisposeProvider',
+  (ref) => 'Random value: ${_random.nextInt(10000)}',
+);
 
 final complexProvider = Provider<Complex>((ref) {
   return Complex(ref.watch(counterProvider) * 2);

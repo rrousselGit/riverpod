@@ -9,6 +9,27 @@ import '../riverpod.dart';
 import '../search/fuzzy_match.dart';
 import '../vm_service.dart';
 
+final selectedProviderProvider = Provider.family
+    .autoDispose<FilteredElement?, String>((ref, search) {
+      final selectedId = ref.watch(selectedProviderIdProvider(search));
+      if (selectedId == null) return null;
+      final filteredProviders = ref.watch(
+        filteredProvidersForCurrentFrameProvider(search),
+      );
+
+      final selected = filteredProviders.values
+          .expand((e) => e.elements)
+          .where((e) => e.isSelected(selectedId))
+          .firstOrNull;
+      if (selected == null) {
+        throw StateError(
+          'Selected provider id $selectedId not found in filtered providers for search "$search".',
+        );
+      }
+
+      return selected;
+    });
+
 final selectedProviderIdProvider = NotifierProvider.autoDispose
     .family<StateNotifier<internals.ElementId?>, internals.ElementId?, String>(
       name: 'selectedProviderIdProvider',
@@ -16,34 +37,35 @@ final selectedProviderIdProvider = NotifierProvider.autoDispose
         // Clear selected provider on hot-restart, due to frames being cleared too
         ref.watch(hotRestartEventProvider);
 
-        ref.listen(filteredProvidersProvider(search), fireImmediately: true, (
-          previous,
-          next,
-        ) {
-          late final wasLastSelectedProvider =
-              previous?.values
-                  .expand((e) => e.elements)
-                  .where((e) => e.isSelected(self.state))
-                  .firstOrNull !=
-              null;
-          late final newProvidersContainId =
-              next.values
-                  .expand((e) => e.elements)
-                  .where((e) => e.isSelected(self.state))
-                  .firstOrNull !=
-              null;
+        ref.listen(
+          filteredProvidersForCurrentFrameProvider(search),
+          fireImmediately: true,
+          (previous, next) {
+            late final wasLastSelectedProvider =
+                previous?.values
+                    .expand((e) => e.elements)
+                    .where((e) => e.isSelected(self.state))
+                    .firstOrNull !=
+                null;
+            late final newProvidersContainId =
+                next.values
+                    .expand((e) => e.elements)
+                    .where((e) => e.isSelected(self.state))
+                    .firstOrNull !=
+                null;
 
-          if (self.stateOrNull == null ||
-              wasLastSelectedProvider ||
-              !newProvidersContainId) {
-            self.state = next.values
-                .expand((e) => e.elements)
-                .firstOrNull
-                ?.element
-                .provider
-                .elementId;
-          }
-        });
+            if (self.stateOrNull == null ||
+                wasLastSelectedProvider ||
+                !newProvidersContainId) {
+              self.state = next.values
+                  .expand((e) => e.elements)
+                  .firstOrNull
+                  ?.element
+                  .provider
+                  .elementId;
+            }
+          },
+        );
 
         return self.stateOrNull;
       }),
@@ -64,24 +86,29 @@ class AllDiscoveredOriginsNotifier extends Notifier<Set<internals.OriginId>> {
     ref.listen(framesProvider, fireImmediately: true, (previous, next) {
       if (next.isLoading) return;
 
+      final setBuilder = SetBuilder<internals.OriginId>(state);
+
       final frames = next.value ?? const [];
 
-      frames.forEach(_handleFrame);
+      for (final frame in frames) {
+        _handleFrame(frame, setBuilder);
+      }
+
+      state = setBuilder.build();
     });
 
     return state;
   }
 
-  void _handleFrame(FoldedFrame frame) {
-    final setBuilder = SetBuilder<internals.OriginId>(state);
-
+  void _handleFrame(
+    FoldedFrame frame,
+    SetBuilder<internals.OriginId> setBuilder,
+  ) {
     for (final event in frame.frame.events) {
       if (event case ProviderElementAddEvent(:final provider)) {
-        state.add(provider.origin.id);
+        setBuilder.add(provider.origin.id);
       }
     }
-
-    state = setBuilder.build();
   }
 }
 
@@ -111,8 +138,20 @@ class AccumulatedFilter {
   final List<FilteredElement> elements = [];
 }
 
-final filteredProvidersProvider = Provider.autoDispose
+final filteredProvidersForCurrentFrameProvider = Provider.autoDispose
     .family<OriginStates, String>((ref, text) {
+      final selectedFrame = ref.watch(selectedFrameProvider);
+
+      if (selectedFrame == null) return {};
+
+      return ref.watch(
+        filteredProvidersProvider((search: text, frame: selectedFrame.id)),
+      );
+    });
+
+final filteredProvidersProvider = Provider.autoDispose
+    .family<OriginStates, ({String search, FrameId? frame})>((ref, args) {
+      final (:search, :frame) = args;
       final selectedFrame = ref.watch(selectedFrameProvider);
 
       if (selectedFrame == null) return {};
@@ -134,9 +173,9 @@ final filteredProvidersProvider = Provider.autoDispose
         acc._foundCount++;
 
         final originMatch = element.provider.origin.toStringValue.fuzzyMatch(
-          text,
+          search,
         );
-        final argMatch = element.provider.argToStringValue.fuzzyMatch(text);
+        final argMatch = element.provider.argToStringValue.fuzzyMatch(search);
 
         if (!originMatch.didMatch && !argMatch.didMatch) continue;
 
