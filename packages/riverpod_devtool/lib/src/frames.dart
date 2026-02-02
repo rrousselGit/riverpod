@@ -379,7 +379,7 @@ class _FrameTooltip extends StatelessWidget {
 
             return _FrameTooltipBody(
               child: Padding(
-                padding: const .symmetric(vertical: 8),
+                padding: const EdgeInsets.only(bottom: 8),
                 child: ProviderList(
                   shrinkWrap: true,
                   showOthers: false,
