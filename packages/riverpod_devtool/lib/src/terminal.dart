@@ -1,5 +1,8 @@
+import 'dart:math' as math;
+
 import 'package:devtools_app_shared/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/experimental/mutation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:vm_service/vm_service.dart';
@@ -11,6 +14,12 @@ import 'vm_service.dart';
 
 final _submit = Mutation<void>();
 
+extension SelectAll on TextEditingController {
+  void selectAll() {
+    selection = TextSelection(baseOffset: 0, extentOffset: text.length);
+  }
+}
+
 class Terminal extends ConsumerStatefulWidget {
   const Terminal({super.key, required this.state, required this.notifier});
 
@@ -21,9 +30,45 @@ class Terminal extends ConsumerStatefulWidget {
   ConsumerState<Terminal> createState() => _TerminalState();
 }
 
-class _TerminalState extends ConsumerState<Terminal> {
+final class _TerminalState extends ConsumerState<Terminal> {
   final List<({String code, Byte<RootCachedObject> byte})> history = [];
+  int? _historyIndex;
   final _terminalController = TextEditingController();
+  late final _terminalFocusNode = FocusNode(
+    onKeyEvent: (node, event) {
+      // Up/Down to navigate history
+
+      if (event is! KeyUpEvent) return KeyEventResult.ignored;
+      if (event.logicalKey != .arrowDown && event.logicalKey != .arrowUp) {
+        return .ignored;
+      }
+
+      final index = _historyIndex;
+      int? newIndex;
+      switch (event.logicalKey) {
+        case .arrowDown when index == 0:
+          newIndex = null;
+        case .arrowDown when index != null && index >= 1:
+          newIndex = math.max(index - 1, 0);
+        case .arrowUp when index == null && history.isNotEmpty:
+          newIndex = 0;
+        case .arrowUp when index != null:
+          newIndex = math.min(index + 1, history.length - 1);
+      }
+
+      if (newIndex != index) {
+        _historyIndex = newIndex;
+
+        if (newIndex != null) {
+          _terminalController
+            ..text = history[newIndex].code
+            ..selectAll();
+        }
+      }
+
+      return KeyEventResult.handled;
+    },
+  );
 
   final _disposable = Disposable();
   late final ProviderSubscription<Future<EvalFactory>> _eval;
@@ -101,7 +146,9 @@ class _TerminalState extends ConsumerState<Terminal> {
         BorderlessTextField(
           controller: _terminalController,
           hintText: r'$notifier.state = 21',
+          focusNode: _terminalFocusNode,
           onEditingComplete: () {
+            _historyIndex = null;
             final code = _terminalController.text.trim();
             _terminalController.clear();
 
