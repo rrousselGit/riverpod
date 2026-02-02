@@ -22,6 +22,7 @@ class Terminal extends ConsumerStatefulWidget {
 
 class _TerminalState extends ConsumerState<Terminal> {
   final List<({String code, Byte<RootCachedObject> byte})> history = [];
+  String? _previousResultId;
 
   final _disposable = Disposable();
   late final ProviderSubscription<Future<EvalFactory>> _eval;
@@ -128,15 +129,21 @@ class _TerminalState extends ConsumerState<Terminal> {
                     code,
                     eval,
                     isAlive: _disposable,
-                    // TODO maybe support $previous to refer to the last terminal result
                     scope: {
                       r'$state': ?state.id,
                       r'$notifier': ?notifier?.instance.id,
+                      if (_previousResultId != null)
+                        r'$previous': _previousResultId!,
                     },
                   );
               }
 
-              setState(() => history.insert(0, (code: trim, byte: result)));
+              setState(() {
+                if (result case ByteVariable<RootCachedObject>(:final instance)) {
+                  _previousResultId = instance.id.value;
+                }
+                history.insert(0, (code: trim, byte: result));
+              });
             });
           },
           prefixIcon: const Icon(Icons.chevron_right),
@@ -174,7 +181,16 @@ class _TerminalHelp extends StatelessWidget {
           ),
           TextSpan(
             text:
-                ': direct state access\n\n'
+                ': direct state access\n'
+                '- ',
+          ),
+          TextSpan(
+            text: r'$previous',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+          TextSpan(
+            text:
+                ': the result of the last terminal command (if any)\n\n'
                 'Only types/variables that are accessible to the Notifier/Provider can be used here.',
           ),
         ],
