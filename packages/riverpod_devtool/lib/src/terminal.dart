@@ -24,7 +24,6 @@ class Terminal extends ConsumerStatefulWidget {
 
 class _TerminalState extends ConsumerState<Terminal> {
   final List<({String code, Byte<RootCachedObject> byte})> history = [];
-  final _terminalFocusNode = FocusNode();
   final _terminalController = TextEditingController();
 
   final _disposable = Disposable();
@@ -39,7 +38,6 @@ class _TerminalState extends ConsumerState<Terminal> {
   @override
   void dispose() {
     _terminalController.dispose();
-    _terminalFocusNode.dispose();
     final eval = _eval.read();
 
     // TODO wait for pending requests to complete, to avoid race condition on the delete loop?
@@ -103,7 +101,6 @@ class _TerminalState extends ConsumerState<Terminal> {
         const Divider(height: 1),
         BorderlessTextField(
           controller: _terminalController,
-          focusNode: _terminalFocusNode,
           hintText: r'$notifier.state = 21',
           onEditingComplete: () {
             final code = _terminalController.text.trim();
