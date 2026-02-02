@@ -1,10 +1,11 @@
-import 'package:devtools_app_shared/ui.dart' as ui;
 import 'package:devtools_app_shared/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/experimental/mutation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:vm_service/vm_service.dart';
 
 import 'state_inspector/inspector.dart';
+import 'ui_primitives/borderless_text_field.dart';
 import 'vm_service.dart';
 
 final _submit = Mutation<void>();
@@ -13,7 +14,7 @@ class Terminal extends ConsumerStatefulWidget {
   const Terminal({super.key, required this.state, required this.notifier});
 
   final RootCachedObject state;
-  final RootCachedObject notifier;
+  final RootCachedObject? notifier;
 
   @override
   ConsumerState<Terminal> createState() => _TerminalState();
@@ -23,7 +24,13 @@ class _TerminalState extends ConsumerState<Terminal> {
   final List<({String code, Byte<RootCachedObject> byte})> history = [];
 
   final _disposable = Disposable();
-  late final _eval = ref.listenManual(evalProvider.future, (_, _) {});
+  late final ProviderSubscription<Future<EvalFactory>> _eval;
+
+  @override
+  void initState() {
+    super.initState();
+    _eval = ref.listenManual(evalProvider.future, (_, _) {});
+  }
 
   @override
   void dispose() {
@@ -46,11 +53,11 @@ class _TerminalState extends ConsumerState<Terminal> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        children: [
-          Expanded(
+    return Column(
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(8),
             child: CustomScrollView(
               reverse: true,
               slivers: [
@@ -85,47 +92,39 @@ class _TerminalState extends ConsumerState<Terminal> {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: ui.DevToolsClearableTextField(
-              hintText: r'$notifier.state = 21',
-              labelText: 'Terminal',
-              onSubmitted: (code) {
-                final trim = code.trim();
-                if (trim.isEmpty) return;
-    
-                _submit.run(ref, (tsx) async {
-                  // TODO use library from selected provider
-                  final evalFactory = await tsx.get(evalProvider.future);
-    
-                  Byte<RootCachedObject> result;
-                  final state = await widget.state.readRef(
-                    evalFactory,
-                    _disposable,
-                  );
-                  final notifier = await widget.notifier.readRef(
-                    evalFactory,
-                    _disposable,
-                  );
-                  switch (state) {
-                    case ByteError(:final error):
-                      result = ByteError(error);
-                      return;
-                    case ByteVariable():
-                      break;
-                  }
-                  switch (notifier) {
-                    case ByteError(:final error):
-                      result = ByteError(error);
-                      return;
-                    case ByteVariable():
-                      break;
-                  }
-    
+        ),
+        const Divider(height: 1),
+        BorderlessTextField(
+          hintText: r'$notifier.state = 21',
+          onSubmitted: (code) {
+            final trim = code.trim();
+            if (trim.isEmpty) return;
+
+            _submit.run(ref, (tsx) async {
+              // TODO use library from selected provider
+              final evalFactory = await tsx.get(evalProvider.future);
+
+              Byte<RootCachedObject> result;
+              final state = await widget.state.readRef(
+                evalFactory,
+                _disposable,
+              );
+              final notifier = await widget.notifier?.readRef(
+                evalFactory,
+                _disposable,
+              );
+
+              switch ((state, notifier)) {
+                case (ByteError(:final error), _):
+                case (_, ByteError(:final error)):
+                  result = ByteError(error);
+                case (
+                  ByteVariable(instance: final state),
+                  final ByteVariable<InstanceRef>? notifier,
+                ):
                   final eval =
-                      evalFactory.forRef(state.instance) ??
-                      evalFactory.dartCore;
-    
+                      evalFactory.forRef(state) ?? evalFactory.dartCore;
+
                   result = await RootCachedObject.create(
                     code,
                     eval,
@@ -133,21 +132,19 @@ class _TerminalState extends ConsumerState<Terminal> {
                     // TODO scope to expose $notifier and $state
                     // TODO maybe support $previous to refer to the last terminal result
                     scope: {
-                      r'$state': ?state.instance.id,
-                      r'$notifier': ?notifier.instance.id,
+                      r'$state': ?state.id,
+                      r'$notifier': ?notifier?.instance.id,
                     },
                   );
-    
-                  setState(
-                    () => history.insert(0, (code: trim, byte: result)),
-                  );
-                });
-              },
-              additionalSuffixActions: const [_TerminalHelp()],
-            ),
-          ),
-        ],
-      ),
+              }
+
+              setState(() => history.insert(0, (code: trim, byte: result)));
+            });
+          },
+          prefixIcon: const Icon(Icons.chevron_right),
+          additionalSuffixActions: const [_TerminalHelp()],
+        ),
+      ],
     );
   }
 }

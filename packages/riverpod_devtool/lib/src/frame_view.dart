@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:devtools_app_shared/ui.dart';
+import 'package:devtools_app_shared/ui.dart' as devtools_shared_ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -8,8 +9,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/src/internals.dart' as internals;
 import 'package:stack_trace/stack_trace.dart';
 
+import 'elements.dart';
 import 'frames.dart';
 import 'ide.dart';
+import 'object.dart';
 import 'provider_list.dart';
 import 'providers/providers.dart';
 import 'state_inspector/inspector.dart';
@@ -74,7 +77,9 @@ class _FrameViewer extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final search = useValueListenable(searchController);
-    final originStates = ref.watch(filteredProvidersForCurrentFrameProvider(search.text));
+    final originStates = ref.watch(
+      filteredProvidersForCurrentFrameProvider(search.text),
+    );
     final selected = ref.watch(selectedProviderProvider(search.text));
     final selectedNotifier = ref.watch(
       selectedProviderIdProvider(search.text).notifier,
@@ -103,10 +108,7 @@ class _FrameViewer extends HookConsumerWidget {
         ),
 
         if (selected case final selected?)
-          ProviderViewer(
-            state: selected.element.state.state,
-            notifier: selected.element.notifier.state,
-          )
+          ProviderViewer(element: selected.element)
         else
           const Panel(child: Text('No provider selected')),
       ],
@@ -121,35 +123,78 @@ extension DevtoolTheme on ThemeData {
 const dividerHeight = 16.0;
 
 class ProviderViewer extends StatelessWidget {
-  const ProviderViewer({
-    super.key,
-    required this.state,
-    required this.notifier,
-  });
+  const ProviderViewer({super.key, required this.element});
 
-  final RootCachedObject state;
-  final RootCachedObject notifier;
+  final ElementMeta element;
 
   @override
   Widget build(BuildContext context) {
+    const terminalMinSize = 60.0;
+    const stateMinSize = 50.0;
+
+    final state = (
+      minSize: stateMinSize,
+      fraction: element.notifier == null ? .8 : .6,
+      content: Column(
+        spacing: denseRowSpacing,
+        children: [
+          const devtools_shared_ui.AreaPaneHeader(
+            roundedTopBorder: false,
+            includeTopBorder: false,
+            title: Text('State'),
+          ),
+          Expanded(child: Inspector(object: element.state.state)),
+        ],
+      ),
+    );
+
+    final notifier = element.notifier.let((notifier) {
+      return (
+        minSize: stateMinSize,
+        fraction: .2,
+        heading: const PreferredSize(
+          preferredSize: Size(0, 28),
+          child: devtools_shared_ui.AreaPaneHeader(
+            roundedTopBorder: false,
+            title: Text('Notifier'),
+          ),
+        ),
+        content: Padding(
+          padding: const .symmetric(vertical: 8),
+          child: Inspector(object: notifier.state),
+        ),
+      );
+    });
+
+    final terminal = (
+      minSize: terminalMinSize,
+      fraction: .2,
+      heading: const PreferredSize(
+        preferredSize: Size(0, 28),
+        child: devtools_shared_ui.AreaPaneHeader(
+          roundedTopBorder: false,
+          title: Text('Terminal'),
+        ),
+      ),
+      content: Terminal(
+        state: element.state.state,
+        notifier: element.notifier?.state,
+      ),
+    );
+
     return Panel(
       child: SplitPane(
+        // TODO remove key, Blocked by: https://github.com/flutter/devtools/issues/9648
+        key: ValueKey(notifier != null),
         axis: .vertical,
-        initialFractions: const [0.8, 0.2],
-        minSizes: const [50, 60],
-        splitters: [
-          PreferredSize(
-            preferredSize: const Size(0, dividerHeight),
-            child: Divider(color: Theme.of(context).panelBorderColor),
-          ),
+        initialFractions: [
+          state.fraction,
+          ?notifier?.fraction,
+          terminal.fraction,
         ],
-        children: [
-          Padding(
-            padding: const .symmetric(vertical: 8),
-            child: Inspector(object: state),
-          ),
-          Terminal(state: state, notifier: notifier),
-        ],
+        minSizes: [state.minSize, ?notifier?.minSize, terminal.minSize],
+        splitters: [if (notifier != null) notifier.heading, terminal.heading],
+        children: [state.content, ?notifier?.content, terminal.content],
       ),
     );
   }

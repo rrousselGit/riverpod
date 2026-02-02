@@ -15,6 +15,29 @@ void openInIDE({required String uri, required int line, required int column}) {
   });
 }
 
+String? _stringForStackTrace(StackTrace? stackTrace) {
+  if (stackTrace == null) return null;
+
+  const _riverpodPackages = {
+    'riverpod',
+    'hooks_riverpod',
+    'flutter_riverpod',
+    'riverpod_generator',
+  };
+
+  final trace = Trace.from(stackTrace);
+  final firstNonRiverpodFrame =
+      trace.frames
+          .where(
+            (frame) =>
+                !_riverpodPackages.contains(frame.package) &&
+                !frame.uri.path.endsWith('.g.dart'),
+          )
+          .firstOrNull;
+
+  return firstNonRiverpodFrame?.toString();
+}
+
 @internal
 class RiverpodDevtool {
   RiverpodDevtool._();
@@ -41,7 +64,7 @@ class RiverpodDevtool {
     if (_pendingFrame == null) {
       final newFrame = _pendingFrame = Frame();
 
-      void onEvent() {
+      void onFrame() {
         frames.add(newFrame);
         newFrame.index = frames.length - 1;
         _pendingFrame = null;
@@ -50,7 +73,7 @@ class RiverpodDevtool {
         debugPostEvent(notification);
       }
 
-      container.scheduler.debugScheduleFrame(onEvent);
+      container.scheduler.debugScheduleFrame(onFrame);
     }
 
     _pendingFrame!.events.add(event);
@@ -160,7 +183,9 @@ final class ProviderMeta {
       element: element,
       elementId: element._debugId,
       containerHashValue: shortHash(element.container),
-      creationStackTrace: provider._debugCreationStackTrace?.toString(),
+      creationStackTrace: _stringForStackTrace(
+        provider._debugCreationStackTrace,
+      ),
     );
   }
 
@@ -195,9 +220,9 @@ final class OriginMeta {
       toStringValue: provider.name ?? provider.runtimeType.toString(),
       hashValue: shortHash(provider.from ?? provider),
       isFamily: provider.from != null,
-      creationStackTrace:
-          (element.origin.from ?? element.origin)._debugCreationStackTrace
-              ?.toString(),
+      creationStackTrace: _stringForStackTrace(
+        (element.origin.from ?? element.origin)._debugCreationStackTrace,
+      ),
     );
   }
 
@@ -242,7 +267,7 @@ final class ProviderElementAddEvent extends Event {
 
   final ProviderMeta provider;
   final ProviderStateRef state;
-  final ProviderStateRef notifier;
+  final ProviderStateRef? notifier;
 }
 
 @devtool
@@ -258,12 +283,12 @@ final class ProviderElementDisposeEvent extends Event {
 @internal
 final class ProviderStateRef {
   ProviderStateRef({required this.state});
-  factory ProviderStateRef.notifier(ProviderElement element) {
+  static ProviderStateRef? notifier(ProviderElement element) {
     return switch (element) {
       $ClassProviderElement() => ProviderStateRef(
         state: element.classListenable.result?.value,
       ),
-      _ => ProviderStateRef(state: null),
+      _ => null,
     };
   }
 
@@ -280,7 +305,7 @@ final class ProviderElementUpdateEvent extends Event {
 
   final ProviderMeta provider;
   final ProviderStateRef next;
-  final ProviderStateRef notifier;
+  final ProviderStateRef? notifier;
 }
 
 final class _DevtoolObserver extends ProviderObserver {

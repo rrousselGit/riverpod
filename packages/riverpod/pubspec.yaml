@@ -24,6 +24,7 @@ dependencies:
   clock: ^1.1.1
   collection: ^1.18.0
   meta: ^1.15.0
+  stack_trace: ^1.12.1
   state_notifier: ">=0.7.2 <2.0.0"
   test: ^1.0.0
   uuid: ^4.5.1

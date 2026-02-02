@@ -251,8 +251,6 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
       itemBuilder: (context, index) {
         return Consumer(
           builder: (context, ref, child) {
-            final eval = ref.watch(evalProvider.future);
-
             final node = widget.reversed
                 ? nodes[nodes.length - 1 - index]
                 : nodes[index];

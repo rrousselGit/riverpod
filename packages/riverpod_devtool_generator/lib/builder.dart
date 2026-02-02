@@ -78,7 +78,7 @@ switch (that) {
             } else {
               final res = _varName('res');
               buffer.write(
-                "final $res = <String, Object?>{'\$path._type': '${clazz.name}'};\n",
+                "final $res = <String, Object?>{'\$path': '${clazz.name}'};\n",
               );
 
               for (final field in clazz.fields) {
@@ -148,7 +148,7 @@ sealed class ${root.name} {
   ${root.name}();
 
   factory ${root.name}.from(Map<String, InstanceRef> events, {required String path}) {
-    final type = events['\$path._type']?.valueAsString;
+    final type = events['\$path']?.valueAsString;
 
     switch (type) {
       #{{case}}
@@ -512,20 +512,45 @@ final class _OtherDevtoolType extends _BuiltInType {
 
   final DartType type;
 
-  @override
-  String typeCode() => type.element!.name!;
+  bool get isNullable => type.nullabilitySuffix == NullabilitySuffix.question;
 
   @override
-  String decodeBytes({required String mapSymbol, required String path}) =>
-      "${type.element!.name!}.from($mapSymbol, path: '$path')";
+  String typeCode() => '${type.element!.name!}${isNullable ? '?' : ''}';
+
+  @override
+  String decodeBytes({required String mapSymbol, required String path}) {
+    if (isNullable) {
+      final name = _varName('result');
+      return '''
+() {
+  final $name = $mapSymbol['$path'];
+  if ($name == null) return null;
+  return ${type.element!.name!}.from($mapSymbol, path: '$path');
+}()
+''';
+    }
+
+    return "${type.element!.name!}.from($mapSymbol, path: '$path')";
+  }
 
   @override
   String appendEncodedValueCode({
     required String mapSymbol,
     required String valueSymbol,
     required String path,
-  }) =>
-      "$mapSymbol.addAll(${type.element!.name}ToBytes($valueSymbol).toBytes(path: '$path'));";
+  }) {
+    if (isNullable) {
+      final name = _varName('result');
+      return '''
+        final $name = $valueSymbol;
+        if ($name != null) {
+          $mapSymbol.addAll(${type.element!.name}ToBytes($name).toBytes(path: '$path'));
+        }
+      ''';
+    }
+
+    return "$mapSymbol.addAll(${type.element!.name}ToBytes($valueSymbol).toBytes(path: '$path'));";
+  }
 }
 
 final class _UnknownType extends _BuiltInType {

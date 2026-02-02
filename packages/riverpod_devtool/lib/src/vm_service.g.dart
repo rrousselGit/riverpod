@@ -12,7 +12,7 @@ sealed class Event {
   Event();
 
   factory Event.from(Map<String, InstanceRef> events, {required String path}) {
-    final type = events['$path._type']?.valueAsString;
+    final type = events['$path']?.valueAsString;
 
     switch (type) {
       case 'ProviderContainerAddEvent':
@@ -258,7 +258,11 @@ class ProviderElementAddEvent extends Event {
 
     final provider = ProviderMeta.from($events, path: '$path.provider');
     final state = ProviderStateRef.from($events, path: '$path.state');
-    final notifier = ProviderStateRef.from($events, path: '$path.notifier');
+    final notifier = () {
+      final result0 = $events['$path.notifier'];
+      if (result0 == null) return null;
+      return ProviderStateRef.from($events, path: '$path.notifier');
+    }();
 
     return ProviderElementAddEvent(
       provider: provider,
@@ -269,7 +273,7 @@ class ProviderElementAddEvent extends Event {
 
   final ProviderMeta provider;
   final ProviderStateRef state;
-  final ProviderStateRef notifier;
+  final ProviderStateRef? notifier;
 }
 
 /// Devtool code for [internals.ProviderElementDisposeEvent]
@@ -326,7 +330,11 @@ class ProviderElementUpdateEvent extends Event {
 
     final provider = ProviderMeta.from($events, path: '$path.provider');
     final next = ProviderStateRef.from($events, path: '$path.next');
-    final notifier = ProviderStateRef.from($events, path: '$path.notifier');
+    final notifier = () {
+      final result1 = $events['$path.notifier'];
+      if (result1 == null) return null;
+      return ProviderStateRef.from($events, path: '$path.notifier');
+    }();
 
     return ProviderElementUpdateEvent(
       provider: provider,
@@ -337,5 +345,5 @@ class ProviderElementUpdateEvent extends Event {
 
   final ProviderMeta provider;
   final ProviderStateRef next;
-  final ProviderStateRef notifier;
+  final ProviderStateRef? notifier;
 }

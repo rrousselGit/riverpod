@@ -16,7 +16,7 @@ class ElementMeta {
 
   final ProviderMeta provider;
   final ProviderStateRef state;
-  final ProviderStateRef notifier;
+  final ProviderStateRef? notifier;
 }
 
 Map<internals.ElementId, ElementMeta> computeElementsForFrame(
