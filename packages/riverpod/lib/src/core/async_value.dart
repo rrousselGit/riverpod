@@ -407,8 +407,8 @@ class AsyncValueIsLoadingException implements Exception {
 ///
 /// ```dart
 /// Widget build(BuildContext context, WidgetRef ref) {
-///   // Reading .requiredValue will be throw both on loading and error states.
-///   final User user = ref.watch(userProvider).requiredValue;
+///   // Reading .requireValue will be thrown both on loading and error states.
+///   final User user = ref.watch(userProvider).requireValue;
 ///
 ///   ...
 /// }
