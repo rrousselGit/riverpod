@@ -78,7 +78,7 @@ switch (that) {
             } else {
               final res = _varName('res');
               buffer.write(
-                "final $res = <String, Object?>{'\$path': '${clazz.name}'};\n",
+                "final $res = <String, Object?>{path: '${clazz.name}'};\n",
               );
 
               for (final field in clazz.fields) {
@@ -148,7 +148,7 @@ sealed class ${root.name} {
   ${root.name}();
 
   factory ${root.name}.from(Map<String, InstanceRef> events, {required String path}) {
-    final type = events['\$path']?.valueAsString;
+    final type = events[path]?.valueAsString;
 
     switch (type) {
       #{{case}}

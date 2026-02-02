@@ -10,7 +10,7 @@ part of 'framework.dart';
 @internal
 extension FrameToBytes on Frame {
   Map<String, Object?> toBytes({required String path}) {
-    final res0 = <String, Object?>{'$path': 'Frame'};
+    final res0 = <String, Object?>{path: 'Frame'};
     res0['$path.timestamp'] = timestamp.millisecondsSinceEpoch;
     res0['$path.index'] = index;
     {
@@ -27,7 +27,7 @@ extension FrameToBytes on Frame {
 @internal
 extension ProviderMetaToBytes on ProviderMeta {
   Map<String, Object?> toBytes({required String path}) {
-    final res1 = <String, Object?>{'$path': 'ProviderMeta'};
+    final res1 = <String, Object?>{path: 'ProviderMeta'};
     res1.addAll(OriginMetaToBytes(origin).toBytes(path: '$path.origin'));
     res1['$path.id'] = id;
     {
@@ -93,7 +93,7 @@ extension ProviderMetaToBytes on ProviderMeta {
 @internal
 extension OriginMetaToBytes on OriginMeta {
   Map<String, Object?> toBytes({required String path}) {
-    final res2 = <String, Object?>{'$path': 'OriginMeta'};
+    final res2 = <String, Object?>{path: 'OriginMeta'};
     res2['$path.id'] = id;
     {
       final $value = toStringValue;
@@ -161,7 +161,7 @@ extension EventToBytes on Event {
 @internal
 extension ProviderContainerAddEventToBytes on ProviderContainerAddEvent {
   Map<String, Object?> toBytes({required String path}) {
-    final res3 = <String, Object?>{'$path': 'ProviderContainerAddEvent'};
+    final res3 = <String, Object?>{path: 'ProviderContainerAddEvent'};
     res3['$path.container'] = RiverpodDevtool.instance.cache(container);
 
     res3['$path.containerId'] = containerId;
@@ -180,7 +180,7 @@ extension ProviderContainerAddEventToBytes on ProviderContainerAddEvent {
 extension ProviderContainerDisposeEventToBytes
     on ProviderContainerDisposeEvent {
   Map<String, Object?> toBytes({required String path}) {
-    final res4 = <String, Object?>{'$path': 'ProviderContainerDisposeEvent'};
+    final res4 = <String, Object?>{path: 'ProviderContainerDisposeEvent'};
     res4['$path.container'] = RiverpodDevtool.instance.cache(container);
 
     return res4;
@@ -190,7 +190,7 @@ extension ProviderContainerDisposeEventToBytes
 @internal
 extension ProviderElementAddEventToBytes on ProviderElementAddEvent {
   Map<String, Object?> toBytes({required String path}) {
-    final res5 = <String, Object?>{'$path': 'ProviderElementAddEvent'};
+    final res5 = <String, Object?>{path: 'ProviderElementAddEvent'};
     res5.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
     res5.addAll(ProviderStateRefToBytes(state).toBytes(path: '$path.state'));
     final result6 = notifier;
@@ -207,7 +207,7 @@ extension ProviderElementAddEventToBytes on ProviderElementAddEvent {
 @internal
 extension ProviderElementDisposeEventToBytes on ProviderElementDisposeEvent {
   Map<String, Object?> toBytes({required String path}) {
-    final res7 = <String, Object?>{'$path': 'ProviderElementDisposeEvent'};
+    final res7 = <String, Object?>{path: 'ProviderElementDisposeEvent'};
     res7.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
     return res7;
   }
@@ -216,7 +216,7 @@ extension ProviderElementDisposeEventToBytes on ProviderElementDisposeEvent {
 @internal
 extension ProviderStateRefToBytes on ProviderStateRef {
   Map<String, Object?> toBytes({required String path}) {
-    final res8 = <String, Object?>{'$path': 'ProviderStateRef'};
+    final res8 = <String, Object?>{path: 'ProviderStateRef'};
     res8['$path.state'] = RiverpodDevtool.instance.cache(state);
 
     return res8;
@@ -226,7 +226,7 @@ extension ProviderStateRefToBytes on ProviderStateRef {
 @internal
 extension ProviderElementUpdateEventToBytes on ProviderElementUpdateEvent {
   Map<String, Object?> toBytes({required String path}) {
-    final res9 = <String, Object?>{'$path': 'ProviderElementUpdateEvent'};
+    final res9 = <String, Object?>{path: 'ProviderElementUpdateEvent'};
     res9.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
     res9.addAll(ProviderStateRefToBytes(next).toBytes(path: '$path.next'));
     final result10 = notifier;

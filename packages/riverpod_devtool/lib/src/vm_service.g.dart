@@ -12,7 +12,7 @@ sealed class Event {
   Event();
 
   factory Event.from(Map<String, InstanceRef> events, {required String path}) {
-    final type = events['$path']?.valueAsString;
+    final type = events[path]?.valueAsString;
 
     switch (type) {
       case 'ProviderContainerAddEvent':
