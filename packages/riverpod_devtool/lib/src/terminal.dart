@@ -101,7 +101,6 @@ class _TerminalState extends ConsumerState<Terminal> {
             if (trim.isEmpty) return;
 
             _submit.run(ref, (tsx) async {
-              // TODO use library from selected provider
               final evalFactory = await tsx.get(evalProvider.future);
 
               Byte<RootCachedObject> result;
@@ -129,7 +128,6 @@ class _TerminalState extends ConsumerState<Terminal> {
                     code,
                     eval,
                     isAlive: _disposable,
-                    // TODO scope to expose $notifier and $state
                     // TODO maybe support $previous to refer to the last terminal result
                     scope: {
                       r'$state': ?state.id,

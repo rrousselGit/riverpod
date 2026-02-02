@@ -137,16 +137,6 @@ final class FoldedFrame {
 class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
   @override
   Future<List<FoldedFrame>> build() async {
-    ref.listen(hotRestartEventProvider, (a, b) {
-      print('Hot restart detected, clearing frames');
-    });
-    ref.listen(vmServiceProvider.future, (a, b) {
-      print('VM service changed, clearing frames');
-    });
-    ref.listen(riverpodEvalProvider, (a, b) {
-      print('Riverpod eval changed, clearing frames');
-    });
-
     // On hot-restart, clear the frames list.
     ref.watch(hotRestartEventProvider);
 

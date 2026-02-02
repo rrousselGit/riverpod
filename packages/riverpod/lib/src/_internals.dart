@@ -1,8 +1,6 @@
 /// Intermediate library for internals.dart.
 library;
 
-// TODO fix lint to not need this ignore
-// ignore: show_all_public_api, not from riverpod package
 export 'package:state_notifier/state_notifier.dart' show StateNotifier;
 export 'builder.dart';
 export 'common/internal_lints.dart';

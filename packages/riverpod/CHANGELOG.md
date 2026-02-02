@@ -1,3 +1,8 @@
+## Unreleased minor
+
+- Removed `@internal` for `ProviderFamily.new`
+- Added various life-cycles to `ProviderObserver`
+
 ## 3.2.0 - 2026-01-17
 
 - Added missing `weak` flags to `WidgetRef.listen/listenManual`

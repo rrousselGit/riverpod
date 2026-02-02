@@ -100,12 +100,19 @@ class RiverpodDevtool {
   }
 }
 
+/// ID for [ProviderContainer]
 @publicInDevtools
 extension type ContainerId(String value) {}
+
+/// ID for [ProviderElement]
 @publicInDevtools
 extension type ElementId(String value) {}
+
+/// ID for [ProviderOrFamily] origin
 @publicInDevtools
 extension type OriginId(String _id) {}
+
+/// ID for specific [Provider] within a [ProviderOrFamily]
 @publicInDevtools
 extension type ProviderId(String _id) {}
 
@@ -236,6 +243,7 @@ final class OriginMeta {
 @devtool
 @internal
 sealed class Event {
+  // ignore: no_runtimetype_tostring, not in production code
   String get name => '$runtimeType';
 }
 

@@ -267,8 +267,7 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
               padding: padding,
               child: switch (node) {
                 _ClosingNode(:final symbol) => Text(symbol),
-                // TODO remove Container()
-                _CachedObjectNode(variable: null) => Container(),
+                _CachedObjectNode(variable: null) => const SizedBox(),
                 _CachedObjectNode(:final variable?) => _ByteTile(
                   byte: variable,
                   shouldShowExpansible: true,

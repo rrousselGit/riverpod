@@ -52,6 +52,10 @@ class _HomeState extends ConsumerState<Home> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(loadingProvider);
+    ref.watch(errorProvider);
+    ref.watch(dataProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -61,7 +65,7 @@ class _HomeState extends ConsumerState<Home> {
       body: Column(
         children: [
           Text('${ref.watch(counterProvider)}'),
-            Column(
+          Column(
             children: [
               if (show) ...[Text(ref.watch(autoDisposeProvider).toString())],
               ElevatedButton(
@@ -128,4 +132,28 @@ class Complex {
     [3, 4],
   };
   final record = (1, 'a', named: true);
+}
+
+final loadingProvider = AsyncNotifierProvider<_AsyncStateNotifier<int>, int>(
+  name: 'loadingProvider',
+  () => _AsyncStateNotifier((ref, self) => self.future),
+);
+
+final errorProvider = AsyncNotifierProvider<_AsyncStateNotifier<int>, int>(
+  name: 'errorProvider',
+  () =>
+      _AsyncStateNotifier((ref, self) => throw Exception('An error occurred')),
+);
+
+final dataProvider = AsyncNotifierProvider<_AsyncStateNotifier<int>, int>(
+  name: 'dataProvider',
+  () => _AsyncStateNotifier((ref, self) => 42),
+);
+
+class _AsyncStateNotifier<T> extends AsyncNotifier<T> {
+  _AsyncStateNotifier(this._build);
+  final FutureOr<T> Function(Ref ref, _AsyncStateNotifier<T> self) _build;
+
+  @override
+  FutureOr<T> build() => _build(ref, this);
 }
