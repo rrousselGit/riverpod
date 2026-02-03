@@ -1,3 +1,5 @@
+include: ../../plugins_only.yaml
+
 analyzer:
   exclude:
     # Files with errors on purpose
@@ -14,10 +16,3 @@ analyzer:
 formatter:
   # Preserving commas for the sake of testing code with/without commas
   trailing_commas: preserve
-
-plugins:
-  internal_lint:
-    path: ../packages/internal_lint
-  riverpod_lint:
-    path: ../packages/riverpod_lint
-  

@@ -1,0 +1,6 @@
+# Workaround to overly sensitive plugin diagnostic
+plugins:
+  internal_lint:
+    path: ../packages/internal_lint
+  riverpod_lint:
+    path: ../packages/riverpod_lint
