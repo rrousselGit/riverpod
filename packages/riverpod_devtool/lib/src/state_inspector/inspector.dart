@@ -92,6 +92,8 @@ _ClosingNode? _resolveClosingNode(
           return _ClosingNode(symbol: ']', level: level);
         case SetVariable():
           return _ClosingNode(symbol: '}', level: level);
+        case MapVariable():
+          return _ClosingNode(symbol: '}', level: level);
         case UnknownObjectVariable():
         case NullVariable():
         case BoolVariable():
@@ -427,6 +429,20 @@ class _ResolvedVariableTile extends StatelessWidget {
               const TextSpan(text: '{'),
               TextSpan(
                 text: ' length=${children.length} ',
+                style: const TextStyle(color: _NodeTileTheme.hashColor),
+              ),
+              if (!isOpen) const TextSpan(text: '}'),
+            ],
+          ),
+        );
+
+      case MapVariable(:final children):
+        content = Text.rich(
+          TextSpan(
+            children: [
+              const TextSpan(text: '{'),
+              TextSpan(
+                text: ' length=${children.length ~/ 2} ',
                 style: const TextStyle(color: _NodeTileTheme.hashColor),
               ),
               if (!isOpen) const TextSpan(text: '}'),

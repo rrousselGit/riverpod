@@ -183,6 +183,42 @@ final class DerivedCachedObject extends CachedObject {
     );
   }
 
+  factory DerivedCachedObject.mapAssociationKey(
+    CachedObject mapObject,
+    int index,
+  ) {
+    return DerivedCachedObject(
+      from: mapObject,
+      label: 'key',
+      obtainRefFromParentInstance: (obj) {
+        final associations = obj.associations;
+        if (associations == null || index < 0 || index >= associations.length) {
+          throw StateError('Index $index out of bounds for map associations');
+        }
+        // Return the key from the MapAssociation at this index
+        return Byte.instanceRef(associations[index].key);
+      },
+    );
+  }
+
+  factory DerivedCachedObject.mapAssociationValue(
+    CachedObject mapObject,
+    int index,
+  ) {
+    return DerivedCachedObject(
+      from: mapObject,
+      label: 'value',
+      obtainRefFromParentInstance: (obj) {
+        final associations = obj.associations;
+        if (associations == null || index < 0 || index >= associations.length) {
+          throw StateError('Index $index out of bounds for map associations');
+        }
+        // Return the value from the MapAssociation at this index
+        return Byte.instanceRef(associations[index].value);
+      },
+    );
+  }
+
   final CachedObject from;
   final Byte<InstanceRef> Function(Instance parent) obtainRefFromParentInstance;
 

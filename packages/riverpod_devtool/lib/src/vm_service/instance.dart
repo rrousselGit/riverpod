@@ -30,9 +30,8 @@ sealed class ResolvedVariable {
         return ListVariable._fromInstance(object, instance);
       case .set:
         return SetVariable._fromInstance(object, instance);
-
-      // TODO handle map
       case .map:
+        return MapVariable._fromInstance(object, instance);
       case .object:
         return UnknownObjectVariable._(object, instance);
     }
@@ -109,6 +108,19 @@ final class SetVariable extends ResolvedVariable {
     : children = [
         for (final (index, _) in (instance.elements ?? <dynamic>[]).indexed)
           DerivedCachedObject.collectionElement(object, index),
+      ];
+
+  @override
+  final List<DerivedCachedObject> children;
+}
+
+final class MapVariable extends ResolvedVariable {
+  MapVariable._fromInstance(super.object, Instance instance)
+    : children = [
+        for (final (index, _) in (instance.associations ?? <dynamic>[]).indexed) ...[
+          DerivedCachedObject.mapAssociationKey(object, index),
+          DerivedCachedObject.mapAssociationValue(object, index),
+        ],
       ];
 
   @override
