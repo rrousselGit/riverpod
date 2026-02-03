@@ -1,3 +1,8 @@
+## Unreleased fix
+
+- Fixed a bug where resuming a paused provider could cause it to never
+  notify its listener ever again.
+
 ## 3.2.0 - 2026-01-17
 
 - Added missing `weak` flags to `WidgetRef.listen/listenManual`
