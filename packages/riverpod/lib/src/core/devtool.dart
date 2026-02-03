@@ -7,6 +7,7 @@ void inspectInIDE(Object? obj) {
 
 @internal
 void openInIDE({required String uri, required int line, required int column}) {
+  print('Opening in IDE: $uri:$line:$column');
   developer.postEvent('navigate', stream: 'ToolEvent', {
     'fileUri': uri,
     'line': line,

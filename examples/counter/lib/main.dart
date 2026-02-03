@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/src/internals.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'main.g.dart';
@@ -53,7 +54,7 @@ class _HomeState extends ConsumerState<Home> {
   @override
   Widget build(BuildContext context) {
     ref.watch(loadingProvider);
-    ref.watch(errorProvider);
+    // ref.watch(errorProvider);
     ref.watch(dataProvider);
 
     return Scaffold(
@@ -84,7 +85,12 @@ class _HomeState extends ConsumerState<Home> {
       ),
       floatingActionButton: FloatingActionButton(
         // The read method is a utility to read a provider without listening to it
-        onPressed: () => ref.read(counterProvider.notifier).increment(),
+        onPressed: () {
+          print('Hello world');
+          openInIDE(uri: 'package:counter/main.dart', line: 100, column: 42);
+
+          ref.read(counterProvider.notifier).increment();
+        },
         child: const Icon(Icons.add),
       ),
     );

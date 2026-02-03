@@ -104,6 +104,12 @@ class _FrameViewer extends HookConsumerWidget {
           selectedId: selected?.element.provider.elementId,
           onSelected: (value) {
             selectedNotifier.state = value?.elementId ?? selectedNotifier.state;
+            print('Hello world ${value?.creationStackTrace}');
+            // Jump to definition
+            // TODO
+            if (value?.creationStackTrace case final trace?) {
+              openTraceInIDE(ref, Trace.parse(trace));
+            }
           },
         ),
 

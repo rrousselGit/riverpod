@@ -10,6 +10,7 @@ Future<void> openTraceInIDE(MutationTarget target, Trace trace) async {
     final eval = await tsx.get(riverpodEvalProvider.future);
 
     final frame = trace.frames.firstOrNull;
+    print('$frame');
     if (frame == null) return;
 
     await eval.evalInstance(isAlive: Disposable(), '''
