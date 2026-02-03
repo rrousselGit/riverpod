@@ -39,13 +39,13 @@ void main() {
   });
 }
 
-class DeferredNotifier<T> extends Notifier<T> {
+class DeferredNotifier<StateT> extends Notifier<StateT> {
   DeferredNotifier(this._build);
 
-  final T Function(Ref ref, DeferredNotifier<T> self) _build;
+  final StateT Function(Ref ref, DeferredNotifier<StateT> self) _build;
 
   @override
-  T build() {
+  StateT build() {
     return _build(ref, this);
   }
 }
