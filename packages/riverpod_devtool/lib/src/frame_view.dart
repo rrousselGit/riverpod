@@ -134,16 +134,18 @@ class ProviderViewer extends StatelessWidget {
     final state = (
       minSize: stateMinSize,
       fraction: element.notifier == null ? .8 : .6,
-      content: Column(
-        spacing: denseRowSpacing,
-        children: [
-          const devtools_shared_ui.AreaPaneHeader(
-            roundedTopBorder: false,
-            includeTopBorder: false,
-            title: Text('State'),
-          ),
-          Expanded(child: Inspector(object: element.state.state)),
-        ],
+      content: Material(
+        child: Column(
+          spacing: denseRowSpacing,
+          children: [
+            const devtools_shared_ui.AreaPaneHeader(
+              roundedTopBorder: false,
+              includeTopBorder: false,
+              title: Text('State'),
+            ),
+            Expanded(child: Inspector(object: element.state.state)),
+          ],
+        ),
       ),
     );
 
@@ -158,9 +160,11 @@ class ProviderViewer extends StatelessWidget {
             title: Text('Notifier'),
           ),
         ),
-        content: Padding(
-          padding: const .symmetric(vertical: 8),
-          child: Inspector(object: notifier.state),
+        content: Material(
+          child: Padding(
+            padding: const .symmetric(vertical: 8),
+            child: Inspector(object: notifier.state),
+          ),
         ),
       );
     });
@@ -175,9 +179,11 @@ class ProviderViewer extends StatelessWidget {
           title: Text('Terminal'),
         ),
       ),
-      content: Terminal(
-        state: element.state.state,
-        notifier: element.notifier?.state,
+      content: Material(
+        child: Terminal(
+          state: element.state.state,
+          notifier: element.notifier?.state,
+        ),
       ),
     );
 
@@ -193,7 +199,8 @@ class ProviderViewer extends StatelessWidget {
         ],
         minSizes: [state.minSize, ?notifier?.minSize, terminal.minSize],
         splitters: [if (notifier != null) notifier.heading, terminal.heading],
-        children: [state.content, ?notifier?.content, terminal.content],
+        // Force Material, to avoid issues with overflowing InkWells
+        children: <Material>[state.content, ?notifier?.content, terminal.content],
       ),
     );
   }

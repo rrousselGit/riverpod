@@ -113,6 +113,7 @@ class Complex {
   Complex(this.nbr);
   final int nbr;
   final String str = 'Hello "John" and Mary\'s friend';
+  final bigString = StackTrace.current.toString();
   final bool boolean = true;
   final double decimal = 3.14;
 

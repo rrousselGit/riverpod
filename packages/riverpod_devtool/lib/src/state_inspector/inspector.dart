@@ -58,11 +58,16 @@ final _openedVariableNodesProvider =
       _OpenedVariableNodes.new,
     );
 
-class _OpenedVariableNodes<T> extends Notifier<Set<T>> {
-  @override
-  Set<T> build() => {};
+final _expandedStringsProvider =
+    NotifierProvider<_OpenedVariableNodes<CachedObject>, Set<CachedObject>>(
+      _OpenedVariableNodes.new,
+    );
 
-  void toggle(T byte) {
+class _OpenedVariableNodes<ElementT> extends Notifier<Set<ElementT>> {
+  @override
+  Set<ElementT> build() => {};
+
+  void toggle(ElementT byte) {
     if (state.contains(byte)) {
       state = {...state}..remove(byte);
     } else {
@@ -70,7 +75,7 @@ class _OpenedVariableNodes<T> extends Notifier<Set<T>> {
     }
   }
 
-  void remove(T byte) {
+  void remove(ElementT byte) {
     // We're only cleaning memory. No need to notify listeners.
     state.remove(byte);
   }
@@ -392,9 +397,48 @@ class _ResolvedVariableTile extends StatelessWidget {
           style: const TextStyle(color: _NodeTileTheme.boolColor),
         );
       case StringVariable(:final value):
-        content = Text(
-          '"${value.escape('"')}"',
-          style: const TextStyle(color: _NodeTileTheme.stringColor),
+        content = Consumer(
+          builder: (context, ref, _) {
+            final isExpanded = ref.watch(
+              _expandedStringsProvider.select(
+                (nodes) => nodes.contains(variable.object),
+              ),
+            );
+            final expandedNotifier = ref.watch(
+              _expandedStringsProvider.notifier,
+            );
+
+            final displayValue = isExpanded
+                ? value
+                : value
+                      .replaceAll('\n', r'\n')
+                      .replaceAll('\r', r'\r')
+                      .replaceAll('\t', r'\t');
+
+            final hasEscapeChars =
+                value.contains('\n') ||
+                value.contains('\r') ||
+                value.contains('\t');
+            final textWidget = Text(
+              '"${displayValue.escape('"')}"',
+              style: const TextStyle(color: _NodeTileTheme.stringColor),
+              maxLines: isExpanded ? null : 1,
+              overflow: isExpanded ? null : TextOverflow.ellipsis,
+            );
+
+            if (hasEscapeChars) {
+              return _ExpansibleTile(
+                isExpanded: isExpanded,
+                onPressed: () => expandedNotifier.toggle(variable.object),
+                child: InkWell(
+                  onTap: () => expandedNotifier.toggle(variable.object),
+                  child: textWidget,
+                ),
+              );
+            }
+
+            return textWidget;
+          },
         );
       case IntVariable(:final num value) || DoubleVariable(:final num value):
         content = Text(
@@ -476,6 +520,7 @@ class _ResolvedVariableTile extends StatelessWidget {
 
     if (label case final label?) {
       content = Row(
+        crossAxisAlignment: .start,
         children: [
           Text('$label: '),
           Expanded(child: content),
@@ -512,6 +557,7 @@ class _ExpansibleTile extends StatelessWidget {
     final icon = isExpanded ? Icons.expand_more : Icons.chevron_right;
 
     return Row(
+      crossAxisAlignment: .start,
       children: [
         Text.rich(
           TextSpan(
