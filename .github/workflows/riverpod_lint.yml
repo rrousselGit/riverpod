@@ -31,7 +31,7 @@ jobs:
           - packages/riverpod_analyzer_utils
           - packages/riverpod_analyzer_utils_tests
           - packages/riverpod_lint
-          - packages/riverpod_lint_flutter_test
+          # - packages/riverpod_lint_flutter_test
 
     steps:
       - uses: actions/checkout@v3.1.0

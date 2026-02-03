@@ -7,9 +7,9 @@ environment:
   sdk: ^3.10.0
 
 dependencies:
-  analysis_server_plugin: ^0.3.0
-  analyzer: ^9.0.0
-  analyzer_plugin: ^0.13.10
+  analysis_server_plugin: ^0.3.8
+  analyzer: '>=9.0.0 <11.0.0'
+  analyzer_plugin: ^0.14.2
   meta: ^1.15.0
   path: ^1.8.1
   pubspec_parse: ^1.5.0

@@ -1,10 +1,9 @@
-include: analysis_options_without_plugins.yaml
-
+# Workaround to overly sensitive plugin diagnostic
 plugins:
   internal_lint:
-    path: packages/internal_lint
+    path: ../packages/internal_lint
   riverpod_lint:
-    path: packages/riverpod_lint
+    path: ../packages/riverpod_lint
 
   dependency_overrides:
     riverpod_analyzer_utils:
