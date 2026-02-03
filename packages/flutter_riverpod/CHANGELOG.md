@@ -1,3 +1,8 @@
+## Unreleased fix
+
+- Fixed a bug where resuming a paused provider could cause it to never
+  notify its listener ever again.
+
 ## 3.2.0 - 2026-01-17
 
 - Fix the IDE pausing on "markNeedsBuild" exceptions when checking "pause on all exceptions".
@@ -723,7 +728,6 @@ Riverpod is now stable!
   ```
 
   That allows providers to implement features that is not shared with other providers.
-
   - `Provider`, `FutureProvider` and `StreamProvider`'s `ref` now have a `state` property,
     which represents the currently exposed value. Modifying it will notify the listeners:
 
@@ -1024,7 +1028,6 @@ Fixed various issues related to scoped providers.
   ```
 
   That allows providers to implement features that is not shared with other providers.
-
   - `Provider`, `FutureProvider` and `StreamProvider`'s `ref` now have a `state` property,
     which represents the currently exposed value. Modifying it will notify the listeners:
 
@@ -1498,4 +1501,3 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-
