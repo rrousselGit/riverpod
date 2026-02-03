@@ -1,4 +1,4 @@
-## Unreleased fix
+## 3.2.1 - 2026-02-03
 
 - Fixed a bug where resuming a paused provider could cause it to never
   notify its listener ever again.

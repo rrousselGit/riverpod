@@ -1,7 +1,11 @@
-## Unreleased fix
+## 3.2.1 - 2026-02-03
 
 - Fixed a bug where resuming a paused provider could cause it to never
   notify its listener ever again.
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.2.1`
 
 ## 3.2.0 - 2026-01-17
 
@@ -1501,3 +1505,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+
