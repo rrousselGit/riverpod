@@ -7,7 +7,6 @@ void inspectInIDE(Object? obj) {
 
 @internal
 void openInIDE({required String uri, required int line, required int column}) {
-  print('Opening in IDE: $uri:$line:$column');
   developer.postEvent('navigate', stream: 'ToolEvent', {
     'fileUri': uri,
     'line': line,
@@ -35,8 +34,11 @@ String? _stringForStackTrace(StackTrace? stackTrace) {
                 !frame.uri.path.endsWith('.g.dart'),
           )
           .firstOrNull;
+  if (firstNonRiverpodFrame == null) return null;
 
-  return firstNonRiverpodFrame?.toString();
+  final newTrace = Trace([firstNonRiverpodFrame]);
+
+  return newTrace.vmTrace.toString();
 }
 
 @internal

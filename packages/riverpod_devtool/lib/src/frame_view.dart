@@ -7,7 +7,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 // ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
-import 'package:stack_trace/stack_trace.dart';
 
 import 'elements.dart';
 import 'frames.dart';
@@ -87,7 +86,7 @@ class _FrameViewer extends HookConsumerWidget {
 
     useEffect(() {
       if (selected?.origin.creationStackTrace case final trace?) {
-        Future(() => openTraceInIDE(ref, Trace.parse(trace)));
+        Future(() => openTraceInIDE(ref, trace));
       }
 
       return null;
@@ -104,12 +103,6 @@ class _FrameViewer extends HookConsumerWidget {
           selectedId: selected?.element.provider.elementId,
           onSelected: (value) {
             selectedNotifier.state = value?.elementId ?? selectedNotifier.state;
-            print('Hello world ${value?.creationStackTrace}');
-            // Jump to definition
-            // TODO
-            if (value?.creationStackTrace case final trace?) {
-              openTraceInIDE(ref, Trace.parse(trace));
-            }
           },
         ),
 

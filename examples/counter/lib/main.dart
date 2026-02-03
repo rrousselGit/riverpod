@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/src/internals.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'main.g.dart';
@@ -68,7 +67,7 @@ class _HomeState extends ConsumerState<Home> {
           Text('${ref.watch(counterProvider)}'),
           Column(
             children: [
-              if (show) ...[Text(ref.watch(autoDisposeProvider).toString())],
+              if (show) ...[Text(ref.watch(autoDisposeProvider))],
               ElevatedButton(
                 onPressed: () {
                   setState(() => show = !show);
@@ -87,7 +86,6 @@ class _HomeState extends ConsumerState<Home> {
         // The read method is a utility to read a provider without listening to it
         onPressed: () {
           print('Hello world');
-          openInIDE(uri: 'package:counter/main.dart', line: 100, column: 42);
 
           ref.read(counterProvider.notifier).increment();
         },

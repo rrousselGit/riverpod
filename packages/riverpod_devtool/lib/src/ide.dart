@@ -4,21 +4,24 @@ import 'package:stack_trace/stack_trace.dart';
 
 import 'vm_service.dart';
 
-Future<void> openTraceInIDE(MutationTarget target, Trace trace) async {
+Future<void> openTraceInIDE(MutationTarget target, String stackTrace) async {
   final mutation = Mutation<void>();
   await mutation.run(target, (tsx) async {
     final eval = await tsx.get(riverpodEvalProvider.future);
 
+    final trace = Trace.parse(stackTrace);
+
     final frame = trace.frames.firstOrNull;
-    print('$frame');
     if (frame == null) return;
 
-    await eval.evalInstance(isAlive: Disposable(), '''
+    final res = await eval.evalInstance(isAlive: Disposable(), '''
         openInIDE(
           uri: '${frame.uri}',
           line: ${frame.line},
           column: ${frame.column}
         )
       ''');
+
+    res.require; // Rethrow any errors
   });
 }
