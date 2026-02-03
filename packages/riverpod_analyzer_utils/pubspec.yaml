@@ -12,8 +12,8 @@ environment:
 resolution: workspace
 
 dependencies:
-  analyzer: ^9.0.0
-  analyzer_buffer: ^0.3.0
+  analyzer: '>=9.0.0 <11.0.0'
+  analyzer_buffer: ^0.3.1
   collection: ^1.16.0
   crypto: ^3.0.2
   freezed_annotation: ^3.0.0
@@ -25,7 +25,7 @@ dev_dependencies:
   build: ">=3.0.0 <5.0.0"
   build_runner: ^2.3.2
   build_test: ^3.2.1
-  freezed: ^3.2.0
+  freezed: ^3.2.5
   lint_visitor_generator:
   lints: ^6.0.0
   test: ^1.21.7

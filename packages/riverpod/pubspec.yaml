@@ -28,8 +28,8 @@ dependencies:
   test: ^1.0.0
 
 dev_dependencies:
-  analyzer: ^9.0.0
-  expect_error: ^1.0.0
+  analyzer: '>=9.0.0 <11.0.0'
+  expect_error: ^1.0.13
   mockito: ^5.0.0
   path: ^1.9.0
   trotter: ^2.0.0-dev.1

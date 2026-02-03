@@ -23,7 +23,7 @@ dev_dependencies:
   build_runner: ^2.0.0
   flutter_test:
     sdk: flutter
-  freezed: ^3.2.0
+  freezed: ^3.2.5
   json_serializable: ^6.3.0
   mockito: ^5.0.0
   riverpod_generator:
