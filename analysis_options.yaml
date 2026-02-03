@@ -5,3 +5,7 @@ plugins:
     path: packages/internal_lint
   riverpod_lint:
     path: packages/riverpod_lint
+
+  dependency_overrides:
+    riverpod_analyzer_utils:
+      path: packages/riverpod_analyzer_utils
