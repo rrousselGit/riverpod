@@ -1,3 +1,7 @@
+## Unreleased fix
+
+- Fixed `setState() called after dispose()` error in `UncontrolledProviderScope` when used in scrollable lists (thanks to @itsatifsiddiqui)
+
 ## 3.2.1 - 2026-02-03
 
 - Fixed a bug where resuming a paused provider could cause it to never
