@@ -362,7 +362,9 @@ To fix this problem, you have one of two solutions:
     /// This is for scoped providers to correctly update without causing a
     /// markNeedsBuild error.
     WidgetsBinding.instance.scheduleFrameCallback(scheduleNewFrame: false, (_) {
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
 
     return _UncontrolledProviderScope(
