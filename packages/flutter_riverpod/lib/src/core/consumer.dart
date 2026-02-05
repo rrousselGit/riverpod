@@ -388,7 +388,11 @@ base class ConsumerStatefulElement extends StatefulElement
   }
 
   @override
-  late ProviderContainer container = ProviderScope.containerOf(this);
+  late ProviderContainer container = ProviderScope.containerOf(
+    this,
+    // TODO test change
+    listen: false,
+  );
   var _dependencies =
       <ProviderListenable<Object?>, ProviderSubscription<Object?>>{};
   Map<ProviderListenable<Object?>, ProviderSubscription<Object?>>?

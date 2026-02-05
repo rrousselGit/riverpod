@@ -268,7 +268,23 @@ sealed class _BuiltInType {
   static _BuiltInType from(
     DartType type, {
     required List<ClassElement> annotatedClasses,
+    bool $checkNull = true,
   }) {
+    if ($checkNull && type.nullabilitySuffix == NullabilitySuffix.question) {
+      final inner = from(
+        type,
+        annotatedClasses: annotatedClasses,
+        $checkNull: false,
+      );
+      // Bypass Nullability check for passing raw InstanceRefs.
+      switch (inner) {
+        case _UnknownType():
+          return inner;
+        case _:
+          return _NullableType(inner);
+      }
+    }
+
     const dateTimeChecker = TypeChecker.fromName(
       'DateTime',
       packageName: 'dart:core',
@@ -307,9 +323,7 @@ sealed class _BuiltInType {
         from(listType.typeArguments.single, annotatedClasses: annotatedClasses),
       );
     } else if (type.isDartCoreString) {
-      return _StringType(
-        nullable: type.nullabilitySuffix == NullabilitySuffix.question,
-      );
+      return _StringType();
     } else if (type.isDartCoreInt) {
       return _IntType();
     } else if (type.isDartCoreDouble) {
@@ -408,12 +422,10 @@ final class _ListType extends _BuiltInType {
 }
 
 final class _StringType extends _BuiltInType {
-  _StringType({required this.nullable});
-  final bool nullable;
+  _StringType();
 
   @override
   String typeCode() {
-    if (nullable) return '#{{dart:core|String}}?';
     return '#{{dart:core|String}}';
   }
 
@@ -433,11 +445,9 @@ final class _StringType extends _BuiltInType {
     required String valueSymbol,
     required String path,
   }) {
-    final fallback = nullable ? "?? ''" : '';
-
     return '''
   {
-    final \$value = $valueSymbol$fallback;
+    final \$value = $valueSymbol;
     final length = (\$value.length / 128).ceil();
     $mapSymbol['$path.length'] = length;
     for (var i = 0; i < length; i++) {
@@ -521,24 +531,11 @@ final class _OtherDevtoolType extends _BuiltInType {
 
   final DartType type;
 
-  bool get isNullable => type.nullabilitySuffix == NullabilitySuffix.question;
-
   @override
-  String typeCode() => '${type.element!.name!}${isNullable ? '?' : ''}';
+  String typeCode() => type.element!.name!;
 
   @override
   String decodeBytes({required String mapSymbol, required String path}) {
-    if (isNullable) {
-      final name = _varName('result');
-      return '''
-() {
-  final $name = $mapSymbol['$path'];
-  if ($name == null) return null;
-  return ${type.element!.name!}.from($mapSymbol, path: '$path');
-}()
-''';
-    }
-
     return "${type.element!.name!}.from($mapSymbol, path: '$path')";
   }
 
@@ -548,17 +545,34 @@ final class _OtherDevtoolType extends _BuiltInType {
     required String valueSymbol,
     required String path,
   }) {
-    if (isNullable) {
-      final name = _varName('result');
-      return '''
-        final $name = $valueSymbol;
-        if ($name != null) {
-          $mapSymbol.addAll(${type.element!.name}ToBytes($name).toBytes(path: '$path'));
-        }
-      ''';
-    }
-
     return "$mapSymbol.addAll(${type.element!.name}ToBytes($valueSymbol).toBytes(path: '$path'));";
+  }
+}
+
+final class _NullableType extends _BuiltInType {
+  _NullableType(this.innerType);
+
+  final _BuiltInType innerType;
+
+  @override
+  String typeCode() => '${innerType.typeCode()}?';
+
+  @override
+  String decodeBytes({required String mapSymbol, required String path}) =>
+      "($mapSymbol['$path'] != null) ? ${innerType.decodeBytes(mapSymbol: mapSymbol, path: path)} : null";
+
+  @override
+  String appendEncodedValueCode({
+    required String mapSymbol,
+    required String valueSymbol,
+    required String path,
+  }) {
+    final name = _varName('value');
+    return '''
+  if ($valueSymbol case final $name?) {
+    ${innerType.appendEncodedValueCode(mapSymbol: mapSymbol, valueSymbol: name, path: path)}
+  }
+  ''';
   }
 }
 

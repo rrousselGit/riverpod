@@ -111,10 +111,14 @@ class ProviderMeta {
     final element = RootCachedObject(
       CacheId($events['$path.element']!.valueAsString!),
     );
-    final creationStackTrace = List.generate(
-      int.parse($events['$path.creationStackTrace.length']!.valueAsString!),
-      (i) => $events['$path.creationStackTrace.$i']!.valueAsString!,
-    ).join();
+    final creationStackTrace = ($events['$path.creationStackTrace'] != null)
+        ? List.generate(
+            int.parse(
+              $events['$path.creationStackTrace.length']!.valueAsString!,
+            ),
+            (i) => $events['$path.creationStackTrace.$i']!.valueAsString!,
+          ).join()
+        : null;
 
     return ProviderMeta(
       origin: origin,
@@ -166,10 +170,14 @@ class OriginMeta {
       (i) => $events['$path.hashValue.$i']!.valueAsString!,
     ).join();
     final isFamily = ($events['$path.isFamily']!.valueAsString! == 'true');
-    final creationStackTrace = List.generate(
-      int.parse($events['$path.creationStackTrace.length']!.valueAsString!),
-      (i) => $events['$path.creationStackTrace.$i']!.valueAsString!,
-    ).join();
+    final creationStackTrace = ($events['$path.creationStackTrace'] != null)
+        ? List.generate(
+            int.parse(
+              $events['$path.creationStackTrace.length']!.valueAsString!,
+            ),
+            (i) => $events['$path.creationStackTrace.$i']!.valueAsString!,
+          ).join()
+        : null;
 
     return OriginMeta(
       id: id,
@@ -264,11 +272,9 @@ class ProviderElementAddEvent extends Event {
 
     final provider = ProviderMeta.from($events, path: '$path.provider');
     final state = ProviderStateRef.from($events, path: '$path.state');
-    final notifier = () {
-      final result0 = $events['$path.notifier'];
-      if (result0 == null) return null;
-      return ProviderStateRef.from($events, path: '$path.notifier');
-    }();
+    final notifier = ($events['$path.notifier'] != null)
+        ? ProviderStateRef.from($events, path: '$path.notifier')
+        : null;
 
     return ProviderElementAddEvent(
       provider: provider,
@@ -336,11 +342,9 @@ class ProviderElementUpdateEvent extends Event {
 
     final provider = ProviderMeta.from($events, path: '$path.provider');
     final next = ProviderStateRef.from($events, path: '$path.next');
-    final notifier = () {
-      final result1 = $events['$path.notifier'];
-      if (result1 == null) return null;
-      return ProviderStateRef.from($events, path: '$path.notifier');
-    }();
+    final notifier = ($events['$path.notifier'] != null)
+        ? ProviderStateRef.from($events, path: '$path.notifier')
+        : null;
 
     return ProviderElementUpdateEvent(
       provider: provider,
@@ -377,10 +381,12 @@ class RefUsageEvent extends Event {
       int.parse($events['$path.methodName.length']!.valueAsString!),
       (i) => $events['$path.methodName.$i']!.valueAsString!,
     ).join();
-    final stackTrace = List.generate(
-      int.parse($events['$path.stackTrace.length']!.valueAsString!),
-      (i) => $events['$path.stackTrace.$i']!.valueAsString!,
-    ).join();
+    final stackTrace = ($events['$path.stackTrace'] != null)
+        ? List.generate(
+            int.parse($events['$path.stackTrace.length']!.valueAsString!),
+            (i) => $events['$path.stackTrace.$i']!.valueAsString!,
+          ).join()
+        : null;
     final positionalArguments = List.generate(
       int.parse($events['$path.positionalArguments.length']!.valueAsString!),
       (i) {
@@ -454,10 +460,12 @@ class WidgetRefUsageEvent extends Event {
       int.parse($events['$path.methodName.length']!.valueAsString!),
       (i) => $events['$path.methodName.$i']!.valueAsString!,
     ).join();
-    final stackTrace = List.generate(
-      int.parse($events['$path.stackTrace.length']!.valueAsString!),
-      (i) => $events['$path.stackTrace.$i']!.valueAsString!,
-    ).join();
+    final stackTrace = ($events['$path.stackTrace'] != null)
+        ? List.generate(
+            int.parse($events['$path.stackTrace.length']!.valueAsString!),
+            (i) => $events['$path.stackTrace.$i']!.valueAsString!,
+          ).join()
+        : null;
     final positionalArguments = List.generate(
       int.parse($events['$path.positionalArguments.length']!.valueAsString!),
       (i) {
@@ -534,10 +542,14 @@ class ConsumerMeta {
       int.parse($events['$path.containerHashValue.length']!.valueAsString!),
       (i) => $events['$path.containerHashValue.$i']!.valueAsString!,
     ).join();
-    final creationStackTrace = List.generate(
-      int.parse($events['$path.creationStackTrace.length']!.valueAsString!),
-      (i) => $events['$path.creationStackTrace.$i']!.valueAsString!,
-    ).join();
+    final creationStackTrace = ($events['$path.creationStackTrace'] != null)
+        ? List.generate(
+            int.parse(
+              $events['$path.creationStackTrace.length']!.valueAsString!,
+            ),
+            (i) => $events['$path.creationStackTrace.$i']!.valueAsString!,
+          ).join()
+        : null;
 
     return ConsumerMeta(
       id: id,

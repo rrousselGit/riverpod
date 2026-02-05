@@ -73,16 +73,18 @@ extension ProviderMetaToBytes on ProviderMeta {
     res1['$path.elementId'] = elementId;
     res1['$path.element'] = RiverpodDevtool.instance.cache(element);
 
-    {
-      final $value = creationStackTrace ?? '';
-      final length = ($value.length / 128).ceil();
-      res1['$path.creationStackTrace.length'] = length;
-      for (var i = 0; i < length; i++) {
-        final end = (i + 1) * 128;
-        res1['$path.creationStackTrace.$i'] = $value.substring(
-          i * 128,
-          end > $value.length ? $value.length : end,
-        );
+    if (creationStackTrace case final value2?) {
+      {
+        final $value = value2;
+        final length = ($value.length / 128).ceil();
+        res1['$path.creationStackTrace.length'] = length;
+        for (var i = 0; i < length; i++) {
+          final end = (i + 1) * 128;
+          res1['$path.creationStackTrace.$i'] = $value.substring(
+            i * 128,
+            end > $value.length ? $value.length : end,
+          );
+        }
       }
     }
 
@@ -93,15 +95,15 @@ extension ProviderMetaToBytes on ProviderMeta {
 @internal
 extension OriginMetaToBytes on OriginMeta {
   Map<String, Object?> toBytes({required String path}) {
-    final res2 = <String, Object?>{path: 'OriginMeta'};
-    res2['$path.id'] = id;
+    final res3 = <String, Object?>{path: 'OriginMeta'};
+    res3['$path.id'] = id;
     {
       final $value = toStringValue;
       final length = ($value.length / 128).ceil();
-      res2['$path.toStringValue.length'] = length;
+      res3['$path.toStringValue.length'] = length;
       for (var i = 0; i < length; i++) {
         final end = (i + 1) * 128;
-        res2['$path.toStringValue.$i'] = $value.substring(
+        res3['$path.toStringValue.$i'] = $value.substring(
           i * 128,
           end > $value.length ? $value.length : end,
         );
@@ -111,31 +113,33 @@ extension OriginMetaToBytes on OriginMeta {
     {
       final $value = hashValue;
       final length = ($value.length / 128).ceil();
-      res2['$path.hashValue.length'] = length;
+      res3['$path.hashValue.length'] = length;
       for (var i = 0; i < length; i++) {
         final end = (i + 1) * 128;
-        res2['$path.hashValue.$i'] = $value.substring(
+        res3['$path.hashValue.$i'] = $value.substring(
           i * 128,
           end > $value.length ? $value.length : end,
         );
       }
     }
 
-    res2['$path.isFamily'] = isFamily;
-    {
-      final $value = creationStackTrace ?? '';
-      final length = ($value.length / 128).ceil();
-      res2['$path.creationStackTrace.length'] = length;
-      for (var i = 0; i < length; i++) {
-        final end = (i + 1) * 128;
-        res2['$path.creationStackTrace.$i'] = $value.substring(
-          i * 128,
-          end > $value.length ? $value.length : end,
-        );
+    res3['$path.isFamily'] = isFamily;
+    if (creationStackTrace case final value4?) {
+      {
+        final $value = value4;
+        final length = ($value.length / 128).ceil();
+        res3['$path.creationStackTrace.length'] = length;
+        for (var i = 0; i < length; i++) {
+          final end = (i + 1) * 128;
+          res3['$path.creationStackTrace.$i'] = $value.substring(
+            i * 128,
+            end > $value.length ? $value.length : end,
+          );
+        }
       }
     }
 
-    return res2;
+    return res3;
   }
 }
 
@@ -165,43 +169,15 @@ extension EventToBytes on Event {
 @internal
 extension ProviderContainerAddEventToBytes on ProviderContainerAddEvent {
   Map<String, Object?> toBytes({required String path}) {
-    final res3 = <String, Object?>{path: 'ProviderContainerAddEvent'};
-    res3['$path.container'] = RiverpodDevtool.instance.cache(container);
+    final res5 = <String, Object?>{path: 'ProviderContainerAddEvent'};
+    res5['$path.container'] = RiverpodDevtool.instance.cache(container);
 
-    res3['$path.containerId'] = containerId;
+    res5['$path.containerId'] = containerId;
     {
-      res3['$path.parentIds.length'] = parentIds.length;
+      res5['$path.parentIds.length'] = parentIds.length;
       for (final (index, e) in parentIds.indexed) {
-        res3['$path.parentIds[$index]'] = e;
+        res5['$path.parentIds[$index]'] = e;
       }
-    }
-
-    return res3;
-  }
-}
-
-@internal
-extension ProviderContainerDisposeEventToBytes
-    on ProviderContainerDisposeEvent {
-  Map<String, Object?> toBytes({required String path}) {
-    final res4 = <String, Object?>{path: 'ProviderContainerDisposeEvent'};
-    res4['$path.container'] = RiverpodDevtool.instance.cache(container);
-
-    return res4;
-  }
-}
-
-@internal
-extension ProviderElementAddEventToBytes on ProviderElementAddEvent {
-  Map<String, Object?> toBytes({required String path}) {
-    final res5 = <String, Object?>{path: 'ProviderElementAddEvent'};
-    res5.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
-    res5.addAll(ProviderStateRefToBytes(state).toBytes(path: '$path.state'));
-    final result6 = notifier;
-    if (result6 != null) {
-      res5.addAll(
-        ProviderStateRefToBytes(result6).toBytes(path: '$path.notifier'),
-      );
     }
 
     return res5;
@@ -209,200 +185,248 @@ extension ProviderElementAddEventToBytes on ProviderElementAddEvent {
 }
 
 @internal
+extension ProviderContainerDisposeEventToBytes
+    on ProviderContainerDisposeEvent {
+  Map<String, Object?> toBytes({required String path}) {
+    final res6 = <String, Object?>{path: 'ProviderContainerDisposeEvent'};
+    res6['$path.container'] = RiverpodDevtool.instance.cache(container);
+
+    return res6;
+  }
+}
+
+@internal
+extension ProviderElementAddEventToBytes on ProviderElementAddEvent {
+  Map<String, Object?> toBytes({required String path}) {
+    final res7 = <String, Object?>{path: 'ProviderElementAddEvent'};
+    res7.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
+    res7.addAll(ProviderStateRefToBytes(state).toBytes(path: '$path.state'));
+    if (notifier case final value8?) {
+      res7.addAll(
+        ProviderStateRefToBytes(value8).toBytes(path: '$path.notifier'),
+      );
+    }
+
+    return res7;
+  }
+}
+
+@internal
 extension ProviderElementDisposeEventToBytes on ProviderElementDisposeEvent {
   Map<String, Object?> toBytes({required String path}) {
-    final res7 = <String, Object?>{path: 'ProviderElementDisposeEvent'};
-    res7.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
-    return res7;
+    final res9 = <String, Object?>{path: 'ProviderElementDisposeEvent'};
+    res9.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
+    return res9;
   }
 }
 
 @internal
 extension ProviderStateRefToBytes on ProviderStateRef {
   Map<String, Object?> toBytes({required String path}) {
-    final res8 = <String, Object?>{path: 'ProviderStateRef'};
-    res8['$path.state'] = RiverpodDevtool.instance.cache(state);
+    final res10 = <String, Object?>{path: 'ProviderStateRef'};
+    res10['$path.state'] = RiverpodDevtool.instance.cache(state);
 
-    return res8;
+    return res10;
   }
 }
 
 @internal
 extension ProviderElementUpdateEventToBytes on ProviderElementUpdateEvent {
   Map<String, Object?> toBytes({required String path}) {
-    final res9 = <String, Object?>{path: 'ProviderElementUpdateEvent'};
-    res9.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
-    res9.addAll(ProviderStateRefToBytes(next).toBytes(path: '$path.next'));
-    final result10 = notifier;
-    if (result10 != null) {
-      res9.addAll(
-        ProviderStateRefToBytes(result10).toBytes(path: '$path.notifier'),
+    final res11 = <String, Object?>{path: 'ProviderElementUpdateEvent'};
+    res11.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
+    res11.addAll(ProviderStateRefToBytes(next).toBytes(path: '$path.next'));
+    if (notifier case final value12?) {
+      res11.addAll(
+        ProviderStateRefToBytes(value12).toBytes(path: '$path.notifier'),
       );
     }
-
-    return res9;
-  }
-}
-
-@internal
-extension RefUsageEventToBytes on RefUsageEvent {
-  Map<String, Object?> toBytes({required String path}) {
-    final res11 = <String, Object?>{path: 'RefUsageEvent'};
-    res11.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
-    {
-      final $value = methodName;
-      final length = ($value.length / 128).ceil();
-      res11['$path.methodName.length'] = length;
-      for (var i = 0; i < length; i++) {
-        final end = (i + 1) * 128;
-        res11['$path.methodName.$i'] = $value.substring(
-          i * 128,
-          end > $value.length ? $value.length : end,
-        );
-      }
-    }
-
-    {
-      final $value = stackTrace ?? '';
-      final length = ($value.length / 128).ceil();
-      res11['$path.stackTrace.length'] = length;
-      for (var i = 0; i < length; i++) {
-        final end = (i + 1) * 128;
-        res11['$path.stackTrace.$i'] = $value.substring(
-          i * 128,
-          end > $value.length ? $value.length : end,
-        );
-      }
-    }
-
-    {
-      res11['$path.positionalArguments.length'] = positionalArguments.length;
-      for (final (index, e) in positionalArguments.indexed) {
-        res11['$path.positionalArguments[$index]'] = RiverpodDevtool.instance
-            .cache(e);
-      }
-    }
-
-    {
-      res11['$path.typeArguments.length'] = typeArguments.length;
-      for (final (index, e) in typeArguments.indexed) {
-        res11['$path.typeArguments[$index]'] = RiverpodDevtool.instance.cache(
-          e,
-        );
-      }
-    }
-
-    res11['$path.namedArguments'] = RiverpodDevtool.instance.cache(
-      namedArguments,
-    );
 
     return res11;
   }
 }
 
 @internal
-extension WidgetRefUsageEventToBytes on WidgetRefUsageEvent {
+extension RefUsageEventToBytes on RefUsageEvent {
   Map<String, Object?> toBytes({required String path}) {
-    final res12 = <String, Object?>{path: 'WidgetRefUsageEvent'};
-    res12['$path.consumer'] = RiverpodDevtool.instance.cache(consumer);
-
+    final res13 = <String, Object?>{path: 'RefUsageEvent'};
+    res13.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
     {
       final $value = methodName;
       final length = ($value.length / 128).ceil();
-      res12['$path.methodName.length'] = length;
+      res13['$path.methodName.length'] = length;
       for (var i = 0; i < length; i++) {
         final end = (i + 1) * 128;
-        res12['$path.methodName.$i'] = $value.substring(
+        res13['$path.methodName.$i'] = $value.substring(
           i * 128,
           end > $value.length ? $value.length : end,
         );
       }
     }
 
-    {
-      final $value = stackTrace ?? '';
-      final length = ($value.length / 128).ceil();
-      res12['$path.stackTrace.length'] = length;
-      for (var i = 0; i < length; i++) {
-        final end = (i + 1) * 128;
-        res12['$path.stackTrace.$i'] = $value.substring(
-          i * 128,
-          end > $value.length ? $value.length : end,
-        );
+    if (stackTrace case final value14?) {
+      {
+        final $value = value14;
+        final length = ($value.length / 128).ceil();
+        res13['$path.stackTrace.length'] = length;
+        for (var i = 0; i < length; i++) {
+          final end = (i + 1) * 128;
+          res13['$path.stackTrace.$i'] = $value.substring(
+            i * 128,
+            end > $value.length ? $value.length : end,
+          );
+        }
       }
     }
 
     {
-      res12['$path.positionalArguments.length'] = positionalArguments.length;
+      res13['$path.positionalArguments.length'] = positionalArguments.length;
       for (final (index, e) in positionalArguments.indexed) {
-        res12['$path.positionalArguments[$index]'] = RiverpodDevtool.instance
+        res13['$path.positionalArguments[$index]'] = RiverpodDevtool.instance
             .cache(e);
       }
     }
 
     {
-      res12['$path.typeArguments.length'] = typeArguments.length;
+      res13['$path.typeArguments.length'] = typeArguments.length;
       for (final (index, e) in typeArguments.indexed) {
-        res12['$path.typeArguments[$index]'] = RiverpodDevtool.instance.cache(
+        res13['$path.typeArguments[$index]'] = RiverpodDevtool.instance.cache(
           e,
         );
       }
     }
 
-    res12['$path.namedArguments'] = RiverpodDevtool.instance.cache(
+    res13['$path.namedArguments'] = RiverpodDevtool.instance.cache(
       namedArguments,
     );
 
-    return res12;
+    {
+      res13['$path.listenedProviders.length'] = listenedProviders.length;
+      for (final (index, e) in listenedProviders.indexed) {
+        res13['$path.listenedProviders[$index]'] = RiverpodDevtool.instance
+            .cache(e);
+      }
+    }
+
+    return res13;
+  }
+}
+
+@internal
+extension WidgetRefUsageEventToBytes on WidgetRefUsageEvent {
+  Map<String, Object?> toBytes({required String path}) {
+    final res15 = <String, Object?>{path: 'WidgetRefUsageEvent'};
+    res15['$path.consumer'] = RiverpodDevtool.instance.cache(consumer);
+
+    {
+      final $value = methodName;
+      final length = ($value.length / 128).ceil();
+      res15['$path.methodName.length'] = length;
+      for (var i = 0; i < length; i++) {
+        final end = (i + 1) * 128;
+        res15['$path.methodName.$i'] = $value.substring(
+          i * 128,
+          end > $value.length ? $value.length : end,
+        );
+      }
+    }
+
+    if (stackTrace case final value16?) {
+      {
+        final $value = value16;
+        final length = ($value.length / 128).ceil();
+        res15['$path.stackTrace.length'] = length;
+        for (var i = 0; i < length; i++) {
+          final end = (i + 1) * 128;
+          res15['$path.stackTrace.$i'] = $value.substring(
+            i * 128,
+            end > $value.length ? $value.length : end,
+          );
+        }
+      }
+    }
+
+    {
+      res15['$path.positionalArguments.length'] = positionalArguments.length;
+      for (final (index, e) in positionalArguments.indexed) {
+        res15['$path.positionalArguments[$index]'] = RiverpodDevtool.instance
+            .cache(e);
+      }
+    }
+
+    {
+      res15['$path.typeArguments.length'] = typeArguments.length;
+      for (final (index, e) in typeArguments.indexed) {
+        res15['$path.typeArguments[$index]'] = RiverpodDevtool.instance.cache(
+          e,
+        );
+      }
+    }
+
+    res15['$path.namedArguments'] = RiverpodDevtool.instance.cache(
+      namedArguments,
+    );
+
+    {
+      res15['$path.listenedProviders.length'] = listenedProviders.length;
+      for (final (index, e) in listenedProviders.indexed) {
+        res15['$path.listenedProviders[$index]'] = RiverpodDevtool.instance
+            .cache(e);
+      }
+    }
+
+    return res15;
   }
 }
 
 @internal
 extension ConsumerMetaToBytes on ConsumerMeta {
   Map<String, Object?> toBytes({required String path}) {
-    final res13 = <String, Object?>{path: 'ConsumerMeta'};
-    res13['$path.id'] = RiverpodDevtool.instance.cache(id);
+    final res17 = <String, Object?>{path: 'ConsumerMeta'};
+    res17['$path.id'] = RiverpodDevtool.instance.cache(id);
 
     {
       final $value = hashValue;
       final length = ($value.length / 128).ceil();
-      res13['$path.hashValue.length'] = length;
+      res17['$path.hashValue.length'] = length;
       for (var i = 0; i < length; i++) {
         final end = (i + 1) * 128;
-        res13['$path.hashValue.$i'] = $value.substring(
+        res17['$path.hashValue.$i'] = $value.substring(
           i * 128,
           end > $value.length ? $value.length : end,
         );
       }
     }
 
-    res13['$path.containerId'] = containerId;
+    res17['$path.containerId'] = containerId;
     {
       final $value = containerHashValue;
       final length = ($value.length / 128).ceil();
-      res13['$path.containerHashValue.length'] = length;
+      res17['$path.containerHashValue.length'] = length;
       for (var i = 0; i < length; i++) {
         final end = (i + 1) * 128;
-        res13['$path.containerHashValue.$i'] = $value.substring(
+        res17['$path.containerHashValue.$i'] = $value.substring(
           i * 128,
           end > $value.length ? $value.length : end,
         );
       }
     }
 
-    {
-      final $value = creationStackTrace ?? '';
-      final length = ($value.length / 128).ceil();
-      res13['$path.creationStackTrace.length'] = length;
-      for (var i = 0; i < length; i++) {
-        final end = (i + 1) * 128;
-        res13['$path.creationStackTrace.$i'] = $value.substring(
-          i * 128,
-          end > $value.length ? $value.length : end,
-        );
+    if (creationStackTrace case final value18?) {
+      {
+        final $value = value18;
+        final length = ($value.length / 128).ceil();
+        res17['$path.creationStackTrace.length'] = length;
+        for (var i = 0; i < length; i++) {
+          final end = (i + 1) * 128;
+          res17['$path.creationStackTrace.$i'] = $value.substring(
+            i * 128,
+            end > $value.length ? $value.length : end,
+          );
+        }
       }
     }
 
-    return res13;
+    return res17;
   }
 }
