@@ -363,7 +363,6 @@ class RefUsageEvent extends Event {
   RefUsageEvent({
     required this.provider,
     required this.methodName,
-    required this.stackTrace,
     required this.positionalArguments,
     required this.typeArguments,
     required this.namedArguments,
@@ -377,16 +376,9 @@ class RefUsageEvent extends Event {
     _validate($events, name: 'RefUsageEvent', path: path);
 
     final provider = ProviderMeta.from($events, path: '$path.provider');
-    final methodName = List.generate(
-      int.parse($events['$path.methodName.length']!.valueAsString!),
-      (i) => $events['$path.methodName.$i']!.valueAsString!,
-    ).join();
-    final stackTrace = ($events['$path.stackTrace'] != null)
-        ? List.generate(
-            int.parse($events['$path.stackTrace.length']!.valueAsString!),
-            (i) => $events['$path.stackTrace.$i']!.valueAsString!,
-          ).join()
-        : null;
+    final methodName = RootCachedObject(
+      CacheId($events['$path.methodName']!.valueAsString!),
+    );
     final positionalArguments = List.generate(
       int.parse($events['$path.positionalArguments.length']!.valueAsString!),
       (i) {
@@ -418,7 +410,6 @@ class RefUsageEvent extends Event {
     return RefUsageEvent(
       provider: provider,
       methodName: methodName,
-      stackTrace: stackTrace,
       positionalArguments: positionalArguments,
       typeArguments: typeArguments,
       namedArguments: namedArguments,
@@ -427,8 +418,7 @@ class RefUsageEvent extends Event {
   }
 
   final ProviderMeta provider;
-  final String methodName;
-  final String? stackTrace;
+  final RootCachedObject methodName;
   final List<RootCachedObject> positionalArguments;
   final List<RootCachedObject> typeArguments;
   final RootCachedObject namedArguments;
@@ -440,7 +430,6 @@ class WidgetRefUsageEvent extends Event {
   WidgetRefUsageEvent({
     required this.consumer,
     required this.methodName,
-    required this.stackTrace,
     required this.positionalArguments,
     required this.typeArguments,
     required this.namedArguments,
@@ -456,16 +445,9 @@ class WidgetRefUsageEvent extends Event {
     final consumer = RootCachedObject(
       CacheId($events['$path.consumer']!.valueAsString!),
     );
-    final methodName = List.generate(
-      int.parse($events['$path.methodName.length']!.valueAsString!),
-      (i) => $events['$path.methodName.$i']!.valueAsString!,
-    ).join();
-    final stackTrace = ($events['$path.stackTrace'] != null)
-        ? List.generate(
-            int.parse($events['$path.stackTrace.length']!.valueAsString!),
-            (i) => $events['$path.stackTrace.$i']!.valueAsString!,
-          ).join()
-        : null;
+    final methodName = RootCachedObject(
+      CacheId($events['$path.methodName']!.valueAsString!),
+    );
     final positionalArguments = List.generate(
       int.parse($events['$path.positionalArguments.length']!.valueAsString!),
       (i) {
@@ -497,7 +479,6 @@ class WidgetRefUsageEvent extends Event {
     return WidgetRefUsageEvent(
       consumer: consumer,
       methodName: methodName,
-      stackTrace: stackTrace,
       positionalArguments: positionalArguments,
       typeArguments: typeArguments,
       namedArguments: namedArguments,
@@ -506,8 +487,7 @@ class WidgetRefUsageEvent extends Event {
   }
 
   final RootCachedObject consumer;
-  final String methodName;
-  final String? stackTrace;
+  final RootCachedObject methodName;
   final List<RootCachedObject> positionalArguments;
   final List<RootCachedObject> typeArguments;
   final RootCachedObject namedArguments;
@@ -521,7 +501,6 @@ class ConsumerMeta {
     required this.hashValue,
     required this.containerId,
     required this.containerHashValue,
-    required this.creationStackTrace,
   });
 
   factory ConsumerMeta.from(
@@ -542,21 +521,12 @@ class ConsumerMeta {
       int.parse($events['$path.containerHashValue.length']!.valueAsString!),
       (i) => $events['$path.containerHashValue.$i']!.valueAsString!,
     ).join();
-    final creationStackTrace = ($events['$path.creationStackTrace'] != null)
-        ? List.generate(
-            int.parse(
-              $events['$path.creationStackTrace.length']!.valueAsString!,
-            ),
-            (i) => $events['$path.creationStackTrace.$i']!.valueAsString!,
-          ).join()
-        : null;
 
     return ConsumerMeta(
       id: id,
       hashValue: hashValue,
       containerId: containerId,
       containerHashValue: containerHashValue,
-      creationStackTrace: creationStackTrace,
     );
   }
 
@@ -564,5 +534,4 @@ class ConsumerMeta {
   final String hashValue;
   final internals.ContainerId containerId;
   final String containerHashValue;
-  final String? creationStackTrace;
 }

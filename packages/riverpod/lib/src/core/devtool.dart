@@ -352,7 +352,6 @@ final class RefUsageEvent extends Event {
   RefUsageEvent({
     required this.provider,
     required this.methodName,
-    required this.stackTrace,
     required this.positionalArguments,
     required this.typeArguments,
     required this.namedArguments,
@@ -363,8 +362,7 @@ final class RefUsageEvent extends Event {
            ).toList();
 
   final ProviderMeta provider;
-  final String methodName;
-  final String? stackTrace;
+  final Symbol methodName;
   final List<Object?> positionalArguments;
   final List<Object?> typeArguments;
   final Map<Symbol, Object?> namedArguments;
@@ -377,7 +375,6 @@ final class WidgetRefUsageEvent extends Event {
   WidgetRefUsageEvent({
     required this.consumer,
     required this.methodName,
-    required this.stackTrace,
     required this.positionalArguments,
     required this.typeArguments,
     required this.namedArguments,
@@ -388,8 +385,7 @@ final class WidgetRefUsageEvent extends Event {
            ).toList();
 
   final ConsumerContext consumer;
-  final String methodName;
-  final String? stackTrace;
+  final Symbol methodName;
   final List<Object?> positionalArguments;
   final List<Object?> typeArguments;
   final Map<Symbol, Object?> namedArguments;
@@ -404,7 +400,6 @@ final class ConsumerMeta {
     required this.hashValue,
     required this.containerId,
     required this.containerHashValue,
-    required this.creationStackTrace,
   });
 
   factory ConsumerMeta.from(ProviderElement element) {
@@ -416,9 +411,6 @@ final class ConsumerMeta {
       containerId: element.container.id,
       id: consumerId,
       containerHashValue: shortHash(element.container),
-      creationStackTrace: _stringForStackTrace(
-        provider._debugCreationStackTrace,
-      ),
     );
   }
 
@@ -426,7 +418,6 @@ final class ConsumerMeta {
   final String hashValue;
   final ContainerId containerId;
   final String containerHashValue;
-  final String? creationStackTrace;
 }
 
 final class _DevtoolObserver extends ProviderObserver {
@@ -485,8 +476,7 @@ final class _DevtoolObserver extends ProviderObserver {
       context.container,
       RefUsageEvent(
         provider: ProviderMeta.from(context._element),
-        methodName: invocation.memberName.toString(),
-        stackTrace: _stringForStackTrace(StackTrace.current),
+        methodName: invocation.memberName,
         positionalArguments: invocation.positionalArguments,
         typeArguments: invocation.typeArguments,
         namedArguments: invocation.namedArguments,
@@ -503,8 +493,7 @@ final class _DevtoolObserver extends ProviderObserver {
       context.container,
       WidgetRefUsageEvent(
         consumer: context,
-        methodName: invocation.memberName.toString(),
-        stackTrace: _stringForStackTrace(StackTrace.current),
+        methodName: invocation.memberName,
         positionalArguments: invocation.positionalArguments,
         typeArguments: invocation.typeArguments,
         namedArguments: invocation.namedArguments,
