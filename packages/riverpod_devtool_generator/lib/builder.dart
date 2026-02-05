@@ -12,9 +12,18 @@ import 'package:source_gen/source_gen.dart' hide TypeChecker;
 
 /// Builds generators for `build_runner` to run
 Builder riverpodDevtoolGenerator(BuilderOptions options) {
-  return SharedPartBuilder([
-    _RiverpodDevtoolGeneratorGenerator(),
-  ], 'riverpod_devtool_generator');
+  return SharedPartBuilder(
+    formatOutput: (code, languageVersion) {
+      try {
+        return DartFormatter(languageVersion: languageVersion).format(code);
+      } on Exception {
+        stderr.writeln('Warning: could not format generated code:\n$code');
+        return code;
+      }
+    },
+    [_RiverpodDevtoolGeneratorGenerator()],
+    'riverpod_devtool_generator',
+  );
 }
 
 class _RiverpodDevtoolGeneratorGenerator extends Generator {
