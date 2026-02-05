@@ -331,6 +331,21 @@ final class ProviderElementUpdateEvent extends Event {
   final ProviderStateRef? notifier;
 }
 
+Iterable<ProviderOrFamily> _obtainListenedProviderFromArgs(
+  List<Object?> positionalArguments,
+  Map<Symbol, Object?> namedArguments,
+) {
+  return positionalArguments.followedBy(namedArguments.values).map((e) {
+    // We search for provider arguments, but also remove modified/selectors/...
+    if (e is! ProviderListenableOrFamily) return null;
+    final listenedProvider = e.debugListenedProvider;
+    if (listenedProvider != null) return listenedProvider;
+
+    // Fallback for when a raw family is passed.
+    if (e is ProviderOrFamily) return e;
+  }).nonNulls;
+}
+
 @devtool
 @internal
 final class RefUsageEvent extends Event {
@@ -341,15 +356,19 @@ final class RefUsageEvent extends Event {
     required this.positionalArguments,
     required this.typeArguments,
     required this.namedArguments,
-  });
+  }) : listenedProviders =
+           _obtainListenedProviderFromArgs(
+             positionalArguments,
+             namedArguments,
+           ).toList();
 
   final ProviderMeta provider;
-
   final String methodName;
   final String? stackTrace;
   final List<Object?> positionalArguments;
   final List<Object?> typeArguments;
   final Map<Symbol, Object?> namedArguments;
+  final List<ProviderOrFamily> listenedProviders;
 }
 
 @devtool
@@ -362,7 +381,11 @@ final class WidgetRefUsageEvent extends Event {
     required this.positionalArguments,
     required this.typeArguments,
     required this.namedArguments,
-  });
+  }) : listenedProviders =
+           _obtainListenedProviderFromArgs(
+             positionalArguments,
+             namedArguments,
+           ).toList();
 
   final ConsumerContext consumer;
   final String methodName;
@@ -370,6 +393,7 @@ final class WidgetRefUsageEvent extends Event {
   final List<Object?> positionalArguments;
   final List<Object?> typeArguments;
   final Map<Symbol, Object?> namedArguments;
+  final List<ProviderOrFamily> listenedProviders;
 }
 
 @devtool
