@@ -140,6 +140,7 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
     _listenedElement.onSubscriptionResumeOrReactivate(this, () {
       final wasPaused = _isPaused;
       super.resume();
+      _listenedElement.flush();
 
       if (wasPaused && !isPaused) {
         if (_missedCalled?.data case final event?) {

@@ -3,6 +3,11 @@
 - Removed `@internal` for `ProviderFamily.new`
 - Added various life-cycles to `ProviderObserver`
 
+## 3.2.1 - 2026-02-03
+
+- Fixed a bug where resuming a paused provider could cause it to never
+  notify its listener ever again.
+
 ## 3.2.0 - 2026-01-17
 
 - Added missing `weak` flags to `WidgetRef.listen/listenManual`
