@@ -131,8 +131,7 @@ _computeExportDiff(ExportDirective export) {
   final show = export.combinators.whereType<ShowCombinator>().firstOrNull;
 
   final missing = exportedIdentifiers.where(
-    (e) =>
-        show == null || !show.shownNames.map((e) => e.name).contains(e.name),
+    (e) => show == null || !show.shownNames.map((e) => e.name).contains(e.name),
   );
 
   final extra = show?.shownNames.where(
