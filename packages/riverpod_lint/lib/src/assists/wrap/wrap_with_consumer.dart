@@ -28,8 +28,9 @@ class WrapWithConsumer extends ResolvedCorrectionProducer {
     final node = this.node;
     if (node is! NamedType) return;
 
-    final instanceCreationExpr =
-        node.ancestors.whereType<InstanceCreationExpression>().firstOrNull;
+    final instanceCreationExpr = node.ancestors
+        .whereType<InstanceCreationExpression>()
+        .firstOrNull;
     if (instanceCreationExpr == null) return;
 
     final type = instanceCreationExpr.staticType;

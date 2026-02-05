@@ -19,10 +19,9 @@ abstract class ConvertToStatefulBaseWidget extends ResolvedCorrectionProducer {
 
   StatefulBaseWidgetType get targetWidget;
   late final statelessBaseType = getStatelessBaseType(
-    exclude:
-        targetWidget == StatefulBaseWidgetType.statefulWidget
-            ? StatelessBaseWidgetType.statelessWidget
-            : null,
+    exclude: targetWidget == StatefulBaseWidgetType.statefulWidget
+        ? StatelessBaseWidgetType.statelessWidget
+        : null,
   );
   late final statefulBaseType = getStatefulBaseType(exclude: targetWidget);
 
@@ -95,7 +94,8 @@ abstract class ConvertToStatefulBaseWidget extends ResolvedCorrectionProducer {
       for (final member in widgetClass.members) {
         if (member is FieldDeclaration && !member.isStatic) {
           for (final fieldNode in member.fields.variables) {
-            final fieldElement = fieldNode.declaredFragment?.element as FieldElement?;
+            final fieldElement =
+                fieldNode.declaredFragment?.element as FieldElement?;
             if (fieldElement == null) continue;
             if (!fieldsAssignedInConstructors.contains(fieldElement)) {
               nodesToMove.add(member);
@@ -289,8 +289,9 @@ class _ReplacementEditBuilder extends RecursiveAstVisitor<void> {
         element.enclosingElement == widgetClassElement &&
         !elementsToMove.contains(element)) {
       final offset = node.offset;
-      final qualifier =
-          element.isStatic ? widgetClassElement.displayName : 'widget';
+      final qualifier = element.isStatic
+          ? widgetClassElement.displayName
+          : 'widget';
 
       final parent = node.parent;
       if (parent is InterpolationExpression &&

@@ -76,8 +76,8 @@ class _Visitor extends SimpleAstVisitor<void> {
         // provider(() => 42) is bad because a new function will always be created
         rule.reportAtNode(value);
       } else if (value is InstanceCreationExpression && !value.isConst) {
-        final instantiatedObject =
-            value.constructorName.element?.applyRedirectedConstructors();
+        final instantiatedObject = value.constructorName.element
+            ?.applyRedirectedConstructors();
 
         final operatorEqual = instantiatedObject?.enclosingElement
             .recursiveGetMethod('==');

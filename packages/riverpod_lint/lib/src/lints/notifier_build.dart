@@ -43,27 +43,24 @@ class _Visitor extends SimpleAstVisitor<void> {
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    final hasRiverpodAnnotation =
-        node.metadata.where((element) {
-          final annotationElement = element.element;
+    final hasRiverpodAnnotation = node.metadata.where((element) {
+      final annotationElement = element.element;
 
-          if (annotationElement == null ||
-              annotationElement is! ExecutableElement) {
-            return false;
-          }
+      if (annotationElement == null ||
+          annotationElement is! ExecutableElement) {
+        return false;
+      }
 
-          return riverpodType.isExactlyType(annotationElement.returnType);
-        }).isNotEmpty;
+      return riverpodType.isExactlyType(annotationElement.returnType);
+    }).isNotEmpty;
 
     if (!hasRiverpodAnnotation) return;
 
-    final hasBuildMethod =
-        node.members
-            .where(
-              (e) =>
-                  e.declaredFragment?.element.displayName == _buildMethodName,
-            )
-            .isNotEmpty;
+    final hasBuildMethod = node.members
+        .where(
+          (e) => e.declaredFragment?.element.displayName == _buildMethodName,
+        )
+        .isNotEmpty;
 
     if (hasBuildMethod) return;
 
