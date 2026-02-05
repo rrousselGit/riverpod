@@ -363,6 +363,7 @@ class RefUsageEvent extends Event {
     required this.positionalArguments,
     required this.typeArguments,
     required this.namedArguments,
+    required this.listenedProviders,
   });
 
   factory RefUsageEvent.from(
@@ -399,6 +400,14 @@ class RefUsageEvent extends Event {
     final namedArguments = RootCachedObject(
       CacheId($events['$path.namedArguments']!.valueAsString!),
     );
+    final listenedProviders = List.generate(
+      int.parse($events['$path.listenedProviders.length']!.valueAsString!),
+      (i) {
+        return RootCachedObject(
+          CacheId($events['$path.listenedProviders[$i]']!.valueAsString!),
+        );
+      },
+    );
 
     return RefUsageEvent(
       provider: provider,
@@ -407,6 +416,7 @@ class RefUsageEvent extends Event {
       positionalArguments: positionalArguments,
       typeArguments: typeArguments,
       namedArguments: namedArguments,
+      listenedProviders: listenedProviders,
     );
   }
 
@@ -416,6 +426,7 @@ class RefUsageEvent extends Event {
   final List<RootCachedObject> positionalArguments;
   final List<RootCachedObject> typeArguments;
   final RootCachedObject namedArguments;
+  final List<RootCachedObject> listenedProviders;
 }
 
 /// Devtool code for [internals.WidgetRefUsageEvent]
@@ -427,6 +438,7 @@ class WidgetRefUsageEvent extends Event {
     required this.positionalArguments,
     required this.typeArguments,
     required this.namedArguments,
+    required this.listenedProviders,
   });
 
   factory WidgetRefUsageEvent.from(
@@ -465,6 +477,14 @@ class WidgetRefUsageEvent extends Event {
     final namedArguments = RootCachedObject(
       CacheId($events['$path.namedArguments']!.valueAsString!),
     );
+    final listenedProviders = List.generate(
+      int.parse($events['$path.listenedProviders.length']!.valueAsString!),
+      (i) {
+        return RootCachedObject(
+          CacheId($events['$path.listenedProviders[$i]']!.valueAsString!),
+        );
+      },
+    );
 
     return WidgetRefUsageEvent(
       consumer: consumer,
@@ -473,6 +493,7 @@ class WidgetRefUsageEvent extends Event {
       positionalArguments: positionalArguments,
       typeArguments: typeArguments,
       namedArguments: namedArguments,
+      listenedProviders: listenedProviders,
     );
   }
 
@@ -482,6 +503,7 @@ class WidgetRefUsageEvent extends Event {
   final List<RootCachedObject> positionalArguments;
   final List<RootCachedObject> typeArguments;
   final RootCachedObject namedArguments;
+  final List<RootCachedObject> listenedProviders;
 }
 
 /// Devtool code for [internals.ConsumerMeta]
