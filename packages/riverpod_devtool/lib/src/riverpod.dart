@@ -1,17 +1,17 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class StateNotifier<T> extends Notifier<T> {
+class StateNotifier<ValueT> extends Notifier<ValueT> {
   StateNotifier(this._builder);
-  final T Function(Ref ref, StateNotifier<T> self) _builder;
+  final ValueT Function(Ref ref, StateNotifier<ValueT> self) _builder;
 
   // Remove protected
   @override
-  abstract T state;
+  abstract ValueT state;
 
   // Remove protected
   @override
-  T? get stateOrNull;
+  ValueT? get stateOrNull;
 
   @override
-  T build() => _builder(ref, this);
+  ValueT build() => _builder(ref, this);
 }

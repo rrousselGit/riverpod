@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_internal_member
+
 part of '../core.dart';
 
 /// {@template flutter_riverpod.widget_ref}
@@ -36,11 +38,7 @@ part of '../core.dart';
 /// a [Ref] instead.
 /// {@endtemplate}
 /// {@category Core}
-sealed class WidgetRef
-    implements
-        // ignore: invalid_use_of_internal_member
-        BaseWidgetRef,
-        MutationTarget {
+sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
   /// The [BuildContext] of the widget associated to this [WidgetRef].
   ///
   /// This is strictly identical to the [BuildContext] passed to [ConsumerWidget.build].

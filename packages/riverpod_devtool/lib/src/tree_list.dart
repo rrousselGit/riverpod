@@ -3,26 +3,28 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 
 @immutable
-abstract class Node<T extends Node<T>> {
-  List<T> get children;
+abstract class Node<NodeT extends Node<NodeT>> {
+  List<NodeT> get children;
 
   void onRemove() {}
 }
 
-class _NodeEntry<T extends Node<T>> {
+class _NodeEntry<NodeT extends Node<NodeT>> {
   _NodeEntry({required this.node});
 
-  final T node;
+  final NodeT node;
   late final int length;
 }
 
-extension type TreeList<T extends Node<T>>._(List<_NodeEntry<T>> _innerList) {
+extension type TreeList<NodeT extends Node<NodeT>>._(
+  List<_NodeEntry<NodeT>> _innerList
+) {
   TreeList() : this._([]);
 
   int get length => _innerList.length;
   bool get isEmpty => _innerList.isEmpty;
 
-  Iterable<_NodeEntry<T>> _toExpanded(T node) sync* {
+  Iterable<_NodeEntry<NodeT>> _toExpanded(NodeT node) sync* {
     var length = 1;
     final entry = _NodeEntry(node: node);
     yield entry;
@@ -44,7 +46,7 @@ extension type TreeList<T extends Node<T>>._(List<_NodeEntry<T>> _innerList) {
     }
   }
 
-  int? indexWhere(bool Function(T node) test) {
+  int? indexWhere(bool Function(NodeT node) test) {
     final index = _innerList.indexWhere((entry) => test(entry.node));
 
     return index == -1 ? null : index;
@@ -58,13 +60,13 @@ extension type TreeList<T extends Node<T>>._(List<_NodeEntry<T>> _innerList) {
     _innerList.removeRange(index, index + entry.length);
   }
 
-  void add(T value) {
+  void add(NodeT value) {
     _innerList.addAll(_toExpanded(value));
   }
 
-  T operator [](int index) => _innerList[index].node;
+  NodeT operator [](int index) => _innerList[index].node;
 
-  void operator []=(int index, T value) {
+  void operator []=(int index, NodeT value) {
     final previous = _innerList.elementAtOrNull(index);
     final end = index + (previous?.length ?? 1);
 

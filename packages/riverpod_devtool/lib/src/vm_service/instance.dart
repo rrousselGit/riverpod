@@ -117,7 +117,8 @@ final class SetVariable extends ResolvedVariable {
 final class MapVariable extends ResolvedVariable {
   MapVariable._fromInstance(super.object, Instance instance)
     : children = [
-        for (final (index, _) in (instance.associations ?? <dynamic>[]).indexed) ...[
+        for (final (index, _)
+            in (instance.associations ?? <dynamic>[]).indexed) ...[
           DerivedCachedObject.mapAssociationKey(object, index),
           DerivedCachedObject.mapAssociationValue(object, index),
         ],

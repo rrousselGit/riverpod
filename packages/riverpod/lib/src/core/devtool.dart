@@ -50,6 +50,7 @@ class RiverpodDevtool {
 
   final _uniqueOrigins = <ProviderOrFamily, OriginId>{};
   final _uniqueProviders = <ProviderOrFamily, ProviderId>{};
+  final _uniqueConsumers = </*BuildContext*/ Object, ConsumerId>{};
   final frames = <Frame>[];
 
   final _cache = <String, Object?>{};
@@ -101,6 +102,13 @@ class RiverpodDevtool {
         .firstWhereOrNull((entry) => entry.value == id)
         ?.key;
   }
+
+  ConsumerId _consumerId(/* BuildContext */ Object buildContext) {
+    return _uniqueConsumers.putIfAbsent(
+      buildContext,
+      () => ConsumerId(const Uuid().v4()),
+    );
+  }
 }
 
 /// ID for [ProviderContainer]
@@ -118,6 +126,10 @@ extension type OriginId(String _id) {}
 /// ID for specific [Provider] within a [ProviderOrFamily]
 @publicInDevtools
 extension type ProviderId(String _id) {}
+
+/// ID for specific [Provider] within a [ProviderOrFamily]
+@publicInDevtools
+extension type ConsumerId(String _id) {}
 
 @internal
 sealed class Notification {
@@ -319,6 +331,80 @@ final class ProviderElementUpdateEvent extends Event {
   final ProviderStateRef? notifier;
 }
 
+@devtool
+@internal
+final class RefUsageEvent extends Event {
+  RefUsageEvent({
+    required this.provider,
+    required this.methodName,
+    required this.stackTrace,
+    required this.positionalArguments,
+    required this.typeArguments,
+    required this.namedArguments,
+  });
+
+  final ProviderMeta provider;
+
+  final String methodName;
+  final String? stackTrace;
+  final List<Object?> positionalArguments;
+  final List<Object?> typeArguments;
+  final Map<Symbol, Object?> namedArguments;
+}
+
+@devtool
+@internal
+final class WidgetRefUsageEvent extends Event {
+  WidgetRefUsageEvent({
+    required this.consumer,
+    required this.methodName,
+    required this.stackTrace,
+    required this.positionalArguments,
+    required this.typeArguments,
+    required this.namedArguments,
+  });
+
+  final ConsumerContext consumer;
+  final String methodName;
+  final String? stackTrace;
+  final List<Object?> positionalArguments;
+  final List<Object?> typeArguments;
+  final Map<Symbol, Object?> namedArguments;
+}
+
+@devtool
+@internal
+final class ConsumerMeta {
+  ConsumerMeta({
+    required this.id,
+    required this.hashValue,
+    required this.containerId,
+    required this.containerHashValue,
+    required this.creationStackTrace,
+  });
+
+  factory ConsumerMeta.from(ProviderElement element) {
+    final provider = element.origin;
+    final consumerId = RiverpodDevtool.instance._consumerId(provider);
+
+    return ConsumerMeta(
+      hashValue: shortHash(provider),
+      containerId: element.container.id,
+      id: consumerId,
+      containerHashValue: shortHash(element.container),
+      creationStackTrace: _stringForStackTrace(
+        provider._debugCreationStackTrace,
+      ),
+    );
+  }
+
+  final ConsumerId id;
+  final String hashValue;
+  final ContainerId containerId;
+  final String containerHashValue;
+  final String? creationStackTrace;
+}
+
 final class _DevtoolObserver extends ProviderObserver {
   const _DevtoolObserver();
 
@@ -363,6 +449,42 @@ final class _DevtoolObserver extends ProviderObserver {
     RiverpodDevtool.instance.addEvent(
       context.container,
       ProviderElementUpdateEvent(context._element),
+    );
+  }
+
+  @override
+  void debugRefInvocation(
+    ProviderObserverContext context,
+    Invocation invocation,
+  ) {
+    RiverpodDevtool.instance.addEvent(
+      context.container,
+      RefUsageEvent(
+        provider: ProviderMeta.from(context._element),
+        methodName: invocation.memberName.toString(),
+        stackTrace: _stringForStackTrace(StackTrace.current),
+        positionalArguments: invocation.positionalArguments,
+        typeArguments: invocation.typeArguments,
+        namedArguments: invocation.namedArguments,
+      ),
+    );
+  }
+
+  @override
+  void debugWidgetRefInvocation(
+    ConsumerContext context,
+    Invocation invocation,
+  ) {
+    RiverpodDevtool.instance.addEvent(
+      context.container,
+      WidgetRefUsageEvent(
+        consumer: context,
+        methodName: invocation.memberName.toString(),
+        stackTrace: _stringForStackTrace(StackTrace.current),
+        positionalArguments: invocation.positionalArguments,
+        typeArguments: invocation.typeArguments,
+        namedArguments: invocation.namedArguments,
+      ),
     );
   }
 }

@@ -1222,31 +1222,12 @@ final class ProviderObserverContext {
 }
 
 @internal
-class ConsumerContext {}
+@immutable
+class ConsumerContext {
+  const ConsumerContext({required this.container, required this.buildContext});
 
-@internal
-base mixin DebugProviderObserver on ProviderObserver {
-  BaseWidgetRef debugOnWidgetRefMethod(ProviderObserverContext context);
-  BaseRef debugOnRefMethod(ProviderObserverContext context);
-  // BaseNotifier debugOnNotifierMethod(ProviderObserverContext context);
-  // BaseAsyncNotifier debugOnAsyncNotifierMethod(ProviderObserverContext context);
-  // BaseStreamNotifier debugOnStreamNotifierMethod(
-  //   ProviderObserverContext context,
-  // );
-
-  void debugDidCreateProviderContainer(ProviderContainer container);
-  void debugDidDisposeProviderContainer(ProviderContainer container);
-
-  void debugProviderBuildStart(ProviderObserverContext context);
-  void debugProviderBuildEnd(ProviderObserverContext context);
-
-  void debugProviderMarkedNeedsBuild(ProviderObserverContext context);
-  void debugProviderUnmount(ProviderObserverContext context);
-
-  void debugConsumerMount(ConsumerContext context);
-  void debugConsumerUnmount(ConsumerContext context);
-  void debugConsumerBuildStart(ConsumerContext context);
-  void debugConsumerBuildEnd(ConsumerContext context);
+  final ProviderContainer container;
+  final /*BuildContext*/ Object? buildContext;
 }
 
 /// An object that listens to the changes of a [ProviderContainer].
@@ -1363,6 +1344,24 @@ abstract base class ProviderObserver {
     ProviderObserverContext context,
     Mutation<Object?> mutation,
     Object? result,
+  ) {}
+
+  /// A method on [Ref] was invoked.
+  ///
+  /// You can use [StackTrace.current] to obtain the stack trace
+  /// of the invocation.
+  void debugRefInvocation(
+    ProviderObserverContext context,
+    Invocation invocation,
+  ) {}
+
+  /// A method on [Ref] was invoked.
+  ///
+  /// You can use [StackTrace.current] to obtain the stack trace
+  /// of the invocation.
+  void debugWidgetRefInvocation(
+    ConsumerContext context,
+    Invocation invocation,
   ) {}
 }
 

@@ -154,6 +154,10 @@ extension EventToBytes on Event {
         return that.toBytes(path: path);
       case ProviderElementUpdateEvent():
         return that.toBytes(path: path);
+      case RefUsageEvent():
+        return that.toBytes(path: path);
+      case WidgetRefUsageEvent():
+        return that.toBytes(path: path);
     }
   }
 }
@@ -237,5 +241,168 @@ extension ProviderElementUpdateEventToBytes on ProviderElementUpdateEvent {
     }
 
     return res9;
+  }
+}
+
+@internal
+extension RefUsageEventToBytes on RefUsageEvent {
+  Map<String, Object?> toBytes({required String path}) {
+    final res11 = <String, Object?>{path: 'RefUsageEvent'};
+    res11.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
+    {
+      final $value = methodName;
+      final length = ($value.length / 128).ceil();
+      res11['$path.methodName.length'] = length;
+      for (var i = 0; i < length; i++) {
+        final end = (i + 1) * 128;
+        res11['$path.methodName.$i'] = $value.substring(
+          i * 128,
+          end > $value.length ? $value.length : end,
+        );
+      }
+    }
+
+    {
+      final $value = stackTrace ?? '';
+      final length = ($value.length / 128).ceil();
+      res11['$path.stackTrace.length'] = length;
+      for (var i = 0; i < length; i++) {
+        final end = (i + 1) * 128;
+        res11['$path.stackTrace.$i'] = $value.substring(
+          i * 128,
+          end > $value.length ? $value.length : end,
+        );
+      }
+    }
+
+    {
+      res11['$path.positionalArguments.length'] = positionalArguments.length;
+      for (final (index, e) in positionalArguments.indexed) {
+        res11['$path.positionalArguments[$index]'] = RiverpodDevtool.instance
+            .cache(e);
+      }
+    }
+
+    {
+      res11['$path.typeArguments.length'] = typeArguments.length;
+      for (final (index, e) in typeArguments.indexed) {
+        res11['$path.typeArguments[$index]'] = RiverpodDevtool.instance.cache(
+          e,
+        );
+      }
+    }
+
+    res11['$path.namedArguments'] = RiverpodDevtool.instance.cache(
+      namedArguments,
+    );
+
+    return res11;
+  }
+}
+
+@internal
+extension WidgetRefUsageEventToBytes on WidgetRefUsageEvent {
+  Map<String, Object?> toBytes({required String path}) {
+    final res12 = <String, Object?>{path: 'WidgetRefUsageEvent'};
+    res12['$path.consumer'] = RiverpodDevtool.instance.cache(consumer);
+
+    {
+      final $value = methodName;
+      final length = ($value.length / 128).ceil();
+      res12['$path.methodName.length'] = length;
+      for (var i = 0; i < length; i++) {
+        final end = (i + 1) * 128;
+        res12['$path.methodName.$i'] = $value.substring(
+          i * 128,
+          end > $value.length ? $value.length : end,
+        );
+      }
+    }
+
+    {
+      final $value = stackTrace ?? '';
+      final length = ($value.length / 128).ceil();
+      res12['$path.stackTrace.length'] = length;
+      for (var i = 0; i < length; i++) {
+        final end = (i + 1) * 128;
+        res12['$path.stackTrace.$i'] = $value.substring(
+          i * 128,
+          end > $value.length ? $value.length : end,
+        );
+      }
+    }
+
+    {
+      res12['$path.positionalArguments.length'] = positionalArguments.length;
+      for (final (index, e) in positionalArguments.indexed) {
+        res12['$path.positionalArguments[$index]'] = RiverpodDevtool.instance
+            .cache(e);
+      }
+    }
+
+    {
+      res12['$path.typeArguments.length'] = typeArguments.length;
+      for (final (index, e) in typeArguments.indexed) {
+        res12['$path.typeArguments[$index]'] = RiverpodDevtool.instance.cache(
+          e,
+        );
+      }
+    }
+
+    res12['$path.namedArguments'] = RiverpodDevtool.instance.cache(
+      namedArguments,
+    );
+
+    return res12;
+  }
+}
+
+@internal
+extension ConsumerMetaToBytes on ConsumerMeta {
+  Map<String, Object?> toBytes({required String path}) {
+    final res13 = <String, Object?>{path: 'ConsumerMeta'};
+    res13['$path.id'] = RiverpodDevtool.instance.cache(id);
+
+    {
+      final $value = hashValue;
+      final length = ($value.length / 128).ceil();
+      res13['$path.hashValue.length'] = length;
+      for (var i = 0; i < length; i++) {
+        final end = (i + 1) * 128;
+        res13['$path.hashValue.$i'] = $value.substring(
+          i * 128,
+          end > $value.length ? $value.length : end,
+        );
+      }
+    }
+
+    res13['$path.containerId'] = containerId;
+    {
+      final $value = containerHashValue;
+      final length = ($value.length / 128).ceil();
+      res13['$path.containerHashValue.length'] = length;
+      for (var i = 0; i < length; i++) {
+        final end = (i + 1) * 128;
+        res13['$path.containerHashValue.$i'] = $value.substring(
+          i * 128,
+          end > $value.length ? $value.length : end,
+        );
+      }
+    }
+
+    {
+      final $value = creationStackTrace ?? '';
+      final length = ($value.length / 128).ceil();
+      res13['$path.creationStackTrace.length'] = length;
+      for (var i = 0; i < length; i++) {
+        final end = (i + 1) * 128;
+        res13['$path.creationStackTrace.$i'] = $value.substring(
+          i * 128,
+          end > $value.length ? $value.length : end,
+        );
+      }
+    }
+
+    return res13;
   }
 }

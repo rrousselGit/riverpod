@@ -67,8 +67,8 @@ class EvalFactory {
   }
 }
 
-Future<Byte<T>> runAndRetryOnExpired<T>(
-  Future<Byte<T>> Function() cb, {
+Future<Byte<ValueT>> runAndRetryOnExpired<ValueT>(
+  Future<Byte<ValueT>> Function() cb, {
   FutureOr<ByteErrorType?> Function()? onRetry,
   int maxRetries = 5,
 }) async {
@@ -111,7 +111,7 @@ class Eval {
 
   String _formatCode(String code) => code.replaceAll('\n', ' ');
 
-  Future<Byte<T>> _run<T>(Future<T> Function() cb) async {
+  Future<Byte<ValueT>> _run<ValueT>(Future<ValueT> Function() cb) async {
     try {
       final ref = await cb();
 

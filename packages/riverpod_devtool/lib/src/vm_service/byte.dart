@@ -1,67 +1,67 @@
 part of '../vm_service.dart';
 
 @immutable
-sealed class Byte<T> {
+sealed class Byte<ValueT> {
   const Byte();
   factory Byte._of(Object? obj) {
     switch (obj) {
       case Sentinel():
         return ByteError(SentinelExceptionType(obj));
-      case T():
+      case ValueT():
         return ByteVariable(obj);
       default:
-        throw ArgumentError('Object $obj is neither a Sentinel nor a $T');
+        throw ArgumentError('Object $obj is neither a Sentinel nor a $ValueT');
     }
   }
 
   static Byte<InstanceRef> instanceRef(Object? ref) => Byte._of(ref);
   static Byte<Instance> instance(Object? instance) => Byte._of(instance);
 
-  ByteVariable<T> get require {
+  ByteVariable<ValueT> get require {
     switch (this) {
-      case final ByteVariable<T> that:
+      case final ByteVariable<ValueT> that:
         return that;
-      case ByteError<T>(:final error):
+      case ByteError<ValueT>(:final error):
         throw StateError('Expected value but got error: $error');
     }
   }
 
-  T? get valueOrNull {
+  ValueT? get valueOrNull {
     switch (this) {
-      case final ByteVariable<T> that:
+      case final ByteVariable<ValueT> that:
         return that.instance;
-      case ByteError<T>():
+      case ByteError<ValueT>():
         return null;
     }
   }
 
-  Byte<R> map<R>(R Function(T value) fn) {
+  Byte<OutT> map<OutT>(OutT Function(ValueT value) fn) {
     switch (this) {
-      case final ByteVariable<T> that:
+      case final ByteVariable<ValueT> that:
         return ByteVariable(fn(that.instance));
-      case ByteError<T>(:final error):
-        return ByteError<R>(error);
+      case ByteError<ValueT>(:final error):
+        return ByteError<OutT>(error);
     }
   }
 }
 
-final class ByteVariable<T> extends Byte<T> {
+final class ByteVariable<ValueT> extends Byte<ValueT> {
   const ByteVariable(this.instance);
-  final T instance;
+  final ValueT instance;
 
   @override
   String toString() => 'ByteVariable($instance)';
 
   @override
   bool operator ==(Object other) {
-    return other is ByteVariable<T> && other.instance == instance;
+    return other is ByteVariable<ValueT> && other.instance == instance;
   }
 
   @override
   int get hashCode => instance.hashCode;
 }
 
-final class ByteError<T> extends Byte<T> {
+final class ByteError<ValueT> extends Byte<ValueT> {
   const ByteError(this.error);
 
   final ByteErrorType error;
@@ -71,7 +71,7 @@ final class ByteError<T> extends Byte<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is ByteError<T> && other.error == error;
+    return other is ByteError<ValueT> && other.error == error;
   }
 
   @override

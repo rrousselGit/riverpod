@@ -30,6 +30,12 @@ sealed class Event {
       case 'ProviderElementUpdateEvent':
         return ProviderElementUpdateEvent.from(events, path: path);
 
+      case 'RefUsageEvent':
+        return RefUsageEvent.from(events, path: path);
+
+      case 'WidgetRefUsageEvent':
+        return WidgetRefUsageEvent.from(events, path: path);
+
       default:
         throw ArgumentError('Unknown event type: $type');
     }
@@ -346,4 +352,183 @@ class ProviderElementUpdateEvent extends Event {
   final ProviderMeta provider;
   final ProviderStateRef next;
   final ProviderStateRef? notifier;
+}
+
+/// Devtool code for [internals.RefUsageEvent]
+class RefUsageEvent extends Event {
+  RefUsageEvent({
+    required this.provider,
+    required this.methodName,
+    required this.stackTrace,
+    required this.positionalArguments,
+    required this.typeArguments,
+    required this.namedArguments,
+  });
+
+  factory RefUsageEvent.from(
+    Map<String, InstanceRef> $events, {
+    required String path,
+  }) {
+    _validate($events, name: 'RefUsageEvent', path: path);
+
+    final provider = ProviderMeta.from($events, path: '$path.provider');
+    final methodName = List.generate(
+      int.parse($events['$path.methodName.length']!.valueAsString!),
+      (i) => $events['$path.methodName.$i']!.valueAsString!,
+    ).join();
+    final stackTrace = List.generate(
+      int.parse($events['$path.stackTrace.length']!.valueAsString!),
+      (i) => $events['$path.stackTrace.$i']!.valueAsString!,
+    ).join();
+    final positionalArguments = List.generate(
+      int.parse($events['$path.positionalArguments.length']!.valueAsString!),
+      (i) {
+        return RootCachedObject(
+          CacheId($events['$path.positionalArguments[$i]']!.valueAsString!),
+        );
+      },
+    );
+    final typeArguments = List.generate(
+      int.parse($events['$path.typeArguments.length']!.valueAsString!),
+      (i) {
+        return RootCachedObject(
+          CacheId($events['$path.typeArguments[$i]']!.valueAsString!),
+        );
+      },
+    );
+    final namedArguments = RootCachedObject(
+      CacheId($events['$path.namedArguments']!.valueAsString!),
+    );
+
+    return RefUsageEvent(
+      provider: provider,
+      methodName: methodName,
+      stackTrace: stackTrace,
+      positionalArguments: positionalArguments,
+      typeArguments: typeArguments,
+      namedArguments: namedArguments,
+    );
+  }
+
+  final ProviderMeta provider;
+  final String methodName;
+  final String? stackTrace;
+  final List<RootCachedObject> positionalArguments;
+  final List<RootCachedObject> typeArguments;
+  final RootCachedObject namedArguments;
+}
+
+/// Devtool code for [internals.WidgetRefUsageEvent]
+class WidgetRefUsageEvent extends Event {
+  WidgetRefUsageEvent({
+    required this.consumer,
+    required this.methodName,
+    required this.stackTrace,
+    required this.positionalArguments,
+    required this.typeArguments,
+    required this.namedArguments,
+  });
+
+  factory WidgetRefUsageEvent.from(
+    Map<String, InstanceRef> $events, {
+    required String path,
+  }) {
+    _validate($events, name: 'WidgetRefUsageEvent', path: path);
+
+    final consumer = RootCachedObject(
+      CacheId($events['$path.consumer']!.valueAsString!),
+    );
+    final methodName = List.generate(
+      int.parse($events['$path.methodName.length']!.valueAsString!),
+      (i) => $events['$path.methodName.$i']!.valueAsString!,
+    ).join();
+    final stackTrace = List.generate(
+      int.parse($events['$path.stackTrace.length']!.valueAsString!),
+      (i) => $events['$path.stackTrace.$i']!.valueAsString!,
+    ).join();
+    final positionalArguments = List.generate(
+      int.parse($events['$path.positionalArguments.length']!.valueAsString!),
+      (i) {
+        return RootCachedObject(
+          CacheId($events['$path.positionalArguments[$i]']!.valueAsString!),
+        );
+      },
+    );
+    final typeArguments = List.generate(
+      int.parse($events['$path.typeArguments.length']!.valueAsString!),
+      (i) {
+        return RootCachedObject(
+          CacheId($events['$path.typeArguments[$i]']!.valueAsString!),
+        );
+      },
+    );
+    final namedArguments = RootCachedObject(
+      CacheId($events['$path.namedArguments']!.valueAsString!),
+    );
+
+    return WidgetRefUsageEvent(
+      consumer: consumer,
+      methodName: methodName,
+      stackTrace: stackTrace,
+      positionalArguments: positionalArguments,
+      typeArguments: typeArguments,
+      namedArguments: namedArguments,
+    );
+  }
+
+  final RootCachedObject consumer;
+  final String methodName;
+  final String? stackTrace;
+  final List<RootCachedObject> positionalArguments;
+  final List<RootCachedObject> typeArguments;
+  final RootCachedObject namedArguments;
+}
+
+/// Devtool code for [internals.ConsumerMeta]
+class ConsumerMeta {
+  ConsumerMeta({
+    required this.id,
+    required this.hashValue,
+    required this.containerId,
+    required this.containerHashValue,
+    required this.creationStackTrace,
+  });
+
+  factory ConsumerMeta.from(
+    Map<String, InstanceRef> $events, {
+    required String path,
+  }) {
+    _validate($events, name: 'ConsumerMeta', path: path);
+
+    final id = RootCachedObject(CacheId($events['$path.id']!.valueAsString!));
+    final hashValue = List.generate(
+      int.parse($events['$path.hashValue.length']!.valueAsString!),
+      (i) => $events['$path.hashValue.$i']!.valueAsString!,
+    ).join();
+    final containerId = internals.ContainerId(
+      $events['$path.containerId']!.valueAsString!,
+    );
+    final containerHashValue = List.generate(
+      int.parse($events['$path.containerHashValue.length']!.valueAsString!),
+      (i) => $events['$path.containerHashValue.$i']!.valueAsString!,
+    ).join();
+    final creationStackTrace = List.generate(
+      int.parse($events['$path.creationStackTrace.length']!.valueAsString!),
+      (i) => $events['$path.creationStackTrace.$i']!.valueAsString!,
+    ).join();
+
+    return ConsumerMeta(
+      id: id,
+      hashValue: hashValue,
+      containerId: containerId,
+      containerHashValue: containerHashValue,
+      creationStackTrace: creationStackTrace,
+    );
+  }
+
+  final RootCachedObject id;
+  final String hashValue;
+  final internals.ContainerId containerId;
+  final String containerHashValue;
+  final String? creationStackTrace;
 }

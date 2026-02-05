@@ -200,7 +200,11 @@ class ProviderViewer extends StatelessWidget {
         minSizes: [state.minSize, ?notifier?.minSize, terminal.minSize],
         splitters: [if (notifier != null) notifier.heading, terminal.heading],
         // Force Material, to avoid issues with overflowing InkWells
-        children: <Material>[state.content, ?notifier?.content, terminal.content],
+        children: <Material>[
+          state.content,
+          ?notifier?.content,
+          terminal.content,
+        ],
       ),
     );
   }

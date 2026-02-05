@@ -30,6 +30,8 @@ Map<internals.ElementId, ElementMeta> computeElementsForFrame(
     switch (event) {
       case ProviderContainerAddEvent():
       case ProviderContainerDisposeEvent():
+      case RefUsageEvent():
+      case WidgetRefUsageEvent():
       // Unrelated events
       case ProviderElementDisposeEvent():
         // We keep the state on purpose

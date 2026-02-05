@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_internal_member
+
 part of '../core.dart';
 
 /// A function that can also listen to providers
@@ -370,6 +372,21 @@ base class ConsumerStatefulElement extends StatefulElement
   @override
   BuildContext get context => this;
 
+  ConsumerContext get _consumerContext =>
+      ConsumerContext(container: container, buildContext: context);
+
+  void _debugReportInvocation(Invocation invocation) {
+    if (!kDebugMode) return;
+
+    for (final obs in container.observers) {
+      container.runBinaryGuarded(
+        obs.debugWidgetRefInvocation,
+        _consumerContext,
+        invocation,
+      );
+    }
+  }
+
   @override
   late ProviderContainer container = ProviderScope.containerOf(this);
   var _dependencies =
@@ -463,6 +480,11 @@ base class ConsumerStatefulElement extends StatefulElement
 
   @override
   StateT watch<StateT>(ProviderListenable<StateT> target) {
+    if (kDebugMode) {
+      _debugReportInvocation(
+        Invocation.genericMethod(#watch, [StateT], [target]),
+      );
+    }
     _assertNotDisposed();
     return _dependencies
             .putIfAbsent(target, () {
@@ -513,6 +535,15 @@ base class ConsumerStatefulElement extends StatefulElement
     void Function(Object error, StackTrace stackTrace)? onError,
     bool weak = false,
   }) {
+    if (kDebugMode) {
+      _debugReportInvocation(
+        Invocation.method(
+          #listen,
+          [provider, listener],
+          {#onError: onError, #weak: weak},
+        ),
+      );
+    }
     _assertNotDisposed();
     assert(
       debugDoingBuild,
@@ -533,24 +564,42 @@ base class ConsumerStatefulElement extends StatefulElement
 
   @override
   bool exists(ProviderBase<Object?> provider) {
+    if (kDebugMode) {
+      _debugReportInvocation(Invocation.method(#exists, [provider], {}));
+    }
     _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).exists(provider);
   }
 
   @override
   StateT read<StateT>(ProviderListenable<StateT> provider) {
+    if (kDebugMode) {
+      _debugReportInvocation(
+        Invocation.genericMethod(#read, [StateT], [provider]),
+      );
+    }
     _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).read(provider);
   }
 
   @override
   ValueT refresh<ValueT>(Refreshable<ValueT> provider) {
+    if (kDebugMode) {
+      _debugReportInvocation(
+        Invocation.genericMethod(#refresh, [ValueT], [provider]),
+      );
+    }
     _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).refresh(provider);
   }
 
   @override
   void invalidate(ProviderOrFamily provider, {bool asReload = false}) {
+    if (kDebugMode) {
+      _debugReportInvocation(
+        Invocation.method(#invalidate, [provider], {#asReload: asReload}),
+      );
+    }
     _assertNotDisposed();
     container.invalidate(provider, asReload: asReload);
   }
@@ -563,6 +612,15 @@ base class ConsumerStatefulElement extends StatefulElement
     bool fireImmediately = false,
     bool weak = false,
   }) {
+    if (kDebugMode) {
+      _debugReportInvocation(
+        Invocation.method(
+          #listenManual,
+          [provider, listener],
+          {#onError: onError, #fireImmediately: fireImmediately, #weak: weak},
+        ),
+      );
+    }
     _assertNotDisposed();
     final listeners = _manualListeners ??= [];
 
