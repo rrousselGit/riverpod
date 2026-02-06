@@ -22,6 +22,18 @@ enum ProviderStatusInFrame { added, modified, disposed }
 
 extension type FrameId(int value) {}
 
+/// Provider that filters frames to only include those with state changes
+/// (creation, update, or deletion).
+final filteredFramesProvider = Provider<AsyncValue<List<FoldedFrame>>>(
+  name: 'filteredFramesProvider',
+  (ref) {
+    final frames = ref.watch(framesProvider);
+    return frames.whenData(
+      (frames) => frames.where((f) => f.hasStateChanges).toList(),
+    );
+  },
+);
+
 final selectedFrameIdProvider =
     NotifierProvider<StateNotifier<FrameId?>, FrameId?>(
       name: 'selectedFrameIdProvider',
@@ -29,7 +41,10 @@ final selectedFrameIdProvider =
         // Clear selected frame on hot-restart, due to frames being cleared too
         ref.watch(hotRestartEventProvider);
 
-        ref.listen(framesProvider, fireImmediately: true, (previous, next) {
+        ref.listen(filteredFramesProvider, fireImmediately: true, (
+          previous,
+          next,
+        ) {
           late final wasLastSelectedFrame =
               previous?.value?.lastOrNull?.id == self.state;
           late final newFramesContainsId =
@@ -50,7 +65,7 @@ final selectedFrameIdProvider =
 final selectedFrameProvider = Provider<FoldedFrame?>(
   name: 'selectedFrameProvider',
   (ref) {
-    final frames = ref.watch(framesProvider);
+    final frames = ref.watch(filteredFramesProvider);
     final selectedFrameId = ref.watch(selectedFrameIdProvider);
 
     if (selectedFrameId == null) return null;
@@ -131,6 +146,21 @@ final class FoldedFrame {
     }
 
     return null;
+  }
+
+  /// Returns true if this frame contains at least one state update/creation/deletion.
+  bool get hasStateChanges {
+    for (final event in frame.events) {
+      switch (event) {
+        case ProviderElementAddEvent() ||
+            ProviderElementUpdateEvent() ||
+            ProviderElementDisposeEvent():
+          return true;
+        case _:
+          continue;
+      }
+    }
+    return false;
   }
 }
 
@@ -245,7 +275,7 @@ class FrameStepper extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = useScrollController();
-    final frames = ref.watch(framesProvider);
+    final frames = ref.watch(filteredFramesProvider);
 
     void select(FrameId frame) {
       onSelect(frame);
@@ -279,6 +309,13 @@ class FrameStepper extends HookConsumerWidget {
 
     switch (frames) {
       case AsyncValue(:final value?):
+        if (value.isEmpty) {
+          return const SizedBox(
+            height: _stepperHeight,
+            child: Center(child: Text('No frames with state changes')),
+          );
+        }
+
         final currentIndex = value.indexOf(selectedFrame!);
         final canGoFirst = currentIndex > 0;
         final canGoPrevious = currentIndex > 0;
