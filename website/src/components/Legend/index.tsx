@@ -58,7 +58,7 @@ const Legend = ({ annotations, code }) => {
 
   return (
     <div className="legend">
-      <pre className="code">
+      <pre className="code" dir="ltr">
         {fullAnnotations.map(({ code, color }) => {
           let underlineClass = color ? `underline` : "";
           let style = color ? { color: color } : undefined;

@@ -329,6 +329,15 @@ export const documentTitles = {
     "getting_started": "Getting started",
     "cookbooks/refresh": "Pull-to-refresh / Retry-on-error",
   },
+  'ar': {
+    "introduction/getting_started": "الشروع في العمل مع Riverpod",
+    "whats_new": "ما الجديد في Riverpod 3.0",
+    "3.0_migration": "الانتقال من الإصدار 2.0 إلى 3.0",
+    "tutorials/first_app": "تطبيقك الأول مع Riverpod",
+    "root/faq": "الأسئلة الشائعة",
+    "root/do_dont": "افعل/لا تفعل",
+    "concepts2/providers": "مفاهيم Providers",
+  },
 };
 export const outdatedTranslations = [
 {"countryCode":"bn","id":"migration/0.13.0_to_0.14.0","englishPath":"/docs/migration/0.13.0_to_0.14.0"},

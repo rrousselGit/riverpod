@@ -1,0 +1,499 @@
+---
+title: تطبيقك الأول مع Riverpod
+version: 2
+---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+import { DartPad } from "/src/components/DartPad";
+
+في هذا البرنامج التعليمي ، سوف نقوم ببناء تطبيق مولد النكات العشوائية بإستخدام Riverpod:
+
+<DartPad id="6bf918e3fc97a40b53d1ea80fd937146" />
+
+## النقاط الرئيسية
+- تعلم كيفية تنصيب Riverpod
+- انشأ Provider للقيام بإتصالك بشبكة الإنترنت
+- استخدم [Consumer] لعرض البيانات في واجهة المستخدم
+- تعامل مع  [AsyncValue] لعرض حالات التحميل والأخطاء
+
+## إعداد المشروع
+
+### إنشاء مشروع Flutter جديد
+
+للبدء, لنقم بإنشاء مشروع Flutter جديد بإستخدام الأمر التالي في منفذ الأوامر:
+
+```sh
+flutter create first_app
+```
+
+بعد ذلك , افتح المشروع في محرر الاكواد المفضل.
+
+### إنشاء واجهة مستخدم وهمية
+
+قبل البداية بكتابة اي شكل من العمليات المنطقية الخاصة بالتطبيق, لنقم بإنشاء واجهة المستخدم الخاصة بالتطبيق.
+بدلا من إستخدام API فعلي, سوف نبدأ العمل على بيانات ثابتة داخل التطبيق.
+
+دعونا نبدأ بإنشاء ملف جديد يدعى `home.dart` داخل مجلد `lib` في مشروعنا.
+داخل هذا المجلد , أضف الكود التالي:
+
+<AutoSnippet
+  title="lib/home.dart"
+  raw={`
+  import 'package:flutter/material.dart';
+  
+  class HomeView extends StatelessWidget {
+    const HomeView({super.key});
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Random Joke Generator')),
+        body: SizedBox.expand(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              const SelectableText(
+                'What kind of bagel can fly?\\n\\n'
+                'A plain bagel.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 24),
+              ),
+  
+              Positioned(
+                bottom: 20,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: const Text('Get another joke'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+`}
+/>
+
+بعدها, يمكننا تعديل مجلد `main.dart` لإستخدام الكائن `HomeView` الذي أنشأناه للتو:
+
+<AutoSnippet
+  title="lib/main.dart"
+  raw={`
+  import 'package:flutter/material.dart';
+  
+  import 'home.dart';
+  
+  void main() {
+    runApp(const MyApp());
+  }
+  
+  class MyApp extends StatelessWidget {
+    const MyApp({super.key});
+  
+    @override
+    Widget build(BuildContext context) {
+      return const MaterialApp(home: HomeView());
+    }
+  }
+`}
+/>
+
+عند تشغيلك للتطبيق, يجب أن ترى واجهة المستخدم التالية:
+
+![Mocked UI](/img/tutorials/first_app/mocked_ui.png)
+
+### إضافة Riverpod إلى المشروع
+
+بعد إنشائك للمشروع , نحتاج إلى إضافة Riverpod ك dependency داخل ملف `pubspec.yaml`.
+
+سوف نقوم بإستخدام Riverpod داخل مشروع Flutter, لذلك سوف نقوم بتنصيب حزمة [flutter_riverpod].  
+بشكل مشابه, سوف نقوم بتنفيذ طلبات الاتصال بالشبكة (network requests) بإستخدام حزمة [Dio], لذلك سنقوم بتنصيبها أيضا.
+
+يمكنك إضافة كلا الحزمتين بإستخدام الأمر التالي في منفذ الأوامر:
+
+```sh
+flutter pub add flutter_riverpod dio
+```
+
+بتنفيذ ذلك ، سيتم اضافة اخر إصدار من كلا الحزمتين Riverpod و [Dio].
+
+### (إختياري) إضافة حزمة riverpod_lint
+
+لمساعدتك في كتابة نصوص Riverpod أفضل, يمكنك تنصيب حزمة [riverpod_lint] .  
+هذه الحزمة توفر لك الوصول الكامل إلى العديد حزم تعديل الهيكلية لتسهيل كتابة نصوص Riverpod , بالإضافة إلى مجموعة من أدوات التصحيح لمساعدتك على تجنب الأخطاء الشائعة.
+
+Riverpod_lint تم تنفيذها بإستخدام [analysis_server_plugin]. نتيجة لذلك, يتم تنصيبها من خلال ملف  `analysis_options.yaml` داخل مشروعك.
+
+إذا لم تجده داخل المشروع , قم بإنشاء ملف  `analysis_options.yaml` جنبًا إلى جنب مع ملف `pubspec.yaml` وقم بإضفة التالي داخله:
+
+```yaml title="analysis_options.yaml"
+plugins:
+  riverpod_lint: <latest version from https://pub.dev/packages/riverpod_lint>
+```
+
+### إضافة ProviderScope داخل وظيفة main داخل ملف `main.dart`
+
+لكي تستطيع حزمة  Riverpod العمل بشكل صحيح,نحتاج لتحديث وظيفة `main` لكي تتضمن  [ProviderScope].  
+يمكنك الحصول على معلومات اكثر داخل قسم  <Link documentID="concepts2/containers" /> .
+
+النص البرمجي التالي هو وظيفة `main` بعد تحديثها:
+
+<AutoSnippet
+  title="lib/main.dart"
+  raw={`
+void main() {
+  runApp(
+    // إضافة ProviderScope فوق الاستدعاء الاساسي لتطبيق Flutter
+    // highlight-next-line
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
+  `}
+/>
+
+## إنشاء نموذج تصنيف البيانات (a model class)
+
+في هذا الدرس التعليمي , سوف نقوم بجلب البيانات من خلال ال API الخاص بـ [Random Joke generator / مولد النكات العشوائي](https://official-joke-api.appspot.com/random_joke).
+
+هذا ال API يقوم بإرجاع بيانات على شكل كائن a JSON والذي يتضمن ما يشبه التالي:
+
+```json
+{
+  "type": "general",
+  "setup": "Why did the scarecrow win an award?",
+  "punchline": "Because he was outstanding in his field.",
+  "id": 333
+}
+```
+
+لتمثيل هذه البيانات داخل تطبيقنا , سوف نقوم بإنشاء نموذج تصنيف البيانات  (model class) يدعى `Joke`.  
+
+من اجل ذلك , لنقم بإنشاء ملف جديد يدعى  `joke.dart` داخل مجلد `lib` الخاص بمشروعنا.
+التالي هو شكل نموذج التصنيف `Joke` الذي نحتاجه:
+
+<AutoSnippet
+  title="lib/joke.dart"
+  raw={`
+class Joke {
+  Joke({
+    required this.type,
+    required this.setup,
+    required this.punchline,
+    required this.id,
+  });
+  
+  factory Joke.fromJson(Map<String, Object?> json) {
+    return Joke(
+      type: json['type']! as String,
+      setup: json['setup']! as String,
+      punchline: json['punchline']! as String,
+      id: json['id']! as int,
+    );
+  }
+  
+  final String type;
+  final String setup;
+  final String punchline;
+  final int id;
+}
+  `}
+/>
+
+
+لاحظ  `fromJson` factory constructor.  
+بما ان الـ API الخاص بنا يقوم بإرجاع كائن JSON , نحتاج لطريقة لتحويل بيانات الـ JSON وتمثيلها من خلال `Joke` .
+هذا الـ constructor يستقبل بيانات بصيغة `Map<String, Object?>` ويقوم بإرجاع نموذج من  `Joke` يمثلها .
+
+## كتابة دالة تستدعي واجهة برمجة التطبيقات (API).
+
+الآن وقد أصبح لدينا نموذج تصنيف البيانات الخاص بنا، يمكننا كتابة دالة تجلب البيانات من واجهة برمجة التطبيقات (API).
+سوف نقوم بإستخدام حزمة [Dio] هنا, لأنه يُصدر خطأً تلقائيًا في حال فشل الطلب، وهو أمرٌ مناسبٌ لحالتنا.
+لكن يمكنك استخدام أي عميل HTTP تفضله.
+
+يمكننا وضع هذه السطور البرمجية في داخل ملف  `joke.dart` الذي أنشأناه سابقًا،,
+بما ان هذه السطور البرمجية مرتبطة ارتباطا وثيقا بكائن `Joke`.
+
+<AutoSnippet
+  title="lib/joke.dart"
+  raw={`
+  final dio = Dio();
+  
+  Future<Joke> fetchRandomJoke() async {
+    // جلب نكتة عشوائية من واجهة برمجة تطبيقات عامة
+    final response = await dio.get<Map<String, Object?>>(
+      'https://official-joke-api.appspot.com/random_joke',
+    );
+  
+    return Joke.fromJson(response.data!);
+  }
+  `}
+/>
+
+:::info
+لاحظ كيف لم نرصد أي خطأ من استدعاء واجهة برمجة التطبيقات (API).
+هذا مقصود. سيتولى Riverpod معالجة الأخطاء نيابةً عنا، لذا لسنا بحاجة إلى القيام بذلك يدويًا.
+:::
+
+## إنشاء provider الذي يقوم بجلب البيانات
+
+الآن بعد أن أصبح لدينا دالة للاستعلام عن واجهة برمجة التطبيقات (API)، يمكننا إنشاء "provider" مسؤول عن
+تخزين نتيجة واجهة برمجة التطبيقات هذه مؤقتًا.  
+الق نظرة على  <Link documentID="concepts2/providers" /> للمزيد من المعلومات عنها.
+
+بما ان دالة `fetchRandomJoke` تعيد البيانات بصيغة `Future<Joke>`, من اجل ذلك ، سوف نقوم بإستخدام [FutureProvider].
+يمكننا وضع الـ provider داخل نفس ملف `joke.dart`, بما انه مرتبط بنفس نمذج تمثيل البيانات `Joke`.
+
+بفعل ذلك، سيتم تخزين تنفيذ `fetchRandomJoke` مؤقتًا، وبغض النظر عن عدد مرات الوصول إلى القيمة، سيتم تنفيذ طلب الشبكة مرة واحدة فقط.
+
+<AutoSnippet
+  title="lib/joke.dart"
+  raw={`
+  final randomJokeProvider = FutureProvider<Joke>((ref) async {
+    // استخدام دالة fetchRandomJoke للحصول على نكتة عشوائية
+    return fetchRandomJoke();
+  });
+  `}
+/>
+
+:::info
+إن الفصل بين دالة `fetchRandomJoke` ودالة `randomJokeProvider` ليس إلزاميًا.  
+يمكنك كتابة محتوى `fetchRandomJoke` مباشرةً داخل الـ Provider إذا كنت تفضل ذلك:
+```dart
+final randomJokeProvider = FutureProvider<Joke>((ref) async {
+  final response = await dio.get<Map<String, Object?>>(
+    'https://official-joke-api.appspot.com/random_joke',
+  );
+
+  return Joke.fromJson(response.data!);
+});
+```
+:::
+
+## عرض البيانات في واجهة المستخدم
+
+### تضمين واجهة المسخدم الخاصة بنا داخل [Consumer]
+
+الآن وقد أصبح لدينا provider، فقد حان الوقت لتحديث عنصر واجهة المستخدم `HomeView` لتحميل البيانات ديناميكيًا.
+وللقيام بذلك، سنحتاج إلى ميزة أخرى من Riverpod: الا وهي أداة [Consumer].  
+تتيح لنا هذه الأداة قراءة قيمة provider وإعادة بناء واجهة المستخدم عند تغيير القيمة.
+يُستخدم بطريقة تذكرنا بالأدوات مثل [StreamBuilder].
+
+بشكل أدق , نحتاج لتضمين `Stack` داخل اداة `Consumer`.  
+إذا قمت بتثبيت [riverpod_lint] في الخطوة السابقة، فيمكنك استخدام إحدى عمليات إعادة البناء المضمنة:
+
+![Wrap in Consumer refactor in action](/img/tutorials/first_app/wrap_in_consumer.gif)
+
+يجب أن يبدو كود `home.dart` المُحدّث كما يلي:
+
+<AutoSnippet
+  title="lib/home.dart"
+  raw={`
+  import 'package:flutter/material.dart';
+  import 'package:flutter_riverpod/flutter_riverpod.dart';
+  
+  class HomeView extends StatelessWidget {
+    const HomeView({super.key});
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Random Joke Generator')),
+        body: SizedBox.expand(
+          // highlight-next-line
+          child: Consumer(
+            // highlight-next-line
+            builder: (context, ref, child) {
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  const SelectableText(
+                    'What kind of bagel can fly?\\n\\n'
+                    'A plain bagel.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 24),
+                  ),
+  
+                  Positioned(
+                    bottom: 20,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: const Text('Get another joke'),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      );
+    }
+  }
+  `}
+/>
+
+### الحصول على joke والاستماع للتغيرات التي تطرأ عليها
+
+الآن بعد أن أصبح لدينا `Consumer`، يمكننا استخدام مُعامل `ref` الخاص به لقراءة ال provider.  
+باستخدام هذا الكائن، يمكننا استدعاء `ref.watch(randomJokeProvider)` للحصول على القيمة الحالية للـ provider.
+لكن هناك طرق أخرى للتفاعل مع الـ providers! الق نظرة على <Link documentID="concepts2/refs" /> للمزيد من المعلومات.
+
+بعد ذلك ، الـ `Consumer` يجب ان يكون كالتالي:
+
+```dart
+Consumer(
+  builder: (context, ref, child) {
+    // highlight-next-line
+    final randomJoke = ref.watch(randomJokeProvider);
+    // ...
+  },
+)
+```
+
+باستخدام هذا السطر، سيقوم Riverpod تلقائيًا بجلب النكتة من واجهة برمجة التطبيقات (API) الخاصة بنا وتخزين النتيجة مؤقتًا.
+يمكننا الآن استخدام المتغير `randomJoke` لعرض النكتة في واجهة المستخدم.
+
+### التعامل مع حالات التحميل والأخطاء
+
+المتغير `randomJoke` الذي أنشأناه سابقًا ليس من النوع `Joke`، بل من النوع `AsyncValue<Joke>`.  
+[AsyncValue] هو نوع من أنواع Riverpod يمثل حالة عملية غير متزامنة, مثل طلب الشبكة.
+يتضمن معلومات حول حالات التحميل والنجاح والخطأ. `AsyncValue` يشبه في نواحٍ عديدة الـ `AsyncSnapshot` المستخدم في [StreamBuilder].
+
+إحدى الطرق المريحة للتعامل مع الحالات المختلفة هي استخدام خاصية `switch` في لغة دارت. وهي تشبه سلسلة `if`/`else if`، ولكنها مصممة خصيصًا للتعامل مع الشروط على كائن محدد.
+تتمثل إحدى الطرق الشائعة لاستخدامه عند دمجه مع `AsyncValue` فيما يلي:
+
+```dart
+switch (asyncValue) {
+  // إذا كانت قيمة "value" غير فارغة، فهذا يعني أن لدينا بعض البيانات.
+  case AsyncValue(:final value?):
+    return Text(value);
+  // إذا كانت قيمة "error" غير فارغة، فهذا يعني أن العملية قد فشلت.
+  case AsyncValue(error: != null):
+    return Text('Error: ${asyncValue.error}');
+  // إذا لم نكن في حالة البيانات ولا في حالة الخطأ، فإننا نكون في حالة التحميل.
+  case AsyncValue():
+    return const CircularProgressIndicator();
+}
+```
+
+:::caution
+ترتيب العملية مهم!  
+إذا كنت تستخدم الصيغة المذكورة أعلاه، فمن المهم التحقق من القيم
+قبل التحقق من الأخطاء ومعالجة حالة التحميل في النهاية.
+
+في حال استخدام ترتيب مختلف، قد تلاحظ سلوكاً غير صحيح، مثل
+عرض مؤشر التقدم بعد اكتمال الطلب.
+:::
+
+
+يمكننا الآن تحديث `Stack` لعرض النكتة أو مؤشر التحميل أو رسالة الخطأ بناءً على حالة `randomJoke`:
+<AutoSnippet
+  raw={`
+  return Stack(
+    alignment: Alignment.center,
+    children: [
+      switch (randomJoke) {
+        // عند اكتمال الطلب بنجاح، نقوم بعرض النكتة.
+        AsyncValue(:final value?) => SelectableText(
+          '$\{value.setup}\\n\\n$\{value.punchline}',
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 24),
+        ),
+        // في حالة حدوث خطأ، نعرض رسالة خطأ بسيطة.
+        AsyncValue(error: != null) => const Text('Error fetching joke'),
+        //أثناء تحميل الطلب، نعرض مؤشرًا للتقدم.
+        AsyncValue() => const CircularProgressIndicator(),
+      },
+  
+      // <code for the button remains unchanged>
+    ],
+  );
+`}
+/>
+
+
+في هذه المرحلة، يكون تطبيقنا متصلاً بالإنترنت، ويتم عرض نكتة عشوائية عند تشغيل التطبيق!
+
+### ربط زر "احصل على نكتة أخرى".
+
+حالياً، نعرض نكتة عشوائية عند تشغيل التطبيق، لكن النقر على الزر لا يُحدث أي تغيير. لنُحدّث الزر لعرض نكتة جديدة عند النقر عليه.
+
+يمكننا استخدام نمط مشابه لـ [ChangeNotifier] والتعامل مع الحالة يدويًا.  
+يدعم Riverpod مثل هذه الأنماط، لكنها ليست ضرورية هنا.
+
+بدلاً من ذلك، يمكننا توجيه Riverpod لإعادة تنفيذ منطق ال provider عند النقر على الزر.
+
+يمكن القيام بذلك باستخدام [Ref.invalidate] كما يلي:
+
+```dart
+ElevatedButton(
+  // highlight-next-line
+  onPressed: () => ref.invalidate(randomJokeProvider),
+  child: const Text('احصل على نكتة أخرى'),
+),
+```
+
+هذا كل ما علينا فعله!  
+عند النقر على الزر، سيعيد Riverpod تنفيذ منطق `randomJokeProvider`، والذي سيقوم
+بجلب نكتة جديدة من واجهة برمجة التطبيقات وتحديث واجهة المستخدم وفقًا لذلك.
+
+### إضافة مؤشر تقدم خطي `LinearProgressIndicator` عند جلب نكتة جديدة
+
+ربما لاحظت أنه عند النقر على زر "احصل على نكتة أخرى"، لا يعرض التطبيق أي مؤشر تحميل.
+
+وذلك لأنه عندما نستدعي [Ref.invalidate]، فإن ذاكرة التخزين المؤقت الموجودة لا يتم تدميرها.
+بدلاً من ذلك، أثناء جلب النكتة الجديدة، نحتفظ بمعلومات حول النكتة السابقة.
+هذا يسمح لنا بعرض النكتة السابقة أثناء جلب النكتة الجديدة.
+
+مع ذلك، قد ترغب واجهات المستخدم في معالجة هذه الحالات وعرض كلٍّ من مؤشر التحميل والنكتة السابقة.
+
+يُعدّ [LinearProgressIndicator] طريقة شائعة للقيام بذلك. لإضافة هذا المؤشر، يمكننا التحقق من
+
+[AsyncValue.isRefreshing]. تكون هذه العلامة `true` عندما تكون البيانات القديمة متوفرة ويتم إرسال طلب جديد.
+
+
+يجب أن تبدو حزمة `Stack` المحدثة لدينا على النحو التالي:
+
+```dart
+return Stack(
+  alignment: Alignment.center,
+  children: [
+    // أثناء الطلب الثاني، نعرض مؤشر تحميل خاص.
+    // highlight-next-line
+    if (randomJoke.isRefreshing)
+      const Positioned(
+        top: 0,
+        left: 0,
+        right: 0,
+        child: LinearProgressIndicator(),
+      ),
+
+    // اعرض البيانات والزر كما كان من قبل
+  ],
+);
+```
+
+هذا كل شيء!  
+لدينا الآن تطبيق مولد نكات عشوائية يعمل بكامل طاقته، حيث يقوم بجلب النكات من واجهة برمجة التطبيقات (API) وعرضها في واجهة المستخدم.  
+وقد تعاملنا مع جميع الحالات الشاذة، مثل حالات التحميل والخطأ.
+
+لاحظ كيف أننا لم نضطر أبدًا إلى كتابة `try/catch` أو كتابة تعليمات برمجية مثل `isLoading = true/false`.
+
+[ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[FutureProvider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/FutureProvider-class.html
+[Dio]: https://pub.dev/packages/dio
+[Consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html
+[AsyncValue]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/AsyncValue-class.html
+[StreamBuilder]: https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html
+[ChangeNotifier]: https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html
+[Ref.invalidate]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref/invalidate.html
+[LinearProgressIndicator]: https://api.flutter.dev/flutter/material/LinearProgressIndicator-class.html
+[AsyncValue.isRefreshing]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/AsyncValueX/isRefreshing.html
+[riverpod_lint]: https://pub.dev/packages/riverpod_lint
+[ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[analysis_server_plugin]: https://pub.dev/packages/analysis_server_plugin

@@ -1,0 +1,174 @@
+---
+title: الشروع في العمل مع Riverpod
+version: 8
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import pubspec from "@site/docs/introduction/getting_started/pubspec";
+import dartHelloWorld from "./dart_hello_world";
+import pubadd from "@site/docs/introduction/getting_started/pub_add";
+import helloWorld from "./hello_world";
+import dartPubspec from "@site/docs/introduction/getting_started/dart_pubspec";
+import dartPubadd from "@site/docs/introduction/getting_started/dart_pub_add";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+
+## جَرِب Riverpod مباشرةً
+
+لتجربة Riverpod، جربها عبر الإنترنت على [Dartpad](https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2)
+أو عبر [Zapp](https://zapp.run/new):
+
+<iframe
+  src="https://zapp.run/edit/zc9206pec930?theme=dark&lazy=false"
+  style={{ width: "100%", border: 0, overflow: "hidden", aspectRatio: "1.5" }}
+></iframe>
+
+## تنصيب الحزم المطلوبة
+
+يأتي Riverpod كحزمة "riverpod" رئيسية مكتفية ذاتيًا, بالإضافة إلى حزم اختيارية لاستخدام توليد التعليمات البرمجية (<Link documentID="concepts/about_code_generation" />) و hooks (<Link documentID="concepts/about_hooks" />).
+
+بمجرد معرفة الحزمة (الحزم) التي تريد تثبيتها، تابع لإضافة الحزم إلى تطبيقك في سطر واحد كما يلي:
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: 'Flutter', value: 'flutter_riverpod', },
+    { label: 'Dart only', value: 'riverpod', },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet {...pubadd}></AutoSnippet>
+
+</TabItem>
+
+<TabItem value="riverpod">
+
+<AutoSnippet {...dartPubadd}></AutoSnippet>
+
+</TabItem>
+
+</Tabs>
+
+بدلاً من ذلك، يمكنك إضافة الحزم إلى تطبيقك بشكل يدوي من داخل ملف `pubspec.yaml` كما يلي:
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: 'Flutter', value: 'flutter_riverpod', },
+    { label: 'Dart only', value: 'riverpod', },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet title="pubspec.yaml" language="yaml" {...pubspec}></AutoSnippet>
+
+
+بعد ذلك ، قم بتنزيل الحزم من خلال تنفيذ `flutter pub get` داخل منفذ الأوامر.
+
+
+
+</TabItem>
+<TabItem value="riverpod">
+
+<AutoSnippet
+  title="pubspec.yaml"
+  language="yaml"
+  {...dartPubspec}
+></AutoSnippet>
+
+بعد ذلك ، قم بتنزيل الحزم من خلال تنفيذ  `dart pub get` داخل منفذ الأوامر.
+
+</TabItem>
+</Tabs>
+
+:::info
+في حال استخدام خاصية توليد الكود، يمكنك الآن تشغيل مولد الكود باستخدام الأمر التالي:
+```sh
+dart run build_runner watch -d
+```
+:::
+
+هذا كل شيء. لقد أضفت [Riverpod] إلى تطبيقك!
+
+## تفعيل riverpod_lint
+
+يأتي Riverpod مزودًا بحزمة اختيارية [riverpod_lint]
+توفر قواعد التدقيق البرمجي لمساعدتك في كتابة كود أفضل، و
+توفر خيارات إعادة هيكلة مخصصة.
+
+تم تنفيذ Riverpod_lint باستخدام [analysis_server_plugin]. ولذلك، يتم تثبيته من خلال `analysis_options.yaml`.
+باختصار، أنشئ ملف `analysis_options.yaml` بجوار ملف `pubspec.yaml` الخاص بك وأضف ما يلي:
+
+```yaml title="analysis_options.yaml"
+plugins:
+  riverpod_lint: <الاصدار الاخير من خلال https://pub.dev/packages/riverpod_lint>
+```
+
+ستظهر لك الآن تحذيرات في بيئة التطوير المتكاملة (IDE) إذا ارتكبت أخطاءً عند استخدام Riverpod
+في قاعدة التعليمات البرمجية الخاصة بك.
+
+للاطلاع على القائمة الكاملة للتحذيرات وعمليات إعادة البناء، انتقل إلى صفحة [riverpod_lint].
+
+## مثال على الاستخدام: مرحباً بالعالم!
+
+بعد تثبيت [Riverpod]، يمكننا البدء باستخدامه.
+
+توضح المقاطع البرمجية التالية كيفية استخدام هذه المكتبة الجديدة لإنشاء برنامج "مرحباً بالعالم!" .:
+
+
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: "Flutter", value: "flutter_riverpod" },
+    { label: "Dart only", value: "riverpod" },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...helloWorld}
+></AutoSnippet>
+
+ثم ابدأ تشغيل التطبيق باستخدام الأمر `flutter run`.  
+سيؤدي هذا إلى عرض عبارة "مرحبا بالعالم!" على جهازك.
+
+</TabItem>
+<TabItem value="riverpod">
+
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...dartHelloWorld}
+></AutoSnippet>
+
+ثم ابدأ تشغيل التطبيق باستخدام الأمر `dart lib/main.dart`.  
+سيؤدي هذا إلى طباعة عبارة  "مرحبا بالعالم!" في وحدة التحكم.
+
+</TabItem>
+</Tabs>
+
+## المضي بمعرفتك لابعد من ذلك: تحميل إضافة Riverpod
+
+إذا كنت تستخدم `Flutter` و`VS Code`، ففكر في استخدام [إضافة Flutter Riverpod](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)
+
+إذا كنت تستخدم `Flutter` و`Android Studio` أو `IntelliJ`، ففكر في استخدام [إضافة Flutter Riverpod](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)
+
+![img](/img/snippets/greetingProvider.gif)
+
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+[riverpod_lint]: https://pub.dev/packages/riverpod_lint
+[analysis_server_plugin]: https://pub.dev/packages/analysis_server_plugin
