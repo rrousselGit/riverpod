@@ -336,6 +336,7 @@ export const documentTitles = {
     "tutorials/first_app": "تطبيقك الأول مع Riverpod",
     "root/faq": "الأسئلة الشائعة",
     "root/do_dont": "افعل/لا تفعل",
+    "concepts2/providers": "مفاهيم Providers",
   },
 };
 export const outdatedTranslations = [

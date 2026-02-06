@@ -105,9 +105,9 @@ flutter create first_app
 
 ![Mocked UI](/img/tutorials/first_app/mocked_ui.png)
 
-### إضافة Riverpod الى المشروع
+### إضافة Riverpod إلى المشروع
 
-بعد إنشائك للمشروع , نحتاج الى إضافة Riverpod ك dependency داخل ملف `pubspec.yaml`.
+بعد إنشائك للمشروع , نحتاج إلى إضافة Riverpod ك dependency داخل ملف `pubspec.yaml`.
 
 سوف نقوم بإستخدام Riverpod داخل مشروع Flutter, لذلك سوف نقوم بتنصيب حزمة [flutter_riverpod].  
 بشكل مشابه, سوف نقوم بتنفيذ طلبات الاتصال بالشبكة (network requests) بإستخدام حزمة [Dio], لذلك سنقوم بتنصيبها أيضا.
@@ -123,11 +123,11 @@ flutter pub add flutter_riverpod dio
 ### (إختياري) إضافة حزمة riverpod_lint
 
 لمساعدتك في كتابة نصوص Riverpod أفضل, يمكنك تنصيب حزمة [riverpod_lint] .  
-هذه الحزمة توفر لك الوصول الكامل الى العديد حزم تعديل الهيكلية لتسهيل كتابة نصوص Riverpod , بالإضافة إلى مجموعة من أدوات التصحيح لمساعدتك على تجنب الأخطاء الشائعة.
+هذه الحزمة توفر لك الوصول الكامل إلى العديد حزم تعديل الهيكلية لتسهيل كتابة نصوص Riverpod , بالإضافة إلى مجموعة من أدوات التصحيح لمساعدتك على تجنب الأخطاء الشائعة.
 
 Riverpod_lint تم تنفيذها بإستخدام [analysis_server_plugin]. نتيجة لذلك, يتم تنصيبها من خلال ملف  `analysis_options.yaml` داخل مشروعك.
 
-اذا لم تجده داخل المشروع , قم بإنشاء ملف  `analysis_options.yaml` جنبا الى جنب مع ملف `pubspec.yaml` وقم بإضفة التالي داخله:
+إذا لم تجده داخل المشروع , قم بإنشاء ملف  `analysis_options.yaml` جنبًا إلى جنب مع ملف `pubspec.yaml` وقم بإضفة التالي داخله:
 
 ```yaml title="analysis_options.yaml"
 plugins:
