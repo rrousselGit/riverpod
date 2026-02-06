@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [convert_to_consumerWidget?offset=1867,1886,1873,1913,2023]
+// [convert_to_consumerWidget?offset=1867,1873,1886,1913,2023]
 // ```
 // }
 //

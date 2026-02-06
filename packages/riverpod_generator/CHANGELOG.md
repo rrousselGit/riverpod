@@ -1,3 +1,20 @@
+## 4.0.3 - 2026-02-03
+### Dependency changes
+
+- `riverpod_annotation` upgraded to `4.0.2`
+
+## 4.0.2 - 2026-01-17
+
+### Dependency changes
+
+- `riverpod_analyzer_utils` upgraded to `1.0.0-dev.9`
+
+## 4.0.1 - 2026-01-17
+
+### Dependency changes
+
+- `riverpod_annotation` upgraded to `4.0.1`
+
 ## 4.0.0+1
 
 Fixed dependency issue
@@ -442,3 +459,4 @@ Fix version conflict with Riverpod
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

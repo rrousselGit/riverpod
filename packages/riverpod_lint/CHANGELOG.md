@@ -1,6 +1,23 @@
-## Unrelease patch
+## 3.1.3 - 2026-02-03
 
-Require Dart 3.10.0
+- Assists to convert widgets to other widget types now correctly trigger on anything
+  between the `class` keyword and `{`
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.2.1`
+
+## 3.1.2 - 2026-01-17
+
+### Dependency changes
+
+- `riverpod_analyzer_utils` upgraded to `1.0.0-dev.9`
+
+## 3.1.1 - 2026-01-17
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.2.0`
 
 ## 3.1.0 - 2025-12-26
 
@@ -327,3 +344,4 @@ Fix quick-fix for provider_dependencies
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

@@ -1,7 +1,29 @@
-## Unreleased minor
+## 3.2.1 - 2026-02-03
+
+- Fixed a bug where resuming a paused provider could cause it to never
+  notify its listener ever again.
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.2.1`
+
+## 3.2.0 - 2026-01-17
 
 - Fix the IDE pausing on "markNeedsBuild" exceptions when checking "pause on all exceptions".
 - `ConsumerWidget`'s now uses the TickerMode notifier instead of TickerMode.of to avoid unnecessary rebuilds when widgets are hidden (thanks to @Colton127)
+- Added missing `weak` flags to `WidgetRef.listen/listenManual`
+- Added `Ref.isPaused` to check if there are any active/non-paused listeners.
+- Deprecated `family.overrideWith` in favour of `family.overrideWith2`
+  The behaviour is the same, but the callback now takes the argument as a parameter.
+  In 4.0.0, `overrideWith2` will be renamed to `overrideWith`.
+- Fix a regression that caused Notifiers to lose their state when one of their dependencies changed. (thanks to @yegair)
+- Fixed `ref.mounted` returning `true` for stale refs after provider rebuild, causing race conditions in async providers.
+- Fixed a bug where providers with only weak listeners (`ref.listen(..., weak: true)`) would incorrectly initialize during hot reload (thanks to @tguerin)
+- Fixes `selectAsync` sometimes throwing an exception when unsubscribed to.
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.2.0`
 
 ## 3.1.0 - 2025-12-26
 
@@ -710,7 +732,6 @@ Riverpod is now stable!
   ```
 
   That allows providers to implement features that is not shared with other providers.
-
   - `Provider`, `FutureProvider` and `StreamProvider`'s `ref` now have a `state` property,
     which represents the currently exposed value. Modifying it will notify the listeners:
 
@@ -1011,7 +1032,6 @@ Fixed various issues related to scoped providers.
   ```
 
   That allows providers to implement features that is not shared with other providers.
-
   - `Provider`, `FutureProvider` and `StreamProvider`'s `ref` now have a `state` property,
     which represents the currently exposed value. Modifying it will notify the listeners:
 
@@ -1109,8 +1129,6 @@ Removed an assert that could cause issues when an application is partially migra
 - feat: Added `ChangeNotifierProvider.notifier` and `StateProvider.notifier`
   They allow obtaining the notifier associated with the provider, without causing widgets/providers to rebuild when the state updates.
 - fix: overriding a `StateNotifierProvider`/`ChangeNotifierProvider` with `overrideWithValue` now correctly listens to the notifier.
-
-## 0.1
 
 ## 0.13.1+1
 
@@ -1487,3 +1505,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

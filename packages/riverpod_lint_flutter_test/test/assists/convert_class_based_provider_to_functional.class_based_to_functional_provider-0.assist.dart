@@ -1,15 +1,16 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [class_based_to_functional_provider?offset=505,492,498,576,610]
+// [class_based_to_functional_provider?offset=239,245,253,261,271,305]
 // ```
-//
+// /// Some comment
 // @riverpod
-// - class Generic<FirstT, /* comment */ SecondT>
-// -     extends _$Generic<FirstT, SecondT> {
+// - class Example extends _$Example {
 // -   @override
 // -   int build() => 0;
 // - }
-// + int generic<FirstT, /* comment */ SecondT>(Ref ref) => 0;
+// + int example(Ref ref) => 0;
+//
+// /// Some comment
 // ```
 @TestFor.class_based_to_functional_provider
 library;
@@ -22,10 +23,7 @@ part 'convert_class_based_provider_to_functional.class_based_to_functional_provi
 
 /// Some comment
 @riverpod
-class Example extends _$Example {
-  @override
-  int build() => 0;
-}
+int example(Ref ref) => 0;
 
 /// Some comment
 @riverpod
@@ -38,4 +36,8 @@ class ExampleFamily extends _$ExampleFamily {
 }
 
 @riverpod
-int generic<FirstT, /* comment */ SecondT>(Ref ref) => 0;
+class Generic<FirstT, /* comment */ SecondT>
+    extends _$Generic<FirstT, SecondT> {
+  @override
+  int build() => 0;
+}
