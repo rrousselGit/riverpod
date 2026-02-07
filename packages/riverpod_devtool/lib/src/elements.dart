@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 // ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
 
@@ -6,9 +5,8 @@ import 'collection.dart';
 import 'frames.dart';
 import 'vm_service.dart';
 
-@immutable
 class ElementMeta {
-  const ElementMeta({
+  ElementMeta({
     required this.provider,
     required this.state,
     required this.notifier,
@@ -17,6 +15,8 @@ class ElementMeta {
   final ProviderMeta provider;
   final ProviderStateRef state;
   final ProviderStateRef? notifier;
+  final Set<internals.ElementId> children = {};
+  final Set<internals.ElementId> parents = {};
 }
 
 Map<internals.ElementId, ElementMeta> computeElementsForFrame(
@@ -30,8 +30,6 @@ Map<internals.ElementId, ElementMeta> computeElementsForFrame(
     switch (event) {
       case ProviderContainerAddEvent():
       case ProviderContainerDisposeEvent():
-      case RefUsageEvent():
-      case WidgetRefUsageEvent():
       // Unrelated events
       case ProviderElementDisposeEvent():
         // We keep the state on purpose
@@ -54,5 +52,22 @@ Map<internals.ElementId, ElementMeta> computeElementsForFrame(
     }
   }
 
-  return state.build();
+  final map = state.build();
+
+  // _computeRelations(map, frame);
+
+  return map;
 }
+
+// TODO
+// void _computeRelations(Map<internals.ElementId, ElementMeta> elements) {
+//   for (final element in elements.values) {
+//     for (final dependency in element.state.dependencies) {
+//       final dependencyElement = elements[dependency];
+//       if (dependencyElement == null) continue;
+
+//       element.parents.add(dependency);
+//       dependencyElement.children.add(element.provider.elementId);
+//     }
+//   }
+// }

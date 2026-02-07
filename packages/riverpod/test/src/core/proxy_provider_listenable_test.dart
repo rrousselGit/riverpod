@@ -1,5 +1,5 @@
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show NodeInternal;
+import 'package:riverpod/src/internals.dart' show ContainerReadElement;
 import 'package:test/test.dart';
 
 void main() {

@@ -3,16 +3,51 @@ part of '../framework.dart';
 /// An abstraction of both [ProviderContainer] and [$ProviderElement] used by
 /// [ProviderListenable].
 @internal
-sealed class Node {}
+@immutable
+sealed class Node {
+  const Node({required this.container});
+  final ProviderContainer container;
+
+  @override
+  @mustBeOverridden
+  String toString();
+}
 
 @internal
-extension NodeX on Node {
-  ProviderContainer get container {
-    final that = this;
-    return switch (that) {
-      ProviderContainer() => that,
-      ProviderElement() => that.container,
-    };
+final class ConsumerNode extends Node {
+  const ConsumerNode({
+    required this.buildContext,
+    required super.container,
+    required this.id,
+  });
+
+  final
+  /*BuildContext*/
+  Object
+  buildContext;
+
+  final ConsumerId id;
+
+  @override
+  String toString() => '$buildContext#${shortHash(buildContext)}';
+}
+
+@internal
+final class ProviderNode extends Node {
+  const ProviderNode(this.element, {required super.container});
+  final ProviderElement<Object?, Object?> element;
+
+  @override
+  String toString() => '${element.origin}';
+}
+
+@internal
+final class ContainerNode extends Node {
+  const ContainerNode({required super.container});
+
+  @override
+  String toString() {
+    return container.toString();
   }
 }
 
@@ -721,7 +756,14 @@ extension InternalProviderContainer on ProviderContainer {
 }
 
 @internal
-extension NodeInternal on Node {
+extension ContainerReadElement on ProviderContainer {
+  ProviderElement<StateT, Object?> readProviderElement<StateT>(
+    $ProviderBaseImpl<StateT> provider,
+  ) => _readProviderElement(provider);
+}
+
+@internal
+extension ElementReadElement on ProviderElement<Object?, Object?> {
   ProviderElement<StateT, Object?> readProviderElement<StateT>(
     $ProviderBaseImpl<StateT> provider,
   ) => container._readProviderElement(provider);
@@ -739,7 +781,7 @@ extension NodeInternal on Node {
 /// {@endtemplate}
 /// {@category Core}
 @publicInRiverpodAndCodegen
-final class ProviderContainer implements Node, MutationTarget {
+final class ProviderContainer implements MutationTarget {
   /// {@macro riverpod.provider_container}
   ProviderContainer({
     ProviderContainer? parent,
@@ -968,7 +1010,7 @@ final class ProviderContainer implements Node, MutationTarget {
     );
 
     final sub = provider._addListener(
-      this,
+      ContainerNode(container: this),
       listener,
       weak: weak,
       onError: onError ?? defaultOnError,
@@ -1344,24 +1386,6 @@ abstract base class ProviderObserver {
     ProviderObserverContext context,
     Mutation<Object?> mutation,
     Object? result,
-  ) {}
-
-  /// A method on [Ref] was invoked.
-  ///
-  /// You can use [StackTrace.current] to obtain the stack trace
-  /// of the invocation.
-  void debugRefInvocation(
-    ProviderObserverContext context,
-    Invocation invocation,
-  ) {}
-
-  /// A method on [Ref] was invoked.
-  ///
-  /// You can use [StackTrace.current] to obtain the stack trace
-  /// of the invocation.
-  void debugWidgetRefInvocation(
-    ConsumerContext context,
-    Invocation invocation,
   ) {}
 }
 

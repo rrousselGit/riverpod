@@ -237,16 +237,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     }
   }
 
-  void _debugReportInvocation(Invocation invocation) {
-    if (!kDebugMode) return;
-
-    final context = _element._currentObserverContext();
-
-    for (final obs in container.observers) {
-      container.runBinaryGuarded(obs.debugRefInvocation, context, invocation);
-    }
-  }
-
   /// Requests for the state of a provider to not be disposed when all the
   /// listeners of the provider are removed.
   ///
@@ -257,7 +247,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// to be closed for the provider to dispose itself when all listeners are removed.
   @override
   KeepAliveLink keepAlive() {
-    if (kDebugMode) _debugReportInvocation(Invocation.method(#keepAlive, []));
     _throwIfInvalidUsage();
 
     final links = _keepAliveLinks ??= [];
@@ -302,9 +291,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   @override
   @useResult
   StateT refresh<StateT>(Refreshable<StateT> refreshable) {
-    if (kDebugMode) {
-      _debugReportInvocation(Invocation.method(#refresh, [refreshable]));
-    }
     _throwIfInvalidUsage();
 
     if (kDebugMode) _debugAssertCanDependOn(refreshable);
@@ -337,15 +323,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// {@endtemplate}
   @override
   void invalidate(ProviderOrFamily providerOrFamily, {bool asReload = false}) {
-    if (kDebugMode) {
-      _debugReportInvocation(
-        Invocation.method(
-          #invalidate,
-          [providerOrFamily],
-          {#asReload: asReload},
-        ),
-      );
-    }
     _throwIfInvalidUsage();
     if (kDebugMode) _debugAssertCanDependOn(providerOrFamily);
 
@@ -357,11 +334,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// {@macro riverpod.invalidate}
   @override
   void invalidateSelf({bool asReload = false}) {
-    if (kDebugMode) {
-      _debugReportInvocation(
-        Invocation.method(#invalidateSelf, [], {#asReload: asReload}),
-      );
-    }
     _throwIfInvalidUsage();
 
     _element.invalidateSelf(asReload: asReload);
@@ -384,9 +356,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// ```
   @override
   void notifyListeners() {
-    if (kDebugMode) {
-      _debugReportInvocation(Invocation.method(#notifyListeners, []));
-    }
     _throwIfInvalidUsage();
 
     final currentValue = _element.value;
@@ -408,10 +377,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// - [onRemoveListener], for when a listener is removed
   @override
   RemoveListener onAddListener(void Function() cb) {
-    if (kDebugMode) {
-      _debugReportInvocation(Invocation.method(#onAddListener, [cb]));
-    }
-
     _throwIfInvalidUsage();
 
     final list = _onAddListeners ??= [];
@@ -428,9 +393,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// - [onAddListener], for when a listener is added
   @override
   RemoveListener onRemoveListener(void Function() cb) {
-    if (kDebugMode) {
-      _debugReportInvocation(Invocation.method(#onRemoveListener, [cb]));
-    }
     _throwIfInvalidUsage();
 
     final list = _onRemoveListeners ??= [];
@@ -460,9 +422,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// - [onResume], a life-cycle for when the provider is listened to again.
   @override
   RemoveListener onCancel(void Function() cb) {
-    if (kDebugMode) {
-      _debugReportInvocation(Invocation.method(#onCancel, [cb]));
-    }
     _throwIfInvalidUsage();
 
     final list = _onCancelListeners ??= [];
@@ -485,9 +444,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
   @override
   RemoveListener onResume(void Function() cb) {
-    if (kDebugMode) {
-      _debugReportInvocation(Invocation.method(#onResume, [cb]));
-    }
     _throwIfInvalidUsage();
 
     final list = _onResumeListeners ??= [];
@@ -546,9 +502,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
   @override
   RemoveListener onDispose(void Function() listener) {
-    if (kDebugMode) {
-      _debugReportInvocation(Invocation.method(#onDispose, [listener]));
-    }
     _throwIfInvalidUsage();
 
     final list = _onDisposeListeners ??= [];
@@ -593,12 +546,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// safer to use.
   @override
   StateT read<StateT>(ProviderListenable<StateT> listenable) {
-    if (kDebugMode) {
-      _debugReportInvocation(
-        Invocation.genericMethod(#keepAlive, [StateT], []),
-      );
-    }
-
     _throwIfInvalidUsage();
 
     final result = container.read(listenable);
@@ -643,9 +590,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// {@endtemplate}
   @override
   bool exists(ProviderBase<Object?> provider) {
-    if (kDebugMode) {
-      _debugReportInvocation(Invocation.method(#exists, [provider]));
-    }
     _throwIfInvalidUsage();
 
     final result = container.exists(provider);
@@ -719,11 +663,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// ```
   @override
   StateT watch<StateT>(ProviderListenable<StateT> listenable) {
-    if (kDebugMode) {
-      _debugReportInvocation(
-        Invocation.genericMethod(#watch, [StateT], [listenable]),
-      );
-    }
     _throwIfInvalidUsage();
     late ProviderSubscription<StateT> sub;
     sub = _element.listen<StateT>(
@@ -768,15 +707,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     bool weak = false,
     bool fireImmediately = false,
   }) {
-    if (kDebugMode) {
-      _debugReportInvocation(
-        Invocation.method(
-          #listen,
-          [provider, listener],
-          {#onError: onError, #weak: weak, #fireImmediately: fireImmediately},
-        ),
-      );
-    }
     _throwIfInvalidUsage();
     return _element.listen(
       provider,

@@ -30,11 +30,34 @@ sealed class Event {
       case 'ProviderElementUpdateEvent':
         return ProviderElementUpdateEvent.from(events, path: path);
 
-      case 'RefUsageEvent':
-        return RefUsageEvent.from(events, path: path);
+      case 'ProviderDependencyChangeEvent':
+        return ProviderDependencyChangeEvent.from(events, path: path);
 
-      case 'WidgetRefUsageEvent':
-        return WidgetRefUsageEvent.from(events, path: path);
+      default:
+        throw ArgumentError('Unknown event type: $type');
+    }
+  }
+}
+
+/// Devtool code for [internals.NodeMeta]
+sealed class NodeMeta {
+  NodeMeta();
+
+  factory NodeMeta.from(
+    Map<String, InstanceRef> events, {
+    required String path,
+  }) {
+    final type = events[path]?.valueAsString;
+
+    switch (type) {
+      case 'ProviderNodeMeta':
+        return ProviderNodeMeta.from(events, path: path);
+
+      case 'ContainerNodeMeta':
+        return ContainerNodeMeta.from(events, path: path);
+
+      case 'ConsumerNodeMeta':
+        return ConsumerNodeMeta.from(events, path: path);
 
       default:
         throw ArgumentError('Unknown event type: $type');
@@ -358,140 +381,102 @@ class ProviderElementUpdateEvent extends Event {
   final ProviderStateRef? notifier;
 }
 
-/// Devtool code for [internals.RefUsageEvent]
-class RefUsageEvent extends Event {
-  RefUsageEvent({
-    required this.provider,
-    required this.methodName,
-    required this.positionalArguments,
-    required this.typeArguments,
-    required this.namedArguments,
-    required this.listenedProviders,
-  });
+/// Devtool code for [internals.ProviderNodeMeta]
+class ProviderNodeMeta extends NodeMeta {
+  ProviderNodeMeta({required this.provider});
 
-  factory RefUsageEvent.from(
+  factory ProviderNodeMeta.from(
     Map<String, InstanceRef> $events, {
     required String path,
   }) {
-    _validate($events, name: 'RefUsageEvent', path: path);
+    _validate($events, name: 'ProviderNodeMeta', path: path);
 
     final provider = ProviderMeta.from($events, path: '$path.provider');
-    final methodName = RootCachedObject(
-      CacheId($events['$path.methodName']!.valueAsString!),
-    );
-    final positionalArguments = List.generate(
-      int.parse($events['$path.positionalArguments.length']!.valueAsString!),
-      (i) {
-        return RootCachedObject(
-          CacheId($events['$path.positionalArguments[$i]']!.valueAsString!),
-        );
-      },
-    );
-    final typeArguments = List.generate(
-      int.parse($events['$path.typeArguments.length']!.valueAsString!),
-      (i) {
-        return RootCachedObject(
-          CacheId($events['$path.typeArguments[$i]']!.valueAsString!),
-        );
-      },
-    );
-    final namedArguments = RootCachedObject(
-      CacheId($events['$path.namedArguments']!.valueAsString!),
-    );
-    final listenedProviders = List.generate(
-      int.parse($events['$path.listenedProviders.length']!.valueAsString!),
-      (i) {
-        return RootCachedObject(
-          CacheId($events['$path.listenedProviders[$i]']!.valueAsString!),
-        );
-      },
+
+    return ProviderNodeMeta(provider: provider);
+  }
+
+  final ProviderMeta provider;
+}
+
+/// Devtool code for [internals.ContainerNodeMeta]
+class ContainerNodeMeta extends NodeMeta {
+  ContainerNodeMeta({required this.containerId});
+
+  factory ContainerNodeMeta.from(
+    Map<String, InstanceRef> $events, {
+    required String path,
+  }) {
+    _validate($events, name: 'ContainerNodeMeta', path: path);
+
+    final containerId = internals.ContainerId(
+      $events['$path.containerId']!.valueAsString!,
     );
 
-    return RefUsageEvent(
+    return ContainerNodeMeta(containerId: containerId);
+  }
+
+  final internals.ContainerId containerId;
+}
+
+/// Devtool code for [internals.ConsumerNodeMeta]
+class ConsumerNodeMeta extends NodeMeta {
+  ConsumerNodeMeta({required this.consumerId});
+
+  factory ConsumerNodeMeta.from(
+    Map<String, InstanceRef> $events, {
+    required String path,
+  }) {
+    _validate($events, name: 'ConsumerNodeMeta', path: path);
+
+    final consumerId = RootCachedObject(
+      CacheId($events['$path.consumerId']!.valueAsString!),
+    );
+
+    return ConsumerNodeMeta(consumerId: consumerId);
+  }
+
+  final RootCachedObject consumerId;
+}
+
+/// Devtool code for [internals.ProviderDependencyChangeEvent]
+class ProviderDependencyChangeEvent extends Event {
+  ProviderDependencyChangeEvent({
+    required this.provider,
+    required this.dependents,
+    required this.weakDependents,
+    required this.dependencies,
+  });
+
+  factory ProviderDependencyChangeEvent.from(
+    Map<String, InstanceRef> $events, {
+    required String path,
+  }) {
+    _validate($events, name: 'ProviderDependencyChangeEvent', path: path);
+
+    final provider = ProviderMeta.from($events, path: '$path.provider');
+    final dependents = RootCachedObject(
+      CacheId($events['$path.dependents']!.valueAsString!),
+    );
+    final weakDependents = RootCachedObject(
+      CacheId($events['$path.weakDependents']!.valueAsString!),
+    );
+    final dependencies = RootCachedObject(
+      CacheId($events['$path.dependencies']!.valueAsString!),
+    );
+
+    return ProviderDependencyChangeEvent(
       provider: provider,
-      methodName: methodName,
-      positionalArguments: positionalArguments,
-      typeArguments: typeArguments,
-      namedArguments: namedArguments,
-      listenedProviders: listenedProviders,
+      dependents: dependents,
+      weakDependents: weakDependents,
+      dependencies: dependencies,
     );
   }
 
   final ProviderMeta provider;
-  final RootCachedObject methodName;
-  final List<RootCachedObject> positionalArguments;
-  final List<RootCachedObject> typeArguments;
-  final RootCachedObject namedArguments;
-  final List<RootCachedObject> listenedProviders;
-}
-
-/// Devtool code for [internals.WidgetRefUsageEvent]
-class WidgetRefUsageEvent extends Event {
-  WidgetRefUsageEvent({
-    required this.consumer,
-    required this.methodName,
-    required this.positionalArguments,
-    required this.typeArguments,
-    required this.namedArguments,
-    required this.listenedProviders,
-  });
-
-  factory WidgetRefUsageEvent.from(
-    Map<String, InstanceRef> $events, {
-    required String path,
-  }) {
-    _validate($events, name: 'WidgetRefUsageEvent', path: path);
-
-    final consumer = RootCachedObject(
-      CacheId($events['$path.consumer']!.valueAsString!),
-    );
-    final methodName = RootCachedObject(
-      CacheId($events['$path.methodName']!.valueAsString!),
-    );
-    final positionalArguments = List.generate(
-      int.parse($events['$path.positionalArguments.length']!.valueAsString!),
-      (i) {
-        return RootCachedObject(
-          CacheId($events['$path.positionalArguments[$i]']!.valueAsString!),
-        );
-      },
-    );
-    final typeArguments = List.generate(
-      int.parse($events['$path.typeArguments.length']!.valueAsString!),
-      (i) {
-        return RootCachedObject(
-          CacheId($events['$path.typeArguments[$i]']!.valueAsString!),
-        );
-      },
-    );
-    final namedArguments = RootCachedObject(
-      CacheId($events['$path.namedArguments']!.valueAsString!),
-    );
-    final listenedProviders = List.generate(
-      int.parse($events['$path.listenedProviders.length']!.valueAsString!),
-      (i) {
-        return RootCachedObject(
-          CacheId($events['$path.listenedProviders[$i]']!.valueAsString!),
-        );
-      },
-    );
-
-    return WidgetRefUsageEvent(
-      consumer: consumer,
-      methodName: methodName,
-      positionalArguments: positionalArguments,
-      typeArguments: typeArguments,
-      namedArguments: namedArguments,
-      listenedProviders: listenedProviders,
-    );
-  }
-
-  final RootCachedObject consumer;
-  final RootCachedObject methodName;
-  final List<RootCachedObject> positionalArguments;
-  final List<RootCachedObject> typeArguments;
-  final RootCachedObject namedArguments;
-  final List<RootCachedObject> listenedProviders;
+  final RootCachedObject dependents;
+  final RootCachedObject weakDependents;
+  final RootCachedObject dependencies;
 }
 
 /// Devtool code for [internals.ConsumerMeta]

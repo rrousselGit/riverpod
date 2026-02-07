@@ -353,7 +353,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
 @internal
 @optionalTypeArgs
 @publicInCodegen
-abstract class ProviderElement<StateT, ValueT> implements Node {
+abstract class ProviderElement<StateT, ValueT> {
   /// {@macro riverpod.provider_element_base}
   ProviderElement(this.pointer);
 
@@ -922,7 +922,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     ref._throwIfInvalidUsage();
 
     final sub = listenable._addListener(
-      this,
+      ProviderNode(this, container: container),
       listener,
       onError: onError ?? container.defaultOnError,
       weak: weak,
@@ -964,7 +964,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         dependents.add(sub);
       }
 
-      if (sub.source case final ProviderElement element) {
+      if (sub.source case ProviderNode(:final element)) {
         final subs = element.subscriptions ??= [];
         subs.add(sub);
       }
@@ -996,7 +996,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         dependents?.remove(sub);
       }
 
-      if (sub.impl.source case final ProviderElement element) {
+      if (sub.impl.source case ProviderNode(:final element)) {
         element
           ..subscriptions?.remove(sub)
           .._inactiveSubscriptions?.remove(sub);
@@ -1302,9 +1302,10 @@ $this''',
     void lookup(Iterable<ProviderSubscription<Object?>> children) {
       for (final child in children) {
         switch (child.impl.source) {
-          case final ProviderElement dependent:
-            elementVisitor(dependent);
-          case ProviderContainer():
+          case ProviderNode(:final element):
+            elementVisitor(element);
+          case ContainerNode():
+          case ConsumerNode():
             break;
         }
       }

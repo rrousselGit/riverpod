@@ -50,7 +50,6 @@ class RiverpodDevtool {
 
   final _uniqueOrigins = <ProviderOrFamily, OriginId>{};
   final _uniqueProviders = <ProviderOrFamily, ProviderId>{};
-  final _uniqueConsumers = </*BuildContext*/ Object, ConsumerId>{};
   final frames = <Frame>[];
 
   final _cache = <String, Object?>{};
@@ -101,13 +100,6 @@ class RiverpodDevtool {
     return _uniqueOrigins.entries
         .firstWhereOrNull((entry) => entry.value == id)
         ?.key;
-  }
-
-  ConsumerId _consumerId(/* BuildContext */ Object buildContext) {
-    return _uniqueConsumers.putIfAbsent(
-      buildContext,
-      () => ConsumerId(const Uuid().v4()),
-    );
   }
 }
 
@@ -331,65 +323,68 @@ final class ProviderElementUpdateEvent extends Event {
   final ProviderStateRef? notifier;
 }
 
-Iterable<ProviderOrFamily> _obtainListenedProviderFromArgs(
-  List<Object?> positionalArguments,
-  Map<Symbol, Object?> namedArguments,
-) {
-  return positionalArguments.followedBy(namedArguments.values).map((e) {
-    // We search for provider arguments, but also remove modified/selectors/...
-    if (e is! ProviderListenableOrFamily) return null;
-    final listenedProvider = e.debugListenedProvider;
-    if (listenedProvider != null) return listenedProvider;
+@devtool
+@internal
+sealed class NodeMeta {}
 
-    // Fallback for when a raw family is passed.
-    if (e is ProviderOrFamily) return e;
-  }).nonNulls;
+@devtool
+@internal
+final class ProviderNodeMeta extends NodeMeta {
+  ProviderNodeMeta(this.provider);
+  final ProviderMeta provider;
 }
 
 @devtool
 @internal
-final class RefUsageEvent extends Event {
-  RefUsageEvent({
-    required this.provider,
-    required this.methodName,
-    required this.positionalArguments,
-    required this.typeArguments,
-    required this.namedArguments,
-  }) : listenedProviders =
-           _obtainListenedProviderFromArgs(
-             positionalArguments,
-             namedArguments,
-           ).toList();
+final class ContainerNodeMeta extends NodeMeta {
+  ContainerNodeMeta(this.containerId);
+  final ContainerId containerId;
+}
+
+@devtool
+@internal
+final class ConsumerNodeMeta extends NodeMeta {
+  ConsumerNodeMeta(this.consumerId);
+  final ConsumerId consumerId;
+}
+
+extension on Node {
+  NodeMeta get meta {
+    final that = this;
+    return switch (that) {
+      ProviderNode(:final element) => ProviderNodeMeta(
+        ProviderMeta.from(element),
+      ),
+      ContainerNode(:final container) => ContainerNodeMeta(container.id),
+      ConsumerNode(:final id) => ConsumerNodeMeta(id),
+    };
+  }
+}
+
+@devtool
+@internal
+class ProviderDependencyChangeEvent extends Event {
+  ProviderDependencyChangeEvent(ProviderElement element)
+    : provider = ProviderMeta.from(element),
+      dependents =
+          ((element.dependents ?? const [])
+              .map((sub) => sub.source.meta)
+              .toSet()),
+      weakDependents =
+          ((element.dependents ?? const [])
+              .map((sub) => sub.source.meta)
+              .toSet()),
+      dependencies =
+          ((element.subscriptions ?? const [])
+              .map((sub) => sub.impl.source.meta)
+              .cast<ProviderNodeMeta>()
+              .map((e) => e.provider.elementId)
+              .toSet());
 
   final ProviderMeta provider;
-  final Symbol methodName;
-  final List<Object?> positionalArguments;
-  final List<Object?> typeArguments;
-  final Map<Symbol, Object?> namedArguments;
-  final List<ProviderOrFamily> listenedProviders;
-}
-
-@devtool
-@internal
-final class WidgetRefUsageEvent extends Event {
-  WidgetRefUsageEvent({
-    required this.consumer,
-    required this.methodName,
-    required this.positionalArguments,
-    required this.typeArguments,
-    required this.namedArguments,
-  }) : listenedProviders =
-           _obtainListenedProviderFromArgs(
-             positionalArguments,
-             namedArguments,
-           ).toList();
-
-  final ConsumerContext consumer;
-  final Symbol methodName;
-  final List<Object?> positionalArguments;
-  final List<Object?> typeArguments;
-  final Map<Symbol, Object?> namedArguments;
-  final List<ProviderOrFamily> listenedProviders;
+  final Set<NodeMeta> dependents;
+  final Set<NodeMeta> weakDependents;
+  final Set<ElementId> dependencies;
 }
 
 @devtool
@@ -402,15 +397,16 @@ final class ConsumerMeta {
     required this.containerHashValue,
   });
 
-  factory ConsumerMeta.from(ProviderElement element) {
-    final provider = element.origin;
-    final consumerId = RiverpodDevtool.instance._consumerId(provider);
-
+  factory ConsumerMeta.from({
+    required ConsumerId id,
+    required Object buildContext,
+    required ProviderContainer container,
+  }) {
     return ConsumerMeta(
-      hashValue: shortHash(provider),
-      containerId: element.container.id,
-      id: consumerId,
-      containerHashValue: shortHash(element.container),
+      id: id,
+      containerId: container.id,
+      hashValue: shortHash(buildContext),
+      containerHashValue: shortHash(container),
     );
   }
 
@@ -464,40 +460,6 @@ final class _DevtoolObserver extends ProviderObserver {
     RiverpodDevtool.instance.addEvent(
       context.container,
       ProviderElementUpdateEvent(context._element),
-    );
-  }
-
-  @override
-  void debugRefInvocation(
-    ProviderObserverContext context,
-    Invocation invocation,
-  ) {
-    RiverpodDevtool.instance.addEvent(
-      context.container,
-      RefUsageEvent(
-        provider: ProviderMeta.from(context._element),
-        methodName: invocation.memberName,
-        positionalArguments: invocation.positionalArguments,
-        typeArguments: invocation.typeArguments,
-        namedArguments: invocation.namedArguments,
-      ),
-    );
-  }
-
-  @override
-  void debugWidgetRefInvocation(
-    ConsumerContext context,
-    Invocation invocation,
-  ) {
-    RiverpodDevtool.instance.addEvent(
-      context.container,
-      WidgetRefUsageEvent(
-        consumer: context,
-        methodName: invocation.memberName,
-        positionalArguments: invocation.positionalArguments,
-        typeArguments: invocation.typeArguments,
-        namedArguments: invocation.namedArguments,
-      ),
     );
   }
 }
