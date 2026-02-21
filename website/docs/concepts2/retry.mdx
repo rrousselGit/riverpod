@@ -106,12 +106,12 @@ that a provider did not fail, but instead rethrow an exception from a failed pro
 <AutoSnippet
   codegen={`
   @riverpod
-  int failed(MyProviderRef ref) {
+  int failed(Ref ref) {
     throw Exception('This provider always fails');
   }
   
   @riverpod
-  int myProvider(MyProviderRef ref) {
+  int myProvider(Ref ref) {
     // This provider depends on a failed provider,
     // and will therefore throw a ProviderException
     return ref.watch(failedProvider);
