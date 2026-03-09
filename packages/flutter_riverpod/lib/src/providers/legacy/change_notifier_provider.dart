@@ -152,6 +152,14 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     return _ChangeNotifierProviderElement<NotifierT>._(pointer);
   }
 
+  @override
+  ChangeNotifierProvider<NotifierT> $view({
+    required Create<NotifierT> create,
+    bool? disposeNotifier,
+  }) {
+    return _View<NotifierT>(this, create, disposeNotifier: disposeNotifier);
+  }
+
   /// Override the behavior of this provider with a custom implementation.
   ///
   /// - [disposeNotifier] allows changing [ChangeNotifierProvider.disposeNotifier] for the override.
@@ -162,11 +170,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   Override overrideWith(Create<NotifierT> create, {bool? disposeNotifier}) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: _View<NotifierT>(
-        this,
-        create,
-        disposeNotifier: disposeNotifier,
-      ),
+      providerOverride: $view(create: create, disposeNotifier: disposeNotifier),
     );
   }
 }
