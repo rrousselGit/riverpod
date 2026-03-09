@@ -11,28 +11,103 @@ import '../../provider_test.dart';
 import '../../utils.dart';
 
 void main() {
-  test('Can specify disposeNotifier', () {
-    final onDispose = OnDisposeMock();
-    final notifier = DelegateNotifier(onDispose: onDispose.call);
-    final onDispose2 = OnDisposeMock();
-    final notifier2 = DelegateNotifier(onDispose: onDispose.call);
-    final container = ProviderContainer.test();
-    final provider = ChangeNotifierProvider(
-      (_) => notifier,
-      disposeNotifier: false,
-    );
-    final family = ChangeNotifierProvider.family(
-      (ref, int arg) => notifier2,
-      disposeNotifier: false,
-    );
+  group('disposeNotifier', () {
+    group('overrideWith', () {
+      test('if null, defaults to the default provider behavior', () {
+        final onDispose = OnDisposeMock();
+        final onDispose2 = OnDisposeMock();
+        final disabled = ChangeNotifierProvider<DelegateNotifier>(
+          (_) => throw StateError('should not be called'),
+          disposeNotifier: false,
+        );
+        final enabled = ChangeNotifierProvider<DelegateNotifier>(
+          (_) => throw StateError('should not be called'),
+        );
+        final container = ProviderContainer.test(
+          overrides: [
+            disabled.overrideWith(
+              (_) => DelegateNotifier(onDispose: onDispose.call),
+            ),
+            enabled.overrideWith(
+              (_) => DelegateNotifier(onDispose: onDispose2.call),
+            ),
+          ],
+        );
 
-    container.read(provider);
-    container.refresh(provider);
-    verifyNever(onDispose.call());
+        container.read(disabled);
+        container.refresh(disabled);
+        verifyNever(onDispose.call());
 
-    container.read(family(0));
-    container.refresh(family(0));
-    verifyNever(onDispose2.call());
+        container.read(enabled);
+        container.refresh(enabled);
+        verify(onDispose2.call());
+      });
+
+      test('if false, the notifier is not disposed', () {
+        final onDispose = OnDisposeMock();
+        final provider = ChangeNotifierProvider<DelegateNotifier>(
+          (_) => throw StateError('should not be called'),
+        );
+        final container = ProviderContainer.test(
+          overrides: [
+            provider.overrideWith(
+              (_) => DelegateNotifier(onDispose: onDispose.call),
+              disposeNotifier: false,
+            ),
+          ],
+        );
+
+        container.read(provider);
+        container.refresh(provider);
+        verifyNever(onDispose.call());
+      });
+
+      test('if true, the notifier is disposed', () {
+        final onDispose = OnDisposeMock();
+        final provider = ChangeNotifierProvider<DelegateNotifier>(
+          (_) => throw StateError('should not be called'),
+          disposeNotifier: false,
+        );
+        final container = ProviderContainer.test(
+          overrides: [
+            provider.overrideWith(
+              (_) => DelegateNotifier(onDispose: onDispose.call),
+              disposeNotifier: true,
+            ),
+          ],
+        );
+
+        container.read(provider);
+        container.refresh(provider);
+        verify(onDispose.call());
+      });
+    });
+
+    test('handles provider', () {
+      final onDispose = OnDisposeMock();
+      final container = ProviderContainer.test();
+      final provider = ChangeNotifierProvider<DelegateNotifier>(
+        (_) => DelegateNotifier(onDispose: onDispose.call),
+        disposeNotifier: false,
+      );
+
+      container.read(provider);
+      container.refresh(provider);
+      verifyNever(onDispose.call());
+    });
+
+    test('handles family', () {
+      final onDispose = OnDisposeMock();
+      final container = ProviderContainer.test();
+      final family = ChangeNotifierProvider.family<DelegateNotifier, int>(
+        (ref, int arg) => DelegateNotifier(onDispose: onDispose.call),
+        disposeNotifier: false,
+      );
+
+      container.read(family(0));
+      container.refresh(family(0));
+      verifyNever(onDispose.call());
+    });
   });
 
   test('Guards ChangeNotifier.dispose', () {
