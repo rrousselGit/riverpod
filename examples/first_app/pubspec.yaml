@@ -11,7 +11,7 @@ dependencies:
   dio: ^5.9.0
   flutter:
     sdk: flutter
-  flutter_riverpod: 3.2.1
+  flutter_riverpod: 3.3.0
 
 flutter:
   uses-material-design: true

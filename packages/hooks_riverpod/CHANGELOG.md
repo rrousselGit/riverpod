@@ -1,3 +1,8 @@
+## 3.3.0 - 2026-03-09
+### Dependency changes
+
+- `flutter_riverpod` upgraded to `3.3.0`
+
 ## 3.2.1 - 2026-02-03
 
 - Fixed a bug where resuming a paused provider could cause it to never

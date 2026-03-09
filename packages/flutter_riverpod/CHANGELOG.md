@@ -1,4 +1,4 @@
-## Unreleased minor
+## 3.3.0 - 2026-03-09
 
 - Added `ChangeNotifierProvider(disposeNotifier: false)`, to disable the automatic
   disposal of the created `ChangeNotifier`. This enables simpler migration from `pkg:provider` to `pkg:riverpod`
@@ -1511,3 +1511,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+
