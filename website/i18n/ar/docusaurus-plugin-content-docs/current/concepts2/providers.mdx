@@ -1,0 +1,581 @@
+---
+title: مفاهيم Providers 
+version: 1
+---
+
+import declaringManyProviders from "./providers/declaring_many_providers";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+import Legend, { colors } from "/src/components/Legend";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+تُعد الـ Providers الميزة الجوهرية في Riverpod. إذا كنت تستخدم Riverpod، فأنت تستخدمها من أجل الـ providers الخاصة بها.
+
+## ما هو الـ Provider؟
+
+الـ Providers هي في جوهرها "دوال memoized" (دوال تحفظ نتائجها)، مع بعض الإضافات التجميلية (syntactic sugar).
+ما يعنيه هذا هو أن الـ providers عبارة عن دوال تُعيد قيمة مخزنة مؤقتاً (cached value) عند استدعائها بنفس المعاملات (parameters).
+
+حالة الاستخدام الأكثر شيوعاً للـ providers هي إجراء طلب عبر الشبكة (network request).
+لنفترض وجود دالة تقوم بجلب بيانات مستخدم من الـ API:
+
+```dart
+Future<User> fetchUser() async {
+  final response = await http.get('https://api.example.com/user/123');
+  return User.fromJson(response.body);
+}
+```
+
+تكمن إحدى مشكلات هذه الدالة في أننا إذا حاولنا استخدامها داخل الـ widgets، فسنضطر إلى تخزين النتيجة مؤقتاً (cache) بأنفسنا؛ ثم إيجاد طريقة لمشاركة هذه القيمة بين جميع الـ widgets التي تحتاجها.
+
+وهنا يأتي دور الـ providers. فالـ Providers هي عبارة عن أغلفة (wrappers) حول الدوال.
+فهي تقوم بتخزين نتيجة تلك الدالة مؤقتاً وتتيح لعدة widgets الوصول إلى نفس القيمة:
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+  // المعادل لدالة fetchUser الخاصة بنا، ولكن النتيجة مخزنة مؤقتاً (cached).
+  // سيولد هذا "userProvider". استخدامه عدة مرات سيؤدي إلى
+  // إرجاع نفس القيمة.
+  @riverpod
+  Future<User> user(Ref ref) async {
+    final response = await http.get('https://api.example.com/user/123');
+    return User.fromJson(response.body);
+  }
+  `}
+  raw={`
+  // المعادل لدالة fetchUser الخاصة بنا، ولكن النتيجة مخزنة مؤقتاً (cached).
+  // استخدام userProvider عدة مرات سيعيد نفس القيمة.
+  final userProvider = FutureProvider<User>((ref) async {
+    final response = await http.get('https://api.example.com/user/123');
+    return User.fromJson(response.body);
+  });
+  `}
+  ></AutoSnippet>
+
+بالإضافة إلى التخزين المؤقت الأساسي، تضيف الـ providers ميزات متنوعة لجعلها أكثر قوة:
+
+* **آليات مدمجة لإبطال التخزين المؤقت (Cache invalidation)**
+على وجه الخصوص، يسمح لك [Ref.watch](https://pub.dev/documentation/riverpod/latest/riverpod/Ref/watch.html) بدمج عدة caches معاً، مع إبطال ما يلزم تلقائياً.
+* **<Link documentID="concepts2/auto_dispose" />** 
+
+
+
+
+يمكن للـ providers تحرير الموارد تلقائياً عندما لا تعود هناك حاجة إليها.
+* **ربط البيانات (Data-binding)**
+تغني الـ Providers عن الحاجة لاستخدام [FutureBuilder](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html) أو [StreamBuilder](https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html).
+* **المعالجة التلقائية للأخطاء**
+يمكن للـ Providers التقاط الأخطاء تلقائياً وعرضها لواجهة المستخدم.
+* **دعم المحاكاة (Mocking)**
+لتحسين الاختبارات ولأغراض أخرى، يمكن محاكاة (mock) جميع الـ providers.
+راجع <Link documentID="concepts2/overrides" />.
+* **<Link documentID="concepts2/offline"/>** 
+
+
+
+
+يمكن حفظ نتيجة الـ provider على القرص وإعادة تحميلها تلقائياً عند إعادة تشغيل التطبيق.
+* **<Link documentID="concepts2/mutations" />** 
+
+
+
+
+توفر الـ Providers طريقة مدمجة لواجهات المستخدم لعرض مؤشر تحميل (spinner) أو خطأ للآثار الجانبية (side effects) (مثل إرسال النماذج).
+
+تأتي الـ Providers في 6 أنواع:
+
+|  | متزامن (Synchronous) | Future | Stream |
+| --- | --- | --- | --- |
+| **غير قابل للتعديل (Unmodifiable)** | [Provider] | [FutureProvider] | [StreamProvider] |
+| **قابل للتعديل (Modifiable)** | [NotifierProvider] | [AsyncNotifierProvider] | [StreamNotifierProvider] |
+
+قد يبدو هذا مربكاً في البداية. دعونا نفصل الأمر ونبسطه.
+
+**Sync** مقابل **Future** مقابل **Stream**:
+تمثل أعمدة هذا الجدول أنواع Dart المدمجة (built-in) للدوال.
+```dart
+int synchronous() => 0;
+Future<int> future() async => 0;
+Stream<int> stream() => Stream.value(0);
+```
+
+**غير قابل للتعديل (Unmodifiable) مقابل قابل للتعديل (Modifiable)**:
+بشكل افتراضي، لا يمكن تعديل الـ providers من قبل الـ widgets. تقوم متغيرات "Notifier" من الـ providers بجعلها قابلة للتعديل خارجياً.
+يشبه هذا وجود setter خاص (private setter) (الـ providers "غير القابلة للتعديل")
+
+```dart
+// _state قابل للتعديل داخلياً
+// لكن لا يمكن تعديله خارجياً
+var _state = 0;
+int get state => _state;
+```
+مقابل setter عام (الـ providers "القابلة للتعديل")
+
+```dart
+// يمكن لأي شيء تعديل "state"
+var state = 0;
+```
+
+:::info
+يمكنك أيضاً اعتبار الفرق بين **غير القابلة للتعديل (unmodifiable)** و **القابلة للتعديل (modifiable)** كالفرق بين `StatelessWidget` و `StatefulWidget` على التوالي، من حيث المبدأ.
+
+هذا التشبيه ليس دقيقاً تماماً، لأن الـ providers ليست widgets، وكلا النوعين يخزنان "حالة" (state).
+ولكن المبدأ مشابه: "كائن واحد، غير قابل للتغيير (immutable)" مقابل "كائنين، أحدهما قابل للتغيير (mutable)".
+:::
+
+
+## إنشاء Provider
+
+يجب إنشاء الـ Providers كتصريحات على مستوى الملف (top-level declarations).
+وهذا يعني أنه يجب تعريفها خارج أي كلاس (class) أو دالة.
+
+تعتمد الصيغة (syntax) لإنشاء الـ provider على ما إذا كان "قابلاً للتعديل" أو "غير قابل للتعديل"، كما هو موضح في الجدول أعلاه.
+
+<Tabs>
+<TabItem value="Unmodifiable" label="غير قابل للتعديل (وظيفي)">
+
+<Tabs groupId="riverpod">
+<TabItem value="riverpod" label="riverpod">
+<Legend
+  code={`
+    final name = SomeProvider.someModifier<Result>((ref) {
+      //ضع المنطق الخاص بك هنا
+    });
+  `}
+  annotations={[
+    {
+      offset: 6,
+      length: 4,
+      label: "متغير الـ provider",
+        description: <>
+
+هذا المتغير هو ما سيتم استخدامه للتفاعل مع الـ provider الخاص بنا.
+يجب أن يكون المتغير `final` و "top-level" (عاماً).
+
+:::note
+لا تدع كون الـ providers عامة (global) يخيفك.
+فالـ Providers غير قابلة للتغيير (immutable) تماماً. وتعريف الـ provider لا يختلف عن تعريف أي دالة، كما أن الـ providers قابلة للاختبار والصيانة.
+:::
+
+</>
+    },
+    {
+      offset: 13,
+      length: 12,
+      label: "نوع الـ provider",
+      description: <>
+
+بشكل عام، يكون إما [Provider]، أو [FutureProvider]، أو [StreamProvider].
+يعتمد نوع الـ provider المُستخدم على القيمة المُرجعة (return value) من الدالة الخاصة بك.
+على سبيل المثال، لإنشاء <span dir="ltr">`Future<Activity>`</span>، ستحتاج إلى استخدام <span dir="ltr">`FutureProvider<Activity>`</span>.
+
+يُعد `FutureProvider` هو النوع الذي سترغب في استخدامه في الغالب.
+
+:::tip
+لا تفكر من منطلق "أي provider يجب أن أختار".
+بدلاً من ذلك، فكر من منطلق "ماذا أريد أن أُرجع (return)". وسيتحدد نوع الـ provider بشكل طبيعي تبعاً لذلك.
+:::
+
+</>
+    },
+    {
+      offset: 25,
+      length: 13,
+      label: "المُعدِّلات (اختياري)",
+      description: <>
+
+غالباً، قد ترى "مُعدِّلاً" (modifier) بعد نوع الـ provider.
+هذه المُعدِّلات اختيارية، وتُستخدم لضبط سلوك الـ provider بطريقة آمنة من حيث النوع (type-safe).
+
+يتوفر حالياً مُعدِّلان (modifiers):
+
+* `autoDispose`، والذي سيقوم بمسح التخزين المؤقت (cache) تلقائياً عندما يتوقف استخدام الـ provider.
+راجع أيضاً <Link documentID="concepts2/auto_dispose" />
+* `family`، والذي يتيح تمرير وسائط (arguments) إلى الـ provider الخاص بك.
+راجع أيضاً <Link documentID="concepts2/family" />.
+
+</>
+    },
+    {
+      offset: 48,
+      length: 3,
+      label: "Ref",
+      description: <>
+
+كائن يُستخدم للتفاعل مع الـ providers الأخرى.
+جميع الـ providers لديها واحد؛ إما كمعامل (parameter) لدالة الـ provider،
+أو كخاصية (property) تابعة لـ Notifier.
+
+</>
+    },
+    {
+      offset: 57,
+      length: 17,
+      label: "دالة الـ provider",
+      description: <>
+
+هنا نضع المنطق الخاص بالـ providers.
+سيتم استدعاء هذه الدالة عند قراءة الـ provider لأول مرة.
+أما القراءات اللاحقة فلن تستدعي الدالة مرة أخرى، بل ستقوم بإرجاع القيمة المخزنة مؤقتاً بدلاً من ذلك.
+
+</>
+    },
+  ]}
+/>
+</TabItem>
+<TabItem value="riverpod_generator" label="riverpod_generator">
+<Legend
+  code={`
+    @riverpod
+    Result myFunction(Ref ref) {
+       //ضع المنطق الخاص بك هنا
+    }
+  `}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "التعليق التوضيحي (Annotation)",
+      description: <>
+
+يجب أن تكون جميع الـ providers المُوَلَّدة مسبوقة بـ <span dir="ltr">`@riverpod`</span> أو <span dir="ltr">`@Riverpod()`</span>.
+يمكن وضع هذا التعليق التوضيحي (annotation) على الدوال العامة (global functions) أو الفئات (classes). ومن خلال هذا التعليق التوضيحي، يمكن ضبط إعدادات الـ provider.
+على سبيل المثال، يمكننا تعطيل ميزة "auto-dispose" (التي سنراها لاحقاً) عن طريق كتابة :
+<span dir="ltr">`@Riverpod(keepAlive: true)`</span>.
+
+</>
+    },
+    {
+      offset: 17,
+      length: 10,
+      label: "الدالة التي تحمل التعليق التوضيحي (Annotated function)",
+      description: <>
+
+يحدد اسم الدالة التي تحمل التعليق التوضيحي (annotated function) كيفية التفاعل مع الـ provider.
+فبالنسبة لدالة معينة باسم `myFunction`، سيتم توليد `myFunctionProvider`.
+
+**يجب** أن تحدد الدوال التي تحمل التعليق التوضيحي [Ref] كأول معامل (parameter).
+بالإضافة إلى ذلك، يمكن أن تحتوي الدالة على أي عدد من المعاملات، بما في ذلك الـ generics.
+كما أن للدالة الحرية في إرجاع `Future` أو `Stream` إذا دعت الحاجة.
+
+سيتم استدعاء هذه الدالة عند قراءة الـ provider لأول مرة.
+أما القراءات اللاحقة فلن تستدعي الدالة مرة أخرى، بل ستقوم بإرجاع القيمة المخزنة مؤقتاً (cached value) بدلاً من ذلك.
+
+</>
+    },
+    {
+      offset: 28,
+      length: 7,
+      label: "Ref",
+      description: <>
+
+كائن يُستخدم للتفاعل مع الـ providers الأخرى.
+تمتلك جميع الـ providers واحداً؛ إما كمعامل (parameter) لدالة الـ provider، أو كخاصية (property) تابعة لـ Notifier.
+يتم تحديد نوع هذا الكائن بناءً على اسم الدالة/الفئة (function/class).
+
+</>
+    },
+]}
+/>
+</TabItem>
+</Tabs>
+
+</TabItem>
+
+<TabItem value="Modifiable" label="قابل للتعديل (Notifier)">
+<Tabs groupId="riverpod">
+<TabItem value="riverpod" label="riverpod">
+<Legend
+  code={`final name = SomeNotifierProvider.someModifier<MyNotifier, Result>(MyNotifier.new);
+ 
+class MyNotifier extends SomeNotifier<Result> {
+  @override
+  Result build() {
+     //ضع المنطق الخاص بك هنا
+  }
+  //الدوال البقية هنا
+}`}
+  annotations={[
+    {
+      offset: 6,
+      length: 4,
+      label: "متغير الـ provider",
+       description: <>
+
+هذا المتغير هو ما سيتم استخدامه للتفاعل مع الـ provider.
+يجب أن يكون المتغير `final` و "top-level" (عاماً).
+
+:::note
+لا تقلق من كون الـ providers عامة (global).
+فالـ Providers غير قابلة للتغيير (immutable) تماماً. وتعريف الـ provider لا يختلف عن تعريف أي دالة، كما أن الـ providers قابلة للاختبار والصيانة.
+:::
+
+</>
+    },
+    {
+      offset: 13,
+      length: 20,
+      label: "نوع الـ provider",
+       description: <>
+
+بشكل عام، يكون إما [NotifierProvider]، أو [AsyncNotifierProvider]، أو [StreamNotifierProvider].
+يعتمد نوع الـ provider المُستخدم على القيمة المُرجعة (return value) من الدالة الخاصة بك.
+على سبيل المثال، لإنشاء <span dir="ltr">`Future<Activity>`</span>، ستحتاج إلى <span dir="ltr">`AsyncNotifierProvider<Activity>`</span>.
+
+يُعد [AsyncNotifierProvider] هو النوع الذي سترغب في استخدامه في الغالب.
+
+:::tip
+كما هو الحال مع الـ providers الوظيفية (functional providers)، لا تفكر من منطلق "أي provider يجب أن أختار".
+قم بإنشاء أي حالة (state) تريد إنشاءها، وسيتحدد نوع الـ provider بشكل طبيعي تبعاً لذلك.
+:::
+</>
+    },
+    {
+      offset: 33,
+      length: 13,
+      label: "المُعدِّلات (اختياري)",
+      description: <>
+
+غالباً، قد ترى "مُعدِّلاً" (modifier) بعد نوع الـ provider.
+هذه المُعدِّلات اختيارية، وتُستخدم لضبط سلوك الـ provider بطريقة آمنة من حيث النوع (type-safe).
+
+يتوفر حالياً مُعدِّلان (modifiers):
+
+* `autoDispose`، والذي سيقوم بمسح التخزين المؤقت (cache) تلقائياً عندما يتوقف استخدام الـ provider.
+راجع أيضاً <Link documentID="concepts2/auto_dispose" />
+* `family`، والذي يتيح تمرير وسائط (arguments) إلى الـ provider الخاص بك.
+راجع أيضاً <Link documentID="concepts2/family" />.
+
+</>
+    },
+    {
+      offset: 67,
+      length: 14,
+      label: "باني الـ Notifier",
+      description: <>
+
+المعامل (parameter) الخاص بـ "notifier providers" هو دالة يُتوقع منها إنشاء (instantiate) الـ "notifier".
+وبشكل عام، يجب أن تكون عبارة عن "constructor tear-off".
+
+</>
+    },
+    {
+      offset: 86,
+      length: 16,
+      label: "The Notifier",
+      description: <>
+
+إذا كان `NotifierProvider` مكافئاً لـ `StatefulWidget`، فإن هذا الجزء يمثل فئة الحالة (`State` class).
+
+هذه الفئة مسؤولة عن إتاحة طرق لتعديل حالة الـ provider.
+يمكن للمستهلكين الوصول إلى الدوال العامة (public methods) في هذه الفئة باستخدام `ref.read(yourProvider.notifier).yourMethod()`.
+
+:::caution
+لا تضع أي منطق برمجي (logic) داخل باني (constructor) الـ notifier الخاص بك.
+يجب ألا تحتوي الـ Notifiers على باني، لأن `ref` والخصائص الأخرى لا تكون متاحة بعد في تلك المرحلة. بدلاً من ذلك، ضع المنطق الخاص بك داخل دالة `build`.
+
+```dart
+class MyNotifier extends ... {
+  MyNotifier() {
+    // ❌ لا تفعل هذا
+    // هذا سيؤدي إلى رمي استثناء (exception)
+    state = AsyncValue.data(42);
+  }
+
+  @override
+  Future<int> build() {
+    // ✅ افعل هذا بدلاً منه
+    state = AsyncValue.data(42);
+  }
+}
+
+```
+
+:::
+
+</>
+    },
+    {
+      offset: 111,
+      length: 12,
+      label: "نوع الـ Notifier",
+      description: <>
+
+يجب أن تتطابق الفئة الأساسية (base class) التي يمددها (extends) الـ notifier الخاص بك مع نوع الـ provider + "family"، إذا كان مُستخدماً.
+فيما يلي بعض الأمثلة:
+
+- <span style={{ color: colors[0] }}>Notifier</span>Provider -> <span style={{ color: colors[0] }}>Notifier</span>
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider -> <span style={{ color: colors[0] }}>AsyncNotifier</span>
+- <span style={{ color: colors[0] }}>StreamNotifier</span>Provider -> <span style={{ color: colors[0] }}>StreamNotifier</span>
+
+</>
+    },
+    {
+      offset: 136,
+      length: 54,
+      label: "دالة build",
+      description: <>
+
+يجب على جميع الـ notifiers إعادة تعريف (override) دالة `build`.
+تُعد هذه الدالة مكافئة للمكان الذي تضع فيه عادةً المنطق البرمجي الخاص بك في الـ provider العادي (غير المعتمد على Notifier).
+
+ينبغي عدم استدعاء هذه الدالة بشكل مباشر.
+
+</>
+    },
+]}
+/>
+</TabItem>
+<TabItem value="riverpod_generator" label="riverpod_generator">
+<Legend
+  code={`@riverpod
+class MyNotifier extends _$MyNotifier {
+  @override
+  Result build() {
+   //ضع المنطق الخاص بك هنا
+  }
+
+  <your methods here>
+}`}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "التعليق التوضيحي (Annotation)",
+      description: <>
+
+يجب أن تكون جميع الـ providers المُوَلَّدة مسبوقة بـ <span dir="ltr">`@riverpod`</span> أو <span dir="ltr">`@Riverpod()`</span>.
+يمكن وضع هذا التعليق التوضيحي (annotation) على الدوال العامة (global functions) أو الفئات (classes). ومن خلال هذا التعليق التوضيحي، يمكن ضبط إعدادات الـ provider.
+على سبيل المثال، يمكننا تعطيل ميزة "auto-dispose" (التي سنراها لاحقاً) عن طريق كتابة :
+<span dir="ltr">`@Riverpod(keepAlive: true)`</span>.
+
+</>
+    },
+    {
+      offset: 10,
+      length: 16,
+      label: "الNotifier",
+       description: <>
+عند وضع التعليق التوضيحي (annotation) <span dir="ltr">`@riverpod`</span> على فئة (class)، تُسمى تلك الفئة "Notifier".
+يجب أن تمدد (extend) الفئة <span dir="ltr">`_$NotifierName`</span>، حيث <span dir="ltr">`NotifierName`</span> هو اسم الفئة.
+
+الـ Notifiers مسؤولة عن إتاحة طرق لتعديل حالة الـ provider.
+يمكن للمستهلكين الوصول إلى الدوال العامة (public methods) في هذه الفئة باستخدام <span dir="ltr">`ref.read(yourProvider.notifier).yourMethod()`</span>.
+
+:::caution
+لا تضع أي منطق برمجي داخل باني (constructor) الـ notifier الخاص بك.
+يجب ألا تحتوي الـ Notifiers على باني، لأن `ref` والخصائص الأخرى لا تكون متاحة بعد في تلك المرحلة. بدلاً من ذلك، ضع المنطق الخاص بك داخل دالة `build`.
+
+```dart
+class MyNotifier extends ... {
+  MyNotifier() {
+    // ❌ لا تفعل هذا
+    // هذا سيؤدي إلى رمي استثناء (exception)
+    state = AsyncValue.data(42);
+  }
+
+  @override
+  Future<int> build() {
+    // ✅ افعل هذا بدلاً منه
+    state = AsyncValue.data(42);
+  }
+}
+
+```
+
+:::
+
+</>
+    },
+    {
+      offset: 52,
+      length: 54,
+          label: "دالة build",
+      description: <>
+
+يجب على جميع الـ notifiers إعادة تعريف (override) دالة `build`.
+تُعد هذه الدالة مكافئة للمكان الذي تضع فيه عادةً المنطق البرمجي الخاص بك في الـ provider العادي (غير المعتمد على Notifier).
+
+ينبغي عدم استدعاء هذه الدالة بشكل مباشر.
+
+</>
+    },
+]}
+/>
+</TabItem>
+</Tabs>
+</TabItem>
+</Tabs>
+
+:::info
+يمكنك تعريف أي عدد تريده من الـ providers دون قيود.
+على عكس استخدام `package:provider`، تتيح Riverpod إنشاء عدة providers تعرض حالة (state) من نفس "النوع" (type):
+
+<AutoSnippet language="dart" {...declaringManyProviders}></AutoSnippet>
+
+حقيقة أن كلا الـ providers ينشئان `String` لا تسبب أي مشكلة.
+:::
+
+
+## استخدام الـ providers
+
+تشبه الـ Providers الـ widgets في أنها، بحد ذاتها، لا تفعل شيئاً.
+وتماما كما أن الـ widgets هي وصف لواجهة المستخدم (UI)، فإن الـ providers هي وصف للحالة (state).
+والمثير للدهشة أن الـ provider بحد ذاته عديم الحالة (stateless) تماماً، وكان من الممكن إنشاؤه كـ `const` لولا أن ذلك سيجعل بناء الجملة (syntax) أكثر إطالة وتعقيداً بعض الشيء.
+
+لاستخدام الـ provider، تحتاج إلى كائن منفصل: [ProviderContainer].
+راجع <Link documentID="concepts2/containers" /> لمزيد من المعلومات.
+
+باختصار، قبل أن تتمكن من استخدام الـ provider، قم بتغليف تطبيق Flutter الخاص بك بـ [ProviderScope]:
+
+```dart
+void main() {
+  runApp(ProviderScope(child: MyApp()));
+}
+```
+
+بمجرد الانتهاء من ذلك، ستحتاج إلى الحصول على [Ref] للتفاعل مع الـ providers الخاصة بك.
+راجع <Link documentID="concepts2/refs" /> للحصول على معلومات حول ذلك.
+
+باختصار، هناك طريقتان للحصول على [Ref]:
+
+* تحصل الـ Providers بشكل طبيعي على إمكانية الوصول إليه.
+هذا هو المعامل (parameter) الأول لدالة الـ provider، أو خاصية `ref` التابعة لـ Notifier.
+وهذا يُمكن الـ providers من التواصل مع بعضها البعض.
+* ستحتاج شجرة الـ Widget إلى نوع خاص من الـ widgets، يُسمى <Link documentID="concepts2/consumers" />.
+تقوم هذه الـ widgets بسد الفجوة بين شجرة الـ widget وشجرة الـ provider، عن طريق منحك [WidgetRef].
+
+كمثال، لنفترض وجود `helloWorldProvider` يُرجع سلسلة نصية (string) بسيطة.
+يمكنك استخدامه داخل الـ widgets بهذا الشكل:
+
+```dart
+class Example extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer(
+      builder: (context, ref, _) {
+        // الحصول على قيمة الـ provider
+        final helloWorld = ref.watch(helloWorldProvider);
+
+        // استخدام القيمة في واجهة المستخدم (UI)
+        return Text(helloWorld);
+      },
+    );
+  }
+}
+```
+
+[provider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Provider-class.html
+[futureprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/FutureProvider-class.html
+[streamprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/StreamProvider-class.html
+[notifierprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/NotifierProvider-class.html
+[asyncnotifierprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/AsyncNotifierProvider-class.html
+[streamnotifierprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/StreamNotifierProvider-class.html
+[ref]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref-class.html
+[widgetref]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/WidgetRef-class.html
+[providerscope]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderScope-class.html
+[providercontainer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderContainer-class.html
