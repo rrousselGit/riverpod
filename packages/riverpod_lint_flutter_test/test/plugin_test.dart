@@ -10,11 +10,12 @@ import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/diagnostic/diagnostic.dart';
+import 'package:analyzer/error/error.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer/source/line_info.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:analyzer/src/dart/ast/ast.dart';
-import 'package:analyzer/src/dart/error/lint_codes.dart';
+import 'package:analyzer/src/lint/config.dart';
 import 'package:analyzer_plugin/protocol/protocol_common.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
@@ -612,7 +613,7 @@ enum RuleType { lint, warning }
 
 class _PluginRegistry extends PluginRegistry {
   final List<ProducerGenerator> assists = [];
-  final List<({LintCode code, ProducerGenerator generator})> fixes = [];
+  final List<({DiagnosticCode code, ProducerGenerator generator})> fixes = [];
   final List<(AbstractAnalysisRule, RuleType)> rules = [];
 
   Iterable<ProducerGenerator> get producers => assists.followedBy(
@@ -639,7 +640,7 @@ class _PluginRegistry extends PluginRegistry {
   }
 
   @override
-  void registerFixForRule(LintCode code, ProducerGenerator generator) {
+  void registerFixForRule(DiagnosticCode code, ProducerGenerator generator) {
     fixes.add((code: code, generator: generator));
   }
 
@@ -652,4 +653,9 @@ class _PluginRegistry extends PluginRegistry {
   void registerWarningRule(AbstractAnalysisRule rule) {
     rules.add((rule, RuleType.warning));
   }
+
+  @override
+  Iterable<AbstractAnalysisRule> enabled(
+    Map<String, RuleConfig> ruleConfigs,
+  ) => [];
 }

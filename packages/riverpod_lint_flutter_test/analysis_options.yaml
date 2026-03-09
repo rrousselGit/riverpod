@@ -1,3 +1,5 @@
+include: ../../plugins_only.yaml
+
 analyzer:
   exclude:
     # Files with errors on purpose
