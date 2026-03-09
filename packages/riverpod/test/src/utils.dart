@@ -240,6 +240,10 @@ class OnRemoveListener extends Mock {
   void call();
 }
 
+class OnManualInvalidation extends Mock {
+  void call();
+}
+
 TypeMatcher<AsyncError<ValueT>> isAsyncError<ValueT>(
   Object? error, {
   Object? stackTrace = const _Sentinel(),

@@ -50,6 +50,8 @@ sealed class Ref implements MutationTarget {
   List<void Function()>? _onCancelListeners;
   List<void Function()>? _onAddListeners;
   List<void Function()>? _onRemoveListeners;
+  List<void Function()>? _onManualInvalidationListeners;
+  bool _inManualInvalidationCallback = false;
 
   /// Whether we're initializing this provider for the first time.
   ///
@@ -227,11 +229,13 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     return path;
   }
 
-  void _throwIfInvalidUsage() {
-    assert(
-      _debugCallbackStack == 0,
-      'Cannot use Ref or modify other providers inside life-cycles/selectors.',
-    );
+  void _throwIfInvalidUsage({bool skipAssert = false}) {
+    if (!skipAssert) {
+      assert(
+        _debugCallbackStack == 0,
+        'Cannot use Ref or modify other providers inside life-cycles/selectors.',
+      );
+    }
     if (!mounted) {
       throw UnmountedRefException(_element.origin);
     }
@@ -320,7 +324,9 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// If used on a provider which is not initialized or disposed, this method will have no effect.
   /// {@endtemplate}
   void invalidate(ProviderOrFamily providerOrFamily, {bool asReload = false}) {
-    _throwIfInvalidUsage();
+    // Allow invalidate calls within onManualInvalidation callbacks
+    _throwIfInvalidUsage(skipAssert: _inManualInvalidationCallback);
+
     if (kDebugMode) _debugAssertCanDependOn(providerOrFamily);
 
     container.invalidate(providerOrFamily, asReload: asReload);
@@ -330,9 +336,60 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// {@macro riverpod.invalidate}
   void invalidateSelf({bool asReload = false}) {
+    _invalidateSelf(asReload: asReload, manual: true);
+  }
+
+  void _invalidateSelf({required bool asReload, required bool manual}) {
     _throwIfInvalidUsage();
 
-    _element.invalidateSelf(asReload: asReload);
+    _element.invalidateSelf(asReload: asReload, manual: manual);
+  }
+
+  /// {@template riverpod.onManualInvalidation}
+  /// A life-cycle for whenever this provider is manually invalidated, as opposed
+  /// to automatic invalidation caused by dependency changes.
+  ///
+  /// This callback is triggered when:
+  /// - [invalidateSelf] is called
+  /// - [invalidate] is called on this provider
+  /// - [refresh] on this provider
+  ///
+  /// This callback is NOT triggered when:
+  /// - A dependency watched with [watch] changes
+  ///
+  /// ## Common Use Cases
+  ///
+  /// **Invalidation forwarding**: Forward manual invalidations to upstream providers:
+  /// ```dart
+  /// final sourceProvider = Provider((ref) => 'source data');
+  ///
+  /// final derivedProvider = Provider((ref) {
+  ///   final data = ref.watch(sourceProvider);
+  ///
+  ///   // Forward manual invalidations to the source
+  ///   ref.onManualInvalidation(() {
+  ///     ref.invalidate(sourceProvider);
+  ///   });
+  ///
+  ///   return 'processed: $data';
+  /// });
+  /// ```
+  ///
+  /// Returns a function which can be called to remove the listener.
+  ///
+  /// See also:
+  /// - [invalidateSelf], to manually invalidate this provider
+  /// - [invalidate], to manually invalidate other providers
+  /// - [refresh], to forcefully re-evaluate a provider
+  /// {@endtemplate}
+  @experimental
+  RemoveListener onManualInvalidation(void Function() cb) {
+    _throwIfInvalidUsage();
+
+    final list = _onManualInvalidationListeners ??= [];
+    list.add(cb);
+
+    return () => list.remove(cb);
   }
 
   /// Notify dependents that this provider has changed.
@@ -654,8 +711,8 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     late ProviderSubscription<StateT> sub;
     sub = _element.listen<StateT>(
       listenable,
-      (prev, value) => invalidateSelf(asReload: true),
-      onError: (err, stack) => invalidateSelf(asReload: true),
+      (prev, value) => _invalidateSelf(asReload: true, manual: false),
+      onError: (err, stack) => _invalidateSelf(asReload: true, manual: false),
       onDependencyMayHaveChanged: _element._markDependencyMayHaveChanged,
     );
 
@@ -718,6 +775,27 @@ void _runCallbacks(
       }
       container.runGuarded(cb);
     } finally {
+      if (kDebugMode) {
+        _debugCallbackStack--;
+      }
+    }
+  }
+}
+
+void _runManualInvalidationCallbacks(ProviderContainer container, Ref? ref) {
+  // toList() protects against ConcurrentModificationError
+  final callbacks = ref?._onManualInvalidationListeners?.toList();
+  if (ref == null || callbacks == null) return;
+
+  for (final cb in callbacks) {
+    try {
+      if (kDebugMode) {
+        _debugCallbackStack++;
+      }
+      ref._inManualInvalidationCallback = true;
+      container.runGuarded(cb);
+    } finally {
+      ref._inManualInvalidationCallback = false;
       if (kDebugMode) {
         _debugCallbackStack--;
       }
