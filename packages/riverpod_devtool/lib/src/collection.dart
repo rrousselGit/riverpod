@@ -24,6 +24,8 @@ class MapBuilder<KeyT, ValueT> {
 
   bool _changed = false;
 
+  ValueT? operator [](KeyT key) => _map[key];
+
   void operator []=(KeyT key, ValueT value) {
     if (!_changed) {
       _map = Map<KeyT, ValueT>.from(_map);

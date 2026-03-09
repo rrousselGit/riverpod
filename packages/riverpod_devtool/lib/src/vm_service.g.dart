@@ -442,7 +442,7 @@ class ConsumerNodeMeta extends NodeMeta {
 /// Devtool code for [internals.ProviderDependencyChangeEvent]
 class ProviderDependencyChangeEvent extends Event {
   ProviderDependencyChangeEvent({
-    required this.provider,
+    required this.elementId,
     required this.dependents,
     required this.weakDependents,
     required this.dependencies,
@@ -454,29 +454,50 @@ class ProviderDependencyChangeEvent extends Event {
   }) {
     _validate($events, name: 'ProviderDependencyChangeEvent', path: path);
 
-    final provider = ProviderMeta.from($events, path: '$path.provider');
-    final dependents = RootCachedObject(
-      CacheId($events['$path.dependents']!.valueAsString!),
+    final elementId = internals.ElementId(
+      $events['$path.elementId']!.valueAsString!,
     );
-    final weakDependents = RootCachedObject(
-      CacheId($events['$path.weakDependents']!.valueAsString!),
-    );
-    final dependencies = RootCachedObject(
-      CacheId($events['$path.dependencies']!.valueAsString!),
-    );
+    final dependents = {
+      for (
+        var i =
+            int.parse($events['$path.dependents.length']!.valueAsString!) - 1;
+        i >= 0;
+        i--
+      )
+        NodeMeta.from($events, path: '$path.dependents[$i]'),
+    };
+    final weakDependents = {
+      for (
+        var i =
+            int.parse($events['$path.weakDependents.length']!.valueAsString!) -
+            1;
+        i >= 0;
+        i--
+      )
+        NodeMeta.from($events, path: '$path.weakDependents[$i]'),
+    };
+    final dependencies = {
+      for (
+        var i =
+            int.parse($events['$path.dependencies.length']!.valueAsString!) - 1;
+        i >= 0;
+        i--
+      )
+        internals.ElementId($events['$path.dependencies[$i]']!.valueAsString!),
+    };
 
     return ProviderDependencyChangeEvent(
-      provider: provider,
+      elementId: elementId,
       dependents: dependents,
       weakDependents: weakDependents,
       dependencies: dependencies,
     );
   }
 
-  final ProviderMeta provider;
-  final RootCachedObject dependents;
-  final RootCachedObject weakDependents;
-  final RootCachedObject dependencies;
+  final internals.ElementId elementId;
+  final Set<NodeMeta> dependents;
+  final Set<NodeMeta> weakDependents;
+  final Set<internals.ElementId> dependencies;
 }
 
 /// Devtool code for [internals.ConsumerMeta]

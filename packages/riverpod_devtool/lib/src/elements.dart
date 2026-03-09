@@ -10,13 +10,15 @@ class ElementMeta {
     required this.provider,
     required this.state,
     required this.notifier,
+    required this.children,
+    required this.parents,
   });
 
   final ProviderMeta provider;
   final ProviderStateRef state;
   final ProviderStateRef? notifier;
-  final Set<internals.ElementId> children = {};
-  final Set<internals.ElementId> parents = {};
+  final Set<NodeMeta> children;
+  final Set<internals.ElementId> parents;
 }
 
 Map<internals.ElementId, ElementMeta> computeElementsForFrame(
@@ -44,30 +46,30 @@ Map<internals.ElementId, ElementMeta> computeElementsForFrame(
         :final provider,
         :final notifier,
       ):
+        final previous = state[provider.elementId];
         state[provider.elementId] = ElementMeta(
           provider: provider,
           state: currentState,
           notifier: notifier,
+          parents: previous?.parents ?? const {},
+          children: previous?.children ?? const {},
+        );
+      case ProviderDependencyChangeEvent(:final elementId):
+        final previous = state[elementId];
+        if (previous == null) {
+          throw StateError(
+            'Received a ProviderDependencyChangeEvent for an element that does not exist: $elementId',
+          );
+        }
+        state[elementId] = ElementMeta(
+          provider: previous.provider,
+          state: previous.state,
+          notifier: previous.notifier,
+          parents: event.dependencies,
+          children: {...event.weakDependents, ...event.dependents},
         );
     }
   }
 
-  final map = state.build();
-
-  // _computeRelations(map, frame);
-
-  return map;
+  return state.build();
 }
-
-// TODO
-// void _computeRelations(Map<internals.ElementId, ElementMeta> elements) {
-//   for (final element in elements.values) {
-//     for (final dependency in element.state.dependencies) {
-//       final dependencyElement = elements[dependency];
-//       if (dependencyElement == null) continue;
-
-//       element.parents.add(dependency);
-//       dependencyElement.children.add(element.provider.elementId);
-//     }
-//   }
-// }

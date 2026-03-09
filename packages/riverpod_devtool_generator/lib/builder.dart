@@ -322,6 +322,11 @@ sealed class _BuiltInType {
       return _ListType(
         from(listType.typeArguments.single, annotatedClasses: annotatedClasses),
       );
+    } else if (type.isDartCoreSet) {
+      final setType = type as InterfaceType;
+      return _SetType(
+        from(setType.typeArguments.single, annotatedClasses: annotatedClasses),
+      );
     } else if (type.isDartCoreString) {
       return _StringType();
     } else if (type.isDartCoreInt) {
@@ -401,6 +406,42 @@ final class _ListType extends _BuiltInType {
         return ${innerType.decodeBytes(mapSymbol: mapSymbol, path: '$path[\$i]')};
       },
     )
+    ''';
+  }
+
+  @override
+  String appendEncodedValueCode({
+    required String mapSymbol,
+    required String valueSymbol,
+    required String path,
+  }) {
+    return '''
+  {
+    $mapSymbol['$path.length'] = $valueSymbol.length;
+    for (final (index, e) in $valueSymbol.indexed) {
+      ${innerType.appendEncodedValueCode(mapSymbol: mapSymbol, valueSymbol: 'e', path: '$path[\$index]')}
+    }
+  }
+  ''';
+  }
+}
+
+final class _SetType extends _BuiltInType {
+  _SetType(this.innerType);
+
+  final _BuiltInType innerType;
+
+  @override
+  String typeCode() => '#{{dart:core|Set}}<${innerType.typeCode()}>';
+
+  @override
+  String decodeBytes({required String mapSymbol, required String path}) {
+    return '''
+    {
+      for (var i = int.parse($mapSymbol['$path.length']!.valueAsString!) - 1; i >= 0; i--)
+        ${innerType.decodeBytes(mapSymbol: mapSymbol, path: '$path[\$i]')},
+
+    }
     ''';
   }
 

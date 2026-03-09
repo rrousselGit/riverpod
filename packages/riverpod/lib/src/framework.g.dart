@@ -292,14 +292,31 @@ extension ProviderDependencyChangeEventToBytes
     on ProviderDependencyChangeEvent {
   Map<String, Object?> toBytes({required String path}) {
     final res16 = <String, Object?>{path: 'ProviderDependencyChangeEvent'};
-    res16.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
-    res16['$path.dependents'] = RiverpodDevtool.instance.cache(dependents);
+    res16['$path.elementId'] = elementId;
+    {
+      res16['$path.dependents.length'] = dependents.length;
+      for (final (index, e) in dependents.indexed) {
+        res16.addAll(
+          NodeMetaToBytes(e).toBytes(path: '$path.dependents[$index]'),
+        );
+      }
+    }
 
-    res16['$path.weakDependents'] = RiverpodDevtool.instance.cache(
-      weakDependents,
-    );
+    {
+      res16['$path.weakDependents.length'] = weakDependents.length;
+      for (final (index, e) in weakDependents.indexed) {
+        res16.addAll(
+          NodeMetaToBytes(e).toBytes(path: '$path.weakDependents[$index]'),
+        );
+      }
+    }
 
-    res16['$path.dependencies'] = RiverpodDevtool.instance.cache(dependencies);
+    {
+      res16['$path.dependencies.length'] = dependencies.length;
+      for (final (index, e) in dependencies.indexed) {
+        res16['$path.dependencies[$index]'] = e;
+      }
+    }
 
     return res16;
   }

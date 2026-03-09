@@ -365,7 +365,7 @@ extension on Node {
 @internal
 class ProviderDependencyChangeEvent extends Event {
   ProviderDependencyChangeEvent(ProviderElement element)
-    : provider = ProviderMeta.from(element),
+    : elementId = element._debugId,
       dependents =
           ((element.dependents ?? const [])
               .map((sub) => sub.source.meta)
@@ -381,7 +381,7 @@ class ProviderDependencyChangeEvent extends Event {
               .map((e) => e.provider.elementId)
               .toSet());
 
-  final ProviderMeta provider;
+  final ElementId elementId;
   final Set<NodeMeta> dependents;
   final Set<NodeMeta> weakDependents;
   final Set<ElementId> dependencies;
