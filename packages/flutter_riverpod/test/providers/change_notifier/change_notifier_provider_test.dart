@@ -5,10 +5,36 @@ import 'dart:async';
 import 'package:flutter/widgets.dart' hide Listener;
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 
+import '../../provider_test.dart';
 import '../../utils.dart';
 
 void main() {
+  test('Can specify disposeNotifier', () {
+    final onDispose = OnDisposeMock();
+    final notifier = DelegateNotifier(onDispose: onDispose.call);
+    final onDispose2 = OnDisposeMock();
+    final notifier2 = DelegateNotifier(onDispose: onDispose.call);
+    final container = ProviderContainer.test();
+    final provider = ChangeNotifierProvider(
+      (_) => notifier,
+      disposeNotifier: false,
+    );
+    final family = ChangeNotifierProvider.family(
+      (ref, int arg) => notifier2,
+      disposeNotifier: false,
+    );
+
+    container.read(provider);
+    container.refresh(provider);
+    verifyNever(onDispose.call());
+
+    container.read(family(0));
+    container.refresh(family(0));
+    verifyNever(onDispose2.call());
+  });
+
   test('Guards ChangeNotifier.dispose', () {
     final notifier = DelegateNotifier(
       onDispose: () => throw StateError('called'),
