@@ -1,4 +1,4 @@
-## Unreleased fix
+## 3.3.1 - 2026-03-09
 
 - Add missing `disposeNotifier` flag on `overrideWith`.
 
