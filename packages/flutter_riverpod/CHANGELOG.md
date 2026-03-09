@@ -1,3 +1,7 @@
+## Unreleased fix
+
+- Add missing `disposeNotifier` flag on `overrideWith`.
+
 ## 3.3.0 - 2026-03-09
 
 - Added `ChangeNotifierProvider(disposeNotifier: false)`, to disable the automatic
