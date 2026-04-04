@@ -537,24 +537,19 @@ String _goldenLineLabel({
   required Iterable<int> offsets,
 }) {
   final lineStarts = _computeLineStarts(sourceContent);
-  final lineNumbers =
-      offsets
-          .map(
-            (offset) => _lineNumberForOffset(
-              sourceContent: sourceContent,
-              lineStarts: lineStarts,
-              offset: offset,
-            ),
-          )
-          .toSet()
-          .toList()
-        ..sort();
+  final lineNumbers = offsets.map(
+    (offset) => _lineNumberForOffset(
+      sourceContent: sourceContent,
+      lineStarts: lineStarts,
+      offset: offset,
+    ),
+  );
 
   if (lineNumbers.isEmpty) {
     return '0';
   }
 
-  return lineNumbers.join('_');
+  return lineNumbers.reduce((a, b) => a < b ? a : b).toString();
 }
 
 List<int> _computeLineStarts(String sourceContent) {

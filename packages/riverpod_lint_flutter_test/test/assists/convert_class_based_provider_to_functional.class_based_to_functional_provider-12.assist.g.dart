@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'convert_class_based_provider_to_functional.class_based_to_functional_provider-12_15.assist.dart';
+part of 'convert_class_based_provider_to_functional.class_based_to_functional_provider-12.assist.dart';
 
 // **************************************************************************
 // RiverpodGenerator
