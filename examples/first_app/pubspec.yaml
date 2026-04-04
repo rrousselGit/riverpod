@@ -8,7 +8,7 @@ environment:
 resolution: workspace
 
 dependencies:
-  dio: ^5.9.0
+  dio: 5.9.2
   flutter:
     sdk: flutter
   flutter_riverpod: 3.3.1
