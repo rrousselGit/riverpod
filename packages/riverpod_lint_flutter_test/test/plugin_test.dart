@@ -321,12 +321,12 @@ extension on File {
   File goldenFile({
     required String id,
     required String groupName,
-    required int index,
+    required String lineLabel,
   }) {
     final baseName = p.basenameWithoutExtension(path);
 
     return parent.file(
-      '$baseName.$id-$index.$groupName.dart',
+      '$baseName.$id-$lineLabel.$groupName.dart',
     );
   }
 
@@ -350,7 +350,7 @@ extension on File {
               return false;
 
             final [_, idAndIndex, _] = fileName.split('.');
-            final [fileId, index] = idAndIndex.split('-');
+            final [fileId, _] = idAndIndex.split('-');
 
             return fileId == id;
           },
@@ -420,16 +420,20 @@ Future<void> _verifyGoldensMatchProducers(
       file.goldensForFile(id: producerId).map((e) => e.path).toSet();
   final mismatch = <({String? expected, String actual})>[];
   final missing = <({String filePath})>[];
+  final sourceContent = file.readAsStringSync();
 
   final actualFiles =
-      uniqueSourceOutputs.entries.indexed.map(
-        (e) {
+      uniqueSourceOutputs.entries.map(
+        (entry) {
+          final lineLabel = _goldenLineLabel(
+            sourceContent: sourceContent,
+            offsets: entry.value.map((e) => e.offset),
+          );
           final goldenFile = file.goldenFile(
             id: producerId,
-            index: e.$1,
             groupName: groupName,
+            lineLabel: lineLabel,
           );
-          final entry = e.$2;
 
           return (
             goldenFile,
@@ -528,6 +532,83 @@ String _encodeProducerOutput({
   }
 }
 
+String _goldenLineLabel({
+  required String sourceContent,
+  required Iterable<int> offsets,
+}) {
+  final lineStarts = _computeLineStarts(sourceContent);
+  final lineNumbers =
+      offsets
+          .map(
+            (offset) => _lineNumberForOffset(
+              sourceContent: sourceContent,
+              lineStarts: lineStarts,
+              offset: offset,
+            ),
+          )
+          .toSet()
+          .toList()
+        ..sort();
+
+  if (lineNumbers.isEmpty) {
+    return '0';
+  }
+
+  return lineNumbers.join('_');
+}
+
+List<int> _computeLineStarts(String sourceContent) {
+  final lineStarts = <int>[0];
+  for (var i = 0; i < sourceContent.length; i++) {
+    if (sourceContent.codeUnitAt(i) == 0x0A) {
+      lineStarts.add(i + 1);
+    }
+  }
+  return lineStarts;
+}
+
+int _lineIndexForOffset({
+  required String sourceContent,
+  required List<int> lineStarts,
+  required int offset,
+}) {
+  final maxOffset = sourceContent.isEmpty ? 0 : sourceContent.length - 1;
+  final safeOffset = offset.clamp(0, maxOffset);
+
+  var low = 0;
+  var high = lineStarts.length - 1;
+
+  while (low <= high) {
+    final mid = (low + high) >> 1;
+    final start = lineStarts[mid];
+    final isLast = mid == lineStarts.length - 1;
+    final nextStart = isLast ? sourceContent.length : lineStarts[mid + 1];
+
+    if (safeOffset < start) {
+      high = mid - 1;
+    } else if (safeOffset >= nextStart && !isLast) {
+      low = mid + 1;
+    } else {
+      return mid;
+    }
+  }
+
+  return lineStarts.length - 1;
+}
+
+int _lineNumberForOffset({
+  required String sourceContent,
+  required List<int> lineStarts,
+  required int offset,
+}) {
+  return _lineIndexForOffset(
+        sourceContent: sourceContent,
+        lineStarts: lineStarts,
+        offset: offset,
+      ) +
+      1;
+}
+
 String _renderOffsetsWithContext({
   required Map<String, List<int>> offsetsForKind,
   required String sourceContent,
@@ -536,34 +617,7 @@ String _renderOffsetsWithContext({
     return '';
   }
 
-  final lineStarts = <int>[0];
-  for (var i = 0; i < sourceContent.length; i++) {
-    if (sourceContent.codeUnitAt(i) == 0x0A) {
-      lineStarts.add(i + 1);
-    }
-  }
-
-  int lineForOffset(int offset) {
-    var low = 0;
-    var high = lineStarts.length - 1;
-
-    while (low <= high) {
-      final mid = (low + high) >> 1;
-      final start = lineStarts[mid];
-      final isLast = mid == lineStarts.length - 1;
-      final nextStart = isLast ? sourceContent.length : lineStarts[mid + 1];
-
-      if (offset < start) {
-        high = mid - 1;
-      } else if (offset >= nextStart && !isLast) {
-        low = mid + 1;
-      } else {
-        return mid;
-      }
-    }
-
-    return lineStarts.length - 1;
-  }
+  final lineStarts = _computeLineStarts(sourceContent);
 
   String lineAt(int index) {
     if (index < 0 || index >= lineStarts.length) return '';
@@ -593,7 +647,11 @@ String _renderOffsetsWithContext({
         0,
         sourceContent.isEmpty ? 0 : sourceContent.length - 1,
       );
-      final lineIndex = lineForOffset(safeOffset);
+      final lineIndex = _lineIndexForOffset(
+        sourceContent: sourceContent,
+        lineStarts: lineStarts,
+        offset: safeOffset,
+      );
       final lineStart = lineStarts[lineIndex];
       final currentLine = lineAt(lineIndex);
 
@@ -680,6 +738,7 @@ Future<void> _writeProducerResultToFile(
   required String groupName,
 }) async {
   final goldens = sourceFile.goldensForFile(id: producerId);
+  final sourceContent = sourceFile.readAsStringSync();
 
   try {
     await Future.wait(
@@ -690,12 +749,16 @@ Future<void> _writeProducerResultToFile(
   }
 
   await Future.wait([
-    for (final (index, entry) in uniqueSourceOutputs.entries.indexed)
+    for (final entry in uniqueSourceOutputs.entries)
       Future(() async {
+        final lineLabel = _goldenLineLabel(
+          sourceContent: sourceContent,
+          offsets: entry.value.map((e) => e.offset),
+        );
         final outputFile = sourceFile.goldenFile(
           id: producerId,
           groupName: groupName,
-          index: index,
+          lineLabel: lineLabel,
         );
 
         await outputFile.create(recursive: true);
