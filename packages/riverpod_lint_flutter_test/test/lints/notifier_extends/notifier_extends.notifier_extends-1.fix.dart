@@ -1,6 +1,9 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [notifier_extends?offset=866,883,884,890]
+// Offsets for "notifier_extends":
+// 36: // ignore: riverpod_lint/notifier_extends
+// 37: class MissingGenerics<FirstT, SecondT> extends <>_$MissingGenerics<><<>FirstT<>> {
+// 38:   int build() => 0;
 // ```
 // @riverpod
 // // ignore: riverpod_lint/notifier_extends

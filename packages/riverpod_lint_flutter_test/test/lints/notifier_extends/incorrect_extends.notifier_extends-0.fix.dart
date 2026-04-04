@@ -1,6 +1,9 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [notifier_extends?offset=319]
+// Offsets for "notifier_extends":
+// 12: // ignore: riverpod_lint/notifier_extends
+// 13: class WrongExtends extends <>Object {
+// 14:   int build() => 0;
 // ```
 // @riverpod
 // // ignore: riverpod_lint/notifier_extends

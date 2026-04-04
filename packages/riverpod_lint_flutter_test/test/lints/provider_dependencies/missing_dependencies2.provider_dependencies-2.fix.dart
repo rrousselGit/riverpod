@@ -1,6 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [provider_dependencies?offset=7022,7028,7074,7202]
+// Offsets for "provider_dependencies":
+// 326: // ignore: riverpod_lint/provider_dependencies
+// 327: <>class <>FindStateFromClassList extends StatefulWidget <>{
+// 328:   const FindStateFromClassList({super.key});
+//
+// 331:   State<FindStateFromClassList> createState() => _Stateful3State();
+// 332: <>}
 // ```
 //
 // // ignore: riverpod_lint/provider_dependencies

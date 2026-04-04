@@ -1,6 +1,9 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [functional_ref?offset=293]
+// Offsets for "functional_ref":
+// 16:   // ignore: riverpod_lint/functional_ref
+// 17:   <>int ref,
+// 18: ) {
 // ```
 // int incorrectlyTyped(
 //   // ignore: riverpod_lint/functional_ref
