@@ -1,6 +1,11 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [class_based_to_functional_provider?offset=239,245,253,261,271,305]
+// Offsets for "class_based_to_functional_provider":
+// 11: @riverpod
+// 12: <>class <>Example <>extends <>_$Example <>{
+// 13:   @override
+// 14:   int build() => 0;
+// 15: <>}
 // ```
 // /// Some comment
 // @riverpod

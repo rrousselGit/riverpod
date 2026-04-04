@@ -1,6 +1,11 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [convert_to_hookWidget?offset=1519,1525,1545,1568,1697]
+// Offsets for "convert_to_hookWidget":
+// 74: <>class <>ExplicitCreateState <>extends StatefulWidget <>{
+// 75:   const ExplicitCreateState({super.key});
+//
+// 78:   ExplicitCreateStateState createState() => ExplicitCreateStateState();
+// 79: <>}
 // ```
 // }
 //

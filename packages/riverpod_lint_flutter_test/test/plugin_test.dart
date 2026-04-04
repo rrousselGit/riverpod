@@ -493,12 +493,17 @@ String _encodeProducerOutput({
     final offsets = offsetsForKind[producerId] ??= [];
     offsets.add(offset);
   }
+  final sourceContent = sourceFile.readAsStringSync();
 
-  final buffer = StringBuffer('''
-// GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, type=warning
-// ${offsetsForKind.entries.map((e) => '[${e.key}?offset=${e.value.join(',')}]').join(' ')}
-''');
+  final buffer = StringBuffer();
+  buffer.writeln('// GENERATED CODE - DO NOT MODIFY BY HAND');
+  buffer.writeln('// ignore_for_file: type=lint, type=warning');
+  buffer.write(
+    _renderOffsetsWithContext(
+      offsetsForKind: offsetsForKind,
+      sourceContent: sourceContent,
+    ),
+  );
 
   if (source.header.isNotEmpty) {
     buffer.write(source.header.indentWith('// '));
@@ -521,6 +526,150 @@ String _encodeProducerOutput({
     Zone.current.handleUncaughtError(err, stack);
     return buffer.toString();
   }
+}
+
+String _renderOffsetsWithContext({
+  required Map<String, List<int>> offsetsForKind,
+  required String sourceContent,
+}) {
+  if (offsetsForKind.isEmpty || sourceContent.isEmpty) {
+    return '';
+  }
+
+  final lineStarts = <int>[0];
+  for (var i = 0; i < sourceContent.length; i++) {
+    if (sourceContent.codeUnitAt(i) == 0x0A) {
+      lineStarts.add(i + 1);
+    }
+  }
+
+  int lineForOffset(int offset) {
+    var low = 0;
+    var high = lineStarts.length - 1;
+
+    while (low <= high) {
+      final mid = (low + high) >> 1;
+      final start = lineStarts[mid];
+      final isLast = mid == lineStarts.length - 1;
+      final nextStart = isLast ? sourceContent.length : lineStarts[mid + 1];
+
+      if (offset < start) {
+        high = mid - 1;
+      } else if (offset >= nextStart && !isLast) {
+        low = mid + 1;
+      } else {
+        return mid;
+      }
+    }
+
+    return lineStarts.length - 1;
+  }
+
+  String lineAt(int index) {
+    if (index < 0 || index >= lineStarts.length) return '';
+
+    final start = lineStarts[index];
+    final isLast = index == lineStarts.length - 1;
+    final end = isLast ? sourceContent.length : lineStarts[index + 1] - 1;
+
+    if (start >= end) return '';
+    return sourceContent.substring(start, end);
+  }
+
+  final buffer = StringBuffer();
+
+  for (final entry in offsetsForKind.entries) {
+    final kind = entry.key;
+    final kindOffsets = entry.value;
+    if (kindOffsets.isEmpty) continue;
+
+    buffer.writeln('// Offsets for "$kind":');
+    int? lastDisplayedLineMaxIndex;
+    // Group offsets by their line so that shared lines are rendered once.
+    final lineToColumns = <int, List<int>>{};
+
+    for (final rawOffset in kindOffsets) {
+      final safeOffset = rawOffset.clamp(
+        0,
+        sourceContent.isEmpty ? 0 : sourceContent.length - 1,
+      );
+      final lineIndex = lineForOffset(safeOffset);
+      final lineStart = lineStarts[lineIndex];
+      final currentLine = lineAt(lineIndex);
+
+      final relativeColumn = (safeOffset - lineStart).clamp(
+        0,
+        currentLine.length,
+      );
+      final columns = lineToColumns[lineIndex] ??= [];
+      columns.add(relativeColumn);
+    }
+
+    final sortedLineIndexes = lineToColumns.keys.toList()..sort();
+
+    for (final lineIndex in sortedLineIndexes) {
+      final currentLine = lineAt(lineIndex);
+      if (currentLine.isEmpty) {
+        continue;
+      }
+
+      final previousLine = lineAt(lineIndex - 1);
+      final nextLine = lineAt(lineIndex + 1);
+
+      var startDisplayedLineIndex = lineIndex;
+      var endDisplayedLineIndex = lineIndex;
+
+      if (previousLine.isNotEmpty) {
+        startDisplayedLineIndex = lineIndex - 1;
+      }
+      if (nextLine.isNotEmpty) {
+        endDisplayedLineIndex = lineIndex + 1;
+      }
+
+      if (lastDisplayedLineMaxIndex != null &&
+          startDisplayedLineIndex > lastDisplayedLineMaxIndex + 1) {
+        buffer.writeln('//');
+      }
+
+      final columns = lineToColumns[lineIndex]!..sort();
+
+      final markedLineBuffer = StringBuffer();
+      var lastPos = 0;
+
+      for (var column in columns) {
+        final col = column.clamp(0, currentLine.length);
+        if (col < lastPos) {
+          continue;
+        }
+
+        markedLineBuffer.write(currentLine.substring(lastPos, col));
+        markedLineBuffer.write('<>');
+        lastPos = col;
+      }
+
+      markedLineBuffer.write(currentLine.substring(lastPos));
+      final markedCurrentLine = markedLineBuffer.toString();
+
+      if (previousLine.isNotEmpty) {
+        final prevIndex = lineIndex - 1;
+        buffer.writeln('// ${prevIndex + 1}: $previousLine');
+      }
+
+      buffer.writeln('// ${lineIndex + 1}: $markedCurrentLine');
+
+      if (nextLine.isNotEmpty) {
+        final nextIndex = lineIndex + 1;
+        buffer.writeln('// ${nextIndex + 1}: $nextLine');
+      }
+
+      if (lastDisplayedLineMaxIndex == null ||
+          endDisplayedLineIndex > lastDisplayedLineMaxIndex) {
+        lastDisplayedLineMaxIndex = endDisplayedLineIndex;
+      }
+    }
+  }
+
+  return buffer.toString();
 }
 
 Future<void> _writeProducerResultToFile(

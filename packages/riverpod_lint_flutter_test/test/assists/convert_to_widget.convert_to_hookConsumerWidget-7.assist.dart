@@ -1,6 +1,11 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [convert_to_hookConsumerWidget?offset=2519,2525,2546,2581,2730]
+// Offsets for "convert_to_hookConsumerWidget":
+// 118: <>class <>HookConsumerStateful <>extends StatefulHookConsumerWidget <>{
+// 119:   const HookConsumerStateful({super.key});
+//
+// 123:       _HookConsumerStatefulState();
+// 124: <>}
 // ```
 // }
 //

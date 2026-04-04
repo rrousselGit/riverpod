@@ -1,6 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [provider_dependencies?offset=6022,6028,6072,6162]
+// Offsets for "provider_dependencies":
+// 279: // ignore: riverpod_lint/provider_dependencies
+// 280: <>class <>WidgetDependencies2 extends StatelessWidget <>{
+// 281:   @override
+//
+// 284:   }
+// 285: <>}
 // ```
 //
 // // ignore: riverpod_lint/provider_dependencies
@@ -117,9 +123,9 @@ int watchGeneratedScopedAndContainsDependency(Ref ref) {
 
 @Riverpod(
   dependencies:
-      // The dependency is redundant because it is not a scoped provider
-      // ignore: riverpod_lint/provider_dependencies
-      [generatedRoot],
+  // The dependency is redundant because it is not a scoped provider
+  // ignore: riverpod_lint/provider_dependencies
+  [generatedRoot],
 )
 int watchGeneratedRootAndContainsDependency(Ref ref) {
   return ref.watch(generatedRootProvider);
@@ -129,9 +135,9 @@ int watchGeneratedRootAndContainsDependency(Ref ref) {
 
 @Riverpod(
   dependencies:
-      // generatedRoot is extra
-      // ignore: riverpod_lint/provider_dependencies
-      [dep, generatedRoot],
+  // generatedRoot is extra
+  // ignore: riverpod_lint/provider_dependencies
+  [dep, generatedRoot],
 )
 int specifiedDependencyButNeverUsed(Ref ref) {
   ref.watch(depProvider);

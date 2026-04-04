@@ -1,6 +1,9 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [wrap_with_consumer?offset=370,379]
+// Offsets for "wrap_with_consumer":
+// 17:     return Scaffold(
+// 18:       body: <>Container<>(),
+// 19:     );
 // ```
 //
 //     return Scaffold(

@@ -1,6 +1,8 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [functional_to_class_based_provider?offset=243,250]
+// Offsets for "functional_to_class_based_provider":
+// 11: @riverpod
+// 12: int <>example<>(Ref ref) => 0;
 // ```
 // /// Some comment
 // @riverpod

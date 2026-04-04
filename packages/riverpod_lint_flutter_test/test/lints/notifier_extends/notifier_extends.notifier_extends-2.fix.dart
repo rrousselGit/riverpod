@@ -1,6 +1,9 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [notifier_extends?offset=1011,1023,1024,1031,1033,1039]
+// Offsets for "notifier_extends":
+// 42: // ignore: riverpod_lint/notifier_extends
+// 43: class WrongOrder<FirstT, SecondT> extends <>_$WrongOrder<><<>SecondT<>, <>FirstT<>> {
+// 44:   int build() => 0;
 // ```
 // @riverpod
 // // ignore: riverpod_lint/notifier_extends

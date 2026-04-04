@@ -1,6 +1,11 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [convert_to_consumerWidget?offset=659,665,684,708,848]
+// Offsets for "convert_to_consumerWidget":
+// 26: <>class <>StatelessWithComma <>extends StatelessWidget <>{
+// 27:   const StatelessWithComma({super.key});
+//
+// 34:   }
+// 35: <>}
 // ```
 // }
 //

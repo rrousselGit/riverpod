@@ -1,6 +1,9 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [wrap_with_consumer?offset=715,729]
+// Offsets for "wrap_with_consumer":
+// 33:   Widget build(BuildContext context, WidgetRef ref) {
+// 34:     return <>ElevatedButton<>(
+// 35:       onPressed: () => onSaved?.call(),
 // ```
 //   @override
 //   Widget build(BuildContext context, WidgetRef ref) {

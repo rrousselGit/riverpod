@@ -1,6 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [provider_dependencies?offset=5106,5112,5159,5468]
+// Offsets for "provider_dependencies":
+// 227: // ignore: riverpod_lint/provider_dependencies
+// 228: <>class <>SupportsMultipleScopes2 extends ConsumerWidget <>{
+// 229:   @override
+//
+// 240:   }
+// 241: <>}
 // ```
 //
 // // ignore: riverpod_lint/provider_dependencies

@@ -1,6 +1,11 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [convert_to_consumerStatefulWidget?offset=1867,1873,1886,1913,2023]
+// Offsets for "convert_to_consumerStatefulWidget":
+// 90: <>class <>HookStateful <>extends StatefulHookWidget <>{
+// 91:   const HookStateful({super.key});
+//
+// 94:   State<HookStateful> createState() => HookStatefulState();
+// 95: <>}
 // ```
 // }
 //

@@ -1,6 +1,9 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [wrap_with_consumer?offset=790,801]
+// Offsets for "wrap_with_consumer":
+// 35:       onPressed: () => onSaved?.call(),
+// 36:       child: const <>Placeholder<>(),
+// 37:     );
 // ```
 //     return ElevatedButton(
 //       onPressed: () => onSaved?.call(),
