@@ -1,3 +1,13 @@
+## 3.3.1 - 2026-03-09
+
+- Add missing `disposeNotifier` flag on `overrideWith`.
+
+## 3.3.0 - 2026-03-09
+
+- Added `ChangeNotifierProvider(disposeNotifier: false)`, to disable the automatic
+  disposal of the created `ChangeNotifier`. This enables simpler migration from `pkg:provider` to `pkg:riverpod`
+  when a `ChangeNotifier` is reused between multiple providers.
+
 ## 3.2.1 - 2026-02-03
 
 - Fixed a bug where resuming a paused provider could cause it to never
@@ -1708,4 +1718,3 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-

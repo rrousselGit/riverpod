@@ -33,12 +33,12 @@ class ClassBasedToFunctionalProvider extends ResolvedCorrectionProducer {
     if (declaration == null) return;
 
     // Select from "class" to the opening bracket
-    final classHeading = range.startStart(
+    final classHeading = range.startEnd(
       declaration.node.classKeyword,
       declaration.node.leftBracket,
     );
 
-    if (!classHeading.intersects(range.node(node))) return;
+    if (!classHeading.contains(selectionOffset)) return;
 
     await builder.addDartFileEdit(file, (builder) {
       final buildTypeOrNameStartOffset =

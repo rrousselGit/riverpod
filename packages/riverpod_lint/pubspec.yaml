@@ -20,8 +20,8 @@ resolution: workspace
 
 dependencies:
   analysis_server_plugin: ^0.3.0
-  analyzer: ^9.0.0
-  analyzer_plugin: ^0.13.10
+  analyzer: ">=10.0.0 <13.0.0"
+  analyzer_plugin: ^0.14.0
   collection: ^1.16.0
   meta: ^1.15.0
   path: ^1.8.1
