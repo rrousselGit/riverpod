@@ -1,11 +1,8 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "convert_to_hookWidget":
-// 192: <>class <>ConsumerStatefulWithField <>extends ConsumerStatefulWidget <>{
+// 192: <>class <>ConsumerStatefulWithField <>extends <>ConsumerStatefulWidget <>{
 // 193:   const ConsumerStatefulWithField({
-//
-// 205:       _ConsumerStatefulWithFieldState();
-// 206: <>}
 // ```
 // }
 //

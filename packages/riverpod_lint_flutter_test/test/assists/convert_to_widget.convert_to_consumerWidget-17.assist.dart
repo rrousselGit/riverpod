@@ -1,11 +1,8 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "convert_to_consumerWidget":
-// 17: <>class <>Stateless <>extends StatelessWidget <>{
+// 17: <>class <>Stateless <>extends <>StatelessWidget <>{
 // 18:   const Stateless({super.key});
-//
-// 23:   }
-// 24: <>}
 // ```
 // import '../test_annotation.dart';
 //
