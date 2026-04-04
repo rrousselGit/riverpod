@@ -27,6 +27,11 @@ class GenericName extends AnalysisRule {
     RuleVisitorRegistry registry,
     RuleContext context,
   ) {
+    if (context.currentUnit!.file.path.endsWith('.g.dart') ||
+        context.currentUnit!.file.path.endsWith('.freezed.dart')) {
+      return;
+    }
+
     final visitor = _Visitor(this, context);
     registry.addTypeParameter(this, visitor);
   }
