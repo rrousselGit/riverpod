@@ -40,10 +40,16 @@ abstract class ConvertToStatelessBaseWidget extends ResolvedCorrectionProducer {
   @override
   Future<void> compute(ChangeBuilder builder) async {
     final classDeclaration = node.findEnclosing<ClassDeclaration>();
-    final extendsClause = classDeclaration?.extendsClause;
+    if (classDeclaration == null) return;
+    final extendsClause = classDeclaration.extendsClause;
     if (extendsClause == null) return;
 
-    if (!isOverlappingClassHeading(classDeclaration!)) return;
+    if (!isOverlappingClassHeading(
+      classDeclaration,
+      selectionOffset: selectionOffset,
+    )) {
+      return;
+    }
 
     final type = extendsClause.superclass.type;
     if (type == null) return;

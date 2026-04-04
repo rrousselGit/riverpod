@@ -45,7 +45,12 @@ abstract class ConvertToStatefulBaseWidget extends ResolvedCorrectionProducer {
     final extendsClause = classDeclaration.extendsClause;
     if (extendsClause == null) return;
 
-    if (!isOverlappingClassHeading(classDeclaration)) return;
+    if (!isOverlappingClassHeading(
+      classDeclaration,
+      selectionOffset: selectionOffset,
+    )) {
+      return;
+    }
 
     final type = extendsClause.superclass.type;
     if (type == null) return;
