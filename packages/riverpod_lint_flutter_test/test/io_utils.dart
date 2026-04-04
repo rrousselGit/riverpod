@@ -25,7 +25,8 @@ extension PackageIOUtils on Directory {
     String? name4,
     String? name5,
     String? name6,
-  ]) => File(join(path, name, name2, name3, name4, name5, name6));  
+  ]) => File(join(path, name, name2, name3, name4, name5, name6));
+
   /// Creates a child [Directory] from a list of path segments.
   Directory dir(
     String name, [

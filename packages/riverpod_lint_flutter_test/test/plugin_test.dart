@@ -597,7 +597,10 @@ String _renderOffsetsWithContext({
       final lineStart = lineStarts[lineIndex];
       final currentLine = lineAt(lineIndex);
 
-      final relativeColumn = (safeOffset - lineStart).clamp(0, currentLine.length);
+      final relativeColumn = (safeOffset - lineStart).clamp(
+        0,
+        currentLine.length,
+      );
       final columns = lineToColumns[lineIndex] ??= [];
       columns.add(relativeColumn);
     }
@@ -623,7 +626,7 @@ String _renderOffsetsWithContext({
         endDisplayedLineIndex = lineIndex + 1;
       }
 
-        if (lastDisplayedLineMaxIndex != null &&
+      if (lastDisplayedLineMaxIndex != null &&
           startDisplayedLineIndex > lastDisplayedLineMaxIndex + 1) {
         buffer.writeln('//');
       }
@@ -659,7 +662,7 @@ String _renderOffsetsWithContext({
         buffer.writeln('// ${nextIndex + 1}: $nextLine');
       }
 
-        if (lastDisplayedLineMaxIndex == null ||
+      if (lastDisplayedLineMaxIndex == null ||
           endDisplayedLineIndex > lastDisplayedLineMaxIndex) {
         lastDisplayedLineMaxIndex = endDisplayedLineIndex;
       }
