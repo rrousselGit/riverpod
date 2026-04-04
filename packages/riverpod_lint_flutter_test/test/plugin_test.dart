@@ -633,8 +633,6 @@ String _renderOffsetsWithContext({
     if (kindOffsets.isEmpty) continue;
 
     buffer.writeln('// Offsets for "$kind":');
-    int? lastDisplayedLineMaxIndex;
-    // Group offsets by their line so that shared lines are rendered once.
     final lineToColumns = <int, List<int>>{};
 
     for (final rawOffset in kindOffsets) {
@@ -659,6 +657,7 @@ String _renderOffsetsWithContext({
     }
 
     final sortedLineIndexes = lineToColumns.keys.toList()..sort();
+    final displayedBlocks = <({int startLineIndex, int endLineIndex})>[];
 
     for (final lineIndex in sortedLineIndexes) {
       final currentLine = lineAt(lineIndex);
@@ -679,45 +678,63 @@ String _renderOffsetsWithContext({
         endDisplayedLineIndex = lineIndex + 1;
       }
 
-      if (lastDisplayedLineMaxIndex != null &&
-          startDisplayedLineIndex > lastDisplayedLineMaxIndex + 1) {
+      if (displayedBlocks.isNotEmpty &&
+          startDisplayedLineIndex <= displayedBlocks.last.endLineIndex + 1) {
+        final lastBlock = displayedBlocks.removeLast();
+        displayedBlocks.add((
+          startLineIndex: lastBlock.startLineIndex,
+          endLineIndex: endDisplayedLineIndex > lastBlock.endLineIndex
+              ? endDisplayedLineIndex
+              : lastBlock.endLineIndex,
+        ));
+      } else {
+        displayedBlocks.add((
+          startLineIndex: startDisplayedLineIndex,
+          endLineIndex: endDisplayedLineIndex,
+        ));
+      }
+    }
+
+    for (final (blockIndex, block) in displayedBlocks.indexed) {
+      if (blockIndex > 0) {
         buffer.writeln('//');
       }
 
-      final columns = lineToColumns[lineIndex]!..sort();
-
-      final markedLineBuffer = StringBuffer();
-      var lastPos = 0;
-
-      for (var column in columns) {
-        final col = column.clamp(0, currentLine.length);
-        if (col < lastPos) {
+      for (
+        var displayedLineIndex = block.startLineIndex;
+        displayedLineIndex <= block.endLineIndex;
+        displayedLineIndex++
+      ) {
+        final displayedLine = lineAt(displayedLineIndex);
+        if (displayedLine.isEmpty) {
           continue;
         }
 
-        markedLineBuffer.write(currentLine.substring(lastPos, col));
-        markedLineBuffer.write('<>');
-        lastPos = col;
-      }
+        final columns = lineToColumns[displayedLineIndex];
+        if (columns == null || columns.isEmpty) {
+          buffer.writeln('// ${displayedLineIndex + 1}: $displayedLine');
+          continue;
+        }
 
-      markedLineBuffer.write(currentLine.substring(lastPos));
-      final markedCurrentLine = markedLineBuffer.toString();
+        final sortedColumns = columns.toSet().toList()..sort();
+        final markedLineBuffer = StringBuffer();
+        var lastPos = 0;
 
-      if (previousLine.isNotEmpty) {
-        final prevIndex = lineIndex - 1;
-        buffer.writeln('// ${prevIndex + 1}: $previousLine');
-      }
+        for (final column in sortedColumns) {
+          final col = column.clamp(0, displayedLine.length);
+          if (col < lastPos) {
+            continue;
+          }
 
-      buffer.writeln('// ${lineIndex + 1}: $markedCurrentLine');
+          markedLineBuffer.write(displayedLine.substring(lastPos, col));
+          markedLineBuffer.write('<>');
+          lastPos = col;
+        }
 
-      if (nextLine.isNotEmpty) {
-        final nextIndex = lineIndex + 1;
-        buffer.writeln('// ${nextIndex + 1}: $nextLine');
-      }
-
-      if (lastDisplayedLineMaxIndex == null ||
-          endDisplayedLineIndex > lastDisplayedLineMaxIndex) {
-        lastDisplayedLineMaxIndex = endDisplayedLineIndex;
+        markedLineBuffer.write(displayedLine.substring(lastPos));
+        buffer.writeln(
+          '// ${displayedLineIndex + 1}: ${markedLineBuffer.toString()}',
+        );
       }
     }
   }
