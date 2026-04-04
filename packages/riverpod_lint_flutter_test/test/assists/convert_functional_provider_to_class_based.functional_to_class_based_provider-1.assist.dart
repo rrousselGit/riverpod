@@ -1,6 +1,9 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [functional_to_class_based_provider?offset=298,311]
+// Offsets for "functional_to_class_based_provider":
+// 15: @riverpod
+// 16: int <>exampleFamily<>(Ref ref, {required int a, String b = '42'}) {
+// 17:   // Hello world
 // ```
 // /// Some comment
 // @riverpod

@@ -1,6 +1,11 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [convert_to_consumerStatefulWidget?offset=2902,2908,2919,2942,3093]
+// Offsets for "convert_to_consumerStatefulWidget":
+// 133: <>class <>MyConsumer <>extends ConsumerWidget <>{
+// 134:   const MyConsumer({super.key});
+//
+// 142:   }
+// 143: <>}
 // ```
 // }
 //

@@ -1,6 +1,9 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [wrap_with_provider_scope?offset=784]
+// Offsets for "wrap_with_provider_scope":
+// 35:       onPressed: () => onSaved?.call(),
+// 36:       child: <>const Placeholder(),
+// 37:     );
 // ```
 //     return ElevatedButton(
 //       onPressed: () => onSaved?.call(),

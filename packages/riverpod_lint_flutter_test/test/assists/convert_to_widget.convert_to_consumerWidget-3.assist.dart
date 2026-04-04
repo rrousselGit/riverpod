@@ -1,6 +1,11 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [convert_to_consumerWidget?offset=1001,1007,1020,1047,1200]
+// Offsets for "convert_to_consumerWidget":
+// 46: <>class <>HookConsumer <>extends HookConsumerWidget <>{
+// 47:   const HookConsumer({super.key});
+//
+// 55:   }
+// 56: <>}
 // ```
 // }
 //

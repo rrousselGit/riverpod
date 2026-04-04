@@ -1,6 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-// [class_based_to_functional_provider?offset=492,498,505,506,512,528,535,541,549,558,559,565,567,574,576,610]
+// Offsets for "class_based_to_functional_provider":
+// 27: @riverpod
+// 28: <>class <>Generic<><<>FirstT<>, /* comment */ <>SecondT<>>
+// 29:     extends _$Generic<FirstT, SecondT> {
+// 28: class Generic<FirstT, /* comment */ SecondT>
+// 29:     <>extends <>_$Generic<><<>FirstT<>, <>SecondT<>> <>{
+// 30:   @override
+// 31:   int build() => 0;
+// 32: <>}
 // ```
 //
 // @riverpod
