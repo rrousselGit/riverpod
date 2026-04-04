@@ -26,7 +26,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../test_annotation.dart';
 
-part 'missing_dependencies.provider_dependencies-152_160.fix.g.dart';
+part 'missing_dependencies.provider_dependencies-152.fix.g.dart';
 
 @Riverpod(dependencies: [])
 int dep(Ref ref) => 0;

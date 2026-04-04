@@ -1,20 +1,20 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
-// 326: // ignore: riverpod_lint/provider_dependencies
-// 327: <>class <>FindStateFromClassList extends StatefulWidget <>{
-// 328:   const FindStateFromClassList({super.key});
+// 279: // ignore: riverpod_lint/provider_dependencies
+// 280: <>class <>WidgetDependencies2 extends StatelessWidget <>{
+// 281:   @override
 //
-// 331:   State<FindStateFromClassList> createState() => _Stateful3State();
-// 332: <>}
+// 284:   }
+// 285: <>}
 // ```
 //
 // // ignore: riverpod_lint/provider_dependencies
-// - class FindStateFromClassList extends StatefulWidget {
+// - class WidgetDependencies2 extends StatelessWidget {
 // + @Dependencies([dep])
-// + class FindStateFromClassList extends StatefulWidget {
-//   const FindStateFromClassList({super.key});
-//
+// + class WidgetDependencies2 extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
 // ```
 // ignore_for_file: unused_field
 
@@ -29,7 +29,7 @@ import '../../test_annotation.dart';
 import 'another.dart' as import_alias;
 import 'another.dart';
 
-part 'missing_dependencies2.provider_dependencies-327_332.fix.g.dart';
+part 'missing_dependencies2.provider_dependencies-280.fix.g.dart';
 
 @Riverpod(dependencies: [])
 int dep(Ref ref) => 0;
@@ -272,6 +272,7 @@ class WidgetDependencies extends StatelessWidget {
 }
 
 // ignore: riverpod_lint/provider_dependencies
+@Dependencies([dep])
 class WidgetDependencies2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -319,7 +320,6 @@ class _Stateful2State extends State<Stateful2> {
 }
 
 // ignore: riverpod_lint/provider_dependencies
-@Dependencies([dep])
 class FindStateFromClassList extends StatefulWidget {
   const FindStateFromClassList({super.key});
 

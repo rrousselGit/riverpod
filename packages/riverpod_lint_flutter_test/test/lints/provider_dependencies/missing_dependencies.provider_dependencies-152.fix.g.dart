@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'missing_dependencies.provider_dependencies-139_149.fix.dart';
+part of 'missing_dependencies.provider_dependencies-152.fix.dart';
 
 // **************************************************************************
 // RiverpodGenerator

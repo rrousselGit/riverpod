@@ -24,7 +24,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../test_annotation.dart';
 
-part 'convert_class_based_provider_to_functional.class_based_to_functional_provider-12_15.assist.g.dart';
+part 'convert_class_based_provider_to_functional.class_based_to_functional_provider-12.assist.g.dart';
 
 /// Some comment
 @riverpod
