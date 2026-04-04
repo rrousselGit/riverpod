@@ -1013,6 +1013,38 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
+  void addAnonymousBlockBody(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
+    visitors.add((rule, visitor));
+  }
+
+  @override
+  void addAnonymousExpressionBody(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
+    visitors.add((rule, visitor));
+  }
+
+  @override
+  void addAnonymousMethodInvocation(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
+    visitors.add((rule, visitor));
+  }
+
+  @override
+  void addPrimaryConstructorBody(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
+    visitors.add((rule, visitor));
+  }
+
+  @override
   void afterLibrary(AbstractAnalysisRule rule, void Function() callback) {
     afterLibraryCallbacks.add((rule, callback));
   }
