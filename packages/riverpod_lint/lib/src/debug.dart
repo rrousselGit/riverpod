@@ -2,6 +2,7 @@
 
 import 'package:analysis_server_plugin/edit/dart/correction_producer.dart';
 
+@Deprecated('do not ship this')
 void printDebugInfo(ResolvedCorrectionProducer producer) {
   final line = producer.unit.declaredFragment!.source.contents.data
       .substring(

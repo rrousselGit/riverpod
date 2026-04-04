@@ -11,6 +11,8 @@ import 'package:collection/collection.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../../imports.dart';
+import '../../node.dart';
+import '../../offsets.dart';
 import 'convert_to_widget_utils.dart';
 
 /// Base class for converting to stateful base widgets
@@ -19,10 +21,9 @@ abstract class ConvertToStatefulBaseWidget extends ResolvedCorrectionProducer {
 
   StatefulBaseWidgetType get targetWidget;
   late final statelessBaseType = getStatelessBaseType(
-    exclude:
-        targetWidget == StatefulBaseWidgetType.statefulWidget
-            ? StatelessBaseWidgetType.statelessWidget
-            : null,
+    exclude: targetWidget == StatefulBaseWidgetType.statefulWidget
+        ? StatelessBaseWidgetType.statelessWidget
+        : null,
   );
   late final statefulBaseType = getStatefulBaseType(exclude: targetWidget);
 
@@ -39,10 +40,12 @@ abstract class ConvertToStatefulBaseWidget extends ResolvedCorrectionProducer {
 
   @override
   Future<void> compute(ChangeBuilder builder) async {
-    final visitor = _ExtendsClauseVisitor();
-    node.accept(visitor);
-    final extendsClause = visitor.extendsClause;
+    final classDeclaration = node.findEnclosing<ClassDeclaration>();
+    if (classDeclaration == null) return;
+    final extendsClause = classDeclaration.extendsClause;
     if (extendsClause == null) return;
+
+    if (!isOverlappingClassHeading(classDeclaration)) return;
 
     final type = extendsClause.superclass.type;
     if (type == null) return;
@@ -95,7 +98,8 @@ abstract class ConvertToStatefulBaseWidget extends ResolvedCorrectionProducer {
       for (final member in widgetClass.members) {
         if (member is FieldDeclaration && !member.isStatic) {
           for (final fieldNode in member.fields.variables) {
-            final fieldElement = fieldNode.declaredFragment?.element as FieldElement?;
+            final fieldElement =
+                fieldNode.declaredFragment?.element as FieldElement?;
             if (fieldElement == null) continue;
             if (!fieldsAssignedInConstructors.contains(fieldElement)) {
               nodesToMove.add(member);
@@ -221,15 +225,6 @@ class $createdStateClassName extends $baseStateName<${widgetClass.name}> {
   }
 }
 
-class _ExtendsClauseVisitor extends RecursiveAstVisitor<void> {
-  ExtendsClause? extendsClause;
-
-  @override
-  void visitExtendsClause(ExtendsClause node) {
-    extendsClause = node;
-  }
-}
-
 // Original implementation in
 // package:analysis_server/lib/src/services/correction/dart/flutter_convert_to_stateful_widget.dart
 class _FieldFinder extends RecursiveAstVisitor<void> {
@@ -289,8 +284,9 @@ class _ReplacementEditBuilder extends RecursiveAstVisitor<void> {
         element.enclosingElement == widgetClassElement &&
         !elementsToMove.contains(element)) {
       final offset = node.offset;
-      final qualifier =
-          element.isStatic ? widgetClassElement.displayName : 'widget';
+      final qualifier = element.isStatic
+          ? widgetClassElement.displayName
+          : 'widget';
 
       final parent = node.parent;
       if (parent is InterpolationExpression &&
