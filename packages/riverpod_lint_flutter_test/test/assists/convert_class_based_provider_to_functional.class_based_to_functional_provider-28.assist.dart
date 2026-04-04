@@ -3,8 +3,6 @@
 // Offsets for "class_based_to_functional_provider":
 // 27: @riverpod
 // 28: <>class <>Generic<><<>FirstT<>, /* comment */ <>SecondT<>>
-// 29:     extends _$Generic<FirstT, SecondT> {
-// 28: class Generic<FirstT, /* comment */ SecondT>
 // 29:     <>extends <>_$Generic<><<>FirstT<>, <>SecondT<>> <>{
 // 30:   @override
 // ```
