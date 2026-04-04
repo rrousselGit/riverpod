@@ -2,10 +2,14 @@
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
 // 151: // ignore: riverpod_lint/provider_dependencies
-// 152: <>class <>Scope2 extends ConsumerWidget <>{
-// 153:   @override
-//
-// 159:   }
+// 152: <>class <>Scope2 <>extends <>ConsumerWidget <>{
+// 153:   <>@<>override
+// 154:   <>Widget <>build<>(<>BuildContext <>context<>, <>WidgetRef <>ref<>) <>{
+// 155:     <>return <>ProviderScope<>(
+// 156:       <>overrides<>: <>[<>depProvider<>.<>overrideWithValue<>(<>42<>)<>]<>,
+// 157:       <>child<>: <>Text<>(<>'<>${<>ref<>.<>watch<>(<>depProvider<>)<>}<>'<>)<>,
+// 158:     <>)<>;
+// 159:   <>}
 // 160: <>}
 // ```
 //

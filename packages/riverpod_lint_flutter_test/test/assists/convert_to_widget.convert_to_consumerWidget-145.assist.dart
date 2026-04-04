@@ -1,11 +1,8 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "convert_to_consumerWidget":
-// 145: <>class <>StatelessWithField <>extends StatelessWidget <>{
+// 145: <>class <>StatelessWithField <>extends <>StatelessWidget <>{
 // 146:   const StatelessWithField({
-//
-// 162:   }
-// 163: <>}
 // ```
 // }
 //

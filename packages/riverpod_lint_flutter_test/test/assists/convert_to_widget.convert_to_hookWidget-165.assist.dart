@@ -1,11 +1,8 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "convert_to_hookWidget":
-// 165: <>class <>HookConsumerWithField <>extends HookConsumerWidget <>{
+// 165: <>class <>HookConsumerWithField <>extends <>HookConsumerWidget <>{
 // 166:   const HookConsumerWithField({
-//
-// 185:   }
-// 186: <>}
 // ```
 // }
 //

@@ -4,8 +4,6 @@
 // 11: @riverpod
 // 12: <>class <>Example <>extends <>_$Example <>{
 // 13:   @override
-// 14:   int build() => 0;
-// 15: <>}
 // ```
 // /// Some comment
 // @riverpod

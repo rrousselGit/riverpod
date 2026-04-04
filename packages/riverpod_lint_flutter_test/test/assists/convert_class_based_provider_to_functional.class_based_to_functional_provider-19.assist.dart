@@ -4,9 +4,6 @@
 // 18: @riverpod
 // 19: <>class <>ExampleFamily <>extends <>_$ExampleFamily <>{
 // 20:   @override
-//
-// 24:   }
-// 25: <>}
 // ```
 // /// Some comment
 // @riverpod

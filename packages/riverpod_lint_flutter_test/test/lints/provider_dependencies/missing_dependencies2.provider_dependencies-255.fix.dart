@@ -2,8 +2,9 @@
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
 // 254: // ignore: riverpod_lint/provider_dependencies
-// 255: void <>fn2<>() {
-// 256:   fn();
+// 255: <>void <>fn2<>(<>) <>{
+// 256:   <>fn<>(<>)<>;
+// 257: <>}
 // ```
 //
 // // ignore: riverpod_lint/provider_dependencies

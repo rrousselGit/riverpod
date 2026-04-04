@@ -1,11 +1,8 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "convert_to_hookWidget":
-// 26: <>class <>StatelessWithComma <>extends StatelessWidget <>{
+// 26: <>class <>StatelessWithComma <>extends <>StatelessWidget <>{
 // 27:   const StatelessWithComma({super.key});
-//
-// 34:   }
-// 35: <>}
 // ```
 // }
 //

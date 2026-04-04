@@ -5,8 +5,6 @@
 // 28: <>class <>Generic<><<>FirstT<>, /* comment */ <>SecondT<>>
 // 29:     <>extends <>_$Generic<><<>FirstT<>, <>SecondT<>> <>{
 // 30:   @override
-// 31:   int build() => 0;
-// 32: <>}
 // ```
 //
 // @riverpod

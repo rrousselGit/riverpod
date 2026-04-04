@@ -257,25 +257,21 @@ class _Visitor extends SimpleAstVisitor<void> {
 
       list.node.accept(visitor);
 
-      var unusedDependencies =
-          list.allDependencies
-              ?.where(
-                (dependency) =>
-                    !usedDependencies.any(
-                      (e) => e.provider == dependency.provider,
-                    ),
-              )
-              .toList();
-      final missingDependencies =
-          usedDependencies
-              .where(
-                (dependency) =>
-                    list.allDependencies?.every(
-                      (e) => e.provider != dependency.provider,
-                    ) ??
-                    true,
-              )
-              .toSet();
+      var unusedDependencies = list.allDependencies
+          ?.where(
+            (dependency) =>
+                !usedDependencies.any((e) => e.provider == dependency.provider),
+          )
+          .toList();
+      final missingDependencies = usedDependencies
+          .where(
+            (dependency) =>
+                list.allDependencies?.every(
+                  (e) => e.provider != dependency.provider,
+                ) ??
+                true,
+          )
+          .toSet();
 
       unusedDependencies ??= const [];
       if (unusedDependencies.isEmpty && missingDependencies.isEmpty) return;
@@ -334,8 +330,12 @@ class ProviderDependenciesFix extends ResolvedCorrectionProducer {
 
   @override
   Future<void> compute(ChangeBuilder builder) async {
-    final node = this.node;
-    final accumulatedDependencyList = node.accumulatedDependencies;
+    final accumulatedDependencyList = node
+        .thisOrAncestorMatching(
+          (node) =>
+              node is AnnotatedNode && node.accumulatedDependencies != null,
+        )
+        ?.accumulatedDependencies;
 
     if (accumulatedDependencyList == null) return;
 
@@ -363,12 +363,12 @@ class ProviderDependenciesFix extends ResolvedCorrectionProducer {
 
     final data = _Data(list: list, usedDependencies: usedDependencies);
 
-    final scopedDependencies =
-        data.usedDependencies.map((e) => e.provider).toSet();
-    final newDependencies =
-        scopedDependencies.isEmpty
-            ? null
-            : '[${scopedDependencies.map((e) => e.name).join(', ')}]';
+    final scopedDependencies = data.usedDependencies
+        .map((e) => e.provider)
+        .toSet();
+    final newDependencies = scopedDependencies.isEmpty
+        ? null
+        : '[${scopedDependencies.map((e) => e.name).join(', ')}]';
 
     final riverpodAnnotation = data.list.riverpod?.annotation;
     final dependencies = data.list.dependencies;

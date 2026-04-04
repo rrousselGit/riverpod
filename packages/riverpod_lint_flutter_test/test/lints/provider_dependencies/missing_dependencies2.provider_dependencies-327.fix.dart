@@ -2,10 +2,11 @@
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
 // 326: // ignore: riverpod_lint/provider_dependencies
-// 327: <>class <>FindStateFromClassList extends StatefulWidget <>{
-// 328:   const FindStateFromClassList({super.key});
+// 327: <>class <>FindStateFromClassList <>extends <>StatefulWidget <>{
+// 328:   <>const <>FindStateFromClassList<>(<>{<>super<>.<>key<>}<>)<>;
 //
-// 331:   State<FindStateFromClassList> createState() => _Stateful3State();
+// 330:   <>@<>override
+// 331:   <>State<><<>FindStateFromClassList<>> <>createState<>(<>) <>=> <>_Stateful3State<>(<>)<>;
 // 332: <>}
 // ```
 //

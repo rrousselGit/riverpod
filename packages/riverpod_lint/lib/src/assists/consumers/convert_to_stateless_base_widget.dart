@@ -10,6 +10,8 @@ import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:collection/collection.dart';
 
 import '../../imports.dart';
+import '../../node.dart';
+import '../../offsets.dart';
 import 'convert_to_widget_utils.dart';
 
 /// Base class for converting to stateless base widgets
@@ -19,10 +21,9 @@ abstract class ConvertToStatelessBaseWidget extends ResolvedCorrectionProducer {
   StatelessBaseWidgetType get targetWidget;
   late final statelessBaseType = getStatelessBaseType(exclude: targetWidget);
   late final statefulBaseType = getStatefulBaseType(
-    exclude:
-        targetWidget == StatelessBaseWidgetType.statelessWidget
-            ? StatefulBaseWidgetType.statefulWidget
-            : null,
+    exclude: targetWidget == StatelessBaseWidgetType.statelessWidget
+        ? StatefulBaseWidgetType.statefulWidget
+        : null,
   );
 
   @override
@@ -38,10 +39,17 @@ abstract class ConvertToStatelessBaseWidget extends ResolvedCorrectionProducer {
 
   @override
   Future<void> compute(ChangeBuilder builder) async {
-    final visitor = _ExtendsClauseVisitor();
-    node.accept(visitor);
-    final extendsClause = visitor.extendsClause;
+    final classDeclaration = node.findEnclosing<ClassDeclaration>();
+    if (classDeclaration == null) return;
+    final extendsClause = classDeclaration.extendsClause;
     if (extendsClause == null) return;
+
+    if (!isOverlappingClassHeading(
+      classDeclaration,
+      selectionOffset: selectionOffset,
+    )) {
+      return;
+    }
 
     final type = extendsClause.superclass.type;
     if (type == null) return;
@@ -168,7 +176,8 @@ abstract class ConvertToStatelessBaseWidget extends ResolvedCorrectionProducer {
             return;
           }
           for (final fieldNode in member.fields.variables) {
-            final fieldElement = fieldNode.declaredFragment?.element as FieldElement?;
+            final fieldElement =
+                fieldNode.declaredFragment?.element as FieldElement?;
             if (fieldElement == null) continue;
             if (!fieldsAssignedInConstructors.contains(fieldElement)) {
               nodesToMove.add(member);
@@ -264,15 +273,6 @@ abstract class ConvertToStatelessBaseWidget extends ResolvedCorrectionProducer {
     final offset = params.leftParenthesis.end;
     final end = params.rightParenthesis.offset;
     return SourceRange(offset, end - offset);
-  }
-}
-
-class _ExtendsClauseVisitor extends RecursiveAstVisitor<void> {
-  ExtendsClause? extendsClause;
-
-  @override
-  void visitExtendsClause(ExtendsClause node) {
-    extendsClause = node;
   }
 }
 
