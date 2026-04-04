@@ -1,18 +1,16 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
-// 254: // ignore: riverpod_lint/provider_dependencies
-// 255: <>void <>fn2<>(<>) <>{
-// 256:   <>fn<>(<>)<>;
-// 257: <>}
+// 250: // ignore: riverpod_lint/provider_dependencies
+// 251: @Dependencies(<>[<>dep<>]<>)
+// 252: void fn() {}
 // ```
-//
+// // Handle identifiers with dependencies
 // // ignore: riverpod_lint/provider_dependencies
-// - void fn2() {
-// + @Dependencies([dep])
-// + void fn2() {
-//   fn();
-// }
+// - @Dependencies([dep])
+// +
+// void fn() {}
+//
 // ```
 // ignore_for_file: unused_field
 
@@ -27,7 +25,7 @@ import '../../test_annotation.dart';
 import 'another.dart' as import_alias;
 import 'another.dart';
 
-part 'missing_dependencies2.provider_dependencies-255.fix.g.dart';
+part 'missing_dependencies2.provider_dependencies-251.fix.g.dart';
 
 @Riverpod(dependencies: [])
 int dep(Ref ref) => 0;
@@ -241,11 +239,10 @@ class RiverpodDependencies extends _$RiverpodDependencies {
 
 // Handle identifiers with dependencies
 // ignore: riverpod_lint/provider_dependencies
-@Dependencies([dep])
+
 void fn() {}
 
 // ignore: riverpod_lint/provider_dependencies
-@Dependencies([dep])
 void fn2() {
   fn();
 }

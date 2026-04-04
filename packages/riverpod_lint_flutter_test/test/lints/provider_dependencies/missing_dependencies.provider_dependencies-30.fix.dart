@@ -1,29 +1,16 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
-// 227: // ignore: riverpod_lint/provider_dependencies
-// 228: <>class <>SupportsMultipleScopes2 <>extends <>ConsumerWidget <>{
-// 229:   <>@<>override
-// 230:   <>Widget <>build<>(<>BuildContext <>context<>, <>WidgetRef <>ref<>) <>{
-// 231:     <>ProviderScope<>(
-// 232:       <>overrides<>: <>[<>depProvider<>.<>overrideWith<>(<>(<>ref<>) <>=> <>0<>)<>]<>,
-// 233:       <>child<>: <>DepFamily<>(<>)<>,
-// 234:     <>)<>;
-//
-// 236:     <>return <>ProviderScope<>(
-// 237:       <>overrides<>: <>[<>depFamilyProvider<>.<>overrideWith<>(<>(<>ref<>, <>arg<>) <>=> <>0<>)<>]<>,
-// 238:       <>child<>: <>DepWidget<>(<>)<>,
-// 239:     <>)<>;
-// 240:   <>}
-// 241: <>}
+// 29: // ignore: riverpod_lint/provider_dependencies
+// 30: @Dependencies(<>[<>depFamily<>]<>)
+// 31: void depFamilyFn() {}
 // ```
 //
 // // ignore: riverpod_lint/provider_dependencies
-// - class SupportsMultipleScopes2 extends ConsumerWidget {
-// + @Dependencies([depFamily, dep])
-// + class SupportsMultipleScopes2 extends ConsumerWidget {
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
+// - @Dependencies([depFamily])
+// +
+// void depFamilyFn() {}
+//
 // ```
 @TestFor.provider_dependencies
 library;
@@ -35,7 +22,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../test_annotation.dart';
 
-part 'missing_dependencies.provider_dependencies-228.fix.g.dart';
+part 'missing_dependencies.provider_dependencies-30.fix.g.dart';
 
 @Riverpod(dependencies: [])
 int dep(Ref ref) => 0;
@@ -54,7 +41,7 @@ int depFamily(Ref ref, int id) => 0;
 void depFn() {}
 
 // ignore: riverpod_lint/provider_dependencies
-@Dependencies([depFamily])
+
 void depFamilyFn() {}
 
 @Dependencies([dep])
@@ -242,7 +229,6 @@ class SupportsMultipleScopes extends ConsumerWidget {
 }
 
 // ignore: riverpod_lint/provider_dependencies
-@Dependencies([depFamily, dep])
 class SupportsMultipleScopes2 extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {

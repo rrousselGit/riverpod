@@ -2,10 +2,11 @@
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
 // 279: // ignore: riverpod_lint/provider_dependencies
-// 280: <>class <>WidgetDependencies2 extends StatelessWidget <>{
-// 281:   @override
-//
-// 284:   }
+// 280: <>class <>WidgetDependencies2 <>extends <>StatelessWidget <>{
+// 281:   <>@<>override
+// 282:   <>Widget <>build<>(<>BuildContext <>context<>) <>{
+// 283:     <>return <>WidgetDependencies<>(<>)<>;
+// 284:   <>}
 // 285: <>}
 // ```
 //

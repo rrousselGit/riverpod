@@ -1,18 +1,16 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
-// 254: // ignore: riverpod_lint/provider_dependencies
-// 255: <>void <>fn2<>(<>) <>{
-// 256:   <>fn<>(<>)<>;
-// 257: <>}
+// 310: // ignore: riverpod_lint/provider_dependencies
+// 311: @Dependencies(<>[<>]<>)
+// 312: class Stateful2 extends StatefulWidget {
 // ```
 //
 // // ignore: riverpod_lint/provider_dependencies
-// - void fn2() {
+// - @Dependencies([])
 // + @Dependencies([dep])
-// + void fn2() {
-//   fn();
-// }
+// class Stateful2 extends StatefulWidget {
+//   const Stateful2({super.key});
 // ```
 // ignore_for_file: unused_field
 
@@ -27,7 +25,7 @@ import '../../test_annotation.dart';
 import 'another.dart' as import_alias;
 import 'another.dart';
 
-part 'missing_dependencies2.provider_dependencies-255.fix.g.dart';
+part 'missing_dependencies2.provider_dependencies-311.fix.g.dart';
 
 @Riverpod(dependencies: [])
 int dep(Ref ref) => 0;
@@ -245,7 +243,6 @@ class RiverpodDependencies extends _$RiverpodDependencies {
 void fn() {}
 
 // ignore: riverpod_lint/provider_dependencies
-@Dependencies([dep])
 void fn2() {
   fn();
 }
@@ -302,7 +299,7 @@ class _StatefulState extends State<Stateful> {
 }
 
 // ignore: riverpod_lint/provider_dependencies
-@Dependencies([])
+@Dependencies([dep])
 class Stateful2 extends StatefulWidget {
   const Stateful2({super.key});
 

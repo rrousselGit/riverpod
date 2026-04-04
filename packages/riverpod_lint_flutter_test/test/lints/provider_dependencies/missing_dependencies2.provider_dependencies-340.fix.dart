@@ -1,18 +1,16 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
-// 254: // ignore: riverpod_lint/provider_dependencies
-// 255: <>void <>fn2<>(<>) <>{
-// 256:   <>fn<>(<>)<>;
-// 257: <>}
+// 339: // ignore: riverpod_lint/provider_dependencies
+// 340: <>@<>riverpod
+// 341: int crossFileDependency(Ref ref) {
 // ```
 //
 // // ignore: riverpod_lint/provider_dependencies
-// - void fn2() {
-// + @Dependencies([dep])
-// + void fn2() {
-//   fn();
-// }
+// - @riverpod
+// + @Riverpod(dependencies: [anotherNonEmptyScoped])
+// int crossFileDependency(Ref ref) {
+//   ref.watch(anotherNonEmptyScopedProvider);
 // ```
 // ignore_for_file: unused_field
 
@@ -27,7 +25,7 @@ import '../../test_annotation.dart';
 import 'another.dart' as import_alias;
 import 'another.dart';
 
-part 'missing_dependencies2.provider_dependencies-255.fix.g.dart';
+part 'missing_dependencies2.provider_dependencies-340.fix.g.dart';
 
 @Riverpod(dependencies: [])
 int dep(Ref ref) => 0;
@@ -245,7 +243,6 @@ class RiverpodDependencies extends _$RiverpodDependencies {
 void fn() {}
 
 // ignore: riverpod_lint/provider_dependencies
-@Dependencies([dep])
 void fn2() {
   fn();
 }
@@ -331,7 +328,7 @@ class _Stateful3State extends State<FindStateFromClassList> {
 }
 
 // ignore: riverpod_lint/provider_dependencies
-@riverpod
+@Riverpod(dependencies: [anotherNonEmptyScoped])
 int crossFileDependency(Ref ref) {
   ref.watch(anotherNonEmptyScopedProvider);
   return 0;

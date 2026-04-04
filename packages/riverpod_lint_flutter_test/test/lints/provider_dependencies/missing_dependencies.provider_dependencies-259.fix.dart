@@ -2,10 +2,14 @@
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
 // 258: // ignore: riverpod_lint/provider_dependencies
-// 259: <>class <>IncompleteFamilyOverride extends ConsumerWidget <>{
-// 260:   @override
-//
-// 266:   }
+// 259: <>class <>IncompleteFamilyOverride <>extends <>ConsumerWidget <>{
+// 260:   <>@<>override
+// 261:   <>Widget <>build<>(<>BuildContext <>context<>, <>WidgetRef <>ref<>) <>{
+// 262:     <>return <>ProviderScope<>(
+// 263:       <>overrides<>: <>[<>depFamilyProvider<>(<>42<>)<>.<>overrideWith<>(<>(<>ref<>) <>=> <>0<>)<>]<>,
+// 264:       <>child<>: <>DepFamily<>(<>)<>,
+// 265:     <>)<>;
+// 266:   <>}
 // 267: <>}
 // ```
 //

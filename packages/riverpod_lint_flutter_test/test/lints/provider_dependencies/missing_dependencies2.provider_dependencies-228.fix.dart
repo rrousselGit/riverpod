@@ -1,18 +1,16 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
-// 254: // ignore: riverpod_lint/provider_dependencies
-// 255: <>void <>fn2<>(<>) <>{
-// 256:   <>fn<>(<>)<>;
-// 257: <>}
+// 227: // ignore: riverpod_lint/provider_dependencies
+// 228: @Dependencies(<>[<>]<>)
+// 229: class CanUpdateMultipleDependenciesAtOnce {
 // ```
 //
 // // ignore: riverpod_lint/provider_dependencies
-// - void fn2() {
+// - @Dependencies([])
 // + @Dependencies([dep])
-// + void fn2() {
-//   fn();
-// }
+// class CanUpdateMultipleDependenciesAtOnce {
+//   // ignore: riverpod_lint/provider_dependencies
 // ```
 // ignore_for_file: unused_field
 
@@ -27,7 +25,7 @@ import '../../test_annotation.dart';
 import 'another.dart' as import_alias;
 import 'another.dart';
 
-part 'missing_dependencies2.provider_dependencies-255.fix.g.dart';
+part 'missing_dependencies2.provider_dependencies-228.fix.g.dart';
 
 @Riverpod(dependencies: [])
 int dep(Ref ref) => 0;
@@ -218,7 +216,7 @@ class MemberDependencies {
 }
 
 // ignore: riverpod_lint/provider_dependencies
-@Dependencies([])
+@Dependencies([dep])
 class CanUpdateMultipleDependenciesAtOnce {
   // ignore: riverpod_lint/provider_dependencies
   @Dependencies([])
@@ -245,7 +243,6 @@ class RiverpodDependencies extends _$RiverpodDependencies {
 void fn() {}
 
 // ignore: riverpod_lint/provider_dependencies
-@Dependencies([dep])
 void fn2() {
   fn();
 }
