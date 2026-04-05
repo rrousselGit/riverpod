@@ -141,7 +141,6 @@ class PackageDetailPage extends HookConsumerWidget {
                   grantedPoints: metrics.grantedPoints,
                   likeCount: metrics.likeCount,
                   maxPoints: metrics.maxPoints,
-                  popularityScore: metrics.popularityScore * 100,
                 );
               },
             ),
