@@ -1089,7 +1089,7 @@ void main() {
       });
 
       test(
-        'if going back to loading after future resolved, throws StateError',
+        'if going back to loading after future resolved, throws ProviderDisposedException',
         () async {
           final container = ProviderContainer.test();
           final completer = Completer<int>.sync();
@@ -1108,7 +1108,7 @@ void main() {
 
           container.dispose();
 
-          await expectLater(future, throwsStateError);
+          await expectLater(future, throwsA(isA<ProviderDisposedException>()));
         },
       );
 

@@ -1133,11 +1133,7 @@ void main() {
 
           await expectLater(
             future,
-            throwsA(isA<Exception>().having(
-              (e) => e.toString(),
-              'message',
-              contains('disposed'),
-            )),
+            throwsA(isA<ProviderDisposedException>()),
           );
         },
       );

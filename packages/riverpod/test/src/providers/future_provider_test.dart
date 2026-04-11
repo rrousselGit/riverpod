@@ -58,7 +58,7 @@ void main() {
 
           container.dispose();
 
-          await expectLater(future, throwsA(isStateError));
+          await expectLater(future, throwsA(isA<ProviderDisposedException>()));
         },
       );
     });
