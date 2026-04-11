@@ -1060,6 +1060,118 @@ void main() {
       verifyNoMoreInteractions(observer3);
     });
   });
+
+  group('providerDidFail – disposal during loading', () {
+      test(
+        'is NOT called when a FutureProvider dependent on a StreamProvider '
+        'receives the disposal error after the stream closes mid-load',
+        () async {
+          // Exact scenario from issue #4706:
+          // delayedStreamProvider (StreamProvider.autoDispose) is disposed
+          // before emitting → dependent FutureProvider gets the error →
+          // ProviderObserver.providerDidFail should NOT be called.
+          final observer = ObserverMock();
+          final container = ProviderContainer.test(
+            observers: [observer],
+            retry: (_, _) => null,
+          );
+
+          final controller = StreamController<int>();
+          final stream = StreamProvider.autoDispose<int>(
+            (ref) => controller.stream,
+          );
+          // dependentProvider mirrors the original repro
+          final dependent = FutureProvider.autoDispose<String>((ref) async {
+            final value = await ref.watch(stream.future);
+            return 'got $value';
+          });
+
+          container.listen(dependent, (_, _) {}, onError: (_, _) {});
+          // Read both futures before disposal so completers are wired up
+          final streamFuture = container.read(stream.future);
+          final dependentFuture = container.read(dependent.future);
+          clearInteractions(observer);
+
+          // Close the stream without emitting — _lastFuture becomes null,
+          // then element.dispose() calls completer.completeError(StateError).
+          await controller.close();
+          // Wait for the stream done-callback microtask to run (_lastFuture = null)
+          await Future<void>.delayed(Duration.zero);
+
+          // Dispose the container — triggers element.dispose() which calls
+          // completer.completeError. The error propagates to the dependent.
+          container.dispose();
+          await streamFuture.catchError((_) => 0);
+          await dependentFuture.catchError((_) => '');
+
+          // Bug: without the fix, providerDidFail IS called here with StateError.
+          // With the fix: _disposed check prevents it.
+          verifyNever(observer.providerDidFail(any, any, any));
+        },
+      );
+
+      test(
+        'ProviderDisposedException is thrown on provider.future when a '
+        'StreamProvider is disposed without emitting a value',
+        () async {
+          final container = ProviderContainer.test(retry: (_, _) => null);
+          final controller = StreamController<int>();
+          final provider = StreamProvider.autoDispose<int>(
+            (ref) => controller.stream,
+          );
+
+          container.listen(provider, (_, _) {});
+          final future = container.read(provider.future);
+
+          // Close the stream without emitting any value.
+          // _lastFuture is set to null by the done() callback.
+          await controller.close();
+
+          // Disposing the container triggers element.dispose(), which calls
+          // completer.completeError(ProviderDisposedException) since _lastFuture == null.
+          container.dispose();
+
+          await expectLater(
+            future,
+            throwsA(isA<Exception>().having(
+              (e) => e.toString(),
+              'message',
+              contains('disposed'),
+            )),
+          );
+        },
+      );
+
+      test(
+        'providerDidFail IS still called for real errors on a live provider',
+        () async {
+          final observer = ObserverMock();
+          final container = ProviderContainer.test(
+            observers: [observer],
+            retry: (_, _) => null,
+          );
+          final provider = FutureProvider<int>(
+            (ref) => Future<int>.error('real error', StackTrace.empty),
+          );
+
+          container.listen(provider, (_, _) {});
+          await container.read(provider.future).catchError((_) => 0);
+
+          verify(
+            observer.providerDidFail(
+              argThat(
+                isProviderObserverContext(
+                  provider: provider,
+                  container: container,
+                ),
+              ),
+              'real error',
+              StackTrace.empty,
+            ),
+          ).called(1);
+        },
+      );
+    });
 }
 
 class OnDisposeMock extends Mock {
