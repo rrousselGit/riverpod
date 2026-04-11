@@ -1,3 +1,12 @@
+## Unreleased
+
+- Fixed `providerDidFail` being incorrectly called when an `autoDispose` provider
+  is disposed before emitting its first value. Disposal is a normal lifecycle event
+  and should not be reported as a provider failure.
+- Added `ProviderDisposedException`, thrown on `provider.future` when a provider
+  is disposed during loading state. Previously a `StateError` was thrown, making it
+  indistinguishable from real programmer errors.
+
 ## 3.2.1 - 2026-02-03
 
 - Fixed a bug where resuming a paused provider could cause it to never
