@@ -323,7 +323,7 @@ void main() {
     final provider = StreamProvider<int>((ref) async* {});
 
     test(
-      'throws StateError if the provider is disposed before a value was emitted',
+      'throws ProviderDisposedException if the provider is disposed before a value was emitted',
       () async {
         final container = ProviderContainer.test(
           overrides: [provider.overrideWithValue(const AsyncLoading())],
@@ -335,16 +335,7 @@ void main() {
 
         await expectLater(
           future,
-          throwsA(
-            isStateError.having(
-              (e) => e.message,
-              'message',
-              equalsIgnoringHashCodes(
-                'The provider StreamProvider<int>#00000 was disposed during loading state, '
-                'yet no value could be emitted.',
-              ),
-            ),
-          ),
+          throwsA(isA<ProviderDisposedException>()),
         );
       },
     );

@@ -34,6 +34,47 @@ void Function()? debugCanModifyProviders;
 @internal
 typedef WhenComplete = void Function(void Function() cb)?;
 
+/// Thrown when a [FutureProvider] or [StreamProvider] is disposed before it
+/// has emitted its first value.
+///
+/// This is a normal lifecycle event — it occurs when an [autoDispose] provider
+/// is no longer listened to (e.g. due to navigation) while it is still loading.
+/// It is **not** a programming error.
+///
+/// [ProviderObserver.providerDidFail] will not be called for this exception.
+///
+/// If a downstream provider awaits a disposed provider's [FutureProvider.future],
+/// it will receive this exception. You can catch it to treat disposal as
+/// a no-op rather than an error:
+///
+/// ```dart
+/// final dependentProvider = FutureProvider.autoDispose<String>((ref) async {
+///   try {
+///     final value = await ref.watch(myProvider.future);
+///     return 'Got $value';
+///   } on ProviderDisposedException {
+///     // Upstream disposed before completing — this is expected.
+///     return '';
+///   }
+/// });
+/// ```
+@publicInMisc
+final class ProviderDisposedException implements Exception {
+  /// Creates a [ProviderDisposedException] for [provider].
+  ProviderDisposedException(this.provider);
+
+  /// The provider that was disposed before emitting a value.
+  final ProviderBase<Object?> provider;
+
+  @override
+  String toString() {
+    return 'ProviderDisposedException: The provider $provider was disposed '
+        'during loading state, before it could emit a value.\n'
+        'This is a normal lifecycle event caused by the provider being '
+        'no longer listened to while still loading.';
+  }
+}
+
 /// Mixin to help implement logic for listening to [Future]s/[Stream]s and setup
 /// `provider.future` + convert the object into an [AsyncValue].
 @internal
@@ -104,8 +145,13 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
     asyncTransition(value, seamless: seamless);
 
     final result = resultForValue(value);
-    if (result is! $ResultError<StateT> && !origin._isSynthetic) {
-      // Hard error states are already reported to the observers
+    if (result is! $ResultError<StateT> &&
+        !origin._isSynthetic &&
+        !_disposed) {
+      // Hard error states are already reported to the observers.
+      // Skip notification if the element is already disposed — the error
+      // is a post-dispose side-effect (e.g. ProviderDisposedException
+      // completing a pending future), not a real provider failure.
       for (final observer in container.observers) {
         container.runTernaryGuarded(
           observer.providerDidFail,
@@ -186,11 +232,8 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
     _cancelSubscription?.resume?.call();
   }
 
-  StateError _missingLastValueError() {
-    return StateError(
-      'The provider $origin was disposed during loading state, '
-      'yet no value could be emitted.',
-    );
+  ProviderDisposedException _missingLastValueError() {
+    return ProviderDisposedException(origin);
   }
 
   /// Listens to a [Future] and convert it into an [AsyncValue].
@@ -877,7 +920,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       }
 
       for (final observer in container.observers) {
-        if (newState is $ResultError<StateT>) {
+        if (newState is $ResultError<StateT> && !_disposed) {
           container.runTernaryGuarded(
             observer.providerDidFail,
             _currentObserverContext(),
