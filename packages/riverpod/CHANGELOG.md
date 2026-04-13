@@ -1,3 +1,25 @@
+## Unreleased
+
+- Added `Ref.onManualInvalidation()` lifecycle method to listen for manual provider invalidations.
+  This allows distinguishing between manual invalidations (via `refresh`/`invalidate`/`invalidateSelf`)
+  and automatic invalidations caused by dependency changes. Additionally, providers can now forward
+  invalidations to other providers within `onManualInvalidation` callbacks, enabling patterns like:
+
+  ```dart
+  final sourceProvider = Provider<String>(...);
+  final derivedProvider = Provider((ref) {
+    final thing = ref.watch(sourceProvider);
+    ref.onManualInvalidation(() {
+      ref.invalidate(sourceProvider);
+    });
+    return '$thing is derived!';
+  });
+
+  ref.invalidate(derivedProvider); // also invalidates sourceProvider!
+  ```
+
+  Which allows for users to invalidate only the providers they care about, while implementation details can be handled privately. (thanks to @TekExplorer)
+
 ## 3.2.1 - 2026-02-03
 
 - Fixed a bug where resuming a paused provider could cause it to never
