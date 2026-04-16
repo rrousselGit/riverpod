@@ -7,8 +7,7 @@ import 'package:analyzer/error/error.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 class OnlyUseKeepAliveInsideKeepAlive extends AnalysisRule {
-  OnlyUseKeepAliveInsideKeepAlive()
-    : super(name: code.name, description: code.problemMessage);
+  OnlyUseKeepAliveInsideKeepAlive() : super(name: code.name, description: code.problemMessage);
 
   static const code = LintCode(
     'only_use_keep_alive_inside_keep_alive',
@@ -23,10 +22,7 @@ class OnlyUseKeepAliveInsideKeepAlive extends AnalysisRule {
   DiagnosticCode get diagnosticCode => code;
 
   @override
-  void registerNodeProcessors(
-    RuleVisitorRegistry registry,
-    RuleContext context,
-  ) {
+  void registerNodeProcessors(RuleVisitorRegistry registry, RuleContext context) {
     final visitor = _Visitor(this, context);
     registry.addMethodInvocation(this, visitor);
   }
@@ -42,15 +38,15 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitMethodInvocation(MethodInvocation node) {
     final refInvocation = node.refInvocation;
     if (refInvocation is! RefDependencyInvocation) return;
+    // Only check ref.watch and ref.listen, not ref.read
+    if (refInvocation is RefReadInvocation) return;
 
-    final dependencyElement =
-        refInvocation.listenable.provider?.providerElement;
+    final dependencyElement = refInvocation.listenable.provider?.providerElement;
     // This only applies if the watched provider is a generated one.
     if (dependencyElement is! GeneratorProviderDeclarationElement) return;
     if (!dependencyElement.isAutoDispose) return;
 
-    final provider =
-        node.thisOrAncestorOfType<NamedCompilationUnitMember>()?.provider;
+    final provider = node.thisOrAncestorOfType<NamedCompilationUnitMember>()?.provider;
     if (provider == null) return;
 
     // The enclosing provider is "autoDispose", so it is allowed to use other "autoDispose" providers
