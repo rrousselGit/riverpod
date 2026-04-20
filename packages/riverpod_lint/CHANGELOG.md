@@ -1,3 +1,7 @@
+## Unreleased minor
+
+- Exclude `ref.read` invocations for `only_use_keep_alive_inside_keep_alive` lint (Thanks to @codeOfJannik)
+
 ## 3.1.3 - 2026-02-03
 
 - Assists to convert widgets to other widget types now correctly trigger on anything
