@@ -43,10 +43,10 @@ export const features: IFeatureProps[] = [
           br: <br></br>,
           Provider: (
             <code>
-              <a href={"./docs/concepts/combining_providers"}>Provider</a>
+              <a href={"./docs/concepts2/providers"}>Provider</a>
             </code>
           ),
-          families: <a href={"./docs/concepts/modifiers/family"}>"families"</a>,
+          families: <a href={"./docs/concepts2/family"}>"families"</a>,
           build: <code>build</code>,
           truly: <strong>truly</strong>,
         }}
