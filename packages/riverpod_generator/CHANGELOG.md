@@ -1,3 +1,7 @@
+## Unreleased 4.0.4-dev.1
+
+Support analyzer 12
+
 ## 4.0.3 - 2026-02-03
 ### Dependency changes
 

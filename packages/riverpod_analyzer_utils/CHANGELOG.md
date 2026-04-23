@@ -1,3 +1,7 @@
+## Unreleased 1.0.0-dev.10
+
+Support analyzer 12
+
 ## 1.0.0-dev.9 - 2026-01-17
 
 Fix out of date dependency version.

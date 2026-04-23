@@ -1,3 +1,7 @@
+## Unreleased 3.1.4-dev.1
+
+Support analyzer 12
+
 ## 3.1.3 - 2026-02-03
 
 - Assists to convert widgets to other widget types now correctly trigger on anything
