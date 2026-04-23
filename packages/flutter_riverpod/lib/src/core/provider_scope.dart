@@ -358,23 +358,26 @@ To fix this problem, you have one of two solutions:
   Widget build(BuildContext context) {
     _callTask();
 
-    /// At the end of every frame, we schedule all ProviderScopes to build.
+    /// At the start of every frame, we schedule all ProviderScopes to build.
     /// This is for scoped providers to correctly update without causing a
     /// markNeedsBuild error.
     ///
-    /// Uses [addPostFrameCallback] instead of [scheduleFrameCallback] so the
-    /// callback does NOT count towards [SchedulerBinding.transientCallbackCount].
-    /// With `scheduleFrameCallback(scheduleNewFrame: false, ...)`, when the
-    /// host app reaches idle (no further frames scheduled from other sources)
-    /// the callback stays registered forever, leaving
-    /// `transientCallbackCount == 1`. This permanently blocks any code that
-    /// waits on the scheduler being idle — most notably `flutter_driver`
-    /// (every `tap` / `waitFor` times out) and `integration_test`'s
-    /// `pumpAndSettle`. Post-frame callbacks are drained at the end of the
-    /// current frame and do not affect driver/idle checks.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) setState(() {});
-    });
+    /// Only registered when the container scheduler has pending work.
+    /// Previously this ran unconditionally on every build. Because it uses
+    /// `scheduleNewFrame: false`, once the host app reached idle (no further
+    /// frames scheduled from other sources) the callback stayed in
+    /// [SchedulerBinding.transientCallbacks] forever, leaving
+    /// `transientCallbackCount == 1`. This permanently blocked anything that
+    /// waits on `waitUntilFrame` — most notably `flutter_driver` (every
+    /// `tap` / `waitFor` timed out) and `integration_test`'s `pumpAndSettle`
+    /// in some configurations. Gating on `pendingFuture` drains the transient
+    /// callback count to zero on idle while preserving the original flush
+    /// behaviour whenever the container actually has tasks to run.
+    if (widget.container.scheduler.pendingFuture != null) {
+      WidgetsBinding.instance.scheduleFrameCallback(scheduleNewFrame: false, (_) {
+        if (mounted) setState(() {});
+      });
+    }
 
     return _UncontrolledProviderScope(
       container: widget.container,
