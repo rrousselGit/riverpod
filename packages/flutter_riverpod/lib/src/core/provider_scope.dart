@@ -358,23 +358,18 @@ To fix this problem, you have one of two solutions:
   Widget build(BuildContext context) {
     _callTask();
 
-    /// At the start of every frame, we schedule all ProviderScopes to build.
-    /// This is for scoped providers to correctly update without causing a
-    /// markNeedsBuild error.
+    /// At the start of every frame, we schedule scoped ProviderScopes to
+    /// build. This is for scoped providers to correctly update without
+    /// causing a markNeedsBuild error.
     ///
-    /// Only registered when the container scheduler has pending work.
-    /// Previously this ran unconditionally on every build. Because it uses
-    /// `scheduleNewFrame: false`, once the host app reached idle (no further
-    /// frames scheduled from other sources) the callback stayed in
-    /// [SchedulerBinding.transientCallbacks] forever, leaving
-    /// `transientCallbackCount == 1`. This permanently blocked anything that
-    /// waits on `waitUntilFrame` — most notably `flutter_driver` (every
-    /// `tap` / `waitFor` timed out) and `integration_test`'s `pumpAndSettle`
-    /// in some configurations. Gating on `pendingFuture` drains the transient
-    /// callback count to zero on idle while preserving the original flush
-    /// behaviour whenever the container actually has tasks to run.
-    if (widget.container.scheduler.pendingFuture != null) {
-      WidgetsBinding.instance.scheduleFrameCallback(scheduleNewFrame: false, (_) {
+    /// Skipped on root containers — they have no ancestor scope whose
+    /// updates could reach them, so the defensive rebuild is unnecessary
+    /// and would leave a permanently-pending transient frame callback on
+    /// idle.
+    if (widget.container.parent != null) {
+      WidgetsBinding.instance.scheduleFrameCallback(scheduleNewFrame: false, (
+        _,
+      ) {
         if (mounted) setState(() {});
       });
     }
