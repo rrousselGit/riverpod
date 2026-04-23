@@ -1,3 +1,9 @@
+## Unreleased patch
+
+- Rename `super.initialValue` to `super._state` in `StateNotifier` subclasses
+  in tests to satisfy the `matching_super_parameters` lint surfaced by
+  Flutter master's newer analyzer. No runtime change.
+
 ## 3.3.1 - 2026-03-09
 
 - Add missing `disposeNotifier` flag on `overrideWith`.

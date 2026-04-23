@@ -1,3 +1,9 @@
+## Unreleased patch
+
+- Rename `super.initialValue` to `super._state` in `StateNotifier` subclasses
+  in tests to satisfy the `matching_super_parameters` lint surfaced by
+  Flutter master's newer analyzer. No runtime change.
+
 ## 3.2.1 - 2026-02-03
 
 - Fixed a bug where resuming a paused provider could cause it to never

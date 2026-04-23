@@ -1,3 +1,10 @@
+## Unreleased patch
+
+- Skip the per-build defensive `scheduleFrameCallback` on root
+  `ProviderScope`s. Previously it left a permanently-pending transient
+  frame callback on idle, blocking `flutter_driver.waitUntilFrame`
+  (every `tap` / `waitFor` timed out).
+
 ## 3.3.1 - 2026-03-09
 
 - Add missing `disposeNotifier` flag on `overrideWith`.
