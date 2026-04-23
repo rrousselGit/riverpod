@@ -15,7 +15,7 @@ ValueT Function(KeyT) cacheFamily<KeyT, ValueT>(
 }
 
 class Counter extends StateNotifier<int> {
-  Counter([super.initialValue = 0]);
+  Counter([super._state = 0]);
 
   void increment() => state++;
 

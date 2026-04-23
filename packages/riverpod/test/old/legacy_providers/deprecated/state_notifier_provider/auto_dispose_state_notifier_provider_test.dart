@@ -244,7 +244,7 @@ void main() {
 }
 
 class TestNotifier extends StateNotifier<int> {
-  TestNotifier([super.initialValue = 0]);
+  TestNotifier([super._state = 0]);
 
   void increment() => state++;
 

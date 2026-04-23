@@ -9,7 +9,7 @@ import '../../src/utils.dart' show isProviderException, throwsProviderException;
 import '../utils.dart';
 
 class Counter extends StateNotifier<int> {
-  Counter([super.initialValue = 0]);
+  Counter([super._state = 0]);
 
   @override
   int get state => super.state;
