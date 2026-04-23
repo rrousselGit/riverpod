@@ -67,7 +67,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
     if (hasBuildMethod) return;
 
-    rule.reportAtToken(node.name, arguments: []);
+    rule.reportAtToken(node.namePart.typeName, arguments: []);
   }
 }
 
@@ -91,6 +91,9 @@ class AddBuildMethodFix extends ResolvedCorrectionProducer {
   Future<void> compute(ChangeBuilder builder) async {
     final enclosingClass = node.findEnclosing<ClassDeclaration>();
     if (enclosingClass == null) return;
+    final leftBracket = enclosingClass.leftBracket;
+    if (leftBracket == null) return;
+
     if (!isOverlappingClassHeading(
       enclosingClass,
       selectionOffset: selectionOffset,
@@ -99,7 +102,7 @@ class AddBuildMethodFix extends ResolvedCorrectionProducer {
     }
 
     await builder.addDartFileEdit(file, (builder) {
-      final offset = enclosingClass.leftBracket.offset + 1;
+      final offset = leftBracket.offset + 1;
 
       builder.addSimpleInsertion(offset, '''
 

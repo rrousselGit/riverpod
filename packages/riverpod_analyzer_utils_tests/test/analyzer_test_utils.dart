@@ -224,8 +224,18 @@ extension FindAst<NodeT extends AstNode> on List<NodeT> {
 
           if (variableWithName != null) return variableWithName as WhereNodeT;
 
-        case NamedCompilationUnitMember():
-          if (node.name.lexeme == name) return node as WhereNodeT;
+        // CompilationUnitMember subtypes
+        case ClassDeclaration(
+          namePart: ClassNamePart(typeName: final nameToken),
+        ):
+        case MixinDeclaration(name: final nameToken):
+        case ExtensionDeclaration(name: final nameToken?):
+        case EnumDeclaration(
+          namePart: ClassNamePart(typeName: final nameToken),
+        ):
+        case TypeAlias(name: final nameToken):
+        case FunctionDeclaration(name: final nameToken):
+          if (nameToken.lexeme == name) return node as WhereNodeT;
 
         default:
           throw UnsupportedError('Unsupported node ${node.runtimeType}');

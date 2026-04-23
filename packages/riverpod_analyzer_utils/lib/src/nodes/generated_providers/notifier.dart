@@ -75,7 +75,7 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
       });
 
       final classBasedProviderDeclaration = ClassBasedProviderDeclaration._(
-        name: name,
+        name: namePart.typeName,
         node: this,
         buildMethod: buildMethod,
         providerElement: providerElement,

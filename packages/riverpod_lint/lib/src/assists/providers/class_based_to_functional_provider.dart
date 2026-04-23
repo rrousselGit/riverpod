@@ -5,6 +5,7 @@ import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dar
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
+import '../../node.dart';
 import '../../riverpod_custom_lint.dart';
 
 /// But the priority above everything else
@@ -35,7 +36,7 @@ class ClassBasedToFunctionalProvider extends ResolvedCorrectionProducer {
     // Select from "class" to the opening bracket
     final classHeading = range.startEnd(
       declaration.node.classKeyword,
-      declaration.node.leftBracket,
+      declaration.node.headingEndToken,
     );
 
     if (!classHeading.contains(selectionOffset)) return;
@@ -57,11 +58,11 @@ class ClassBasedToFunctionalProvider extends ResolvedCorrectionProducer {
       // Rename the build method to the class name
       builder.addSimpleReplacement(
         range.token(declaration.buildMethod.name),
-        declaration.node.name.lexeme.lowerFirst,
+        declaration.node.namePart.typeName.lexeme.lowerFirst,
       );
 
       var typeParametersSource = '';
-      final typeParameters = declaration.node.typeParameters;
+      final typeParameters = declaration.node.namePart.typeParameters;
       if (typeParameters != null) {
         // Obtain the source of type parameters
         typeParametersSource = unit.declaredFragment!.source.contents.data

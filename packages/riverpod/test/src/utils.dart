@@ -390,7 +390,7 @@ class Selector<InT, OutT> extends Mock {
 }
 
 class Counter extends StateNotifier<int> {
-  Counter([super.initialValue = 0]);
+  Counter([super._state = 0]);
 
   void increment() => state++;
 

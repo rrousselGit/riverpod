@@ -266,3 +266,10 @@ class NestedClass {
     },
   );
 }
+
+extension ClassMembers on ClassDeclaration {
+  List<ClassMember> get members => switch (body) {
+    BlockClassBody(:final members) => members,
+    EmptyClassBody() => const [],
+  };
+}
