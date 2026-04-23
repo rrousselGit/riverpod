@@ -358,11 +358,22 @@ To fix this problem, you have one of two solutions:
   Widget build(BuildContext context) {
     _callTask();
 
-    /// At the start of every frame, we schedule all ProviderScopes to build.
+    /// At the end of every frame, we schedule all ProviderScopes to build.
     /// This is for scoped providers to correctly update without causing a
     /// markNeedsBuild error.
-    WidgetsBinding.instance.scheduleFrameCallback(scheduleNewFrame: false, (_) {
-      setState(() {});
+    ///
+    /// Uses [addPostFrameCallback] instead of [scheduleFrameCallback] so the
+    /// callback does NOT count towards [SchedulerBinding.transientCallbackCount].
+    /// With `scheduleFrameCallback(scheduleNewFrame: false, ...)`, when the
+    /// host app reaches idle (no further frames scheduled from other sources)
+    /// the callback stays registered forever, leaving
+    /// `transientCallbackCount == 1`. This permanently blocks any code that
+    /// waits on the scheduler being idle — most notably `flutter_driver`
+    /// (every `tap` / `waitFor` times out) and `integration_test`'s
+    /// `pumpAndSettle`. Post-frame callbacks are drained at the end of the
+    /// current frame and do not affect driver/idle checks.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) setState(() {});
     });
 
     return _UncontrolledProviderScope(
