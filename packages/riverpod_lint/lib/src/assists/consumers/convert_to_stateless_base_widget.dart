@@ -242,11 +242,17 @@ abstract class ConvertToStatelessBaseWidget extends ResolvedCorrectionProducer {
         builder.addDeletion(range);
       }
 
-      if (widgetClass.body case BlockClassBody(
-        :final rightBracket,
-        :final leftBracket,
-      )) {
-        builder.addDeletion(range.startEnd(rightBracket, leftBracket));
+      final widgetEnd = switch (widgetClass.body) {
+        BlockClassBody(:final rightBracket) => rightBracket,
+        EmptyClassBody() => null,
+      };
+      final stateHeadingEnd = switch (stateClass.body) {
+        BlockClassBody(:final leftBracket) => leftBracket,
+        EmptyClassBody() => null,
+      };
+
+      if (widgetEnd != null && stateHeadingEnd != null) {
+        builder.addDeletion(range.startEnd(widgetEnd, stateHeadingEnd));
       }
 
       final parameterRange = _generateBuildMethodParameterRange(buildMethod);
