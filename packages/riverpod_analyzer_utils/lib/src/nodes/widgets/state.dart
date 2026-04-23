@@ -52,7 +52,7 @@ final class StateDeclaration {
 
     final widgetClass = unit.declarations
         .whereType<ClassDeclaration>()
-        .firstWhereOrNull((e) => e.name.lexeme == widgetName);
+        .firstWhereOrNull((e) => e.namePart.typeName.lexeme == widgetName);
 
     return widgetClass?.widget;
   }

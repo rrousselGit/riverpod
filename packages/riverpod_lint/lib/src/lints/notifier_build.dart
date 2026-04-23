@@ -67,7 +67,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
     if (hasBuildMethod) return;
 
-    rule.reportAtToken(node.name, arguments: []);
+    rule.reportAtToken(node.namePart.typeName, arguments: []);
   }
 }
 

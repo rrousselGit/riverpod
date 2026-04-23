@@ -57,7 +57,7 @@ class ClassBasedToFunctionalProvider extends ResolvedCorrectionProducer {
       // Rename the build method to the class name
       builder.addSimpleReplacement(
         range.token(declaration.buildMethod.name),
-        declaration.node.name.lexeme.lowerFirst,
+        declaration.node.namePart.typeName.lexeme.lowerFirst,
       );
 
       var typeParametersSource = '';
