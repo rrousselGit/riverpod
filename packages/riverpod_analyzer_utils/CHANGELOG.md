@@ -1,4 +1,4 @@
-## Unreleased 1.0.0-dev.10
+## 1.0.0-dev.10 - 2026-04-23
 
 Support analyzer 12
 
