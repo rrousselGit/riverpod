@@ -973,12 +973,15 @@ final class ProviderContainer implements Node, MutationTarget {
   /// }
   /// ```
   StateT read<StateT>(ProviderListenable<StateT> provider) {
+    final currentAction = _currentAction();
     final sub = listen(provider, (_, _) {});
+
+    if (currentAction != null) currentAction.register(sub);
 
     try {
       return sub.readSafe().valueOrProviderException;
     } finally {
-      sub.close();
+      if (currentAction == null) sub.close();
     }
   }
 
