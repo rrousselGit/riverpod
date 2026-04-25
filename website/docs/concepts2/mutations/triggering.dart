@@ -35,12 +35,11 @@ class AddTodoButton extends ConsumerWidget {
     return ElevatedButton(
       onPressed: () {
         // Trigger the mutation, and run the callback.
-        // During the callback, we obtain a MutationTransaction (tsx) object
-        // which we can use to access providers and perform operations.
-        addTodo.run(ref, (tsx) async {
-          // We use tsx.get to access providers within mutations.
-          // This will keep the provider alive for the duration of the operation.
-          final todoNotifier = tsx.get(todoNotifierProvider.notifier);
+        // The callback runs inside an action.
+        // This lets imperative APIs such as read keep providers alive
+        // for the duration of the operation.
+        addTodo.run(ref, () async {
+          final todoNotifier = ref.read(todoNotifierProvider.notifier);
 
           // We perform a request using a Notifier.
           final createdTodo = await todoNotifier.addTodo('Eat a cookie');

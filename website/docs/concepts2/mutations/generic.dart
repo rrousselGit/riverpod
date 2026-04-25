@@ -40,8 +40,8 @@ final create = Mutation<ApiResponse>();
 final createTodo = create<CreatedResponse<Todo>>('create_todo');
 
 Future<void> executeCreateTodo(MutationTarget ref) async {
-  await createTodo.run(ref, (tsx) async {
-    final client = tsx.get(apiProvider);
+  await createTodo.run(ref, () async {
+    final client = ref.container.read(apiProvider);
     final response = client.post('/todos', data: {'title': 'Eat a cookie'});
     return CreatedResponse<Todo>.fromJson(response.data, Todo.fromJson);
   });

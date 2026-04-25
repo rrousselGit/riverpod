@@ -6,52 +6,6 @@ part of '../framework.dart';
 @publicInCodegenMutation
 const mutationZoneKey = #_mutation;
 
-/// A "ref" to be used within [Mutation.run].
-///
-/// By using this ref instead of the usual [Ref]/`WidgetRef`, this enables
-/// [Mutation.run] to be do things such as:
-/// - Keeping providers alive for the `run` duration.
-/// - Closing any pending subscriptions specific to `run` after it completes.
-///
-///
-/// See also:
-/// - [get], the primary way to interact with providers within [Mutation.run].
-@publicInMutations
-final class MutationTransaction {
-  MutationTransaction._(this._container);
-
-  final ProviderContainer _container;
-  var _closed = false;
-  final List<ProviderSubscription<Object?>> _subscriptions = [];
-
-  /// Reads the current state of a listenable and maintains a subscription
-  /// to it until the transaction completes.
-  ///
-  /// **Note**: Updates to the listenable during the transaction are ignored.
-  StateT get<StateT>(ProviderListenable<StateT> listenable) {
-    assert(
-      !_closed,
-      'Cannot get a listenable after the transaction has been closed',
-    );
-
-    final sub = _container.listen(
-      listenable,
-      (previous, next) {},
-      onError: (error, stackTrace) {},
-    );
-
-    _subscriptions.add(sub);
-
-    return sub.readSafe().valueOrProviderException;
-  }
-
-  void _close() {
-    assert(!_closed, 'MutationTransaction is already closed');
-    _closed = true;
-    _closeSubscriptions(_subscriptions);
-  }
-}
-
 final class _MutationProvider<ValueT>
     extends
         $FunctionalProvider<
@@ -100,10 +54,9 @@ class _MutationNotifier<ValueT> {
   _MutationNotifier(this.state, this.setState, this.setRef, this.getRef);
 
   final MutationState<ValueT> state;
-  final void Function(MutationState<ValueT> state, MutationTransaction ref)
-  setState;
-  final void Function(MutationTransaction ref) setRef;
-  final MutationTransaction? Function() getRef;
+  final void Function(MutationState<ValueT> state, Object ref) setState;
+  final void Function(Object ref) setRef;
+  final Object? Function() getRef;
 
   @override
   String toString() {
@@ -126,9 +79,9 @@ class _MutationElement<StateT>
     final provider = this.provider as _MutationProvider<StateT>;
     final mutation = provider.mutation;
 
-    MutationTransaction? activeRef;
+    Object? activeRef;
 
-    void setState(MutationState<StateT> state, MutationTransaction? mutRef) {
+    void setState(MutationState<StateT> state, Object? mutRef) {
       if (mutRef != activeRef) return;
 
       final prevState = value;
@@ -258,10 +211,10 @@ abstract class MutationTarget {
 /// ```dart
 /// ElevatedButton(
 ///   onPressed: () {
-///     addTodoMutation.run(ref, (tsx) async {
+///     addTodoMutation.run(ref, () async {
 ///       // This is where you perform the side-effect. Here, you can
 ///       // read your providers to modify them.
-///       await tsx.get(todoListProvider.notifier).addTodo(
+///       await ref.read(todoListProvider.notifier).addTodo(
 ///         Todo(title: 'New Todo'),
 ///       );
 ///     });
@@ -318,7 +271,7 @@ abstract class MutationTarget {
 /// onPressed: () {
 ///   // Upon calling `run`, you will have to pass the same key as when
 ///   // watching the mutation.
-///   deleteTodo(todo.id).run(ref, (tsx) async { /* ... */ });
+///   deleteTodo(todo.id).run(ref, () async { /* ... */ });
 /// }
 /// ```
 ///
@@ -362,13 +315,13 @@ sealed class Mutation<ResultT>
   /// [MutationSuccess] or [MutationError] depending on whether the callback
   /// completes successfully or throws an error.
   ///
-  /// While within the callback, use [MutationTransaction] to interact with providers.
-  /// When doing so, [run] will naturally keep the providers alive for the duration
-  /// of the callback, and close any pending subscriptions after it completes.
-  Future<ResultT> run(
-    MutationTarget target,
-    Future<ResultT> Function(MutationTransaction transaction) cb,
-  );
+  /// [run] executes [cb] inside an [action].
+  ///
+  /// This means imperative APIs such as [ProviderContainer.read] and [Ref.read]
+  /// automatically keep touched providers alive for the duration of [cb].
+  /// Any action-managed subscriptions created during the callback are closed
+  /// when the mutation completes.
+  Future<ResultT> run(MutationTarget target, Future<ResultT> Function() cb);
 
   /// Resets the mutation to its initial state ([MutationIdle]).
   void reset(MutationTarget container);
@@ -415,10 +368,7 @@ final class MutationImpl<ResultT>
   }
 
   @override
-  Future<ResultT> run(
-    MutationTarget target,
-    Future<ResultT> Function(MutationTransaction ref) cb,
-  ) {
+  Future<ResultT> run(MutationTarget target, Future<ResultT> Function() cb) {
     return runZoned(zoneValues: {mutationZoneKey: this}, () async {
       final container = target.container;
 
@@ -427,12 +377,12 @@ final class MutationImpl<ResultT>
         _MutationProvider(this),
         (_, _) {},
       );
-      final ref = MutationTransaction._(container);
+      final ref = Object();
 
       try {
         mut._mutationStart(sub, ref);
 
-        final result = await cb(ref);
+        final result = await action(cb);
 
         mut._mutationSuccess(sub, ref, result);
 
@@ -443,7 +393,6 @@ final class MutationImpl<ResultT>
         rethrow;
       } finally {
         sub.close();
-        ref._close();
       }
     });
   }
@@ -462,7 +411,7 @@ final class MutationImpl<ResultT>
 
   void _mutationStart(
     ProviderSubscription<_MutationNotifier<ResultT>> sub,
-    MutationTransaction ref,
+    Object ref,
   ) {
     final _MutationNotifier(:state, :setState, :setRef) =
         sub.readSafe().valueOrRawException;
@@ -474,7 +423,7 @@ final class MutationImpl<ResultT>
 
   void _mutationSuccess(
     ProviderSubscription<_MutationNotifier<ResultT>> sub,
-    MutationTransaction ref,
+    Object ref,
     ResultT result,
   ) {
     final _MutationNotifier(:state, :setState) =
@@ -485,7 +434,7 @@ final class MutationImpl<ResultT>
 
   void _mutationErrored(
     ProviderSubscription<_MutationNotifier<ResultT>> sub,
-    MutationTransaction ref,
+    Object ref,
     Object error,
     StackTrace stackTrace,
   ) {
