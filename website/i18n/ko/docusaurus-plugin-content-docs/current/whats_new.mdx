@@ -957,7 +957,7 @@ void main() {
     void main() {
       final container = ProviderContainer.test(
         overrides: [
-          myProvider.overrideWithBuild((ref) {
+          myProvider.overrideWithBuild((ref, self) {
             // build 메서드를 모킹하여 42에서 시작합니다.
             // "increment" 메서드는 영향을 받지 않습니다.
             return 42;
@@ -982,7 +982,7 @@ void main() {
     void main() {
       final container = ProviderContainer.test(
         overrides: [
-          myProvider.overrideWithBuild((ref) {
+          myProvider.overrideWithBuild((ref, self) {
             // build 메서드를 모킹하여 42에서 시작합니다.
             // "increment" 메서드는 영향을 받지 않습니다.
             return 42;
