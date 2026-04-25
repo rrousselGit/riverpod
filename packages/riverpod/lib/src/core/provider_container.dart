@@ -504,6 +504,15 @@ class ProviderPointerManager {
     return _familyPointers.pointers.values.map((e) => e.element).nonNulls;
   }
 
+  Iterable<ProviderBase<Object?>> listFamilyProviders(Family family) {
+    final _familyPointers = familyPointers[family];
+    if (_familyPointers == null) return const <ProviderBase<Object?>>[];
+
+    return _familyPointers.pointers.entries
+        .where((entry) => entry.value.element != null)
+        .map((entry) => entry.key);
+  }
+
   /// Remove a provider from this container.
   ///
   /// Noop if the provider is from an override or doesn't exist.

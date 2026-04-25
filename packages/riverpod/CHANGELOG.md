@@ -1,6 +1,7 @@
-## Unreleased patch
+## Unreleased minor
 
-Refactored internal scheduling mechanism to solve some markNeedsBuild error.
+- Added `myFamilyProvider.allOf(ref/container)`, to obtain all arguments for a given 'family'.
+- Refactored internal scheduling mechanism to solve some markNeedsBuild error.
 
 ## 3.2.1 - 2026-02-03
 
@@ -807,7 +808,6 @@ Riverpod is now stable!
 
   That allows providers to implement features that is not shared with other
   providers.
-
   - `Provider`, `FutureProvider` and `StreamProvider`'s `ref` now have a `state`
     property, which represents the currently exposed value. Modifying it will
     notify the listeners:
@@ -1080,7 +1080,6 @@ Fixed various issues related to scoped providers.
 
   That allows providers to implement features that is not shared with other
   providers.
-
   - `Provider`, `FutureProvider` and `StreamProvider`'s `ref` now have a `state`
     property, which represents the currently exposed value. Modifying it will
     notify the listeners:
@@ -1501,4 +1500,3 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-
