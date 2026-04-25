@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_foreach
-
 import 'package:riverpod/riverpod.dart';
 
 final userProvider = Provider.family<User, String>((ref, id) {
