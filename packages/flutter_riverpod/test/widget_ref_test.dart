@@ -37,19 +37,23 @@ void main() {
 
     testWidgets('watch throws inside action', (tester) async {
       final provider = Provider((ref) => 42);
+      late WidgetRef widgetRef;
 
       await tester.pumpWidget(
         ProviderScope(
           child: Consumer(
             builder: (context, ref, _) {
-              action(() => ref.watch(provider));
+              widgetRef = ref;
               return Container();
             },
           ),
         ),
       );
 
-      expect(tester.takeException(), isA<AssertionError>());
+      await expectLater(
+        action(() async => widgetRef.watch(provider)),
+        throwsA(isA<AssertionError>()),
+      );
     });
 
     group('invalidate', () {

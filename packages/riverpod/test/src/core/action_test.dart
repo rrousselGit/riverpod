@@ -88,13 +88,13 @@ void main() {
         return 42;
       });
 
-      final result = action(() {
+      final result = action(() async {
         expect(container.read(provider), 42);
         expect(container.read(provider), 42);
         return container.read(provider);
       });
 
-      expect(result, 42);
+      await expectLater(result, completion(42));
       expect(buildCount, 1);
 
       await container.pump();
@@ -102,7 +102,7 @@ void main() {
       expect(container.pointerManager.readPointer(provider), isNull);
     });
 
-    test('throws if Ref.watch is used inside an action', () {
+    test('throws if Ref.watch is used inside an action', () async {
       final container = ProviderContainer.test();
       final notifier = DeferredNotifier<int>((ref, self) => 0);
       final holder = NotifierProvider<DeferredNotifier<int>, int>(
@@ -112,8 +112,8 @@ void main() {
 
       container.read(holder);
 
-      expect(
-        () => action(() => notifier.ref.watch(provider)),
+      await expectLater(
+        action(() async => notifier.ref.watch(provider)),
         throwsA(isA<AssertionError>()),
       );
     });

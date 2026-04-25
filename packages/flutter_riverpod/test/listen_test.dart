@@ -189,19 +189,25 @@ void main() {
   group('WidgetRef.listen', () {
     testWidgets('throws inside action', (tester) async {
       final provider = Provider((ref) => 0);
+      late WidgetRef widgetRef;
 
       await tester.pumpWidget(
         ProviderScope(
           child: Consumer(
             builder: (context, ref, _) {
-              action(() => ref.listen(provider, (_, _) {}));
+              widgetRef = ref;
               return Container();
             },
           ),
         ),
       );
 
-      expect(tester.takeException(), isA<AssertionError>());
+      await expectLater(
+        action(() async {
+          widgetRef.listen(provider, (_, _) {});
+        }),
+        throwsA(isA<AssertionError>()),
+      );
     });
 
     testWidgets('expose previous and new value on change', (tester) async {
