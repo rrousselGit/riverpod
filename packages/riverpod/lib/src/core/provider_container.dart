@@ -976,8 +976,6 @@ final class ProviderContainer implements Node, MutationTarget {
     final currentAction = _currentAction();
     final sub = listen(provider, (_, _) {});
 
-    if (currentAction != null) currentAction.register(sub);
-
     try {
       return sub.readSafe().valueOrProviderException;
     } finally {
