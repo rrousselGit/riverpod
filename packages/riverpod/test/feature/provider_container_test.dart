@@ -111,6 +111,43 @@ void main() {
       expect(container.allProviders(), isEmpty);
     });
 
+    test('throws if new providers are registered while iterating', () {
+      final provider = Provider((ref) => 0);
+      final newProvider = Provider((ref) => 1);
+      final container = ProviderContainer.test();
+
+      container.listen(provider, (_, _) {});
+
+      expect(() {
+        for (final _ in container.allProviders()) {
+          container.listen(newProvider, (_, _) {});
+        }
+      }, throwsA(isA<ConcurrentModificationError>()));
+    });
+
+    test(
+      'with family specified, only new providers from that family throw',
+      () {
+        final family = Provider.family<int, int>((ref, arg) => arg);
+        final otherFamily = Provider.family<int, int>((ref, arg) => arg);
+        final container = ProviderContainer.test();
+
+        container.listen(family(0), (_, _) {});
+
+        expect(() {
+          for (final _ in container.allProviders(family: family)) {
+            container.listen(otherFamily(0), (_, _) {});
+          }
+        }, returnsNormally);
+
+        expect(() {
+          for (final _ in container.allProviders(family: family)) {
+            container.listen(family(1), (_, _) {});
+          }
+        }, throwsA(isA<ConcurrentModificationError>()));
+      },
+    );
+
     test('includes active providers from parent containers too', () {
       final provider = Provider((ref) => 0);
       final family = Provider.autoDispose.family<int, int>(
