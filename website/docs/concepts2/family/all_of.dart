@@ -14,8 +14,8 @@ class User {
 
 void refreshVisibleUsers(Ref ref) {
   /* SNIPPET START */
-  for (final provider in userProvider.allOf(ref)) {
-    ref.invalidate(provider);
+  for (final reference in ref.container.allProviders(family: userProvider)) {
+    ref.invalidate(reference.provider);
   }
   /* SNIPPET END */
 }

@@ -62,38 +62,6 @@ final class Family extends ProviderOrFamily implements _FamilyOverride {
   @override
   Family get origin => from;
 
-  /// Returns all currently active providers created by this family.
-  ///
-  /// This includes providers where, given `target.read(provider)`, no new "state"
-  /// is created.
-  /// If you use "scoping", then it is possible for some providers to not
-  /// be included in the returned list if they are further down the tree.
-  ///
-  /// Note: Be careful about _when_ you call this method, as you may otherwise
-  /// miss providers that haven't been listened to yet.
-  ///
-  /// For example if you do:
-  ///
-  /// ```dart
-  /// final args = myFamily.allOf(ref);
-  /// ref.read(myFamily(0));
-  /// ```
-  ///
-  /// Then it is possible for `family(0)` to not be included in `args`.
-  Iterable<ProviderBase<Object?>> allOf(MutationTarget target) {
-    final providers = target.container._pointerManager.listFamilyProviders(
-      this,
-    );
-
-    if (target.container.parent case final parent?) {
-      return providers
-          .followedBy(parent._pointerManager.listFamilyProviders(this))
-          .toSet();
-    }
-
-    return providers;
-  }
-
   @override
   String toString() => name ?? describeIdentity(this);
 }

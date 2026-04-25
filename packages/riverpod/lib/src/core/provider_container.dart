@@ -504,13 +504,49 @@ class ProviderPointerManager {
     return _familyPointers.pointers.values.map((e) => e.element).nonNulls;
   }
 
-  Iterable<ProviderBase<Object?>> listFamilyProviders(Family family) {
+  Iterable<ProviderReference> listFamilyProviders(Family family) {
     final _familyPointers = familyPointers[family];
-    if (_familyPointers == null) return const <ProviderBase<Object?>>[];
+    if (_familyPointers == null) return const <ProviderReference>[];
 
     return _familyPointers.pointers.entries
-        .where((entry) => entry.value.element != null)
-        .map((entry) => entry.key);
+        .where(
+          (entry) =>
+              entry.value.targetContainer == container &&
+              entry.value.element != null,
+        )
+        .map(
+          (entry) =>
+              ProviderReference._(entry.key, entry.value.element!.container),
+        );
+  }
+
+  Iterable<ProviderReference> listProviders() {
+    return orphanPointers.pointers.entries
+        .where(
+          (entry) =>
+              entry.value.targetContainer == container &&
+              entry.value.element != null,
+        )
+        .map(
+          (entry) =>
+              ProviderReference._(entry.key, entry.value.element!.container),
+        )
+        .followedBy(
+          familyPointers.values.expand(
+            (directory) => directory.pointers.entries
+                .where(
+                  (entry) =>
+                      entry.value.targetContainer == container &&
+                      entry.value.element != null,
+                )
+                .map(
+                  (entry) => ProviderReference._(
+                    entry.key,
+                    entry.value.element!.container,
+                  ),
+                ),
+          ),
+        );
   }
 
   /// Remove a provider from this container.
@@ -736,6 +772,20 @@ extension NodeInternal on Node {
   ) => container._readProviderElement(provider);
 }
 
+/// The response of [ProviderContainer.allProviders].
+final class ProviderReference {
+  ProviderReference._(this.provider, this.container);
+
+  /// An active provider.
+  final ProviderBase<Object?> provider;
+
+  /// The container where [provider] is originating from.
+  final ProviderContainer container;
+
+  @override
+  String toString() => '$provider';
+}
+
 /// {@template riverpod.provider_container}
 /// An object that stores the state of the providers and allows overriding the
 /// behavior of a specific provider.
@@ -942,6 +992,37 @@ final class ProviderContainer implements Node, MutationTarget {
                 ?.element !=
             null;
     }
+  }
+
+  /// Returns all currently active providers in this container.
+  ///
+  /// If [family] is specified, returns only the providers from that family.
+  /// This is more efficient than
+  /// `allProviders().where((p) => p.provider.from == family)`.
+  ///
+  /// The result includes providers mounted in this container and any of its parents,
+  /// but does not include providers from child containers.
+  ///
+  /// Note: Be careful about _when_ you call this method, as you may otherwise
+  /// miss providers that haven't been listened to yet.
+  ///
+  /// For example if you do:
+  ///
+  /// ```dart
+  /// final args = ref.container.allProviders(family: myFamily);
+  /// ref.read(myFamily(0));
+  /// ```
+  Iterable<ProviderReference> allProviders({Family? family}) {
+    final providers =
+        family != null
+            ? _pointerManager.listFamilyProviders(family)
+            : _pointerManager.listProviders();
+
+    if (container.parent case final parent?) {
+      return providers.followedBy(parent.allProviders(family: family));
+    }
+
+    return providers;
   }
 
   /// Executes [ProviderElement.debugReassemble] on all the providers.

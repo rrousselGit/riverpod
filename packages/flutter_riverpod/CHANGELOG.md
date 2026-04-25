@@ -1,6 +1,6 @@
 ## Unreleased minor
 
-- Added `myFamilyProvider.allOf(ref/container)`, to obtain all arguments for a given 'family'.
+- Added `ProviderContainer.allProviders()`, to obtain all providers accessible from said container. You can optionally specify `allProviders(family: myFamily)` to only include providers from said family.
 - Refactored internal scheduling mechanism to solve some markNeedsBuild error.
 
 ## 3.3.1 - 2026-03-09

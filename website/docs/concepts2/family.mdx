@@ -97,19 +97,8 @@ class Example extends ConsumerWidget {
 
 ## Accessing all active providers of a family
 
-Families expose `allOf(MutationTarget)`, which returns every active provider
-currently mounted for that family in the target container.
-
-This is useful when you want to apply the same operation to all live instances
-of a family, such as invalidating every visible entry after a refresh.
-
-You can pass a `Ref`, `WidgetRef`, or `ProviderContainer` as the target:
-
-```dart
-final providers = userProvider.allOf(ref);
-```
-
-For example:
+Using <Link documentID="concepts2/containers" />, you can access all the providers that are
+linked to a `Family` thanks to its `allProviders` method:
 
 <AutoSnippet raw={activeProviders} />
 
