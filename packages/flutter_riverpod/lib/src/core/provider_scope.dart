@@ -254,10 +254,12 @@ class UncontrolledProviderScope extends StatefulWidget {
 }
 
 final class _UncontrolledProviderScopeState
-    extends State<UncontrolledProviderScope> {
+    extends State<UncontrolledProviderScope>
+    implements Vsync {
   Task? _task;
   Timer? _vsyncTimer;
   Timer? _vsyncTimOutTimer;
+  void Function()? _cancelAsyncTask;
 
   @override
   void initState() {
@@ -265,10 +267,10 @@ final class _UncontrolledProviderScopeState
 
     if (kDebugMode) debugCanModifyProviders ??= _debugCanModifyProviders;
     assert(
-      !widget.container.scheduler.flutterVsyncs.contains(_flutterVsync),
+      !widget.container.scheduler.flutterVsyncs.contains(this),
       'Sync already added',
     );
-    widget.container.scheduler.flutterVsyncs.add(_flutterVsync);
+    widget.container.scheduler.flutterVsyncs.add(this);
   }
 
   @override
@@ -282,6 +284,8 @@ final class _UncontrolledProviderScopeState
   void _callTask() {
     if (!mounted) return;
 
+    _cancelAsyncTask?.call();
+    _cancelAsyncTask = null;
     _vsyncTimOutTimer?.cancel();
     _vsyncTimOutTimer = null;
     _vsyncTimer?.cancel();
@@ -292,7 +296,7 @@ final class _UncontrolledProviderScopeState
     task?.call();
   }
 
-  void _flutterVsync(Task task) {
+  void _debugAssertCanScheduleTask(Task task) {
     assert(
       _task == null
           // Checks for race conditions where a task has been completed in a different scope.
@@ -303,6 +307,13 @@ final class _UncontrolledProviderScopeState
       'Only one task can be scheduled at a time',
     );
     assert(mounted, 'Cannot schedule a task on an unmounted element');
+  }
+
+  @override
+  void Function()? scheduleRefresh(Task task) {
+    _debugAssertCanScheduleTask(task);
+    _cancelAsyncTask?.call();
+    _cancelAsyncTask = null;
     _task = task;
 
     _vsyncTimer?.cancel();
@@ -317,6 +328,34 @@ final class _UncontrolledProviderScopeState
         _callTask();
       });
     });
+
+    return () {
+      _vsyncTimer?.cancel();
+      _vsyncTimer = null;
+      _vsyncTimOutTimer?.cancel();
+      _vsyncTimOutTimer = null;
+    };
+  }
+
+  @override
+  void Function()? scheduleDispose(Task task) {
+    _debugAssertCanScheduleTask(task);
+    _task = task;
+
+    var canceled = false;
+    _cancelAsyncTask?.call();
+    _cancelAsyncTask = () => canceled = true;
+    Future.microtask(() {
+      if (canceled) return;
+      _callTask();
+    });
+
+    return () {
+      canceled = true;
+      if (identical(_task, task)) {
+        _cancelAsyncTask = null;
+      }
+    };
   }
 
   void _debugCanModifyProviders() {
@@ -373,6 +412,8 @@ To fix this problem, you have one of two solutions:
 
   @override
   void dispose() {
+    _cancelAsyncTask?.call();
+    _cancelAsyncTask = null;
     _vsyncTimer?.cancel();
     _vsyncTimer = null;
     _vsyncTimOutTimer?.cancel();
@@ -381,7 +422,7 @@ To fix this problem, you have one of two solutions:
       debugCanModifyProviders = null;
     }
 
-    widget.container.scheduler.flutterVsyncs.remove(_flutterVsync);
+    widget.container.scheduler.flutterVsyncs.remove(this);
 
     super.dispose();
   }
