@@ -20,21 +20,18 @@ bool $isInAction() => _currentAction() != null;
 /// Providers accessed through [Ref.read] or [ProviderContainer.read] while the
 /// callback is pending are kept alive and active for the duration of the
 /// action.
-FutureOr<ResultT> action<ResultT>(FutureOr<ResultT> Function() cb) {
+Future<ResultT> action<ResultT>(Future<ResultT> Function() cb) {
   if (_currentAction() != null) return cb();
 
   final action = _ActionExecution();
 
   try {
-    return runZoned<FutureOr<ResultT>>(() {
-      final result = cb();
-
-      if (result is Future<ResultT>) {
-        return result.whenComplete(action._close);
+    return runZoned<Future<ResultT>>(() async {
+      try {
+        return await cb();
+      } finally {
+        action._close();
       }
-
-      action._close();
-      return result;
     }, zoneValues: {_actionZoneKey: action});
   } catch (_) {
     action._close();
@@ -45,11 +42,7 @@ FutureOr<ResultT> action<ResultT>(FutureOr<ResultT> Function() cb) {
 /// Returns a callback that executes [cb] inside [action].
 ///
 /// This is equivalent to writing `() => action(cb)`.
-void Function() voidAction(FutureOr<void> Function() cb) {
-  return () {
-    action(cb);
-  };
-}
+void Function() voidAction(Future<void> Function() cb) => () => action(cb);
 
 final class _ActionExecution {
   var _closed = false;

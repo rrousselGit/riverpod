@@ -27,6 +27,7 @@ module.exports = {
         "concepts2/refs",
         "concepts2/auto_dispose",
         "concepts2/family",
+        "concepts2/actions",
         "concepts2/mutations",
         "concepts2/offline",
         "concepts2/retry",

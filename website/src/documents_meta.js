@@ -25,6 +25,7 @@ export const documentTitles = {
     "concepts2/overrides": "Provider overrides",
     "concepts2/offline": "Offline persistence (experimental)",
     "concepts2/observers": "ProviderObservers",
+    "concepts2/actions": "Actions",
     "concepts2/mutations": "Mutations (experimental)",
     "concepts2/family": "Family",
     "concepts2/containers": "ProviderContainers/ProviderScopes",
