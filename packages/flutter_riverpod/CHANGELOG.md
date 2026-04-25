@@ -1,3 +1,7 @@
+## Unreleased patch
+
+Refactored internal scheduling mechanism to solve some markNeedsBuild error.
+
 ## 3.3.1 - 2026-03-09
 
 - Add missing `disposeNotifier` flag on `overrideWith`.
@@ -1515,4 +1519,3 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-

@@ -1,3 +1,7 @@
+## Unreleased patch
+
+Refactored internal scheduling mechanism to solve some markNeedsBuild error.
+
 ## 3.2.1 - 2026-02-03
 
 - Fixed a bug where resuming a paused provider could cause it to never
