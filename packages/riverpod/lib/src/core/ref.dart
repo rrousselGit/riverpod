@@ -695,13 +695,17 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     bool fireImmediately = false,
   }) {
     _throwIfInvalidUsage();
-    return _element.listen(
+    final sub = _element.listen(
       provider,
       listener,
       weak: weak,
       onError: onError,
       fireImmediately: fireImmediately,
     );
+
+    _currentAction()?.register(sub);
+
+    return sub;
   }
 }
 

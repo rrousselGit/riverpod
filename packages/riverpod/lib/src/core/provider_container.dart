@@ -1061,6 +1061,8 @@ final class ProviderContainer implements Node, MutationTarget {
 
     sub.impl._listenedElement.addDependentSubscription(sub.impl);
 
+    _currentAction()?.register(sub);
+
     return sub;
   }
 

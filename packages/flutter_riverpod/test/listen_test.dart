@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart' hide Listener;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
@@ -150,9 +152,58 @@ void main() {
       ref.read(provider.notifier).state++;
       verifyNoMoreInteractions(listener);
     });
+
+    testWidgets('closes subscriptions when the action ends', (tester) async {
+      final completer = Completer<void>();
+      final provider = StateProvider((ref) => 0);
+      final listener = Listener<int>();
+
+      late WidgetRef ref;
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(
+            builder: (context, r, _) {
+              ref = r;
+              return Container();
+            },
+          ),
+        ),
+      );
+
+      final future = action(() async {
+        ref.listenManual(provider, listener.call);
+        await completer.future;
+      });
+
+      ref.read(provider.notifier).state++;
+      verifyOnly(listener, listener(0, 1));
+
+      completer.complete();
+      await future;
+
+      ref.read(provider.notifier).state++;
+      verifyNoMoreInteractions(listener);
+    });
   });
 
   group('WidgetRef.listen', () {
+    testWidgets('throws inside action', (tester) async {
+      final provider = Provider((ref) => 0);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(
+            builder: (context, ref, _) {
+              action(() => ref.listen(provider, (_, _) {}));
+              return Container();
+            },
+          ),
+        ),
+      );
+
+      expect(tester.takeException(), isA<AssertionError>());
+    });
+
     testWidgets('expose previous and new value on change', (tester) async {
       final container = ProviderContainer.test();
       final dep = StateNotifierProvider<StateController<int>, int>(

@@ -117,6 +117,61 @@ void main() {
         throwsA(isA<AssertionError>()),
       );
     });
+
+    test(
+      'closes ProviderContainer.listen subscriptions when the action ends',
+      () async {
+        final container = ProviderContainer.test();
+        final completer = Completer<void>();
+        final listener = Listener<int>();
+        final dep = StateProvider((ref) => 0);
+
+        final future = action(() async {
+          container.listen(dep, listener.call);
+          await completer.future;
+        });
+
+        container.read(dep.notifier).state++;
+
+        verifyOnly(listener, listener(0, 1));
+
+        completer.complete();
+        await future;
+
+        container.read(dep.notifier).state++;
+
+        verifyNoMoreInteractions(listener);
+      },
+    );
+
+    test('closes Ref.listen subscriptions when the action ends', () async {
+      final container = ProviderContainer.test();
+      final completer = Completer<void>();
+      final listener = Listener<int>();
+      final dep = StateProvider((ref) => 0);
+      final notifier = DeferredNotifier<int>((ref, self) => 0);
+      final holder = NotifierProvider<DeferredNotifier<int>, int>(
+        () => notifier,
+      );
+
+      container.read(holder);
+
+      final future = action(() async {
+        notifier.ref.listen(dep, listener.call);
+        await completer.future;
+      });
+
+      container.read(dep.notifier).state++;
+
+      verifyOnly(listener, listener(0, 1));
+
+      completer.complete();
+      await future;
+
+      container.read(dep.notifier).state++;
+
+      verifyNoMoreInteractions(listener);
+    });
   });
 
   group('voidAction', () {

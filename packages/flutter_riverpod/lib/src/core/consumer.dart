@@ -519,6 +519,10 @@ base class ConsumerStatefulElement extends StatefulElement
   }) {
     _assertNotDisposed();
     assert(
+      !$isInAction(),
+      'Cannot use WidgetRef.listen inside action callbacks.',
+    );
+    assert(
       debugDoingBuild,
       'ref.listen can only be used within the build method of a ConsumerWidget',
     );
