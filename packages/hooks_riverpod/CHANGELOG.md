@@ -1,6 +1,7 @@
-## 3.3.1 - 2026-03-09
+## Unreleased minor
 
-- Add missing `disposeNotifier` flag on `overrideWith`.
+- Added `ProviderContainer.allProviders()`, to obtain all providers accessible from said container. You can optionally specify `allProviders(family: myFamily)` to only include providers from said family.
+- Refactored internal scheduling mechanism to solve some markNeedsBuild error.
 
 ## 3.3.0 - 2026-03-09
 

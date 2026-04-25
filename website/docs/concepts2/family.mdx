@@ -9,6 +9,7 @@ import functionalFamily from './family/functional';
 import notifierFamily from './family/notifier';
 import singleOverride from 'raw-loader!./family/single_override.dart';
 import allOverride from 'raw-loader!./family/all_overrides.dart';
+import activeProviders from 'raw-loader!./family/all_of.dart';
 
 One of Riverpod's most powerful feature is called "Families".  
 In short, it allows a provider to be associated with multiple independent states,
@@ -93,6 +94,13 @@ class Example extends ConsumerWidget {
   }
 }
 ```
+
+## Accessing all active providers of a family
+
+Using <Link documentID="concepts2/containers" />, you can access all the providers that are
+linked to a `Family` thanks to its `allProviders` method:
+
+<AutoSnippet raw={activeProviders} />
 
 ## Overriding families
 
