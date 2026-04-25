@@ -189,7 +189,7 @@ void main() {
         await container.read(provider.future);
       });
 
-      callback();
+      unawaited(callback());
 
       final element = container.readProviderElement(provider);
       expect(element.isActive, true);

@@ -42,7 +42,7 @@ Future<ResultT> action<ResultT>(Future<ResultT> Function() cb) {
 /// Returns a callback that executes [cb] inside [action].
 ///
 /// This is equivalent to writing `() => action(cb)`.
-void Function() voidAction(Future<void> Function() cb) => () => action(cb);
+Future<T> Function() voidAction<T>(Future<T> Function() cb) => () => action(cb);
 
 final class _ActionExecution {
   var _closed = false;
