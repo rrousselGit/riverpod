@@ -1,6 +1,5 @@
 export 'src/internals.dart'
     show
-        action,
         AsyncValue,
         AsyncData,
         AsyncLoading,
@@ -32,5 +31,4 @@ export 'src/internals.dart'
         ProviderListenableSelect,
         AsyncResult,
         AsyncValueExtensions,
-        AsyncValueIsLoadingException,
-        voidAction;
+        AsyncValueIsLoadingException;

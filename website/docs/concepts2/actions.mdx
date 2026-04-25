@@ -1,5 +1,5 @@
 ---
-title: Actions
+title: Actions (experimental)
 ---
 import CodeBlock from "@theme/CodeBlock";
 import { Link } from "/src/components/Link";
@@ -10,6 +10,11 @@ import keepingAlive from 'raw-loader!./actions/keeping_alive.dart';
 
 Actions are an imperative helper for running side-effects while temporarily
 keeping the providers used by that side-effect alive.
+
+:::caution
+Actions are experimental, and the API may change in a breaking way without a
+major version bump.
+:::
 
 They are designed for callbacks such as button presses, commands, tests, or
 other event handlers where using `watch` would be inappropriate.

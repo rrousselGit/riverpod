@@ -4,8 +4,6 @@ export 'src/internals.dart'
         AsyncData,
         AsyncLoading,
         AsyncError,
-        action,
-        voidAction,
         ProviderContainer,
         ProviderReference,
         ProviderObserverContext,

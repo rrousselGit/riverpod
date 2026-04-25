@@ -148,7 +148,7 @@ void main() {
           ref.onDispose(onDispose.call);
           return providerCompleter.future;
         });
-        final provider = Provider.autoDispose<Future<int>>(
+        final provider = FutureProvider.autoDispose<Future<int>>(
           (ref) => ref.read(dep.future),
         );
 
