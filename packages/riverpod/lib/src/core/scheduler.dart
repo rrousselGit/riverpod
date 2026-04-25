@@ -58,8 +58,6 @@ const _defaultVsync = _DefaultVsync();
 class ProviderScheduler {
   var _disposed = false;
 
-  /// A way to override [vsync], used by Flutter to synchronize a container
-  /// with the widget tree.
   final flutterVsyncs = <Vsync>{};
 
   final _stateToDispose = <ProviderElement>[];

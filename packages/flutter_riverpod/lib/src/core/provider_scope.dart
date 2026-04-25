@@ -314,7 +314,10 @@ final class _UncontrolledProviderScopeState
     _debugAssertCanScheduleTask(task);
     _cancelAsyncTask?.call();
     _cancelAsyncTask = null;
-    _task = task;
+
+    setState(() {
+      _task = task;
+    });
 
     _vsyncTimer?.cancel();
     _vsyncTimer = Timer(Duration.zero, () {
@@ -396,13 +399,6 @@ To fix this problem, you have one of two solutions:
   @override
   Widget build(BuildContext context) {
     _callTask();
-
-    /// At the start of every frame, we schedule all ProviderScopes to build.
-    /// This is for scoped providers to correctly update without causing a
-    /// markNeedsBuild error.
-    WidgetsBinding.instance.scheduleFrameCallback(scheduleNewFrame: false, (_) {
-      setState(() {});
-    });
 
     return _UncontrolledProviderScope(
       container: widget.container,
