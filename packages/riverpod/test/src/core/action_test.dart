@@ -119,6 +119,91 @@ void main() {
     });
 
     test(
+      'does not treat Ref.watch from providers initialized in an action as part of the action',
+      () async {
+        final container = ProviderContainer.test();
+        final dep = StateProvider((ref) => 42);
+        final provider = Provider.autoDispose((ref) => ref.watch(dep));
+
+        await expectLater(
+          action(() async => container.read(provider)),
+          completion(42),
+        );
+
+        await container.pump();
+
+        expect(container.pointerManager.readPointer(provider), isNull);
+      },
+    );
+
+    test(
+      'does not treat Ref.read from providers initialized in an action as part of the action',
+      () async {
+        final container = ProviderContainer.test();
+        final providerCompleter = Completer<int>();
+        final actionCompleter = Completer<void>();
+        final onDispose = OnDisposeMock();
+
+        final dep = FutureProvider.autoDispose<int>((ref) {
+          ref.onDispose(onDispose.call);
+          return providerCompleter.future;
+        });
+        final provider = Provider.autoDispose<Future<int>>(
+          (ref) => ref.read(dep.future),
+        );
+
+        final future = action(() async {
+          container.read(provider);
+          await actionCompleter.future;
+        });
+
+        await container.pump();
+
+        verifyOnly(onDispose, onDispose());
+        expect(container.pointerManager.readPointer(provider), isNotNull);
+        expect(container.pointerManager.readPointer(dep), isNull);
+
+        actionCompleter.complete();
+        await future;
+
+        providerCompleter.complete(42);
+      },
+    );
+
+    test(
+      'does not close Ref.listen from providers initialized in an action when the action ends',
+      () async {
+        final container = ProviderContainer.test();
+        final actionCompleter = Completer<void>();
+        final listener = Listener<int>();
+        final dep = StateProvider((ref) => 0);
+
+        final provider = Provider.autoDispose((ref) {
+          ref.listen(dep, listener.call);
+          return 42;
+        });
+
+        final future = action(() async {
+          expect(container.read(provider), 42);
+          await actionCompleter.future;
+        });
+
+        await container.pump();
+
+        final keepAlive = container.listen(provider, (_, _) {});
+
+        actionCompleter.complete();
+        await future;
+
+        container.read(dep.notifier).state++;
+
+        verifyOnly(listener, listener(0, 1));
+
+        keepAlive.close();
+      },
+    );
+
+    test(
       'closes ProviderContainer.listen subscriptions when the action ends',
       () async {
         final container = ProviderContainer.test();
