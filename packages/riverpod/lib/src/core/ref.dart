@@ -651,6 +651,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// ```
   StateT watch<StateT>(ProviderListenable<StateT> listenable) {
     _throwIfInvalidUsage();
+    assert(!$isInAction(), 'Cannot use Ref.watch inside action callbacks.');
     late ProviderSubscription<StateT> sub;
     sub = _element.listen<StateT>(
       listenable,
@@ -694,13 +695,17 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     bool fireImmediately = false,
   }) {
     _throwIfInvalidUsage();
-    return _element.listen(
+    final sub = _element.listen(
       provider,
       listener,
       weak: weak,
       onError: onError,
       fireImmediately: fireImmediately,
     );
+
+    _currentAction()?.register(sub);
+
+    return sub;
   }
 }
 

@@ -27,6 +27,7 @@ module.exports = {
         "concepts2/refs",
         "concepts2/auto_dispose",
         "concepts2/family",
+        "concepts2/actions",
         "concepts2/mutations",
         "concepts2/offline",
         "concepts2/retry",
@@ -200,11 +201,6 @@ module.exports = {
               type: "link",
               label: "Mutation",
               href: "https://pub.dev/documentation/hooks_riverpod/latest/experimental_mutation/Mutation-class.html",
-            },
-            {
-              type: "link",
-              label: "MutationTransaction",
-              href: "https://pub.dev/documentation/hooks_riverpod/latest/experimental_mutation/MutationTransaction-class.html",
             },
             {
               type: "link",

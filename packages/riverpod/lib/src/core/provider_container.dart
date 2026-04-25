@@ -973,12 +973,13 @@ final class ProviderContainer implements Node, MutationTarget {
   /// }
   /// ```
   StateT read<StateT>(ProviderListenable<StateT> provider) {
+    final currentAction = _currentAction();
     final sub = listen(provider, (_, _) {});
 
     try {
       return sub.readSafe().valueOrProviderException;
     } finally {
-      sub.close();
+      if (currentAction == null) sub.close();
     }
   }
 
@@ -1057,6 +1058,8 @@ final class ProviderContainer implements Node, MutationTarget {
     _handleFireImmediately(container, sub, fireImmediately: fireImmediately);
 
     sub.impl._listenedElement.addDependentSubscription(sub.impl);
+
+    _currentAction()?.register(sub);
 
     return sub;
   }

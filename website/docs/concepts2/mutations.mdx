@@ -82,6 +82,11 @@ So far, we've listened to the state of a mutation, but nothing actually happens 
 To trigger a mutation, we can use [Mutation.run], pass our mutation, and provide an asynchronous callback
 that updates whatever state we want. Lastly, we'll need to return a value matching the generic type of the mutation.
 
+If you do not need pending/error/success state in the UI, consider using
+<Link documentID="concepts2/actions" /> instead. Actions cover the imperative
+"keep providers alive while this callback is pending" use-case, whereas
+mutations add UI-facing state on top of that side-effect.
+
 <CodeBlock>{trimSnippet(triggering)}</CodeBlock>
 
 ### The different mutation states and their meaning

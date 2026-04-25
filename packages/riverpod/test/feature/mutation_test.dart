@@ -18,7 +18,7 @@ void main() {
       fireImmediately: true,
     );
 
-    await mut.run(container, (tsx) async {});
+    await mut.run(container, () async {});
 
     expect(container.read(mut), isMutationSuccess<void>());
   });
@@ -51,9 +51,9 @@ void main() {
       (_, _) {},
     );
 
-    await mut.run(container, (tsx) async => 9);
-    await mutInt.run(container, (tsx) async => 42);
-    await mutDouble.run(container, (tsx) async => 3.14);
+    await mut.run(container, () async => 9);
+    await mutInt.run(container, () async => 42);
+    await mutDouble.run(container, () async => 3.14);
 
     expect(sub.read(), isMutationSuccess<num>(9));
     expect(subInt.read(), isMutationSuccess<int>(42));
@@ -69,7 +69,7 @@ void main() {
 
     final sub = container.listen(mut, listener.call);
 
-    final a = mut.run(container, (tsx) => completer1.future);
+    final a = mut.run(container, () => completer1.future);
     verifyOnly(
       listener,
       listener(
@@ -78,7 +78,7 @@ void main() {
       ),
     );
 
-    final b = mut.run(container, (tsx) => completer2.future);
+    final b = mut.run(container, () => completer2.future);
     verifyNoMoreInteractions(listener);
 
     completer1.complete(1);
@@ -111,7 +111,7 @@ void main() {
       listener(argThat(isNull), argThat(isMutationIdle<int>())),
     );
 
-    final result = mut.run(container, (tsx) => completer.future);
+    final result = mut.run(container, () => completer.future);
 
     verifyOnly(
       listener,
@@ -149,7 +149,7 @@ void main() {
       listener(argThat(isNull), argThat(isMutationIdle<int>())),
     );
 
-    final result = mut.run(container, (tsx) => completer.future);
+    final result = mut.run(container, () => completer.future);
 
     // caching errors before they are reported to the zone
     expect(result, throwsA(42));
@@ -180,7 +180,7 @@ void main() {
         final mut = Mutation<int>();
         final container = ProviderContainer.test();
 
-        unawaited(mut.run(container, (tsx) async => 42));
+        unawaited(mut.run(container, () async => 42));
         mut.reset(container);
 
         expect(container.read(mut), isMutationIdle<int>());
@@ -242,7 +242,7 @@ void main() {
     final sub = container.listen(mut(1), (previous, next) {});
     final sub2 = container.listen(mut(2), (previous, next) {});
 
-    final first = mut(1).run(container, (tsx) => completer.future);
+    final first = mut(1).run(container, () => completer.future);
 
     verifyOnly(
       observer,
@@ -268,9 +268,7 @@ void main() {
       ),
     );
 
-    final second = mut(
-      2,
-    ).run(container, (tsx) async => throw Exception('error'));
+    final second = mut(2).run(container, () async => throw Exception('error'));
 
     verifyOnly(
       observer,
@@ -309,8 +307,8 @@ void main() {
       final provider = Provider<int>((ref) => 0);
 
       unawaited(
-        mut.run(container, (tsx) async {
-          tsx.get(provider);
+        mut.run(container, () async {
+          container.read(provider);
         }),
       );
 
@@ -342,8 +340,8 @@ void main() {
       final container = ProviderContainer.test();
       final completer = Completer<void>();
 
-      final f = mut.run(container, (tsx) async {
-        tsx.get(p);
+      final f = mut.run(container, () async {
+        container.read(p);
 
         await completer.future;
 
@@ -368,7 +366,7 @@ void main() {
     final mut = Mutation<int>();
     final container = ProviderContainer.test();
 
-    await mut.run(container, (tsx) async => 0);
+    await mut.run(container, () async => 0);
 
     await container.pump();
 
@@ -387,10 +385,10 @@ void main() {
     final sub3 = container.listen(mut3, (previous, next) {});
     final sub4 = container.listen(mut4, (previous, next) {});
 
-    await mut1.run(container, (tsx) async => 1);
-    await mut2.run(container, (tsx) async => 2);
-    await mut3.run(container, (tsx) async => 3);
-    await mut4.run(container, (tsx) async => 4);
+    await mut1.run(container, () async => 1);
+    await mut2.run(container, () async => 2);
+    await mut3.run(container, () async => 3);
+    await mut4.run(container, () async => 4);
 
     expect(container.read(mut1), isMutationSuccess<int>(1));
     expect(container.read(mut2), isMutationSuccess<int>(2));
