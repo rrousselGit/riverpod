@@ -1,7 +1,5 @@
 import 'package:riverpod/riverpod.dart';
 
-Future<T> action<T>(Future<T> Function() cb) => cb();
-
 class User {
   const User();
 }

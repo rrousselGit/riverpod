@@ -1,5 +1,17 @@
 ## Unreleased minor
 
+- **Experimental breaking** `Mutation.run` is modified: `MutationTransaction` is removed.
+  Before:
+  ```dart
+  mutation.run(ref, (tsx) async => tsx.get(...))
+  ```
+  After:
+  ```dart
+  mutation.run(ref, () async => ref.read(...));
+  ```
+  The behavior is otherwise the same.
+- Added `action`/`voidAction`, as syntax sugar to using Mutations for keeping providers alive
+  during side-effects.
 - Added `ProviderContainer.allProviders()`, to obtain all providers accessible from said container. You can optionally specify `allProviders(family: myFamily)` to only include providers from said family.
 - Refactored internal scheduling mechanism to solve some markNeedsBuild error.
 
