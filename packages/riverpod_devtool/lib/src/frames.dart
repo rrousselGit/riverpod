@@ -438,7 +438,7 @@ class _FrameStep extends StatelessWidget {
       ProviderStatusInFrame.added ||
       ProviderStatusInFrame.modified => theme.colorScheme.primary,
       ProviderStatusInFrame.disposed => Colors.red,
-      null => theme.colorScheme.onSurface.withOpacity(0.5),
+      null => theme.colorScheme.onSurface.withValues(alpha: 0.5),
     };
 
     return GestureDetector(
