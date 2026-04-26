@@ -165,26 +165,6 @@ final class FoldedFrame {
 }
 
 class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
-  List<FoldedFrame> _foldFrames(
-    List<Frame> rawFrames, {
-    FoldedFrame? previous,
-  }) {
-    final mappedFrames = List<FoldedFrame?>.filled(
-      rawFrames.length,
-      null,
-      growable: false,
-    );
-
-    return List.generate(rawFrames.length, (index) {
-      final foldedFrame = FoldedFrame(
-        frame: rawFrames[index],
-        previous: index == 0 ? previous : mappedFrames[index - 1],
-      );
-      mappedFrames[index] = foldedFrame;
-      return foldedFrame;
-    }, growable: false);
-  }
-
   @override
   Future<List<FoldedFrame>> build() async {
     // On hot-restart, clear the frames list.
