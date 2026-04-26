@@ -70,7 +70,7 @@ final class StatefulWidgetDeclaration extends WidgetDeclaration {
 
     final stateClass = unit.declarations
         .whereType<ClassDeclaration>()
-        .firstWhereOrNull((e) => e.name.lexeme == stateName);
+        .firstWhereOrNull((e) => e.namePart.typeName.lexeme == stateName);
 
     return stateClass?.state;
   }

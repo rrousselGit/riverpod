@@ -1,3 +1,30 @@
+## Unreleased minor
+
+- **Deprecated** `Mutation.run`. A replacement `Mutation.run2` has been added with a modified prototype.
+  Before:
+  ```dart
+  mutation.run(ref, (tsx) async => tsx.get(...))
+  ```
+  After:
+  ```dart
+  mutation.run2(ref, () async => ref.read(...));
+  ```
+  In version 4.0, `run` will be removed and `run2` will be renamed to `run`.
+- Added `action`/`voidAction`, as syntax sugar to using Mutations for keeping providers alive
+  during side-effects.
+- Added `ProviderContainer.allProviders()`, to obtain all providers accessible from said container. You can optionally specify `allProviders(family: myFamily)` to only include providers from said family.
+- Refactored internal scheduling mechanism to solve some markNeedsBuild error.
+
+## 3.3.1 - 2026-03-09
+
+- Add missing `disposeNotifier` flag on `overrideWith`.
+
+## 3.3.0 - 2026-03-09
+
+- Added `ChangeNotifierProvider(disposeNotifier: false)`, to disable the automatic
+  disposal of the created `ChangeNotifier`. This enables simpler migration from `pkg:provider` to `pkg:riverpod`
+  when a `ChangeNotifier` is reused between multiple providers.
+
 ## 3.2.1 - 2026-02-03
 
 - Fixed a bug where resuming a paused provider could cause it to never
@@ -1505,4 +1532,3 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-

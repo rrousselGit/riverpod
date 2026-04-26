@@ -330,8 +330,12 @@ class ProviderDependenciesFix extends ResolvedCorrectionProducer {
 
   @override
   Future<void> compute(ChangeBuilder builder) async {
-    final node = this.node;
-    final accumulatedDependencyList = node.accumulatedDependencies;
+    final accumulatedDependencyList = node
+        .thisOrAncestorMatching(
+          (node) =>
+              node is AnnotatedNode && node.accumulatedDependencies != null,
+        )
+        ?.accumulatedDependencies;
 
     if (accumulatedDependencyList == null) return;
 

@@ -290,7 +290,7 @@ extension ProviderNames on GeneratorProviderDeclaration {
   TypeParameterList? get typeParameters => switch (this) {
     final FunctionalProviderDeclaration p =>
       p.node.functionExpression.typeParameters,
-    final ClassBasedProviderDeclaration p => p.node.typeParameters,
+    final ClassBasedProviderDeclaration p => p.node.namePart.typeParameters,
   };
 
   String generics() => typeParameters.genericUsageDisplayString();

@@ -514,7 +514,7 @@ depending on itself.
     _debugCurrentCreateHash = provider.debugGetCreateSourceHash();
 
     if (previousHash != _debugCurrentCreateHash) {
-      invalidateSelf(asReload: false);
+      invalidateSelf(asReload: false, manual: false);
     }
   }
 
@@ -665,6 +665,11 @@ depending on itself.
   /// Invokes [create] and handles errors.
   @internal
   void buildState($Ref<StateT, ValueT> ref) {
+    if (_currentAction() != null) {
+      runZoned(() => buildState(ref), zoneValues: {_actionZoneKey: null});
+      return;
+    }
+
     if (_didChangeDependency) _retryCount = 0;
 
     _didChangeDependency = false;
@@ -714,7 +719,7 @@ depending on itself.
         _pendingRetryTimer = Timer(duration, () {
           _pendingRetryTimer = null;
           _retryCount++;
-          invalidateSelf(asReload: false);
+          invalidateSelf(asReload: false, manual: false);
         });
       });
     }
@@ -746,13 +751,17 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     debugCanModifyProviders?.call();
   }
 
-  void invalidateSelf({required bool asReload}) {
+  void invalidateSelf({required bool asReload, required bool manual}) {
     if (!_didMount) return;
 
     if (asReload) _didChangeDependency = true;
     if (_mustRecomputeState) return;
 
     _mustRecomputeState = true;
+
+    // Call manual invalidation listeners before runOnDispose clears them
+    if (manual) _runManualInvalidationCallbacks(container, ref);
+
     runOnDispose();
     mayNeedDispose();
     container.scheduler.scheduleProviderRefresh(this);
@@ -1194,6 +1203,7 @@ $this''',
     ref._onRemoveListeners = null;
     ref._onChangeSelfListeners = null;
     ref._onErrorSelfListeners = null;
+    ref._onManualInvalidationListeners = null;
     _didCancelOnce = false;
 
     assert(

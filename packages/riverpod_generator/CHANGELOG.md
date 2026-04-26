@@ -1,4 +1,13 @@
+## 4.0.4-dev.1 - 2026-04-23
+
+Support analyzer 12
+
+### Dependency changes
+
+- `riverpod_analyzer_utils` upgraded to `1.0.0-dev.10`
+
 ## 4.0.3 - 2026-02-03
+
 ### Dependency changes
 
 - `riverpod_annotation` upgraded to `4.0.2`

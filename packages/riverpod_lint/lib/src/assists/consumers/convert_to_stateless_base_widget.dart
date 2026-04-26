@@ -10,6 +10,8 @@ import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:collection/collection.dart';
 
 import '../../imports.dart';
+import '../../node.dart';
+import '../../offsets.dart';
 import 'convert_to_widget_utils.dart';
 
 /// Base class for converting to stateless base widgets
@@ -37,10 +39,17 @@ abstract class ConvertToStatelessBaseWidget extends ResolvedCorrectionProducer {
 
   @override
   Future<void> compute(ChangeBuilder builder) async {
-    final visitor = _ExtendsClauseVisitor();
-    node.accept(visitor);
-    final extendsClause = visitor.extendsClause;
+    final classDeclaration = node.findEnclosing<ClassDeclaration>();
+    if (classDeclaration == null) return;
+    final extendsClause = classDeclaration.extendsClause;
     if (extendsClause == null) return;
+
+    if (!isOverlappingClassHeading(
+      classDeclaration,
+      selectionOffset: selectionOffset,
+    )) {
+      return;
+    }
 
     final type = extendsClause.superclass.type;
     if (type == null) return;
@@ -233,9 +242,18 @@ abstract class ConvertToStatelessBaseWidget extends ResolvedCorrectionProducer {
         builder.addDeletion(range);
       }
 
-      builder.addDeletion(
-        range.startEnd(widgetClass.rightBracket, stateClass.leftBracket),
-      );
+      final widgetEnd = switch (widgetClass.body) {
+        BlockClassBody(:final rightBracket) => rightBracket,
+        EmptyClassBody() => null,
+      };
+      final stateHeadingEnd = switch (stateClass.body) {
+        BlockClassBody(:final leftBracket) => leftBracket,
+        EmptyClassBody() => null,
+      };
+
+      if (widgetEnd != null && stateHeadingEnd != null) {
+        builder.addDeletion(range.startEnd(widgetEnd, stateHeadingEnd));
+      }
 
       final parameterRange = _generateBuildMethodParameterRange(buildMethod);
       if (parameterRange == SourceRange.EMPTY) {
@@ -264,15 +282,6 @@ abstract class ConvertToStatelessBaseWidget extends ResolvedCorrectionProducer {
     final offset = params.leftParenthesis.end;
     final end = params.rightParenthesis.offset;
     return SourceRange(offset, end - offset);
-  }
-}
-
-class _ExtendsClauseVisitor extends RecursiveAstVisitor<void> {
-  ExtendsClause? extendsClause;
-
-  @override
-  void visitExtendsClause(ExtendsClause node) {
-    extendsClause = node;
   }
 }
 

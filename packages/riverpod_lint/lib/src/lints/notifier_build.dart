@@ -11,6 +11,9 @@ import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dar
 import 'package:analyzer_plugin/utilities/fixes/fixes.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
+import '../node.dart';
+import '../offsets.dart';
+
 const _buildMethodName = 'build';
 
 class NotifierBuild extends AnalysisRule {
@@ -64,7 +67,7 @@ class _Visitor extends SimpleAstVisitor<void> {
 
     if (hasBuildMethod) return;
 
-    rule.reportAtToken(node.name, arguments: []);
+    rule.reportAtToken(node.namePart.typeName, arguments: []);
   }
 }
 
@@ -86,12 +89,20 @@ class AddBuildMethodFix extends ResolvedCorrectionProducer {
 
   @override
   Future<void> compute(ChangeBuilder builder) async {
-    final node = this.node;
-    final classDeclaration = node.parent;
-    if (classDeclaration is! ClassDeclaration) return;
+    final enclosingClass = node.findEnclosing<ClassDeclaration>();
+    if (enclosingClass == null) return;
+    final leftBracket = enclosingClass.leftBracket;
+    if (leftBracket == null) return;
+
+    if (!isOverlappingClassHeading(
+      enclosingClass,
+      selectionOffset: selectionOffset,
+    )) {
+      return;
+    }
 
     await builder.addDartFileEdit(file, (builder) {
-      final offset = classDeclaration.leftBracket.offset + 1;
+      final offset = leftBracket.offset + 1;
 
       builder.addSimpleInsertion(offset, '''
 

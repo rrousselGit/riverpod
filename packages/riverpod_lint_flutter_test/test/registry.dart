@@ -261,11 +261,6 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addEnumBody(AbstractAnalysisRule rule, AstVisitor visitor) {
-    visitors.add((rule, visitor));
-  }
-
-  @override
   void addEnumConstantArguments(AbstractAnalysisRule rule, AstVisitor visitor) {
     visitors.add((rule, visitor));
   }
@@ -545,11 +540,6 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addLibraryIdentifier(AbstractAnalysisRule rule, AstVisitor visitor) {
-    visitors.add((rule, visitor));
-  }
-
-  @override
   void addListLiteral(AbstractAnalysisRule rule, AstVisitor visitor) {
     visitors.add((rule, visitor));
   }
@@ -800,22 +790,6 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addRepresentationConstructorName(
-    AbstractAnalysisRule rule,
-    AstVisitor visitor,
-  ) {
-    visitors.add((rule, visitor));
-  }
-
-  @override
-  void addRepresentationDeclaration(
-    AbstractAnalysisRule rule,
-    AstVisitor visitor,
-  ) {
-    visitors.add((rule, visitor));
-  }
-
-  @override
   void addRestPatternElement(AbstractAnalysisRule rule, AstVisitor visitor) {
     visitors.add((rule, visitor));
   }
@@ -1009,6 +983,54 @@ class Registry extends RuleVisitorRegistry {
 
   @override
   void addYieldStatement(AbstractAnalysisRule rule, AstVisitor visitor) {
+    visitors.add((rule, visitor));
+  }
+
+  @override
+  void addAnonymousBlockBody(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
+    visitors.add((rule, visitor));
+  }
+
+  @override
+  void addAnonymousExpressionBody(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
+    visitors.add((rule, visitor));
+  }
+
+  @override
+  void addAnonymousMethodInvocation(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
+    visitors.add((rule, visitor));
+  }
+
+  @override
+  void addPrimaryConstructorBody(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
+    visitors.add((rule, visitor));
+  }
+
+  @override
+  void addBlockEnumBody(
+    AbstractAnalysisRule rule,
+    AstVisitor<dynamic> visitor,
+  ) {
+    visitors.add((rule, visitor));
+  }
+
+  @override
+  void addEmptyEnumBody(
+    AbstractAnalysisRule rule,
+    AstVisitor<dynamic> visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 

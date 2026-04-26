@@ -149,7 +149,6 @@ sealed class PackageMetricsScore with _$PackageMetricsScore {
     required int grantedPoints,
     required int maxPoints,
     required int likeCount,
-    required double popularityScore,
     required List<String> tags,
   }) = _PackageMetricsScore;
 

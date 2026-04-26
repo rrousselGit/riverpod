@@ -54,7 +54,7 @@ int eight(Ref ref) => 0;
 
       expect(
         errors[2].message,
-        'Only elements annotated with @riverpod are supported.',
+        contains('Only elements annotated with @riverpod are supported.'),
       );
       expect(errors[2].targetNode.toSource(), 'gibberish');
 
@@ -68,7 +68,7 @@ int eight(Ref ref) => 0;
 
       expect(
         errors[5].message,
-        'The dependency int is not a class annotated with @riverpod',
+        contains('The dependency int is not a class annotated with @riverpod'),
       );
       expect(errors[5].targetNode.toString(), 'int');
 
@@ -79,7 +79,9 @@ int eight(Ref ref) => 0;
 
       expect(
         errors[7].message,
-        'The dependency fn is not a function annotated with @riverpod',
+        contains(
+          'The dependency fn is not a function annotated with @riverpod',
+        ),
       );
       expect(errors[7].targetNode.toString(), 'fn');
 
@@ -90,7 +92,7 @@ int eight(Ref ref) => 0;
 
       expect(
         errors[9].message,
-        'Only elements annotated with @riverpod are supported.',
+        contains('Only elements annotated with @riverpod are supported.'),
       );
       expect(errors[9].targetNode.toString(), "'foo'");
     },
@@ -263,4 +265,11 @@ class NestedClass {
       );
     },
   );
+}
+
+extension ClassMembers on ClassDeclaration {
+  List<ClassMember> get members => switch (body) {
+    BlockClassBody(:final members) => members,
+    EmptyClassBody() => const [],
+  };
 }

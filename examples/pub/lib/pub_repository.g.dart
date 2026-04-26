@@ -13,7 +13,6 @@ _PackageMetricsScore _$PackageMetricsScoreFromJson(Map<String, dynamic> json) =>
       grantedPoints: (json['grantedPoints'] as num).toInt(),
       maxPoints: (json['maxPoints'] as num).toInt(),
       likeCount: (json['likeCount'] as num).toInt(),
-      popularityScore: (json['popularityScore'] as num).toDouble(),
       tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
@@ -23,7 +22,6 @@ Map<String, dynamic> _$PackageMetricsScoreToJson(
   'grantedPoints': instance.grantedPoints,
   'maxPoints': instance.maxPoints,
   'likeCount': instance.likeCount,
-  'popularityScore': instance.popularityScore,
   'tags': instance.tags,
 };
 

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PackageMetricsScore implements DiagnosticableTreeMixin {
 
- int get grantedPoints; int get maxPoints; int get likeCount; double get popularityScore; List<String> get tags;
+ int get grantedPoints; int get maxPoints; int get likeCount; List<String> get tags;
 /// Create a copy of PackageMetricsScore
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,21 +29,21 @@ $PackageMetricsScoreCopyWith<PackageMetricsScore> get copyWith => _$PackageMetri
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'PackageMetricsScore'))
-    ..add(DiagnosticsProperty('grantedPoints', grantedPoints))..add(DiagnosticsProperty('maxPoints', maxPoints))..add(DiagnosticsProperty('likeCount', likeCount))..add(DiagnosticsProperty('popularityScore', popularityScore))..add(DiagnosticsProperty('tags', tags));
+    ..add(DiagnosticsProperty('grantedPoints', grantedPoints))..add(DiagnosticsProperty('maxPoints', maxPoints))..add(DiagnosticsProperty('likeCount', likeCount))..add(DiagnosticsProperty('tags', tags));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PackageMetricsScore&&(identical(other.grantedPoints, grantedPoints) || other.grantedPoints == grantedPoints)&&(identical(other.maxPoints, maxPoints) || other.maxPoints == maxPoints)&&(identical(other.likeCount, likeCount) || other.likeCount == likeCount)&&(identical(other.popularityScore, popularityScore) || other.popularityScore == popularityScore)&&const DeepCollectionEquality().equals(other.tags, tags));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PackageMetricsScore&&(identical(other.grantedPoints, grantedPoints) || other.grantedPoints == grantedPoints)&&(identical(other.maxPoints, maxPoints) || other.maxPoints == maxPoints)&&(identical(other.likeCount, likeCount) || other.likeCount == likeCount)&&const DeepCollectionEquality().equals(other.tags, tags));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,grantedPoints,maxPoints,likeCount,popularityScore,const DeepCollectionEquality().hash(tags));
+int get hashCode => Object.hash(runtimeType,grantedPoints,maxPoints,likeCount,const DeepCollectionEquality().hash(tags));
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'PackageMetricsScore(grantedPoints: $grantedPoints, maxPoints: $maxPoints, likeCount: $likeCount, popularityScore: $popularityScore, tags: $tags)';
+  return 'PackageMetricsScore(grantedPoints: $grantedPoints, maxPoints: $maxPoints, likeCount: $likeCount, tags: $tags)';
 }
 
 
@@ -54,7 +54,7 @@ abstract mixin class $PackageMetricsScoreCopyWith<$Res>  {
   factory $PackageMetricsScoreCopyWith(PackageMetricsScore value, $Res Function(PackageMetricsScore) _then) = _$PackageMetricsScoreCopyWithImpl;
 @useResult
 $Res call({
- int grantedPoints, int maxPoints, int likeCount, double popularityScore, List<String> tags
+ int grantedPoints, int maxPoints, int likeCount, List<String> tags
 });
 
 
@@ -71,13 +71,12 @@ class _$PackageMetricsScoreCopyWithImpl<$Res>
 
 /// Create a copy of PackageMetricsScore
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? grantedPoints = null,Object? maxPoints = null,Object? likeCount = null,Object? popularityScore = null,Object? tags = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? grantedPoints = null,Object? maxPoints = null,Object? likeCount = null,Object? tags = null,}) {
   return _then(_self.copyWith(
 grantedPoints: null == grantedPoints ? _self.grantedPoints : grantedPoints // ignore: cast_nullable_to_non_nullable
 as int,maxPoints: null == maxPoints ? _self.maxPoints : maxPoints // ignore: cast_nullable_to_non_nullable
 as int,likeCount: null == likeCount ? _self.likeCount : likeCount // ignore: cast_nullable_to_non_nullable
-as int,popularityScore: null == popularityScore ? _self.popularityScore : popularityScore // ignore: cast_nullable_to_non_nullable
-as double,tags: null == tags ? _self.tags : tags // ignore: cast_nullable_to_non_nullable
+as int,tags: null == tags ? _self.tags : tags // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));
 }
@@ -160,10 +159,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int grantedPoints,  int maxPoints,  int likeCount,  double popularityScore,  List<String> tags)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int grantedPoints,  int maxPoints,  int likeCount,  List<String> tags)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PackageMetricsScore() when $default != null:
-return $default(_that.grantedPoints,_that.maxPoints,_that.likeCount,_that.popularityScore,_that.tags);case _:
+return $default(_that.grantedPoints,_that.maxPoints,_that.likeCount,_that.tags);case _:
   return orElse();
 
 }
@@ -181,10 +180,10 @@ return $default(_that.grantedPoints,_that.maxPoints,_that.likeCount,_that.popula
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int grantedPoints,  int maxPoints,  int likeCount,  double popularityScore,  List<String> tags)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int grantedPoints,  int maxPoints,  int likeCount,  List<String> tags)  $default,) {final _that = this;
 switch (_that) {
 case _PackageMetricsScore():
-return $default(_that.grantedPoints,_that.maxPoints,_that.likeCount,_that.popularityScore,_that.tags);}
+return $default(_that.grantedPoints,_that.maxPoints,_that.likeCount,_that.tags);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -198,10 +197,10 @@ return $default(_that.grantedPoints,_that.maxPoints,_that.likeCount,_that.popula
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int grantedPoints,  int maxPoints,  int likeCount,  double popularityScore,  List<String> tags)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int grantedPoints,  int maxPoints,  int likeCount,  List<String> tags)?  $default,) {final _that = this;
 switch (_that) {
 case _PackageMetricsScore() when $default != null:
-return $default(_that.grantedPoints,_that.maxPoints,_that.likeCount,_that.popularityScore,_that.tags);case _:
+return $default(_that.grantedPoints,_that.maxPoints,_that.likeCount,_that.tags);case _:
   return null;
 
 }
@@ -213,13 +212,12 @@ return $default(_that.grantedPoints,_that.maxPoints,_that.likeCount,_that.popula
 @JsonSerializable()
 
 class _PackageMetricsScore with DiagnosticableTreeMixin implements PackageMetricsScore {
-   _PackageMetricsScore({required this.grantedPoints, required this.maxPoints, required this.likeCount, required this.popularityScore, required final  List<String> tags}): _tags = tags;
+   _PackageMetricsScore({required this.grantedPoints, required this.maxPoints, required this.likeCount, required final  List<String> tags}): _tags = tags;
   factory _PackageMetricsScore.fromJson(Map<String, dynamic> json) => _$PackageMetricsScoreFromJson(json);
 
 @override final  int grantedPoints;
 @override final  int maxPoints;
 @override final  int likeCount;
-@override final  double popularityScore;
  final  List<String> _tags;
 @override List<String> get tags {
   if (_tags is EqualUnmodifiableListView) return _tags;
@@ -242,21 +240,21 @@ Map<String, dynamic> toJson() {
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
     ..add(DiagnosticsProperty('type', 'PackageMetricsScore'))
-    ..add(DiagnosticsProperty('grantedPoints', grantedPoints))..add(DiagnosticsProperty('maxPoints', maxPoints))..add(DiagnosticsProperty('likeCount', likeCount))..add(DiagnosticsProperty('popularityScore', popularityScore))..add(DiagnosticsProperty('tags', tags));
+    ..add(DiagnosticsProperty('grantedPoints', grantedPoints))..add(DiagnosticsProperty('maxPoints', maxPoints))..add(DiagnosticsProperty('likeCount', likeCount))..add(DiagnosticsProperty('tags', tags));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PackageMetricsScore&&(identical(other.grantedPoints, grantedPoints) || other.grantedPoints == grantedPoints)&&(identical(other.maxPoints, maxPoints) || other.maxPoints == maxPoints)&&(identical(other.likeCount, likeCount) || other.likeCount == likeCount)&&(identical(other.popularityScore, popularityScore) || other.popularityScore == popularityScore)&&const DeepCollectionEquality().equals(other._tags, _tags));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PackageMetricsScore&&(identical(other.grantedPoints, grantedPoints) || other.grantedPoints == grantedPoints)&&(identical(other.maxPoints, maxPoints) || other.maxPoints == maxPoints)&&(identical(other.likeCount, likeCount) || other.likeCount == likeCount)&&const DeepCollectionEquality().equals(other._tags, _tags));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,grantedPoints,maxPoints,likeCount,popularityScore,const DeepCollectionEquality().hash(_tags));
+int get hashCode => Object.hash(runtimeType,grantedPoints,maxPoints,likeCount,const DeepCollectionEquality().hash(_tags));
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'PackageMetricsScore(grantedPoints: $grantedPoints, maxPoints: $maxPoints, likeCount: $likeCount, popularityScore: $popularityScore, tags: $tags)';
+  return 'PackageMetricsScore(grantedPoints: $grantedPoints, maxPoints: $maxPoints, likeCount: $likeCount, tags: $tags)';
 }
 
 
@@ -267,7 +265,7 @@ abstract mixin class _$PackageMetricsScoreCopyWith<$Res> implements $PackageMetr
   factory _$PackageMetricsScoreCopyWith(_PackageMetricsScore value, $Res Function(_PackageMetricsScore) _then) = __$PackageMetricsScoreCopyWithImpl;
 @override @useResult
 $Res call({
- int grantedPoints, int maxPoints, int likeCount, double popularityScore, List<String> tags
+ int grantedPoints, int maxPoints, int likeCount, List<String> tags
 });
 
 
@@ -284,13 +282,12 @@ class __$PackageMetricsScoreCopyWithImpl<$Res>
 
 /// Create a copy of PackageMetricsScore
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? grantedPoints = null,Object? maxPoints = null,Object? likeCount = null,Object? popularityScore = null,Object? tags = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? grantedPoints = null,Object? maxPoints = null,Object? likeCount = null,Object? tags = null,}) {
   return _then(_PackageMetricsScore(
 grantedPoints: null == grantedPoints ? _self.grantedPoints : grantedPoints // ignore: cast_nullable_to_non_nullable
 as int,maxPoints: null == maxPoints ? _self.maxPoints : maxPoints // ignore: cast_nullable_to_non_nullable
 as int,likeCount: null == likeCount ? _self.likeCount : likeCount // ignore: cast_nullable_to_non_nullable
-as int,popularityScore: null == popularityScore ? _self.popularityScore : popularityScore // ignore: cast_nullable_to_non_nullable
-as double,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable
+as int,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));
 }

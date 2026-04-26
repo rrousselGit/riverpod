@@ -178,7 +178,7 @@ class Counter extends _$Counter {
             .having((e) => e.node.name.toString(), 'node.name', 'second'),
         isA<ClassBasedProviderDeclaration>()
             .having((e) => e.name.toString(), 'name', 'Counter')
-            .having((e) => e.node.name.toString(), 'node.name', 'Counter'),
+            .having((e) => e.node.namePart.typeName.toString(), 'node.name', 'Counter'),
       ]);
     },
   );

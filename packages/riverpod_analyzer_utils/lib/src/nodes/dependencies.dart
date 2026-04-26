@@ -17,10 +17,17 @@ extension on CollectionElement {
         return null;
       }
 
-      if (that is! SimpleIdentifier) {
+      final element = switch (that) {
+        SimpleIdentifier() => that.element,
+        TypeLiteral() => that.type.element,
+        _ => null
+      };
+      
+
+      if (element == null) {
         errorReporter(
           RiverpodAnalysisError.ast(
-            'Only elements annotated with @riverpod are supported.',
+            'Only elements annotated with @riverpod are supported. (no Element) ${that.runtimeType}',
             targetNode: that,
             code: RiverpodAnalysisErrorCode.providerDependencyListParseError,
           ),
@@ -28,10 +35,9 @@ extension on CollectionElement {
         return null;
       }
 
-      final dependencyElement = that.element;
-      if (dependencyElement is ExecutableElement) {
+      if (element is ExecutableElement) {
         final dependencyProvider = FunctionalProviderDeclarationElement._parse(
-          dependencyElement,
+          element,
           this,
         );
 
@@ -49,9 +55,9 @@ extension on CollectionElement {
         return null;
       }
 
-      if (dependencyElement is ClassElement) {
+      if (element is ClassElement) {
         final dependencyProvider = ClassBasedProviderDeclarationElement._parse(
-          dependencyElement,
+          element,
           this,
         );
 
@@ -61,7 +67,7 @@ extension on CollectionElement {
 
         errorReporter(
           RiverpodAnalysisError.ast(
-            'The dependency $that is not a class annotated with @riverpod',
+            'The dependency $that is not a class annotated with @riverpod. (class not annotated)',
             targetNode: that,
             code: RiverpodAnalysisErrorCode.providerDependencyListParseError,
           ),
@@ -71,7 +77,7 @@ extension on CollectionElement {
 
       errorReporter(
         RiverpodAnalysisError.ast(
-          'Only elements annotated with @riverpod are supported.',
+          'Only elements annotated with @riverpod are supported. (unknown)',
           targetNode: that,
           code: RiverpodAnalysisErrorCode.providerDependencyListParseError,
         ),

@@ -2,29 +2,51 @@ part of '../framework.dart';
 
 @internal
 class Task {
-  Task(this._scheduler);
+  Task(this._task);
 
-  final ProviderScheduler _scheduler;
+  final void Function() _task;
   var _completed = false;
+
   bool get completed => _completed;
 
   void call() {
     if (_completed) return;
     _completed = true;
-    _scheduler._task();
+    _task();
   }
 }
 
 /// A listener used to determine when providers should rebuild.
 /// This is used to synchronize provider rebuilds when widget rebuilds.
 @internal
-typedef Vsync = void Function(Task task);
+abstract interface class Vsync {
+  void Function()? scheduleRefresh(Task task);
 
-void Function()? _defaultVsync(Task task) {
-  final timer = Timer(Duration.zero, task.call);
-
-  return timer.cancel;
+  void Function()? scheduleDispose(Task task);
 }
+
+@internal
+typedef VsyncScheduler = void Function()? Function(Vsync vsync, Task task);
+
+final class _DefaultVsync implements Vsync {
+  const _DefaultVsync();
+
+  @override
+  void Function()? scheduleRefresh(Task task) {
+    final timer = Timer(Duration.zero, task.call);
+
+    return timer.cancel;
+  }
+
+  @override
+  void Function()? scheduleDispose(Task task) {
+    final timer = Timer(Duration.zero, task.call);
+
+    return timer.cancel;
+  }
+}
+
+const _defaultVsync = _DefaultVsync();
 
 /// The object that handles when providers are refreshed and disposed.
 ///
@@ -36,40 +58,21 @@ void Function()? _defaultVsync(Task task) {
 class ProviderScheduler {
   var _disposed = false;
 
-  /// A way to override [vsync], used by Flutter to synchronize a container
-  /// with the widget tree.
   final flutterVsyncs = <Vsync>{};
-
-  /// A function that controls the refresh rate of providers.
-  ///
-  /// Defaults to refreshing providers at the end of the next event-loop.
-  void Function()? Function(Task) get vsync {
-    if (flutterVsyncs.isNotEmpty) {
-      // Notify all InheritedWidgets of a possible rebuild.
-      // At the same time, we only execute the task once, in whichever
-      // InheritedWidget that rebuilds first.
-      return (task) {
-        for (final flutterVsync in flutterVsyncs) {
-          flutterVsync(task);
-        }
-
-        return;
-      };
-    }
-
-    return _defaultVsync;
-  }
 
   final _stateToDispose = <ProviderElement>[];
   final stateToRefresh = <ProviderElement>[];
   void Function()? _debugPendingFrame;
 
   Completer<void>? _pendingTaskCompleter;
+  Task? _pendingTask;
 
   /// A future that completes when the next task is done.
   Future<void>? get pendingFuture => _pendingTaskCompleter?.future;
 
-  void Function()? _cancel;
+  void Function()? _cancelTask;
+  var _taskUsesVsync = false;
+  var _pendingTaskNeedsRefresh = false;
 
   /// Schedules a provider to be refreshed.
   ///
@@ -82,32 +85,92 @@ class ProviderScheduler {
     );
     stateToRefresh.add(element);
 
-    _scheduleTask();
+    _scheduleTask(taskNeedsRefresh: true);
   }
 
-  void _scheduleTask() {
+  void _scheduleTask({required bool taskNeedsRefresh}) {
     // Don't schedule a task if there is already one pending or if the scheduler
     // is disposed.
     // It is possible that during disposal of a ProviderContainer, if a provider
     // uses ref.keepAlive(), the keepAlive closure will try to schedule a task.
     // In this case, we don't want to schedule a task as the container is already
     // disposed.
-    if (_pendingTaskCompleter != null || _disposed) return;
+    if (_disposed) return;
+
+    final pendingTask = _pendingTask;
+    if (pendingTask != null) {
+      if (pendingTask.completed) return;
+
+      if (taskNeedsRefresh && !_pendingTaskNeedsRefresh) {
+        _pendingTaskNeedsRefresh = true;
+        if (!_taskUsesVsync) {
+          _cancelTask?.call();
+          _cancelTask = _scheduleTaskWithVsyncs(
+            pendingTask,
+            _scheduleRefreshTask,
+          );
+          _taskUsesVsync = true;
+        }
+      }
+
+      return;
+    }
 
     _pendingTaskCompleter = Completer<void>();
-    _cancel = vsync(Task(this));
+    final task = Task(_task);
+    _pendingTask = task;
+    _pendingTaskNeedsRefresh = taskNeedsRefresh;
+    _taskUsesVsync = taskNeedsRefresh;
+    _cancelTask = _scheduleTaskWithVsyncs(
+      task,
+      taskNeedsRefresh ? _scheduleRefreshTask : _scheduleDisposeTask,
+    );
+  }
+
+  void Function()? _scheduleTaskWithVsyncs(
+    Task task,
+    VsyncScheduler scheduleTask,
+  ) {
+    if (flutterVsyncs.isEmpty) {
+      return scheduleTask(_defaultVsync, task);
+    }
+
+    final cancels = <void Function()?>[];
+    for (final flutterVsync in flutterVsyncs) {
+      cancels.add(scheduleTask(flutterVsync, task));
+    }
+
+    return () {
+      for (final cancel in cancels) {
+        cancel?.call();
+      }
+    };
+  }
+
+  static void Function()? _scheduleRefreshTask(Vsync vsync, Task task) {
+    return vsync.scheduleRefresh(task);
+  }
+
+  static void Function()? _scheduleDisposeTask(Vsync vsync, Task task) {
+    return vsync.scheduleDispose(task);
   }
 
   void _task() {
-    _cancel = null;
+    final cancelTask = _cancelTask;
+    _cancelTask = null;
+    _taskUsesVsync = false;
+    _pendingTaskNeedsRefresh = false;
+    cancelTask?.call();
+    final pendingTask = _pendingTask;
     final pendingTaskCompleter = _pendingTaskCompleter;
-    if (pendingTaskCompleter == null) return;
+    if (pendingTask == null || pendingTaskCompleter == null) return;
     pendingTaskCompleter.complete();
 
     _performRefresh();
     _performDispose();
     stateToRefresh.clear();
     _stateToDispose.clear();
+    _pendingTask = null;
     if (kDebugMode) {
       _debugPendingFrame?.call();
       _debugPendingFrame = null;
@@ -162,7 +225,7 @@ class ProviderScheduler {
     );
 
     _stateToDispose.add(element);
-    _scheduleTask();
+    _scheduleTask(taskNeedsRefresh: false);
   }
 
   void _performDispose() {
@@ -195,6 +258,10 @@ class ProviderScheduler {
     _disposed = true;
     _pendingTaskCompleter?.complete();
     _pendingTaskCompleter = null;
-    _cancel?.call();
+    _pendingTask = null;
+    _cancelTask?.call();
+    _cancelTask = null;
+    _taskUsesVsync = false;
+    _pendingTaskNeedsRefresh = false;
   }
 }

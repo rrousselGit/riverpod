@@ -79,6 +79,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     super.dependencies,
     super.isAutoDispose = false,
     super.retry,
+    this.disposeNotifier = true,
   }) : super(
          $allTransitiveDependencies: computeAllTransitiveDependencies(
            dependencies,
@@ -99,6 +100,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     super.from,
     super.argument,
     super.retry,
+    required this.disposeNotifier,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -106,6 +108,14 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 
   /// {@macro riverpod.family}
   static const family = ChangeNotifierProviderFamilyBuilder();
+
+  /// Whether to automatically call [ChangeNotifier.dispose] on the created [ChangeNotifier].
+  ///
+  /// This is `true` by default.
+  ///
+  /// Disabling this may be useful if you want to share a [ChangeNotifier]
+  /// across multiple providers.
+  final bool disposeNotifier;
 
   /// Obtains the [ChangeNotifier] associated with this provider, without listening
   /// to state changes.
@@ -141,6 +151,60 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   ) {
     return _ChangeNotifierProviderElement<NotifierT>._(pointer);
   }
+
+  @override
+  ChangeNotifierProvider<NotifierT> $view({
+    required Create<NotifierT> create,
+    bool? disposeNotifier,
+  }) {
+    return _View<NotifierT>(this, create, disposeNotifier: disposeNotifier);
+  }
+
+  /// Override the behavior of this provider with a custom implementation.
+  ///
+  /// - [disposeNotifier] allows changing [ChangeNotifierProvider.disposeNotifier] for the override.
+  ///   If null, the override will use the same value as the original provider.
+  ///
+  /// {@macro riverpod.override_with}
+  @override
+  Override overrideWith(Create<NotifierT> create, {bool? disposeNotifier}) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $view(create: create, disposeNotifier: disposeNotifier),
+    );
+  }
+}
+
+final class _View<NotifierT extends ChangeNotifier?>
+    extends ChangeNotifierProvider<NotifierT> {
+  /// Implementation detail of `riverpod_generator`.
+  /// Do not use, as this can be removed at any time.
+  _View(this._inner, Create<NotifierT> _createOverride, {bool? disposeNotifier})
+    : super.internal(
+        _createOverride,
+        name: _inner.name,
+        from: _inner.from,
+        argument: _inner.argument,
+        dependencies: _inner.dependencies,
+        $allTransitiveDependencies: _inner.$allTransitiveDependencies,
+        isAutoDispose: _inner.isAutoDispose,
+        retry: _inner.retry,
+        disposeNotifier: disposeNotifier ?? _inner.disposeNotifier,
+      );
+
+  final ChangeNotifierProvider<NotifierT> _inner;
+
+  /// @nodoc
+  @internal
+  @override
+  _ChangeNotifierProviderElement<NotifierT> $createElement(
+    $ProviderPointer pointer,
+  ) {
+    return _inner.$createElement(pointer)..provider = this;
+  }
+
+  @override
+  String? debugGetCreateSourceHash() => _inner.debugGetCreateSourceHash();
 }
 
 /// The element of [ChangeNotifierProvider].
@@ -179,7 +243,8 @@ class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
     _removeListener = null;
 
     final notifier = _notifierNotifier.result?.value;
-    if (notifier != null) {
+    if (notifier != null &&
+        (provider as ChangeNotifierProvider).disposeNotifier) {
       container.runGuarded(notifier.dispose);
     }
     _notifierNotifier.result = null;
@@ -215,8 +280,30 @@ final class ChangeNotifierProviderFamily<
     super.dependencies,
     super.isAutoDispose = false,
     super.retry,
+    bool disposeNotifier = true,
   }) : super(
-         providerFactory: ChangeNotifierProvider.internal,
+         providerFactory: (
+           create, {
+           required $allTransitiveDependencies,
+           required argument,
+           required dependencies,
+           required from,
+           required isAutoDispose,
+           required name,
+           required retry,
+         }) {
+           return ChangeNotifierProvider<NotifierT>.internal(
+             create,
+             disposeNotifier: disposeNotifier,
+             name: name,
+             dependencies: dependencies,
+             $allTransitiveDependencies: $allTransitiveDependencies,
+             isAutoDispose: isAutoDispose,
+             argument: argument,
+             from: from,
+             retry: retry,
+           );
+         },
          $allTransitiveDependencies: computeAllTransitiveDependencies(
            dependencies,
          ),

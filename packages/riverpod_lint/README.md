@@ -25,7 +25,7 @@ issues and simplify repetitive tasks.
 Riverpod_lint adds various warnings with quick fixes and refactoring options, such as:
 
 - Warn if `runApp` does not include a `ProviderScope` at its root
-- Warn if provider parameters do not respect [the rules of `family`](https://riverpod.dev/docs/concepts/modifiers/family#passing-multiple-parameters-to-a-family)
+- Warn if provider parameters do not respect [the rules of `family`](https://riverpod.dev/docs/concepts2/family)
 - Refactor a widget to a ConsumerWidget/ConsumerStatefulWidget
 - ...
 

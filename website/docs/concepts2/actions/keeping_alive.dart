@@ -1,0 +1,26 @@
+import 'package:riverpod/experimental/action.dart';
+import 'package:riverpod/riverpod.dart';
+
+class User {
+  const User();
+}
+
+class Api {
+  Future<User> fetchCurrentUser() async {
+    return const User();
+  }
+}
+
+final apiProvider = Provider((ref) => Api());
+
+/* SNIPPET START */
+final currentUserProvider = FutureProvider.autoDispose<User>((ref) {
+  return ref.read(apiProvider).fetchCurrentUser();
+});
+
+Future<User> loadCurrentUser(ProviderContainer container) {
+  return action(() async {
+    return await container.read(currentUserProvider.future);
+  });
+}
+/* SNIPPET END */

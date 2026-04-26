@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:test/test.dart';
 
 void main() async {
@@ -92,8 +93,8 @@ extension TopLevelVariableDeclarationFindNamedX on List<Declaration> {
           return element.fields.variables.first.name.lexeme == name;
         case MethodDeclaration():
           return element.name.lexeme == name;
-        case NamedCompilationUnitMember():
-          return element.name.lexeme == name;
+        case CompilationUnitMember():
+          return element.name?.lexeme == name;
         case ConstructorDeclaration():
           return element.name?.lexeme == name;
         case _:
@@ -101,4 +102,28 @@ extension TopLevelVariableDeclarationFindNamedX on List<Declaration> {
       }
     });
   }
+}
+
+extension CompilationUnitMemberName on CompilationUnitMember {
+  Token? get name {
+    switch (this) {
+      // CompilationUnitMember subtypes
+      case ClassDeclaration(namePart: ClassNamePart(typeName: final nameToken)):
+      case MixinDeclaration(name: final nameToken):
+      case ExtensionDeclaration(name: final nameToken?):
+      case EnumDeclaration(namePart: ClassNamePart(typeName: final nameToken)):
+      case TypeAlias(name: final nameToken):
+      case FunctionDeclaration(name: final nameToken):
+        return nameToken;
+      default:
+        return null;
+    }
+  }
+}
+
+extension ClassMembers on ClassDeclaration {
+  List<ClassMember> get members => switch (body) {
+    BlockClassBody(:final members) => members,
+    EmptyClassBody() => const [],
+  };
 }

@@ -28,7 +28,7 @@ class ProviderWidget<T> extends ConsumerWidget {
 
       final consumerWidget = result.widgetDeclarations.single;
       expect(consumerWidget, isA<StatelessWidgetDeclaration>());
-      expect(consumerWidget.node.name.toString(), 'ProviderWidget');
+      expect(consumerWidget.node.namePart.typeName.toString(), 'ProviderWidget');
     },
   );
 
@@ -55,7 +55,7 @@ class MyConsumerWidget extends ConsumerWidget {
 
       final consumerWidget = result.widgetDeclarations.single;
       expect(consumerWidget, isA<StatelessWidgetDeclaration>());
-      expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
+      expect(consumerWidget.node.namePart.typeName.toString(), 'MyConsumerWidget');
     },
   );
 
@@ -82,7 +82,7 @@ class MyConsumerWidget extends HookConsumerWidget {
 
       final consumerWidget = result.widgetDeclarations.single;
       expect(consumerWidget, isA<StatelessWidgetDeclaration>());
-      expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
+      expect(consumerWidget.node.namePart.typeName.toString(), 'MyConsumerWidget');
     },
   );
 
@@ -123,10 +123,10 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
           result.widgetDeclarations.single as StatefulWidgetDeclaration;
       final consumerState = result.stateDeclarations.single;
 
-      expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
+      expect(consumerWidget.node.namePart.typeName.toString(), 'MyConsumerWidget');
       expect(consumerWidget.state, consumerState.element);
 
-      expect(consumerState.node.name.toString(), 'MyConsumerState');
+      expect(consumerState.node.namePart.typeName.toString(), 'MyConsumerState');
       expect(consumerState.widget, consumerWidget.element);
       expect(consumerState.element.widget, consumerWidget.element);
     },
@@ -168,10 +168,10 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
           result.widgetDeclarations.single as StatefulWidgetDeclaration;
       final consumerState = result.stateDeclarations.single;
 
-      expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
+      expect(consumerWidget.node.namePart.typeName.toString(), 'MyConsumerWidget');
       expect(consumerWidget.state, consumerState.element);
 
-      expect(consumerState.node.name.toString(), 'MyConsumerState');
+      expect(consumerState.node.namePart.typeName.toString(), 'MyConsumerState');
       expect(consumerState.widget, consumerWidget.element);
       expect(consumerState.element.widget, consumerWidget.element);
     },

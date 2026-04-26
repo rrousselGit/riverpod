@@ -2,6 +2,11 @@
 title: ProviderContainers/ProviderScopes
 ---
 import { Link } from "/src/components/Link";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+import allProviders from 'raw-loader!./containers/all_providers.dart';
+import familyProviders from 'raw-loader!./containers/all_providers_family.dart';
 
 [ProviderContainer] is _the_ central piece of Riverpod's architecture.  
 In Riverpod, [Providers](./providers.mdx) hold no state themselves. Instead,
@@ -50,6 +55,21 @@ test('Counter starts at 0 and can be incremented', () {
 });
 ```
 :::
+
+### Listing active providers in a container
+
+`ProviderContainer` exposes `allProviders()`, which returns the active providers
+mounted in that container and its parents.
+
+This can be useful for debugging, testing, or applying the same operation to
+all currently live providers:
+
+<AutoSnippet raw={allProviders} />
+
+You can optionally specify `family` to only list active providers of a family:
+
+<AutoSnippet raw={familyProviders} />
+
 
 ### Using a ProviderScope for Flutter applications
 

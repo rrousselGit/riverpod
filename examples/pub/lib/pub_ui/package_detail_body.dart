@@ -9,7 +9,6 @@ class PackageDetailBodyScrollView extends StatelessWidget {
     required this.likeCount,
     required this.grantedPoints,
     required this.maxPoints,
-    required this.popularityScore,
   });
 
   final String packageName;
@@ -18,7 +17,6 @@ class PackageDetailBodyScrollView extends StatelessWidget {
   final int likeCount;
   final int grantedPoints;
   final int maxPoints;
-  final double popularityScore;
 
   @override
   Widget build(BuildContext context) {
@@ -70,28 +68,6 @@ class PackageDetailBodyScrollView extends StatelessWidget {
                   ],
                 ),
                 const Text('PUB POINTS', style: TextStyle(fontSize: 13)),
-              ],
-            ),
-            Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
-                  children: [
-                    Text(
-                      '${popularityScore.round()}',
-                      style: const TextStyle(
-                        color: Color(0xff1967d2),
-                        fontSize: 40,
-                      ),
-                    ),
-                    const Text(
-                      '%',
-                      style: TextStyle(color: Color(0xff1967d2), fontSize: 20),
-                    ),
-                  ],
-                ),
-                const Text('POPULARITY', style: TextStyle(fontSize: 13)),
               ],
             ),
           ],

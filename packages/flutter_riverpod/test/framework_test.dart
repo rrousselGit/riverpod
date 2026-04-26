@@ -365,6 +365,43 @@ void main() {
     expect(find.text('Hello 0'), findsNothing);
   });
 
+  testWidgets('autoDispose does not notify flutter vsyncs', (tester) async {
+    final container = ProviderContainer.test();
+    addTearDown(container.dispose);
+
+    final provider = Provider.autoDispose((ref) => 0);
+    var vsyncCount = 0;
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(container: container, child: Container()),
+    );
+
+    final onVsync = _TestVsync(
+      scheduleRefresh: (task) {
+        vsyncCount++;
+        task.call();
+        return null;
+      },
+      scheduleDispose: (_) {
+        return null;
+      },
+    );
+
+    container.scheduler.flutterVsyncs.add(onVsync);
+    addTearDown(() => container.scheduler.flutterVsyncs.remove(onVsync));
+
+    final sub = container.listen(provider, (_, _) {});
+
+    expect(container.exists(provider), true);
+    expect(vsyncCount, 0);
+
+    sub.close();
+    await container.pump();
+
+    expect(vsyncCount, 0);
+    expect(container.exists(provider), false);
+  });
+
   testWidgets(
     'UncontrolledProviderScope gracefully handles debugCanModifyProviders',
     (tester) async {
@@ -713,18 +750,16 @@ void main() {
 
     expect(find.text('1'), findsOneWidget);
 
-    unawaited(
-      key.currentState!.pushReplacement<void, void>(
-        PageRouteBuilder<void>(
-          pageBuilder: (_, _, _) {
-            return Consumer(
-              builder: (context, ref, _) {
-                final count = ref.watch(counterProvider);
-                return Text('new $count');
-              },
-            );
-          },
-        ),
+    key.currentState!.pushReplacement<void, void>(
+      PageRouteBuilder<void>(
+        pageBuilder: (_, _, _) {
+          return Consumer(
+            builder: (context, ref, _) {
+              final count = ref.watch(counterProvider);
+              return Text('new $count');
+            },
+          );
+        },
       ),
     );
 
@@ -756,4 +791,21 @@ class _InitStateState extends ConsumerState<_InitState> {
   Widget build(BuildContext context) {
     return Container();
   }
+}
+
+final class _TestVsync implements Vsync {
+  _TestVsync({
+    required void Function()? Function(Task task) scheduleRefresh,
+    required void Function()? Function(Task task) scheduleDispose,
+  }) : _scheduleRefresh = scheduleRefresh,
+       _scheduleDispose = scheduleDispose;
+
+  final void Function()? Function(Task task) _scheduleRefresh;
+  final void Function()? Function(Task task) _scheduleDispose;
+
+  @override
+  void Function()? scheduleRefresh(Task task) => _scheduleRefresh(task);
+
+  @override
+  void Function()? scheduleDispose(Task task) => _scheduleDispose(task);
 }

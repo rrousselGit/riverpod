@@ -50,7 +50,7 @@ class _Visitor extends SimpleAstVisitor<void> {
     if (!dependencyElement.isAutoDispose) return;
 
     final provider = node
-        .thisOrAncestorOfType<NamedCompilationUnitMember>()
+        .thisOrAncestorOfType<CompilationUnitMember>()
         ?.provider;
     if (provider == null) return;
 
