@@ -1,8 +1,28 @@
+import 'package:devtools_app_shared/service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:riverpod_devtool/src/vm_service.dart';
 import 'package:vm_service/vm_service.dart';
 
+class _FakeVmService implements VmService {
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 void main() {
+  group('EvalFactory.dispose', () {
+    test('does not throw when cached evals remove themselves', () {
+      final factory = EvalFactory(
+        vmService: _FakeVmService(),
+        serviceManager: ServiceManager<VmService>(),
+      );
+
+      factory.forLibrary('dart:core');
+      factory.forLibrary('dart:async');
+
+      expect(factory.dispose, returnsNormally);
+    });
+  });
+
   group('runAndRetryOnExpired', () {
     test('returns successful values immediately', () async {
       var calls = 0;

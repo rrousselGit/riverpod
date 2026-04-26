@@ -53,7 +53,7 @@ class EvalFactory {
 
   void dispose() {
     _disposable.dispose();
-    for (final eval in _evalCache.values) {
+    for (final eval in _evalCache.values.toList()) {
       eval.dispose();
     }
     _evalCache.clear();
