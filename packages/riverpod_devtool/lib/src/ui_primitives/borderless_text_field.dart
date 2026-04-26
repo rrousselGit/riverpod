@@ -8,10 +8,10 @@ import 'package:devtools_app_shared/ui.dart';
 import 'package:flutter/material.dart';
 
 /// A DevTools-styled text field with a suffix action to clear the search field.
-final class BorderlessTextField extends StatelessWidget {
+final class BorderlessTextField extends StatefulWidget {
   BorderlessTextField({
     super.key,
-    TextEditingController? controller,
+    this.controller,
     this.labelText,
     this.hintText,
     this.prefixIcon,
@@ -24,9 +24,9 @@ final class BorderlessTextField extends StatelessWidget {
     this.focusNode,
     this.onEditingComplete,
     this.textInputAction,
-  }) : controller = controller ?? TextEditingController();
+  });
 
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String? hintText;
   final Widget? prefixIcon;
   final List<Widget> additionalSuffixActions;
@@ -41,21 +41,52 @@ final class BorderlessTextField extends StatelessWidget {
   final FocusNode? focusNode;
 
   @override
+  State<BorderlessTextField> createState() => _BorderlessTextFieldState();
+}
+
+class _BorderlessTextFieldState extends State<BorderlessTextField> {
+  late TextEditingController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = widget.controller ?? TextEditingController();
+  }
+
+  @override
+  void didUpdateWidget(covariant BorderlessTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      throw ArgumentError(
+        'BorderlessTextField does not support changing the controller after initialization.',
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    if (widget.controller == null) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return SizedBox(
       height: defaultTextFieldHeight + densePadding,
       child: TextField(
-        onEditingComplete: onEditingComplete,
-        textInputAction: textInputAction,
-        focusNode: focusNode,
+        onEditingComplete: widget.onEditingComplete,
+        textInputAction: widget.textInputAction,
+        focusNode: widget.focusNode,
         textAlignVertical: TextAlignVertical.center,
         cursorHeight: defaultTextFieldHeight / 2,
-        autofocus: autofocus,
+        autofocus: widget.autofocus,
         controller: controller,
-        enabled: enabled,
-        onChanged: onChanged,
-        onSubmitted: onSubmitted,
+        enabled: widget.enabled,
+        onChanged: widget.onChanged,
+        onSubmitted: widget.onSubmitted,
         style: theme.regularTextStyle,
         decoration: InputDecoration(
           isDense: true,
@@ -69,21 +100,21 @@ final class BorderlessTextField extends StatelessWidget {
             maxHeight: defaultTextFieldHeight,
           ),
           border: .none,
-          labelText: labelText,
+          labelText: widget.labelText,
           labelStyle: theme.subtleTextStyle,
-          hintText: hintText,
+          hintText: widget.hintText,
           hintStyle: theme.subtleTextStyle,
-          prefixIcon: prefixIcon,
+          prefixIcon: widget.prefixIcon,
           suffixIcon: SizedBox(
             height: inputDecorationElementHeight,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                ...additionalSuffixActions,
+                ...widget.additionalSuffixActions,
                 InputDecorationSuffixButton.clear(
                   onPressed: () {
                     controller.clear();
-                    onChanged?.call('');
+                    widget.onChanged?.call('');
                   },
                 ),
               ],
