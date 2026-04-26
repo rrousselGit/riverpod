@@ -213,7 +213,7 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   @override
   String toString() {
     final listenedDisplay = _listenedElement.origin.toString();
-   
+
     return '''
 ProviderSubscription<$OutT>#${shortHash(this)}(
   active: $active,

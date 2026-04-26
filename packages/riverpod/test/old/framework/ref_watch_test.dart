@@ -2,7 +2,8 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/misc.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show ProviderElement, ContainerReadElement;
+import 'package:riverpod/src/internals.dart'
+    show ProviderElement, ContainerReadElement;
 import 'package:test/test.dart';
 
 import '../../src/utils.dart' show isProviderException, throwsProviderException;
