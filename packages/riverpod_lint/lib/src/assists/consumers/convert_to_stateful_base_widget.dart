@@ -11,6 +11,8 @@ import 'package:collection/collection.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../../imports.dart';
+import '../../node.dart';
+import '../../offsets.dart';
 import 'convert_to_widget_utils.dart';
 
 /// Base class for converting to stateful base widgets
@@ -19,10 +21,9 @@ abstract class ConvertToStatefulBaseWidget extends ResolvedCorrectionProducer {
 
   StatefulBaseWidgetType get targetWidget;
   late final statelessBaseType = getStatelessBaseType(
-    exclude:
-        targetWidget == StatefulBaseWidgetType.statefulWidget
-            ? StatelessBaseWidgetType.statelessWidget
-            : null,
+    exclude: targetWidget == StatefulBaseWidgetType.statefulWidget
+        ? StatelessBaseWidgetType.statelessWidget
+        : null,
   );
   late final statefulBaseType = getStatefulBaseType(exclude: targetWidget);
 
@@ -39,10 +40,17 @@ abstract class ConvertToStatefulBaseWidget extends ResolvedCorrectionProducer {
 
   @override
   Future<void> compute(ChangeBuilder builder) async {
-    final visitor = _ExtendsClauseVisitor();
-    node.accept(visitor);
-    final extendsClause = visitor.extendsClause;
+    final classDeclaration = node.findEnclosing<ClassDeclaration>();
+    if (classDeclaration == null) return;
+    final extendsClause = classDeclaration.extendsClause;
     if (extendsClause == null) return;
+
+    if (!isOverlappingClassHeading(
+      classDeclaration,
+      selectionOffset: selectionOffset,
+    )) {
+      return;
+    }
 
     final type = extendsClause.superclass.type;
     if (type == null) return;
@@ -95,7 +103,8 @@ abstract class ConvertToStatefulBaseWidget extends ResolvedCorrectionProducer {
       for (final member in widgetClass.members) {
         if (member is FieldDeclaration && !member.isStatic) {
           for (final fieldNode in member.fields.variables) {
-            final fieldElement = fieldNode.declaredFragment?.element as FieldElement?;
+            final fieldElement =
+                fieldNode.declaredFragment?.element as FieldElement?;
             if (fieldElement == null) continue;
             if (!fieldsAssignedInConstructors.contains(fieldElement)) {
               nodesToMove.add(member);
@@ -134,7 +143,8 @@ abstract class ConvertToStatefulBaseWidget extends ResolvedCorrectionProducer {
           .firstWhereOrNull((element) => element.name.lexeme == 'build');
       if (buildMethod == null) return;
 
-      final createdStateClassName = '_${widgetClass.name.lexeme.public}State';
+      final createdStateClassName =
+          '_${widgetClass.namePart.typeName.lexeme.public}State';
       final String baseStateName;
       switch (targetWidget) {
         case StatefulBaseWidgetType.consumerStatefulWidget:
@@ -148,10 +158,10 @@ abstract class ConvertToStatefulBaseWidget extends ResolvedCorrectionProducer {
       // Split the class into two classes right before the build method
       builder.addSimpleInsertion(buildMethod.offset, '''
 @override
-  $baseStateName<${widgetClass.name.lexeme}> createState() => $createdStateClassName();
+  $baseStateName<${widgetClass.namePart.typeName.lexeme}> createState() => $createdStateClassName();
 }
 
-class $createdStateClassName extends $baseStateName<${widgetClass.name}> {
+class $createdStateClassName extends $baseStateName<${widgetClass.namePart.typeName}> {
 ''');
 
       final buildParams = buildMethod.parameters;
@@ -200,11 +210,11 @@ class $createdStateClassName extends $baseStateName<${widgetClass.name}> {
           .firstWhereOrNull((element) => element.name.lexeme == 'createState');
       if (createStateMethod != null) {
         final returnTypeString = createStateMethod.returnType?.toSource() ?? '';
-        if (returnTypeString != stateClass.name.lexeme) {
+        if (returnTypeString != stateClass.namePart.typeName.lexeme) {
           // Replace State
           builder.addSimpleReplacement(
             range.node(createStateMethod.returnType!),
-            '$baseStateName<${widgetClass.name}>',
+            '$baseStateName<${widgetClass.namePart.typeName}>',
           );
         }
       }
@@ -214,19 +224,10 @@ class $createdStateClassName extends $baseStateName<${widgetClass.name}> {
         // Replace State
         builder.addSimpleReplacement(
           range.node(stateExtends.superclass),
-          '$baseStateName<${widgetClass.name}>',
+          '$baseStateName<${widgetClass.namePart.typeName}>',
         );
       }
     });
-  }
-}
-
-class _ExtendsClauseVisitor extends RecursiveAstVisitor<void> {
-  ExtendsClause? extendsClause;
-
-  @override
-  void visitExtendsClause(ExtendsClause node) {
-    extendsClause = node;
   }
 }
 
@@ -289,8 +290,9 @@ class _ReplacementEditBuilder extends RecursiveAstVisitor<void> {
         element.enclosingElement == widgetClassElement &&
         !elementsToMove.contains(element)) {
       final offset = node.offset;
-      final qualifier =
-          element.isStatic ? widgetClassElement.displayName : 'widget';
+      final qualifier = element.isStatic
+          ? widgetClassElement.displayName
+          : 'widget';
 
       final parent = node.parent;
       if (parent is InterpolationExpression &&

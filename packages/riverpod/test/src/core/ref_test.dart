@@ -56,7 +56,7 @@ void main() {
       container.read(provider);
       final sub = container.listen(mutation, (a, b) {});
 
-      await mutation.run(notifier.ref, (tsx) async {
+      await mutation.run2(notifier.ref, () async {
         notifier.state++;
 
         return notifier.state;
@@ -1008,6 +1008,27 @@ void main() {
         verifyInOrder([listener(0, 42), listener2(0, 42)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
+      });
+
+      test('is allowed to listen to other providers', () {
+        final container = ProviderContainer.test();
+        final listener = Listener<int>();
+        final anotherListener = Listener<int>();
+        final another = Provider.autoDispose((ref) => 0);
+
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            self.listenSelf((previous, next) {
+              ref.listen(another, anotherListener.call, fireImmediately: true);
+            });
+            return 42;
+          }),
+        );
+
+        container.listen(provider, listener.call, fireImmediately: true);
+
+        verifyOnly(listener, listener(null, 42));
+        verifyOnly(anotherListener, anotherListener(null, 0));
       });
 
       test(skip: true, 'listeners are not allowed to modify the state', () {});

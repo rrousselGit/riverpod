@@ -1,3 +1,11 @@
+## 3.1.4-dev.1 - 2026-04-23
+
+Support analyzer 12
+
+### Dependency changes
+
+- `riverpod_analyzer_utils` upgraded to `1.0.0-dev.10`
+
 ## 3.1.3 - 2026-02-03
 
 - Assists to convert widgets to other widget types now correctly trigger on anything

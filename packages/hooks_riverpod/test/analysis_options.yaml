@@ -2,6 +2,6 @@ import: "../../analysis_options.yaml"
 
 analyzer:
   errors:
-    deprecated_member_use_from_same_package: false
+    deprecated_member_use_from_same_package: ignore
     # Some tests rely on explicit async behavior
-    unnecessary_async: false
+    unnecessary_async: ignore

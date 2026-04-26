@@ -245,17 +245,17 @@ class AddTodoButton extends ConsumerWidget {
 
 ```dart
 onPressed: () {
-  addTodoMutation.run(ref, (tsx) async {
+  addTodoMutation.run2(ref, () async {
     // 여기서 사이드이펙트를 실행합니다.
-    // 보통 여기서 Notifier를 가져와서 메서드를 호출합니다.
-    await tsx.get(todoListProvider.notifier).addTodo('새 할일');
+    // 여기서 Notifier를 직접 읽어서 메서드를 호출할 수 있습니다.
+    await ref.read(todoListProvider.notifier).addTodo('새 할일');
   });
 }
 ```
 
 :::note
-여기서 [Ref.read] 대신 [tsx.get]을 호출했다는 점에 주목하세요. 이는 Mutation 고유의 기능입니다. [tsx.get]은 Provider의 상태를 가져오지만,
-Mutation이 완료될 때까지 그것을 유지합니다.
+`run2`는 콜백을 action 내부에서 실행합니다.  
+[Ref.read] 같은 명령형 읽기는 Mutation이 완료될 때까지 사용한 Provider를 유지합니다.
 :::
 
 
@@ -957,7 +957,7 @@ void main() {
     void main() {
       final container = ProviderContainer.test(
         overrides: [
-          myProvider.overrideWithBuild((ref) {
+          myProvider.overrideWithBuild((ref, self) {
             // build 메서드를 모킹하여 42에서 시작합니다.
             // "increment" 메서드는 영향을 받지 않습니다.
             return 42;
@@ -982,7 +982,7 @@ void main() {
     void main() {
       final container = ProviderContainer.test(
         overrides: [
-          myProvider.overrideWithBuild((ref) {
+          myProvider.overrideWithBuild((ref, self) {
             // build 메서드를 모킹하여 42에서 시작합니다.
             // "increment" 메서드는 영향을 받지 않습니다.
             return 42;
@@ -1292,7 +1292,6 @@ Future<int> myFutureProvider() => throw UnimplementedError();
 [riverpod_lint]: https://pub.dev/packages/riverpod_lint
 [Ref]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref-class.html
 [Ref.read]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref/read.html
-[tsx.get]: https://pub.dev/documentation/riverpod/latest/experimental_mutation/MutationTransaction/get.html
 [WidgetRef]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef-class.html
 [TickerMode]: https://api.flutter.dev/flutter/widgets/TickerMode-class.html
 [Consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html

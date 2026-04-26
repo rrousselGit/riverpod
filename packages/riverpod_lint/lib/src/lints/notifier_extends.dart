@@ -103,7 +103,7 @@ class _Visitor extends SimpleAstVisitor<void> {
     }
 
     final expectedTypeArguments =
-        declaration.node.typeParameters?.typeParameters ??
+        declaration.node.namePart.typeParameters?.typeParameters ??
         const <TypeParameter>[];
     final actualTypeArguments =
         extendsClause.superclass.typeArguments?.arguments ??
@@ -142,7 +142,7 @@ class NotifierExtendsFix extends ResolvedCorrectionProducer {
     if (declaration == null) return;
 
     final expectedGenerics = genericsDisplayStringFor(
-      declaration.node.typeParameters,
+      declaration.node.namePart.typeParameters,
     );
     final expectedClassName = _generatedClassName(declaration);
     final expectedExtends = '$expectedClassName$expectedGenerics';

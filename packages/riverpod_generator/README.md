@@ -191,7 +191,7 @@ targets:
           provider_name_strip_pattern: "Notifier$" # (default)
 ```
 
-[family]: https://riverpod.dev/docs/concepts/modifiers/family
+[family]: https://riverpod.dev/docs/concepts2/family
 [provider]: https://github.com/rrousselGit/provider
 [riverpod]: https://github.com/rrousselGit/riverpod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks

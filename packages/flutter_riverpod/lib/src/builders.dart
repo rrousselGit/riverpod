@@ -236,6 +236,7 @@ final class ChangeNotifierProviderFamilyBuilder {
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
     bool isAutoDispose = false,
+    bool disposeNotifier = true,
   }) {
     return ChangeNotifierProviderFamily<NotifierT, ArgT>(
       create,
@@ -243,6 +244,7 @@ final class ChangeNotifierProviderFamilyBuilder {
       isAutoDispose: isAutoDispose,
       dependencies: dependencies,
       retry: retry,
+      disposeNotifier: disposeNotifier,
     );
   }
 

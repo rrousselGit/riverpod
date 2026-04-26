@@ -14,7 +14,7 @@ import 'package:analyzer/error/listener.dart';
 import 'package:analyzer/source/line_info.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:analyzer/src/dart/ast/ast.dart';
-import 'package:analyzer/src/dart/error/lint_codes.dart';
+import 'package:analyzer/src/lint/config.dart';
 import 'package:analyzer_plugin/protocol/protocol_common.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
@@ -321,12 +321,12 @@ extension on File {
   File goldenFile({
     required String id,
     required String groupName,
-    required int index,
+    required String lineLabel,
   }) {
     final baseName = p.basenameWithoutExtension(path);
 
     return parent.file(
-      '$baseName.$id-$index.$groupName.dart',
+      '$baseName.$id-$lineLabel.$groupName.dart',
     );
   }
 
@@ -350,7 +350,7 @@ extension on File {
               return false;
 
             final [_, idAndIndex, _] = fileName.split('.');
-            final [fileId, index] = idAndIndex.split('-');
+            final [fileId, _] = idAndIndex.split('-');
 
             return fileId == id;
           },
@@ -420,16 +420,20 @@ Future<void> _verifyGoldensMatchProducers(
       file.goldensForFile(id: producerId).map((e) => e.path).toSet();
   final mismatch = <({String? expected, String actual})>[];
   final missing = <({String filePath})>[];
+  final sourceContent = file.readAsStringSync();
 
   final actualFiles =
-      uniqueSourceOutputs.entries.indexed.map(
-        (e) {
+      uniqueSourceOutputs.entries.map(
+        (entry) {
+          final lineLabel = _goldenLineLabel(
+            sourceContent: sourceContent,
+            offsets: entry.value.map((e) => e.offset),
+          );
           final goldenFile = file.goldenFile(
             id: producerId,
-            index: e.$1,
             groupName: groupName,
+            lineLabel: lineLabel,
           );
-          final entry = e.$2;
 
           return (
             goldenFile,
@@ -493,12 +497,17 @@ String _encodeProducerOutput({
     final offsets = offsetsForKind[producerId] ??= [];
     offsets.add(offset);
   }
+  final sourceContent = sourceFile.readAsStringSync();
 
-  final buffer = StringBuffer('''
-// GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, type=warning
-// ${offsetsForKind.entries.map((e) => '[${e.key}?offset=${e.value.join(',')}]').join(' ')}
-''');
+  final buffer = StringBuffer();
+  buffer.writeln('// GENERATED CODE - DO NOT MODIFY BY HAND');
+  buffer.writeln('// ignore_for_file: type=lint, type=warning');
+  buffer.write(
+    _renderOffsetsWithContext(
+      offsetsForKind: offsetsForKind,
+      sourceContent: sourceContent,
+    ),
+  );
 
   if (source.header.isNotEmpty) {
     buffer.write(source.header.indentWith('// '));
@@ -523,6 +532,216 @@ String _encodeProducerOutput({
   }
 }
 
+String _goldenLineLabel({
+  required String sourceContent,
+  required Iterable<int> offsets,
+}) {
+  final lineStarts = _computeLineStarts(sourceContent);
+  final lineNumbers = offsets.map(
+    (offset) => _lineNumberForOffset(
+      sourceContent: sourceContent,
+      lineStarts: lineStarts,
+      offset: offset,
+    ),
+  );
+
+  if (lineNumbers.isEmpty) {
+    return '0';
+  }
+
+  return lineNumbers.reduce((a, b) => a < b ? a : b).toString();
+}
+
+List<int> _computeLineStarts(String sourceContent) {
+  final lineStarts = <int>[0];
+  for (var i = 0; i < sourceContent.length; i++) {
+    if (sourceContent.codeUnitAt(i) == 0x0A) {
+      lineStarts.add(i + 1);
+    }
+  }
+  return lineStarts;
+}
+
+int _lineIndexForOffset({
+  required String sourceContent,
+  required List<int> lineStarts,
+  required int offset,
+}) {
+  final maxOffset = sourceContent.isEmpty ? 0 : sourceContent.length - 1;
+  final safeOffset = offset.clamp(0, maxOffset);
+
+  var low = 0;
+  var high = lineStarts.length - 1;
+
+  while (low <= high) {
+    final mid = (low + high) >> 1;
+    final start = lineStarts[mid];
+    final isLast = mid == lineStarts.length - 1;
+    final nextStart = isLast ? sourceContent.length : lineStarts[mid + 1];
+
+    if (safeOffset < start) {
+      high = mid - 1;
+    } else if (safeOffset >= nextStart && !isLast) {
+      low = mid + 1;
+    } else {
+      return mid;
+    }
+  }
+
+  return lineStarts.length - 1;
+}
+
+int _lineNumberForOffset({
+  required String sourceContent,
+  required List<int> lineStarts,
+  required int offset,
+}) {
+  return _lineIndexForOffset(
+        sourceContent: sourceContent,
+        lineStarts: lineStarts,
+        offset: offset,
+      ) +
+      1;
+}
+
+String _renderOffsetsWithContext({
+  required Map<String, List<int>> offsetsForKind,
+  required String sourceContent,
+}) {
+  if (offsetsForKind.isEmpty || sourceContent.isEmpty) {
+    return '';
+  }
+
+  final lineStarts = _computeLineStarts(sourceContent);
+
+  String lineAt(int index) {
+    if (index < 0 || index >= lineStarts.length) return '';
+
+    final start = lineStarts[index];
+    final isLast = index == lineStarts.length - 1;
+    final end = isLast ? sourceContent.length : lineStarts[index + 1] - 1;
+
+    if (start >= end) return '';
+    return sourceContent.substring(start, end);
+  }
+
+  final buffer = StringBuffer();
+
+  for (final entry in offsetsForKind.entries) {
+    final kind = entry.key;
+    final kindOffsets = entry.value;
+    if (kindOffsets.isEmpty) continue;
+
+    buffer.writeln('// Offsets for "$kind":');
+    final lineToColumns = <int, List<int>>{};
+
+    for (final rawOffset in kindOffsets) {
+      final safeOffset = rawOffset.clamp(
+        0,
+        sourceContent.isEmpty ? 0 : sourceContent.length - 1,
+      );
+      final lineIndex = _lineIndexForOffset(
+        sourceContent: sourceContent,
+        lineStarts: lineStarts,
+        offset: safeOffset,
+      );
+      final lineStart = lineStarts[lineIndex];
+      final currentLine = lineAt(lineIndex);
+
+      final relativeColumn = (safeOffset - lineStart).clamp(
+        0,
+        currentLine.length,
+      );
+      final columns = lineToColumns[lineIndex] ??= [];
+      columns.add(relativeColumn);
+    }
+
+    final sortedLineIndexes = lineToColumns.keys.toList()..sort();
+    final displayedBlocks = <({int startLineIndex, int endLineIndex})>[];
+
+    for (final lineIndex in sortedLineIndexes) {
+      final currentLine = lineAt(lineIndex);
+      if (currentLine.isEmpty) {
+        continue;
+      }
+
+      final previousLine = lineAt(lineIndex - 1);
+      final nextLine = lineAt(lineIndex + 1);
+
+      var startDisplayedLineIndex = lineIndex;
+      var endDisplayedLineIndex = lineIndex;
+
+      if (previousLine.isNotEmpty) {
+        startDisplayedLineIndex = lineIndex - 1;
+      }
+      if (nextLine.isNotEmpty) {
+        endDisplayedLineIndex = lineIndex + 1;
+      }
+
+      if (displayedBlocks.isNotEmpty &&
+          startDisplayedLineIndex <= displayedBlocks.last.endLineIndex + 1) {
+        final lastBlock = displayedBlocks.removeLast();
+        displayedBlocks.add((
+          startLineIndex: lastBlock.startLineIndex,
+          endLineIndex: endDisplayedLineIndex > lastBlock.endLineIndex
+              ? endDisplayedLineIndex
+              : lastBlock.endLineIndex,
+        ));
+      } else {
+        displayedBlocks.add((
+          startLineIndex: startDisplayedLineIndex,
+          endLineIndex: endDisplayedLineIndex,
+        ));
+      }
+    }
+
+    for (final (blockIndex, block) in displayedBlocks.indexed) {
+      if (blockIndex > 0) {
+        buffer.writeln('//');
+      }
+
+      for (
+        var displayedLineIndex = block.startLineIndex;
+        displayedLineIndex <= block.endLineIndex;
+        displayedLineIndex++
+      ) {
+        final displayedLine = lineAt(displayedLineIndex);
+        if (displayedLine.isEmpty) {
+          continue;
+        }
+
+        final columns = lineToColumns[displayedLineIndex];
+        if (columns == null || columns.isEmpty) {
+          buffer.writeln('// ${displayedLineIndex + 1}: $displayedLine');
+          continue;
+        }
+
+        final sortedColumns = columns.toSet().toList()..sort();
+        final markedLineBuffer = StringBuffer();
+        var lastPos = 0;
+
+        for (final column in sortedColumns) {
+          final col = column.clamp(0, displayedLine.length);
+          if (col < lastPos) {
+            continue;
+          }
+
+          markedLineBuffer.write(displayedLine.substring(lastPos, col));
+          markedLineBuffer.write('<>');
+          lastPos = col;
+        }
+
+        markedLineBuffer.write(displayedLine.substring(lastPos));
+        buffer.writeln(
+          '// ${displayedLineIndex + 1}: ${markedLineBuffer.toString()}',
+        );
+      }
+    }
+  }
+
+  return buffer.toString();
+}
+
 Future<void> _writeProducerResultToFile(
   Map<({String header, String editedSource}), List<({int offset})>>
   uniqueSourceOutputs, {
@@ -531,6 +750,7 @@ Future<void> _writeProducerResultToFile(
   required String groupName,
 }) async {
   final goldens = sourceFile.goldensForFile(id: producerId);
+  final sourceContent = sourceFile.readAsStringSync();
 
   try {
     await Future.wait(
@@ -541,12 +761,16 @@ Future<void> _writeProducerResultToFile(
   }
 
   await Future.wait([
-    for (final (index, entry) in uniqueSourceOutputs.entries.indexed)
+    for (final entry in uniqueSourceOutputs.entries)
       Future(() async {
+        final lineLabel = _goldenLineLabel(
+          sourceContent: sourceContent,
+          offsets: entry.value.map((e) => e.offset),
+        );
         final outputFile = sourceFile.goldenFile(
           id: producerId,
           groupName: groupName,
-          index: index,
+          lineLabel: lineLabel,
         );
 
         await outputFile.create(recursive: true);
@@ -612,7 +836,7 @@ enum RuleType { lint, warning }
 
 class _PluginRegistry extends PluginRegistry {
   final List<ProducerGenerator> assists = [];
-  final List<({LintCode code, ProducerGenerator generator})> fixes = [];
+  final List<({Object code, ProducerGenerator generator})> fixes = [];
   final List<(AbstractAnalysisRule, RuleType)> rules = [];
 
   Iterable<ProducerGenerator> get producers => assists.followedBy(
@@ -639,7 +863,7 @@ class _PluginRegistry extends PluginRegistry {
   }
 
   @override
-  void registerFixForRule(LintCode code, ProducerGenerator generator) {
+  void registerFixForRule(Object code, ProducerGenerator generator) {
     fixes.add((code: code, generator: generator));
   }
 
@@ -651,5 +875,10 @@ class _PluginRegistry extends PluginRegistry {
   @override
   void registerWarningRule(AbstractAnalysisRule rule) {
     rules.add((rule, RuleType.warning));
+  }
+
+  @override
+  Iterable<AbstractAnalysisRule> enabled(Map<String, RuleConfig> ruleConfigs) {
+    return rules.map((e) => e.$1);
   }
 }

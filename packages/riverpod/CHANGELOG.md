@@ -1,4 +1,4 @@
-## Unreleased
+## Unreleased minor
 
 - Added `Ref.onManualInvalidation()` lifecycle method to listen for manual provider invalidations.
   This allows distinguishing between manual invalidations (via `refresh`/`invalidate`/`invalidateSelf`)
@@ -19,6 +19,21 @@
   ```
 
   Which allows for users to invalidate only the providers they care about, while implementation details can be handled privately. (thanks to @TekExplorer)
+
+- **Deprecated** `Mutation.run`. A replacement `Mutation.run2` has been added with a modified prototype.
+  Before:
+  ```dart
+  mutation.run(ref, (tsx) async => tsx.get(...))
+  ```
+  After:
+  ```dart
+  mutation.run2(ref, () async => ref.read(...));
+  ```
+  In version 4.0, `run` will be removed and `run2` will be renamed to `run`.
+- Added `action`/`voidAction`, as syntax sugar to using Mutations for keeping providers alive
+  during side-effects.
+- Added `ProviderContainer.allProviders()`, to obtain all providers accessible from said container. You can optionally specify `allProviders(family: myFamily)` to only include providers from said family.
+- Refactored internal scheduling mechanism to solve some markNeedsBuild error.
 
 ## 3.2.1 - 2026-02-03
 
@@ -825,7 +840,6 @@ Riverpod is now stable!
 
   That allows providers to implement features that is not shared with other
   providers.
-
   - `Provider`, `FutureProvider` and `StreamProvider`'s `ref` now have a `state`
     property, which represents the currently exposed value. Modifying it will
     notify the listeners:
@@ -1098,7 +1112,6 @@ Fixed various issues related to scoped providers.
 
   That allows providers to implement features that is not shared with other
   providers.
-
   - `Provider`, `FutureProvider` and `StreamProvider`'s `ref` now have a `state`
     property, which represents the currently exposed value. Modifying it will
     notify the listeners:
@@ -1519,4 +1532,3 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-

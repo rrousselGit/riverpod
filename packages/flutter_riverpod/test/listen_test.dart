@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart' hide Listener;
+import 'package:flutter_riverpod/experimental/action.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -150,9 +153,64 @@ void main() {
       ref.read(provider.notifier).state++;
       verifyNoMoreInteractions(listener);
     });
+
+    testWidgets('closes subscriptions when the action ends', (tester) async {
+      final completer = Completer<void>();
+      final provider = StateProvider((ref) => 0);
+      final listener = Listener<int>();
+
+      late WidgetRef ref;
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(
+            builder: (context, r, _) {
+              ref = r;
+              return Container();
+            },
+          ),
+        ),
+      );
+
+      final future = action(() async {
+        ref.listenManual(provider, listener.call);
+        await completer.future;
+      });
+
+      ref.read(provider.notifier).state++;
+      verifyOnly(listener, listener(0, 1));
+
+      completer.complete();
+      await future;
+
+      ref.read(provider.notifier).state++;
+      verifyNoMoreInteractions(listener);
+    });
   });
 
   group('WidgetRef.listen', () {
+    testWidgets('throws inside action', (tester) async {
+      final provider = Provider((ref) => 0);
+      late WidgetRef widgetRef;
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(
+            builder: (context, ref, _) {
+              widgetRef = ref;
+              return Container();
+            },
+          ),
+        ),
+      );
+
+      await expectLater(
+        action(() async {
+          widgetRef.listen(provider, (_, _) {});
+        }),
+        throwsA(isA<AssertionError>()),
+      );
+    });
+
     testWidgets('expose previous and new value on change', (tester) async {
       final container = ProviderContainer.test();
       final dep = StateNotifierProvider<StateController<int>, int>(

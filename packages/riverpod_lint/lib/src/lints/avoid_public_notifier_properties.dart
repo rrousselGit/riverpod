@@ -7,6 +7,8 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
+import '../node.dart';
+
 class AvoidPublicNotifierProperties extends AnalysisRule {
   AvoidPublicNotifierProperties()
     : super(name: code.name, description: code.problemMessage);
