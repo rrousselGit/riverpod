@@ -1,15 +1,15 @@
 ## Unreleased minor
 
-- **Experimental breaking** `Mutation.run` is modified: `MutationTransaction` is removed.
+- **Deprecated** `Mutation.run`. A replacement `Mutation.run2` has been added with a modified prototype.
   Before:
   ```dart
   mutation.run(ref, (tsx) async => tsx.get(...))
   ```
   After:
   ```dart
-  mutation.run(ref, () async => ref.read(...));
+  mutation.run2(ref, () async => ref.read(...));
   ```
-  The behavior is otherwise the same.
+  In version 4.0, `run` will be removed and `run2` will be renamed to `run`.
 - Added `action`/`voidAction`, as syntax sugar to using Mutations for keeping providers alive
   during side-effects.
 - Added `ProviderContainer.allProviders()`, to obtain all providers accessible from said container. You can optionally specify `allProviders(family: myFamily)` to only include providers from said family.

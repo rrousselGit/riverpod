@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 part of '../framework.dart';
 
 /// Mutation code. This should be in riverpod_annotation, but has to be here
@@ -5,6 +7,35 @@ part of '../framework.dart';
 @internal
 @publicInCodegenMutation
 const mutationZoneKey = #_mutation;
+
+/// A transaction object used within [Mutation.run].
+///
+/// Use [get] to imperatively read a provider while the mutation is pending.
+/// Providers accessed this way remain alive for the duration of the mutation.
+@Deprecated('Use actions')
+@publicInMutations
+final class MutationTransaction {
+  @Deprecated('Use actions')
+  MutationTransaction._(this._container);
+
+  final ProviderContainer _container;
+  var _closed = false;
+
+  /// Reads the current state of a listenable and keeps it alive until the
+  /// enclosing mutation completes.
+  StateT get<StateT>(ProviderListenable<StateT> listenable) {
+    assert(
+      !_closed,
+      'Cannot access MutationTransaction after the mutation has completed',
+    );
+
+    return _container.read(listenable);
+  }
+
+  void _close() {
+    _closed = true;
+  }
+}
 
 final class _MutationProvider<ValueT>
     extends
@@ -54,9 +85,10 @@ class _MutationNotifier<ValueT> {
   _MutationNotifier(this.state, this.setState, this.setRef, this.getRef);
 
   final MutationState<ValueT> state;
-  final void Function(MutationState<ValueT> state, Object ref) setState;
-  final void Function(Object ref) setRef;
-  final Object? Function() getRef;
+  final void Function(MutationState<ValueT> state, MutationTransaction ref)
+  setState;
+  final void Function(MutationTransaction ref) setRef;
+  final MutationTransaction? Function() getRef;
 
   @override
   String toString() {
@@ -79,9 +111,9 @@ class _MutationElement<StateT>
     final provider = this.provider as _MutationProvider<StateT>;
     final mutation = provider.mutation;
 
-    Object? activeRef;
+    MutationTransaction? activeRef;
 
-    void setState(MutationState<StateT> state, Object? mutRef) {
+    void setState(MutationState<StateT> state, MutationTransaction? mutRef) {
       if (mutRef != activeRef) return;
 
       final prevState = value;
@@ -204,14 +236,14 @@ abstract class MutationTarget {
 /// This is for the UI logic. But on its own, the state of the mutation
 /// will never change.
 ///
-/// To change the mutation state, you need to call [Mutation.run].
+/// To change the mutation state, you need to call [Mutation.run2].
 /// This is typically done inside a callback, such as the `onPressed`
 /// of a button:
 ///
 /// ```dart
 /// ElevatedButton(
 ///   onPressed: () {
-///     addTodoMutation.run(ref, () async {
+///     addTodoMutation.run2(ref, () async {
 ///       // This is where you perform the side-effect. Here, you can
 ///       // read your providers to modify them.
 ///       await ref.read(todoListProvider.notifier).addTodo(
@@ -244,7 +276,7 @@ abstract class MutationTarget {
 ///
 /// Currently, mutations do not restrict concurrent calls in any capacity.
 ///
-/// This means that if you call [Mutation.run] while a previous call is still
+/// This means that if you call [Mutation.run2] while a previous call is still
 /// pending, the mutation state will be set to [MutationPending] again,
 /// and the previous call's return value will be ignored.
 ///
@@ -269,9 +301,9 @@ abstract class MutationTarget {
 /// ...
 ///
 /// onPressed: () {
-///   // Upon calling `run`, you will have to pass the same key as when
+///   // Upon calling `run2`, you will have to pass the same key as when
 ///   // watching the mutation.
-///   deleteTodo(todo.id).run(ref, () async { /* ... */ });
+///   deleteTodo(todo.id).run2(ref, () async { /* ... */ });
 /// }
 /// ```
 ///
@@ -316,12 +348,32 @@ sealed class Mutation<ResultT>
   /// completes successfully or throws an error.
   ///
   /// [run] executes [cb] inside an [action].
-  ///
   /// This means imperative APIs such as [ProviderContainer.read] and [Ref.read]
   /// automatically keep touched providers alive for the duration of [cb].
   /// Any action-managed subscriptions created during the callback are closed
   /// when the mutation completes.
-  Future<ResultT> run(MutationTarget target, Future<ResultT> Function() cb);
+  ///
+  /// Use [MutationTransaction.get] inside [cb] to interact with providers while
+  /// keeping them alive for the duration of the mutation.
+  @Deprecated('use run2')
+  Future<ResultT> run(
+    MutationTarget target,
+    Future<ResultT> Function(MutationTransaction transaction) cb,
+  );
+
+  /// Starts a mutation and set its state based on the result of the callback.
+  ///
+  /// This sets the mutation state to [MutationPending],
+  /// call the callback, then set the mutation state to either
+  /// [MutationSuccess] or [MutationError] depending on whether the callback
+  /// completes successfully or throws an error.
+  ///
+  /// [run2] executes [cb] inside an [action].
+  /// This means imperative APIs such as [ProviderContainer.read] and [Ref.read]
+  /// automatically keep touched providers alive for the duration of [cb].
+  /// Any action-managed subscriptions created during the callback are closed
+  /// when the mutation completes.
+  Future<ResultT> run2(MutationTarget target, Future<ResultT> Function() cb);
 
   /// Resets the mutation to its initial state ([MutationIdle]).
   void reset(MutationTarget container);
@@ -368,7 +420,10 @@ final class MutationImpl<ResultT>
   }
 
   @override
-  Future<ResultT> run(MutationTarget target, Future<ResultT> Function() cb) {
+  Future<ResultT> run(
+    MutationTarget target,
+    Future<ResultT> Function(MutationTransaction transaction) cb,
+  ) {
     return runZoned(zoneValues: {mutationZoneKey: this}, () async {
       final container = target.container;
 
@@ -377,12 +432,12 @@ final class MutationImpl<ResultT>
         _MutationProvider(this),
         (_, _) {},
       );
-      final ref = Object();
+      final ref = MutationTransaction._(container);
 
       try {
         mut._mutationStart(sub, ref);
 
-        final result = await action(cb);
+        final result = await action(() => cb(ref));
 
         mut._mutationSuccess(sub, ref, result);
 
@@ -393,8 +448,14 @@ final class MutationImpl<ResultT>
         rethrow;
       } finally {
         sub.close();
+        ref._close();
       }
     });
+  }
+
+  @override
+  Future<ResultT> run2(MutationTarget target, Future<ResultT> Function() cb) {
+    return run(target, (_) => cb());
   }
 
   @override
@@ -411,7 +472,7 @@ final class MutationImpl<ResultT>
 
   void _mutationStart(
     ProviderSubscription<_MutationNotifier<ResultT>> sub,
-    Object ref,
+    MutationTransaction ref,
   ) {
     final _MutationNotifier(:state, :setState, :setRef) =
         sub.readSafe().valueOrRawException;
@@ -423,7 +484,7 @@ final class MutationImpl<ResultT>
 
   void _mutationSuccess(
     ProviderSubscription<_MutationNotifier<ResultT>> sub,
-    Object ref,
+    MutationTransaction ref,
     ResultT result,
   ) {
     final _MutationNotifier(:state, :setState) =
@@ -434,7 +495,7 @@ final class MutationImpl<ResultT>
 
   void _mutationErrored(
     ProviderSubscription<_MutationNotifier<ResultT>> sub,
-    Object ref,
+    MutationTransaction ref,
     Object error,
     StackTrace stackTrace,
   ) {

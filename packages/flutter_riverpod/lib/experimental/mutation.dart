@@ -1,5 +1,6 @@
 export '../src/internals.dart'
     show
+        MutationTransaction,
         Mutation,
         MutationState,
         MutationIdle,
