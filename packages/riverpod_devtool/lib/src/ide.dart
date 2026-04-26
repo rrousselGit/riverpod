@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:devtools_app_shared/utils.dart';
 import 'package:hooks_riverpod/experimental/mutation.dart';
 import 'package:stack_trace/stack_trace.dart';

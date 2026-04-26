@@ -114,9 +114,8 @@ class ServiceManagerNotifier extends AsyncNotifier<ServiceManager> {
   Future<ServiceManager<VmService>> build() async {
     final timer = Timer.periodic(const Duration(milliseconds: 18), (_) async {
       final newService = serviceManager;
-      final currentService = await future;
       // New service detected
-      if (state.value == currentService) return;
+      if (state.value == newService) return;
 
       state = const AsyncLoading();
       await newService.onServiceAvailable;

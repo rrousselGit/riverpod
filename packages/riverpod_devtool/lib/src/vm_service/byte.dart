@@ -62,7 +62,8 @@ final class ByteVariable<ValueT> extends Byte<ValueT> {
 }
 
 final class ByteError<ValueT> extends Byte<ValueT> {
-  const ByteError(this.error);
+  // ignore: prefer_const_constructors_in_immutables, errors are never const
+  ByteError(this.error);
 
   final ByteErrorType error;
 
@@ -101,7 +102,8 @@ final class EvalErrorType extends ByteErrorType {
 }
 
 final class UnknownEvalErrorType extends ByteErrorType {
-  const UnknownEvalErrorType(this.message);
+  // ignore: prefer_const_constructors_in_immutables, errors are never const
+  UnknownEvalErrorType(this.message);
   final String message;
 
   @override

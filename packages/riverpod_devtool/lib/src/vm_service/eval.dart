@@ -78,7 +78,7 @@ Future<Byte<ValueT>> runAndRetryOnExpired<ValueT>(
     final result = await cb();
 
     switch (result) {
-      case _ when i == maxRetries:
+      case ByteVariable():
         return result;
       case ByteError(error: SentinelExceptionType(:final error))
           when error.kind == SentinelKind.kExpired:
@@ -88,7 +88,9 @@ Future<Byte<ValueT>> runAndRetryOnExpired<ValueT>(
         }
 
         continue;
-      case _:
+      case ByteError() when i == maxRetries:
+        return result;
+      case ByteError():
         continue;
     }
   }
