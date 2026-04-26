@@ -159,6 +159,10 @@ class _AsyncStateNotifier<T> extends AsyncNotifier<T> {
   _AsyncStateNotifier(this._build);
   final FutureOr<T> Function(Ref ref, _AsyncStateNotifier<T> self) _build;
 
+  // remove protected
+  @override
+  Future<T> get future;
+
   @override
   FutureOr<T> build() => _build(ref, this);
 }

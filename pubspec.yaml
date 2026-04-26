@@ -35,4 +35,5 @@ workspace:
   - packages/riverpod_sqflite/example
   - packages/riverpod_sqflite
   - tools/generate_providers
+  - other_projects/devtool_debug_app
   - website
