@@ -69,6 +69,10 @@ sealed class NodeMeta {
 class Frame {
   Frame({required this.timestamp, required this.index, required this.events});
 
+  @visibleForTesting
+  Frame.test({required this.index, required this.events, DateTime? timestamp})
+    : timestamp = timestamp ?? DateTime(2026).add(Duration(seconds: index));
+
   factory Frame.from(Map<String, InstanceRef> $events, {required String path}) {
     _validate($events, name: 'Frame', path: path);
 
@@ -104,6 +108,32 @@ class ProviderMeta {
     required this.element,
     required this.creationStackTrace,
   });
+
+  @visibleForTesting
+  ProviderMeta.test({
+    required String elementId,
+    String? providerId,
+    String? containerId,
+    String label = 'provider',
+    this.argToStringValue = '',
+    String? originId,
+    OriginMeta? origin,
+    String? hashValue,
+    String? containerHashValue,
+    RootCachedObject? element,
+    this.creationStackTrace,
+  }) : origin =
+           origin ??
+           OriginMeta.test(id: originId ?? 'origin-$elementId', label: label),
+       id = internals.ProviderId(providerId ?? 'provider-$elementId'),
+       hashValue = hashValue ?? 'provider-hash-$elementId',
+       containerId = internals.ContainerId(
+         containerId ?? 'container-$elementId',
+       ),
+       containerHashValue = containerHashValue ?? 'container-hash-$elementId',
+       elementId = internals.ElementId(elementId),
+       element =
+           element ?? RootCachedObject(CacheId('element-cache-$elementId'));
 
   factory ProviderMeta.from(
     Map<String, InstanceRef> $events, {
@@ -176,6 +206,17 @@ class OriginMeta {
     required this.isFamily,
     required this.creationStackTrace,
   });
+
+  @visibleForTesting
+  OriginMeta.test({
+    String id = 'origin-id',
+    String label = 'origin',
+    this.isFamily = false,
+    String? hashValue,
+    this.creationStackTrace,
+  }) : id = internals.OriginId(id),
+       toStringValue = label,
+       hashValue = hashValue ?? 'hash-$id';
 
   factory OriginMeta.from(
     Map<String, InstanceRef> $events, {
@@ -332,6 +373,10 @@ class ProviderElementDisposeEvent extends Event {
 /// Devtool code for [internals.ProviderStateRef]
 class ProviderStateRef {
   ProviderStateRef({required this.state});
+
+  @visibleForTesting
+  ProviderStateRef.test({required String cacheId})
+    : state = RootCachedObject(CacheId(cacheId));
 
   factory ProviderStateRef.from(
     Map<String, InstanceRef> $events, {

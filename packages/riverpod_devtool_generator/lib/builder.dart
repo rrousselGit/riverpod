@@ -26,6 +26,67 @@ Builder riverpodDevtoolGenerator(BuilderOptions options) {
   );
 }
 
+String? _testingConstructorCode(String className) {
+  switch (className) {
+    case 'Frame':
+      return '''
+  @visibleForTesting
+  Frame.test({
+    required this.index,
+    required this.events,
+    DateTime? timestamp,
+  }) : timestamp = timestamp ?? DateTime(2026).add(Duration(seconds: index));
+''';
+    case 'ProviderMeta':
+      return '''
+  @visibleForTesting
+  ProviderMeta.test({
+    required String elementId,
+    String? providerId,
+    String? containerId,
+    String label = 'provider',
+    this.argToStringValue = '',
+    String? originId,
+    OriginMeta? origin,
+    String? hashValue,
+    String? containerHashValue,
+    RootCachedObject? element,
+    this.creationStackTrace,
+  }) : origin =
+           origin ??
+         OriginMeta.test(id: originId ?? 'origin-\$elementId', label: label),
+       id = internals.ProviderId(providerId ?? 'provider-\$elementId'),
+       hashValue = hashValue ?? 'provider-hash-\$elementId',
+       containerId = internals.ContainerId(containerId ?? 'container-\$elementId'),
+       containerHashValue =
+         containerHashValue ?? 'container-hash-\$elementId',
+       elementId = internals.ElementId(elementId),
+       element = element ?? RootCachedObject(CacheId('element-cache-\$elementId'));
+''';
+    case 'OriginMeta':
+      return '''
+  @visibleForTesting
+  OriginMeta.test({
+    String id = 'origin-id',
+    String label = 'origin',
+    this.isFamily = false,
+    String? hashValue,
+    this.creationStackTrace,
+  }) : id = internals.OriginId(id),
+       toStringValue = label,
+      hashValue = hashValue ?? 'hash-\$id';
+''';
+    case 'ProviderStateRef':
+      return '''
+  @visibleForTesting
+  ProviderStateRef.test({required String cacheId})
+    : state = RootCachedObject(CacheId(cacheId));
+''';
+    default:
+      return null;
+  }
+}
+
 class _RiverpodDevtoolGeneratorGenerator extends Generator {
   @override
   String generate(LibraryReader library, BuildStep buildStep) {
@@ -198,6 +259,12 @@ sealed class ${root.name} {
           ${fields.map((e) => 'required this.${e.name},').join()}
         });
         '''),
+        'testingCtor': () {
+          final testingCtor = _testingConstructorCode(subclass.name!);
+          if (testingCtor != null) {
+            buffer.write(testingCtor);
+          }
+        },
         'ctorParameters': () {
           for (final field in fields) {
             buffer.write('''
@@ -240,6 +307,7 @@ final ${field.name} = ${field.type.decodeBytes(mapSymbol: r'$events', path: '\$p
 /// Devtool code for [${subclass.thisType.toCode()}]
 class ${subclass.name} #{{superClass}} {
   #{{defaultCtor}}
+  #{{testingCtor}}
   #{{fromCtor}}
   #{{fields}}
 }
