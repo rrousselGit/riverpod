@@ -38,7 +38,7 @@ String? _testingConstructorCode(String className) {
   }) : timestamp = timestamp ?? DateTime(2026).add(Duration(seconds: index));
 ''';
     case 'ProviderMeta':
-      return '''
+      return r'''
   @visibleForTesting
   ProviderMeta.test({
     required String elementId,
@@ -54,17 +54,17 @@ String? _testingConstructorCode(String className) {
     this.creationStackTrace,
   }) : origin =
            origin ??
-         OriginMeta.test(id: originId ?? 'origin-\$elementId', label: label),
-       id = internals.ProviderId(providerId ?? 'provider-\$elementId'),
-       hashValue = hashValue ?? 'provider-hash-\$elementId',
-       containerId = internals.ContainerId(containerId ?? 'container-\$elementId'),
+         OriginMeta.test(id: originId ?? 'origin-$elementId', label: label),
+       id = internals.ProviderId(providerId ?? 'provider-$elementId'),
+       hashValue = hashValue ?? 'provider-hash-$elementId',
+       containerId = internals.ContainerId(containerId ?? 'container-$elementId'),
        containerHashValue =
-         containerHashValue ?? 'container-hash-\$elementId',
+         containerHashValue ?? 'container-hash-$elementId',
        elementId = internals.ElementId(elementId),
-       element = element ?? RootCachedObject(CacheId('element-cache-\$elementId'));
+       element = element ?? RootCachedObject(CacheId('element-cache-$elementId'));
 ''';
     case 'OriginMeta':
-      return '''
+      return r'''
   @visibleForTesting
   OriginMeta.test({
     String id = 'origin-id',
@@ -74,7 +74,7 @@ String? _testingConstructorCode(String className) {
     this.creationStackTrace,
   }) : id = internals.OriginId(id),
        toStringValue = label,
-      hashValue = hashValue ?? 'hash-\$id';
+      hashValue = hashValue ?? 'hash-$id';
 ''';
     case 'ProviderStateRef':
       return '''

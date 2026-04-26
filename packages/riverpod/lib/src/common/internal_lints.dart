@@ -48,7 +48,7 @@ const publicInPersist = Public.inLibrary('experimental/persist');
 const publicInMutations = Public.inLibrary('experimental/mutation');
 
 @internal
-const publicInDevtools = Public.inLibrary('src/devtools.dart');
+const publicInDevtools = Public.inLibrary('src/framework.dart');
 
 /// Not public
 @internal

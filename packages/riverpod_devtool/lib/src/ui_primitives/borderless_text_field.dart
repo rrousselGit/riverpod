@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 
 /// A DevTools-styled text field with a suffix action to clear the search field.
 final class BorderlessTextField extends StatefulWidget {
-  BorderlessTextField({
+  const BorderlessTextField({
     super.key,
     this.controller,
     this.labelText,
