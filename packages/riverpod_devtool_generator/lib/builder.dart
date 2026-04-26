@@ -5,9 +5,9 @@ import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer_buffer/analyzer_buffer.dart';
 import 'package:build/build.dart';
-import 'package:custom_lint_core/custom_lint_core.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:meta/meta.dart';
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:source_gen/source_gen.dart' hide TypeChecker;
 
 /// Builds generators for `build_runner` to run

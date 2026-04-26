@@ -208,7 +208,7 @@ class ProviderScheduler {
     if (!kDebugMode) return;
 
     _debugPendingFrame = onEvent;
-    _scheduleTask();
+    _scheduleTask(taskNeedsRefresh: true);
   }
 
   /// Schedules a provider to be disposed.
