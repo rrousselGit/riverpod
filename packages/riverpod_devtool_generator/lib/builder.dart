@@ -217,7 +217,7 @@ extension ${clazz.name}ToBytes on ${clazz.name} {
 sealed class ${root.name} {
   ${root.name}();
 
-  factory ${root.name}.from(Map<String, InstanceRef> events, {required String path}) {
+  factory ${root.name}.from(Map<String, VmInstanceRef> events, {required String path}) {
     final type = events[path]?.valueAsString;
 
     switch (type) {
@@ -275,7 +275,7 @@ final ${field.name} = ${field.type.decodeBytes(mapSymbol: r'$events', path: '\$p
         'fromCtor': () {
           buffer.write('''
         factory ${subclass.name}.from(
-          Map<String, InstanceRef> \$events, {
+          Map<String, VmInstanceRef> \$events, {
           required String path,
         }) {
           _validate(

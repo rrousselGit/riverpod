@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/experimental/mutation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:vm_service/vm_service.dart';
 
 import 'object.dart';
 import 'state_inspector/inspector.dart';
@@ -183,8 +182,8 @@ final class _TerminalState extends ConsumerState<Terminal> {
                   result = ByteError(error);
                 case (
                   ByteVariable(instance: final state),
-                  final ByteVariable<InstanceRef>? notifier,
-                  final ByteVariable<InstanceRef>? previous,
+                  final ByteVariable<VmInstanceRef>? notifier,
+                  final ByteVariable<VmInstanceRef>? previous,
                 ):
                   final eval =
                       evalFactory.forRef(state) ?? evalFactory.dartCore;

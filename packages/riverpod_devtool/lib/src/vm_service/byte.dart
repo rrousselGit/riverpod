@@ -14,8 +14,8 @@ sealed class Byte<ValueT> {
     }
   }
 
-  static Byte<InstanceRef> instanceRef(Object? ref) => Byte._of(ref);
-  static Byte<Instance> instance(Object? instance) => Byte._of(instance);
+  static Byte<VmInstanceRef> instanceRef(Object? ref) => Byte._of(ref);
+  static Byte<VmInstance> instance(Object? instance) => Byte._of(instance);
 
   ByteVariable<ValueT> get require {
     switch (this) {

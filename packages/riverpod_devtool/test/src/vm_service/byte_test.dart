@@ -2,16 +2,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:riverpod_devtool/src/vm_service.dart';
 import 'package:vm_service/vm_service.dart';
 
-import '../../test_helpers.dart';
-
 void main() {
   group('Byte', () {
     test('wraps instance refs and instances', () {
-      final ref = stringRef('hello');
-      final instance = stringInstance('world');
+      final ref = VmInstanceRef.string('hello', id: 'ref-hello').raw;
+      final instance = VmInstance.string('world');
 
-      expect(Byte.instanceRef(ref), ByteVariable(ref));
-      expect(Byte.instance(instance), ByteVariable(instance));
+      expect(Byte.instanceRef(ref), ByteVariable(VmInstanceRef(ref)));
+      expect(
+        Byte.instanceRef(instance),
+        ByteVariable(VmInstanceRef(instance)),
+      );
     });
 
     test('turns sentinels into errors', () {
@@ -19,8 +20,8 @@ void main() {
         Sentinel(kind: SentinelKind.kExpired, valueAsString: 'expired'),
       );
 
-      expect(result, isA<ByteError<InstanceRef>>());
-      expect((result as ByteError<InstanceRef>).error.toString(), 'expired');
+      expect(result, isA<ByteError<VmInstanceRef>>());
+      expect((result as ByteError<VmInstanceRef>).error.toString(), 'expired');
     });
 
     test('throws on unsupported input', () {
@@ -28,8 +29,8 @@ void main() {
     });
 
     test('require and valueOrNull reflect success and failure', () {
-      final ok = ByteVariable(stringRef('ok'));
-      final error = ByteError<InstanceRef>(UnknownEvalErrorType('boom'));
+      final ok = ByteVariable(VmInstanceRef.string('ok', id: 'ref-ok'));
+      final error = ByteError<VmInstanceRef>(UnknownEvalErrorType('boom'));
 
       expect(ok.require.instance.valueAsString, 'ok');
       expect(ok.valueOrNull?.valueAsString, 'ok');

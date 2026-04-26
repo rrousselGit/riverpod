@@ -4,17 +4,17 @@ import 'package:riverpod_devtool/src/elements.dart';
 import 'package:riverpod_devtool/src/frames.dart';
 import 'package:riverpod_devtool/src/vm_service.dart';
 
-import '../test_helpers.dart';
-
 ProviderElementAddEvent addEvent(
   String elementId, {
   String stateId = 'state',
   String? notifierId,
 }) {
   return ProviderElementAddEvent(
-    provider: providerMeta(elementId: elementId),
-    state: stateRef(stateId),
-    notifier: notifierId == null ? null : stateRef(notifierId),
+    provider: ProviderMeta.test(elementId: elementId),
+    state: ProviderStateRef.test(cacheId: stateId),
+    notifier: notifierId == null
+        ? null
+        : ProviderStateRef.test(cacheId: notifierId),
   );
 }
 
@@ -24,16 +24,16 @@ ProviderElementUpdateEvent updateEvent(
   String? notifierId,
 }) {
   return ProviderElementUpdateEvent(
-    provider: providerMeta(elementId: elementId),
-    next: stateRef(nextId),
-    notifier: notifierId == null ? null : stateRef(notifierId),
+    provider: ProviderMeta.test(elementId: elementId),
+    next: ProviderStateRef.test(cacheId: nextId),
+    notifier: notifierId == null
+        ? null
+        : ProviderStateRef.test(cacheId: notifierId),
   );
 }
 
 ProviderElementDisposeEvent disposeEvent(String elementId) {
-  return ProviderElementDisposeEvent(
-    provider: providerMeta(elementId: elementId),
-  );
+  return ProviderElementDisposeEvent(provider: ProviderMeta.test(elementId: elementId));
 }
 
 void main() {
@@ -41,7 +41,10 @@ void main() {
     test('requires the first frame to start at index zero', () {
       expect(
         () => FoldedFrame(
-          frame: devtoolFrame(index: 1, events: const []),
+          frame: Frame.test(
+            index: 1,
+            events: const [],
+          ),
           previous: null,
         ),
         throwsStateError,
@@ -50,7 +53,7 @@ void main() {
 
     test('requires timestamps to stay chronological', () {
       final first = FoldedFrame(
-        frame: devtoolFrame(
+        frame: Frame(
           index: 0,
           timestamp: DateTime(2026, 1, 1, 12),
           events: const [],
@@ -60,7 +63,7 @@ void main() {
 
       expect(
         () => FoldedFrame(
-          frame: devtoolFrame(
+          frame: Frame(
             index: 1,
             timestamp: DateTime(2026, 1, 1, 11),
             events: const [],
@@ -73,13 +76,19 @@ void main() {
 
     test('requires consecutive indexes', () {
       final first = FoldedFrame(
-        frame: devtoolFrame(index: 0, events: const []),
+        frame: Frame.test(
+          index: 0,
+          events: const [],
+        ),
         previous: null,
       );
 
       expect(
         () => FoldedFrame(
-          frame: devtoolFrame(index: 2, events: const []),
+          frame: Frame.test(
+            index: 2,
+            events: const [],
+          ),
           previous: first,
         ),
         throwsStateError,
@@ -87,26 +96,26 @@ void main() {
     });
 
     test('statusOf and hasStateChanges reflect frame events', () {
-      final addedProvider = providerMeta(elementId: 'added');
-      final updatedProvider = providerMeta(elementId: 'updated');
-      final disposedProvider = providerMeta(elementId: 'disposed');
+      final addedProvider = ProviderMeta.test(elementId: 'added');
+      final updatedProvider = ProviderMeta.test(elementId: 'updated');
+      final disposedProvider = ProviderMeta.test(elementId: 'disposed');
       final frame = FoldedFrame(
-        frame: devtoolFrame(
+        frame: Frame.test(
           index: 0,
           events: [
             ProviderContainerAddEvent(
-              container: cacheObject('container'),
+              container: RootCachedObject(CacheId('container')),
               containerId: internals.ContainerId('container'),
               parentIds: const [],
             ),
             ProviderElementAddEvent(
               provider: addedProvider,
-              state: stateRef('state-added'),
+              state: ProviderStateRef.test(cacheId: 'state-added'),
               notifier: null,
             ),
             ProviderElementUpdateEvent(
               provider: updatedProvider,
-              next: stateRef('state-updated'),
+              next: ProviderStateRef.test(cacheId: 'state-updated'),
               notifier: null,
             ),
             ProviderElementDisposeEvent(provider: disposedProvider),
@@ -133,11 +142,11 @@ void main() {
 
     test('hasStateChanges is false for non-state events', () {
       final frame = FoldedFrame(
-        frame: devtoolFrame(
+        frame: Frame.test(
           index: 0,
           events: [
             ProviderContainerAddEvent(
-              container: cacheObject('container'),
+              container: RootCachedObject(CacheId('container')),
               containerId: internals.ContainerId('container'),
               parentIds: const [],
             ),
@@ -153,7 +162,7 @@ void main() {
   group('computeElementsForFrame', () {
     test('records newly added elements', () {
       final frame = FoldedFrame(
-        frame: devtoolFrame(
+        frame: Frame.test(
           index: 0,
           events: [
             addEvent(
@@ -179,10 +188,10 @@ void main() {
 
     test('preserves previous dependency graph when state updates', () {
       final dependent = ProviderNodeMeta(
-        provider: providerMeta(elementId: 'child'),
+        provider: ProviderMeta.test(elementId: 'child'),
       );
       final initial = FoldedFrame(
-        frame: devtoolFrame(
+        frame: Frame.test(
           index: 0,
           events: [
             addEvent('provider-1', stateId: 'state-1'),
@@ -198,7 +207,7 @@ void main() {
       );
 
       final updated = FoldedFrame(
-        frame: devtoolFrame(
+        frame: Frame.test(
           index: 1,
           events: [updateEvent('provider-1', nextId: 'state-2')],
         ),
@@ -215,20 +224,20 @@ void main() {
 
     test('updates dependencies and dependents when graph changes', () {
       final dependent = ProviderNodeMeta(
-        provider: providerMeta(elementId: 'child'),
+        provider: ProviderMeta.test(elementId: 'child'),
       );
       final weakDependent = ContainerNodeMeta(
         containerId: internals.ContainerId('container-1'),
       );
       final initial = FoldedFrame(
-        frame: devtoolFrame(
+        frame: Frame.test(
           index: 0,
           events: [addEvent('provider-1', stateId: 'state-1')],
         ),
         previous: null,
       );
       final changed = FoldedFrame(
-        frame: devtoolFrame(
+        frame: Frame.test(
           index: 1,
           events: [
             ProviderDependencyChangeEvent(
@@ -257,7 +266,7 @@ void main() {
 
     test('throws if dependency changes reference an unknown element', () {
       final frame = FoldedFrame(
-        frame: devtoolFrame(
+        frame: Frame.test(
           index: 0,
           events: [
             ProviderDependencyChangeEvent(
@@ -276,14 +285,17 @@ void main() {
 
     test('ignores dispose events and keeps previous state snapshot', () {
       final initial = FoldedFrame(
-        frame: devtoolFrame(
+        frame: Frame.test(
           index: 0,
           events: [addEvent('provider-1', stateId: 'state-1')],
         ),
         previous: null,
       );
       final disposed = FoldedFrame(
-        frame: devtoolFrame(index: 1, events: [disposeEvent('provider-1')]),
+        frame: Frame.test(
+          index: 1,
+          events: [disposeEvent('provider-1')],
+        ),
         previous: initial,
       );
 

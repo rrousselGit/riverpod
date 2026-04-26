@@ -5,7 +5,7 @@ sealed class ResolvedVariable {
 
   factory ResolvedVariable.fromInstance(
     CachedObject object,
-    Instance instance,
+    VmInstance instance,
   ) {
     final kind = _SimplifiedInstanceKind.fromInstanceKind(
       _SealedInstanceKind.fromString(instance.kind!),
@@ -47,42 +47,42 @@ final class NullVariable extends ResolvedVariable {
 }
 
 final class BoolVariable extends ResolvedVariable {
-  BoolVariable._fromInstance(super.object, Instance instance)
+  BoolVariable._fromInstance(super.object, VmInstance instance)
     : value = instance.valueAsString == 'true';
 
   final bool value;
 }
 
 final class IntVariable extends ResolvedVariable {
-  IntVariable._fromInstance(super.object, Instance instance)
+  IntVariable._fromInstance(super.object, VmInstance instance)
     : value = int.parse(instance.valueAsString!);
 
   final int value;
 }
 
 final class DoubleVariable extends ResolvedVariable {
-  DoubleVariable._fromInstance(super.object, Instance instance)
+  DoubleVariable._fromInstance(super.object, VmInstance instance)
     : value = double.parse(instance.valueAsString!);
 
   final double value;
 }
 
 final class StringVariable extends ResolvedVariable {
-  StringVariable._fromInstance(super.object, Instance instance)
+  StringVariable._fromInstance(super.object, VmInstance instance)
     : value = instance.valueAsString!;
 
   final String value;
 }
 
 final class TypeVariable extends ResolvedVariable {
-  TypeVariable._fromInstance(super.object, Instance instance)
+  TypeVariable._fromInstance(super.object, VmInstance instance)
     : name = instance.name!;
 
   final String name;
 }
 
 final class RecordVariable extends ResolvedVariable {
-  RecordVariable._fromInstance(super.object, Instance instance)
+  RecordVariable._fromInstance(super.object, VmInstance instance)
     : children = [
         for (final field in instance.fields ?? <BoundField>[])
           DerivedCachedObject.objectField(object, field),
@@ -93,7 +93,7 @@ final class RecordVariable extends ResolvedVariable {
 }
 
 final class ListVariable extends ResolvedVariable {
-  ListVariable._fromInstance(super.object, Instance instance)
+  ListVariable._fromInstance(super.object, VmInstance instance)
     : children = [
         for (final (index, _) in (instance.elements ?? <dynamic>[]).indexed)
           DerivedCachedObject.collectionElement(object, index),
@@ -104,7 +104,7 @@ final class ListVariable extends ResolvedVariable {
 }
 
 final class SetVariable extends ResolvedVariable {
-  SetVariable._fromInstance(super.object, Instance instance)
+  SetVariable._fromInstance(super.object, VmInstance instance)
     : children = [
         for (final (index, _) in (instance.elements ?? <dynamic>[]).indexed)
           DerivedCachedObject.collectionElement(object, index),
@@ -115,7 +115,7 @@ final class SetVariable extends ResolvedVariable {
 }
 
 final class MapVariable extends ResolvedVariable {
-  MapVariable._fromInstance(super.object, Instance instance)
+  MapVariable._fromInstance(super.object, VmInstance instance)
     : children = [
         for (final (index, _)
             in (instance.associations ?? <dynamic>[]).indexed) ...[
@@ -129,7 +129,7 @@ final class MapVariable extends ResolvedVariable {
 }
 
 final class UnknownObjectVariable extends ResolvedVariable {
-  UnknownObjectVariable._(super.object, Instance ref)
+  UnknownObjectVariable._(super.object, VmInstance ref)
     : type = ref.classRef!.name!,
       identityHashCode = ref.identityHashCode,
       children = [

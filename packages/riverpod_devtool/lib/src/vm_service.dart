@@ -16,13 +16,14 @@ part 'vm_service.g.dart';
 part 'vm_service/byte.dart';
 part 'vm_service/eval.dart';
 part 'vm_service/hot_restart.dart';
+part 'vm_service/vm_instance.dart';
 part 'vm_service/instance.dart';
 part 'vm_service/instance_kind.dart';
 part 'vm_service/cache.dart';
 
 Iterable<ItemT> decodeAll<ItemT>(
-  Map<String, InstanceRef> events,
-  ItemT Function(Map<String, InstanceRef>, {required String path}) fn, {
+  Map<String, VmInstanceRef> events,
+  ItemT Function(Map<String, VmInstanceRef>, {required String path}) fn, {
   required String path,
 }) sync* {
   final length = int.parse(events['$path.length']!.valueAsString!);
@@ -51,7 +52,7 @@ String encodeList(
 }
 
 void _validate(
-  Map<String, InstanceRef> events, {
+  Map<String, VmInstanceRef> events, {
   required String name,
   required String path,
 }) {

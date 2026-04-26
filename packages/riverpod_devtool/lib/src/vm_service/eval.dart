@@ -59,7 +59,7 @@ class EvalFactory {
     _evalCache.clear();
   }
 
-  Eval? forRef(InstanceRef? state) {
+  Eval? forRef(VmInstanceRef? state) {
     final libraryUri = state?.classRef?.library?.uri;
     if (libraryUri == null) return null;
 
@@ -129,17 +129,19 @@ class Eval {
     }
   }
 
-  Future<Byte<InstanceRef>> eval(
+  Future<Byte<VmInstanceRef>> eval(
     String code, {
     required Disposable isAlive,
     Map<String, String>? scope,
   }) {
-    return _run(() {
-      return _eval.safeEval(_formatCode(code), isAlive: isAlive, scope: scope);
+    return _run(() async {
+      return VmInstanceRef(
+        await _eval.safeEval(_formatCode(code), isAlive: isAlive, scope: scope),
+      );
     });
   }
 
-  Future<Byte<Instance>> evalInstance(
+  Future<Byte<VmInstance>> evalInstance(
     String code, {
     required Disposable isAlive,
     Map<String, String>? scope,
@@ -147,18 +149,19 @@ class Eval {
     final ref = await eval(code, isAlive: isAlive, scope: scope);
 
     switch (ref) {
-      case ByteError<InstanceRef>():
+      case ByteError<VmInstanceRef>():
         return ByteError(ref.error);
-      case ByteVariable<InstanceRef>():
+      case ByteVariable<VmInstanceRef>():
         return instance(ref.instance, isAlive: isAlive);
     }
   }
 
-  Future<Byte<Instance>> instance(
-    InstanceRef ref, {
+  Future<Byte<VmInstance>> instance(
+    VmInstanceRef ref, {
     required Disposable isAlive,
-  }) {
-    return _run(() => _eval.safeGetInstance(ref, isAlive));
+  }) async {
+    final instance = await _run(() => _eval.safeGetInstance(ref.raw, isAlive));
+    return instance.map(VmInstance.new);
   }
 
   Future<Byte<Class>> getClass(ClassRef ref, {required Disposable isAlive}) {

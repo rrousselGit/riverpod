@@ -7,13 +7,13 @@ sealed class CachedObject {
 
   final String? label;
 
-  InstanceRef? _lastKnownRef;
+  VmInstanceRef? _lastKnownRef;
 
-  Future<Byte<Instance>> read(
+  Future<Byte<VmInstance>> read(
     EvalFactory eval, {
     required Disposable isAlive,
   }) async {
-    InstanceRef ref;
+    VmInstanceRef ref;
     if (_lastKnownRef case final lastKnownRef?) {
       ref = lastKnownRef;
     } else {
@@ -41,7 +41,7 @@ sealed class CachedObject {
         final byte = await eval.dartCore.instance(ref, isAlive: isAlive);
 
         _lastKnownRef = switch (byte) {
-          ByteVariable() => byte.instance,
+          ByteVariable() => byte.instance.ref,
           ByteError() => null,
         };
 
@@ -50,7 +50,7 @@ sealed class CachedObject {
     );
   }
 
-  Future<Byte<InstanceRef>> readRef(EvalFactory eval, Disposable isAlive) {
+  Future<Byte<VmInstanceRef>> readRef(EvalFactory eval, Disposable isAlive) {
     if (_lastKnownRef case final lastKnownRef?) {
       return Future.value(ByteVariable(lastKnownRef));
     }
@@ -58,7 +58,7 @@ sealed class CachedObject {
     return _fetchInstance(eval, isAlive);
   }
 
-  Future<Byte<InstanceRef>> _fetchInstance(
+  Future<Byte<VmInstanceRef>> _fetchInstance(
     EvalFactory eval,
     Disposable isAlive,
   );
@@ -109,7 +109,7 @@ class RootCachedObject extends CachedObject {
   final CacheId id;
 
   @override
-  Future<Byte<InstanceRef>> _fetchInstance(
+  Future<Byte<VmInstanceRef>> _fetchInstance(
     EvalFactory eval,
     Disposable isAlive,
   ) {
@@ -220,10 +220,11 @@ final class DerivedCachedObject extends CachedObject {
   }
 
   final CachedObject from;
-  final Byte<InstanceRef> Function(Instance parent) obtainRefFromParentInstance;
+  final Byte<VmInstanceRef> Function(VmInstance parent)
+  obtainRefFromParentInstance;
 
   @override
-  Future<Byte<InstanceRef>> _fetchInstance(
+  Future<Byte<VmInstanceRef>> _fetchInstance(
     EvalFactory eval,
     Disposable isAlive,
   ) async {

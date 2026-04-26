@@ -9,7 +9,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 // ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
-import 'package:vm_service/vm_service.dart' hide Frame;
 
 import 'collection.dart';
 import 'elements.dart';
@@ -226,10 +225,10 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
     final instance = instanceByte.require.instance;
     final map = Map.fromEntries(
       instance.associations!.map((e) {
-        return MapEntry(
-          (e.key as InstanceRef).valueAsString!,
-          e.value as InstanceRef,
-        );
+        final key = VmInstanceRef.fromObject(e.key);
+        final value = VmInstanceRef.fromObject(e.value);
+
+        return MapEntry(key.valueAsString!, value);
       }),
     );
 

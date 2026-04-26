@@ -11,7 +11,10 @@ part of 'vm_service.dart';
 sealed class Event {
   Event();
 
-  factory Event.from(Map<String, InstanceRef> events, {required String path}) {
+  factory Event.from(
+    Map<String, VmInstanceRef> events, {
+    required String path,
+  }) {
     final type = events[path]?.valueAsString;
 
     switch (type) {
@@ -44,7 +47,7 @@ sealed class NodeMeta {
   NodeMeta();
 
   factory NodeMeta.from(
-    Map<String, InstanceRef> events, {
+    Map<String, VmInstanceRef> events, {
     required String path,
   }) {
     final type = events[path]?.valueAsString;
@@ -73,7 +76,10 @@ class Frame {
   Frame.test({required this.index, required this.events, DateTime? timestamp})
     : timestamp = timestamp ?? DateTime(2026).add(Duration(seconds: index));
 
-  factory Frame.from(Map<String, InstanceRef> $events, {required String path}) {
+  factory Frame.from(
+    Map<String, VmInstanceRef> $events, {
+    required String path,
+  }) {
     _validate($events, name: 'Frame', path: path);
 
     final timestamp = DateTime.fromMillisecondsSinceEpoch(
@@ -136,7 +142,7 @@ class ProviderMeta {
            element ?? RootCachedObject(CacheId('element-cache-$elementId'));
 
   factory ProviderMeta.from(
-    Map<String, InstanceRef> $events, {
+    Map<String, VmInstanceRef> $events, {
     required String path,
   }) {
     _validate($events, name: 'ProviderMeta', path: path);
@@ -219,7 +225,7 @@ class OriginMeta {
        hashValue = hashValue ?? 'hash-$id';
 
   factory OriginMeta.from(
-    Map<String, InstanceRef> $events, {
+    Map<String, VmInstanceRef> $events, {
     required String path,
   }) {
     _validate($events, name: 'OriginMeta', path: path);
@@ -268,7 +274,7 @@ class ProviderContainerAddEvent extends Event {
   });
 
   factory ProviderContainerAddEvent.from(
-    Map<String, InstanceRef> $events, {
+    Map<String, VmInstanceRef> $events, {
     required String path,
   }) {
     _validate($events, name: 'ProviderContainerAddEvent', path: path);
@@ -305,7 +311,7 @@ class ProviderContainerDisposeEvent extends Event {
   ProviderContainerDisposeEvent({required this.container});
 
   factory ProviderContainerDisposeEvent.from(
-    Map<String, InstanceRef> $events, {
+    Map<String, VmInstanceRef> $events, {
     required String path,
   }) {
     _validate($events, name: 'ProviderContainerDisposeEvent', path: path);
@@ -329,7 +335,7 @@ class ProviderElementAddEvent extends Event {
   });
 
   factory ProviderElementAddEvent.from(
-    Map<String, InstanceRef> $events, {
+    Map<String, VmInstanceRef> $events, {
     required String path,
   }) {
     _validate($events, name: 'ProviderElementAddEvent', path: path);
@@ -357,7 +363,7 @@ class ProviderElementDisposeEvent extends Event {
   ProviderElementDisposeEvent({required this.provider});
 
   factory ProviderElementDisposeEvent.from(
-    Map<String, InstanceRef> $events, {
+    Map<String, VmInstanceRef> $events, {
     required String path,
   }) {
     _validate($events, name: 'ProviderElementDisposeEvent', path: path);
@@ -379,7 +385,7 @@ class ProviderStateRef {
     : state = RootCachedObject(CacheId(cacheId));
 
   factory ProviderStateRef.from(
-    Map<String, InstanceRef> $events, {
+    Map<String, VmInstanceRef> $events, {
     required String path,
   }) {
     _validate($events, name: 'ProviderStateRef', path: path);
@@ -403,7 +409,7 @@ class ProviderElementUpdateEvent extends Event {
   });
 
   factory ProviderElementUpdateEvent.from(
-    Map<String, InstanceRef> $events, {
+    Map<String, VmInstanceRef> $events, {
     required String path,
   }) {
     _validate($events, name: 'ProviderElementUpdateEvent', path: path);
@@ -431,7 +437,7 @@ class ProviderNodeMeta extends NodeMeta {
   ProviderNodeMeta({required this.provider});
 
   factory ProviderNodeMeta.from(
-    Map<String, InstanceRef> $events, {
+    Map<String, VmInstanceRef> $events, {
     required String path,
   }) {
     _validate($events, name: 'ProviderNodeMeta', path: path);
@@ -449,7 +455,7 @@ class ContainerNodeMeta extends NodeMeta {
   ContainerNodeMeta({required this.containerId});
 
   factory ContainerNodeMeta.from(
-    Map<String, InstanceRef> $events, {
+    Map<String, VmInstanceRef> $events, {
     required String path,
   }) {
     _validate($events, name: 'ContainerNodeMeta', path: path);
@@ -469,7 +475,7 @@ class ConsumerNodeMeta extends NodeMeta {
   ConsumerNodeMeta({required this.consumerId});
 
   factory ConsumerNodeMeta.from(
-    Map<String, InstanceRef> $events, {
+    Map<String, VmInstanceRef> $events, {
     required String path,
   }) {
     _validate($events, name: 'ConsumerNodeMeta', path: path);
@@ -494,7 +500,7 @@ class ProviderDependencyChangeEvent extends Event {
   });
 
   factory ProviderDependencyChangeEvent.from(
-    Map<String, InstanceRef> $events, {
+    Map<String, VmInstanceRef> $events, {
     required String path,
   }) {
     _validate($events, name: 'ProviderDependencyChangeEvent', path: path);
@@ -555,7 +561,7 @@ class ConsumerMeta {
   });
 
   factory ConsumerMeta.from(
-    Map<String, InstanceRef> $events, {
+    Map<String, VmInstanceRef> $events, {
     required String path,
   }) {
     _validate($events, name: 'ConsumerMeta', path: path);
