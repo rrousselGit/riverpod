@@ -1,0 +1,32 @@
+name: counter
+description: A new Flutter project.
+
+publish_to: "none"
+
+environment:
+  sdk: ^3.7.0
+  flutter: ">=1.17.0"
+
+resolution: workspace
+
+dependencies:
+  cupertino_icons: ^1.0.2
+  flutter:
+    sdk: flutter
+  flutter_riverpod:
+  freezed_annotation: ^3.0.0
+  hooks_riverpod:
+  json_annotation: ^4.9.0
+  riverpod:
+  riverpod_annotation:
+
+dev_dependencies:
+  build_runner: ^2.11.0
+  flutter_test:
+    sdk: flutter
+  freezed: ^3.2.0
+  json_serializable: ^6.6.1
+  riverpod_generator:
+
+flutter:
+  uses-material-design: true
