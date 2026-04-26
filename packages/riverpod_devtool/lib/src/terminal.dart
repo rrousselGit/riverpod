@@ -100,7 +100,6 @@ final class _TerminalState extends ConsumerState<Terminal> {
     super.dispose();
   }
 
-  // 344678928
   @override
   Widget build(BuildContext context) {
     return Column(

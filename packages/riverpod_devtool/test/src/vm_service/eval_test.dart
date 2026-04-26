@@ -65,10 +65,14 @@ void main() {
     });
 
     test('returns non-expired errors without retrying', () async {
+      var attempts = 0;
       var retries = 0;
 
       final result = await runAndRetryOnExpired<int>(
-        () async => ByteError(UnknownEvalErrorType('boom')),
+        () async {
+          attempts++;
+          return ByteError(UnknownEvalErrorType('boom'));
+        },
         onRetry: () {
           retries++;
           return null;
@@ -81,6 +85,7 @@ void main() {
         'UnknownEvalError: boom',
       );
       expect(retries, 0);
+      expect(attempts, 1);
     });
   });
 }
