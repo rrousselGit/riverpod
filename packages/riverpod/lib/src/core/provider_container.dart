@@ -1070,10 +1070,10 @@ final class ProviderContainer implements Node, MutationTarget {
       case ProviderBase<Object?>():
         _pointerManager
             .readElement(provider)
-            ?.invalidateSelf(asReload: asReload);
+            ?.invalidateSelf(asReload: asReload, manual: true);
       case Family():
         for (final element in _pointerManager.listFamily(provider)) {
-          element.invalidateSelf(asReload: asReload);
+          element.invalidateSelf(asReload: asReload, manual: true);
         }
     }
   }
