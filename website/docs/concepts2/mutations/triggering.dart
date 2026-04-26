@@ -35,10 +35,9 @@ class AddTodoButton extends ConsumerWidget {
     return ElevatedButton(
       onPressed: () {
         // Trigger the mutation, and run the callback.
-        // The callback runs inside an action.
-        // This lets imperative APIs such as read keep providers alive
-        // for the duration of the operation.
-        addTodo.run(ref, () async {
+        // Reads inside the callback keep providers alive
+        // for the duration of the mutation.
+        addTodo.run2(ref, () async {
           final todoNotifier = ref.read(todoNotifierProvider.notifier);
 
           // We perform a request using a Notifier.

@@ -256,18 +256,18 @@ followed:
 
 ```dart
 onPressed: () {
-  addTodoMutation.run(ref, () async {
+  addTodoMutation.run2(ref, () async {
     // This is where we run our side-effect.
-    // Here, we typically use Ref.read to obtain a Notifier and call a method on it.
+    // Here, we can read a Notifier directly and call a method on it.
     await ref.read(todoListProvider.notifier).addTodo('New Todo');
   });
 }
 ```
 
 :::note
-Mutations now execute their callback inside an action.  
-As such, imperative APIs such as [Ref.read] keep touched providers alive until
-the mutation completes.
+`run2` executes the callback inside an action.  
+Imperative reads such as [Ref.read] keep touched providers alive until the
+mutation completes.
 :::
 
 
