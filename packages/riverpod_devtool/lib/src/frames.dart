@@ -87,7 +87,7 @@ final selectedFrameProvider = Provider<FoldedFrame?>(
 final framesProvider =
     AsyncNotifierProvider.autoDispose<FramesNotifier, List<FoldedFrame>>(
       FramesNotifier.new,
-      name: 'providerElementsProvider',
+      name: 'framesProvider',
     );
 
 class AccumulatedState {
