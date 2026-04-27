@@ -12,10 +12,10 @@ const mutationZoneKey = #_mutation;
 ///
 /// Use [get] to imperatively read a provider while the mutation is pending.
 /// Providers accessed this way remain alive for the duration of the mutation.
-@Deprecated('Use actions')
+@Deprecated('You can now use `ref.read` directly inside `Mutation.run`')
 @publicInMutations
 final class MutationTransaction {
-  @Deprecated('Use actions')
+  @Deprecated('You can now use `ref.read` directly inside `Mutation.run`')
   MutationTransaction._(this._container);
 
   final ProviderContainer _container;

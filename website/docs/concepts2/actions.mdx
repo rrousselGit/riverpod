@@ -8,11 +8,11 @@ import runningAction from 'raw-loader!./actions/running_action.dart';
 import returningResult from 'raw-loader!./actions/returning_result.dart';
 import keepingAlive from 'raw-loader!./actions/keeping_alive.dart';
 
-Actions are an imperative helper for running side-effects while temporarily
+Runs are an imperative helper for running side-effects while temporarily
 keeping the providers used by that side-effect alive.
 
 :::caution
-Actions are experimental, and the API may change in a breaking way without a
+Runs are experimental, and the API may change in a breaking way without a
 major version bump.
 :::
 
@@ -49,7 +49,7 @@ to dispose as soon as the read is no longer actively listened to.
 
 ## Supported APIs inside actions
 
-Actions are meant to work with imperative APIs:
+Runs are meant to work with imperative APIs:
 
 - `ProviderContainer.read`
 - `Ref.read`
@@ -63,7 +63,7 @@ action ends.
 
 ## APIs to avoid inside actions
 
-Actions are not declarative, so `watch`-based APIs are intentionally not part
+Runs are not declarative, so `watch`-based APIs are intentionally not part
 of the pattern.
 
 - Use `read` instead of `Ref.watch` or `WidgetRef.watch`.
@@ -73,9 +73,9 @@ If you need rebuilds driven by provider changes, stay in a declarative widget or
 provider context and use <Link documentID="concepts2/consumers" /> or
 <Link documentID="concepts2/refs" /> APIs directly.
 
-## Actions vs mutations
+## Runs vs mutations
 
-Use actions when you simply want to perform imperative work while keeping the
+Use runs when you simply want to perform imperative work while keeping the
 used providers alive.
 
 Use <Link documentID="concepts2/mutations" /> when the user interface should
