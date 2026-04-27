@@ -19,8 +19,9 @@ final currentUserProvider = FutureProvider.autoDispose<User>((ref) {
 });
 
 Future<User> loadCurrentUser(ProviderContainer container) {
-  return action(() async {
+  return run(() async {
     return await container.read(currentUserProvider.future);
   });
 }
+
 /* SNIPPET END */

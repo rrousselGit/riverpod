@@ -154,7 +154,7 @@ void main() {
       verifyNoMoreInteractions(listener);
     });
 
-    testWidgets('closes subscriptions when the action ends', (tester) async {
+    testWidgets('closes subscriptions when the run ends', (tester) async {
       final completer = Completer<void>();
       final provider = StateProvider((ref) => 0);
       final listener = Listener<int>();
@@ -171,7 +171,7 @@ void main() {
         ),
       );
 
-      final future = action(() async {
+      final future = run(() async {
         ref.listenManual(provider, listener.call);
         await completer.future;
       });
@@ -188,7 +188,7 @@ void main() {
   });
 
   group('WidgetRef.listen', () {
-    testWidgets('throws inside action', (tester) async {
+    testWidgets('throws inside run', (tester) async {
       final provider = Provider((ref) => 0);
       late WidgetRef widgetRef;
 
@@ -204,7 +204,7 @@ void main() {
       );
 
       await expectLater(
-        action(() async {
+        run(() async {
           widgetRef.listen(provider, (_, _) {});
         }),
         throwsA(isA<AssertionError>()),

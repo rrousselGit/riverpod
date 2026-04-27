@@ -8,7 +8,7 @@ import '../matrix.dart';
 import '../utils.dart';
 
 void main() {
-  group('action', () {
+  group('run', () {
     test('keeps autoDispose providers active while pending', () async {
       final container = ProviderContainer.test();
       final completer = Completer<int>();
@@ -19,7 +19,7 @@ void main() {
         return completer.future;
       });
 
-      final future = action(() async {
+      final future = run(() async {
         return container.read(provider.future);
       });
 
@@ -60,7 +60,7 @@ void main() {
 
         container.read(holder);
 
-        final future = action(() async => notifier.ref.read(provider.future));
+        final future = run(() async => notifier.ref.read(provider.future));
 
         final element = container.readProviderElement(provider);
         expect(element.isActive, true);
@@ -80,7 +80,7 @@ void main() {
       },
     );
 
-    test('deduplicates reads of the same provider within an action', () async {
+    test('deduplicates reads of the same provider within a run', () async {
       final container = ProviderContainer.test();
       var buildCount = 0;
       final provider = Provider.autoDispose((ref) {
@@ -88,7 +88,7 @@ void main() {
         return 42;
       });
 
-      final result = action(() async {
+      final result = run(() async {
         expect(container.read(provider), 42);
         expect(container.read(provider), 42);
         return container.read(provider);
@@ -102,7 +102,7 @@ void main() {
       expect(container.pointerManager.readPointer(provider), isNull);
     });
 
-    test('throws if Ref.watch is used inside an action', () async {
+    test('throws if Ref.watch is used inside a run', () async {
       final container = ProviderContainer.test();
       final notifier = DeferredNotifier<int>((ref, self) => 0);
       final holder = NotifierProvider<DeferredNotifier<int>, int>(
@@ -113,20 +113,20 @@ void main() {
       container.read(holder);
 
       await expectLater(
-        action(() async => notifier.ref.watch(provider)),
+        run(() async => notifier.ref.watch(provider)),
         throwsA(isA<AssertionError>()),
       );
     });
 
     test(
-      'does not treat Ref.watch from providers initialized in an action as part of the action',
+      'does not treat Ref.watch from providers initialized in a run as part of the run',
       () async {
         final container = ProviderContainer.test();
         final dep = StateProvider((ref) => 42);
         final provider = Provider.autoDispose((ref) => ref.watch(dep));
 
         await expectLater(
-          action(() async => container.read(provider)),
+          run(() async => container.read(provider)),
           completion(42),
         );
 
@@ -137,11 +137,11 @@ void main() {
     );
 
     test(
-      'does not treat Ref.read from providers initialized in an action as part of the action',
+      'does not treat Ref.read from providers initialized in a run as part of the run',
       () async {
         final container = ProviderContainer.test();
         final providerCompleter = Completer<int>();
-        final actionCompleter = Completer<void>();
+        final runCompleter = Completer<void>();
         final onDispose = OnDisposeMock();
 
         final dep = FutureProvider.autoDispose<int>((ref) {
@@ -152,9 +152,9 @@ void main() {
           (ref) => ref.read(dep.future),
         );
 
-        final future = action(() async {
+        final future = run(() async {
           container.read(provider);
-          await actionCompleter.future;
+          await runCompleter.future;
         });
 
         await container.pump();
@@ -163,7 +163,7 @@ void main() {
         expect(container.pointerManager.readPointer(provider), isNotNull);
         expect(container.pointerManager.readPointer(dep), isNull);
 
-        actionCompleter.complete();
+        runCompleter.complete();
         await future;
 
         providerCompleter.complete(42);
@@ -171,10 +171,10 @@ void main() {
     );
 
     test(
-      'does not close Ref.listen from providers initialized in an action when the action ends',
+      'does not close Ref.listen from providers initialized in a run when the run ends',
       () async {
         final container = ProviderContainer.test();
-        final actionCompleter = Completer<void>();
+        final runCompleter = Completer<void>();
         final listener = Listener<int>();
         final dep = StateProvider((ref) => 0);
 
@@ -183,16 +183,16 @@ void main() {
           return 42;
         });
 
-        final future = action(() async {
+        final future = run(() async {
           expect(container.read(provider), 42);
-          await actionCompleter.future;
+          await runCompleter.future;
         });
 
         await container.pump();
 
         final keepAlive = container.listen(provider, (_, _) {});
 
-        actionCompleter.complete();
+        runCompleter.complete();
         await future;
 
         container.read(dep.notifier).state++;
@@ -204,14 +204,14 @@ void main() {
     );
 
     test(
-      'closes ProviderContainer.listen subscriptions when the action ends',
+      'closes ProviderContainer.listen subscriptions when the run ends',
       () async {
         final container = ProviderContainer.test();
         final completer = Completer<void>();
         final listener = Listener<int>();
         final dep = StateProvider((ref) => 0);
 
-        final future = action(() async {
+        final future = run(() async {
           container.listen(dep, listener.call);
           await completer.future;
         });
@@ -229,7 +229,7 @@ void main() {
       },
     );
 
-    test('closes Ref.listen subscriptions when the action ends', () async {
+    test('closes Ref.listen subscriptions when the run ends', () async {
       final container = ProviderContainer.test();
       final completer = Completer<void>();
       final listener = Listener<int>();
@@ -241,7 +241,7 @@ void main() {
 
       container.read(holder);
 
-      final future = action(() async {
+      final future = run(() async {
         notifier.ref.listen(dep, listener.call);
         await completer.future;
       });
@@ -259,8 +259,8 @@ void main() {
     });
   });
 
-  group('voidAction', () {
-    test('returns a callback that runs inside action', () async {
+  group('voidRun', () {
+    test('returns a callback that runs inside run', () async {
       final container = ProviderContainer.test();
       final completer = Completer<int>();
       final onDispose = OnDisposeMock();
@@ -270,7 +270,7 @@ void main() {
         return completer.future;
       });
 
-      final callback = voidAction(() async {
+      final callback = voidRun(() async {
         await container.read(provider.future);
       });
 

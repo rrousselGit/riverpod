@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('WidgetRef', () {
-    testWidgets('read participates in action retention', (tester) async {
+    testWidgets('read participates in run retention', (tester) async {
       final completer = Completer<int>();
       var disposed = false;
       final provider = FutureProvider.autoDispose<int>((ref) {
@@ -23,7 +23,7 @@ void main() {
 
       final ref = tester.firstElement(find.byType(Consumer)) as WidgetRef;
 
-      final future = action(() async => ref.read(provider.future));
+      final future = run(() async => ref.read(provider.future));
 
       await tester.pump();
       expect(disposed, false);
@@ -36,7 +36,7 @@ void main() {
       expect(disposed, true);
     });
 
-    testWidgets('watch throws inside action', (tester) async {
+    testWidgets('watch throws inside run', (tester) async {
       final provider = Provider((ref) => 42);
       late WidgetRef widgetRef;
 
@@ -52,7 +52,7 @@ void main() {
       );
 
       await expectLater(
-        action(() async => widgetRef.watch(provider)),
+        run(() async => widgetRef.watch(provider)),
         throwsA(isA<AssertionError>()),
       );
     });

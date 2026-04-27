@@ -30,7 +30,7 @@
   mutation.run2(ref, () async => ref.read(...));
   ```
   In version 4.0, `run` will be removed and `run2` will be renamed to `run`.
-- Added `action`/`voidAction`, as syntax sugar to using Mutations for keeping providers alive
+- Added `run`/`voidRun`, as syntax sugar to using Mutations for keeping providers alive
   during side-effects.
 - Added `ProviderContainer.allProviders()`, to obtain all providers accessible from said container. You can optionally specify `allProviders(family: myFamily)` to only include providers from said family.
 - Refactored internal scheduling mechanism to solve some markNeedsBuild error.

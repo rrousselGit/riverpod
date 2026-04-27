@@ -24,8 +24,9 @@ class TodoListNotifier extends Notifier<List<Todo>> {
 
 /* SNIPPET START */
 Future<Todo> createTodo(WidgetRef ref, String title) {
-  return action(() {
+  return run(() {
     return ref.read(todoListProvider.notifier).addTodo(title);
   });
 }
+
 /* SNIPPET END */
