@@ -1,5 +1,5 @@
 ---
-title: Actions (experimental)
+title: Runs (experimental)
 ---
 import CodeBlock from "@theme/CodeBlock";
 import { Link } from "/src/components/Link";
@@ -21,8 +21,8 @@ other event handlers where using `watch` would be inappropriate.
 
 Riverpod exposes two top-level helpers:
 
-- `action`, which returns a value.
-- `voidAction`, a shorthand for actions that return `void`.
+- `run`, which returns a value.
+- `voidRun`, a shorthand for actions that return `void`.
 
 ## Running an action
 
@@ -31,7 +31,7 @@ Use an action from an imperative callback, then interact with providers through
 
 <CodeBlock>{trimSnippet(runningAction)}</CodeBlock>
 
-If you need a result, use `action` instead:
+If you need a result, use `run` instead:
 
 <CodeBlock>{trimSnippet(returningResult)}</CodeBlock>
 

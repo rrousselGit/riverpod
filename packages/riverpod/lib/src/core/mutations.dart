@@ -347,14 +347,17 @@ sealed class Mutation<ResultT>
   /// [MutationSuccess] or [MutationError] depending on whether the callback
   /// completes successfully or throws an error.
   ///
-  /// [run] executes [cb] inside an [action].
+  /// [run] executes [cb] inside a top-level `run` callback.
   /// This means imperative APIs such as [ProviderContainer.read] and [Ref.read]
   /// automatically keep touched providers alive for the duration of [cb].
-  /// Any action-managed subscriptions created during the callback are closed
+  /// Any run-managed subscriptions created during the callback are closed
   /// when the mutation completes.
   ///
   /// Use [MutationTransaction.get] inside [cb] to interact with providers while
   /// keeping them alive for the duration of the mutation.
+  ///
+  /// See also:
+  /// - top-level `run`, to keep providers alive without using a mutation.
   @Deprecated('use run2')
   Future<ResultT> run(
     MutationTarget target,
@@ -368,11 +371,14 @@ sealed class Mutation<ResultT>
   /// [MutationSuccess] or [MutationError] depending on whether the callback
   /// completes successfully or throws an error.
   ///
-  /// [run2] executes [cb] inside an [action].
+  /// [run2] executes [cb] inside a top-level `run` callback.
   /// This means imperative APIs such as [ProviderContainer.read] and [Ref.read]
   /// automatically keep touched providers alive for the duration of [cb].
-  /// Any action-managed subscriptions created during the callback are closed
+  /// Any run-managed subscriptions created during the callback are closed
   /// when the mutation completes.
+  ///
+  /// See also:
+  /// - top-level `run`, to keep providers alive without using a mutation.
   Future<ResultT> run2(MutationTarget target, Future<ResultT> Function() cb);
 
   /// Resets the mutation to its initial state ([MutationIdle]).
@@ -437,7 +443,7 @@ final class MutationImpl<ResultT>
       try {
         mut._mutationStart(sub, ref);
 
-        final result = await action(() => cb(ref));
+        final result = await _runInternal(() => cb(ref));
 
         mut._mutationSuccess(sub, ref, result);
 

@@ -22,7 +22,7 @@ class AddTodoButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ElevatedButton(
-      onPressed: voidAction(() async {
+      onPressed: voidRun(() async {
         await ref.read(todoListProvider.notifier).addTodo('Eat a cookie');
       }),
       child: const Text('Add todo'),
