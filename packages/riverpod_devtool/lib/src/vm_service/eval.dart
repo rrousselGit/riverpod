@@ -22,7 +22,7 @@ final evalProvider = FutureProvider.autoDispose<EvalFactory>(
   },
 );
 
-extension type RiverpodEval._(Eval _eval) implements Eval {}
+extension type RiverpodEval(Eval _eval) implements Eval {}
 
 class EvalFactory {
   EvalFactory({required this.vmService, required this.serviceManager});
@@ -30,7 +30,7 @@ class EvalFactory {
   Eval get dartCore => forLibrary('dart:core');
   Eval get dartAsync => forLibrary('dart:async');
   RiverpodEval get riverpodFramework =>
-      RiverpodEval._(forLibrary('package:riverpod/src/framework.dart'));
+      RiverpodEval(forLibrary('package:riverpod/src/framework.dart'));
 
   final VmService vmService;
   final ServiceManager serviceManager;
@@ -80,18 +80,15 @@ Future<Byte<ValueT>> runAndRetryOnExpired<ValueT>(
     switch (result) {
       case ByteVariable():
         return result;
-      case ByteError(error: SentinelExceptionType(:final error))
-          when error.kind == SentinelKind.kExpired:
+      case ByteError(error: ExpiredSentinelExceptionType()) when i < maxRetries:
         if (onRetry != null) {
           final error = await onRetry();
           if (error != null) return ByteError(error);
         }
 
         continue;
-      case ByteError() when i == maxRetries:
-        return result;
       case ByteError():
-        continue;
+        return result;
     }
   }
 }

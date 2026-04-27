@@ -84,13 +84,29 @@ sealed class ByteErrorType {
   const ByteErrorType();
 }
 
-final class SentinelExceptionType extends ByteErrorType {
-  const SentinelExceptionType(this.error);
+sealed class SentinelExceptionType extends ByteErrorType {
+  factory SentinelExceptionType(Sentinel error) {
+    return switch (error.kind) {
+      SentinelKind.kExpired => ExpiredSentinelExceptionType(error),
+      _ => GenericSentinelExceptionType(error),
+    };
+  }
+
+  const SentinelExceptionType._(this.error);
+
   final Sentinel error;
 
   @override
   String toString() =>
       error.valueAsString ?? '<unknown sentinel error ${error.kind}>';
+}
+
+final class ExpiredSentinelExceptionType extends SentinelExceptionType {
+  const ExpiredSentinelExceptionType(super.error) : super._();
+}
+
+final class GenericSentinelExceptionType extends SentinelExceptionType {
+  const GenericSentinelExceptionType(super.error) : super._();
 }
 
 final class EvalErrorType extends ByteErrorType {

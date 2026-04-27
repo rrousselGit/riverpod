@@ -45,7 +45,7 @@ void main() {
           attempts++;
           if (attempts < 3) {
             return ByteError(
-              SentinelExceptionType(
+              ExpiredSentinelExceptionType(
                 Sentinel(kind: SentinelKind.kExpired, valueAsString: 'expired'),
               ),
             );

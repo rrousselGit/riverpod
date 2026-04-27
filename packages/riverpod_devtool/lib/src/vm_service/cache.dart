@@ -21,8 +21,11 @@ sealed class CachedObject {
       switch (byte) {
         case ByteVariable():
           ref = _lastKnownRef = byte.instance;
-        case ByteError():
-          return ByteError(byte.error);
+        case ByteError(error: final ExpiredSentinelExceptionType error):
+          _lastKnownRef = null;
+          return ByteError(error);
+        case ByteError(:final error):
+          return ByteError(error);
       }
     }
 
@@ -30,8 +33,11 @@ sealed class CachedObject {
       onRetry: () async {
         final newRef = await _fetchInstance(eval, isAlive);
         switch (newRef) {
-          case ByteError():
-            return newRef.error;
+          case ByteError(error: final ExpiredSentinelExceptionType error):
+            _lastKnownRef = null;
+            return error;
+          case ByteError(:final error):
+            return error;
           case ByteVariable():
             _lastKnownRef = ref = newRef.instance;
             return null;
@@ -40,10 +46,13 @@ sealed class CachedObject {
       () async {
         final byte = await eval.dartCore.instance(ref, isAlive: isAlive);
 
-        _lastKnownRef = switch (byte) {
-          ByteVariable() => byte.instance.ref,
-          ByteError() => null,
-        };
+        switch (byte) {
+          case ByteVariable():
+            _lastKnownRef = byte.instance.ref;
+          case ByteError(error: ExpiredSentinelExceptionType()):
+            _lastKnownRef = null;
+          case ByteError():
+        }
 
         return byte;
       },

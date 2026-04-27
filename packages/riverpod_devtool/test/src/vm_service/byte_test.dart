@@ -9,10 +9,7 @@ void main() {
       final instance = VmInstance.string('world');
 
       expect(Byte.instanceRef(ref), ByteVariable(VmInstanceRef(ref)));
-      expect(
-        Byte.instanceRef(instance),
-        ByteVariable(VmInstanceRef(instance)),
-      );
+      expect(Byte.instanceRef(instance), ByteVariable(VmInstanceRef(instance)));
     });
 
     test('turns sentinels into errors', () {
@@ -21,7 +18,26 @@ void main() {
       );
 
       expect(result, isA<ByteError<VmInstanceRef>>());
-      expect((result as ByteError<VmInstanceRef>).error.toString(), 'expired');
+      expect(
+        (result as ByteError<VmInstanceRef>).error,
+        isA<ExpiredSentinelExceptionType>(),
+      );
+      expect(result.error.toString(), 'expired');
+    });
+
+    test('uses a non-expired subtype for other sentinels', () {
+      final result = Byte.instanceRef(
+        Sentinel(
+          kind: SentinelKind.kNotInitialized,
+          valueAsString: 'not initialized',
+        ),
+      );
+
+      expect(result, isA<ByteError<VmInstanceRef>>());
+      expect(
+        (result as ByteError<VmInstanceRef>).error,
+        isA<GenericSentinelExceptionType>(),
+      );
     });
 
     test('throws on unsupported input', () {
@@ -59,5 +75,6 @@ void main() {
         contains('RPCError: eval: (500) Boom'),
       );
     });
+
   });
 }
