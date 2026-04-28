@@ -547,11 +547,7 @@ class _Circle extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(size * 2),
-        border: border,
-        color: color,
-      ),
+      decoration: BoxDecoration(shape: .circle, border: border, color: color),
     );
   }
 }

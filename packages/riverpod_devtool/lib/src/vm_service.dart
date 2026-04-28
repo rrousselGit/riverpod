@@ -56,12 +56,12 @@ void _validate(
   required String name,
   required String path,
 }) {
-  // final startEvent = events['$path._type']?.valueAsString;
-  // if (startEvent != name) {
-  //   throw ArgumentError(
-  //     'Invalid event type, expected "$name" but got $startEvent',
-  //   );
-  // }
+  final startEvent = events['$path._type']?.valueAsString;
+  if (startEvent != null && startEvent != name) {
+    throw ArgumentError(
+      'Invalid event type, expected "$name" but got $startEvent',
+    );
+  }
 }
 
 /// A provider that emits an update when a hot-restart is detected.
