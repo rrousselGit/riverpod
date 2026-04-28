@@ -75,6 +75,5 @@ void main() {
         contains('RPCError: eval: (500) Boom'),
       );
     });
-
   });
 }

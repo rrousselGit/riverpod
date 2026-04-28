@@ -154,7 +154,10 @@ void main() {
         'ok',
       );
       expect(cachedRef, isA<ByteVariable<VmInstanceRef>>());
-      expect((cachedRef as ByteVariable<VmInstanceRef>).instance, isNot(staleRef));
+      expect(
+        (cachedRef as ByteVariable<VmInstanceRef>).instance,
+        isNot(staleRef),
+      );
       expect(fetchCount, 2);
       expect(seenRefs, hasLength(2));
       expect(seenRefs.first, staleRef);

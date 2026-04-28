@@ -33,7 +33,9 @@ ProviderElementUpdateEvent updateEvent(
 }
 
 ProviderElementDisposeEvent disposeEvent(String elementId) {
-  return ProviderElementDisposeEvent(provider: ProviderMeta.test(elementId: elementId));
+  return ProviderElementDisposeEvent(
+    provider: ProviderMeta.test(elementId: elementId),
+  );
 }
 
 void main() {
@@ -41,10 +43,7 @@ void main() {
     test('requires the first frame to start at index zero', () {
       expect(
         () => FoldedFrame(
-          frame: Frame.test(
-            index: 1,
-            events: const [],
-          ),
+          frame: Frame.test(index: 1, events: const []),
           previous: null,
         ),
         throwsStateError,
@@ -76,19 +75,13 @@ void main() {
 
     test('requires consecutive indexes', () {
       final first = FoldedFrame(
-        frame: Frame.test(
-          index: 0,
-          events: const [],
-        ),
+        frame: Frame.test(index: 0, events: const []),
         previous: null,
       );
 
       expect(
         () => FoldedFrame(
-          frame: Frame.test(
-            index: 2,
-            events: const [],
-          ),
+          frame: Frame.test(index: 2, events: const []),
           previous: first,
         ),
         throwsStateError,
@@ -292,10 +285,7 @@ void main() {
         previous: null,
       );
       final disposed = FoldedFrame(
-        frame: Frame.test(
-          index: 1,
-          events: [disposeEvent('provider-1')],
-        ),
+        frame: Frame.test(index: 1, events: [disposeEvent('provider-1')]),
         previous: initial,
       );
 

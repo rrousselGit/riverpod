@@ -16,7 +16,7 @@ part of '../framework.dart';
 ///   // Use Riverpod as normal
 /// }
 /// ```
-/// 
+///
 /// Make sure to hot-restart your application after changing this flag.
 /// The devtool should then automatically pick up the stack trace of providers.
 bool debugTrackProviderCreation = false;
