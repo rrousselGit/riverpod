@@ -161,3 +161,43 @@ final class CProvider extends $FunctionalProvider<String, String, String>
 }
 
 String _$cHash() => r'0740be3fc310f1a5a8e637f5c7283d601013d3d2';
+
+@ProviderFor(d)
+final dProvider = DProvider._();
+
+final class DProvider extends $FunctionalProvider<String, String, String>
+    with $Provider<String> {
+  DProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: prefix.ProviderContainer.defaultRetry,
+        name: r'dProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$dHash();
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String create(Ref ref) {
+    return d(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String>(value),
+    );
+  }
+}
+
+String _$dHash() => r'ce264bd3a56604fe16209452726ed6472e6379a8';
