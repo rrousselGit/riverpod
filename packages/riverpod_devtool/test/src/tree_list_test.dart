@@ -200,5 +200,56 @@ void main() {
       );
       expect(removed, ['branch', 'leaf', 'root', 'sibling']);
     });
+
+    test('modifying the second root does not impact the first root', () {
+      final removed = <String>[];
+      final tree = TreeList<TestNode>();
+      tree.add(
+        TestNode(
+          'root',
+          onRemove: removed.add,
+          children: [
+            TestNode('child', onRemove: removed.add),
+            TestNode('sibling', onRemove: removed.add),
+          ],
+        ),
+      );
+      tree.add(
+        TestNode(
+          'other-root',
+          onRemove: removed.add,
+          children: [
+            TestNode(
+              'other-branch',
+              onRemove: removed.add,
+              children: [TestNode('other-leaf', onRemove: removed.add)],
+            ),
+          ],
+        ),
+      );
+
+      tree[4] = TestNode(
+        'other-branch-2',
+        onRemove: removed.add,
+        children: [
+          TestNode('other-leaf-1', onRemove: removed.add),
+          TestNode('other-leaf-2', onRemove: removed.add),
+        ],
+      );
+
+      expect(
+        [for (var i = 0; i < tree.length; i++) tree[i].name],
+        [
+          'root',
+          'child',
+          'sibling',
+          'other-root',
+          'other-branch-2',
+          'other-leaf-1',
+          'other-leaf-2',
+        ],
+      );
+      expect(removed, ['other-branch', 'other-leaf']);
+    });
   });
 }
