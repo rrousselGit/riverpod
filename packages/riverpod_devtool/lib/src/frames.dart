@@ -327,6 +327,10 @@ class FrameStepper extends HookConsumerWidget {
             child: Center(child: Text('No frames with state changes')),
           );
         }
+        assert(
+          selectedFrame != null,
+          'Even though frames.length > 0, selectedFrame is null',
+        );
 
         final currentIndex = value.indexOf(selectedFrame!);
         final canGoFirst = currentIndex > 0;

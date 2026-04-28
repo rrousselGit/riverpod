@@ -1,5 +1,26 @@
 part of '../framework.dart';
 
+/// A flag to control whether Riverpod should track the [StackTrace] of providers
+/// when they are created.
+///
+/// This is used by the devtool to enable navigating to the source of a provider.
+///
+/// No-op in release mode.
+/// Defaults to `false` as this can slow down provider creation.
+///
+/// To use, set to `true` before using any provider:
+///
+/// ```dart
+/// void main() {
+///   debugTrackProviderCreation = true;
+///   // Use Riverpod as normal
+/// }
+/// ```
+/// 
+/// Make sure to hot-restart your application after changing this flag.
+/// The devtool should then automatically pick up the stack trace of providers.
+bool debugTrackProviderCreation = false;
+
 @internal
 void inspectInIDE(Object? obj) {
   dev.inspect(obj);
@@ -371,9 +392,7 @@ class ProviderDependencyChangeEvent extends Event {
               .map((sub) => sub.source.meta)
               .toSet()),
       weakDependents =
-          ((element.dependents ?? const [])
-              .map((sub) => sub.source.meta)
-              .toSet()),
+          (element.weakDependents.map((sub) => sub.source.meta).toSet()),
       dependencies =
           ((element.subscriptions ?? const [])
               .map((sub) => sub.impl.source.meta)
@@ -416,8 +435,11 @@ final class ConsumerMeta {
   final String containerHashValue;
 }
 
-final class _DevtoolObserver extends ProviderObserver {
-  const _DevtoolObserver();
+/// An observer who's responsible for communicating with the Riverpod devtool
+@visibleForTesting
+final class DevtoolObserver extends ProviderObserver {
+  /// An observer who's responsible for communicating with the Riverpod devtool
+  const DevtoolObserver();
 
   @override
   void didCreateProviderContainer(ProviderContainer container) {

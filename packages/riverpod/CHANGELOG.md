@@ -1,5 +1,8 @@
 ## Unreleased minor
 
+- Devtool-only:
+  Added `debugTrackProviderCreation`, which can be set to `true` to enable the Riverpod devtool
+  to jump to the source of a provider.
 - Added `Ref.onManualInvalidation()` lifecycle method to listen for manual provider invalidations.
   This allows distinguishing between manual invalidations (via `refresh`/`invalidate`/`invalidateSelf`)
   and automatic invalidations caused by dependency changes. Additionally, providers can now forward

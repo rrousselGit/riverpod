@@ -16,7 +16,9 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
     required this.isAutoDispose,
     required this.retry,
   }) {
-    if (kDebugMode && (from == null || this is Family)) {
+    if (kDebugMode &&
+        debugTrackProviderCreation &&
+        (from == null || this is Family)) {
       _debugCreationStackTrace = StackTrace.current;
     } else {
       _debugCreationStackTrace = null;
