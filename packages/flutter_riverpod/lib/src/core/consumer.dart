@@ -373,7 +373,6 @@ base class ConsumerStatefulElement extends StatefulElement
   @override
   late ProviderContainer container = ProviderScope.containerOf(
     this,
-    // TODO test change
     listen: false,
   );
   var _dependencies =
@@ -384,6 +383,13 @@ base class ConsumerStatefulElement extends StatefulElement
   List<ProviderSubscription<Object?>>? _manualListeners;
   ValueListenable<bool>? _tickerModeNotifier;
   bool? _isActive;
+
+  @override
+  void mount(Element? parent, Object? newSlot) {
+    super.mount(parent, newSlot);
+    // Forcibly listen to the container, to guarantee that didChangeDependencies is called when the container changes.
+    ProviderScope.containerOf(this);
+  }
 
   @override
   void activate() {
