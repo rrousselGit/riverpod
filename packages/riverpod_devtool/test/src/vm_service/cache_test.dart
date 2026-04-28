@@ -73,7 +73,6 @@ void main() {
         riverpodFramework.eval(
           'RiverpodDevtool.instance.getCache("cached-object")',
           isAlive: isAlive,
-          scope: null,
         ),
       ).thenAnswer((_) async {
         fetchCount++;
@@ -122,7 +121,6 @@ void main() {
         riverpodFramework.eval(
           'RiverpodDevtool.instance.getCache("cached-object")',
           isAlive: isAlive,
-          scope: null,
         ),
       ).thenAnswer((_) async {
         return ByteVariable(fetchedRefs[fetchCount++]);
