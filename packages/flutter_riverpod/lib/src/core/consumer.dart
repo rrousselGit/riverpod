@@ -387,8 +387,13 @@ base class ConsumerStatefulElement extends StatefulElement
   @override
   void mount(Element? parent, Object? newSlot) {
     super.mount(parent, newSlot);
-    // Forcibly listen to the container, to guarantee that didChangeDependencies is called when the container changes.
-    ProviderScope.containerOf(this);
+    try {
+      // Forcibly listen to the container, to guarantee that didChangeDependencies
+      // is called when the container changes.
+      ProviderScope.containerOf(this);
+    } catch (e) {
+      // Silence 'no scope' error. It is already reported by the container variable.
+    }
   }
 
   @override
