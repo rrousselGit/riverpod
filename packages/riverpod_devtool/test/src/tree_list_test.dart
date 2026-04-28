@@ -18,6 +18,10 @@ class TestNode extends Node<TestNode> {
   void onRemove() => _onRemove?.call(name);
 }
 
+List<int> _entryLengths(TreeList<TestNode> tree) {
+  return [for (final entry in tree.debugEntries) entry.length];
+}
+
 void main() {
   group('TreeList', () {
     test('starts empty', () {
@@ -44,6 +48,7 @@ void main() {
         [for (var i = 0; i < tree.length; i++) tree[i].name],
         ['root', 'child-1', 'child-2', 'grandchild'],
       );
+      expect(_entryLengths(tree), [4, 1, 2, 1]);
       expect(tree.indexWhere((node) => node.name == 'child-2'), 2);
       expect(tree.indexWhere((node) => node.name == 'missing'), isNull);
     });
@@ -142,6 +147,7 @@ void main() {
           'other-child',
         ],
       );
+      expect(_entryLengths(tree), [5, 3, 1, 1, 1, 2, 1]);
 
       tree.removeAt(0);
 
@@ -149,6 +155,7 @@ void main() {
         [for (var i = 0; i < tree.length; i++) tree[i].name],
         ['other-root', 'other-child'],
       );
+      expect(_entryLengths(tree), [2, 1]);
       expect(removed, [
         'branch',
         'leaf',
@@ -191,6 +198,7 @@ void main() {
         [for (var i = 0; i < tree.length; i++) tree[i].name],
         ['root', 'sibling', 'other-root', 'other-child'],
       );
+      expect(_entryLengths(tree), [2, 1, 2, 1]);
 
       tree.removeAt(0);
 
@@ -198,6 +206,7 @@ void main() {
         [for (var i = 0; i < tree.length; i++) tree[i].name],
         ['other-root', 'other-child'],
       );
+      expect(_entryLengths(tree), [2, 1]);
       expect(removed, ['branch', 'leaf', 'root', 'sibling']);
     });
 
@@ -249,6 +258,7 @@ void main() {
           'other-leaf-2',
         ],
       );
+      expect(_entryLengths(tree), [3, 1, 1, 4, 3, 1, 1]);
       expect(removed, ['other-branch', 'other-leaf']);
     });
   });

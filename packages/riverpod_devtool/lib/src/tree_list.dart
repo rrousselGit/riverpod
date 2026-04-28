@@ -9,24 +9,28 @@ abstract class Node<NodeT extends Node<NodeT>> {
   void onRemove() {}
 }
 
-class _NodeEntry<NodeT extends Node<NodeT>> {
-  _NodeEntry({required this.node});
+class TreeListEntry<NodeT extends Node<NodeT>> {
+  TreeListEntry._({required this.node});
 
   final NodeT node;
   late int length;
 }
 
 extension type TreeList<NodeT extends Node<NodeT>>._(
-  List<_NodeEntry<NodeT>> _innerList
+  List<TreeListEntry<NodeT>> _innerList
 ) {
   TreeList() : this._([]);
 
   int get length => _innerList.length;
   bool get isEmpty => _innerList.isEmpty;
 
-  Iterable<_NodeEntry<NodeT>> _toExpanded(NodeT node) sync* {
+  @visibleForTesting
+  List<TreeListEntry<NodeT>> get debugEntries =>
+      UnmodifiableListView(_innerList);
+
+  Iterable<TreeListEntry<NodeT>> _toExpanded(NodeT node) sync* {
     var length = 1;
-    final entry = _NodeEntry(node: node);
+    final entry = TreeListEntry._(node: node);
     yield entry;
 
     for (final directChild in node.children) {
