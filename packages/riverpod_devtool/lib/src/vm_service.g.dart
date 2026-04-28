@@ -170,7 +170,8 @@ class ProviderMeta {
     final element = RootCachedObject(
       CacheId($events['$path.element']!.valueAsString!),
     );
-    final creationStackTrace = ($events['$path.creationStackTrace'] != null)
+    final creationStackTrace =
+        ($events['$path.creationStackTrace.__present']?.valueAsString == 'true')
         ? List.generate(
             int.parse(
               $events['$path.creationStackTrace.length']!.valueAsString!,
@@ -240,7 +241,8 @@ class OriginMeta {
       (i) => $events['$path.hashValue.$i']!.valueAsString!,
     ).join();
     final isFamily = ($events['$path.isFamily']!.valueAsString! == 'true');
-    final creationStackTrace = ($events['$path.creationStackTrace'] != null)
+    final creationStackTrace =
+        ($events['$path.creationStackTrace.__present']?.valueAsString == 'true')
         ? List.generate(
             int.parse(
               $events['$path.creationStackTrace.length']!.valueAsString!,
@@ -342,7 +344,8 @@ class ProviderElementAddEvent extends Event {
 
     final provider = ProviderMeta.from($events, path: '$path.provider');
     final state = ProviderStateRef.from($events, path: '$path.state');
-    final notifier = ($events['$path.notifier'] != null)
+    final notifier =
+        ($events['$path.notifier.__present']?.valueAsString == 'true')
         ? ProviderStateRef.from($events, path: '$path.notifier')
         : null;
 
@@ -416,7 +419,8 @@ class ProviderElementUpdateEvent extends Event {
 
     final provider = ProviderMeta.from($events, path: '$path.provider');
     final next = ProviderStateRef.from($events, path: '$path.next');
-    final notifier = ($events['$path.notifier'] != null)
+    final notifier =
+        ($events['$path.notifier.__present']?.valueAsString == 'true')
         ? ProviderStateRef.from($events, path: '$path.notifier')
         : null;
 

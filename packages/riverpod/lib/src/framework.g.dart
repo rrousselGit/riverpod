@@ -73,6 +73,7 @@ extension ProviderMetaToBytes on ProviderMeta {
     res1['$path.elementId'] = elementId;
     res1['$path.element'] = RiverpodDevtool.instance.cache(element);
 
+    res1['$path.creationStackTrace.__present'] = (creationStackTrace != null);
     if (creationStackTrace case final value2?) {
       {
         final $value = value2;
@@ -124,6 +125,7 @@ extension OriginMetaToBytes on OriginMeta {
     }
 
     res3['$path.isFamily'] = isFamily;
+    res3['$path.creationStackTrace.__present'] = (creationStackTrace != null);
     if (creationStackTrace case final value4?) {
       {
         final $value = value4;
@@ -199,6 +201,7 @@ extension ProviderElementAddEventToBytes on ProviderElementAddEvent {
     final res7 = <String, Object?>{path: 'ProviderElementAddEvent'};
     res7.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
     res7.addAll(ProviderStateRefToBytes(state).toBytes(path: '$path.state'));
+    res7['$path.notifier.__present'] = (notifier != null);
     if (notifier case final value8?) {
       res7.addAll(
         ProviderStateRefToBytes(value8).toBytes(path: '$path.notifier'),
@@ -234,6 +237,7 @@ extension ProviderElementUpdateEventToBytes on ProviderElementUpdateEvent {
     final res11 = <String, Object?>{path: 'ProviderElementUpdateEvent'};
     res11.addAll(ProviderMetaToBytes(provider).toBytes(path: '$path.provider'));
     res11.addAll(ProviderStateRefToBytes(next).toBytes(path: '$path.next'));
+    res11['$path.notifier.__present'] = (notifier != null);
     if (notifier case final value12?) {
       res11.addAll(
         ProviderStateRefToBytes(value12).toBytes(path: '$path.notifier'),

@@ -663,12 +663,14 @@ final class _NullableType extends _BuiltInType {
 
   final _BuiltInType innerType;
 
+  String _presenceKey(String path) => '$path.__present';
+
   @override
   String typeCode() => '${innerType.typeCode()}?';
 
   @override
   String decodeBytes({required String mapSymbol, required String path}) =>
-      "($mapSymbol['$path'] != null) ? ${innerType.decodeBytes(mapSymbol: mapSymbol, path: path)} : null";
+      "($mapSymbol['${_presenceKey(path)}']?.valueAsString == 'true') ? ${innerType.decodeBytes(mapSymbol: mapSymbol, path: path)} : null";
 
   @override
   String appendEncodedValueCode({
@@ -678,6 +680,7 @@ final class _NullableType extends _BuiltInType {
   }) {
     final name = _varName('value');
     return '''
+  $mapSymbol['${_presenceKey(path)}'] = ($valueSymbol != null);
   if ($valueSymbol case final $name?) {
     ${innerType.appendEncodedValueCode(mapSymbol: mapSymbol, valueSymbol: name, path: path)}
   }
