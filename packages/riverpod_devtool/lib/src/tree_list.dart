@@ -13,7 +13,7 @@ class _NodeEntry<NodeT extends Node<NodeT>> {
   _NodeEntry({required this.node});
 
   final NodeT node;
-  late final int length;
+  late int length;
 }
 
 extension type TreeList<NodeT extends Node<NodeT>>._(
@@ -46,6 +46,17 @@ extension type TreeList<NodeT extends Node<NodeT>>._(
     }
   }
 
+  void _propagateLengthDelta(int startIndex, int delta) {
+    if (delta == 0) return;
+
+    for (var i = startIndex - 1; i >= 0; i--) {
+      final entry = _innerList[i];
+      if (startIndex < i + entry.length) {
+        entry.length += delta;
+      }
+    }
+  }
+
   int? indexWhere(bool Function(NodeT node) test) {
     final index = _innerList.indexWhere((entry) => test(entry.node));
 
@@ -55,9 +66,11 @@ extension type TreeList<NodeT extends Node<NodeT>>._(
   void removeAt(int index) {
     final entry = _innerList.elementAtOrNull(index);
     if (entry == null) return;
+    final removedLength = entry.length;
 
-    _callRemove(index, index + entry.length);
-    _innerList.removeRange(index, index + entry.length);
+    _callRemove(index, index + removedLength);
+    _innerList.removeRange(index, index + removedLength);
+    _propagateLengthDelta(index, -removedLength);
   }
 
   void add(NodeT value) {
@@ -69,9 +82,13 @@ extension type TreeList<NodeT extends Node<NodeT>>._(
   void operator []=(int index, NodeT value) {
     final previous = _innerList.elementAtOrNull(index);
     final end = index + (previous?.length ?? 1);
+    final expanded = _toExpanded(value).toList();
+    final newExpandedLength = expanded.length;
+    final delta = newExpandedLength - (previous?.length ?? 1);
 
     _callRemove(index, end);
 
-    _innerList.replaceRange(index, end, _toExpanded(value));
+    _innerList.replaceRange(index, end, expanded);
+    _propagateLengthDelta(index, delta);
   }
 }

@@ -95,5 +95,110 @@ void main() {
         );
       },
     );
+
+    test('replacing a nested subtree updates ancestor spans', () {
+      final removed = <String>[];
+      final tree = TreeList<TestNode>();
+      tree.add(
+        TestNode(
+          'root',
+          onRemove: removed.add,
+          children: [
+            TestNode(
+              'branch',
+              onRemove: removed.add,
+              children: [TestNode('leaf', onRemove: removed.add)],
+            ),
+            TestNode('sibling', onRemove: removed.add),
+          ],
+        ),
+      );
+      tree.add(
+        TestNode(
+          'other-root',
+          onRemove: removed.add,
+          children: [TestNode('other-child', onRemove: removed.add)],
+        ),
+      );
+
+      tree[1] = TestNode(
+        'branch-2',
+        onRemove: removed.add,
+        children: [
+          TestNode('leaf-1', onRemove: removed.add),
+          TestNode('leaf-2', onRemove: removed.add),
+        ],
+      );
+
+      expect(
+        [for (var i = 0; i < tree.length; i++) tree[i].name],
+        [
+          'root',
+          'branch-2',
+          'leaf-1',
+          'leaf-2',
+          'sibling',
+          'other-root',
+          'other-child',
+        ],
+      );
+
+      tree.removeAt(0);
+
+      expect(
+        [for (var i = 0; i < tree.length; i++) tree[i].name],
+        ['other-root', 'other-child'],
+      );
+      expect(removed, [
+        'branch',
+        'leaf',
+        'root',
+        'branch-2',
+        'leaf-1',
+        'leaf-2',
+        'sibling',
+      ]);
+    });
+
+    test('removing a nested subtree updates ancestor spans', () {
+      final removed = <String>[];
+      final tree = TreeList<TestNode>();
+      tree.add(
+        TestNode(
+          'root',
+          onRemove: removed.add,
+          children: [
+            TestNode(
+              'branch',
+              onRemove: removed.add,
+              children: [TestNode('leaf', onRemove: removed.add)],
+            ),
+            TestNode('sibling', onRemove: removed.add),
+          ],
+        ),
+      );
+      tree.add(
+        TestNode(
+          'other-root',
+          onRemove: removed.add,
+          children: [TestNode('other-child', onRemove: removed.add)],
+        ),
+      );
+
+      tree.removeAt(1);
+
+      expect(
+        [for (var i = 0; i < tree.length; i++) tree[i].name],
+        ['root', 'sibling', 'other-root', 'other-child'],
+      );
+
+      tree.removeAt(0);
+
+      expect(
+        [for (var i = 0; i < tree.length; i++) tree[i].name],
+        ['other-root', 'other-child'],
+      );
+      expect(removed, ['branch', 'leaf', 'root', 'sibling']);
+    });
   });
 }
