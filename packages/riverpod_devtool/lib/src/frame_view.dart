@@ -20,6 +20,90 @@ import 'ui_primitives/panel.dart';
 import 'ui_primitives/search_bar.dart';
 import 'vm_service.dart';
 
+class InspectorSettings {
+  const InspectorSettings({this.showExternalPrivateMembers = true});
+
+  final bool showExternalPrivateMembers;
+
+  InspectorSettings copyWith({bool? showExternalPrivateMembers}) {
+    return InspectorSettings(
+      showExternalPrivateMembers:
+          showExternalPrivateMembers ?? this.showExternalPrivateMembers,
+    );
+  }
+}
+
+final inspectorSettingsProvider =
+    NotifierProvider<InspectorSettingsNotifier, InspectorSettings>(
+      InspectorSettingsNotifier.new,
+    );
+
+class InspectorSettingsNotifier extends Notifier<InspectorSettings> {
+  @override
+  InspectorSettings build() => const InspectorSettings();
+
+  void setShowExternalPrivateMembers(bool value) {
+    state = state.copyWith(showExternalPrivateMembers: value);
+  }
+}
+
+class InspectorSettingsButton extends StatelessWidget {
+  const InspectorSettingsButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () => showDialog<void>(
+        context: context,
+        builder: (context) => const _InspectorSettingsDialog(),
+      ),
+      tooltip: 'Inspector settings',
+      icon: const Icon(Icons.settings),
+      iconSize: 18,
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints.tightFor(width: 32, height: 32),
+    );
+  }
+}
+
+class _InspectorSettingsDialog extends ConsumerWidget {
+  const _InspectorSettingsDialog();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(inspectorSettingsProvider);
+    final notifier = ref.watch(inspectorSettingsProvider.notifier);
+
+    return AlertDialog(
+      title: const Text('Inspector settings'),
+      content: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 420),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CheckboxListTile(
+                value: settings.showExternalPrivateMembers,
+                controlAffinity: .leading,
+                contentPadding: .zero,
+                onChanged: (value) =>
+                    notifier.setShowExternalPrivateMembers(value ?? false),
+                title: const Text('Show private members from other packages'),
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
+}
+
 class FrameView extends HookConsumerWidget {
   const FrameView({super.key});
 
@@ -142,6 +226,7 @@ class ProviderViewer extends StatelessWidget {
               roundedTopBorder: false,
               includeTopBorder: false,
               title: Text('State'),
+              actions: [InspectorSettingsButton()],
             ),
             Expanded(child: Inspector(object: element.state.state)),
           ],
