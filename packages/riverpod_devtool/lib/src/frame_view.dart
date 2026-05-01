@@ -42,7 +42,7 @@ class InspectorSettingsNotifier extends Notifier<InspectorSettings> {
   @override
   InspectorSettings build() => const InspectorSettings();
 
-  void setShowExternalPrivateMembers(bool value) {
+  void setShowExternalPrivateMembers({required bool value}) {
     state = state.copyWith(showExternalPrivateMembers: value);
   }
 }
@@ -87,7 +87,7 @@ class _InspectorSettingsDialog extends ConsumerWidget {
                 controlAffinity: .leading,
                 contentPadding: .zero,
                 onChanged: (value) =>
-                    notifier.setShowExternalPrivateMembers(value ?? false),
+                    notifier.setShowExternalPrivateMembers(value: value ?? false),
                 title: const Text('Show private members from other packages'),
               ),
             ],
