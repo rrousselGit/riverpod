@@ -176,9 +176,7 @@ void main() {
         FieldKey.from('label'),
       );
 
-      expect(positional.from, same(root));
       expect(positional.label, isNull);
-      expect(namedField.from, same(root));
       expect(namedField.label, 'label');
     });
 
@@ -186,7 +184,6 @@ void main() {
       final root = RootCachedObject(CacheId('root'));
       final child = DerivedCachedObject.collectionElement(root, 1);
 
-      expect(child.from, same(root));
       expect(child.label, isNull);
     });
 
@@ -195,9 +192,7 @@ void main() {
       final key = DerivedCachedObject.mapAssociationKey(root, 0);
       final value = DerivedCachedObject.mapAssociationValue(root, 0);
 
-      expect(key.from, same(root));
       expect(key.label, 'key');
-      expect(value.from, same(root));
       expect(value.label, 'value');
     });
 

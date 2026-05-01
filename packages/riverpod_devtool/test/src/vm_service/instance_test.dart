@@ -72,7 +72,7 @@ void main() {
               ],
             ),
           ),
-        );
+        )!;
         expect(record, isA<RecordVariable>());
         expect(record.children, hasLength(2));
         expect(record.children.first.label, isNull);
@@ -87,7 +87,7 @@ void main() {
               elements: [childRef, childRef],
             ),
           ),
-        );
+        )!;
         expect(list, isA<ListVariable>());
         expect(list.children, hasLength(2));
 
@@ -100,7 +100,7 @@ void main() {
               elements: [childRef],
             ),
           ),
-        );
+        )!;
         expect(set, isA<SetVariable>());
         expect(set.children, hasLength(1));
 
@@ -113,28 +113,11 @@ void main() {
               associations: [vm.MapAssociation(key: childRef, value: childRef)],
             ),
           ),
-        );
+        )!;
         expect(map, isA<MapVariable>());
         expect(map.children, hasLength(2));
         expect(map.children.first.label, 'key');
         expect(map.children.last.label, 'value');
-
-        final unknown = ResolvedVariable.fromInstance(
-          object,
-          VmInstance(
-            vm.Instance(
-              id: 'object',
-              kind: vm.InstanceKind.kPlainInstance,
-              classRef: vm.ClassRef(id: 'class', name: 'ExampleObject'),
-              identityHashCode: 123,
-              fields: [vm.BoundField(name: 'field', value: childRef)],
-            ),
-          ),
-        );
-        expect(unknown, isA<UnknownObjectVariable>());
-        expect((unknown as UnknownObjectVariable).type, 'ExampleObject');
-        expect(unknown.identityHashCode, 123);
-        expect(unknown.children.single.label, 'field');
       },
     );
 
