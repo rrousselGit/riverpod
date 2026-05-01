@@ -651,7 +651,7 @@ final _resolvedVariableForObject = FutureProvider.autoDispose
                 byte.instance,
                 getters: classId != null
                     ? await ref.watch(gettersForClassProvider(classId).future)
-                    : const [],
+                    : const {},
               );
             }
 

@@ -132,7 +132,7 @@ final class UnknownObjectVariable extends ResolvedVariable {
   UnknownObjectVariable(
     super.object,
     VmInstance ref, {
-    required List<({String name, Uri uri})> getters,
+    required Set<({String name, Uri uri})> getters,
   }) : type = ref.classRef!.name!,
        identityHashCode = ref.identityHashCode,
        children = [
@@ -228,9 +228,9 @@ final classFromIdProvider = FutureProvider.autoDispose
 /// A provider that lists the names of all getters declared on an object's class.
 ///
 /// Returns an empty list if the object's class cannot be resolved or on error.
-final FutureProviderFamily<List<({String name, Uri uri})>, ClassId>
+final FutureProviderFamily<Set<({String name, Uri uri})>, ClassId>
 gettersForClassProvider = FutureProvider.autoDispose
-    .family<List<({String name, Uri uri})>, ClassId>((ref, classId) async {
+    .family<Set<({String name, Uri uri})>, ClassId>((ref, classId) async {
       // Skip Object properties manually, as they may be overridden and thus
       // listed on classes other than Object.
       const excludedNames = {'hashCode', 'runtimeType'};
@@ -238,14 +238,14 @@ gettersForClassProvider = FutureProvider.autoDispose
       final klass = await ref.watch(classFromIdProvider(classId).future);
       switch (klass) {
         case ByteError<Class>():
-          return const [];
+          return const {};
         case ByteVariable<Class>(instance: final klass):
           final functions = klass.functions ?? <FuncRef>[];
 
           // Skip hashCode & co from Object.
-          if (klass.isDartCodeObject) return const [];
+          if (klass.isDartCodeObject) return const {};
 
-          return [
+          return {
             for (final function in functions)
               if ((function.isGetter ?? true) &&
                   !excludedNames.contains(function.name))
@@ -262,7 +262,7 @@ gettersForClassProvider = FutureProvider.autoDispose
               ...await ref.watch(
                 gettersForClassProvider(superClass.classId).future,
               ),
-          ];
+          };
       }
     });
 
@@ -271,7 +271,7 @@ extension IsDartCoreObject on Class {
 }
 
 final gettersForObjectProvider = FutureProvider.autoDispose
-    .family<List<({String name, Uri uri})>, CachedObject>((ref, object) async {
+    .family<Set<({String name, Uri uri})>, CachedObject>((ref, object) async {
       final eval = await ref.watch(evalProvider.future);
       final isAlive = ref.disposable();
 
@@ -280,7 +280,7 @@ final gettersForObjectProvider = FutureProvider.autoDispose
       switch (byte) {
         case ByteError():
         case ByteVariable(instance: VmInstanceRef(classRef: null)):
-          return const [];
+          return const {};
         case ByteVariable(instance: VmInstanceRef(classRef: final classRef?)):
           return await ref.watch(
             gettersForClassProvider(classRef.classId).future,
