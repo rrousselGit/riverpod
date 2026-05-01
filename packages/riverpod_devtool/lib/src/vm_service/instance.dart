@@ -231,6 +231,10 @@ final classFromIdProvider = FutureProvider.autoDispose
 final FutureProviderFamily<List<({String name, Uri uri})>, ClassId>
 gettersForClassProvider = FutureProvider.autoDispose
     .family<List<({String name, Uri uri})>, ClassId>((ref, classId) async {
+      // Skip Object properties manually, as they may be overridden and thus
+      // listed on classes other than Object.
+      const excludedNames = {'hashCode', 'runtimeType'};
+
       final klass = await ref.watch(classFromIdProvider(classId).future);
       switch (klass) {
         case ByteError<Class>():
@@ -243,7 +247,8 @@ gettersForClassProvider = FutureProvider.autoDispose
 
           return [
             for (final function in functions)
-              if (function.isGetter ?? true)
+              if ((function.isGetter ?? true) &&
+                  !excludedNames.contains(function.name))
                 (
                   name: function.name!,
                   uri: switch (function.owner) {
