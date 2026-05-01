@@ -169,11 +169,11 @@ void main() {
 
       final positional = DerivedCachedObject.objectField(
         root,
-        vm.BoundField(name: 0),
+        FieldKey.from(0),
       );
       final namedField = DerivedCachedObject.objectField(
         root,
-        vm.BoundField(name: 'label'),
+        FieldKey.from('label'),
       );
 
       expect(positional.from, same(root));
@@ -205,7 +205,7 @@ void main() {
       expect(
         () => DerivedCachedObject.objectField(
           RootCachedObject(CacheId('root')),
-          vm.BoundField(name: 3.14),
+          FieldKey.from(3.14),
         ),
         throwsStateError,
       );

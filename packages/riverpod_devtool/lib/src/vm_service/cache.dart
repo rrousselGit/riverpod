@@ -146,12 +146,7 @@ final class DerivedCachedObject extends CachedObject {
     super.label,
   });
 
-  factory DerivedCachedObject.objectField(
-    CachedObject object,
-    BoundField field,
-  ) {
-    final name = FieldKey.from(field.name);
-
+  factory DerivedCachedObject.objectField(CachedObject object, FieldKey name) {
     return DerivedCachedObject(
       from: object,
       label: switch (name) {

@@ -85,7 +85,7 @@ final class RecordVariable extends ResolvedVariable {
   RecordVariable._fromInstance(super.object, VmInstance instance)
     : children = [
         for (final field in instance.fields ?? <BoundField>[])
-          DerivedCachedObject.objectField(object, field),
+          DerivedCachedObject.objectField(object, FieldKey.from(field.name)),
       ];
 
   @override
@@ -134,7 +134,7 @@ final class UnknownObjectVariable extends ResolvedVariable {
       identityHashCode = ref.identityHashCode,
       children = [
         for (final field in ref.fields ?? <BoundField>[])
-          DerivedCachedObject.objectField(object, field),
+          DerivedCachedObject.objectField(object, FieldKey.from(field.name)),
       ];
 
   final String type;
