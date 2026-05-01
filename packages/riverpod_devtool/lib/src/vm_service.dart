@@ -13,6 +13,9 @@ import 'package:hooks_riverpod/src/internals.dart' as internals;
 import 'package:meta/meta.dart';
 import 'package:vm_service/vm_service.dart';
 
+import 'frame_view.dart';
+import 'package_name_provider.dart';
+
 part 'vm_service.g.dart';
 part 'vm_service/byte.dart';
 part 'vm_service/eval.dart';

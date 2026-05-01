@@ -21,7 +21,7 @@ import 'ui_primitives/search_bar.dart';
 import 'vm_service.dart';
 
 class InspectorSettings {
-  const InspectorSettings({this.showExternalPrivateMembers = true});
+  const InspectorSettings({this.showExternalPrivateMembers = false});
 
   final bool showExternalPrivateMembers;
 

@@ -53,8 +53,9 @@ class _HomeState extends ConsumerState<Home> {
   @override
   Widget build(BuildContext context) {
     ref.watch(loadingProvider);
-    // ref.watch(errorProvider);
+    ref.watch(errorProvider);
     ref.watch(dataProvider);
+    ref.watch(objectWithExternalFields);
 
     return Scaffold(
       appBar: AppBar(
@@ -154,6 +155,10 @@ final dataProvider = AsyncNotifierProvider<_AsyncStateNotifier<int>, int>(
   name: 'dataProvider',
   () => _AsyncStateNotifier((ref, self) => 42),
 );
+
+final objectWithExternalFields = Provider<Object>((ref) {
+  return ValueNotifier(0);
+});
 
 class _AsyncStateNotifier<T> extends AsyncNotifier<T> {
   _AsyncStateNotifier(this._build);

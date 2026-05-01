@@ -146,7 +146,7 @@ final class AsyncValueVariable extends ResolvedVariable {
          if (hasError) ...[
            DerivedCachedObject.getter(object, name: 'error', uri: uri),
            DerivedCachedObject.getter(object, name: 'stackTrace', uri: uri),
-           DerivedCachedObject.getter(object, name: 'retryCount', uri: uri),
+           DerivedCachedObject.getter(object, name: 'retrying', uri: uri),
          ],
          if (progress != null)
            DerivedCachedObject.getter(object, name: 'progress', uri: uri),
@@ -165,26 +165,45 @@ final class AsyncValueVariable extends ResolvedVariable {
 }
 
 final class UnknownObjectVariable extends ResolvedVariable {
-  UnknownObjectVariable(
-    super.object,
-    VmInstance ref, {
-    required Set<({String name, Uri uri})> getters,
-  }) : type = ref.classRef!.name!,
-       identityHashCode = ref.identityHashCode,
-       children = [
-         for (final getter in getters)
-           // Only include getters if they aren't already included as fields, to avoid duplicates.
-           // ObjectField is more efficient
-           if (ref.fields?.map((field) => field.name).contains(getter.name) !=
-               true)
-             DerivedCachedObject.getter(
-               object,
-               name: getter.name,
-               uri: getter.uri,
-             ),
-         for (final field in ref.fields ?? <BoundField>[])
-           DerivedCachedObject.objectField(object, FieldKey.from(field.name)),
-       ];
+  UnknownObjectVariable(super.object, VmInstance ref, {required this.children})
+    : type = ref.classRef!.name!,
+      identityHashCode = ref.identityHashCode;
+
+  static List<DerivedCachedObject> computeChildren(
+    CachedObject from,
+    Set<({String name, Uri uri})> getters,
+    List<BoundField> fields, {
+    required bool showExternalPrivateMembers,
+    required String? currentPackageName,
+  }) {
+    final uniqueFieldNames = fields.map((field) => field.name).toSet();
+
+    bool isVisible({required Uri owner, required String name}) {
+      if (showExternalPrivateMembers) return true;
+      if (!name.startsWith('_')) return true;
+
+      return owner.packageName == currentPackageName;
+    }
+
+    return [
+      for (final getter in getters)
+        // Only include getters if they aren't already included as fields, to avoid duplicates.
+        // ObjectField is more efficient
+        if (!uniqueFieldNames.contains(getter.name))
+          if (isVisible(owner: getter.uri, name: getter.name))
+            DerivedCachedObject.getter(
+              from,
+              name: getter.name,
+              uri: getter.uri,
+            ),
+      for (final field in fields)
+        if (isVisible(
+          owner: Uri.tryParse(field.decl?.location?.script?.uri ?? '') ?? Uri(),
+          name: field.name! as String,
+        ))
+          DerivedCachedObject.objectField(from, FieldKey.from(field.name)),
+    ];
+  }
 
   final String type;
   final int? identityHashCode;
@@ -265,7 +284,7 @@ final classFromIdProvider = FutureProvider.autoDispose
 ///
 /// Returns an empty list if the object's class cannot be resolved or on error.
 final FutureProviderFamily<Set<({String name, Uri uri})>, ClassId>
-gettersForClassProvider = FutureProvider.autoDispose
+_unfilteredGettersForClassProvider = FutureProvider.autoDispose
     .family<Set<({String name, Uri uri})>, ClassId>((ref, classId) async {
       // Skip Object properties manually, as they may be overridden and thus
       // listed on classes other than Object.
@@ -296,10 +315,38 @@ gettersForClassProvider = FutureProvider.autoDispose
                 ),
             if (klass.superClass case final superClass?)
               ...await ref.watch(
-                gettersForClassProvider(superClass.classId).future,
+                _unfilteredGettersForClassProvider(superClass.classId).future,
               ),
           };
       }
+    });
+
+final gettersForClassProvider = FutureProvider.autoDispose
+    .family<Set<({String name, Uri uri})>, ClassId>((ref, classId) async {
+      final unfilteredGetters = await ref.watch(
+        _unfilteredGettersForClassProvider(classId).future,
+      );
+
+      final showPrivateProperties = ref.watch(
+        inspectorSettingsProvider.select((e) => e.showExternalPrivateMembers),
+      );
+
+      if (showPrivateProperties) {
+        return unfilteredGetters;
+      }
+
+      final currentPackageName = await ref.watch(
+        currentPackageNameProvider.future,
+      );
+      if (currentPackageName == null) return unfilteredGetters;
+
+      return unfilteredGetters
+          .where(
+            (getter) =>
+                !getter.name.startsWith('_') ||
+                getter.uri.packageName == currentPackageName,
+          )
+          .toSet();
     });
 
 extension IsDartCoreObject on Class {

@@ -5,6 +5,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/misc.dart';
 import 'package:vm_service/vm_service.dart';
 
+import '../frame_view.dart';
+import '../package_name_provider.dart';
 import '../tree_list.dart';
 import '../vm_service.dart';
 
@@ -715,14 +717,29 @@ final _resolvedVariableForObject = FutureProvider.autoDispose
                   );
 
                 case _:
+                  final getters = classId != null
+                      ? await ref.watch(gettersForClassProvider(classId).future)
+                      : const <({String name, Uri uri})>{};
+
+                  final showExternalPrivateMembers = ref.watch(
+                    inspectorSettingsProvider.select(
+                      (s) => s.showExternalPrivateMembers,
+                    ),
+                  );
+                  final currentPackageName = await ref.watch(
+                    currentPackageNameProvider.future,
+                  );
+
                   instance = UnknownObjectVariable(
                     object,
                     byte.instance,
-                    getters: classId != null
-                        ? await ref.watch(
-                            gettersForClassProvider(classId).future,
-                          )
-                        : const {},
+                    children: UnknownObjectVariable.computeChildren(
+                      object,
+                      getters,
+                      byte.instance.fields ?? const [],
+                      showExternalPrivateMembers: showExternalPrivateMembers,
+                      currentPackageName: currentPackageName,
+                    ),
                   );
               }
             }
