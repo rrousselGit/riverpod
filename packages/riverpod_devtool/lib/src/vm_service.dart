@@ -7,6 +7,7 @@ import 'package:devtools_app_shared/service.dart' hide SentinelException;
 import 'package:devtools_app_shared/utils.dart';
 import 'package:devtools_extensions/devtools_extensions.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/misc.dart';
 // ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
 import 'package:meta/meta.dart';

@@ -139,15 +139,78 @@ class RootCachedObject extends CachedObject {
   String toString() => 'CachedObject(id: $id)';
 }
 
-final class DerivedCachedObject extends CachedObject {
-  DerivedCachedObject({
+abstract class DerivedCachedObject extends CachedObject {
+  DerivedCachedObject({super.label});
+
+  factory DerivedCachedObject.getter(
+    CachedObject from, {
+    required String name,
+    required Uri uri,
+  }) = _GetterCachedObject;
+
+  factory DerivedCachedObject.objectField(CachedObject object, FieldKey name) =
+      _DelegatingDerivedCachedObject.objectField;
+
+  factory DerivedCachedObject.collectionElement(
+    CachedObject object,
+    int index,
+  ) = _DelegatingDerivedCachedObject.collectionElement;
+
+  factory DerivedCachedObject.mapAssociationKey(
+    CachedObject mapObject,
+    int index,
+  ) = _DelegatingDerivedCachedObject.mapAssociationKey;
+
+  factory DerivedCachedObject.mapAssociationValue(
+    CachedObject mapObject,
+    int index,
+  ) = _DelegatingDerivedCachedObject.mapAssociationValue;
+}
+
+final class _GetterCachedObject extends DerivedCachedObject {
+  _GetterCachedObject(this.from, {required this.name, required this.uri})
+    : super(label: name);
+
+  final CachedObject from;
+  final String name;
+  final Uri uri;
+
+  @override
+  Future<Byte<VmInstanceRef>> _fetchInstance(
+    EvalFactory evalFactory,
+    Disposable isAlive,
+  ) async {
+    final parentInstance = await from.read(evalFactory, isAlive: isAlive);
+
+    return runAndRetryOnExpired(() async {
+      final eval = evalFactory.forLibrary(uri.toString());
+
+      switch (parentInstance) {
+        case ByteError():
+          return ByteError(parentInstance.error);
+        case ByteVariable():
+          return eval.eval(
+            'that.$name',
+            isAlive: isAlive,
+            scope: {'that': parentInstance.instance.ref.id!},
+          );
+      }
+    });
+  }
+}
+
+final class _DelegatingDerivedCachedObject extends DerivedCachedObject {
+  _DelegatingDerivedCachedObject({
     required this.from,
     required this.obtainRefFromParentInstance,
     super.label,
   });
 
-  factory DerivedCachedObject.objectField(CachedObject object, FieldKey name) {
-    return DerivedCachedObject(
+  factory _DelegatingDerivedCachedObject.objectField(
+    CachedObject object,
+    FieldKey name,
+  ) {
+    return _DelegatingDerivedCachedObject(
       from: object,
       label: switch (name) {
         PositionalFieldKey() => null,
@@ -168,11 +231,11 @@ final class DerivedCachedObject extends CachedObject {
     );
   }
 
-  factory DerivedCachedObject.collectionElement(
+  factory _DelegatingDerivedCachedObject.collectionElement(
     CachedObject object,
     int index,
   ) {
-    return DerivedCachedObject(
+    return _DelegatingDerivedCachedObject(
       from: object,
       obtainRefFromParentInstance: (obj) {
         final elements = obj.elements;
@@ -187,11 +250,11 @@ final class DerivedCachedObject extends CachedObject {
     );
   }
 
-  factory DerivedCachedObject.mapAssociationKey(
+  factory _DelegatingDerivedCachedObject.mapAssociationKey(
     CachedObject mapObject,
     int index,
   ) {
-    return DerivedCachedObject(
+    return _DelegatingDerivedCachedObject(
       from: mapObject,
       label: 'key',
       obtainRefFromParentInstance: (obj) {
@@ -205,11 +268,11 @@ final class DerivedCachedObject extends CachedObject {
     );
   }
 
-  factory DerivedCachedObject.mapAssociationValue(
+  factory _DelegatingDerivedCachedObject.mapAssociationValue(
     CachedObject mapObject,
     int index,
   ) {
-    return DerivedCachedObject(
+    return _DelegatingDerivedCachedObject(
       from: mapObject,
       label: 'value',
       obtainRefFromParentInstance: (obj) {

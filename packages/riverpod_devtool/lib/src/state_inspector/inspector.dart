@@ -602,9 +602,21 @@ final _resolvedVariableForObject = FutureProvider.autoDispose
           case ByteError():
             return ByteError(byte.error);
           case ByteVariable():
-            return ByteVariable(
-              ResolvedVariable.fromInstance(object, byte.instance),
-            );
+            var instance = ResolvedVariable.fromInstance(object, byte.instance);
+
+            if (instance == null) {
+              final classId = byte.instance.classRef?.classId;
+
+              instance = UnknownObjectVariable(
+                object,
+                byte.instance,
+                getters: classId != null
+                    ? await ref.watch(gettersForClassProvider(classId).future)
+                    : const [],
+              );
+            }
+
+            return ByteVariable(instance);
         }
       },
     );

@@ -3,7 +3,7 @@ part of '../vm_service.dart';
 sealed class ResolvedVariable {
   const ResolvedVariable(this.object);
 
-  factory ResolvedVariable.fromInstance(
+  static ResolvedVariable? fromInstance(
     CachedObject object,
     VmInstance instance,
   ) {
@@ -33,13 +33,13 @@ sealed class ResolvedVariable {
       case .map:
         return MapVariable._fromInstance(object, instance);
       case .object:
-        return UnknownObjectVariable._(object, instance);
+        return null;
     }
   }
 
   final CachedObject object;
 
-  List<DerivedCachedObject> get children => const [];
+  List<CachedObject> get children => const [];
 }
 
 final class NullVariable extends ResolvedVariable {
@@ -129,13 +129,26 @@ final class MapVariable extends ResolvedVariable {
 }
 
 final class UnknownObjectVariable extends ResolvedVariable {
-  UnknownObjectVariable._(super.object, VmInstance ref)
-    : type = ref.classRef!.name!,
-      identityHashCode = ref.identityHashCode,
-      children = [
-        for (final field in ref.fields ?? <BoundField>[])
-          DerivedCachedObject.objectField(object, FieldKey.from(field.name)),
-      ];
+  UnknownObjectVariable(
+    super.object,
+    VmInstance ref, {
+    required List<({String name, Uri uri})> getters,
+  }) : type = ref.classRef!.name!,
+       identityHashCode = ref.identityHashCode,
+       children = [
+         for (final getter in getters)
+           // Only include getters if they aren't already included as fields, to avoid duplicates.
+           // ObjectField is more efficient
+           if (ref.fields?.map((field) => field.name).contains(getter.name) !=
+               true)
+             DerivedCachedObject.getter(
+               object,
+               name: getter.name,
+               uri: getter.uri,
+             ),
+         for (final field in ref.fields ?? <BoundField>[])
+           DerivedCachedObject.objectField(object, FieldKey.from(field.name)),
+       ];
 
   final String type;
   final int? identityHashCode;
@@ -185,4 +198,87 @@ final class NamedFieldKey implements FieldKey {
 
   @override
   int get hashCode => name.hashCode;
+
+  @override
+  String toString() => '`$name`';
 }
+
+extension type ClassId(String value) {}
+
+extension ClassIdOnRef on ClassRef {
+  ClassId get classId => ClassId(id!);
+}
+
+/// Resolve a `Class` object for a given `ClassRef`.
+///
+/// Returns `null` if the class cannot be resolved or on error.
+final classFromIdProvider = FutureProvider.autoDispose
+    .family<Byte<Class>, ClassId>((ref, classId) async {
+      ref.watch(hotRestartEventProvider);
+
+      final evalFactory = await ref.watch(evalProvider.future);
+      final isAlive = ref.disposable();
+
+      return evalFactory.dartCore.getClass(
+        ClassRef(id: classId.value),
+        isAlive: isAlive,
+      );
+    });
+
+/// A provider that lists the names of all getters declared on an object's class.
+///
+/// Returns an empty list if the object's class cannot be resolved or on error.
+final FutureProviderFamily<List<({String name, Uri uri})>, ClassId>
+gettersForClassProvider = FutureProvider.autoDispose
+    .family<List<({String name, Uri uri})>, ClassId>((ref, classId) async {
+      final klass = await ref.watch(classFromIdProvider(classId).future);
+      switch (klass) {
+        case ByteError<Class>():
+          return const [];
+        case ByteVariable<Class>(instance: final klass):
+          final functions = klass.functions ?? <FuncRef>[];
+
+          // Skip hashCode & co from Object.
+          if (klass.isDartCodeObject) return const [];
+
+          return [
+            for (final function in functions)
+              if (function.isGetter ?? true)
+                (
+                  name: function.name!,
+                  uri: switch (function.owner) {
+                    final ClassRef ref => Uri.parse(ref.library!.uri!),
+                    LibraryRef() || FuncRef() || _ => throw UnsupportedError(
+                      'Unsupported function owner: ${function.owner.runtimeType}',
+                    ),
+                  },
+                ),
+            if (klass.superClass case final superClass?)
+              ...await ref.watch(
+                gettersForClassProvider(superClass.classId).future,
+              ),
+          ];
+      }
+    });
+
+extension IsDartCoreObject on Class {
+  bool get isDartCodeObject => library?.uri == 'dart:core' && name == 'Object';
+}
+
+final gettersForObjectProvider = FutureProvider.autoDispose
+    .family<List<({String name, Uri uri})>, CachedObject>((ref, object) async {
+      final eval = await ref.watch(evalProvider.future);
+      final isAlive = ref.disposable();
+
+      final byte = await object.readRef(eval, isAlive);
+
+      switch (byte) {
+        case ByteError():
+        case ByteVariable(instance: VmInstanceRef(classRef: null)):
+          return const [];
+        case ByteVariable(instance: VmInstanceRef(classRef: final classRef?)):
+          return await ref.watch(
+            gettersForClassProvider(classRef.classId).future,
+          );
+      }
+    });
