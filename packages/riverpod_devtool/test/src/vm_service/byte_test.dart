@@ -8,12 +8,12 @@ void main() {
       final ref = VmInstanceRef.string('hello', id: 'ref-hello').raw;
       final instance = VmInstance.string('world');
 
-      expect(Byte.instanceRef(ref), ByteVariable(VmInstanceRef(ref)));
-      expect(Byte.instanceRef(instance), ByteVariable(VmInstanceRef(instance)));
+      expect(Byte.requireInstanceRef(ref), ByteVariable(VmInstanceRef(ref)));
+      expect(Byte.requireInstanceRef(instance), ByteVariable(VmInstanceRef(instance)));
     });
 
     test('turns sentinels into errors', () {
-      final result = Byte.instanceRef(
+      final result = Byte.requireInstanceRef(
         Sentinel(kind: SentinelKind.kExpired, valueAsString: 'expired'),
       );
 
@@ -26,7 +26,7 @@ void main() {
     });
 
     test('uses a non-expired subtype for other sentinels', () {
-      final result = Byte.instanceRef(
+      final result = Byte.requireInstanceRef(
         Sentinel(
           kind: SentinelKind.kNotInitialized,
           valueAsString: 'not initialized',
@@ -41,7 +41,7 @@ void main() {
     });
 
     test('throws on unsupported input', () {
-      expect(() => Byte.instanceRef(Object()), throwsArgumentError);
+      expect(() => Byte.requireInstanceRef(Object()), throwsArgumentError);
     });
 
     test('require and valueOrNull reflect success and failure', () {

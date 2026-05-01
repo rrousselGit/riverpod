@@ -226,7 +226,7 @@ final class _DelegatingDerivedCachedObject extends DerivedCachedObject {
           );
         }
 
-        return Byte.instanceRef(field.value);
+        return Byte.requireInstanceRef(field.value);
       },
     );
   }
@@ -245,7 +245,7 @@ final class _DelegatingDerivedCachedObject extends DerivedCachedObject {
           );
         }
 
-        return Byte.instanceRef(elements[index]);
+        return Byte.requireInstanceRef(elements[index]);
       },
     );
   }
@@ -263,7 +263,7 @@ final class _DelegatingDerivedCachedObject extends DerivedCachedObject {
           throw StateError('Index $index out of bounds for map associations');
         }
         // Return the key from the MapAssociation at this index
-        return Byte.instanceRef(associations[index].key);
+        return Byte.requireInstanceRef(associations[index].key);
       },
     );
   }
@@ -281,7 +281,7 @@ final class _DelegatingDerivedCachedObject extends DerivedCachedObject {
           throw StateError('Index $index out of bounds for map associations');
         }
         // Return the value from the MapAssociation at this index
-        return Byte.instanceRef(associations[index].value);
+        return Byte.requireInstanceRef(associations[index].value);
       },
     );
   }

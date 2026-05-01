@@ -128,6 +128,42 @@ final class MapVariable extends ResolvedVariable {
   final List<DerivedCachedObject> children;
 }
 
+enum AsyncLoadingStatus { refreshing, reloading, other }
+
+final class AsyncValueVariable extends ResolvedVariable {
+  AsyncValueVariable(
+    super.object,
+    VmInstance ref,
+    Uri uri, {
+    required bool hasValue,
+    required bool hasError,
+    required AsyncLoadingStatus? loadingStatus,
+    required double? progress,
+  }) : type = ref.classRef!.name!,
+       children = [
+         if (hasValue)
+           DerivedCachedObject.getter(object, name: 'value', uri: uri),
+         if (hasError) ...[
+           DerivedCachedObject.getter(object, name: 'error', uri: uri),
+           DerivedCachedObject.getter(object, name: 'stackTrace', uri: uri),
+           DerivedCachedObject.getter(object, name: 'retryCount', uri: uri),
+         ],
+         if (progress != null)
+           DerivedCachedObject.getter(object, name: 'progress', uri: uri),
+         if (loadingStatus == AsyncLoadingStatus.refreshing)
+           DerivedCachedObject.getter(object, name: 'isRefreshing', uri: uri)
+         else if (loadingStatus == AsyncLoadingStatus.reloading)
+           DerivedCachedObject.getter(object, name: 'isReloading', uri: uri)
+         else if (loadingStatus == AsyncLoadingStatus.other)
+           DerivedCachedObject.getter(object, name: 'isLoading', uri: uri),
+       ];
+
+  final String type;
+
+  @override
+  final List<DerivedCachedObject> children;
+}
+
 final class UnknownObjectVariable extends ResolvedVariable {
   UnknownObjectVariable(
     super.object,

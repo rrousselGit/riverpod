@@ -100,6 +100,7 @@ _ClosingNode? _resolveClosingNode(
         case MapVariable():
           return _ClosingNode(symbol: '}', level: level);
         case UnknownObjectVariable():
+        case AsyncValueVariable():
         case NullVariable():
         case BoolVariable():
         case StringVariable():
@@ -534,6 +535,7 @@ class _ResolvedVariableTile extends StatelessWidget {
         );
 
       case UnknownObjectVariable(:final type):
+      case AsyncValueVariable(:final type):
         content = Text.rich(
           TextSpan(
             children: [
@@ -541,9 +543,9 @@ class _ResolvedVariableTile extends StatelessWidget {
                 text: '$type ',
                 style: const TextStyle(color: _NodeTileTheme.typeColor),
               ),
-              if (variable.identityHashCode case final hash?)
+              if (variable case UnknownObjectVariable(:final identityHashCode?))
                 TextSpan(
-                  text: '#${hash.toRadixString(16)}',
+                  text: '#${identityHashCode.toRadixString(16)}',
                   style: const TextStyle(color: _NodeTileTheme.hashColor),
                 ),
             ],
@@ -645,14 +647,84 @@ final _resolvedVariableForObject = FutureProvider.autoDispose
 
             if (instance == null) {
               final classId = byte.instance.classRef?.classId;
+              switch (byte.instance.classRef) {
+                // AsyncValue:
+                case ClassRef(library: final lib?, name: 'AsyncValue') ||
+                        ClassRef(library: final lib?, name: 'AsyncData') ||
+                        ClassRef(library: final lib?, name: 'AsyncError') ||
+                        ClassRef(library: final lib?, name: 'AsyncLoading')
+                    when lib.uri!.startsWith('package:riverpod/'):
+                  final isAlive = ref.disposable();
+                  final metadata = await eval.riverpodFramework.evalInstance(
+                    isAlive: isAlive,
+                    scope: {'that': byte.instance.id!},
+                    '['
+                    'that.hasValue, '
+                    'that.hasError, '
+                    'that.isLoading, '
+                    'that.isRefreshing, '
+                    'that.isReloading, '
+                    'that.progress, '
+                    ']',
+                  );
+                  if (metadata case ByteError()) {
+                    return ByteError(metadata.error);
+                  }
+                  metadata as ByteVariable<VmInstance>;
 
-              instance = UnknownObjectVariable(
-                object,
-                byte.instance,
-                getters: classId != null
-                    ? await ref.watch(gettersForClassProvider(classId).future)
-                    : const {},
-              );
+                  final bytes = metadata.instance.elements!
+                      .map(Byte.instanceRefOrNull)
+                      .toList();
+                  if (bytes.whereType<ByteError<Object>>().firstOrNull
+                      case final firstError?) {
+                    return ByteError(firstError.error);
+                  }
+
+                  final [
+                    hasValue,
+                    hasError,
+                    isLoading,
+                    isRefreshing,
+                    isReloading,
+                  ] = bytes
+                      .take(5)
+                      .map(
+                        (e) => e!.require.instance.raw.valueAsString == 'true',
+                      )
+                      .toList();
+
+                  final progressRef = bytes[5]?.require.instance;
+                  final progress = switch (progressRef?.kind) {
+                    null || InstanceKind.kNull => null,
+                    _ => double.tryParse(progressRef!.valueAsString!),
+                  };
+
+                  instance = AsyncValueVariable(
+                    object,
+                    byte.instance,
+                    Uri.parse('package:riverpod/src/framework.dart'),
+                    hasValue: hasValue,
+                    hasError: hasError,
+                    progress: progress,
+                    loadingStatus: switch (null) {
+                      _ when isRefreshing => AsyncLoadingStatus.refreshing,
+                      _ when isReloading => AsyncLoadingStatus.reloading,
+                      _ when isLoading => AsyncLoadingStatus.other,
+                      _ => null,
+                    },
+                  );
+
+                case _:
+                  instance = UnknownObjectVariable(
+                    object,
+                    byte.instance,
+                    getters: classId != null
+                        ? await ref.watch(
+                            gettersForClassProvider(classId).future,
+                          )
+                        : const {},
+                  );
+              }
             }
 
             return ByteVariable(instance);

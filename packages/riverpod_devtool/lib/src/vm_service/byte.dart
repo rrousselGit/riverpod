@@ -3,19 +3,31 @@ part of '../vm_service.dart';
 @immutable
 sealed class Byte<ValueT> {
   const Byte();
-  factory Byte._of(Object? obj) {
+  static Byte<ValueT>? _ofOrNull<ValueT>(Object? obj) {
     switch (obj) {
       case Sentinel():
         return ByteError(SentinelExceptionType(obj));
       case ValueT():
         return ByteVariable(obj);
       default:
-        throw ArgumentError('Object $obj is neither a Sentinel nor a $ValueT');
+        return null;
     }
   }
 
-  static Byte<VmInstanceRef> instanceRef(Object? ref) => Byte._of(ref);
-  static Byte<VmInstance> instance(Object? instance) => Byte._of(instance);
+  static Byte<ValueT> _requireOf<ValueT>(Object? obj) {
+    if (Byte._ofOrNull<ValueT>(obj) case final byte?) return byte;
+
+    throw ArgumentError('Object $obj is neither a Sentinel nor a $ValueT');
+  }
+
+  static Byte<VmInstanceRef> requireInstanceRef(Object? ref) =>
+      Byte._requireOf(ref);
+  static Byte<VmInstance> requireInstance(Object? instance) =>
+      Byte._requireOf(instance);
+  static Byte<VmInstanceRef>? instanceRefOrNull(Object? ref) =>
+      Byte._ofOrNull(ref);
+  static Byte<VmInstance>? instanceOrNull(Object? instance) =>
+      Byte._ofOrNull(instance);
 
   ByteVariable<ValueT> get require {
     switch (this) {
