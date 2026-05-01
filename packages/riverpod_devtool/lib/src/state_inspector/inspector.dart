@@ -328,14 +328,25 @@ class _ByteTile extends StatelessWidget {
   }
 }
 
-class ByteErrorTile extends StatelessWidget {
+class ByteErrorTile extends StatefulWidget {
   const ByteErrorTile({super.key, required this.error, required this.label});
 
   final ByteErrorType error;
   final String? label;
 
   @override
+  State<ByteErrorTile> createState() => _ByteErrorTileState();
+}
+
+class _ByteErrorTileState extends State<ByteErrorTile> {
+  var _isExpanded = false;
+
+  void _toggle() => setState(() => _isExpanded = !_isExpanded);
+
+  @override
   Widget build(BuildContext context) {
+    final error = widget.error;
+
     switch (error) {
       case SentinelExceptionType(
         error: Sentinel(kind: SentinelKind.kNotInitialized),
@@ -343,22 +354,50 @@ class ByteErrorTile extends StatelessWidget {
         return Text.rich(
           TextSpan(
             children: [
-              if (label != null) TextSpan(text: '$label: '),
+              if (widget.label != null) TextSpan(text: '${widget.label}: '),
               const TextSpan(
-                // TODO add a mean to init the variable
                 text: '<not initialized>',
                 style: TextStyle(color: _NodeTileTheme.evalErrorColor),
               ),
             ],
           ),
         );
+
       case final error:
-        return Text.rich(
+        final text = error.toString().trim();
+        final displayValue = text
+            .replaceAll('\n', r'\n')
+            .replaceAll('\r', r'\r')
+            .replaceAll('\t', r'\t');
+
+        final hasEscapeChars =
+            text.contains('\n') || text.contains('\r') || text.contains('\t');
+
+        final textWidget = Text.rich(
           TextSpan(
-            text: error.toString(),
-            style: const TextStyle(color: _NodeTileTheme.evalErrorColor),
+            text: widget.label != null ? '${widget.label}: ' : null,
+            children: [
+              TextSpan(
+                text: _isExpanded ? text : displayValue,
+                style: const TextStyle(color: _NodeTileTheme.evalErrorColor),
+              ),
+            ],
           ),
+          maxLines: _isExpanded || !hasEscapeChars ? null : 1,
+          overflow: _isExpanded || !hasEscapeChars
+              ? null
+              : TextOverflow.ellipsis,
         );
+
+        if (hasEscapeChars) {
+          return _ExpansibleTile(
+            isExpanded: _isExpanded,
+            onPressed: _toggle,
+            child: InkWell(onTap: _toggle, child: textWidget),
+          );
+        }
+
+        return textWidget;
     }
   }
 }
