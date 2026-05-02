@@ -304,7 +304,7 @@ abstract class MutationTarget {
 /// ...
 ///
 /// onPressed: () {
-// Upon calling `run`, you will have to pass the same key as when
+///   // Upon calling `run`, you will have to pass the same key as when
 ///   // watching the mutation.
 ///   deleteTodo(todo.id).run(ref, () async { /* ... */ });
 /// }
@@ -402,13 +402,6 @@ final class MutationImpl<ResultT>
   Future<ResultT> run(
     MutationTarget target,
     Future<ResultT> Function(MutationTransaction tsx) cb,
-  ) {
-    return _runWithTransaction(target, cb);
-  }
-
-  Future<ResultT> _runWithTransaction(
-    MutationTarget target,
-    Future<ResultT> Function(MutationTransaction transaction) cb,
   ) {
     return runZoned(zoneValues: {mutationZoneKey: this}, () async {
       final container = target.container;
