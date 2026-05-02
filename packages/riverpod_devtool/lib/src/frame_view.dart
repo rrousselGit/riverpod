@@ -86,8 +86,9 @@ class _InspectorSettingsDialog extends ConsumerWidget {
                 value: settings.showExternalPrivateMembers,
                 controlAffinity: .leading,
                 contentPadding: .zero,
-                onChanged: (value) =>
-                    notifier.setShowExternalPrivateMembers(value: value ?? false),
+                onChanged: (value) => notifier.setShowExternalPrivateMembers(
+                  value: value ?? false,
+                ),
                 title: const Text('Show private members from other packages'),
               ),
             ],

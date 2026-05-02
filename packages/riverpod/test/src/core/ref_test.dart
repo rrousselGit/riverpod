@@ -56,7 +56,7 @@ void main() {
       container.read(provider);
       final sub = container.listen(mutation, (a, b) {});
 
-      await mutation.run2(notifier.ref, () async {
+      await mutation.run(notifier.ref, (_) async {
         notifier.state++;
 
         return notifier.state;

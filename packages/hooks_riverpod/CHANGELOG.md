@@ -22,19 +22,6 @@
   ```
 
   Which allows for users to invalidate only the providers they care about, while implementation details can be handled privately. (thanks to @TekExplorer)
-
-- **Deprecated** `Mutation.run`. A replacement `Mutation.run2` has been added with a modified prototype.
-  Before:
-  ```dart
-  mutation.run(ref, (tsx) async => tsx.get(...))
-  ```
-  After:
-  ```dart
-  mutation.run2(ref, () async => ref.read(...));
-  ```
-  In version 4.0, `run` will be removed and `run2` will be renamed to `run`.
-- Added `run`/`voidRun`, as syntax sugar to using Mutations for keeping providers alive
-  during side-effects.
 - Added `ProviderContainer.allProviders()`, to obtain all providers accessible from said container. You can optionally specify `allProviders(family: myFamily)` to only include providers from said family.
 - Refactored internal scheduling mechanism to solve some markNeedsBuild error.
 - Removed `@internal` for `ProviderFamily.new`

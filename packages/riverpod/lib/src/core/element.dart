@@ -665,11 +665,6 @@ depending on itself.
   /// Invokes [create] and handles errors.
   @internal
   void buildState($Ref<StateT, ValueT> ref) {
-    if (_currentAction() != null) {
-      runZoned(() => buildState(ref), zoneValues: {_actionZoneKey: null});
-      return;
-    }
-
     if (_didChangeDependency) _retryCount = 0;
 
     _didChangeDependency = false;
