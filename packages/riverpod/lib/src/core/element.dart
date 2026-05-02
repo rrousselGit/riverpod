@@ -80,7 +80,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
       final completer = _futureCompleter = Completer();
       futureNotifier.setResultAndMaybeNotify(
         $ResultData(completer.future),
-        shouldNotify: true,
+        shouldNotify: notified,
       );
     }
 
@@ -483,7 +483,8 @@ abstract class ProviderElement<StateT, ValueT> {
       return updateShouldNotify;
     }
 
-    return false;
+    // True so that weak listeners are correctly notified of the first state set.
+    return true;
   }
 
   set value(AsyncValue<ValueT> value) {

@@ -1037,11 +1037,9 @@ void main() {
         notifier.state = AsyncError(42, StackTrace.empty);
         expect(container.read(provider.future), throwsA(42));
 
-        verifyZeroInteractions(listener);
-
-        // Loading notifies anyway
         notifier.state = AsyncLoading();
-        verifyOnly(listener, listener(any, any));
+
+        verifyZeroInteractions(listener);
       });
 
       test('can be used inside Notifier.build', () async {
