@@ -52,7 +52,7 @@ final class $Observable<ValueT> extends _ValueListenable<ValueT> {
     return result;
   }
 
-  void setResultAndMaybeModify(
+  void setResultAndMaybeNotify(
     $Result<ValueT> newResult, {
     required bool shouldNotify,
   }) {

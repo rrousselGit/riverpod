@@ -78,7 +78,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
     final notified = asyncTransition(value, seamless: seamless);
     if (_futureCompleter == null) {
       final completer = _futureCompleter = Completer();
-      futureNotifier.setResultAndMaybeModify(
+      futureNotifier.setResultAndMaybeNotify(
         $ResultData(completer.future),
         shouldNotify: notified,
       );
@@ -124,7 +124,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
         ..completeError(value.error, value.stackTrace);
       _futureCompleter = null;
     } else {
-      futureNotifier.setResultAndMaybeModify(
+      futureNotifier.setResultAndMaybeNotify(
         $Result.data(Future.error(value.error, value.stackTrace)..ignore()),
         shouldNotify: notified,
       );
@@ -144,7 +144,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
       completer.complete(value.value);
       _futureCompleter = null;
     } else {
-      futureNotifier.setResultAndMaybeModify(
+      futureNotifier.setResultAndMaybeNotify(
         $Result.data(Future.value(value.value)),
         shouldNotify: notified,
       );
