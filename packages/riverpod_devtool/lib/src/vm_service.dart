@@ -117,7 +117,7 @@ final serviceManagerProvider =
 class ServiceManagerNotifier extends AsyncNotifier<ServiceManager> {
   @override
   Future<ServiceManager<VmService>> build() async {
-    final timer = Timer.periodic(const Duration(milliseconds: 18), (_) async {
+    final timer = Timer.periodic(const Duration(seconds: 1), (_) async {
       final newService = serviceManager;
       // New service detected
       if (state.value == newService) return;
