@@ -20,6 +20,7 @@ final class MutationTransaction {
 
   final ProviderContainer _container;
   var _closed = false;
+  final _subscriptions = <ProviderSubscription<Object?>>[];
 
   /// Reads the current state of a listenable and keeps it alive until the
   /// enclosing mutation completes.
@@ -29,11 +30,17 @@ final class MutationTransaction {
       'Cannot access MutationTransaction after the mutation has completed',
     );
 
-    return _container.read(listenable);
+    final sub = _container.listen<StateT>(listenable, (_, _) {});
+    _subscriptions.add(sub as ProviderSubscription<Object?>);
+    return sub.read();
   }
 
   void _close() {
     _closed = true;
+    for (final sub in _subscriptions) {
+      sub.close();
+    }
+    _subscriptions.clear();
   }
 }
 
@@ -342,7 +349,10 @@ sealed class Mutation<ResultT>
   /// call the callback, then set the mutation state to either
   /// [MutationSuccess] or [MutationError] depending on whether the callback
   /// completes successfully or throws an error.
-  Future<ResultT> run(MutationTarget target, Future<ResultT> Function() cb);
+  Future<ResultT> run(
+    MutationTarget target,
+    Future<ResultT> Function(MutationTransaction tsx) cb,
+  );
 
   /// Resets the mutation to its initial state ([MutationIdle]).
   void reset(MutationTarget container);
@@ -389,8 +399,11 @@ final class MutationImpl<ResultT>
   }
 
   @override
-  Future<ResultT> run(MutationTarget target, Future<ResultT> Function() cb) {
-    return _runWithTransaction(target, (_) => cb());
+  Future<ResultT> run(
+    MutationTarget target,
+    Future<ResultT> Function(MutationTransaction tsx) cb,
+  ) {
+    return _runWithTransaction(target, cb);
   }
 
   Future<ResultT> _runWithTransaction(

@@ -27,7 +27,7 @@ class Example extends ConsumerWidget {
             },
           ),
           onPressed: () {
-            addTodo.run(ref, () async {
+            addTodo.run(ref, (_) async {
               // todo
             });
           },

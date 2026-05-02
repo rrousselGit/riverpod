@@ -154,8 +154,8 @@ final class _TerminalState extends ConsumerState<Terminal> {
 
             if (code.isEmpty) return;
 
-            _submit.run(ref, () async {
-              final evalFactory = await ref.read(evalProvider.future);
+            _submit.run(ref, (tsx) async {
+              final evalFactory = await tsx.get(evalProvider.future);
 
               Byte<RootCachedObject> result;
               final stateFuture = widget.state.readRef(

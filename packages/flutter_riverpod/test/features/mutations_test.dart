@@ -33,7 +33,7 @@ void main() {
 
     expect(find.text('42'), findsNothing);
 
-    await mut.run(container, () async {
+    await mut.run(container, (_) async {
       return 42;
     });
     await tester.pump();
