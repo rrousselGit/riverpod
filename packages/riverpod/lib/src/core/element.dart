@@ -80,7 +80,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
       final completer = _futureCompleter = Completer();
       futureNotifier.setResultAndMaybeNotify(
         $ResultData(completer.future),
-        shouldNotify: notified,
+        shouldNotify: true,
       );
     }
 
