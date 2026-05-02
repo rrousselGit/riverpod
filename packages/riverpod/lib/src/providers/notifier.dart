@@ -86,9 +86,9 @@ class $NotifierProviderElement<
 
   @override
   void handleError(Ref ref, Object error, StackTrace stackTrace) =>
-      value = AsyncError<ValueT>(error, stackTrace);
+      setValue(AsyncError<ValueT>(error, stackTrace));
 
   @override
   void handleCreate(Ref ref, ValueT Function() created) =>
-      value = AsyncData(created());
+      setValue(AsyncData(created()));
 }

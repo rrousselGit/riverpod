@@ -1015,6 +1015,19 @@ void main() {
     });
 
     group('AsyncNotifier.future', () {
+      test('does not notify when updateShouldNotify returns false', () async {
+        final notifier = factory.deferredNotifier<int>((ref, _) => 0);
+        final provider = factory.provider<int>(() => notifier);
+        final container = ProviderContainer.test();
+        final listener = Listener<Future<int>>();
+
+        container.listen(provider.future, listener.call);
+
+        notifier.state = AsyncData(0);
+
+        verifyZeroInteractions(listener);
+      });
+
       test('can be used inside Notifier.build', () async {
         final provider = factory.simpleTestProvider<int>((ref, self) {
           return self.future;

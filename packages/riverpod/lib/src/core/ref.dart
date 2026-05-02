@@ -415,13 +415,14 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   void notifyListeners() {
     _throwIfInvalidUsage();
 
-    final currentValue = _element.value;
-
     if (_element._didBuild) {
+      final currentValue = _element.value;
+      final currentValueResult = _element.resultForValue(currentValue);
+
       _element._notifyListeners(
-        currentValue,
-        currentValue,
-        checkUpdateShouldNotify: false,
+        currentValueResult!,
+        currentValueResult,
+        updateShouldNotifyResult: null,
       );
     }
   }

@@ -55,17 +55,15 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   /// [seamless] controls how the previous state is preserved:
   /// - seamless:true => import previous state and skip loading
   /// - seamless:false => import previous state and prefer loading
-  void asyncTransition(AsyncValue<ValueT> newState, {required bool seamless}) {
+  bool asyncTransition(AsyncValue<ValueT> newState, {required bool seamless}) {
     final previous = value;
 
     if (newState._isMultiState) {
-      super.value = newState;
-      return;
+      return super.setValue(newState);
     }
 
-    super.value = newState.cast<ValueT>().copyWithPrevious(
-      previous,
-      isRefresh: seamless,
+    return super.setValue(
+      newState.cast<ValueT>().copyWithPrevious(previous, isRefresh: seamless),
     );
   }
 
@@ -77,8 +75,9 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
 
   @internal
   void onLoading(AsyncLoading<ValueT> value, {bool seamless = false}) {
-    asyncTransition(value, seamless: seamless);
-    if (_futureCompleter == null) {
+    final notified = asyncTransition(value, seamless: seamless);
+    if (_futureCompleter == null &&
+        (futureNotifier.result == null || notified)) {
       final completer = _futureCompleter = Completer();
       futureNotifier.result = $ResultData(completer.future);
     }
@@ -101,7 +100,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   /// has yet to complete.
   @internal
   void onError(AsyncError<ValueT> value, {bool seamless = false}) {
-    asyncTransition(value, seamless: seamless);
+    final notified = asyncTransition(value, seamless: seamless);
 
     final result = resultForValue(value);
     if (result is! $ResultError<StateT> && !origin._isSynthetic) {
@@ -122,7 +121,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
         ..future.ignore()
         ..completeError(value.error, value.stackTrace);
       _futureCompleter = null;
-    } else {
+    } else if (futureNotifier.result == null || notified) {
       futureNotifier.result = $Result.data(
         Future.error(value.error, value.stackTrace)..ignore(),
       );
@@ -135,13 +134,13 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   /// has yet to complete.
   @internal
   void onData(AsyncData<ValueT> value, {bool seamless = false}) {
-    asyncTransition(value, seamless: seamless);
+    final notified = asyncTransition(value, seamless: seamless);
 
     final completer = _futureCompleter;
     if (completer != null) {
       completer.complete(value.value);
       _futureCompleter = null;
-    } else {
+    } else if (futureNotifier.result == null || notified) {
       futureNotifier.result = $Result.data(Future.value(value.value));
     }
   }
@@ -449,15 +448,33 @@ abstract class ProviderElement<StateT, ValueT> {
   /* STATE */
   var _value = AsyncValue<ValueT>.loading();
   AsyncValue<ValueT> get value => _value;
-  set value(AsyncValue<ValueT> value) {
+  bool setValue(AsyncValue<ValueT> value) {
     if (kDebugMode) _debugDidSetState = true;
 
-    final previousResult = this.value;
-    final result = _value = value;
+    final previous = this.value;
+    final next = _value = value;
 
     if (_didBuild) {
-      _notifyListeners(result, previousResult);
+      final previousResult = resultForValue(previous);
+      final nextResult = resultForValue(next);
+
+      return _notifyListeners(
+        nextResult!,
+        previousResult,
+        updateShouldNotifyResult: _callUpdateShouldNotifyFromResults(
+          previousResult,
+          nextResult,
+        ),
+      );
     }
+
+    // First build always count as notification, so that .future & co can
+    // properly initialize.
+    return true;
+  }
+
+  set value(AsyncValue<ValueT> value) {
+    setValue(value);
   }
 
   $Result<StateT>? stateResult() => resultForValue(value);
@@ -494,6 +511,24 @@ depending on itself.
     }
 
     return state;
+  }
+
+  bool _callUpdateShouldNotifyFromResults(
+    $Result<StateT>? previousState,
+    $Result<StateT> newState,
+  ) {
+    if (previousState == null) return true;
+
+    switch ((previousState, newState)) {
+      case (
+        $ResultData(value: final previousValue),
+        $ResultData(value: final newValue),
+      ):
+        return updateShouldNotify(previousValue, newValue);
+      case ($ResultError(), _):
+      case ($ResultData<StateT>(), $ResultError<StateT>()):
+        return true;
+    }
   }
 
   /// Called when a provider is rebuilt. Used for providers to not notify their
@@ -539,10 +574,10 @@ depending on itself.
       if (kDebugMode) _debugCurrentlyBuildingElement = null;
 
       _notifyListeners(
-        value,
-        initialState,
+        resultForValue(value)!,
+        resultForValue(initialState),
         isFirstBuild: true,
-        checkUpdateShouldNotify: false,
+        updateShouldNotifyResult: null,
       );
     } finally {
       if (kDebugMode) {
@@ -599,7 +634,16 @@ depending on itself.
           _debugCurrentlyBuildingElement = null;
         }
 
-        _notifyListeners(value, previousValue);
+        final valueResult = resultForValue(value);
+        final previousValueResult = resultForValue(previousValue);
+        _notifyListeners(
+          valueResult!,
+          previousValueResult,
+          updateShouldNotifyResult: _callUpdateShouldNotifyFromResults(
+            previousValueResult,
+            valueResult,
+          ),
+        );
 
         if (kDebugMode) {
           _debugSkipNotifyListenersAsserts = false;
@@ -687,7 +731,7 @@ depending on itself.
     } catch (err, stack) {
       if (kDebugMode) _debugDidSetState = true;
 
-      value = triggerRetry(err, stack);
+      setValue(triggerRetry(err, stack));
     } finally {
       _insideBuildFrame = false;
       _didBuild = true;
@@ -786,17 +830,13 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
   }
 
-  void _notifyListeners(
-    AsyncValue<ValueT> newStateValue,
-    AsyncValue<ValueT>? previousStateValue, {
-    bool checkUpdateShouldNotify = true,
+  bool _notifyListeners(
+    $Result<StateT> newState,
+    $Result<StateT>? previousStateResult, {
     bool isFirstBuild = false,
+    required bool? updateShouldNotifyResult,
   }) {
     if (kDebugMode && !isFirstBuild) _debugAssertNotificationAllowed();
-
-    final newState = resultForValue(newStateValue)!;
-    final previousStateResult =
-        previousStateValue != null ? resultForValue(previousStateValue) : null;
 
     final previousState = previousStateResult?.value;
 
@@ -826,15 +866,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         }
     }
 
-    if (checkUpdateShouldNotify) {
-      switch ((previousStateResult, newState)) {
-        case ((null, _)):
-        case (($ResultError(), _)):
-        case ((_, $ResultError())):
-          break;
-        case (($ResultData() && final prev, $ResultData() && final next)):
-          if (!updateShouldNotify(prev.value, next.value)) return;
-      }
+    if (updateShouldNotifyResult != null && !updateShouldNotifyResult) {
+      return false;
     }
 
     final listeners = [...weakDependents, if (!isFirstBuild) ...?dependents];
@@ -892,6 +925,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         }
       }
     }
+
+    return true;
   }
 
   void _markDependencyMayHaveChanged() {
@@ -1373,5 +1408,5 @@ mixin SyncProviderElement<ValueT> on ProviderElement<ValueT, ValueT> {
   }
 
   @override
-  void setValueFromState(ValueT state) => value = AsyncData(state);
+  void setValueFromState(ValueT state) => setValue(AsyncData(state));
 }
