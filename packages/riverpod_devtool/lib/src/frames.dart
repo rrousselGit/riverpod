@@ -378,6 +378,7 @@ class FrameStepper extends HookConsumerWidget {
               ),
               Flexible(
                 child: Scrollbar(
+                  controller: controller,
                   child: ListView.builder(
                     primary: false,
                     shrinkWrap: true,
