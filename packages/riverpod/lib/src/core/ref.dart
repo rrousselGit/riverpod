@@ -420,8 +420,8 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
       final currentValueResult = _element.resultForValue(currentValue);
 
       _element._notifyListeners(
-        currentValueResult!,
-        currentValueResult,
+        next: currentValueResult!,
+        previous: currentValueResult,
         updateShouldNotifyResult: null,
       );
     }

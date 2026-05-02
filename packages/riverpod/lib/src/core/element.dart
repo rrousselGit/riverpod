@@ -469,8 +469,8 @@ abstract class ProviderElement<StateT, ValueT> {
       );
 
       _notifyListeners(
-        nextResult,
-        previousResult,
+        next: nextResult,
+        previous: previousResult,
         updateShouldNotifyResult: updateShouldNotify,
       );
 
@@ -581,8 +581,8 @@ depending on itself.
       if (kDebugMode) _debugCurrentlyBuildingElement = null;
 
       _notifyListeners(
-        resultForValue(value)!,
-        resultForValue(initialState),
+        next: resultForValue(value)!,
+        previous: resultForValue(initialState),
         isFirstBuild: true,
         updateShouldNotifyResult: null,
       );
@@ -644,8 +644,8 @@ depending on itself.
         final valueResult = resultForValue(value);
         final previousValueResult = resultForValue(previousValue);
         _notifyListeners(
-          valueResult!,
-          previousValueResult,
+          next: valueResult!,
+          previous: previousValueResult,
           updateShouldNotifyResult: _callUpdateShouldNotifyFromResults(
             previous: previousValueResult,
             next: valueResult,
@@ -837,18 +837,18 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
   }
 
-  void _notifyListeners(
-    $Result<StateT> newState,
-    $Result<StateT>? previousStateResult, {
+  void _notifyListeners({
+    required $Result<StateT> next,
+    required $Result<StateT>? previous,
     bool isFirstBuild = false,
     required bool? updateShouldNotifyResult,
   }) {
     if (kDebugMode && !isFirstBuild) _debugAssertNotificationAllowed();
 
-    final previousState = previousStateResult?.value;
+    final previousState = previous?.value;
 
     // listenSelf listeners do not respect updateShouldNotify
-    switch (newState) {
+    switch (next) {
       case final $ResultData<StateT> newState:
         final onChangeSelfListeners = ref?._onChangeSelfListeners;
         if (onChangeSelfListeners != null) {
@@ -876,7 +876,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (updateShouldNotifyResult != null && !updateShouldNotifyResult) return;
 
     final listeners = [...weakDependents, if (!isFirstBuild) ...?dependents];
-    switch (newState) {
+    switch (next) {
       case final $ResultData<StateT> newState:
         for (var i = 0; i < listeners.length; i++) {
           final listener = listeners[i];
@@ -907,25 +907,25 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
           container.runBinaryGuarded(
             observer.didAddProvider,
             _currentObserverContext(),
-            newState.value,
+            next.value,
           );
         } else {
           container.runTernaryGuarded(
             observer.didUpdateProvider,
             _currentObserverContext(),
             previousState,
-            newState.value,
+            next.value,
           );
         }
       }
 
       for (final observer in container.observers) {
-        if (newState is $ResultError<StateT>) {
+        if (next is $ResultError<StateT>) {
           container.runTernaryGuarded(
             observer.providerDidFail,
             _currentObserverContext(),
-            newState.error,
-            newState.stackTrace,
+            next.error,
+            next.stackTrace,
           );
         }
       }
