@@ -76,10 +76,12 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   @internal
   void onLoading(AsyncLoading<ValueT> value, {bool seamless = false}) {
     final notified = asyncTransition(value, seamless: seamless);
-    if (_futureCompleter == null &&
-        (futureNotifier.result == null || notified)) {
+    if (_futureCompleter == null && (futureNotifier.result == null)) {
       final completer = _futureCompleter = Completer();
-      futureNotifier.result = $ResultData(completer.future);
+      futureNotifier.setResultAndMaybeModify(
+        $ResultData(completer.future),
+        shouldNotify: notified,
+      );
     }
   }
 
@@ -121,9 +123,10 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
         ..future.ignore()
         ..completeError(value.error, value.stackTrace);
       _futureCompleter = null;
-    } else if (futureNotifier.result == null || notified) {
-      futureNotifier.result = $Result.data(
-        Future.error(value.error, value.stackTrace)..ignore(),
+    } else {
+      futureNotifier.setResultAndMaybeModify(
+        $Result.data(Future.error(value.error, value.stackTrace)..ignore()),
+        shouldNotify: notified,
       );
     }
   }
@@ -140,8 +143,11 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
     if (completer != null) {
       completer.complete(value.value);
       _futureCompleter = null;
-    } else if (futureNotifier.result == null || notified) {
-      futureNotifier.result = $Result.data(Future.value(value.value));
+    } else {
+      futureNotifier.setResultAndMaybeModify(
+        $Result.data(Future.value(value.value)),
+        shouldNotify: notified,
+      );
     }
   }
 
