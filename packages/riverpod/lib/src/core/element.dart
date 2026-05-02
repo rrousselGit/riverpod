@@ -464,8 +464,8 @@ abstract class ProviderElement<StateT, ValueT> {
       final previousResult = resultForValue(previous);
       final nextResult = resultForValue(next);
       final updateShouldNotify = _callUpdateShouldNotifyFromResults(
-        previousResult,
-        nextResult!,
+        previous: previousResult,
+        next: nextResult!,
       );
 
       _notifyListeners(
@@ -520,13 +520,13 @@ depending on itself.
     return state;
   }
 
-  bool _callUpdateShouldNotifyFromResults(
-    $Result<StateT>? previousState,
-    $Result<StateT> newState,
-  ) {
-    if (previousState == null) return true;
+  bool _callUpdateShouldNotifyFromResults({
+    required $Result<StateT>? previous,
+    required $Result<StateT> next,
+  }) {
+    if (previous == null) return true;
 
-    switch ((previousState, newState)) {
+    switch ((previous, next)) {
       case (
         $ResultData(value: final previousValue),
         $ResultData(value: final newValue),
@@ -647,8 +647,8 @@ depending on itself.
           valueResult!,
           previousValueResult,
           updateShouldNotifyResult: _callUpdateShouldNotifyFromResults(
-            previousValueResult,
-            valueResult,
+            previous: previousValueResult,
+            next: valueResult,
           ),
         );
 
