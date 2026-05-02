@@ -76,7 +76,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   @internal
   void onLoading(AsyncLoading<ValueT> value, {bool seamless = false}) {
     final notified = asyncTransition(value, seamless: seamless);
-    if (_futureCompleter == null && (futureNotifier.result == null)) {
+    if (_futureCompleter == null) {
       final completer = _futureCompleter = Completer();
       futureNotifier.setResultAndMaybeModify(
         $ResultData(completer.future),
@@ -463,20 +463,21 @@ abstract class ProviderElement<StateT, ValueT> {
     if (_didBuild) {
       final previousResult = resultForValue(previous);
       final nextResult = resultForValue(next);
-
-      return _notifyListeners(
-        nextResult!,
+      final updateShouldNotify = _callUpdateShouldNotifyFromResults(
         previousResult,
-        updateShouldNotifyResult: _callUpdateShouldNotifyFromResults(
-          previousResult,
-          nextResult,
-        ),
+        nextResult!,
       );
+
+      _notifyListeners(
+        nextResult,
+        previousResult,
+        updateShouldNotifyResult: updateShouldNotify,
+      );
+
+      return updateShouldNotify;
     }
 
-    // First build always count as notification, so that .future & co can
-    // properly initialize.
-    return true;
+    return false;
   }
 
   set value(AsyncValue<ValueT> value) {
@@ -836,7 +837,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
   }
 
-  bool _notifyListeners(
+  void _notifyListeners(
     $Result<StateT> newState,
     $Result<StateT>? previousStateResult, {
     bool isFirstBuild = false,
@@ -872,9 +873,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         }
     }
 
-    if (updateShouldNotifyResult != null && !updateShouldNotifyResult) {
-      return false;
-    }
+    if (updateShouldNotifyResult != null && !updateShouldNotifyResult) return;
 
     final listeners = [...weakDependents, if (!isFirstBuild) ...?dependents];
     switch (newState) {
@@ -931,8 +930,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         }
       }
     }
-
-    return true;
   }
 
   void _markDependencyMayHaveChanged() {
