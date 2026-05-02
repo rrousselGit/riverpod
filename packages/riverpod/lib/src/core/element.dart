@@ -69,12 +69,12 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
 
   @override
   @protected
-  set value(AsyncValue<ValueT> newState) {
-    newState.map(loading: onLoading, error: onError, data: onData);
+  bool setValue(AsyncValue<ValueT> value) {
+    return value.map(loading: onLoading, error: onError, data: onData);
   }
 
   @internal
-  void onLoading(AsyncLoading<ValueT> value, {bool seamless = false}) {
+  bool onLoading(AsyncLoading<ValueT> value, {bool seamless = false}) {
     final notified = asyncTransition(value, seamless: seamless);
     if (_futureCompleter == null) {
       final completer = _futureCompleter = Completer();
@@ -83,6 +83,8 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
         shouldNotify: notified,
       );
     }
+
+    return notified;
   }
 
   void onValue(AsyncValue<ValueT> value, {bool seamless = false}) {
@@ -101,7 +103,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   /// Might be invoked after the element is disposed in the case where `provider.future`
   /// has yet to complete.
   @internal
-  void onError(AsyncError<ValueT> value, {bool seamless = false}) {
+  bool onError(AsyncError<ValueT> value, {bool seamless = false}) {
     final notified = asyncTransition(value, seamless: seamless);
 
     final result = resultForValue(value);
@@ -129,6 +131,8 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
         shouldNotify: notified,
       );
     }
+
+    return notified;
   }
 
   /// Life-cycle for when a data from the provider's "build" method is received.
@@ -136,7 +140,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   /// Might be invoked after the element is disposed in the case where `provider.future`
   /// has yet to complete.
   @internal
-  void onData(AsyncData<ValueT> value, {bool seamless = false}) {
+  bool onData(AsyncData<ValueT> value, {bool seamless = false}) {
     final notified = asyncTransition(value, seamless: seamless);
 
     final completer = _futureCompleter;
@@ -149,6 +153,8 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
         shouldNotify: notified,
       );
     }
+
+    return notified;
   }
 
   /// Listens to a [Stream] and convert it into an [AsyncValue].
