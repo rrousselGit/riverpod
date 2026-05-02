@@ -9,7 +9,10 @@ void main() {
       final instance = VmInstance.string('world');
 
       expect(Byte.requireInstanceRef(ref), ByteVariable(VmInstanceRef(ref)));
-      expect(Byte.requireInstanceRef(instance), ByteVariable(VmInstanceRef(instance)));
+      expect(
+        Byte.requireInstanceRef(instance),
+        ByteVariable(VmInstanceRef(instance)),
+      );
     });
 
     test('turns sentinels into errors', () {

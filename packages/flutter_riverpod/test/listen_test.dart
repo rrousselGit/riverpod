@@ -150,7 +150,6 @@ void main() {
       ref.read(provider.notifier).state++;
       verifyNoMoreInteractions(listener);
     });
-
   });
 
   group('WidgetRef.listen', () {

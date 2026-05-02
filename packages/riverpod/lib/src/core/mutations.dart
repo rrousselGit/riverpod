@@ -297,9 +297,9 @@ abstract class MutationTarget {
 /// ...
 ///
 /// onPressed: () {
-  // Upon calling `run`, you will have to pass the same key as when
-  ///   // watching the mutation.
-  ///   deleteTodo(todo.id).run(ref, () async { /* ... */ });
+// Upon calling `run`, you will have to pass the same key as when
+///   // watching the mutation.
+///   deleteTodo(todo.id).run(ref, () async { /* ... */ });
 /// }
 /// ```
 ///
@@ -342,10 +342,7 @@ sealed class Mutation<ResultT>
   /// call the callback, then set the mutation state to either
   /// [MutationSuccess] or [MutationError] depending on whether the callback
   /// completes successfully or throws an error.
-  Future<ResultT> run(
-    MutationTarget target,
-    Future<ResultT> Function() cb,
-  );
+  Future<ResultT> run(MutationTarget target, Future<ResultT> Function() cb);
 
   /// Resets the mutation to its initial state ([MutationIdle]).
   void reset(MutationTarget container);
@@ -392,10 +389,7 @@ final class MutationImpl<ResultT>
   }
 
   @override
-  Future<ResultT> run(
-    MutationTarget target,
-    Future<ResultT> Function() cb,
-  ) {
+  Future<ResultT> run(MutationTarget target, Future<ResultT> Function() cb) {
     return _runWithTransaction(target, (_) => cb());
   }
 
