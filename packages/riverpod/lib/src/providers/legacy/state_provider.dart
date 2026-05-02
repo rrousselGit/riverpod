@@ -117,7 +117,7 @@ class _StateProviderElement<ValueT>
 
     _removeListener = controller.addListener(fireImmediately: true, (state) {
       _stateNotifier.result = _controllerNotifier.result;
-      value = AsyncData(state);
+      setValue(AsyncData(state));
     });
 
     return null;

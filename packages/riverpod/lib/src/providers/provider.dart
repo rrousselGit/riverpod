@@ -340,7 +340,7 @@ class $ProviderElement<ValueT>
 
   @override
   WhenComplete create(Ref ref) {
-    value = AsyncData(provider.create(ref));
+    setValue(AsyncData(provider.create(ref)));
 
     return null;
   }

@@ -126,12 +126,14 @@ class _MutationElement<StateT>
       final prevState = value;
       if (prevState.value?.state == state) return;
 
-      value = AsyncData(
-        _MutationNotifier(
-          state,
-          setState,
-          (ref) => activeRef = ref,
-          () => activeRef,
+      setValue(
+        AsyncData(
+          _MutationNotifier(
+            state,
+            setState,
+            (ref) => activeRef = ref,
+            () => activeRef,
+          ),
         ),
       );
       switch (state) {

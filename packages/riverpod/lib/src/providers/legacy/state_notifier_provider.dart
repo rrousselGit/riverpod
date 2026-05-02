@@ -170,7 +170,7 @@ class _StateNotifierProviderElement<
         _notifierNotifier.result = $Result.guard(() => provider.create(ref));
 
     _removeListener = notifier.valueOrRawException.addListener(
-      (newState) => value = AsyncData(newState),
+      (newState) => setValue(AsyncData(newState)),
       fireImmediately: true,
     );
 

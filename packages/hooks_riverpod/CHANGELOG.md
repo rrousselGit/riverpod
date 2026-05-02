@@ -22,10 +22,12 @@
   ```
 
   Which allows for users to invalidate only the providers they care about, while implementation details can be handled privately. (thanks to @TekExplorer)
+
 - Added `ProviderContainer.allProviders()`, to obtain all providers accessible from said container. You can optionally specify `allProviders(family: myFamily)` to only include providers from said family.
 - Refactored internal scheduling mechanism to solve some markNeedsBuild error.
 - Removed `@internal` for `ProviderFamily.new`
 - Added various life-cycles to `ProviderObserver`
+- Fix `.future` incorrectly notifying listeners even when `AsyncValue` doesn't change.
 
 ## 3.3.0 - 2026-03-09
 

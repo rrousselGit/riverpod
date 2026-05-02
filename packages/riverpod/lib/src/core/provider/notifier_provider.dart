@@ -127,6 +127,11 @@ abstract class AnyNotifier<StateT, ValueT> {
   ///
   /// You can override this method to provide a custom comparison logic,
   /// such as using [identical] to use a more efficient comparison.
+  ///
+  /// **Note:**
+  /// This also affects whether [AsyncNotifier.future] notifies.
+  /// If [updateShouldNotify] returns false, then [AsyncNotifier.future] will not notify
+  /// when the state changes. However, the future will still resolve with the new state.
   @visibleForOverriding
   bool updateShouldNotify(StateT previous, StateT next) {
     return ProviderElement.defaultUpdateShouldNotify(previous, next);

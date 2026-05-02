@@ -55,33 +55,36 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   /// [seamless] controls how the previous state is preserved:
   /// - seamless:true => import previous state and skip loading
   /// - seamless:false => import previous state and prefer loading
-  void asyncTransition(AsyncValue<ValueT> newState, {required bool seamless}) {
+  bool asyncTransition(AsyncValue<ValueT> newState, {required bool seamless}) {
     final previous = value;
 
     if (newState._isMultiState) {
-      super.value = newState;
-      return;
+      return super.setValue(newState);
     }
 
-    super.value = newState.cast<ValueT>().copyWithPrevious(
-      previous,
-      isRefresh: seamless,
+    return super.setValue(
+      newState.cast<ValueT>().copyWithPrevious(previous, isRefresh: seamless),
     );
   }
 
   @override
   @protected
-  set value(AsyncValue<ValueT> newState) {
-    newState.map(loading: onLoading, error: onError, data: onData);
+  bool setValue(AsyncValue<ValueT> value) {
+    return value.map(loading: onLoading, error: onError, data: onData);
   }
 
   @internal
-  void onLoading(AsyncLoading<ValueT> value, {bool seamless = false}) {
-    asyncTransition(value, seamless: seamless);
+  bool onLoading(AsyncLoading<ValueT> value, {bool seamless = false}) {
+    final notified = asyncTransition(value, seamless: seamless);
     if (_futureCompleter == null) {
       final completer = _futureCompleter = Completer();
-      futureNotifier.result = $ResultData(completer.future);
+      futureNotifier.setResultAndMaybeNotify(
+        $ResultData(completer.future),
+        shouldNotify: notified,
+      );
     }
+
+    return notified;
   }
 
   void onValue(AsyncValue<ValueT> value, {bool seamless = false}) {
@@ -100,8 +103,8 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   /// Might be invoked after the element is disposed in the case where `provider.future`
   /// has yet to complete.
   @internal
-  void onError(AsyncError<ValueT> value, {bool seamless = false}) {
-    asyncTransition(value, seamless: seamless);
+  bool onError(AsyncError<ValueT> value, {bool seamless = false}) {
+    final notified = asyncTransition(value, seamless: seamless);
 
     final result = resultForValue(value);
     if (result is! $ResultError<StateT> && !origin._isSynthetic) {
@@ -123,10 +126,13 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
         ..completeError(value.error, value.stackTrace);
       _futureCompleter = null;
     } else {
-      futureNotifier.result = $Result.data(
-        Future.error(value.error, value.stackTrace)..ignore(),
+      futureNotifier.setResultAndMaybeNotify(
+        $Result.data(Future.error(value.error, value.stackTrace)..ignore()),
+        shouldNotify: notified,
       );
     }
+
+    return notified;
   }
 
   /// Life-cycle for when a data from the provider's "build" method is received.
@@ -134,16 +140,21 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   /// Might be invoked after the element is disposed in the case where `provider.future`
   /// has yet to complete.
   @internal
-  void onData(AsyncData<ValueT> value, {bool seamless = false}) {
-    asyncTransition(value, seamless: seamless);
+  bool onData(AsyncData<ValueT> value, {bool seamless = false}) {
+    final notified = asyncTransition(value, seamless: seamless);
 
     final completer = _futureCompleter;
     if (completer != null) {
       completer.complete(value.value);
       _futureCompleter = null;
     } else {
-      futureNotifier.result = $Result.data(Future.value(value.value));
+      futureNotifier.setResultAndMaybeNotify(
+        $Result.data(Future.value(value.value)),
+        shouldNotify: notified,
+      );
     }
+
+    return notified;
   }
 
   /// Listens to a [Stream] and convert it into an [AsyncValue].
@@ -449,15 +460,35 @@ abstract class ProviderElement<StateT, ValueT> {
   /* STATE */
   var _value = AsyncValue<ValueT>.loading();
   AsyncValue<ValueT> get value => _value;
-  set value(AsyncValue<ValueT> value) {
+  bool setValue(AsyncValue<ValueT> value) {
     if (kDebugMode) _debugDidSetState = true;
 
-    final previousResult = this.value;
-    final result = _value = value;
+    final previous = this.value;
+    final next = _value = value;
 
     if (_didBuild) {
-      _notifyListeners(result, previousResult);
+      final previousResult = resultForValue(previous);
+      final nextResult = resultForValue(next);
+      final updateShouldNotify = _callUpdateShouldNotifyFromResults(
+        previous: previousResult,
+        next: nextResult!,
+      );
+
+      _notifyListeners(
+        next: nextResult,
+        previous: previousResult,
+        updateShouldNotifyResult: updateShouldNotify,
+      );
+
+      return updateShouldNotify;
     }
+
+    // True so that weak listeners are correctly notified of the first state set.
+    return true;
+  }
+
+  set value(AsyncValue<ValueT> value) {
+    setValue(value);
   }
 
   $Result<StateT>? stateResult() => resultForValue(value);
@@ -494,6 +525,24 @@ depending on itself.
     }
 
     return state;
+  }
+
+  bool _callUpdateShouldNotifyFromResults({
+    required $Result<StateT>? previous,
+    required $Result<StateT> next,
+  }) {
+    if (previous == null) return true;
+
+    switch ((previous, next)) {
+      case (
+        $ResultData(value: final previousValue),
+        $ResultData(value: final newValue),
+      ):
+        return updateShouldNotify(previousValue, newValue);
+      case ($ResultError(), _):
+      case ($ResultData<StateT>(), $ResultError<StateT>()):
+        return true;
+    }
   }
 
   /// Called when a provider is rebuilt. Used for providers to not notify their
@@ -539,10 +588,10 @@ depending on itself.
       if (kDebugMode) _debugCurrentlyBuildingElement = null;
 
       _notifyListeners(
-        value,
-        initialState,
+        next: resultForValue(value)!,
+        previous: resultForValue(initialState),
         isFirstBuild: true,
-        checkUpdateShouldNotify: false,
+        updateShouldNotifyResult: null,
       );
     } finally {
       if (kDebugMode) {
@@ -599,7 +648,16 @@ depending on itself.
           _debugCurrentlyBuildingElement = null;
         }
 
-        _notifyListeners(value, previousValue);
+        final valueResult = resultForValue(value);
+        final previousValueResult = resultForValue(previousValue);
+        _notifyListeners(
+          next: valueResult!,
+          previous: previousValueResult,
+          updateShouldNotifyResult: _callUpdateShouldNotifyFromResults(
+            previous: previousValueResult,
+            next: valueResult,
+          ),
+        );
 
         if (kDebugMode) {
           _debugSkipNotifyListenersAsserts = false;
@@ -687,7 +745,7 @@ depending on itself.
     } catch (err, stack) {
       if (kDebugMode) _debugDidSetState = true;
 
-      value = triggerRetry(err, stack);
+      setValue(triggerRetry(err, stack));
     } finally {
       _insideBuildFrame = false;
       _didBuild = true;
@@ -786,22 +844,18 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
   }
 
-  void _notifyListeners(
-    AsyncValue<ValueT> newStateValue,
-    AsyncValue<ValueT>? previousStateValue, {
-    bool checkUpdateShouldNotify = true,
+  void _notifyListeners({
+    required $Result<StateT> next,
+    required $Result<StateT>? previous,
     bool isFirstBuild = false,
+    required bool? updateShouldNotifyResult,
   }) {
     if (kDebugMode && !isFirstBuild) _debugAssertNotificationAllowed();
 
-    final newState = resultForValue(newStateValue)!;
-    final previousStateResult =
-        previousStateValue != null ? resultForValue(previousStateValue) : null;
-
-    final previousState = previousStateResult?.value;
+    final previousState = previous?.value;
 
     // listenSelf listeners do not respect updateShouldNotify
-    switch (newState) {
+    switch (next) {
       case final $ResultData<StateT> newState:
         final onChangeSelfListeners = ref?._onChangeSelfListeners;
         if (onChangeSelfListeners != null) {
@@ -826,19 +880,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         }
     }
 
-    if (checkUpdateShouldNotify) {
-      switch ((previousStateResult, newState)) {
-        case ((null, _)):
-        case (($ResultError(), _)):
-        case ((_, $ResultError())):
-          break;
-        case (($ResultData() && final prev, $ResultData() && final next)):
-          if (!updateShouldNotify(prev.value, next.value)) return;
-      }
-    }
+    if (updateShouldNotifyResult != null && !updateShouldNotifyResult) return;
 
     final listeners = [...weakDependents, if (!isFirstBuild) ...?dependents];
-    switch (newState) {
+    switch (next) {
       case final $ResultData<StateT> newState:
         for (var i = 0; i < listeners.length; i++) {
           final listener = listeners[i];
@@ -869,25 +914,25 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
           container.runBinaryGuarded(
             observer.didAddProvider,
             _currentObserverContext(),
-            newState.value,
+            next.value,
           );
         } else {
           container.runTernaryGuarded(
             observer.didUpdateProvider,
             _currentObserverContext(),
             previousState,
-            newState.value,
+            next.value,
           );
         }
       }
 
       for (final observer in container.observers) {
-        if (newState is $ResultError<StateT>) {
+        if (next is $ResultError<StateT>) {
           container.runTernaryGuarded(
             observer.providerDidFail,
             _currentObserverContext(),
-            newState.error,
-            newState.stackTrace,
+            next.error,
+            next.stackTrace,
           );
         }
       }
@@ -1373,5 +1418,5 @@ mixin SyncProviderElement<ValueT> on ProviderElement<ValueT, ValueT> {
   }
 
   @override
-  void setValueFromState(ValueT state) => value = AsyncData(state);
+  void setValueFromState(ValueT state) => setValue(AsyncData(state));
 }
