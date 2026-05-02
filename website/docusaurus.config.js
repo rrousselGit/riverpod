@@ -25,8 +25,14 @@ module.exports = {
       "it",
       "ru",
       "tr",
+      "ar",
       "zh-Hans",
     ],
+    localeConfigs: {
+      ar: {
+        direction: "rtl",
+      },
+    },
   },
   themeConfig: {
     algolia: {
