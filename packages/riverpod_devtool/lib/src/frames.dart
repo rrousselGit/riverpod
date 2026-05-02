@@ -98,7 +98,11 @@ class AccumulatedState {
 
 @immutable
 final class FoldedFrame {
-  FoldedFrame({required this.frame, required this.previous}) {
+  FoldedFrame({
+    required this.frame,
+    required this.previous,
+    List<Frame> newFrames = const [],
+  }) {
     final previous = this.previous;
     if (previous != null) {
       if (frame.timestamp.isBefore(previous.frame.timestamp)) {
@@ -111,7 +115,7 @@ final class FoldedFrame {
       if (frame.index != previous.frame.index + 1) {
         throw StateError(
           'Frame index must be strictly increasing. '
-          'Got ${previous.frame.index} followed by ${frame.index}',
+          '${_debugGetAllFrameIndexes().join(' -> ')} // new frames indexes: ${newFrames.map((f) => f.index).join(', ')}',
         );
       }
     } else {
@@ -119,6 +123,18 @@ final class FoldedFrame {
         throw StateError('The first frame must have index 0');
       }
     }
+  }
+
+  List<int> _debugGetAllFrameIndexes() {
+    final indexes = <int>[];
+    for (
+      FoldedFrame? current = this;
+      current != null;
+      current = current.previous
+    ) {
+      indexes.add(current.frame.index);
+    }
+    return indexes.toList();
   }
 
   FrameId get id => FrameId(frame.index);
@@ -197,13 +213,17 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
 
     final mappedFrames = List.filled(
       rawFrames.length,
-      FoldedFrame(frame: firstFrame, previous: null),
+      FoldedFrame(frame: firstFrame, previous: null, newFrames: rawFrames),
     );
     for (var i = 1; i < rawFrames.length; i++) {
       final previous = mappedFrames[i - 1];
       final rawFrame = rawFrames[i];
 
-      mappedFrames[i] = FoldedFrame(frame: rawFrame, previous: previous);
+      mappedFrames[i] = FoldedFrame(
+        frame: rawFrame,
+        previous: previous,
+        newFrames: rawFrames,
+      );
     }
 
     return mappedFrames;
@@ -240,7 +260,7 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
     required Eval riverpodEval,
     required Disposable isAlive,
   }) async {
-    final frames = await future;
+    final frames = state.value ?? await future;
     final alreadyHasNewFrame = notification.offset <= frames.length - 1;
     if (alreadyHasNewFrame) return;
 
@@ -250,7 +270,7 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
       startIndex: math.max(frames.length, 0),
     );
 
-    final previousFrames = state.value ?? const <FoldedFrame>[];
+    final previousFrames = frames;
     FoldedFrame? lastFrame;
     state = AsyncData(
       List.generate(previousFrames.length + newFrames.length, (index) {
@@ -261,6 +281,7 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
           result = FoldedFrame(
             frame: newFrames[index - previousFrames.length],
             previous: lastFrame,
+            newFrames: newFrames,
           );
         }
 
