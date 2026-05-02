@@ -1016,16 +1016,32 @@ void main() {
 
     group('AsyncNotifier.future', () {
       test('does not notify when updateShouldNotify returns false', () async {
-        final notifier = factory.deferredNotifier<int>((ref, _) => 0);
-        final provider = factory.provider<int>(() => notifier);
+        final provider = factory.deferredProvider<int>(
+          (ref, _) => 0,
+          updateShouldNotify: (a, b) => false,
+        );
         final container = ProviderContainer.test();
         final listener = Listener<Future<int>>();
+        final notifier = container.read(provider.notifier);
 
         container.listen(provider.future, listener.call);
 
-        notifier.state = AsyncData(0);
+        notifier.state = AsyncData(42);
+        expect(
+          container.read(provider.future),
+          completion(42),
+          reason:
+              'Even though no notification happened, the state is still updated',
+        );
+
+        notifier.state = AsyncError(42, StackTrace.empty);
+        expect(container.read(provider.future), throwsA(42));
 
         verifyZeroInteractions(listener);
+
+        // Loading notifies anyway
+        notifier.state = AsyncLoading();
+        verifyOnly(listener, listener(any, any));
       });
 
       test('can be used inside Notifier.build', () async {
