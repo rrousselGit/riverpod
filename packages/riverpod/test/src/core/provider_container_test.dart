@@ -1504,7 +1504,13 @@ void main() {
         );
 
         expect(container.root, root);
-        expect(container.observers, [observer]);
+        expect(
+          container.observers,
+          anyOf([
+            [observer],
+            [observer, isA<DevtoolObserver>()],
+          ]),
+        );
         expect(container.read(provider), 1);
       });
     });

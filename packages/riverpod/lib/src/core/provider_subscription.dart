@@ -213,17 +213,14 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   @override
   String toString() {
     final listenedDisplay = _listenedElement.origin.toString();
-    final listenerDisplay = switch (source) {
-      final ProviderElement e => e.origin.toString(),
-      ProviderContainer() => source.toString(),
-    };
+
     return '''
 ProviderSubscription<$OutT>#${shortHash(this)}(
   active: $active,
   pauseCount: $_pauseCount,
   closed: $closed,
   listened: $listenedDisplay,
-  listener: $listenerDisplay,
+  listener: $source,
   weak: $weak,
   hasParent: ${$hasParent},
   childSub: ${switch (this) {

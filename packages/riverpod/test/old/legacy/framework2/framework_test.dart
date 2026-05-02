@@ -5,7 +5,7 @@ import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart'
     show $ProviderElement, InternalProviderContainer, ProviderElement;
-import 'package:riverpod/src/internals.dart' show NodeInternal;
+import 'package:riverpod/src/internals.dart' show ContainerReadElement;
 import 'package:test/test.dart';
 
 import '../../../src/utils.dart' show throwsProviderException;

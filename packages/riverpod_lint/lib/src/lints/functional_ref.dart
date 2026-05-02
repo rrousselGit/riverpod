@@ -100,8 +100,9 @@ class FunctionalRefFix extends ResolvedCorrectionProducer {
   @override
   Future<void> compute(ChangeBuilder builder) async {
     final node = this.node;
-    final declaration =
-        node.thisOrAncestorOfType<FunctionDeclaration>()?.provider;
+    final declaration = node
+        .thisOrAncestorOfType<FunctionDeclaration>()
+        ?.provider;
     if (declaration == null) return;
 
     final refNode =

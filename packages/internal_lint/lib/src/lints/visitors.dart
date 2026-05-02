@@ -55,7 +55,8 @@ class _Visitor extends SimpleAstVisitor<void> {
     final visitorVar = body.block.statements
         .whereType<VariableDeclarationStatement>()
         .map((e) {
-          final type = e.variables.variables.firstOrNull?.declaredFragment?.element.type;
+          final type =
+              e.variables.variables.firstOrNull?.declaredFragment?.element.type;
           if (type == null) return null;
           return (type: type, node: e);
         })

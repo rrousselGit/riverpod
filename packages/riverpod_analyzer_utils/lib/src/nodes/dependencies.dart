@@ -20,9 +20,8 @@ extension on CollectionElement {
       final element = switch (that) {
         SimpleIdentifier() => that.element,
         TypeLiteral() => that.type.element,
-        _ => null
+        _ => null,
       };
-      
 
       if (element == null) {
         errorReporter(

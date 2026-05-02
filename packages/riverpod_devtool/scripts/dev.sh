@@ -1,0 +1,1 @@
+flutter run -d chrome --dart-define=use_simulated_environment=true

@@ -10,6 +10,12 @@ examples/**/ios/
 examples/**/web/
 examples/**/windows/
 examples/**/macos/
+other_projects/**/android/
+other_projects/**/ios/
+other_projects/**/web/
+other_projects/**/windows/
+other_projects/**/macos/
+other_projects/**/linux/
 # Include specific entitlements files which enable internet access
 !examples/**/macos/Runner/DebugProfile.entitlements
 

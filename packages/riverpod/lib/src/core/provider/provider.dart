@@ -114,7 +114,7 @@ abstract final class $ProviderBaseImpl<StateT> extends ProviderBase<StateT> {
     required void Function()? onDependencyMayHaveChanged,
     required bool weak,
   }) {
-    final element = source.readProviderElement(this);
+    final element = source.container.readProviderElement(this);
 
     if (!weak) element.flush();
 

@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_internal_member
+
 part of '../core.dart';
 
 /// {@template flutter_riverpod.widget_ref}
@@ -36,7 +38,7 @@ part of '../core.dart';
 /// a [Ref] instead.
 /// {@endtemplate}
 /// {@category Core}
-sealed class WidgetRef implements MutationTarget {
+sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
   /// The [BuildContext] of the widget associated to this [WidgetRef].
   ///
   /// This is strictly identical to the [BuildContext] passed to [ConsumerWidget.build].
@@ -110,6 +112,7 @@ sealed class WidgetRef implements MutationTarget {
   /// - [ProviderListenableSelect.select], which allows a widget to filter rebuilds by
   ///   observing only the selected properties.
   /// - [listen], to react to changes on a provider, such as for showing modals.
+  @override
   StateT watch<StateT>(ProviderListenable<StateT> provider);
 
   /// Determines whether a provider is initialized or not.
@@ -143,6 +146,7 @@ sealed class WidgetRef implements MutationTarget {
   ///   return Item.fromJson(json);
   /// });
   /// ```
+  @override
   bool exists(ProviderBase<Object?> provider);
 
   /// Listen to a provider and call `listener` whenever its value changes,
@@ -219,6 +223,7 @@ sealed class WidgetRef implements MutationTarget {
   /// - [read], to read a provider without listening to it.
   ///
   /// This is useful for showing modals or other imperative logic.
+  @override
   void listen<StateT>(
     ProviderListenable<StateT> provider,
     void Function(StateT? previous, StateT next) listener, {
@@ -240,6 +245,7 @@ sealed class WidgetRef implements MutationTarget {
   /// It is not necessary to call [ProviderSubscription.close] inside [State.dispose].
   /// When the widget that calls [listenManual] is disposed, the subscription
   /// will be disposed automatically.
+  @override
   ProviderSubscription<StateT> listenManual<StateT>(
     ProviderListenable<StateT> provider,
     void Function(StateT? previous, StateT next) listener, {
@@ -315,6 +321,7 @@ sealed class WidgetRef implements MutationTarget {
   /// While more verbose than [read], using [Provider]/`select` is a lot safer.
   /// It does not rely on implementation details on `Model`, and it makes
   /// impossible to have a bug where our UI does not refresh.
+  @override
   StateT read<StateT>(ProviderListenable<StateT> provider);
 
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
@@ -366,6 +373,7 @@ sealed class WidgetRef implements MutationTarget {
   ///   }
   /// }
   /// ```
+  @override
   @useResult
   StateT refresh<StateT>(Refreshable<StateT> provider);
 
@@ -387,5 +395,6 @@ sealed class WidgetRef implements MutationTarget {
   ///   "hard refresh".
   ///
   /// If used on a provider which is not initialized, this method will have no effect.
+  @override
   void invalidate(ProviderOrFamily provider, {bool asReload = false});
 }

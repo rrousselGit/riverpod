@@ -371,7 +371,10 @@ base class ConsumerStatefulElement extends StatefulElement
   BuildContext get context => this;
 
   @override
-  late ProviderContainer container = ProviderScope.containerOf(this);
+  late ProviderContainer container = ProviderScope.containerOf(
+    this,
+    listen: false,
+  );
   var _dependencies =
       <ProviderListenable<Object?>, ProviderSubscription<Object?>>{};
   Map<ProviderListenable<Object?>, ProviderSubscription<Object?>>?
@@ -380,6 +383,18 @@ base class ConsumerStatefulElement extends StatefulElement
   List<ProviderSubscription<Object?>>? _manualListeners;
   ValueListenable<bool>? _tickerModeNotifier;
   bool? _isActive;
+
+  @override
+  void mount(Element? parent, Object? newSlot) {
+    super.mount(parent, newSlot);
+    try {
+      // Forcibly listen to the container, to guarantee that didChangeDependencies
+      // is called when the container changes.
+      ProviderScope.containerOf(this);
+    } catch (e) {
+      // Silence 'no scope' error. It is already reported by the container variable.
+    }
+  }
 
   @override
   void activate() {

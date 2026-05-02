@@ -134,6 +134,7 @@ export 'src/riverpod_types.dart'
         stateProviderType,
         asyncNotifierBaseType,
         streamNotifierBaseType,
+        providerElementType,
         notifierBaseType,
         anyNotifierType,
         futureProviderType,

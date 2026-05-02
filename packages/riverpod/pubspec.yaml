@@ -24,12 +24,16 @@ dependencies:
   clock: ^1.1.1
   collection: ^1.18.0
   meta: ^1.15.0
+  stack_trace: ^1.12.1
   state_notifier: ">=0.7.2 <2.0.0"
   test: ^1.0.0
+  uuid: ^4.5.1
 
 dev_dependencies:
   analyzer: ^12.0.0
+  build_runner: ^2.11.0
   expect_error: ^1.0.0
   mockito: ^5.0.0
   path: ^1.9.0
+  riverpod_devtool_generator: ^0.0.0
   trotter: ^2.0.0-dev.1

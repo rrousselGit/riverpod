@@ -170,6 +170,7 @@ class ProviderScheduler {
     stateToRefresh.clear();
     _stateToDispose.clear();
     _pendingTask = null;
+
     _pendingTaskCompleter = null;
   }
 
@@ -196,6 +197,15 @@ class ProviderScheduler {
     }
 
     if (kDebugMode) _builtWithinFrame = null;
+  }
+
+  void debugScheduleFrame(void Function() onEvent) {
+    if (!kDebugMode || _disposed) return;
+
+    Future.microtask(() {
+      if (_disposed) return;
+      onEvent();
+    });
   }
 
   /// Schedules a provider to be disposed.

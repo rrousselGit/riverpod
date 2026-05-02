@@ -40,7 +40,7 @@ Cannot use the Ref of $origin after it has been disposed. This typically happens
 /// {@endtemplate}
 /// {@category Core}
 @publicInRiverpodAndCodegen
-sealed class Ref implements MutationTarget {
+sealed class Ref implements BaseRef, MutationTarget {
   Ref._({required this.isFirstBuild, required this.isReload});
 
   ProviderElement<Object?, Object?> get _element;
@@ -249,6 +249,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// If [keepAlive] is invoked multiple times, all [KeepAliveLink] will have
   /// to be closed for the provider to dispose itself when all listeners are removed.
+  @override
   KeepAliveLink keepAlive() {
     _throwIfInvalidUsage();
 
@@ -291,6 +292,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
   /// {@endtemplate}
+  @override
   @useResult
   StateT refresh<StateT>(Refreshable<StateT> refreshable) {
     _throwIfInvalidUsage();
@@ -323,6 +325,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// If used on a provider which is not initialized or disposed, this method will have no effect.
   /// {@endtemplate}
+  @override
   void invalidate(ProviderOrFamily providerOrFamily, {bool asReload = false}) {
     // Allow invalidate calls within onManualInvalidation callbacks
     _throwIfInvalidUsage(skipAssert: _inManualInvalidationCallback);
@@ -335,6 +338,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// Invokes [invalidate] on itself.
   ///
   /// {@macro riverpod.invalidate}
+  @override
   void invalidateSelf({bool asReload = false}) {
     _invalidateSelf(asReload: asReload, manual: true);
   }
@@ -407,6 +411,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///   }
   /// }
   /// ```
+  @override
   void notifyListeners() {
     _throwIfInvalidUsage();
 
@@ -427,6 +432,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// See also:
   /// - [onRemoveListener], for when a listener is removed
+  @override
   RemoveListener onAddListener(void Function() cb) {
     _throwIfInvalidUsage();
 
@@ -442,6 +448,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// See also:
   /// - [onAddListener], for when a listener is added
+  @override
   RemoveListener onRemoveListener(void Function() cb) {
     _throwIfInvalidUsage();
 
@@ -470,6 +477,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///   destroy its state when no longer listened to.
   /// - [onDispose], a life-cycle for when a provider is disposed.
   /// - [onResume], a life-cycle for when the provider is listened to again.
+  @override
   RemoveListener onCancel(void Function() cb) {
     _throwIfInvalidUsage();
 
@@ -491,6 +499,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///   destroy its state when no longer listened to.
   /// - [onDispose], a life-cycle for when a provider is disposed.
   /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
+  @override
   RemoveListener onResume(void Function() cb) {
     _throwIfInvalidUsage();
 
@@ -548,6 +557,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// - [ProviderContainer.dispose], to destroy all providers associated with
   ///   a [ProviderContainer] at once.
   /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
+  @override
   RemoveListener onDispose(void Function() listener) {
     _throwIfInvalidUsage();
 
@@ -591,6 +601,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// If possible, avoid using [read] and prefer [watch], which is generally
   /// safer to use.
+  @override
   StateT read<StateT>(ProviderListenable<StateT> listenable) {
     _throwIfInvalidUsage();
 
@@ -634,6 +645,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// });
   /// ```
   /// {@endtemplate}
+  @override
   bool exists(ProviderBase<Object?> provider) {
     _throwIfInvalidUsage();
 
@@ -706,6 +718,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///    return sub.read();
   /// }
   /// ```
+  @override
   StateT watch<StateT>(ProviderListenable<StateT> listenable) {
     _throwIfInvalidUsage();
     assert(!$isInAction(), 'Cannot use Ref.watch inside run callbacks.');
@@ -744,6 +757,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///   This enables listening to changes on a provider, without causing it to
   ///   perform any work if it currently isn't used.
   /// {@endtemplate}
+  @override
   ProviderSubscription<StateT> listen<StateT>(
     ProviderListenable<StateT> provider,
     void Function(StateT? previous, StateT next) listener, {

@@ -2,13 +2,17 @@ library;
 
 import 'dart:async';
 import 'dart:collection';
+import 'dart:developer' as developer;
+import 'dart:developer' as dev;
 import 'dart:math' as math;
 
 import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
+import 'package:stack_trace/stack_trace.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart' as test;
+import 'package:uuid/uuid.dart';
 
 import './common/tenable.dart';
 import 'common/env.dart';
@@ -16,6 +20,9 @@ import 'common/pragma.dart';
 import 'common/string.dart';
 import 'internals.dart';
 
+part 'framework.g.dart';
+
+part 'core/base_ref.dart';
 part 'core/element.dart';
 part 'core/family.dart';
 part 'core/foundation.dart';
@@ -35,4 +42,5 @@ part 'core/mutations.dart';
 part 'core/ref.dart';
 part 'core/scheduler.dart';
 part 'core/async_value.dart';
+part 'core/devtool.dart';
 part 'core/action.dart';

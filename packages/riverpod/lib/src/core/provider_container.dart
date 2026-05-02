@@ -3,16 +3,51 @@ part of '../framework.dart';
 /// An abstraction of both [ProviderContainer] and [$ProviderElement] used by
 /// [ProviderListenable].
 @internal
-sealed class Node {}
+@immutable
+sealed class Node {
+  const Node({required this.container});
+  final ProviderContainer container;
+
+  @override
+  @mustBeOverridden
+  String toString();
+}
 
 @internal
-extension NodeX on Node {
-  ProviderContainer get container {
-    final that = this;
-    return switch (that) {
-      ProviderContainer() => that,
-      ProviderElement() => that.container,
-    };
+final class ConsumerNode extends Node {
+  const ConsumerNode({
+    required this.buildContext,
+    required super.container,
+    required this.id,
+  });
+
+  final
+  /*BuildContext*/
+  Object
+  buildContext;
+
+  final ConsumerId id;
+
+  @override
+  String toString() => '$buildContext#${shortHash(buildContext)}';
+}
+
+@internal
+final class ProviderNode extends Node {
+  const ProviderNode(this.element, {required super.container});
+  final ProviderElement<Object?, Object?> element;
+
+  @override
+  String toString() => '${element.origin}';
+}
+
+@internal
+final class ContainerNode extends Node {
+  const ContainerNode({required super.container});
+
+  @override
+  String toString() {
+    return container.toString();
   }
 }
 
@@ -766,7 +801,14 @@ extension InternalProviderContainer on ProviderContainer {
 }
 
 @internal
-extension NodeInternal on Node {
+extension ContainerReadElement on ProviderContainer {
+  ProviderElement<StateT, Object?> readProviderElement<StateT>(
+    $ProviderBaseImpl<StateT> provider,
+  ) => _readProviderElement(provider);
+}
+
+@internal
+extension ElementReadElement on ProviderElement<Object?, Object?> {
   ProviderElement<StateT, Object?> readProviderElement<StateT>(
     $ProviderBaseImpl<StateT> provider,
   ) => container._readProviderElement(provider);
@@ -798,7 +840,7 @@ final class ProviderReference {
 /// {@endtemplate}
 /// {@category Core}
 @publicInRiverpodAndCodegen
-final class ProviderContainer implements Node, MutationTarget {
+final class ProviderContainer implements MutationTarget {
   /// {@macro riverpod.provider_container}
   ProviderContainer({
     ProviderContainer? parent,
@@ -811,7 +853,11 @@ final class ProviderContainer implements Node, MutationTarget {
        _parent = parent,
        _onError = onError ?? Zone.current.handleUncaughtError,
        retry = retry ?? parent?.retry,
-       observers = [...?observers, if (parent != null) ...parent.observers],
+       observers = [
+         ...?observers,
+         if (kDebugMode && parent == null) const DevtoolObserver(),
+         if (parent != null) ...parent.observers,
+       ],
        _root = parent?._root ?? parent {
     if (parent != null) {
       if (parent.disposed) {
@@ -857,6 +903,10 @@ final class ProviderContainer implements Node, MutationTarget {
     // This ensures that if an error is thrown, the parent & global state
     // are not affected.
     parent?._children.add(this);
+
+    for (final obs in this.observers) {
+      container.runUnaryGuarded(obs.didCreateProviderContainer, this);
+    }
   }
 
   /// An automatically disposed [ProviderContainer].
@@ -902,6 +952,8 @@ final class ProviderContainer implements Node, MutationTarget {
 
     return delay;
   }
+
+  final _debugId = ContainerId(const Uuid().v4());
 
   final int _debugOverridesLength;
 
@@ -1049,7 +1101,7 @@ final class ProviderContainer implements Node, MutationTarget {
     );
 
     final sub = provider._addListener(
-      this,
+      ContainerNode(container: this),
       listener,
       weak: weak,
       onError: onError ?? defaultOnError,
@@ -1228,6 +1280,10 @@ final class ProviderContainer implements Node, MutationTarget {
     for (final element in getAllProviderElementsInOrder().toList().reversed) {
       element.dispose();
     }
+
+    for (final obs in observers) {
+      container.runUnaryGuarded(obs.didDisposeProviderContainer, this);
+    }
   }
 
   /// Release all the resources associated with this [ProviderContainer].
@@ -1266,12 +1322,16 @@ final class ProviderObserverContext {
   @internal
   ProviderObserverContext(
     this.provider,
-    this.container, {
+    this.container,
+    this._element, {
     required this.mutation,
   });
 
   /// The provider that triggered the event.
   final ProviderBase<Object?> provider;
+
+  /// The element associated to [provider].
+  final ProviderElement _element;
 
   /// The container that owns [provider]'s state.
   final ProviderContainer container;
@@ -1296,6 +1356,15 @@ final class ProviderObserverContext {
   }
 }
 
+@internal
+@immutable
+class ConsumerContext {
+  const ConsumerContext({required this.container, required this.buildContext});
+
+  final ProviderContainer container;
+  final /*BuildContext*/ Object? buildContext;
+}
+
 /// An object that listens to the changes of a [ProviderContainer].
 ///
 /// This can be used for logging or making devtools.
@@ -1305,6 +1374,12 @@ abstract base class ProviderObserver {
   ///
   /// This can be used for logging or making devtools.
   const ProviderObserver();
+
+  /// A new [ProviderContainer] was created.
+  void didCreateProviderContainer(ProviderContainer container) {}
+
+  /// A [ProviderContainer] was disposed.
+  void didDisposeProviderContainer(ProviderContainer container) {}
 
   /// A provider was initialized, and the value exposed is [value].
   ///
@@ -1318,6 +1393,11 @@ abstract base class ProviderObserver {
     Object error,
     StackTrace stackTrace,
   ) {}
+
+  /// A provider was unmounted and fully removed from memory.
+  ///
+  /// See also [didDisposeProvider], for [Ref.onDispose] listeners being called.
+  void didUnmountProvider(ProviderObserverContext context) {}
 
   /// Called by providers when they emit a notification.
   ///
@@ -1348,7 +1428,10 @@ abstract base class ProviderObserver {
     Object? newValue,
   ) {}
 
-  /// A provider was disposed
+  /// A provider was disposed. This does not mean that the provider was fully
+  /// removed from memory, only that [Ref.onDispose] listeners were called.
+  ///
+  /// See also [didUnmountProvider], for full memory removal.
   void didDisposeProvider(ProviderObserverContext context) {}
 
   /// A mutation was reset.

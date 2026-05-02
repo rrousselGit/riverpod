@@ -1,5 +1,8 @@
 ## Unreleased minor
 
+- Devtool-only:
+  Added `debugTrackProviderCreation`, which can be set to `true` to enable the Riverpod devtool
+  to jump to the source of a provider.
 - Added `Ref.onManualInvalidation()` lifecycle method to listen for manual provider invalidations.
   This allows distinguishing between manual invalidations (via `refresh`/`invalidate`/`invalidateSelf`)
   and automatic invalidations caused by dependency changes. Additionally, providers can now forward
@@ -34,6 +37,8 @@
   during side-effects.
 - Added `ProviderContainer.allProviders()`, to obtain all providers accessible from said container. You can optionally specify `allProviders(family: myFamily)` to only include providers from said family.
 - Refactored internal scheduling mechanism to solve some markNeedsBuild error.
+- Removed `@internal` for `ProviderFamily.new`
+- Added various life-cycles to `ProviderObserver`
 
 ## 3.2.1 - 2026-02-03
 

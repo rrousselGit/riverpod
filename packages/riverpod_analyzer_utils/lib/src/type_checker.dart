@@ -119,14 +119,8 @@ abstract class TypeChecker {
   ///
   /// Throws [UnresolvedAnnotationException] on unresolved annotations unless
   /// [throwOnUnresolved] is explicitly set to `false` (default is `true`).
-  bool hasAnnotationOfExact(
-    Element element, {
-    bool throwOnUnresolved = true,
-  }) =>
-      firstAnnotationOfExact(
-        element,
-        throwOnUnresolved: throwOnUnresolved,
-      ) !=
+  bool hasAnnotationOfExact(Element element, {bool throwOnUnresolved = true}) =>
+      firstAnnotationOfExact(element, throwOnUnresolved: throwOnUnresolved) !=
       null;
 
   DartObject? _computeConstantValue(
@@ -190,8 +184,7 @@ abstract class TypeChecker {
   /// Returns `true` if the type of [element] can be assigned to this type.
   bool isAssignableFrom(Element element) =>
       isExactly(element) ||
-      (element is InterfaceElement &&
-          element.allSupertypes.any(isExactlyType));
+      (element is InterfaceElement && element.allSupertypes.any(isExactlyType));
 
   /// Returns `true` if [staticType] can be assigned to this type.
   bool isAssignableFromType(DartType staticType) {
@@ -350,8 +343,7 @@ class _AnyChecker extends TypeChecker {
   final Iterable<TypeChecker> _checkers;
 
   @override
-  bool isExactly(Element element) =>
-      _checkers.any((c) => c.isExactly(element));
+  bool isExactly(Element element) => _checkers.any((c) => c.isExactly(element));
 }
 
 class _EveryChecker extends TypeChecker {

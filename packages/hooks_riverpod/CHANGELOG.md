@@ -1,5 +1,28 @@
 ## Unreleased minor
 
+- Devtool-only:
+  Added `debugTrackProviderCreation`, which can be set to `true` to enable the Riverpod devtool
+  to jump to the source of a provider.
+- Added `Ref.onManualInvalidation()` lifecycle method to listen for manual provider invalidations.
+  This allows distinguishing between manual invalidations (via `refresh`/`invalidate`/`invalidateSelf`)
+  and automatic invalidations caused by dependency changes. Additionally, providers can now forward
+  invalidations to other providers within `onManualInvalidation` callbacks, enabling patterns like:
+
+  ```dart
+  final sourceProvider = Provider<String>(...);
+  final derivedProvider = Provider((ref) {
+    final thing = ref.watch(sourceProvider);
+    ref.onManualInvalidation(() {
+      ref.invalidate(sourceProvider);
+    });
+    return '$thing is derived!';
+  });
+
+  ref.invalidate(derivedProvider); // also invalidates sourceProvider!
+  ```
+
+  Which allows for users to invalidate only the providers they care about, while implementation details can be handled privately. (thanks to @TekExplorer)
+
 - **Deprecated** `Mutation.run`. A replacement `Mutation.run2` has been added with a modified prototype.
   Before:
   ```dart
@@ -14,6 +37,8 @@
   during side-effects.
 - Added `ProviderContainer.allProviders()`, to obtain all providers accessible from said container. You can optionally specify `allProviders(family: myFamily)` to only include providers from said family.
 - Refactored internal scheduling mechanism to solve some markNeedsBuild error.
+- Removed `@internal` for `ProviderFamily.new`
+- Added various life-cycles to `ProviderObserver`
 
 ## 3.3.0 - 2026-03-09
 

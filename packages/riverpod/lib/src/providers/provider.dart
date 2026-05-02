@@ -354,8 +354,6 @@ class $ProviderElement<ValueT>
 final class ProviderFamily<StateT, ArgT>
     extends FunctionalFamily<StateT, StateT, ArgT, StateT, Provider<StateT>> {
   /// The [Family] of [Provider]
-  /// @nodoc
-  @internal
   ProviderFamily(
     super._createFn, {
     super.name,
