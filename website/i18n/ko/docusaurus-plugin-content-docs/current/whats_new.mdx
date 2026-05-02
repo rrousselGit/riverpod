@@ -245,7 +245,7 @@ class AddTodoButton extends ConsumerWidget {
 
 ```dart
 onPressed: () {
-  addTodoMutation.run2(ref, () async {
+  addTodoMutation.run(ref, () async {
     // 여기서 사이드이펙트를 실행합니다.
     // 여기서 Notifier를 직접 읽어서 메서드를 호출할 수 있습니다.
     await ref.read(todoListProvider.notifier).addTodo('새 할일');
@@ -254,7 +254,7 @@ onPressed: () {
 ```
 
 :::note
-`run2`는 콜백을 `run` 내부에서 실행합니다.  
+`run`는 콜백을 `run` 내부에서 실행합니다.  
 [Ref.read] 같은 명령형 읽기는 Mutation이 완료될 때까지 사용한 Provider를 유지합니다.
 :::
 

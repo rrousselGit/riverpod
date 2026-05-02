@@ -479,7 +479,6 @@ base class ConsumerStatefulElement extends StatefulElement
   @override
   StateT watch<StateT>(ProviderListenable<StateT> target) {
     _assertNotDisposed();
-    assert(!$isInAction(), 'Cannot use WidgetRef.watch inside run callbacks.');
     return _dependencies
             .putIfAbsent(target, () {
               final oldDependency = _oldDependencies?.remove(target);
@@ -530,7 +529,6 @@ base class ConsumerStatefulElement extends StatefulElement
     bool weak = false,
   }) {
     _assertNotDisposed();
-    assert(!$isInAction(), 'Cannot use WidgetRef.listen inside run callbacks.');
     assert(
       debugDoingBuild,
       'ref.listen can only be used within the build method of a ConsumerWidget',

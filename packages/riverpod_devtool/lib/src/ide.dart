@@ -7,8 +7,8 @@ import 'vm_service.dart';
 
 Future<void> openTraceInIDE(MutationTarget target, String stackTrace) async {
   final mutation = Mutation<void>();
-  await mutation.run(target, (tsx) async {
-    final eval = await tsx.get(riverpodEvalProvider.future);
+  await mutation.run(target, () async {
+    final eval = await target.container.read(riverpodEvalProvider.future);
 
     final trace = Trace.parse(stackTrace);
 

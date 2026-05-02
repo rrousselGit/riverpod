@@ -37,7 +37,7 @@ class AddTodoButton extends ConsumerWidget {
         // Trigger the mutation, and run the callback.
         // Reads inside the callback keep providers alive
         // for the duration of the mutation.
-        addTodo.run2(ref, () async {
+        addTodo.run(ref, () async {
           final todoNotifier = ref.read(todoNotifierProvider.notifier);
 
           // We perform a request using a Notifier.

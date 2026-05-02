@@ -236,14 +236,14 @@ abstract class MutationTarget {
 /// This is for the UI logic. But on its own, the state of the mutation
 /// will never change.
 ///
-/// To change the mutation state, you need to call [Mutation.run2].
+/// To change the mutation state, you need to call [Mutation.run].
 /// This is typically done inside a callback, such as the `onPressed`
 /// of a button:
 ///
 /// ```dart
 /// ElevatedButton(
 ///   onPressed: () {
-///     addTodoMutation.run2(ref, () async {
+///     addTodoMutation.run(ref, () async {
 ///       // This is where you perform the side-effect. Here, you can
 ///       // read your providers to modify them.
 ///       await ref.read(todoListProvider.notifier).addTodo(
@@ -276,10 +276,6 @@ abstract class MutationTarget {
 ///
 /// Currently, mutations do not restrict concurrent calls in any capacity.
 ///
-/// This means that if you call [Mutation.run2] while a previous call is still
-/// pending, the mutation state will be set to [MutationPending] again,
-/// and the previous call's return value will be ignored.
-///
 /// ## Passing keys to mutations to obtain a unique state
 ///
 /// By default, the state of a mutation is shared across all places that
@@ -301,9 +297,9 @@ abstract class MutationTarget {
 /// ...
 ///
 /// onPressed: () {
-///   // Upon calling `run2`, you will have to pass the same key as when
-///   // watching the mutation.
-///   deleteTodo(todo.id).run2(ref, () async { /* ... */ });
+  // Upon calling `run`, you will have to pass the same key as when
+  ///   // watching the mutation.
+  ///   deleteTodo(todo.id).run(ref, () async { /* ... */ });
 /// }
 /// ```
 ///
@@ -346,40 +342,10 @@ sealed class Mutation<ResultT>
   /// call the callback, then set the mutation state to either
   /// [MutationSuccess] or [MutationError] depending on whether the callback
   /// completes successfully or throws an error.
-  ///
-  /// [run] executes [cb] inside a top-level `run` callback.
-  /// This means imperative APIs such as [ProviderContainer.read] and [Ref.read]
-  /// automatically keep touched providers alive for the duration of [cb].
-  /// Any run-managed subscriptions created during the callback are closed
-  /// when the mutation completes.
-  ///
-  /// Use [MutationTransaction.get] inside [cb] to interact with providers while
-  /// keeping them alive for the duration of the mutation.
-  ///
-  /// See also:
-  /// - top-level `run`, to keep providers alive without using a mutation.
-  @Deprecated('use run2')
   Future<ResultT> run(
     MutationTarget target,
-    Future<ResultT> Function(MutationTransaction transaction) cb,
+    Future<ResultT> Function() cb,
   );
-
-  /// Starts a mutation and set its state based on the result of the callback.
-  ///
-  /// This sets the mutation state to [MutationPending],
-  /// call the callback, then set the mutation state to either
-  /// [MutationSuccess] or [MutationError] depending on whether the callback
-  /// completes successfully or throws an error.
-  ///
-  /// [run2] executes [cb] inside a top-level `run` callback.
-  /// This means imperative APIs such as [ProviderContainer.read] and [Ref.read]
-  /// automatically keep touched providers alive for the duration of [cb].
-  /// Any run-managed subscriptions created during the callback are closed
-  /// when the mutation completes.
-  ///
-  /// See also:
-  /// - top-level `run`, to keep providers alive without using a mutation.
-  Future<ResultT> run2(MutationTarget target, Future<ResultT> Function() cb);
 
   /// Resets the mutation to its initial state ([MutationIdle]).
   void reset(MutationTarget container);
@@ -428,6 +394,13 @@ final class MutationImpl<ResultT>
   @override
   Future<ResultT> run(
     MutationTarget target,
+    Future<ResultT> Function() cb,
+  ) {
+    return _runWithTransaction(target, (_) => cb());
+  }
+
+  Future<ResultT> _runWithTransaction(
+    MutationTarget target,
     Future<ResultT> Function(MutationTransaction transaction) cb,
   ) {
     return runZoned(zoneValues: {mutationZoneKey: this}, () async {
@@ -443,7 +416,7 @@ final class MutationImpl<ResultT>
       try {
         mut._mutationStart(sub, ref);
 
-        final result = await _runInternal(() => cb(ref));
+        final result = await cb(ref);
 
         mut._mutationSuccess(sub, ref, result);
 
@@ -457,11 +430,6 @@ final class MutationImpl<ResultT>
         ref._close();
       }
     });
-  }
-
-  @override
-  Future<ResultT> run2(MutationTarget target, Future<ResultT> Function() cb) {
-    return run(target, (_) => cb());
   }
 
   @override

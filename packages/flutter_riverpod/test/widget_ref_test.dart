@@ -1,62 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/experimental/action.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('WidgetRef', () {
-    testWidgets('read participates in run retention', (tester) async {
-      final completer = Completer<int>();
-      var disposed = false;
-      final provider = FutureProvider.autoDispose<int>((ref) {
-        ref.onDispose(() => disposed = true);
-        return completer.future;
-      });
-
-      await tester.pumpWidget(
-        ProviderScope(
-          child: Consumer(builder: (context, ref, _) => Container()),
-        ),
-      );
-
-      final ref = tester.firstElement(find.byType(Consumer)) as WidgetRef;
-
-      final future = run(() async => ref.read(provider.future));
-
-      await tester.pump();
-      expect(disposed, false);
-
-      completer.complete(42);
-
-      await expectLater(future, completion(42));
-      await tester.pump();
-
-      expect(disposed, true);
-    });
-
-    testWidgets('watch throws inside run', (tester) async {
-      final provider = Provider((ref) => 42);
-      late WidgetRef widgetRef;
-
-      await tester.pumpWidget(
-        ProviderScope(
-          child: Consumer(
-            builder: (context, ref, _) {
-              widgetRef = ref;
-              return Container();
-            },
-          ),
-        ),
-      );
-
-      await expectLater(
-        run(() async => widgetRef.watch(provider)),
-        throwsA(isA<AssertionError>()),
-      );
-    });
-
     group('invalidate', () {
       testWidgets('supports asReload', (tester) async {
         final provider = FutureProvider<int>((r) async => 0);

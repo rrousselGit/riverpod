@@ -256,19 +256,13 @@ followed:
 
 ```dart
 onPressed: () {
-  addTodoMutation.run2(ref, () async {
+  addTodoMutation.run(ref, () async {
     // This is where we run our side-effect.
     // Here, we can read a Notifier directly and call a method on it.
     await ref.read(todoListProvider.notifier).addTodo('New Todo');
   });
 }
 ```
-
-:::note
-`run2` executes the callback inside <Link documentID="concepts2/actions" />.  
-Imperative reads such as [Ref.read] keep touched providers alive until the
-mutation completes.
-:::
 
 
 ## Automatic retry
