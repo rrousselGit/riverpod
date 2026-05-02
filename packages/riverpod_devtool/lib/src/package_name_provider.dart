@@ -4,9 +4,6 @@ import 'vm_service.dart';
 
 /// A provider that returns the current package name as discovered from the
 /// currently selected isolate in the connected VM service.
-///
-/// It prefers the `rootLib.uri` (e.g. `package:my_pkg/main.dart`) and falls
-/// back to scanning the isolate's libraries for the first `package:` URI.
 final currentPackageNameProvider = FutureProvider<String?>((ref) async {
   final vmService = await ref.watch(vmServiceProvider.future);
   final serviceManager = await ref.watch(serviceManagerProvider.future);
