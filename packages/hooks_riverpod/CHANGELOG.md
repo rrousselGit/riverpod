@@ -1,4 +1,4 @@
-## Unreleased 3.3.2-dev.1
+## 3.3.2-dev.1 - 2026-05-03
 
 - Devtool-only:
   Added `debugTrackProviderCreation`, which can be set to `true` to enable the Riverpod devtool
@@ -28,6 +28,11 @@
 - Removed `@internal` for `ProviderFamily.new`
 - Added various life-cycles to `ProviderObserver`
 - Fix `.future` incorrectly notifying listeners even when `AsyncValue` doesn't change.
+
+### Dependency changes
+
+- `flutter_riverpod` upgraded to `3.3.2-dev.1`
+- `riverpod` upgraded to `3.3.2-dev.1`
 
 ## 3.3.0 - 2026-03-09
 
@@ -1745,3 +1750,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

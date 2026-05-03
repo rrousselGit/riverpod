@@ -1,6 +1,10 @@
-## Unreleased 3.1.4-dev.2
+## 3.1.4-dev.2 - 2026-05-03
 
 Upgrade `riverpod`
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.3.2-dev.1`
 
 ## 3.1.4-dev.1 - 2026-04-23
 

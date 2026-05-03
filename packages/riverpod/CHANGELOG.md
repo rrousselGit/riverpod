@@ -1,4 +1,4 @@
-## Unreleased 3.3.2-dev.1
+## 3.3.2-dev.1 - 2026-05-03
 
 - Devtool-only:
   Added `debugTrackProviderCreation`, which can be set to `true` to enable the Riverpod devtool
@@ -1526,3 +1526,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

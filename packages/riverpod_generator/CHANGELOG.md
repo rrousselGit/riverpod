@@ -1,6 +1,10 @@
-## Unreleased 4.0.4-dev.2
+## 4.0.4-dev.2 - 2026-05-03
 
 Upgrade `riverpod`
+
+### Dependency changes
+
+- `riverpod_annotation` upgraded to `4.0.3-dev.1`
 
 ## 4.0.4-dev.1 - 2026-04-23
 
@@ -472,3 +476,4 @@ Fix version conflict with Riverpod
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+
