@@ -47,6 +47,7 @@ typedef FamilyCreate<CreatedT, ArgT> = CreatedT Function(Ref ref, ArgT arg);
 @publicInMisc
 final class Family extends ProviderOrFamily implements _FamilyOverride {
   /// A base class for all families
+  @internal
   Family({
     required super.name,
     required super.dependencies,
