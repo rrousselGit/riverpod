@@ -1,3 +1,7 @@
+## Unreleased 4.0.4-dev.2
+
+Upgrade `riverpod`
+
 ## 4.0.4-dev.1 - 2026-04-23
 
 Support analyzer 12
@@ -468,4 +472,3 @@ Fix version conflict with Riverpod
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-
