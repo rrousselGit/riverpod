@@ -1,4 +1,4 @@
-## Unreleased 3.3.0-dev.1
+## Unreleased 3.3.2-dev.1
 
 - Devtool-only:
   Added `debugTrackProviderCreation`, which can be set to `true` to enable the Riverpod devtool
