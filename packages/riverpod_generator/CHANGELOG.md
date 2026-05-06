@@ -1,3 +1,8 @@
+## 4.0.4-dev.3 - 2026-05-06
+### Dependency changes
+
+- `riverpod_annotation` upgraded to `4.0.3-dev.2`
+
 ## 4.0.4-dev.2 - 2026-05-03
 
 Upgrade `riverpod`
