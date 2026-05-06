@@ -1,3 +1,7 @@
+## Unreleased build
+
+- Fixed Riverpod devtool not starting.
+
 ## 3.3.2-dev.1 - 2026-05-03
 
 - Devtool-only:
