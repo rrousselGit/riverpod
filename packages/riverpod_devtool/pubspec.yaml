@@ -16,7 +16,7 @@ dependencies:
   flutter_hooks: ^0.21.3+1
   freezed_annotation: ^3.1.0
   hooks_riverpod: 3.3.2-dev.2
-  intl: ^0.19.0
+  intl: ^0.20.2
   meta: ^1.17.0
   stack_trace: ^1.12.1
   vm_service: ^15.0.2
