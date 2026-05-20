@@ -11,6 +11,42 @@ import 'package:riverpod/src/internals.dart'
     show ContainerReadElement, InternalProviderContainer;
 
 void main() {
+  testWidgets('TickerMode + mutation triggers assertion', (tester) async {
+    // Regression test for https://github.com/rrousselGit/riverpod/issues/4709
+    final container = ProviderContainer.test();
+
+    final rootProvider = NotifierProvider<_RootNotifier, int>(
+      _RootNotifier.new,
+    );
+    final middle = Provider<int>((ref) => ref.watch(rootProvider));
+    final leaf = Provider<int>((ref) => ref.watch(middle));
+
+    final testWidget = Consumer(
+      builder: (context, ref, _) {
+        ref.watch(middle);
+        ref.watch(leaf);
+
+        return const SizedBox();
+      },
+    );
+
+    Widget app({required bool tickerModeEnabled}) {
+      return UncontrolledProviderScope(
+        container: container,
+        child: TickerMode(enabled: tickerModeEnabled, child: testWidget),
+      );
+    }
+
+    // pump with TickerMode disabled
+    await tester.pumpWidget(app(tickerModeEnabled: false));
+
+    // mutate
+    container.read(rootProvider.notifier).increment();
+
+    // pump with TickerMode enabled - asserts
+    await tester.pumpWidget(app(tickerModeEnabled: true));
+  });
+
   group('Handles TickerMode', () {
     testWidgets('Does not rebuild widgets when TickerMode changes', (
       tester,
@@ -915,4 +951,10 @@ class _CallbackConsumerWidgetState
   Widget build(BuildContext context) {
     return Container();
   }
+}
+
+class _RootNotifier extends Notifier<int> {
+  @override
+  int build() => 0;
+  void increment() => state = state + 1;
 }
