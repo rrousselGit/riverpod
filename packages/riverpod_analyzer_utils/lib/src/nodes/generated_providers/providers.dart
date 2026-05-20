@@ -34,11 +34,11 @@ enum SupportedCreatedType {
   static SupportedCreatedType from(DartType type) {
     final dartType = type;
     switch (dartType) {
-      case != null
+      case _
           when !dartType.isRaw &&
               (dartType.isDartAsyncFutureOr || dartType.isDartAsyncFuture):
         return SupportedCreatedType.future;
-      case != null when !dartType.isRaw && dartType.isDartAsyncStream:
+      case _ when !dartType.isRaw && dartType.isDartAsyncStream:
         return SupportedCreatedType.stream;
       case _:
         return SupportedCreatedType.value;
