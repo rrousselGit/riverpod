@@ -363,7 +363,9 @@ final class _UncontrolledProviderScopeState
 
   void _debugCanModifyProviders() {
     if (!kDebugMode) {
-      throw StateError('debugCanModifyProviders should not be called outside of debug mode');
+      throw StateError(
+        'debugCanModifyProviders should not be called outside of debug mode',
+      );
     }
     try {
       setState(() {});
