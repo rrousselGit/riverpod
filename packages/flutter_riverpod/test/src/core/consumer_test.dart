@@ -10,16 +10,21 @@ import 'package:riverpod/legacy.dart';
 import 'package:riverpod/src/internals.dart'
     show ContainerReadElement, InternalProviderContainer;
 
+import 'provider_subscription_test.dart';
+
 void main() {
   testWidgets('TickerMode + mutation triggers assertion', (tester) async {
     // Regression test for https://github.com/rrousselGit/riverpod/issues/4709
     final container = ProviderContainer.test();
 
-    final rootProvider = NotifierProvider<_RootNotifier, int>(
-      _RootNotifier.new,
+    final rootProvider = NotifierProvider(
+      () => DeferredNotifier((ref, self) => 0),
     );
-    final middle = Provider<int>((ref) => ref.watch(rootProvider));
-    final leaf = Provider<int>((ref) => ref.watch(middle));
+    final middle = Provider<int>(
+      name: 'middle',
+      (ref) => ref.watch(rootProvider),
+    );
+    final leaf = Provider<int>(name: 'leaf', (ref) => ref.watch(middle));
 
     final testWidget = Consumer(
       builder: (context, ref, _) {
@@ -31,9 +36,12 @@ void main() {
     );
 
     Widget app({required bool tickerModeEnabled}) {
-      return UncontrolledProviderScope(
-        container: container,
-        child: TickerMode(enabled: tickerModeEnabled, child: testWidget),
+      return TickerMode(
+        enabled: tickerModeEnabled,
+        child: UncontrolledProviderScope(
+          container: container,
+          child: testWidget,
+        ),
       );
     }
 
@@ -41,7 +49,7 @@ void main() {
     await tester.pumpWidget(app(tickerModeEnabled: false));
 
     // mutate
-    container.read(rootProvider.notifier).increment();
+    container.read(rootProvider.notifier).state++;
 
     // pump with TickerMode enabled - asserts
     await tester.pumpWidget(app(tickerModeEnabled: true));
@@ -951,10 +959,4 @@ class _CallbackConsumerWidgetState
   Widget build(BuildContext context) {
     return Container();
   }
-}
-
-class _RootNotifier extends Notifier<int> {
-  @override
-  int build() => 0;
-  void increment() => state = state + 1;
 }
