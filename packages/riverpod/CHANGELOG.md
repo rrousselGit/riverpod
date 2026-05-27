@@ -1,3 +1,7 @@
+## Unreleased build
+
+- Fixes assertion error when providers are unpaused.
+
 ## 3.3.2-dev.2 - 2026-05-06
 
 - Fixed Riverpod devtool not starting.
@@ -1530,4 +1534,3 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-
