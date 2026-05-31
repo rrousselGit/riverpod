@@ -315,9 +315,23 @@ final class _UncontrolledProviderScopeState
     _cancelAsyncTask?.call();
     _cancelAsyncTask = null;
 
-    setState(() {
-      _task = task;
-    });
+    _task = task;
+    if (SchedulerBinding.instance.schedulerPhase ==
+        SchedulerPhase.persistentCallbacks) {
+      assert(() {
+        try {
+          setState(() {});
+          // Flutter throws when the scope cannot be marked dirty during the
+          // current build. In that case, the timer below will defer the refresh.
+          // ignore: avoid_catching_errors
+        } on FlutterError {
+          // Defer to the timer below.
+        }
+        return true;
+      }(), 'ProviderScope refresh scheduling should not fail');
+    } else {
+      setState(() {});
+    }
 
     _vsyncTimer?.cancel();
     _vsyncTimer = Timer(Duration.zero, () {

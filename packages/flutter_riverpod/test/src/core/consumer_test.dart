@@ -12,7 +12,89 @@ import 'package:riverpod/src/internals.dart'
 
 import 'provider_subscription_test.dart';
 
+final _issue4765ProviderA = Provider<int>((ref) {
+  return ref.watch(_issue4765ProviderB);
+});
+
+final _issue4765ProviderB = Provider<int>((ref) {
+  return ref.watch(_issue4765ProviderC).value ?? 0;
+});
+
+final _issue4765ProviderC = AsyncNotifierProvider<_Issue4765Notifier, int>(
+  _Issue4765Notifier.new,
+);
+
+late StreamController<int> _issue4765Stream;
+
+class _Issue4765Notifier extends AsyncNotifier<int> {
+  @override
+  Future<int> build() {
+    final subscription = _issue4765Stream.stream.listen((value) {
+      state = AsyncData(value);
+    });
+
+    ref.onDispose(subscription.cancel);
+
+    return _issue4765Stream.stream.first;
+  }
+}
+
+class _Issue4765Widget extends ConsumerStatefulWidget {
+  const _Issue4765Widget();
+
+  @override
+  ConsumerState<_Issue4765Widget> createState() => _Issue4765WidgetState();
+}
+
+class _Issue4765WidgetState extends ConsumerState<_Issue4765Widget> {
+  var _show = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      textDirection: TextDirection.ltr,
+      children: [
+        OutlinedButton(
+          onPressed: () => setState(() => _show = !_show),
+          child: const Text('press'),
+        ),
+        if (_show) Text('${ref.watch(_issue4765ProviderA)}'),
+      ],
+    );
+  }
+}
+
 void main() {
+  testWidgets(
+    'resuming provider chain after missed async notifier event does not assert',
+    (tester) async {
+      // Regression test for https://github.com/rrousselGit/riverpod/issues/4765
+      _issue4765Stream = StreamController<int>.broadcast(sync: true);
+      addTearDown(_issue4765Stream.close);
+
+      await tester.pumpWidget(
+        const ProviderScope(child: MaterialApp(home: _Issue4765Widget())),
+      );
+
+      await tester.tap(find.text('press'));
+      await tester.pump();
+      _issue4765Stream.add(1);
+      await tester.pump();
+
+      expect(find.text('1'), findsOneWidget);
+
+      await tester.tap(find.text('press'));
+      await tester.pump();
+      _issue4765Stream.add(2);
+
+      await tester.tap(find.text('press'));
+      await tester.pump();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('2'), findsOneWidget);
+    },
+  );
+
   testWidgets('TickerMode + mutation triggers assertion', (tester) async {
     // Regression test for https://github.com/rrousselGit/riverpod/issues/4709
     final container = ProviderContainer.test();
@@ -113,7 +195,7 @@ void main() {
         ),
       );
 
-      navigator.pushNamed('/detail');
+      unawaited(navigator.pushNamed('/detail'));
       await tester.pump();
 
       expect(

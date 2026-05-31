@@ -3,6 +3,8 @@
 - Fixes assertion error when providers are unpaused.
 - Fixes assertion error when invalidating a provider after an autoDispose
   provider schedules disposal. (thanks to @a1573595)
+- Fixes assertion error when resuming a widget subscription after an async
+  provider emits while unlistened. (thanks to @a1573595)
 
 ## 3.3.2-dev.2 - 2026-05-06
 ### Dependency changes
