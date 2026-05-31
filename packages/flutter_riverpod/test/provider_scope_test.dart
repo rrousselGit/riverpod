@@ -2,8 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'src/core/provider_subscription_test.dart';
+
 void main() {
   group('ProviderScope', () {
+    testWidgets(
+      'reading an autoDispose notifier then invalidating a watched provider does not assert',
+      (tester) async {
+        final _issue4766Provider = NotifierProvider.autoDispose(
+          () => DeferredNotifier((ref, self) => 1),
+        );
+
+        final _issue4766OtherProvider = NotifierProvider.autoDispose(
+          () => DeferredNotifier((ref, self) => 2),
+        );
+
+        await tester.pumpWidget(
+          ProviderScope(
+            child: Consumer(
+              builder: (context, ref, child) {
+                ref.watch(_issue4766OtherProvider);
+                return const Placeholder();
+              },
+            ),
+          ),
+        );
+
+        final container = tester.container();
+
+        container
+            .read(_issue4766Provider.notifier)
+            .ref
+            .read(_issue4766OtherProvider);
+        container.invalidate(_issue4766OtherProvider);
+      },
+    );
+
     testWidgets(
       'If ProviderScope does not rebuild after a few frames, flush the scheduler',
       (tester) async {
