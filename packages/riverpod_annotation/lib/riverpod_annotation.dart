@@ -67,7 +67,8 @@ export './src/internal.dart'
         Raw,
         MissingScopeException,
         $FunctionalFamilyOverride,
-        $ClassFamilyOverride;
+        $ClassFamilyOverride,
+        WhenComplete;
 
 /// An implementation detail of `riverpod_generator`.
 /// Do not use.
