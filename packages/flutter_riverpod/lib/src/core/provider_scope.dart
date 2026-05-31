@@ -309,6 +309,24 @@ final class _UncontrolledProviderScopeState
     assert(mounted, 'Cannot schedule a task on an unmounted element');
   }
 
+  bool _debugCanMarkNeedsBuild() {
+    if (!kDebugMode) return true;
+    if (SchedulerBinding.instance.schedulerPhase !=
+        SchedulerPhase.persistentCallbacks) {
+      return true;
+    }
+    if (context.owner?.debugBuilding != true) return true;
+    if (context.debugDoingBuild) return true;
+
+    var ancestorIsBuilding = false;
+    context.visitAncestorElements((element) {
+      ancestorIsBuilding = element.debugDoingBuild;
+      return !ancestorIsBuilding;
+    });
+
+    return ancestorIsBuilding;
+  }
+
   @override
   void Function()? scheduleRefresh(Task task) {
     _debugAssertCanScheduleTask(task);
@@ -316,24 +334,7 @@ final class _UncontrolledProviderScopeState
     _cancelAsyncTask = null;
 
     _task = task;
-    if (SchedulerBinding.instance.schedulerPhase ==
-        SchedulerPhase.persistentCallbacks) {
-      if (kDebugMode) {
-        try {
-          setState(() {});
-          // Flutter throws when the scope cannot be marked dirty during the
-          // current build. In that case, the timer below will defer the refresh.
-          // ignore: avoid_catching_errors
-        } on FlutterError catch (err) {
-          final summary = err.diagnostics.first.toDescription();
-          if (summary !=
-              'setState() or markNeedsBuild() called during build.') {
-            rethrow;
-          }
-          // Defer to the timer below.
-        }
-      }
-    } else {
+    if (_debugCanMarkNeedsBuild()) {
       setState(() {});
     }
 
