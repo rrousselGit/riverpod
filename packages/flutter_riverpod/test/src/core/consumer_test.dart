@@ -195,7 +195,7 @@ void main() {
         ),
       );
 
-      unawaited(navigator.pushNamed('/detail'));
+      final pendingRoute = navigator.pushNamed('/detail');
       await tester.pump();
 
       expect(
