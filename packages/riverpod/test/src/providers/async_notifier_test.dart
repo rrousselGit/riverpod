@@ -80,6 +80,87 @@ void main() {
       expect(sub.read().isRefreshing, true);
     });
 
+    test('keeps post-await dependencies alive during rebuild', () async {
+      final container = ProviderContainer.test();
+      var dependencyDisposeCount = 0;
+      var gate = Completer<void>();
+      addTearDown(() {
+        if (!gate.isCompleted) gate.complete();
+      });
+
+      final dependency = NotifierProvider.autoDispose(
+        () => DeferredNotifier<int>((ref, _) {
+          ref.onDispose(() => dependencyDisposeCount++);
+          return 0;
+        }),
+      );
+      final provider = factory.simpleTestProvider<int>((ref, _) async {
+        await gate.future;
+
+        return ref.watch(dependency);
+      });
+
+      container.listen(provider, (previous, next) {});
+
+      gate.complete();
+      await expectLater(container.read(provider.future), completion(0));
+
+      gate = Completer<void>();
+      container.read(dependency.notifier).state++;
+      await container.pump();
+
+      expect(dependencyDisposeCount, 0);
+
+      gate.complete();
+      await expectLater(container.read(provider.future), completion(1));
+      expect(dependencyDisposeCount, 0);
+    });
+
+    test(
+      'keeps post-await dependencies alive during rebuild (overrideWithBuild)',
+      () async {
+        var dependencyDisposeCount = 0;
+        var gate = Completer<void>();
+        addTearDown(() {
+          if (!gate.isCompleted) gate.complete();
+        });
+
+        final dependency = NotifierProvider.autoDispose(
+          () => DeferredNotifier<int>((ref, _) {
+            ref.onDispose(() => dependencyDisposeCount++);
+            return 0;
+          }),
+        );
+        final provider = factory.simpleTestProvider<int>((ref, _) async {
+          throw UnimplementedError();
+        });
+        final container = ProviderContainer.test(
+          overrides: [
+            provider.overrideWithBuild((ref, self) async {
+              await gate.future;
+
+              return ref.watch(dependency);
+            }),
+          ],
+        );
+
+        container.listen(provider, (previous, next) {});
+
+        gate.complete();
+        await expectLater(container.read(provider.future), completion(0));
+
+        gate = Completer<void>();
+        container.read(dependency.notifier).state++;
+        await container.pump();
+
+        expect(dependencyDisposeCount, 0);
+
+        gate.complete();
+        await expectLater(container.read(provider.future), completion(1));
+        expect(dependencyDisposeCount, 0);
+      },
+    );
+
     test(
       'Calling state= followed by returning .future does not cause a double notification',
       () async {

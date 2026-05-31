@@ -85,7 +85,7 @@ class $AsyncNotifierProviderElement<
   $AsyncNotifierProviderElement(super.pointer);
 
   @override
-  void handleCreate(Ref ref, FutureOr<ValueT> Function() created) {
-    handleFuture(ref, created);
+  WhenComplete handleCreate(Ref ref, FutureOr<ValueT> Function() created) {
+    return handleFuture(ref, created);
   }
 }

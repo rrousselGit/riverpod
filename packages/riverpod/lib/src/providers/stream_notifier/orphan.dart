@@ -21,9 +21,7 @@ abstract class StreamNotifier<ValueT> extends $StreamNotifier<ValueT> {
 
   @mustCallSuper
   @override
-  void runBuild() {
-    requireElement().handleCreate(ref, build);
-  }
+  WhenComplete runBuild() => requireElement().handleCreate(ref, build);
 }
 
 /// {@template riverpod.stream_notifier_provider}

@@ -1,4 +1,10 @@
+## Unreleased build
+
+- Fix `AsyncNotifierProvider`/`StreamNotifierProvider` disposing dependencies
+  watched after an asynchronous gap during rebuild. (thanks to @a1573595)
+
 ## 4.0.3-dev.2 - 2026-05-06
+
 ### Dependency changes
 
 - `riverpod` upgraded to `3.3.2-dev.2`
@@ -352,4 +358,3 @@ Upgrade Riverpod version
 ## 1.0.0
 
 Initial release
-

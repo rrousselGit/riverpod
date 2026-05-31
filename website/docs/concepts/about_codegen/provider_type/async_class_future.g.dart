@@ -40,7 +40,7 @@ abstract class _$Example extends $AsyncNotifier<String> {
   FutureOr<String> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -50,6 +50,6 @@ abstract class _$Example extends $AsyncNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

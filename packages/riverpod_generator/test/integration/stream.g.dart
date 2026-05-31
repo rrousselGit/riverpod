@@ -209,7 +209,7 @@ abstract class _$GenericClass<StateT extends num>
   Stream<List<StateT>> build(StateT param);
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<List<StateT>>, List<StateT>>;
     final element =
         ref.element
@@ -219,7 +219,7 @@ abstract class _$GenericClass<StateT extends num>
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }
 
@@ -434,7 +434,7 @@ abstract class _$PublicClass extends $StreamNotifier<String> {
   Stream<String> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -444,7 +444,7 @@ abstract class _$PublicClass extends $StreamNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -478,7 +478,7 @@ abstract class _$PrivateClass extends $StreamNotifier<String> {
   Stream<String> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -488,7 +488,7 @@ abstract class _$PrivateClass extends $StreamNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -612,7 +612,7 @@ abstract class _$FamilyClass extends $StreamNotifier<String> {
   });
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -622,7 +622,7 @@ abstract class _$FamilyClass extends $StreamNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleCreate(
+    return element.handleCreate(
       ref,
       () => build(
         _$args.$1,

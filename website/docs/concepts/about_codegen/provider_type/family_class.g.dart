@@ -94,7 +94,7 @@ abstract class _$Example extends $Notifier<String> {
   String build(int param1, {String param2 = 'foo'});
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
@@ -104,6 +104,9 @@ abstract class _$Example extends $Notifier<String> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args.$1, param2: _$args.param2));
+    return element.handleCreate(
+      ref,
+      () => build(_$args.$1, param2: _$args.param2),
+    );
   }
 }

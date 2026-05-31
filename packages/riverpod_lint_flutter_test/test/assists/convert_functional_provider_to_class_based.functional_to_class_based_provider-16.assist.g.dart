@@ -147,7 +147,7 @@ abstract class _$ExampleFamily extends $Notifier<int> {
   int build({required int a, String b = '42'});
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -157,6 +157,6 @@ abstract class _$ExampleFamily extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(a: _$args.a, b: _$args.b));
+    return element.handleCreate(ref, () => build(a: _$args.a, b: _$args.b));
   }
 }

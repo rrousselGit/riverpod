@@ -113,6 +113,43 @@ void main() {
       verifyOnly(onSubResume, onSubResume());
       verifyNoMoreInteractions(onSubPause);
     });
+
+    test('keeps post-await dependencies alive during rebuild', () async {
+      final container = ProviderContainer.test();
+      var dependencyDisposeCount = 0;
+      var gate = Completer<void>();
+      addTearDown(() {
+        if (!gate.isCompleted) gate.complete();
+      });
+
+      final dependency = NotifierProvider.autoDispose(
+        () => DeferredNotifier<int>((ref, _) {
+          ref.onDispose(() => dependencyDisposeCount++);
+          return 0;
+        }),
+      );
+      final provider = factory.simpleTestProvider<int>((ref, _) async* {
+        await gate.future;
+
+        yield ref.watch(dependency);
+      });
+
+      container.listen(provider, (previous, next) {});
+
+      gate.complete();
+      await expectLater(container.read(provider.future), completion(0));
+
+      gate = Completer<void>();
+      container.read(dependency.notifier).state++;
+      await container.pump();
+
+      expect(dependencyDisposeCount, 0);
+
+      gate.complete();
+      await expectLater(container.read(provider.future), completion(1));
+      expect(dependencyDisposeCount, 0);
+    });
+
     group('retry', () {
       test(
         'handles retry',

@@ -34,9 +34,7 @@ abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT> {
 
   @mustCallSuper
   @override
-  void runBuild() {
-    requireElement().handleCreate(ref, build);
-  }
+  WhenComplete runBuild() => requireElement().handleCreate(ref, build);
 }
 
 /// {@template riverpod.async_notifier_provider}

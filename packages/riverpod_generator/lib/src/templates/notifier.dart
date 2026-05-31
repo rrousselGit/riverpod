@@ -70,11 +70,11 @@ abstract class $notifierBaseName$genericsDefinition extends $baseClass {
     buffer.writeln('''
   @\$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as \$Ref<${provider.providerElement.exposedTypeNode}, ${provider.providerElement.valueTypeNode.toCode()}>;
     final element = ref.element as \$ClassProviderElement<AnyNotifier<${provider.providerElement.exposedTypeNode}, ${provider.providerElement.valueTypeNode.toCode()}>,
           ${provider.providerElement.exposedTypeNode}, Object?, Object?>;
-    element.handleCreate(ref, $buildVarUsage);
+    return element.handleCreate(ref, $buildVarUsage);
   }
 }
 ''');
