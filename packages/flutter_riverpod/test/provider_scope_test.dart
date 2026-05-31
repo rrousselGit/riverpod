@@ -2,35 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-final _issue4766Provider =
-    NotifierProvider.autoDispose<_Issue4766Notifier, int>(
-      _Issue4766Notifier.new,
-    );
-
-final _issue4766OtherProvider =
-    NotifierProvider.autoDispose<_Issue4766OtherNotifier, int>(
-      _Issue4766OtherNotifier.new,
-    );
-
-class _Issue4766Notifier extends Notifier<int> {
-  @override
-  int build() => 1;
-
-  void doSomething() {
-    ref.read(_issue4766OtherProvider);
-  }
-}
-
-class _Issue4766OtherNotifier extends Notifier<int> {
-  @override
-  int build() => 2;
-}
+import 'src/core/provider_subscription_test.dart';
 
 void main() {
   group('ProviderScope', () {
     testWidgets(
       'reading an autoDispose notifier then invalidating a watched provider does not assert',
       (tester) async {
+        final _issue4766Provider = NotifierProvider.autoDispose(
+          () => DeferredNotifier((ref, self) => 1),
+        );
+
+        final _issue4766OtherProvider = NotifierProvider.autoDispose(
+          () => DeferredNotifier((ref, self) => 2),
+        );
+
         await tester.pumpWidget(
           ProviderScope(
             child: Consumer(
@@ -44,7 +30,10 @@ void main() {
 
         final container = tester.container();
 
-        container.read(_issue4766Provider.notifier).doSomething();
+        container
+            .read(_issue4766Provider.notifier)
+            .ref
+            .read(_issue4766OtherProvider);
         container.invalidate(_issue4766OtherProvider);
       },
     );
