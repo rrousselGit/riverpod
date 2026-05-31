@@ -537,6 +537,7 @@ abstract class $ClassProviderElement<
   RunNotifierBuild<NotifierT, CreatedT>? _runNotifierBuildOverride;
 
   final classListenable = $Observable<NotifierT>();
+  WhenComplete _notifierBuildCompletion;
 
   @mustCallSuper
   @override
@@ -555,6 +556,7 @@ abstract class $ClassProviderElement<
           return notifier;
         });
 
+    _notifierBuildCompletion = null;
     switch (result) {
       case $ResultData():
         try {
@@ -571,10 +573,18 @@ abstract class $ClassProviderElement<
         handleError(ref, result.error, result.stackTrace);
     }
 
-    return null;
+    final completion = _notifierBuildCompletion;
+    _notifierBuildCompletion = null;
+    return completion;
   }
 
-  void handleCreate(Ref ref, CreatedT Function() created);
+  void handleCreate(Ref ref, CreatedT Function() created) {
+    _notifierBuildCompletion = runNotifierBuild(ref, created);
+  }
+
+  @protected
+  WhenComplete runNotifierBuild(Ref ref, CreatedT Function() created);
+
   void handleError(Ref ref, Object error, StackTrace stackTrace);
 
   @override

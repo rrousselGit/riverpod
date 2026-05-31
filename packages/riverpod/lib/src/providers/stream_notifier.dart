@@ -81,7 +81,7 @@ class $StreamNotifierProviderElement<
   $StreamNotifierProviderElement(super.pointer);
 
   @override
-  void handleCreate(Ref ref, Stream<ValueT> Function() created) {
-    handleStream(ref, created);
+  WhenComplete runNotifierBuild(Ref ref, Stream<ValueT> Function() created) {
+    return handleStream(ref, created);
   }
 }
