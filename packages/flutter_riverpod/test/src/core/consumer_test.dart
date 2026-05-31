@@ -69,7 +69,7 @@ void main() {
     'resuming provider chain after missed async notifier event does not assert',
     (tester) async {
       // Regression test for https://github.com/rrousselGit/riverpod/issues/4765
-      _issue4765Stream = StreamController<int>.broadcast(sync: true);
+      _issue4765Stream = StreamController<int>.broadcast();
       addTearDown(_issue4765Stream.close);
 
       await tester.pumpWidget(

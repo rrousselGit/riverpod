@@ -318,7 +318,7 @@ final class _UncontrolledProviderScopeState
     _task = task;
     if (SchedulerBinding.instance.schedulerPhase ==
         SchedulerPhase.persistentCallbacks) {
-      assert(() {
+      if (kDebugMode) {
         try {
           setState(() {});
           // Flutter throws when the scope cannot be marked dirty during the
@@ -327,8 +327,7 @@ final class _UncontrolledProviderScopeState
         } on FlutterError {
           // Defer to the timer below.
         }
-        return true;
-      }(), 'ProviderScope refresh scheduling should not fail');
+      }
     } else {
       setState(() {});
     }
@@ -377,11 +376,13 @@ final class _UncontrolledProviderScopeState
   }
 
   void _debugCanModifyProviders() {
+    // coverage:ignore-start
     if (!kDebugMode) {
       throw StateError(
         'debugCanModifyProviders should not be called outside of debug mode',
       );
     }
+    // coverage:ignore-end
     try {
       setState(() {});
     } catch (err) {
