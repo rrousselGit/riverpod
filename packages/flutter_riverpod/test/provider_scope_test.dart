@@ -2,8 +2,53 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+final _issue4766Provider =
+    NotifierProvider.autoDispose<_Issue4766Notifier, int>(
+      _Issue4766Notifier.new,
+    );
+
+final _issue4766OtherProvider =
+    NotifierProvider.autoDispose<_Issue4766OtherNotifier, int>(
+      _Issue4766OtherNotifier.new,
+    );
+
+class _Issue4766Notifier extends Notifier<int> {
+  @override
+  int build() => 1;
+
+  void doSomething() {
+    ref.read(_issue4766OtherProvider);
+  }
+}
+
+class _Issue4766OtherNotifier extends Notifier<int> {
+  @override
+  int build() => 2;
+}
+
 void main() {
   group('ProviderScope', () {
+    testWidgets(
+      'reading an autoDispose notifier then invalidating a watched provider does not assert',
+      (tester) async {
+        await tester.pumpWidget(
+          ProviderScope(
+            child: Consumer(
+              builder: (context, ref, child) {
+                ref.watch(_issue4766OtherProvider);
+                return const Placeholder();
+              },
+            ),
+          ),
+        );
+
+        final container = tester.container();
+
+        container.read(_issue4766Provider.notifier).doSomething();
+        container.invalidate(_issue4766OtherProvider);
+      },
+    );
+
     testWidgets(
       'If ProviderScope does not rebuild after a few frames, flush the scheduler',
       (tester) async {
