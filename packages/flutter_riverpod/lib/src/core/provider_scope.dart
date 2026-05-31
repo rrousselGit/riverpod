@@ -324,7 +324,12 @@ final class _UncontrolledProviderScopeState
           // Flutter throws when the scope cannot be marked dirty during the
           // current build. In that case, the timer below will defer the refresh.
           // ignore: avoid_catching_errors
-        } on FlutterError {
+        } on FlutterError catch (err) {
+          final summary = err.diagnostics.first.toDescription();
+          if (summary !=
+              'setState() or markNeedsBuild() called during build.') {
+            rethrow;
+          }
           // Defer to the timer below.
         }
       }
