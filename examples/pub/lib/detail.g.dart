@@ -270,7 +270,7 @@ abstract class _$PackageMetrics extends $AsyncNotifier<PackageMetricsScore> {
   FutureOr<PackageMetricsScore> build({required String packageName});
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref as $Ref<AsyncValue<PackageMetricsScore>, PackageMetricsScore>;
     final element =
@@ -281,6 +281,6 @@ abstract class _$PackageMetrics extends $AsyncNotifier<PackageMetricsScore> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(packageName: _$args));
+    return element.handleCreate(ref, () => build(packageName: _$args));
   }
 }

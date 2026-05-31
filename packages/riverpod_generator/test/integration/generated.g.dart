@@ -165,7 +165,7 @@ abstract class _$$DynamicClass extends $Notifier<dynamic> {
   dynamic build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<dynamic, dynamic>;
     final element =
         ref.element
@@ -175,7 +175,7 @@ abstract class _$$DynamicClass extends $Notifier<dynamic> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -263,7 +263,7 @@ abstract class _$$DynamicClassFamily extends $Notifier<dynamic> {
   dynamic build(dynamic test);
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<dynamic, dynamic>;
     final element =
         ref.element
@@ -273,7 +273,7 @@ abstract class _$$DynamicClassFamily extends $Notifier<dynamic> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }
 
@@ -512,7 +512,7 @@ abstract class _$AliasClass extends $Notifier<AsyncValue<int>> {
   AsyncValue<int> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<int>, AsyncValue<int>>;
     final element =
         ref.element
@@ -522,7 +522,7 @@ abstract class _$AliasClass extends $Notifier<AsyncValue<int>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -609,7 +609,7 @@ abstract class _$AliasClassFamily extends $Notifier<AsyncValue<int>> {
   AsyncValue<int> build(AsyncValue<int> test);
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<int>, AsyncValue<int>>;
     final element =
         ref.element
@@ -619,6 +619,6 @@ abstract class _$AliasClassFamily extends $Notifier<AsyncValue<int>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }
