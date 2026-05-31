@@ -356,6 +356,7 @@ final class _UncontrolledProviderScopeState
     return () {
       canceled = true;
       if (identical(_task, task)) {
+        _task = null;
         _cancelAsyncTask = null;
       }
     };

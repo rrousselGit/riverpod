@@ -43,6 +43,9 @@ class DeferredNotifier<StateT> extends Notifier<StateT> {
   final StateT Function(Ref ref, DeferredNotifier<StateT> self) _build;
 
   @override
+  Ref get ref;
+
+  @override
   StateT build() {
     return _build(ref, this);
   }
