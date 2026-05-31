@@ -1,11 +1,8 @@
-## Unreleased fix
-
-- Fix `AsyncNotifierProvider`/`StreamNotifierProvider` disposing dependencies
-  watched after an asynchronous gap during rebuild. (thanks to @a1573595)
-
 ## Unreleased build
 
 - Fixes assertion error when providers are unpaused.
+- Fix `AsyncNotifierProvider`/`StreamNotifierProvider` disposing dependencies
+  watched after an asynchronous gap during rebuild. (thanks to @a1573595)
 
 ## 3.3.2-dev.2 - 2026-05-06
 

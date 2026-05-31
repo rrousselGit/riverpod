@@ -89,7 +89,7 @@ class $NotifierProviderElement<
       setValue(AsyncError<ValueT>(error, stackTrace));
 
   @override
-  WhenComplete runNotifierBuild(Ref ref, ValueT Function() created) {
+  WhenComplete handleCreate(Ref ref, ValueT Function() created) {
     setValue(AsyncData(created()));
     return null;
   }

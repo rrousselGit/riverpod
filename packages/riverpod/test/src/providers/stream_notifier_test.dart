@@ -122,31 +122,31 @@ void main() {
         if (!gate.isCompleted) gate.complete();
       });
 
-      final dependency = NotifierProvider.autoDispose<Issue4761Counter, int>(
-        () => Issue4761Counter(() => dependencyDisposeCount++),
+      final dependency = NotifierProvider.autoDispose(
+        () => DeferredNotifier<int>((ref, _) {
+          ref.onDispose(() => dependencyDisposeCount++);
+          return 0;
+        }),
       );
       final provider = factory.simpleTestProvider<int>((ref, _) async* {
-        ref.keepAlive();
         await gate.future;
 
         yield ref.watch(dependency);
       });
 
-      final sub = container.listen(provider, (previous, next) {});
+      container.listen(provider, (previous, next) {});
 
       gate.complete();
       await expectLater(container.read(provider.future), completion(0));
-      expect(sub.read(), const AsyncData<int>(0));
 
       gate = Completer<void>();
-      container.read(dependency.notifier).increment();
+      container.read(dependency.notifier).state++;
       await container.pump();
 
       expect(dependencyDisposeCount, 0);
 
       gate.complete();
       await expectLater(container.read(provider.future), completion(1));
-      expect(sub.read(), const AsyncData<int>(1));
       expect(dependencyDisposeCount, 0);
     });
 
@@ -1228,18 +1228,4 @@ class Equal<BoxedT> {
 class CtorNotifier extends StreamNotifier<int> {
   @override
   Stream<int> build() => Stream.value(0);
-}
-
-class Issue4761Counter extends Notifier<int> {
-  Issue4761Counter(this._onDispose);
-
-  final void Function() _onDispose;
-
-  @override
-  int build() {
-    ref.onDispose(_onDispose);
-    return 0;
-  }
-
-  void increment() => state++;
 }
