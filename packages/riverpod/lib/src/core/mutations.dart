@@ -443,10 +443,15 @@ final class MutationImpl<ResultT>
     final ref = getRef();
     if (ref == null) return;
 
-    setState(MutationIdle<ResultT>._(), ref);
-    // Invalidate the active transaction so that an in-flight `run` can no
-    // longer write its result over the reset state once it completes.
-    setRef(MutationTransaction._(container));
+    // Rotate the active transaction *before* publishing the idle state.
+    // `setState` notifies listeners/observers synchronously, so a listener
+    // could start a new `run` during this call. Rotating first means that
+    // new run installs its own transaction *after* ours, and is therefore
+    // not invalidated. Any `run` that was already in-flight before the reset
+    // keeps its now-stale transaction and can no longer overwrite the state.
+    final resetRef = MutationTransaction._(container);
+    setRef(resetRef);
+    setState(MutationIdle<ResultT>._(), resetRef);
   }
 
   void _mutationStart(
