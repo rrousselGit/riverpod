@@ -6,6 +6,9 @@
 - Devtool-only:
   Fixed a `TapGestureRecognizer` leak in the state inspector, where the
   recognizer was recreated on every rebuild and never disposed. (thanks to @Gyeony95)
+- Fix `Mutation.run` throwing a `StateError` ("subscription was closed") when
+  the `ProviderContainer` was disposed while the mutation was still running.
+  (thanks to @Gyeony95)
 
 ## 3.3.2-dev.2 - 2026-05-06
 
