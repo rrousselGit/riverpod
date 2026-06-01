@@ -581,7 +581,7 @@ class _ResolvedVariableTile extends StatelessWidget {
   }
 }
 
-class _ExpansibleTile extends StatelessWidget {
+class _ExpansibleTile extends StatefulWidget {
   const _ExpansibleTile({
     super.key,
     required this.isExpanded,
@@ -594,10 +594,31 @@ class _ExpansibleTile extends StatelessWidget {
   final Widget child;
 
   @override
+  State<_ExpansibleTile> createState() => _ExpansibleTileState();
+}
+
+class _ExpansibleTileState extends State<_ExpansibleTile> {
+  late final _recognizer = TapGestureRecognizer()..onTap = widget.onPressed;
+
+  @override
+  void didUpdateWidget(_ExpansibleTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.onPressed != widget.onPressed) {
+      _recognizer.onTap = widget.onPressed;
+    }
+  }
+
+  @override
+  void dispose() {
+    _recognizer.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = DefaultTextStyle.of(context).style.fontSize ?? 14.0;
 
-    final icon = isExpanded ? Icons.expand_more : Icons.chevron_right;
+    final icon = widget.isExpanded ? Icons.expand_more : Icons.chevron_right;
 
     return Row(
       crossAxisAlignment: .start,
@@ -605,7 +626,7 @@ class _ExpansibleTile extends StatelessWidget {
         Text.rich(
           TextSpan(
             text: String.fromCharCode(icon.codePoint),
-            recognizer: TapGestureRecognizer()..onTap = onPressed,
+            recognizer: _recognizer,
             style: TextStyle(
               fontFamily: icon.fontFamily,
               package: icon.fontPackage,
@@ -613,7 +634,7 @@ class _ExpansibleTile extends StatelessWidget {
             ),
           ),
         ),
-        Expanded(child: child),
+        Expanded(child: widget.child),
       ],
     );
   }
