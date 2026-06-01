@@ -194,6 +194,41 @@ void main() {
 
         expect(container.read(mut), isMutationIdle<int>());
       });
+
+      test('an in-flight run does not override the reset state', () async {
+        final mut = Mutation<int>();
+        final container = ProviderContainer.test();
+        final completer = Completer<int>();
+        final listener = Listener<MutationState<int>>();
+
+        container.listen(mut, listener.call);
+
+        final future = mut.run(container, (_) => completer.future);
+        verifyOnly(
+          listener,
+          listener(
+            argThat(isMutationIdle<int>()),
+            argThat(isMutationPending<int>()),
+          ),
+        );
+
+        mut.reset(container);
+        verifyOnly(
+          listener,
+          listener(
+            argThat(isMutationPending<int>()),
+            argThat(isMutationIdle<int>()),
+          ),
+        );
+
+        // The run completes after the reset. Its result must not be applied,
+        // as the mutation has been explicitly reset to idle in the meantime.
+        completer.complete(42);
+        await future;
+
+        expect(container.read(mut), isMutationIdle<int>());
+        verifyNoMoreInteractions(listener);
+      });
     });
 
     test('overrides ==/hashCode', () {

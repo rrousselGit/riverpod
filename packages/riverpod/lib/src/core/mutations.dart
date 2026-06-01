@@ -437,13 +437,16 @@ final class MutationImpl<ResultT>
   @override
   void reset(MutationTarget target) {
     final container = target.container;
-    final _MutationNotifier(:state, :setState, :getRef) = container
+    final _MutationNotifier(:state, :setState, :getRef, :setRef) = container
         .read<_MutationNotifier<ResultT>>(_MutationProvider(this));
 
     final ref = getRef();
     if (ref == null) return;
 
     setState(MutationIdle<ResultT>._(), ref);
+    // Invalidate the active transaction so that an in-flight `run` can no
+    // longer write its result over the reset state once it completes.
+    setRef(MutationTransaction._(container));
   }
 
   void _mutationStart(
