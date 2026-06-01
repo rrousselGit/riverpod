@@ -230,37 +230,40 @@ void main() {
         verifyNoMoreInteractions(listener);
       });
 
-      test('a run started by a synchronous reset listener is not invalidated', () async {
-        // `reset` rotates the active transaction. Because `setState` notifies
-        // listeners synchronously, a listener may start a new `run` during the
-        // reset. That new run must remain valid and able to publish its result.
-        final mut = Mutation<int>();
-        final container = ProviderContainer.test();
-        final firstRun = Completer<int>();
-        final secondRun = Completer<int>();
-        Future<int>? reentrantRun;
+      test(
+        'a run started by a synchronous reset listener is not invalidated',
+        () async {
+          // `reset` rotates the active transaction. Because `setState` notifies
+          // listeners synchronously, a listener may start a new `run` during the
+          // reset. That new run must remain valid and able to publish its result.
+          final mut = Mutation<int>();
+          final container = ProviderContainer.test();
+          final firstRun = Completer<int>();
+          final secondRun = Completer<int>();
+          Future<int>? reentrantRun;
 
-        container.listen<MutationState<int>>(mut, (prev, next) {
-          if (next is MutationIdle<int> &&
-              prev is MutationPending<int> &&
-              reentrantRun == null) {
-            reentrantRun = mut.run(container, (_) => secondRun.future);
-          }
-        });
+          container.listen<MutationState<int>>(mut, (prev, next) {
+            if (next is MutationIdle<int> &&
+                prev is MutationPending<int> &&
+                reentrantRun == null) {
+              reentrantRun = mut.run(container, (_) => secondRun.future);
+            }
+          });
 
-        final first = mut.run(container, (_) => firstRun.future);
-        mut.reset(container);
+          final first = mut.run(container, (_) => firstRun.future);
+          mut.reset(container);
 
-        expect(container.read(mut), isMutationPending<int>());
+          expect(container.read(mut), isMutationPending<int>());
 
-        secondRun.complete(7);
-        await reentrantRun;
+          secondRun.complete(7);
+          await reentrantRun;
 
-        expect(container.read(mut), isMutationSuccess<int>(7));
+          expect(container.read(mut), isMutationSuccess<int>(7));
 
-        firstRun.complete(1);
-        await first.catchError((_) => 0);
-      });
+          firstRun.complete(1);
+          await first.catchError((_) => 0);
+        },
+      );
     });
 
     test('overrides ==/hashCode', () {
