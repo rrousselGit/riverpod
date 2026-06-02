@@ -201,11 +201,15 @@ void main() {
       expect(Mutation<int>().hashCode, isNot(Mutation<int>().hashCode));
 
       final mut = Mutation<int>();
+      final mut2 = Mutation<int>();
       expect(mut, mut);
+      expect(mut, isNot(mut2));
       expect(mut.hashCode, mut.hashCode);
+      expect(mut.hashCode, isNot(mut2.hashCode));
 
       expect(mut(1), mut(1));
-      expect(mut(1).hashCode, mut(1).hashCode);
+      expect(mut(1), isNot(mut2(1)));
+      expect(mut(1).hashCode, isNot(mut2(1).hashCode));
       expect(mut(1), isNot(mut(2)));
       expect(mut(1).hashCode, isNot(mut(2).hashCode));
       expect(mut(1), isNot(mut));
