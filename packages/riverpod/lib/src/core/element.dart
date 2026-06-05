@@ -32,6 +32,7 @@ void Function()? debugCanModifyProviders;
 
 /// A Future-like that support synchronous completion.
 @internal
+@publicInCodegen
 typedef WhenComplete = void Function(void Function() cb)?;
 
 /// Mixin to help implement logic for listening to [Future]s/[Stream]s and setup

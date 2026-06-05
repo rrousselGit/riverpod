@@ -159,7 +159,7 @@ abstract class AnyNotifier<StateT, ValueT> {
   /// The benefit of this method is that it applies on all notifiers,
   /// regardless of whether they use arguments or not.
   @mustCallSuper
-  void runBuild();
+  WhenComplete runBuild();
 
   void _debugAssertNoDuplicateKey(
     Object? key,
@@ -555,14 +555,18 @@ abstract class $ClassProviderElement<
           return notifier;
         });
 
+    WhenComplete whenComplete;
     switch (result) {
       case $ResultData():
         try {
           switch (_runNotifierBuildOverride) {
             case final override?:
-              handleCreate(ref, () => override(ref, result.value));
+              whenComplete = handleCreate(
+                ref,
+                () => override(ref, result.value),
+              );
             case null:
-              result.value.runBuild();
+              whenComplete = result.value.runBuild();
           }
         } catch (err, stack) {
           handleError(ref, err, stack);
@@ -571,10 +575,11 @@ abstract class $ClassProviderElement<
         handleError(ref, result.error, result.stackTrace);
     }
 
-    return null;
+    return whenComplete;
   }
 
-  void handleCreate(Ref ref, CreatedT Function() created);
+  WhenComplete handleCreate(Ref ref, CreatedT Function() created);
+
   void handleError(Ref ref, Object error, StackTrace stackTrace);
 
   @override

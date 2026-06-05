@@ -1,6 +1,11 @@
 ## Unreleased build
 
 - Fixes assertion error when providers are unpaused.
+- Fix `AsyncNotifierProvider`/`StreamNotifierProvider` disposing dependencies
+  watched after an asynchronous gap during rebuild. (thanks to @a1573595)
+- Devtool-only:
+  Fixed a `TapGestureRecognizer` leak in the state inspector, where the
+  recognizer was recreated on every rebuild and never disposed. (thanks to @Gyeony95)
 
 ## 3.3.2-dev.2 - 2026-05-06
 
