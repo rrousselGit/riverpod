@@ -114,6 +114,7 @@ export const documentTitles = {
     "concepts/modifiers/auto_dispose": ".autoDispose",
     "getting_started": "Введение",
     "cookbooks/refresh": "Pull-to-refresh / Retry-on-error",
+    "concepts2/providers": "Providers",
   },
   'ko': {
     "providers/stream_provider": "StreamProvider",
@@ -331,12 +332,12 @@ export const documentTitles = {
   },
   'ar': {
     "introduction/getting_started": "الشروع في العمل مع Riverpod",
+    "concepts2/providers": "مفاهيم Providers",
     "whats_new": "ما الجديد في Riverpod 3.0",
     "3.0_migration": "الانتقال من الإصدار 2.0 إلى 3.0",
     "tutorials/first_app": "تطبيقك الأول مع Riverpod",
     "root/faq": "الأسئلة الشائعة",
     "root/do_dont": "افعل/لا تفعل",
-    "concepts2/providers": "مفاهيم Providers",
   },
 };
 export const outdatedTranslations = [

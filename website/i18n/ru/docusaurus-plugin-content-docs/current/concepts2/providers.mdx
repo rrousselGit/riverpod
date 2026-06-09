@@ -1,0 +1,574 @@
+---
+title: Providers
+version: 1
+---
+
+import declaringManyProviders from "./providers/declaring_many_providers";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+import Legend, { colors } from "/src/components/Legend";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+Providers — ключевая возможность Riverpod. Если вы используете Riverpod, то используете его из-за providers.
+
+## Что такое provider?
+
+Providers по сути являются «мемоизированными функциями» с дополнительными возможностями.  
+Это означает, что providers — это функции, которые возвращают кэшированное значение при вызове с одинаковыми параметрами.
+
+Наиболее распространенный сценарий использования провайдеров — это выполнение сетевого запроса.  
+Рассмотрим функцию, которая получает данные пользователя из API:
+
+```dart
+Future<User> fetchUser() async {
+  final response = await http.get('https://api.example.com/user/123');
+  return User.fromJson(response.body);
+}
+```
+
+Одна из проблем этой функции заключается в том, что если бы мы попытались использовать её внутри виджетов, нам пришлось бы кэшировать результат самостоятельно, а затем найти способ поделиться этим значением со всеми виджетами, которым оно необходимо.
+
+Именно здесь providers приходят на помощь. Providers — это обёртки над функциями. 
+Они кэшируют результат указанной функции и позволяют нескольким виджетам получать доступ к одному и тому же значению:
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+  // Это аналог нашей функции fetchUser, но результат кэшируется.
+  // В результате будет создан "userProvider". При многократном использовании
+  // будет возвращаться одно и то же значение.
+  @riverpod
+  Future<User> user(Ref ref) async {
+    final response = await http.get('https://api.example.com/user/123');
+    return User.fromJson(response.body);
+  }
+  `}
+  raw={`
+  // Это аналог нашей функции fetchUser, но результат кэшируется.
+  // При многократном использовании будет возвращаться одно и то же значение.
+  final userProvider = FutureProvider<User>((ref) async {
+    final response = await http.get('https://api.example.com/user/123');
+    return User.fromJson(response.body);
+  });
+  `}
+  ></AutoSnippet>
+
+Помимо базового кэширования, providers также предоставляют различные возможности, 
+которые делают их более мощными:
+
+- **Встроенные механизмы инвалидации кэша**  
+  В частности, [Ref.watch](https://pub.dev/documentation/riverpod/latest/riverpod/Ref/watch.html)
+  позволяет объединять кэши между собой, автоматически инвалидируя всё необходимое.
+- **<Link documentID="concepts2/auto_dispose" />** <br/>
+  Providers могут автоматически освобождать ресурсы, когда они больше не нужны.
+- **Связывание данных (Data-binding)**  
+  Providers устраняют необходимость использовать [FutureBuilder](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html)
+  или [StreamBuilder](https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html).
+- **Автоматическая обработка ошибок**  
+  Providers могут автоматически перехватывать ошибки и передавать их в UI.
+- **Поддержка моков**  
+  Для удобства тестирования и других целей все providers могут быть замоканы.
+  См. <Link documentID="concepts2/overrides" />.
+- **<Link documentID="concepts2/offline"/>** <br/>
+  Результат provider может сохраняться на диск и автоматически загружаться при перезапуске приложения.
+- **<Link documentID="concepts2/mutations" />** <br/>
+  Providers предоставляют встроенный способ отображать в UI состояние загрузки/ошибки для побочных эффектов, таких как отправка формы.
+
+Существует 6 типов providers:
+
+|              | Synchronous      | Future                | Stream                 |
+| ------------ | ---------------- | --------------------- | ---------------------- |
+| Unmodifiable | [Provider]         | [FutureProvider]        | [StreamProvider]         |
+| Modifiable   | [NotifierProvider] | [AsyncNotifierProvider] | [StreamNotifierProvider] |
+
+Поначалу это может показаться сложным. Давай разберёмся по шагам.
+
+**Sync** vs **Future** vs **Stream**:  
+Столбцы этой таблицы представляют собой встроенные типы данных Dart для функций.
+```dart
+int synchronous() => 0;
+Future<int> future() async => 0;
+Stream<int> stream() => Stream.value(0);
+```
+
+**Неизменяемые vs Изменяемые**:  
+По умолчанию providers нельзя изменять из виджетов. 
+Вариант providers на основе Notifier позволяет изменять их извне.  
+Это похоже на ситуацию с приватным сеттером ("неизменяемые" providers). 
+```dart
+// _state можно изменять изнутри,
+// но нельзя изменять извне
+var _state = 0;
+int get state => _state;
+```
+В отличие от публичного сеттера ("изменяемые" providers)
+```dart
+// Изменить "state" можно откуда угодно
+var state = 0;
+```
+
+:::info
+Также **неизменяемые** и **изменяемые** можно в принципе рассматривать как `StatelessWidget` и `StatefulWidget` соответственно.
+
+Это не совсем точно, так как providers — не виджеты, и оба типа хранят "state". 
+Но принцип похож: "Один объект, неизменяемый" и "Два объекта, изменяемый".
+:::
+
+
+## Создание provider
+
+Providers следует создавать как «верхнеуровневые» объявления.  
+Это означает, что их нужно объявлять вне любых классов или функций.
+
+Синтаксис создания provider зависит от того, является ли он "изменяемым" или "неизменяемым", как указано в таблице выше.
+
+<Tabs>
+<TabItem value="Unmodifiable" label="Неизменяемый (functional)">
+
+<Tabs groupId="riverpod">
+<TabItem value="riverpod" label="riverpod">
+<Legend
+  code={`
+    final name = SomeProvider.someModifier<Result>((ref) {
+      <ваша логика здесь>
+    });
+  `}
+  annotations={[
+    {
+      offset: 6,
+      length: 4,
+      label: "Переменная provider",
+        description: <>
+
+Эта переменная будет использоваться для взаимодействия с нашим provider.
+Переменная должна быть final и иметь "верхний уровень" (глобальный).
+
+:::note
+Не пугайтесь глобальной природы providers. 
+Providers полностью неизменяемы. Объявление provider ничем не отличается 
+от объявления функции, а сами providers легко тестировать и поддерживать.
+:::
+
+</>
+    },
+    {
+      offset: 13,
+      length: 12,
+      label: "Тип provider",
+      description: <>
+
+Обычно это [Provider], [FutureProvider] или [StreamProvider].  
+Тип используемого provider зависит от возвращаемого значения вашей функции.
+Например, чтобы создать `Future<Activity>`, вам понадобится `FutureProvider<Activity>`.
+
+Чаще всего вам будет нужен именно `FutureProvider`.
+
+:::tip
+Не думайте в духе "Какой provider мне выбрать". 
+Вместо этого подумайте: «Что я хочу вернуть». Тип provider определится сам собой.
+:::
+
+</>
+    },
+    {
+      offset: 25,
+      length: 13,
+      label: "Модификаторы (необязательно)",
+      description: <>
+
+Часто после типа provider можно увидеть "модификатор".  
+Модификаторы необязательны и используются для безопасного изменения поведения provider с точки зрения типов.
+
+На данный момент доступны два модификатора:
+
+- `autoDispose`, автоматически очищает кэш, когда provider перестаёт использоваться.  
+  См. также <Link documentID="concepts2/auto_dispose" />
+- `family`, позволяет передавать аргументы в provider.  
+  См. также <Link documentID="concepts2/family" />.
+
+</>
+    },
+    {
+      offset: 48,
+      length: 3,
+      label: "Ref",
+      description: <>
+
+Объект, используемый для взаимодействия с другими providers.  
+Он есть у всех providers: либо как параметр функции provider, либо как свойство Notifier.
+
+</>
+    },
+    {
+      offset: 57,
+      length: 19,
+      label: "Функция provider",
+      description: <>
+
+Именно здесь размещается логика providers. Эта функция будет вызвана при первом чтении provider.  
+Последующие чтения не будут вызывать функцию повторно — вместо этого будет возвращаться закэшированное значение.
+
+</>
+    },
+  ]}
+/>
+</TabItem>
+<TabItem value="riverpod_generator" label="riverpod_generator">
+<Legend
+  code={`
+    @riverpod
+    Result myFunction(Ref ref) {
+      <ваша логика здесь>
+    }
+  `}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "Аннотация",
+      description: <>
+
+Все сгенерированные providers должны быть помечены `@riverpod` или `@Riverpod()`.
+Эту аннотацию можно размещать над глобальными функциями или классами. С её помощью 
+можно настраивать provider.
+
+Например, мы можем отключить "auto-dispose" (о котором поговорим позже) указав `@Riverpod(keepAlive: true)`.
+
+</>
+    },
+    {
+      offset: 17,
+      length: 10,
+      label: "Аннотированная функция",
+      description: <>
+
+Название аннотированной функции определяет, как будет осуществляться взаимодействие с provider.  
+Например для функции `myFunction` будет сгенерирован `myFunctionProvider`.
+
+Аннотированные функции **должны** принимать [Ref] в качестве первого параметра.  
+Помимо этого, функция может иметь любое количество параметров, включая generic-параметры.
+При необходимости функция также может возвращать `Future` или `Stream`.
+
+Эта функция будет вызвана при первом чтении provider.  
+Последующие чтения не будут вызывать функцию повторно — вместо этого будет возвращаться закэшированное значение.
+
+</>
+    },
+    {
+      offset: 28,
+      length: 7,
+      label: "Ref",
+      description: <>
+
+Объект, используемый для взаимодействия с другими providers.  
+Он есть у всех providers: либо как параметр функции provider, либо как свойство Notifier.  
+Тип этого объекта определяется именем функции или класса.
+
+</>
+    },
+]}
+/>
+</TabItem>
+</Tabs>
+
+</TabItem>
+
+<TabItem value="Modifiable" label="Изменяемый (notifier)">
+<Tabs groupId="riverpod">
+<TabItem value="riverpod" label="riverpod">
+<Legend
+  code={`final name = SomeNotifierProvider.someModifier<MyNotifier, Result>(MyNotifier.new);
+ 
+class MyNotifier extends SomeNotifier<Result> {
+  @override
+  Result build() {
+    <ваша логика здесь>
+  }
+
+  <your methods here>
+}`}
+  annotations={[
+    {
+      offset: 6,
+      length: 4,
+      label: "Переменная provider",
+       description: <>
+
+Эта переменная будет использоваться для взаимодействия с нашим provider.
+Переменная должна быть final и иметь "верхний уровень" (глобальный).
+
+:::note
+Не пугайтесь глобальной природы providers. 
+Providers полностью неизменяемы. Объявление provider ничем не отличается 
+от объявления функции, а сами providers легко тестировать и поддерживать.
+:::
+
+</>
+    },
+    {
+      offset: 13,
+      length: 20,
+      label: "Тип provider",
+       description: <>
+
+Обычно это [NotifierProvider], [AsyncNotifierProvider] или [StreamNotifierProvider].  
+Тип используемого provider зависит от возвращаемого значения вашей функции.
+Например, чтобы создать `Future<Activity>`, вам понадобится `AsyncNotifierProvider<Activity>`.
+
+Чаще всего вам будет нужен именно [AsyncNotifierProvider].
+
+:::tip
+Не думайте в духе "Какой provider мне выбрать". 
+Создавайте любой state, который вам нужен, а тип provider определится сам собой.
+:::
+
+</>
+    },
+    {
+      offset: 33,
+      length: 13,
+      label: "Модификаторы (необязательно)",
+      description: <>
+
+Часто после типа provider можно увидеть "модификатор".  
+Модификаторы необязательны и используются для безопасного изменения поведения provider с точки зрения типов.
+
+На данный момент доступны два модификатора:
+
+- `autoDispose`, автоматически очищает кэш, когда provider перестаёт использоваться.  
+  См. также <Link documentID="concepts2/auto_dispose" />
+- `family`, позволяет передавать аргументы в provider.  
+  См. также <Link documentID="concepts2/family" />.
+
+</>
+    },
+    {
+      offset: 67,
+      length: 14,
+      label: "Конструктор Notifier",
+      description: <>
+
+Параметром "notifier providers" является функция, которая должна создавать экземпляр "notifier".  
+Как правило, это должен быть "constructor tear-off".
+
+</>
+    },
+    {
+      offset: 86,
+      length: 16,
+      label: "Notifier",
+      description: <>
+
+Если `NotifierProvider` — это аналог `StatefulWidget`, то эта часть соответствует классу `State`.
+
+Этот класс отвечает за предоставление способов изменения состояния provider.  
+Публичные методы этого класса доступны для consumers через `ref.read(yourProvider.notifier).yourMethod()`.
+
+:::caution
+Не размещайте логику в конструкторе вашего notifier.  
+У Notifier не должно быть конструктора, так как `ref` и другие свойства в этот момент ещё недоступны. 
+Вместо этого размещайте логику в методе `build`.
+
+```dart
+class MyNotifier extends ... {
+  MyNotifier() {
+    // ❌ Не делайте так
+    // Это вызовет исключение
+    state = AsyncValue.data(42);
+  }
+
+  @override
+  Future<int> build() {
+    // ✅ Делайте так
+    state = AsyncValue.data(42);
+  }
+}
+```
+:::
+
+</>
+    },
+    {
+      offset: 111,
+      length: 12,
+      label: "Тип Notifier",
+      description: <>
+
+Базовый класс, который расширяет ваш notifier должен соответствовать типу provider и "family" если он используется.
+Вот несколько примеров:
+
+- <span style={{ color: colors[0] }}>Notifier</span>Provider -> <span style={{ color: colors[0] }}>Notifier</span>
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider -> <span style={{ color: colors[0] }}>AsyncNotifier</span>
+- <span style={{ color: colors[0] }}>StreamNotifier</span>Provider -> <span style={{ color: colors[0] }}>StreamNotifier</span>
+
+</>
+    },
+    {
+      offset: 136,
+      length: 56,
+      label: "Метод build",
+      description: <>
+
+Все notifiers должны переопределять метод `build`.  
+Этот метод соответствует месту, где обычно размещается логика в provider без notifier.
+
+Этот метод не следует вызывать напрямую.
+
+</>
+    },
+]}
+/>
+</TabItem>
+<TabItem value="riverpod_generator" label="riverpod_generator">
+<Legend
+  code={`@riverpod
+class MyNotifier extends _$MyNotifier {
+  @override
+  Result build() {
+    <ваша логика здесь>
+  }
+
+  <your methods here>
+}`}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "Аннотация",
+      description: <>
+
+Все сгенерированные providers должны быть помечены `@riverpod` или `@Riverpod()`.
+Эту аннотацию можно размещать над глобальными функциями или классами. С её помощью 
+можно настраивать provider.
+
+Например, мы можем отключить "auto-dispose" (о котором поговорим позже) указав `@Riverpod(keepAlive: true)`.
+
+</>
+    },
+    {
+      offset: 10,
+      length: 16,
+      label: "Notifier",
+       description: <>
+
+Когда аннотация `@riverpod` применяется к классу, такой класс называется "Notifier".  
+Класс должен расширять `_$NotifierName`, где `NotifierName` — это имя класса.
+
+Notifiers отвечают за предоставление способов изменения состояния provider.  
+Публичные методы этого класса доступны для consumers через `ref.read(yourProvider.notifier).yourMethod()`.
+
+:::caution
+Не размещайте логику в конструкторе вашего notifier.  
+У Notifier не должно быть конструктора, так как `ref` и другие свойства в этот 
+момент ещё недоступны. Вместо этого размещайте логику в методе `build`.
+
+```dart
+class MyNotifier extends ... {
+  MyNotifier() {
+    // ❌ Не делайте так
+    // Это вызовет исключение
+    state = AsyncValue.data(42);
+  }
+
+  @override
+  Future<int> build() {
+    // ✅ Делайте так
+    state = AsyncValue.data(42);
+  }
+}
+```
+:::
+
+</>
+    },
+    {
+      offset: 52,
+      length: 56,
+      label: "Метод build",
+      description: <>
+
+Все notifiers должны переопределять метод `build`.  
+Этот метод соответствует месту, где обычно размещается логика в provider без notifier.
+
+Этот метод не следует вызывать напрямую.
+
+</>
+    },
+]}
+/>
+</TabItem>
+</Tabs>
+</TabItem>
+</Tabs>
+
+:::info
+Вы можете объявлять сколько угодно providers без ограничений.
+В отличие от ситуации при использовании `package:provider`, Riverpod позволяет создавать несколько providers, которые предоставляют state одного и того же "типа":
+
+<AutoSnippet language="dart" {...declaringManyProviders}></AutoSnippet>
+
+Тот факт, что оба поставщика создают `String`, не вызывает никаких проблем.
+:::
+
+
+## Использование providers
+
+Providers похожи на widgets тем, что сами по себе они ничего не делают.  
+Как widgets являются описанием UI, так providers являются описанием состояния.  
+Удивительно, но provider полностью stateless и мог бы создаваться через `const`, 
+если бы это не усложняло синтаксис.
+
+Чтобы использовать provider, нужен отдельный объект: [ProviderContainer]. 
+Подробнее см. <Link documentID="concepts2/containers" />.
+
+Короче говоря, прежде чем использовать provider, оберните ваши Flutter-приложения в [ProviderScope]:
+
+```dart
+void main() {
+  runApp(ProviderScope(child: MyApp()));
+}
+```
+
+После этого вам понадобится получить [Ref] чтобы взаимодействовать с вашими providers. 
+См. <Link documentID="concepts2/refs" /> для подробностей.
+
+Вкратце, есть два способа получить [Ref]:
+- Providers получают доступ к нему автоматически.  
+  Это первый параметр функции provider или свойство `ref` у Notifier.
+  Это позволяет providers взаимодействовать друг с другом.
+- Дереву widgets нужны специальные виджеты, называемые <Link documentID="concepts2/consumers" />.
+  Эти виджеты служат связующим звеном между widget tree и provider tree, предоставляя [WidgetRef].
+
+В качестве примера рассмотрим `helloWorldProvider` который возвращает простую строку.
+Использовать его в widgets можно так:
+
+```dart
+class Example extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer(
+      builder: (context, ref, _) {
+        // Получение значения provider
+        final helloWorld = ref.watch(helloWorldProvider);
+
+        // Использование значения в UI
+        return Text(helloWorld);
+      },
+    );
+  }
+}
+```
+
+[provider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Provider-class.html
+[futureprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/FutureProvider-class.html
+[streamprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/StreamProvider-class.html
+[notifierprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/NotifierProvider-class.html
+[asyncnotifierprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/AsyncNotifierProvider-class.html
+[streamnotifierprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/StreamNotifierProvider-class.html
+[ref]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref-class.html
+[widgetref]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/WidgetRef-class.html
+[providerscope]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderScope-class.html
+[providercontainer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderContainer-class.html
