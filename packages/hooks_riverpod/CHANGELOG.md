@@ -1,10 +1,16 @@
-## Unreleased patch
+## 3.3.2 - 2026-06-10
 
 - Fixes assertion error when providers are unpaused.
 - Fixes assertion error when invalidating a provider after an autoDispose
   provider schedules disposal. (thanks to @a1573595)
 
+### Dependency changes
+
+- `flutter_riverpod` upgraded to `3.3.2`
+- `riverpod` upgraded to `3.3.2`
+
 ## 3.3.2-dev.2 - 2026-05-06
+
 ### Dependency changes
 
 - `flutter_riverpod` upgraded to `3.3.2-dev.2`
@@ -1762,3 +1768,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

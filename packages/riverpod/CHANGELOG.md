@@ -1,4 +1,4 @@
-## Unreleased patch
+## 3.3.2 - 2026-06-10
 
 - Fixes assertion error when providers are unpaused.
 - Fix `AsyncNotifierProvider`/`StreamNotifierProvider` disposing dependencies
@@ -1539,3 +1539,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

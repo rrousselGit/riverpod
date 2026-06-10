@@ -1,8 +1,10 @@
-## Unreleased patch
+## 3.1.4 - 2026-06-10
+### Dependency changes
 
-- Support latest Riverpod
+- `riverpod` upgraded to `3.3.2`
 
 ## 3.1.4-dev.3 - 2026-05-06
+
 ### Dependency changes
 
 - `riverpod` upgraded to `3.3.2-dev.2`
