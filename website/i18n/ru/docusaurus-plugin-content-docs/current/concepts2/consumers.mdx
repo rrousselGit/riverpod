@@ -1,0 +1,108 @@
+---
+title: Consumers
+---
+import { Link } from "/src/components/Link";
+
+"Consumer" — это виджет, который служит связующим звеном между Widget tree и Provider tree.
+
+Единственное существенное отличие Consumer от обычных виджетов заключается в том, что Consumers
+получает доступ к [Ref]. Это позволяет ему читать providers и отслеживать их изменения.
+Подробнее см. <Link documentID="concepts2/refs" />.
+
+Consumers представлены в нескольких вариантах, представлены в нескольких вариантах, в основном для удобства и личных предпочтений разработчика. Вы можете встретить:
+- [Consumer], "builder" виджет (аналогичный [FutureBuilder](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html)).
+  Он позволяет виджетам взаимодействовать с providers, не наследуясь ни от чего, кроме `StatelessWidget` или `StatefulWidget`.
+  ```dart
+  // Наследуемся от StatelessWidget как обычно
+  class MyWidget extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      // Виджет, похожий на FutureBuilder
+      return Consumer(
+        // Колбэк "builder" предоставляет параметр "ref"
+        builder: (context, ref, _) {
+          // Через ref можно подписываться на providers
+          final value = ref.watch(myProvider);
+          return Text(value.toString());
+        },
+      );
+    }
+  }
+  ```
+- [ConsumerWidget], разновидность `StatelessWidget`.
+  Вместо наследования от `StatelessWidget`, вы наследуетесь от `ConsumerWidget`. Он ведёт себя так же,
+  а исключением того, что метод `build` получает дополнительный параметр [WidgetRef].
+  ```dart
+  // Наследуемся от ConsumerWidget вместо StatelessWidget
+  class MyWidget extends ConsumerWidget {
+    // "build" получает дополнительный параметр
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      // Через "ref" можно подписываться на providers
+      final value = ref.watch(myProvider);
+      return Text(value.toString());
+    }
+  }
+  ```
+- [ConsumerStatefulWidget], разновидность `StatefulWidget`.  
+  Как и в предыдущем случае, вместо наследования от `StatefulWidget` вы наследуетесь от `ConsumerStatefulWidget`.
+  А вместо `State` вы наследуетесь от [ConsumerState].
+  Главное отличие заключается в том, что [ConsumerState] предоставляет свойство `ref`.
+  ```dart
+  // Наследуемся от ConsumerStatefulWidget вместо StatefulWidget
+  class MyWidget extends ConsumerStatefulWidget {
+    @override
+    ConsumerState<MyWidget> createState() => _MyWidgetState();
+  }
+  // Наследуемся от ConsumerState вместо State
+  class _MyWidgetState extends ConsumerState<MyWidget> {
+    // Доступно свойство "ref"
+    @override
+    Widget build(BuildContext context) {
+      // Через "ref" можно подписываться на providers
+      final value = ref.watch(myProvider);
+      return Text(value.toString());
+    }
+  }
+  ```
+В качестве альтернативы, вы можете найти дополнительные consumers в пакете [hooks_riverpod](https://pub.dev/packages/hooks_riverpod).
+Они объединяют consumers Riverpod с [flutter_hooks](https://pub.dev/packages/flutter_hooks). 
+Если вас не интересуют хуки, вы можете их игнорировать.
+
+### Какой вариант использовать?
+
+Выбор consumer в основном зависит от личных предпочтений.
+Можно использовать [Consumer] для всего — это более универсальный, но чуть более многословный вариант.
+Но это разумная цена, если вам не нравится, как Riverpod использует `StatelessWidget` и `StatefulWidget`.
+
+Но если у вас нет твердого мнения, мы рекомендуем использовать [ConsumerWidget] (или [ConsumerStatefulWidget] если вам нужен `State`).
+
+### Почему мы не можем использовать `StatelessWidget` + `context.watch`?
+
+В альтернативных пакетах, таких как [provider](https://pub.dev/packages/provider), можно использовать `context.watch` чтобы подписываться на providers.
+Это работает внутри любого виджета, если у вас есть `BuildContext`. Так почему же в Riverpod это не так?
+
+Причина в том, что полагаться только на `BuildContext` вместо [Ref] не позволило бы надёжно реализовать механизм <Link documentID="concepts2/auto_dispose" />. 
+Существуют способы сделать реализацию, которая «в большинстве случаев работает» с `BuildContext`,
+но проблема в том, что есть множество тонких edge-case’ов, которые могут незаметно ломать auto-dispose.
+
+Это привело бы к утечкам памяти, но это не главная проблема. 
+Automatic disposal ресурсов важнее тем, что оно останавливает выполнение ненужного кода. 
+Если auto-dispose не сработает, provider может продолжать, например, выполнять сетевые запросы в фоне.
+Поэтому Riverpod предпочёл не жертвовать надёжностью ради небольшого удобства.
+
+:::note
+Чтобы смягчить неудобства, связанные с использованием [ConsumerWidget]/[ConsumerStatefulWidget] вместо `StatelessWidget`/`StatefulWidget`, 
+Riverpod предоставляет различные рефакторинги в IDE, таких как VS Code и Android Studio.
+
+![Refactor to Consumer](/img/intro/convert_to_class_provider.gif)
+
+Чтобы включить их в вашей IDE, см. раздел <Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint" />
+:::
+
+[ref]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref-class.html
+[consumer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Consumer-class.html
+[consumerWidget]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ConsumerWidget-class.html
+[consumerStatefulWidget]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ConsumerStatefulWidget-class.html
+[consumerState]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ConsumerState-class.html
+[widgetref]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/WidgetRef-class.html
