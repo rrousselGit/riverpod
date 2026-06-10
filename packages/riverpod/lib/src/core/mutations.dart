@@ -433,13 +433,21 @@ final class MutationImpl<ResultT>
   @override
   void reset(MutationTarget target) {
     final container = target.container;
-    final _MutationNotifier(:state, :setState, :getRef) = container
+    final _MutationNotifier(:state, :setState, :getRef, :setRef) = container
         .read<_MutationNotifier<ResultT>>(_MutationProvider(this));
 
     final ref = getRef();
     if (ref == null) return;
 
-    setState(MutationIdle<ResultT>._(), ref);
+    // Rotate the active transaction *before* publishing the idle state.
+    // `setState` notifies listeners/observers synchronously, so a listener
+    // could start a new `run` during this call. Rotating first means that
+    // new run installs its own transaction *after* ours, and is therefore
+    // not invalidated. Any `run` that was already in-flight before the reset
+    // keeps its now-stale transaction and can no longer overwrite the state.
+    final resetRef = MutationTransaction._(container);
+    setRef(resetRef);
+    setState(MutationIdle<ResultT>._(), resetRef);
   }
 
   void _mutationStart(

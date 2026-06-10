@@ -6,6 +6,9 @@
 - Devtool-only:
   Fixed a `TapGestureRecognizer` leak in the state inspector, where the
   recognizer was recreated on every rebuild and never disposed. (thanks to @Gyeony95)
+- Fix `Mutation.reset` not cancelling an in-flight `run`. The pending run could
+  previously write its result back over the reset state once it completed.
+  (thanks to @Gyeony95)
 
 ## 3.3.2-dev.2 - 2026-05-06
 
