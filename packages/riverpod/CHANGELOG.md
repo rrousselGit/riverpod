@@ -1,4 +1,4 @@
-## Unreleased build
+## Unreleased patch
 
 - Fixes assertion error when providers are unpaused.
 - Fix `AsyncNotifierProvider`/`StreamNotifierProvider` disposing dependencies

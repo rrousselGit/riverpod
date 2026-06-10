@@ -1,4 +1,4 @@
-## Unreleased build
+## Unreleased patch
 
 - Fixes assertion error when providers are unpaused.
 - Fixes assertion error when invalidating a provider after an autoDispose

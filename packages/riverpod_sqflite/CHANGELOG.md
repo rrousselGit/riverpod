@@ -1,3 +1,7 @@
+## Unreleased patch
+
+Support latest Riverpod
+
 ## 0.4.3-dev.2 - 2026-05-06
 ### Dependency changes
 
