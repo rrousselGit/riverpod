@@ -315,9 +315,22 @@ final class _UncontrolledProviderScopeState
     _cancelAsyncTask?.call();
     _cancelAsyncTask = null;
 
-    setState(() {
+    // A provider can be flushed synchronously during the widget build phase:
+    // e.g. when a dirty provider is read or listened to while a route is
+    // mounting, or when a paused subscription resumes during a TickerMode
+    // change in a route transition. Calling setState from such a flush throws
+    // "setState() or markNeedsBuild() called during build" and aborts
+    // scheduling halfway. Storing the task without the synchronous setState is
+    // enough here: the zero-duration vsync timers below re-mark the scope from
+    // a timer context and invoke the task either way.
+    final phase = flutter_scheduler.SchedulerBinding.instance.schedulerPhase;
+    if (phase == flutter_scheduler.SchedulerPhase.persistentCallbacks) {
       _task = task;
-    });
+    } else {
+      setState(() {
+        _task = task;
+      });
+    }
 
     _vsyncTimer?.cancel();
     _vsyncTimer = Timer(Duration.zero, () {
