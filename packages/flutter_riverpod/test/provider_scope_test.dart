@@ -39,6 +39,56 @@ void main() {
     );
 
     testWidgets(
+      'can invalidate a provider watched in a sibling scope with overrides',
+      (tester) async {
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/4784
+        var buildCount = 0;
+        final counterProvider = Provider((ref) => ++buildCount);
+        final scopeNameProvider = Provider<String>((ref) => 'root');
+        late WidgetRef refC;
+
+        await tester.pumpWidget(
+          ProviderScope(
+            child: ProviderScope(
+              overrides: [scopeNameProvider.overrideWithValue('A')],
+              child: Column(
+                children: [
+                  ProviderScope(
+                    overrides: [scopeNameProvider.overrideWithValue('B')],
+                    child: Consumer(
+                      builder: (context, ref, _) {
+                        return Text(
+                          'count: ${ref.watch(counterProvider)}',
+                          textDirection: TextDirection.ltr,
+                        );
+                      },
+                    ),
+                  ),
+                  ProviderScope(
+                    overrides: [scopeNameProvider.overrideWithValue('C')],
+                    child: Consumer(
+                      builder: (context, ref, _) {
+                        refC = ref;
+                        return const SizedBox();
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('count: 1'), findsOneWidget);
+
+        refC.invalidate(counterProvider);
+        await tester.pump();
+
+        expect(find.text('count: 2'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
       'If ProviderScope does not rebuild after a few frames, flush the scheduler',
       (tester) async {
         var result = 'Hello World';

@@ -1,3 +1,9 @@
+## Unreleased fix
+
+- Fix `invalidate`/`refresh` not finding providers and families when called
+  from a scoped `ProviderContainer`/`ProviderScope` with overrides, if the
+  provider was never read through that scope. (thanks to @itsUndefined)
+
 ## 3.3.2 - 2026-06-10
 
 - Fixes assertion error when providers are unpaused.
