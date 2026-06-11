@@ -1,3 +1,11 @@
+## Unreleased fix
+
+- Fix `setState() called during build` crash in `ProviderScope` when a
+  provider's refresh is scheduled during the build phase (e.g. a dirty provider
+  first read during a widget build, or a paused subscription resuming during a
+  route transition). `scheduleRefresh` no longer calls `setState` synchronously
+  during the build phase. (thanks to @alkoschuster)
+
 ## 3.3.2 - 2026-06-10
 
 - Fixes assertion error when providers are unpaused.

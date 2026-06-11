@@ -315,9 +315,20 @@ final class _UncontrolledProviderScopeState
     _cancelAsyncTask?.call();
     _cancelAsyncTask = null;
 
-    setState(() {
+    // Marking the scope dirty is illegal while the framework is building, e.g.
+    // a dirty provider flushed during a widget build, or a paused subscription
+    // resuming during a route transition. Marking it directly throws
+    // "setState() called during build" there. The legal case (an ancestor is
+    // currently building) still runs synchronously; the illegal case stores
+    // the task and lets the zero-duration vsync timers below re-mark the scope
+    // from a timer context and run it. (Restores the guard removed by #4653.)
+    try {
+      setState(() {
+        _task = task;
+      });
+    } on Object catch (_) {
       _task = task;
-    });
+    }
 
     _vsyncTimer?.cancel();
     _vsyncTimer = Timer(Duration.zero, () {
