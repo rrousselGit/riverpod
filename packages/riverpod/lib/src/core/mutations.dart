@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use_from_same_package
-
 part of '../framework.dart';
 
 /// Mutation code. This should be in riverpod_annotation, but has to be here
@@ -12,10 +10,8 @@ const mutationZoneKey = #_mutation;
 ///
 /// Use [get] to imperatively read a provider while the mutation is pending.
 /// Providers accessed this way remain alive for the duration of the mutation.
-@Deprecated('You can now use `ref.read` directly inside `Mutation.run`')
 @publicInMutations
 final class MutationTransaction {
-  @Deprecated('You can now use `ref.read` directly inside `Mutation.run`')
   MutationTransaction._(this._container);
 
   final ProviderContainer _container;
@@ -437,13 +433,21 @@ final class MutationImpl<ResultT>
   @override
   void reset(MutationTarget target) {
     final container = target.container;
-    final _MutationNotifier(:state, :setState, :getRef) = container
+    final _MutationNotifier(:state, :setState, :getRef, :setRef) = container
         .read<_MutationNotifier<ResultT>>(_MutationProvider(this));
 
     final ref = getRef();
     if (ref == null) return;
 
-    setState(MutationIdle<ResultT>._(), ref);
+    // Rotate the active transaction *before* publishing the idle state.
+    // `setState` notifies listeners/observers synchronously, so a listener
+    // could start a new `run` during this call. Rotating first means that
+    // new run installs its own transaction *after* ours, and is therefore
+    // not invalidated. Any `run` that was already in-flight before the reset
+    // keeps its now-stale transaction and can no longer overwrite the state.
+    final resetRef = MutationTransaction._(container);
+    setRef(resetRef);
+    setState(MutationIdle<ResultT>._(), resetRef);
   }
 
   void _mutationStart(

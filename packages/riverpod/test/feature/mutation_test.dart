@@ -213,6 +213,76 @@ void main() {
 
         expect(container.read(mut), isMutationIdle<int>());
       });
+
+      test('an in-flight run does not override the reset state', () async {
+        final mut = Mutation<int>();
+        final container = ProviderContainer.test();
+        final completer = Completer<int>();
+        final listener = Listener<MutationState<int>>();
+
+        container.listen(mut, listener.call);
+
+        final future = mut.run(container, (_) => completer.future);
+        verifyOnly(
+          listener,
+          listener(
+            argThat(isMutationIdle<int>()),
+            argThat(isMutationPending<int>()),
+          ),
+        );
+
+        mut.reset(container);
+        verifyOnly(
+          listener,
+          listener(
+            argThat(isMutationPending<int>()),
+            argThat(isMutationIdle<int>()),
+          ),
+        );
+
+        // The run completes after the reset. Its result must not be applied,
+        // as the mutation has been explicitly reset to idle in the meantime.
+        completer.complete(42);
+        await future;
+
+        expect(container.read(mut), isMutationIdle<int>());
+        verifyNoMoreInteractions(listener);
+      });
+
+      test(
+        'a run started by a synchronous reset listener is not invalidated',
+        () async {
+          // `reset` rotates the active transaction. Because `setState` notifies
+          // listeners synchronously, a listener may start a new `run` during the
+          // reset. That new run must remain valid and able to publish its result.
+          final mut = Mutation<int>();
+          final container = ProviderContainer.test();
+          final firstRun = Completer<int>();
+          final secondRun = Completer<int>();
+          Future<int>? reentrantRun;
+
+          container.listen<MutationState<int>>(mut, (prev, next) {
+            if (next is MutationIdle<int> &&
+                prev is MutationPending<int> &&
+                reentrantRun == null) {
+              reentrantRun = mut.run(container, (_) => secondRun.future);
+            }
+          });
+
+          final first = mut.run(container, (_) => firstRun.future);
+          mut.reset(container);
+
+          expect(container.read(mut), isMutationPending<int>());
+
+          secondRun.complete(7);
+          await reentrantRun;
+
+          expect(container.read(mut), isMutationSuccess<int>(7));
+
+          firstRun.complete(1);
+          await first.catchError((_) => 0);
+        },
+      );
     });
 
     test('overrides ==/hashCode', () {
@@ -220,11 +290,15 @@ void main() {
       expect(Mutation<int>().hashCode, isNot(Mutation<int>().hashCode));
 
       final mut = Mutation<int>();
+      final mut2 = Mutation<int>();
       expect(mut, mut);
+      expect(mut, isNot(mut2));
       expect(mut.hashCode, mut.hashCode);
+      expect(mut.hashCode, isNot(mut2.hashCode));
 
       expect(mut(1), mut(1));
-      expect(mut(1).hashCode, mut(1).hashCode);
+      expect(mut(1), isNot(mut2(1)));
+      expect(mut(1).hashCode, isNot(mut2(1).hashCode));
       expect(mut(1), isNot(mut(2)));
       expect(mut(1).hashCode, isNot(mut(2).hashCode));
       expect(mut(1), isNot(mut));

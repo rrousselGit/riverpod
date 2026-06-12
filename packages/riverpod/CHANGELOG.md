@@ -1,4 +1,4 @@
-## Unreleased build
+## 3.3.2 - 2026-06-10
 
 - Fixes assertion error when providers are unpaused.
 - Fix `AsyncNotifierProvider`/`StreamNotifierProvider` disposing dependencies
@@ -7,8 +7,9 @@
   Fixed a `TapGestureRecognizer` leak in the state inspector, where the
   recognizer was recreated on every rebuild and never disposed. (thanks to @Gyeony95)
 - Fix `Mutation.run` throwing a `StateError` ("subscription was closed") when
-  the `ProviderContainer` was disposed while the mutation was still running.
-  (thanks to @Gyeony95)
+  the `ProviderContainer` was disposed while the mutation was still running. (thanks to @Gyeony95)
+- Fix `Mutation.reset` not cancelling an in-flight `run`. The pending run could
+  previously write its result back over the reset state once it completed. (thanks to @Gyeony95)
 
 ## 3.3.2-dev.2 - 2026-05-06
 
@@ -1542,3 +1543,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+
