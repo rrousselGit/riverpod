@@ -174,6 +174,25 @@ void main() {
     );
   });
 
+  test('run does not throw if the container is disposed mid-run', () async {
+    final mut = Mutation<int>();
+    final container = ProviderContainer.test();
+    final completer = Completer<int>();
+
+    container.listen(mut, (_, _) {});
+
+    final future = mut.run(container, (_) => completer.future);
+
+    // Dispose while the mutation is still pending. This closes the internal
+    // subscription used by `run`.
+    container.dispose();
+    completer.complete(42);
+
+    // The run should still complete with its value instead of throwing a
+    // "subscription was closed" StateError.
+    await expectLater(future, completion(42));
+  });
+
   group('Mutation', () {
     group('.reset', () {
       test('simple flow', () async {
