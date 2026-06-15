@@ -115,6 +115,7 @@ export const documentTitles = {
     "getting_started": "Введение",
     "cookbooks/refresh": "Pull-to-refresh / Retry-on-error",
     "concepts2/providers": "Providers",
+    "concepts2/consumers": "Consumers",
   },
   'ko': {
     "providers/stream_provider": "StreamProvider",
