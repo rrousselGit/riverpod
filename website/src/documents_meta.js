@@ -114,7 +114,9 @@ export const documentTitles = {
     "concepts/modifiers/auto_dispose": ".autoDispose",
     "getting_started": "Введение",
     "cookbooks/refresh": "Pull-to-refresh / Retry-on-error",
+    "concepts2/refs": "Refs",
     "concepts2/providers": "Providers",
+    "concepts2/containers": "ProviderContainers/ProviderScopes",
     "concepts2/consumers": "Consumers",
   },
   'ko': {
