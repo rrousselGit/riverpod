@@ -1,3 +1,10 @@
+## Unreleased
+
+- Fixes errors emitted by a watched provider after the initial build (such as
+  those produced by automatic retries) being incorrectly reported as uncaught
+  to the zone instead of letting the widget handle them. The widget now rebuilds
+  so the error is rethrown by `ref.watch` during `build`. (#4432)
+
 ## 3.3.2 - 2026-06-10
 
 - Fixes assertion error when providers are unpaused.
