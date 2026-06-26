@@ -157,13 +157,15 @@ ElevatedButton(
 )
 ```
 
-## Why does a provider recompute (and sometimes throw) right before its widget is removed?
+## Known caveat: a provider may recompute (and throw) one frame before its widget is removed
+
+This is a known limitation of eager recomputation, with no clean fix yet.
 
 When a provider's dependency changes, every dependent provider that still has a
 listener recomputes **immediately**, before the next frame in which the listening
 widgets would rebuild or be removed.
 
-If the same change is also what removes the listener (logging out, or a filter
+So if the same change is also what removes the listener (logging out, or a filter
 shrinking a list), the dependent still recomputes once against the new value
 before its widget is unmounted. If that computation assumed the previous value,
 it throws:
@@ -175,9 +177,11 @@ final userNameProvider = Provider((ref) {
 });
 ```
 
-There is currently no way to skip this last recompute. The workaround is to make
-the computation total: return `null` (or a sentinel) for the transient state
-instead of throwing.
+:::caution
+There is currently no way to skip this last recompute. Until there is, the
+recommended workaround is to make the computation total: return `null` (or a
+sentinel) for the transient state instead of throwing.
+:::
 
 ```dart
 final userNameProvider = Provider((ref) {
