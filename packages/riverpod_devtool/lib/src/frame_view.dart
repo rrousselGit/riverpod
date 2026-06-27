@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:devtools_app_shared/ui.dart';
 import 'package:devtools_app_shared/ui.dart' as devtools_shared_ui;
+import 'package:devtools_app_shared/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/experimental/mutation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 // ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
@@ -204,6 +206,66 @@ extension DevtoolTheme on ThemeData {
   Color get panelBorderColor => focusColor;
 }
 
+final _invalidateProviderMutation = Mutation<void>();
+
+class InvalidateProviderButton extends ConsumerWidget {
+  const InvalidateProviderButton({super.key, required this.element});
+
+  /// The live ProviderElement backing the provider to invalidate.
+  final RootCachedObject element;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mutation = ref.watch(_invalidateProviderMutation);
+
+    void invalidate() {
+      _invalidateProviderMutation.run(ref, (tsx) async {
+        final evalFactory = await tsx.get(evalProvider.future);
+        final isAlive = Disposable();
+
+        try {
+          final elementByte = await element.readRef(evalFactory, isAlive);
+
+          switch (elementByte) {
+            case ByteError(:final error):
+              throw StateError(error.toString());
+            case ByteVariable(:final instance):
+              final result = await evalFactory.riverpodFramework.eval(
+                'that.container.invalidate(that.origin)',
+                isAlive: isAlive,
+                scope: {'that': instance.id!},
+              );
+
+              if (result case ByteError(:final error)) {
+                throw StateError(error.toString());
+              }
+          }
+        } finally {
+          isAlive.dispose();
+        }
+      });
+    }
+
+    return IconButton(
+      onPressed: mutation.isPending ? null : invalidate,
+      tooltip: switch (mutation) {
+        MutationError(:final error) => 'Failed to invalidate: $error',
+        _ => 'Invalidate provider',
+      },
+      icon: mutation.isPending
+          ? const SizedBox(
+              width: 14,
+              height: 14,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : Icon(Icons.refresh, color: mutation.hasError ? Colors.red : null),
+      iconSize: 18,
+      padding: EdgeInsets.zero,
+      constraints: const BoxConstraints.tightFor(width: 32, height: 32),
+    );
+  }
+}
+
 const dividerHeight = 16.0;
 
 class ProviderViewer extends StatelessWidget {
@@ -223,11 +285,14 @@ class ProviderViewer extends StatelessWidget {
         child: Column(
           spacing: denseRowSpacing,
           children: [
-            const devtools_shared_ui.AreaPaneHeader(
+            devtools_shared_ui.AreaPaneHeader(
               roundedTopBorder: false,
               includeTopBorder: false,
-              title: Text('State'),
-              actions: [InspectorSettingsButton()],
+              title: const Text('State'),
+              actions: [
+                InvalidateProviderButton(element: element.provider.element),
+                const InspectorSettingsButton(),
+              ],
             ),
             Expanded(child: Inspector(object: element.state.state)),
           ],
