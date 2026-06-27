@@ -5,7 +5,6 @@ import 'package:devtools_app_shared/ui.dart' as devtools_shared_ui;
 import 'package:devtools_app_shared/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/experimental/mutation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 // ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
@@ -18,6 +17,7 @@ import 'provider_list.dart';
 import 'providers/providers.dart';
 import 'state_inspector/inspector.dart';
 import 'terminal.dart';
+import 'ui_primitives/icon_button.dart';
 import 'ui_primitives/panel.dart';
 import 'ui_primitives/search_bar.dart';
 import 'vm_service.dart';
@@ -54,16 +54,13 @@ class InspectorSettingsButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
+    return DevtoolIconButton(
       onPressed: () => showDialog<void>(
         context: context,
         builder: (context) => const _InspectorSettingsDialog(),
       ),
       tooltip: 'Inspector settings',
       icon: const Icon(Icons.settings),
-      iconSize: 18,
-      padding: EdgeInsets.zero,
-      constraints: const BoxConstraints.tightFor(width: 32, height: 32),
     );
   }
 }
@@ -206,62 +203,51 @@ extension DevtoolTheme on ThemeData {
   Color get panelBorderColor => focusColor;
 }
 
-final _invalidateProviderMutation = Mutation<void>();
-
 class InvalidateProviderButton extends ConsumerWidget {
   const InvalidateProviderButton({super.key, required this.element});
 
   /// The live ProviderElement backing the provider to invalidate.
   final RootCachedObject element;
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final mutation = ref.watch(_invalidateProviderMutation);
+  Future<void> _invalidate(BuildContext context, WidgetRef ref) async {
+    final evalFactory = await ref.read(evalProvider.future);
+    final isAlive = Disposable();
 
-    void invalidate() {
-      _invalidateProviderMutation.run(ref, (tsx) async {
-        final evalFactory = await tsx.get(evalProvider.future);
-        final isAlive = Disposable();
+    String? errorMessage;
+    try {
+      final elementByte = await element.readRef(evalFactory, isAlive);
 
-        try {
-          final elementByte = await element.readRef(evalFactory, isAlive);
+      switch (elementByte) {
+        case ByteError(error: final error):
+          errorMessage = error.toString();
+        case ByteVariable(:final instance):
+          final result = await evalFactory.riverpodFramework.eval(
+            'that.container.invalidate(that.origin)',
+            isAlive: isAlive,
+            scope: {'that': instance.id!},
+          );
 
-          switch (elementByte) {
-            case ByteError(:final error):
-              throw StateError(error.toString());
-            case ByteVariable(:final instance):
-              final result = await evalFactory.riverpodFramework.eval(
-                'that.container.invalidate(that.origin)',
-                isAlive: isAlive,
-                scope: {'that': instance.id!},
-              );
-
-              if (result case ByteError(:final error)) {
-                throw StateError(error.toString());
-              }
+          if (result case ByteError(error: final error)) {
+            errorMessage = error.toString();
           }
-        } finally {
-          isAlive.dispose();
-        }
-      });
+      }
+    } finally {
+      isAlive.dispose();
     }
 
-    return IconButton(
-      onPressed: mutation.isPending ? null : invalidate,
-      tooltip: switch (mutation) {
-        MutationError(:final error) => 'Failed to invalidate: $error',
-        _ => 'Invalidate provider',
-      },
-      icon: mutation.isPending
-          ? const SizedBox(
-              width: 14,
-              height: 14,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : Icon(Icons.refresh, color: mutation.hasError ? Colors.red : null),
-      iconSize: 18,
-      padding: EdgeInsets.zero,
-      constraints: const BoxConstraints.tightFor(width: 32, height: 32),
+    if (errorMessage != null && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to invalidate: $errorMessage')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return DevtoolIconButton(
+      onPressed: () => _invalidate(context, ref),
+      tooltip: 'Invalidate provider',
+      icon: const Icon(Icons.refresh),
     );
   }
 }
