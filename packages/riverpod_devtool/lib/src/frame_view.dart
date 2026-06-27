@@ -210,11 +210,11 @@ class InvalidateProviderButton extends ConsumerWidget {
   final RootCachedObject element;
 
   Future<void> _invalidate(BuildContext context, WidgetRef ref) async {
-    final evalFactory = await ref.read(evalProvider.future);
     final isAlive = Disposable();
 
     String? errorMessage;
     try {
+      final evalFactory = await ref.read(evalProvider.future);
       final elementByte = await element.readRef(evalFactory, isAlive);
 
       switch (elementByte) {
@@ -231,6 +231,8 @@ class InvalidateProviderButton extends ConsumerWidget {
             errorMessage = error.toString();
           }
       }
+    } catch (error) {
+      errorMessage = error.toString();
     } finally {
       isAlive.dispose();
     }
