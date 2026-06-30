@@ -43,6 +43,7 @@ final dep = Provider((ref) {
   ref.watch(legacy(const Object()));
   ref.watch(legacy(FreezedExample()));
   ref.watch(legacy(ClassicFreezed(42)));
+  ref.watch(legacy(TypeId(1)));
 
   void fn() {}
 
@@ -72,6 +73,7 @@ final dep = Provider((ref) {
   // ignore: riverpod_lint/provider_parameters
   ref.watch(generatorProvider(value: Object()));
   ref.watch(generatorProvider(value: const Object()));
+  ref.watch(generatorProvider(value: TypeId(1)));
 
   ref.watch(generatorProvider(value: ClassThatOverridesEqual()));
   ref.watch(generatorProvider(value: const ClassThatOverridesEqual()));
@@ -143,6 +145,7 @@ class MyWidget extends ConsumerWidget {
     // ignore: riverpod_lint/provider_parameters
     ref.watch(legacy(Object()));
     ref.watch(legacy(const Object()));
+    ref.watch(legacy(TypeId(1)));
 
     ref.watch(legacy(ClassThatOverridesEqual()));
     ref.watch(legacy(const ClassThatOverridesEqual()));
@@ -171,6 +174,7 @@ class MyWidget extends ConsumerWidget {
     // ignore: riverpod_lint/provider_parameters
     ref.watch(generatorProvider(value: Object()));
     ref.watch(generatorProvider(value: const Object()));
+    ref.watch(generatorProvider(value: TypeId(1)));
 
     ref.watch(generatorProvider(value: ClassThatOverridesEqual()));
     ref.watch(generatorProvider(value: const ClassThatOverridesEqual()));
@@ -190,6 +194,8 @@ class MyWidget extends ConsumerWidget {
     return const Placeholder();
   }
 }
+
+extension type TypeId(int id) {}
 
 // Regression test for https://github.com/rrousselGit/riverpod/issues/3302
 mixin Equatable {

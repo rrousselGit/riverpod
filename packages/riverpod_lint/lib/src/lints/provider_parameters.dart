@@ -78,9 +78,11 @@ class _Visitor extends SimpleAstVisitor<void> {
       } else if (value is InstanceCreationExpression && !value.isConst) {
         final instantiatedObject = value.constructorName.element
             ?.applyRedirectedConstructors();
+        final instantiatedType = instantiatedObject?.enclosingElement;
 
-        final operatorEqual = instantiatedObject?.enclosingElement
-            .recursiveGetMethod('==');
+        if (instantiatedType is ExtensionTypeElement) return;
+
+        final operatorEqual = instantiatedType?.recursiveGetMethod('==');
 
         if (operatorEqual == null) {
           // Doing `provider(new Class())` is bad if the class does not override ==
