@@ -3,14 +3,42 @@ part of '../framework.dart';
 /// An object containing metadata about the listened object of a
 /// [ProviderTransformer].
 @publicInMisc
-final class ProviderTransformerContext<InT, OutT> {
-  ProviderTransformerContext._({required AsyncResult<InT> sourceState})
-    : _sourceState = sourceState;
+final class ProviderTransformerContext<InT, OutT> with _OnPauseMixin {
+  ProviderTransformerContext._({
+    required AsyncResult<InT> sourceState,
+    required ProviderSubscription<InT> innerSub,
+  }) : _sourceState = sourceState,
+       _innerSub = innerSub;
 
-  AsyncResult<InT> _sourceState;
+  final ProviderSubscription<InT> _innerSub;
 
   /// The current state of [SyncProviderTransformerMixin.source].
   AsyncResult<InT> get sourceState => _sourceState;
+  AsyncResult<InT> _sourceState;
+
+  ProviderSubscription<Object?>? _sub;
+
+  /// Retrieves the latest value of the source provider.
+  InT read() => _innerSub.read();
+
+  @override
+  void pause() {
+    if (_sub?.isPaused ?? false) {
+      _innerSub.pause();
+    }
+
+    super.pause();
+  }
+
+  @override
+  void resume() {
+    final wasPaused = _sub?.isPaused ?? false;
+    super.resume();
+
+    if (!(_sub?.isPaused ?? false) && wasPaused) {
+      _innerSub.resume();
+    }
+  }
 }
 
 /// {@template provider_transformer}
@@ -87,6 +115,7 @@ extension<InT, StateT, ValueT>
           stackTrace,
         ),
       },
+      innerSub: sub,
     );
 
     AsyncResult<ProviderTransformer<InT, ValueT>>? transformer;
@@ -173,6 +202,8 @@ extension<InT, StateT, ValueT>
             ),
           }),
     );
+
+    context._sub = resultSub;
 
     // 'weak' is lazy loaded, but weak:false isn't.
     // We rely on 'late final' for that.

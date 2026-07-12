@@ -8,6 +8,7 @@ import 'dart:math' as math;
 
 import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
+import 'package:listen/listen.dart';
 import 'package:meta/meta.dart';
 import 'package:stack_trace/stack_trace.dart';
 import 'package:state_notifier/state_notifier.dart';
@@ -27,6 +28,7 @@ part 'core/element.dart';
 part 'core/family.dart';
 part 'core/foundation.dart';
 part 'core/modifiers/future.dart';
+part 'core/modifiers/listenable.dart';
 part 'core/modifiers/select.dart';
 part 'core/modifiers/select_async.dart';
 part 'core/override.dart';
