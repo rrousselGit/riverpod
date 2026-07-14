@@ -336,7 +336,7 @@ final class ExternalProviderSubscription<InT, OutT>
   $Result<OutT> _callRead() => _read();
 }
 
-mixin _OnPauseMixin {
+mixin class _OnPauseMixin {
   bool get _isPaused => _pauseCount > 0;
   var _pauseCount = 0;
 
