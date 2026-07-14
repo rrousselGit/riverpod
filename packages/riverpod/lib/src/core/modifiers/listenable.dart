@@ -1,58 +1,67 @@
 part of '../../framework.dart';
 
 /// Adds [listenable] to [ProviderListenable].
-extension ProviderListenableListenable<StateT> on ProviderListenable<StateT> {
+extension ProviderListenableListenable<T> on ProviderListenable<T> {
   /// Exposes a [ValueListenable] that tracks the state of this provider.
-  ProviderListenable<ValueListenable<StateT>> get listenable {
-    return _ListenableModifier<StateT>(this);
+  ProviderListenable<ValueListenable<T>> get listenable {
+    return _ListenableListenable(this);
   }
 }
 
 @immutable
-final class _ListenableModifier<StateT>
-    with SyncProviderTransformerMixin<StateT, ValueListenable<StateT>> {
-  _ListenableModifier(this.source);
+class _ListenableListenable<T>
+    extends CustomProviderListenable<T, ValueListenable<T>> {
+  _ListenableListenable(this.source);
 
   @override
-  final ProviderListenable<StateT> source;
+  final ProviderListenable<T> source;
 
   @override
-  ProviderTransformer<StateT, ValueListenable<StateT>> transform(
-    ProviderTransformerContext<StateT, ValueListenable<StateT>> context,
-  ) {
-    // Start paused so that if no listener is added to the listenable,
-    // the source provider is is paused.
-    context.pause();
-
-    late final _ProviderValueListenable<StateT> listenable;
-    return ProviderTransformer(
-      initState: (self) => listenable = _ProviderValueListenable(context),
-      listener: (self, _, _) => listenable.notifyListeners(),
-      onClose: () => listenable.dispose(),
-    );
+  _ListenableTransformer2<T> createTransformer() {
+    return _ListenableTransformer2();
   }
 
   @override
   bool operator ==(Object other) =>
-      other is _ListenableModifier<StateT> && other.source == source;
+      other is _ListenableListenable<T> && other.source == source;
 
   @override
-  int get hashCode => source.hashCode;
+  int get hashCode => Object.hash(T, source);
 }
 
-class _ProviderValueListenable<StateT>
+final class _ListenableTransformer2<T>
+    extends
+        SyncProviderTransformer2<
+          T,
+          ValueListenable<T>,
+          _ListenableListenable<T>
+        >
     with ChangeNotifier
-    implements ValueListenable<StateT> {
-  _ProviderValueListenable(this.context);
-
-  final ProviderTransformerContext<StateT, ValueListenable<StateT>> context;
+    implements ValueListenable<T> {
+  @override
+  T get value => read();
 
   @override
-  void notifyListeners();
+  ValueListenable<T> initState() {
+    // Start paused so that if no listener is added to the listenable,
+    // the source provider is paused.
+    pause();
+    return this;
+  }
+
+  @override
+  void onEvent(
+    ProviderTransformer2<T, ValueListenable<T>, _ListenableListenable<T>>
+    self,
+    AsyncResult<T> prev,
+    AsyncResult<T> next,
+  ) {
+    notifyListeners();
+  }
 
   @override
   void addListener(VoidCallback listener) {
-    if (!hasListeners) context.resume();
+    if (!hasListeners) resume();
 
     super.addListener(listener);
   }
@@ -62,9 +71,11 @@ class _ProviderValueListenable<StateT>
     final hadListeners = hasListeners;
     super.removeListener(listener);
 
-    if (!hasListeners && hadListeners) context.pause();
+    if (!hasListeners && hadListeners) pause();
   }
 
   @override
-  StateT get value => context.read();
+  void onClose() {
+    dispose();
+  }
 }

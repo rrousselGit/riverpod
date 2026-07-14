@@ -22,10 +22,10 @@ abstract class CustomProviderListenable<InT, ValueT>
     final transformer =
         createTransformer()
           .._source = source
-          .._listenable = this;
+          .._listenable = this
+          .._node = node;
 
     return transformer._listenSource(
-      node,
       weak: weak,
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
       listener: listener,
@@ -72,15 +72,33 @@ abstract base class ProviderTransformer2<
     _notify?.call(value);
   }
 
+  late Node _node;
+
   AsyncResult<InT>? _sourceState;
-  void _setSourceState(AsyncResult<InT> state) {
-    _sourceState = state;
+  void _setSourceState(AsyncResult<InT> next) {
+    final prev = _sourceState;
+    _sourceState = next;
+
+    // Only forward to `onData` once the transformer was initialized and
+    // has an actual previous state to compare against.
+    if (_initialized && prev != null) {
+      _node.container.runTernaryGuarded(onEvent, this, prev, next);
+    }
   }
 
   AsyncResult<InT> get sourceState {
     if (_sourceState case final sourceState?) return sourceState;
 
     throw StateError('Cannot call sourceState from a constructor.');
+  }
+
+  ProviderSubscription<InT>? _innerSub;
+
+  /// Reads the latest value of [source], bypassing the pause state.
+  InT read() {
+    if (_innerSub case final innerSub?) return innerSub.read();
+
+    throw StateError('Cannot call read() from a constructor.');
   }
 
   ExternalProviderSubscription<InT, ValueT>? _outerSub;
@@ -104,29 +122,57 @@ abstract base class ProviderTransformer2<
     }
   }
 
-  ExternalProviderSubscription<InT, ValueT> _listenSource(
-    Node node, {
+  ExternalProviderSubscription<InT, ValueT> _listenSource({
     required bool weak,
     required void Function()? onDependencyMayHaveChanged,
     required void Function(ValueT? previous, ValueT next) listener,
     required void Function(Object error, StackTrace stackTrace) onError,
   }) {
-    final innerSub = _source._addListener(
-      node,
-      (previous, next) => _setSourceState(AsyncData(next)),
-      onError:
-          (err, stackTrace) => _setSourceState(AsyncError(err, stackTrace)),
-      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
-      weak: weak,
-    );
+    final innerSub =
+        _innerSub = _source._addListener(
+          _node,
+          (previous, next) => _setSourceState(AsyncData(next)),
+          onError:
+              (err, stackTrace) => _setSourceState(AsyncError(err, stackTrace)),
+          onDependencyMayHaveChanged: onDependencyMayHaveChanged,
+          weak: weak,
+        );
 
-    final resultSub = ExternalProviderSubscription.fromSub(
-      innerSubscription: innerSub,
-      listener: listener,
-      onError: onError,
-      onClose: () => node.container.runGuarded(onClose),
-      read: () => _read(_flush()),
-    );
+    _sourceState = switch (innerSub.readSafe()) {
+      $ResultData(:final value) => AsyncData(value),
+      $ResultError(:final error, :final stackTrace) => AsyncError(
+        error,
+        stackTrace,
+      ),
+    };
+
+    ExternalProviderSubscription<InT, ValueT>? resultSub;
+    $Result<ValueT>? currentRead;
+
+    _notify = (next) {
+      final prevResult = currentRead ??= _read(_flush());
+      final nextResult = _read(next);
+      currentRead = nextResult;
+
+      final sub = resultSub;
+      if (sub == null) return;
+
+      switch (nextResult) {
+        case $ResultData(:final value):
+          sub._notifyData(prevResult.value, value);
+        case $ResultError(:final error, :final stackTrace):
+          sub._notifyError(error, stackTrace);
+      }
+    };
+
+    resultSub =
+        _outerSub = ExternalProviderSubscription.fromSub(
+          innerSubscription: innerSub,
+          listener: listener,
+          onError: onError,
+          onClose: () => _node.container.runGuarded(onClose),
+          read: () => currentRead = _read(_flush()),
+        );
 
     // 'weak' is lazy loaded, but weak:false isn't.
     if (!weak) resultSub.read();
@@ -134,22 +180,36 @@ abstract base class ProviderTransformer2<
     return resultSub;
   }
 
-  AsyncResult<ValueT> _flush() => throw UnimplementedError();
+  var _initialized = false;
+
+  AsyncResult<ValueT> _flush() {
+    if (!_initialized) {
+      _initialized = true;
+      try {
+        state = AsyncData(initState());
+      } catch (error, stackTrace) {
+        state = AsyncError(error, stackTrace);
+      }
+    }
+
+    return _state;
+  }
 
   $Result<ValueT> _read(AsyncResult<ValueT> asyncResult);
 
-  void initState() {}
+  /// Initializes the state of this transformer.
+  ///
+  /// This is called lazily, the first time the state of this transformer
+  /// is read, and its return value is used as the initial [state].
+  ValueT initState();
 
-  @mustCallSuper
-  void didUpdateListenable(CustomProviderListenable<InT, ValueT> listenable) {}
-
-  void onClose() {}
-
-  void onData(
+  void onEvent(
     ProviderTransformer2<InT, ValueT, ListenableT> self,
     AsyncResult<InT> prev,
     AsyncResult<InT> next,
   ) {}
+
+  void onClose() {}
 }
 
 @publicInMisc
