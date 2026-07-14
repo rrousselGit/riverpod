@@ -50,10 +50,7 @@ final class _ListenableTransformer2<T>
   }
 
   @override
-  void onEvent(
-    AsyncResult<T> prev,
-    AsyncResult<T> next,
-  ) {
+  void onEvent(AsyncResult<T> prev, AsyncResult<T> next) {
     notifyListeners();
   }
 

@@ -281,10 +281,7 @@ abstract base class ProviderTransformer2<
   ///
   /// - `self` represents the `this` object of the [ProviderTransformer2].
   ///   It offers a convenient way to call [ProviderTransformer2.state].
-  void onEvent(
-    AsyncResult<InT> prev,
-    AsyncResult<InT> next,
-  ) {}
+  void onEvent(AsyncResult<InT> prev, AsyncResult<InT> next) {}
 
   /// A life-cycle method for when the [ProviderSubscription] obtained from
   /// [CustomProviderListenable] is closed.

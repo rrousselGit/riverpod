@@ -524,8 +524,7 @@ final class DelegatingTransformer<InT, ValueT>
           DelegatingListenable<InT, ValueT>
         > {
   DelegatingTransformer({
-    required ValueT Function(DelegatingTransformer<InT, ValueT> self)
-    initState,
+    required ValueT Function(DelegatingTransformer<InT, ValueT> self) initState,
     required void Function(
       DelegatingTransformer<InT, ValueT> self,
       AsyncResult<InT> prev,
@@ -550,10 +549,8 @@ final class DelegatingTransformer<InT, ValueT>
   ValueT initState() => _initState(this);
 
   @override
-  void onEvent(
-    AsyncResult<InT> prev,
-    AsyncResult<InT> next,
-  ) => _onEvent(this, prev, next);
+  void onEvent(AsyncResult<InT> prev, AsyncResult<InT> next) =>
+      _onEvent(this, prev, next);
 
   @override
   void onClose() => _onClose?.call();

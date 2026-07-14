@@ -106,38 +106,41 @@ void main() {
 
       verifyOnly(onDispose, onDispose());
     });
-    test('addListener/removeListener handle pausing/resuming the associated provider', () async {
-      final container = ProviderContainer.test();
-      var cancelCount = 0;
-      var resumeCount = 0;
-      final provider = Provider.autoDispose((ref) {
-        ref.onCancel(() => cancelCount++);
-        ref.onResume(() => resumeCount++);
-        return 0;
-      });
+    test(
+      'addListener/removeListener handle pausing/resuming the associated provider',
+      () async {
+        final container = ProviderContainer.test();
+        var cancelCount = 0;
+        var resumeCount = 0;
+        final provider = Provider.autoDispose((ref) {
+          ref.onCancel(() => cancelCount++);
+          ref.onResume(() => resumeCount++);
+          return 0;
+        });
 
-      final sub = container.listen(provider.listenable, (prev, next) {});
-      final listenable = sub.read();
+        final sub = container.listen(provider.listenable, (prev, next) {});
+        final listenable = sub.read();
 
-      await Future.microtask(() {});
+        await Future.microtask(() {});
 
-      expect(cancelCount, 1);
-      expect(resumeCount, 0);
+        expect(cancelCount, 1);
+        expect(resumeCount, 0);
 
-      void listener() {}
-      listenable.addListener(listener);
+        void listener() {}
+        listenable.addListener(listener);
 
-      await Future.microtask(() {});
+        await Future.microtask(() {});
 
-      expect(cancelCount, 1);
-      expect(resumeCount, 1);
+        expect(cancelCount, 1);
+        expect(resumeCount, 1);
 
-      listenable.removeListener(listener);
+        listenable.removeListener(listener);
 
-      await Future.microtask(() {});
+        await Future.microtask(() {});
 
-      expect(cancelCount, 2);
-      expect(resumeCount, 1);
-    });
+        expect(cancelCount, 2);
+        expect(resumeCount, 1);
+      },
+    );
   });
 }
