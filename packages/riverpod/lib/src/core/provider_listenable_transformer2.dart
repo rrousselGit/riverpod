@@ -73,6 +73,8 @@ abstract base class ProviderTransformer2<
   }
 
   late Node _node;
+  ProviderSubscription<InT>? _innerSub;
+  ExternalProviderSubscription<InT, ValueT>? _outerSub;
 
   AsyncResult<InT>? _sourceState;
   void _setSourceState(AsyncResult<InT> next) {
@@ -92,16 +94,12 @@ abstract base class ProviderTransformer2<
     throw StateError('Cannot call sourceState from a constructor.');
   }
 
-  ProviderSubscription<InT>? _innerSub;
-
   /// Reads the latest value of [source], bypassing the pause state.
   InT read() {
     if (_innerSub case final innerSub?) return innerSub.read();
 
     throw StateError('Cannot call read() from a constructor.');
   }
-
-  ExternalProviderSubscription<InT, ValueT>? _outerSub;
 
   @mustCallSuper
   void pause() {
@@ -138,15 +136,7 @@ abstract base class ProviderTransformer2<
           weak: weak,
         );
 
-    _sourceState = switch (innerSub.readSafe()) {
-      $ResultData(:final value) => AsyncData(value),
-      $ResultError(:final error, :final stackTrace) => AsyncError(
-        error,
-        stackTrace,
-      ),
-    };
-
-    ExternalProviderSubscription<InT, ValueT>? resultSub;
+    ExternalProviderSubscription<InT, ValueT>? outerSub;
     $Result<ValueT>? currentRead;
 
     _notify = (next) {
@@ -154,7 +144,7 @@ abstract base class ProviderTransformer2<
       final nextResult = _read(next);
       currentRead = nextResult;
 
-      final sub = resultSub;
+      final sub = outerSub;
       if (sub == null) return;
 
       switch (nextResult) {
@@ -165,7 +155,7 @@ abstract base class ProviderTransformer2<
       }
     };
 
-    resultSub =
+    outerSub =
         _outerSub = ExternalProviderSubscription.fromSub(
           innerSubscription: innerSub,
           listener: listener,
@@ -173,11 +163,14 @@ abstract base class ProviderTransformer2<
           onClose: () => _node.container.runGuarded(onClose),
           read: () => currentRead = _read(_flush()),
         );
+    // Pause was called before the subscription was created, so we need to pause it now.
+    // Otherwise even though pause was called, the source provider would still be active and listening to its dependencies.
+    if (_pauser._isPaused) outerSub.pause();
 
     // 'weak' is lazy loaded, but weak:false isn't.
-    if (!weak) resultSub.read();
+    if (!weak) outerSub.read();
 
-    return resultSub;
+    return outerSub;
   }
 
   var _initialized = false;
@@ -185,10 +178,18 @@ abstract base class ProviderTransformer2<
   AsyncResult<ValueT> _flush() {
     if (!_initialized) {
       _initialized = true;
+
       try {
-        state = AsyncData(initState());
+        _sourceState = switch (_innerSub!.readSafe()) {
+          $ResultData(:final value) => AsyncData(value),
+          $ResultError(:final error, :final stackTrace) => AsyncError(
+            error,
+            stackTrace,
+          ),
+        };
+        _state = AsyncData(initState());
       } catch (error, stackTrace) {
-        state = AsyncError(error, stackTrace);
+        _state = AsyncError(error, stackTrace);
       }
     }
 

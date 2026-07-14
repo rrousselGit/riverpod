@@ -1001,17 +1001,16 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void addDependentSubscription(ProviderSubscriptionImpl<Object?> sub) {
-    assert(
-      !sub.isPaused && sub.impl.active,
-      'Expected subscription to be active and not paused',
-    );
-
     _onChangeSubscription(sub, () {
+      sub._attachedToElement = true;
+
       if (sub.weak) {
         weakDependents.add(sub);
       } else {
         final dependents = this.dependents ??= [];
         dependents.add(sub);
+
+        if (sub.isPaused || !sub.impl.active) pausedActiveSubscriptionCount++;
       }
 
       if (sub.source case ProviderNode(:final element)) {
