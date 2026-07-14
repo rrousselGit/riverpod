@@ -1018,6 +1018,17 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         subs.add(sub);
       }
     });
+
+    // The provider was initialized with a paused subscription. As such, we
+    // need to immediately call onCancel to respect life-cycles.
+    if (!sub.weak &&
+        !_didCancelOnce &&
+        !isActive &&
+        (sub.isPaused || !sub.impl.active)) {
+      _didCancelOnce = true;
+      _runCallbacks(container, ref?._onCancelListeners);
+      onCancel();
+    }
   }
 
   void removeDependentSubscription(

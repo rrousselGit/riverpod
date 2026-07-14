@@ -142,11 +142,7 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   @mustCallSuper
   @override
   void resume() {
-    if (!_attachedToElement) {
-      super.resume();
-      return;
-    }
-    _listenedElement.onSubscriptionResumeOrReactivate(this, () {
+    void applyResume() {
       final wasPaused = _isPaused;
       super.resume();
 
@@ -165,7 +161,14 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
           _notifyError(error, stackTrace);
         }
       }
-    });
+    }
+
+    if (!_attachedToElement) {
+      applyResume();
+      return;
+    }
+
+    _listenedElement.onSubscriptionResumeOrReactivate(this, applyResume);
 
     _listenedElement.flush();
   }
@@ -339,6 +342,18 @@ final class ExternalProviderSubscription<InT, OutT>
   void resume() {
     super.resume();
     _innerSubscription.resume();
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+    _innerSubscription.impl.deactivate();
+  }
+
+  @override
+  void reactivate() {
+    super.reactivate();
+    _innerSubscription.impl.reactivate();
   }
 
   @override
