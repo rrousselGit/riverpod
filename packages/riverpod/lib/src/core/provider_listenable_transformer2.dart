@@ -233,9 +233,6 @@ abstract base class ProviderTransformer2<
           onClose: () => _node.container.runGuarded(onClose),
           read: () => currentRead = _read(_flush()),
         );
-    // Pause was called before the subscription was created, so we need to pause it now.
-    // Otherwise even though pause was called, the source provider would still be active and listening to its dependencies.
-    if (_pauser._isPaused) outerSub.pause();
 
     // 'weak' is lazy loaded, but weak:false isn't.
     if (!weak) outerSub.read();
