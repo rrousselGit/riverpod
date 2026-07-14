@@ -368,8 +368,8 @@ extension<StateT> on Mutation<StateT> {
 
 @internal
 final class MutationImpl<ResultT>
-    with
-        SyncProviderTransformerMixin<
+    extends
+        CustomProviderListenable<
           _MutationNotifier<ResultT>,
           MutationState<ResultT>
         >
@@ -383,6 +383,12 @@ final class MutationImpl<ResultT>
   // ignore: library_private_types_in_public_api, not public
   ProviderListenable<_MutationNotifier<ResultT>> get source =>
       _MutationProvider<ResultT>(this);
+
+  @override
+  // ignore: library_private_types_in_public_api, not public
+  _MutationTransformer<ResultT> createTransformer() {
+    return _MutationTransformer<ResultT>();
+  }
 
   @override
   Object? get key => _key?.$1;
@@ -485,26 +491,6 @@ final class MutationImpl<ResultT>
     setState(MutationError<ResultT>._(error, stackTrace), ref);
   }
 
-  @internal
-  @override
-  // ignore: library_private_types_in_public_api, not public
-  ProviderTransformer<_MutationNotifier<ResultT>, MutationState<ResultT>>
-  transform(
-    ProviderTransformerContext<
-      // ignore: library_private_types_in_public_api, not public
-      _MutationNotifier<ResultT>,
-      MutationState<ResultT>
-    >
-    context,
-  ) {
-    return ProviderTransformer(
-      initState: (self) => context.sourceState.requireValue.state,
-      listener: (self, prev, next) {
-        self.state = AsyncResult.guard(() => next.requireValue.state);
-      },
-    );
-  }
-
   bool _matchesT(Mutation<Object?> other) => other is Mutation<ResultT>;
 
   @override
@@ -533,6 +519,32 @@ final class MutationImpl<ResultT>
     return buffer.toString();
   }
 }
+
+final class _MutationTransformer<ResultT>
+    extends
+        SyncProviderTransformer2<
+          _MutationNotifier<ResultT>,
+          MutationState<ResultT>,
+          MutationImpl<ResultT>
+        > {
+  @override
+  MutationState<ResultT> initState() => sourceState.requireValue.state;
+
+  @override
+  void onEvent(
+    ProviderTransformer2<
+      _MutationNotifier<ResultT>,
+      MutationState<ResultT>,
+      MutationImpl<ResultT>
+    >
+    self,
+    AsyncResult<_MutationNotifier<ResultT>> prev,
+    AsyncResult<_MutationNotifier<ResultT>> next,
+  ) {
+    state = AsyncResult.guard(() => next.requireValue.state);
+  }
+}
+
 
 /// The current state of a mutation.
 ///

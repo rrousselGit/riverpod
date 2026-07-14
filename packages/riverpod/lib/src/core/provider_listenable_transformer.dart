@@ -2,8 +2,16 @@ part of '../framework.dart';
 
 /// An object containing metadata about the listened object of a
 /// [ProviderTransformer].
+@Deprecated(
+  'Use CustomProviderListenable/ProviderTransformer2 instead. '
+  'This will be removed in a future version.',
+)
 @publicInMisc
 final class ProviderTransformerContext<InT, OutT> with _OnPauseMixin {
+  @Deprecated(
+    'Use CustomProviderListenable/ProviderTransformer2 instead. '
+    'This will be removed in a future version.',
+  )
   ProviderTransformerContext._({
     required AsyncResult<InT> sourceState,
     required ProviderSubscription<InT> innerSub,
@@ -50,9 +58,17 @@ final class ProviderTransformerContext<InT, OutT> with _OnPauseMixin {
 /// - a description of how to react to various life-cycles
 ///   related to the listened object.
 /// {@endtemplate}
+@Deprecated(
+  'Use CustomProviderListenable/ProviderTransformer2 instead. '
+  'This will be removed in a future version.',
+)
 @publicInMisc
 class ProviderTransformer<InT, ValueT> {
   /// {@macro provider_transformer}
+  @Deprecated(
+    'Use CustomProviderListenable/ProviderTransformer2 instead. '
+    'This will be removed in a future version.',
+  )
   ProviderTransformer({
     required this.listener,
     required ValueT Function(ProviderTransformer<InT, ValueT> self) initState,
@@ -274,6 +290,10 @@ abstract class _ProviderTransformerMixin<InT, StateT, ValueT>
 ///
 /// See also:
 /// - [ProviderTransformer], the object responsible for the transformation logic.
+@Deprecated(
+  'Use CustomProviderListenable/SyncProviderTransformer2 instead. '
+  'This will be removed in a future version.',
+)
 @publicInMisc
 base mixin SyncProviderTransformerMixin<InT, ValueT>
     implements _ProviderTransformerMixin<InT, ValueT, ValueT> {
