@@ -1,5 +1,60 @@
 part of '../framework.dart';
 
+/// A [ProviderListenable] whose value is derived from transforming another
+/// [ProviderListenable] ([source]).
+///
+/// This is the base class for implementing custom variants of methods such
+/// as [ProviderListenableSelect.select].
+///
+/// ## Usage
+///
+/// To use this class, you must implement the [source]. getter (the provider
+/// that is being transformed) and [createTransformer] (the object responsible
+/// for computing/holding the transformed state, see [ProviderTransformer2]).
+///
+/// The following example implements a variant of [ProviderListenableSelect.select],
+/// where the callback returns a boolean instead of the selected value.
+///
+/// ```dart
+/// final class Where<T> extends CustomProviderListenable<T, T> {
+///   Where(this.source, this.where);
+///
+///   @override
+///   final ProviderListenable<T> source;
+///   final bool Function(T previous, T value) where;
+///
+///   @override
+///   _WhereTransformer<T> createTransformer() => _WhereTransformer<T>();
+/// }
+///
+/// final class _WhereTransformer<T>
+///     extends SyncProviderTransformer2<T, T, Where<T>> {
+///   @override
+///   T initState() => sourceState.requireValue;
+///
+///   @override
+///   void onEvent(
+///     AsyncResult<T> prev,
+///     AsyncResult<T> next,
+///   ) {
+///     if (listenable.where(prev.requireValue, next.requireValue)) {
+///       state = next;
+///     }
+///   }
+/// }
+///
+/// extension<T> on ProviderListenable<T> {
+///   ProviderListenable<T> where(
+///     bool Function(T previous, T value) where,
+///   ) => Where<T>(this, where);
+/// }
+/// ```
+///
+/// Used as `ref.watch(provider.where((previous, value) => value > 0))`.
+///
+/// See also:
+/// - [ProviderTransformer2], the object responsible for the transformation logic.
+@publicInMisc
 abstract class CustomProviderListenable<InT, ValueT>
     implements ProviderListenable<ValueT> {
   /// The source of this transformer.
@@ -8,6 +63,11 @@ abstract class CustomProviderListenable<InT, ValueT>
   @visibleForOverriding
   ProviderListenable<InT> get source;
 
+  /// Creates the [ProviderTransformer2] responsible for computing and
+  /// holding the state of this [CustomProviderListenable].
+  ///
+  /// This is called once per subscription (every time [CustomProviderListenable.source]. gains a
+  /// new listener).
   ProviderTransformer2<InT, ValueT, CustomProviderListenable<InT, ValueT>>
   createTransformer();
 
@@ -55,6 +115,12 @@ abstract base class ProviderTransformer2<
   void Function(AsyncResult<ValueT> next)? _notify;
 
   ListenableT? _listenable;
+
+  /// The [CustomProviderListenable] that created this transformer.
+  ///
+  /// This offers a convenient way to access the properties of the
+  /// [CustomProviderListenable] (such as a `select` callback) from within
+  /// the transformer.
   ListenableT get listenable {
     if (_listenable case final listenable?) return listenable;
 
@@ -65,7 +131,7 @@ abstract base class ProviderTransformer2<
 
   /// The currently exposed state of this transformer.
   ///
-  /// When using [SyncProviderTransformerMixin2], will rethrow the error if any.
+  /// When using [SyncProviderTransformer2], will rethrow the error if any.
   AsyncResult<ValueT> get state => _state;
   set state(AsyncResult<ValueT> value) {
     _state = value;
@@ -84,23 +150,26 @@ abstract base class ProviderTransformer2<
     // Only forward to `onData` once the transformer was initialized and
     // has an actual previous state to compare against.
     if (_initialized && prev != null) {
-      _node.container.runTernaryGuarded(onEvent, this, prev, next);
+      _node.container.runBinaryGuarded(onEvent, prev, next);
     }
   }
 
+  /// The current state of [CustomProviderListenable.source].
   AsyncResult<InT> get sourceState {
     if (_sourceState case final sourceState?) return sourceState;
 
     throw StateError('Cannot call sourceState from a constructor.');
   }
 
-  /// Reads the latest value of [source], bypassing the pause state.
+  /// Reads the latest value of [CustomProviderListenable.source]., bypassing the pause state.
   InT read() {
     if (_innerSub case final innerSub?) return innerSub.read();
 
     throw StateError('Cannot call read() from a constructor.');
   }
 
+  /// Pauses the subscription to [CustomProviderListenable.source]., stopping it from being notified
+  /// of any change until [resume] is called.
   @mustCallSuper
   void pause() {
     if (!_pauser._isPaused) {
@@ -110,6 +179,7 @@ abstract base class ProviderTransformer2<
     }
   }
 
+  /// Resumes the subscription to [CustomProviderListenable.source]. after a call to [pause].
   @mustCallSuper
   void resume() {
     final wasPaused = _pauser._isPaused;
@@ -204,15 +274,33 @@ abstract base class ProviderTransformer2<
   /// is read, and its return value is used as the initial [state].
   ValueT initState();
 
+  /// A life-cycle method invoked when [CustomProviderListenable.source]. changes after the initial
+  /// event.
+  ///
+  /// It will _not_ be called with the initial value.
+  ///
+  /// - `self` represents the `this` object of the [ProviderTransformer2].
+  ///   It offers a convenient way to call [ProviderTransformer2.state].
   void onEvent(
-    ProviderTransformer2<InT, ValueT, ListenableT> self,
     AsyncResult<InT> prev,
     AsyncResult<InT> next,
   ) {}
 
+  /// A life-cycle method for when the [ProviderSubscription] obtained from
+  /// [CustomProviderListenable] is closed.
+  ///
+  /// This callback will only be called once regardless of how many times
+  /// [ProviderSubscription.close] is called.
   void onClose() {}
 }
 
+/// A variant of [ProviderTransformer2] for [CustomProviderListenable]s that
+/// do not emit [AsyncValue].
+///
+/// If in error state, an exception will happen when trying to read the state
+/// of the associated [CustomProviderListenable].
+///
+/// See [CustomProviderListenable] for a usage example.
 @publicInMisc
 abstract base class SyncProviderTransformer2<
   InT,

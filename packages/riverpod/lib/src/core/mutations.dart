@@ -532,19 +532,12 @@ final class _MutationTransformer<ResultT>
 
   @override
   void onEvent(
-    ProviderTransformer2<
-      _MutationNotifier<ResultT>,
-      MutationState<ResultT>,
-      MutationImpl<ResultT>
-    >
-    self,
     AsyncResult<_MutationNotifier<ResultT>> prev,
     AsyncResult<_MutationNotifier<ResultT>> next,
   ) {
     state = AsyncResult.guard(() => next.requireValue.state);
   }
 }
-
 
 /// The current state of a mutation.
 ///

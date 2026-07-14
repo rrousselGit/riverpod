@@ -51,7 +51,6 @@ final class _ListenableTransformer2<T>
 
   @override
   void onEvent(
-    ProviderTransformer2<T, ValueListenable<T>, _ListenableListenable<T>> self,
     AsyncResult<T> prev,
     AsyncResult<T> next,
   ) {

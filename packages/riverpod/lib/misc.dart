@@ -20,4 +20,7 @@ export 'src/internals.dart'
         ProviderTransformerContext,
         ProviderTransformer,
         SyncProviderTransformerMixin,
-        AsyncProviderListenable;
+        AsyncProviderListenable,
+        CustomProviderListenable,
+        ProviderTransformer2,
+        SyncProviderTransformer2;
