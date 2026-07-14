@@ -750,16 +750,18 @@ void main() {
 
     expect(find.text('1'), findsOneWidget);
 
-    key.currentState!.pushReplacement<void, void>(
-      PageRouteBuilder<void>(
-        pageBuilder: (_, _, _) {
-          return Consumer(
-            builder: (context, ref, _) {
-              final count = ref.watch(counterProvider);
-              return Text('new $count');
-            },
-          );
-        },
+    unawaited(
+      key.currentState!.pushReplacement<void, void>(
+        PageRouteBuilder<void>(
+          pageBuilder: (_, _, _) {
+            return Consumer(
+              builder: (context, ref, _) {
+                final count = ref.watch(counterProvider);
+                return Text('new $count');
+              },
+            );
+          },
+        ),
       ),
     );
 
