@@ -1,3 +1,8 @@
+## Unreleased fix
+
+- Fix `scheduleRefresh` throwing the debug-only "setState() called during build"
+  `FlutterError` and freezing the `ProviderScheduler`. (thanks to @xianjianlf2)
+
 ## 3.3.2 - 2026-06-10
 
 - Fixes assertion error when providers are unpaused.
