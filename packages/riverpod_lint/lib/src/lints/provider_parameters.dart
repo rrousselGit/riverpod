@@ -84,8 +84,7 @@ class _Visitor extends SimpleAstVisitor<void> {
         // them (including generic ones, e.g. `Box<Foo>`) to check the
         // underlying representation type instead.
         if (instantiatedType is ExtensionTypeElement) {
-          final erasureElement =
-              value.staticType?.extensionTypeErasure.element;
+          final erasureElement = value.staticType?.extensionTypeErasure.element;
           instantiatedType = erasureElement is InterfaceElement
               ? erasureElement
               : null;

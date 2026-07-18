@@ -117,11 +117,10 @@ extension on Expression {
 
       return ProviderDependencyList._(
         node: that,
-        values:
-            that.elements
-                .map((e) => e.providerDependency)
-                .whereType<ProviderDependency>()
-                .toList(),
+        values: that.elements
+            .map((e) => e.providerDependency)
+            .whereType<ProviderDependency>()
+            .toList(),
       );
     });
   }
@@ -177,8 +176,10 @@ extension on DartObject {
       return null;
     }
 
-    final values =
-        list.map((e) => e.toDependency(from: from)).nonNulls.toList();
+    final values = list
+        .map((e) => e.toDependency(from: from))
+        .nonNulls
+        .toList();
 
     // If any dependency failed to parse, return null.
     // Errors should already have been reported
@@ -204,11 +205,10 @@ final class AccumulatedDependencyList {
     required this.dependencies,
     required this.widgetDependencies,
     required this.overrides,
-  }) : parent =
-           node.ancestors
-               .map((e) => e.accumulatedDependencies)
-               .nonNulls
-               .firstOrNull;
+  }) : parent = node.ancestors
+           .map((e) => e.accumulatedDependencies)
+           .nonNulls
+           .firstOrNull;
 
   final AstNode node;
   final AccumulatedDependencyList? parent;

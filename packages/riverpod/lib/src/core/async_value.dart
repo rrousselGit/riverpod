@@ -351,11 +351,17 @@ typedef _DataRecord<ValueT> = (ValueT, {DataKind? kind, DataSource? source});
 
 /// Not public
 @internal
-typedef DataFilledRecord<ValueT> =
-    ({ValueT value, DataKind kind, DataSource? source});
+typedef DataFilledRecord<ValueT> = ({
+  ValueT value,
+  DataKind kind,
+  DataSource? source,
+});
 typedef _ErrorRecord = ({Object err, StackTrace stack, bool? retrying});
-typedef _ErrorFilledRecord =
-    ({Object error, StackTrace stackTrace, bool retrying});
+typedef _ErrorFilledRecord = ({
+  Object error,
+  StackTrace stackTrace,
+  bool retrying,
+});
 typedef _LoadingRecord = ({num? progress});
 
 /// [AsyncValue.requireValue] was called on an [AsyncValue] with no error nor a value.
@@ -781,25 +787,22 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
     AsyncValue<ValueT> previous, {
     bool isRefresh = true,
   }) {
-    final previousValue =
-        isRefresh
-            ? previous._value
-            : previous._value?.copyWith(source: (DataSource.reload,));
+    final previousValue = isRefresh
+        ? previous._value
+        : previous._value?.copyWith(source: (DataSource.reload,));
 
     if (isRefresh) {
       return previous.map(
-        data:
-            (previous) => AsyncData._(
-              previousValue!,
-              error: previous._error,
-              loading: _loading,
-            ),
-        error:
-            (previous) => AsyncError._(
-              previous._error,
-              loading: _loading,
-              value: previousValue,
-            ),
+        data: (previous) => AsyncData._(
+          previousValue!,
+          error: previous._error,
+          loading: _loading,
+        ),
+        error: (previous) => AsyncError._(
+          previous._error,
+          loading: _loading,
+          value: previousValue,
+        ),
         loading: (_) {
           return AsyncLoading<ValueT>._(
             _loading,

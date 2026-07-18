@@ -22,12 +22,18 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addAnonymousExpressionBody(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addAnonymousExpressionBody(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
   @override
-  void addAnonymousMethodInvocation(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addAnonymousMethodInvocation(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -52,7 +58,10 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addAssignedVariablePattern(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addAssignedVariablePattern(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -162,12 +171,18 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addConstructorDeclaration(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addConstructorDeclaration(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
   @override
-  void addConstructorFieldInitializer(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addConstructorFieldInitializer(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -197,7 +212,10 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addDeclaredVariablePattern(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addDeclaredVariablePattern(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -207,17 +225,26 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addDotShorthandConstructorInvocation(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addDotShorthandConstructorInvocation(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
   @override
-  void addDotShorthandInvocation(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addDotShorthandInvocation(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
   @override
-  void addDotShorthandPropertyAccess(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addDotShorthandPropertyAccess(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -257,7 +284,10 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addEnumConstantDeclaration(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addEnumConstantDeclaration(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -272,7 +302,10 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addExpressionFunctionBody(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addExpressionFunctionBody(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -302,7 +335,10 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addExtensionTypeDeclaration(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addExtensionTypeDeclaration(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -317,17 +353,26 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addForEachPartsWithDeclaration(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addForEachPartsWithDeclaration(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
   @override
-  void addForEachPartsWithIdentifier(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addForEachPartsWithIdentifier(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
   @override
-  void addForEachPartsWithPattern(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addForEachPartsWithPattern(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -337,7 +382,10 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addFormalParameterDefaultClause(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addFormalParameterDefaultClause(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -347,12 +395,18 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addForPartsWithDeclarations(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addForPartsWithDeclarations(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
   @override
-  void addForPartsWithExpression(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addForPartsWithExpression(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -372,7 +426,10 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addFunctionDeclarationStatement(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addFunctionDeclarationStatement(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -382,7 +439,10 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addFunctionExpressionInvocation(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addFunctionExpressionInvocation(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -397,7 +457,10 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addFunctionTypedFormalParameterSuffix(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addFunctionTypedFormalParameterSuffix(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -457,7 +520,10 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addInstanceCreationExpression(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addInstanceCreationExpression(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -467,7 +533,10 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addInterpolationExpression(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addInterpolationExpression(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -567,7 +636,10 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addNameWithTypeParameters(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addNameWithTypeParameters(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -607,7 +679,10 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addParenthesizedExpression(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addParenthesizedExpression(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -642,12 +717,18 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addPatternVariableDeclaration(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addPatternVariableDeclaration(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
   @override
-  void addPatternVariableDeclarationStatement(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addPatternVariableDeclarationStatement(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -667,17 +748,26 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addPrimaryConstructorBody(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addPrimaryConstructorBody(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
   @override
-  void addPrimaryConstructorDeclaration(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addPrimaryConstructorDeclaration(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
   @override
-  void addPrimaryConstructorName(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addPrimaryConstructorName(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -692,7 +782,10 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addRecordLiteralNamedField(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addRecordLiteralNamedField(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -707,27 +800,42 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addRecordTypeAnnotationNamedField(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addRecordTypeAnnotationNamedField(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
   @override
-  void addRecordTypeAnnotationNamedFields(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addRecordTypeAnnotationNamedFields(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
   @override
-  void addRecordTypeAnnotationPositionalField(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addRecordTypeAnnotationPositionalField(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
   @override
-  void addRedirectingConstructorInvocation(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addRedirectingConstructorInvocation(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
   @override
-  void addRegularFormalParameter(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addRegularFormalParameter(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -787,7 +895,10 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addSuperConstructorInvocation(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addSuperConstructorInvocation(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -847,7 +958,10 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addTopLevelVariableDeclaration(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addTopLevelVariableDeclaration(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -882,12 +996,18 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addVariableDeclarationList(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addVariableDeclarationList(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
   @override
-  void addVariableDeclarationStatement(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addVariableDeclarationStatement(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -926,4 +1046,3 @@ class Registry extends RuleVisitorRegistry {
     afterLibraryCallbacks.add((rule, callback));
   }
 }
-
