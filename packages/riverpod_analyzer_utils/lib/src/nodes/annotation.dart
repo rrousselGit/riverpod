@@ -44,7 +44,7 @@ extension RiverpodAnnotatedAnnotatedNodeX on Annotation {
       final dependenciesNode = arguments?.named('dependencies');
 
       final dependencyList = dependenciesNode.let(
-        (NamedArgument e) => e.argumentExpression.providerDependencyList,
+        (e) => e.argumentExpression.providerDependencyList,
       );
 
       final retryNode = arguments?.named('retry')?.argumentExpression;

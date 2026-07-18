@@ -423,11 +423,7 @@ class ProviderPointerManager {
                 familyPointer.pointers.values.map((e) => e.targetContainer),
               );
             case $ProviderBaseImpl():
-              return [
-                if (readPointer(dependency)?.targetContainer
-                    case final container?)
-                  container,
-              ];
+              return [?readPointer(dependency)?.targetContainer];
           }
         });
 
@@ -1002,7 +998,7 @@ final class ProviderContainer implements MutationTarget {
     final a = scheduler.pendingFuture;
 
     await Future.wait<void>([
-      if (a != null) a,
+      ?a,
       if (parent case final parent?) parent.pump(),
     ]);
   }
