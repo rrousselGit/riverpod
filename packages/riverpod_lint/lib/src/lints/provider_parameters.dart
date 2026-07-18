@@ -63,10 +63,10 @@ class _Visitor extends SimpleAstVisitor<void> {
 
     for (final argument in arguments.arguments) {
       Expression value;
-      if (argument is NamedExpression) {
-        value = argument.expression;
+      if (argument is NamedArgument) {
+        value = argument.argumentExpression;
       } else {
-        value = argument;
+        value = argument as Expression;
       }
 
       if (value is TypedLiteral && !value.isConst) {
@@ -84,8 +84,7 @@ class _Visitor extends SimpleAstVisitor<void> {
         // them (including generic ones, e.g. `Box<Foo>`) to check the
         // underlying representation type instead.
         if (instantiatedType is ExtensionTypeElement) {
-          final erasureElement =
-              value.staticType?.extensionTypeErasure.element;
+          final erasureElement = value.staticType?.extensionTypeErasure.element;
           instantiatedType = erasureElement is InterfaceElement
               ? erasureElement
               : null;

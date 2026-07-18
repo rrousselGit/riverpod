@@ -444,8 +444,9 @@ void main() {
             builder: (c, ref, _) {
               buildCount++;
               final state = ref.watch(stateProvider);
-              final value =
-                  state == 0 ? ref.watch(provider0) : ref.watch(provider1);
+              final value = state == 0
+                  ? ref.watch(provider0)
+                  : ref.watch(provider1);
 
               return Text(
                 '${ref.watch(provider0)} $value',
@@ -532,9 +533,9 @@ void main() {
               final state = ref.watch(stateProvider);
               final result =
                   state ==
-                          0 //
-                      ? ref.watch(provider0)
-                      : ref.watch(provider1);
+                      0 //
+                  ? ref.watch(provider0)
+                  : ref.watch(provider1);
               return Text('$result', textDirection: TextDirection.ltr);
             },
           ),

@@ -185,12 +185,10 @@ class FakeAsync {
   T run<T>(T Function(FakeAsync self) callback) => runZoned(
     () => withClock(_clock, () => callback(this)),
     zoneSpecification: ZoneSpecification(
-      createTimer:
-          (_, _, _, duration, callback) =>
-              _createTimer(duration, callback, false),
-      createPeriodicTimer:
-          (_, _, _, duration, callback) =>
-              _createTimer(duration, callback, true),
+      createTimer: (_, _, _, duration, callback) =>
+          _createTimer(duration, callback, false),
+      createPeriodicTimer: (_, _, _, duration, callback) =>
+          _createTimer(duration, callback, true),
       // scheduleMicrotask: (_, _, _, microtask) =>
       //     _microtasks.add(microtask)
     ),

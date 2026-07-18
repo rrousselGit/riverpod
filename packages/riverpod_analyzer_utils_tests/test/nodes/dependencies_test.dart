@@ -52,16 +52,15 @@ void main() {
       final clazz = unit.declarations.findByName('Class');
       final function = unit.declarations.findByName('function');
 
-      final value =
-          unit.declarations
-              .findByName<FunctionDeclaration>('main')
-              .functionExpression
-              .body
-              .cast<BlockFunctionBody>()!
-              .block
-              .statements
-              .whereType<VariableDeclarationStatement>()
-              .single;
+      final value = unit.declarations
+          .findByName<FunctionDeclaration>('main')
+          .functionExpression
+          .body
+          .cast<BlockFunctionBody>()!
+          .block
+          .statements
+          .whereType<VariableDeclarationStatement>()
+          .single;
 
       expect(
         clazz.dependencies,

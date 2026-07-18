@@ -72,11 +72,10 @@ void main() {
         container.read(provider);
 
         expect(buildCount, 1);
-        final [future as Future<String>] =
-            verifyOnly(
-              listener,
-              listener.call(argThat(isNull), captureAny),
-            ).captured;
+        final [future as Future<String>] = verifyOnly(
+          listener,
+          listener.call(argThat(isNull), captureAny),
+        ).captured;
         expect(await future, 'Hello');
       });
 
@@ -97,11 +96,10 @@ void main() {
 
           expect(await sub.read(), 'Hello');
 
-          final [future as Future<String>] =
-              verifyOnly(
-                listener,
-                listener.call(argThat(isNull), captureAny),
-              ).captured;
+          final [future as Future<String>] = verifyOnly(
+            listener,
+            listener.call(argThat(isNull), captureAny),
+          ).captured;
 
           expect(await future, 'Hello');
         },

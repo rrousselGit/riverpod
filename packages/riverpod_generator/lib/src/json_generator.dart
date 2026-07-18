@@ -50,10 +50,9 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
         false) {
       throw InvalidGenerationSourceError(
         'Encoding generic notifiers is currently not supported',
-        element:
-            provider.node.declaredFragment!.libraryFragment.element.classes
-                .where((e) => e.name == provider.name.lexeme)
-                .firstOrNull,
+        element: provider.node.declaredFragment!.libraryFragment.element.classes
+            .where((e) => e.name == provider.name.lexeme)
+            .firstOrNull,
         node: provider.node,
       );
     }
@@ -63,10 +62,9 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
 
     final genericsDefinition = provider.genericsDefinition();
 
-    final resolvedKey =
-        !provider.providerElement.isFamily
-            ? 'const resolvedKey = "${provider.name}";'
-            : '''
+    final resolvedKey = !provider.providerElement.isFamily
+        ? 'const resolvedKey = "${provider.name}";'
+        : '''
     late final args = ${provider.argumentToRecord()};
     late final resolvedKey = '${provider.name}(\$args)';
 ''';

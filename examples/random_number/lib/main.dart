@@ -42,9 +42,8 @@ class RandomNumberApp extends StatelessWidget {
                 builder: (context, ref, child) {
                   return ElevatedButton(
                     child: const Text('Generate'),
-                    onPressed:
-                        () =>
-                            ref.read(randomNumberProvider.notifier).generate(),
+                    onPressed: () =>
+                        ref.read(randomNumberProvider.notifier).generate(),
                   );
                 },
               ),

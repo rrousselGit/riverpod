@@ -62,7 +62,9 @@ final dep = Provider((ref) {
 
   // Triple-nested extension types are unwrapped recursively.
   ref.watch(
-    legacy(TripleGoodTypeId(NestedGoodTypeId(GoodTypeId(ClassThatOverridesEqual())))),
+    legacy(
+      TripleGoodTypeId(NestedGoodTypeId(GoodTypeId(ClassThatOverridesEqual()))),
+    ),
   );
   // ignore: riverpod_lint/provider_parameters
   ref.watch(
@@ -71,7 +73,9 @@ final dep = Provider((ref) {
 
   // A generic extension type wrapping another generic extension type is
   // unwrapped recursively too.
-  ref.watch(legacy(Box<Box<ClassThatOverridesEqual>>(Box(ClassThatOverridesEqual()))));
+  ref.watch(
+    legacy(Box<Box<ClassThatOverridesEqual>>(Box(ClassThatOverridesEqual()))),
+  );
   // ignore: riverpod_lint/provider_parameters
   ref.watch(legacy(Box<Box<NoEqualsClass>>(Box(NoEqualsClass()))));
 

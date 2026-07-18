@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'marvel.dart';
@@ -9,6 +9,7 @@ part of 'marvel.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -63,7 +64,7 @@ class _$MarvelListCharactersResponseCopyWithImpl<$Res>
 /// Create a copy of MarvelListCharactersResponse
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? totalCount = null,Object? characters = null,}) {
-  return _then(_self.copyWith(
+  return _then(MarvelListCharactersResponse(
 totalCount: null == totalCount ? _self.totalCount : totalCount // ignore: cast_nullable_to_non_nullable
 as int,characters: null == characters ? _self.characters : characters // ignore: cast_nullable_to_non_nullable
 as List<Character>,
@@ -201,7 +202,7 @@ return $default(_that.totalCount,_that.characters);case _:
 
 
 class _MarvelListCharactersResponse implements MarvelListCharactersResponse {
-   _MarvelListCharactersResponse({required this.totalCount, required final  List<Character> characters}): _characters = characters;
+   _MarvelListCharactersResponse({required this.totalCount, required  List<Character> characters}): _characters = characters;
   
 
 @override final  int totalCount;
@@ -326,7 +327,7 @@ class _$CharacterCopyWithImpl<$Res>
 /// Create a copy of Character
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? thumbnail = null,}) {
-  return _then(_self.copyWith(
+  return _then(Character(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,thumbnail: null == thumbnail ? _self.thumbnail : thumbnail // ignore: cast_nullable_to_non_nullable
@@ -607,7 +608,7 @@ class _$ThumbnailCopyWithImpl<$Res>
 /// Create a copy of Thumbnail
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? path = null,Object? extension = null,}) {
-  return _then(_self.copyWith(
+  return _then(Thumbnail(
 path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
 as String,extension: null == extension ? _self.extension : extension // ignore: cast_nullable_to_non_nullable
 as String,
@@ -867,8 +868,8 @@ class _$MarvelResponseCopyWithImpl<$Res>
 /// Create a copy of MarvelResponse
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? data = null,}) {
-  return _then(_self.copyWith(
-data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+  return _then(MarvelResponse(
+null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as MarvelData,
   ));
 }
@@ -1142,9 +1143,9 @@ class _$MarvelDataCopyWithImpl<$Res>
 /// Create a copy of MarvelData
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? results = null,Object? total = null,}) {
-  return _then(_self.copyWith(
-results: null == results ? _self.results : results // ignore: cast_nullable_to_non_nullable
-as List<Map<String, Object?>>,total: null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
+  return _then(MarvelData(
+null == results ? _self.results : results // ignore: cast_nullable_to_non_nullable
+as List<Map<String, Object?>>,null == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -1280,7 +1281,7 @@ return $default(_that.results,_that.total);case _:
 @JsonSerializable()
 
 class _MarvelData implements MarvelData {
-   _MarvelData(final  List<Map<String, Object?>> results, this.total): _results = results;
+   _MarvelData( List<Map<String, Object?>> results, this.total): _results = results;
   factory _MarvelData.fromJson(Map<String, dynamic> json) => _$MarvelDataFromJson(json);
 
  final  List<Map<String, Object?>> _results;

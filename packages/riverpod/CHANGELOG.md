@@ -1,5 +1,6 @@
 ## Unreleased minor
 
+- Upgraded `analyzer` to `<15.0.0`
 - Deprecated `SyncProviderTransformerMixin`. It is replaced by the newly added APIs
 - Added `CustomProviderListenable`, a slightly simplified way of making custom provider extensions
 - Added the ability to do `ValueListenable<int> listenable = ref.watch(counterProvider.listenable)`.

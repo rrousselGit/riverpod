@@ -296,11 +296,10 @@ void main() {
     group('onClose', () {
       test('guards the listener', () {
         final errors = <Object>[];
-        final container =
-            runZonedGuarded(
-              ProviderContainer.test,
-              (err, _) => errors.add(err),
-            )!;
+        final container = runZonedGuarded(
+          ProviderContainer.test,
+          (err, _) => errors.add(err),
+        )!;
         final provider = Provider<int>((ref) => 0);
 
         final listenable = DelegatingListenable<int, String>(provider, () {
@@ -410,8 +409,10 @@ void main() {
 
     test('If listener throws, reports to onError', () {
       final errors = <Object>[];
-      final container =
-          runZonedGuarded(ProviderContainer.test, (err, _) => errors.add(err))!;
+      final container = runZonedGuarded(
+        ProviderContainer.test,
+        (err, _) => errors.add(err),
+      )!;
       final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
       final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
@@ -524,17 +525,10 @@ final class DelegatingTransformer<InT, ValueT>
           DelegatingListenable<InT, ValueT>
         > {
   DelegatingTransformer({
-    required ValueT Function(DelegatingTransformer<InT, ValueT> self) initState,
-    required void Function(
-      DelegatingTransformer<InT, ValueT> self,
-      AsyncResult<InT> prev,
-      AsyncResult<InT> next,
-    )
-    onEvent,
-    void Function()? onClose,
-  }) : _initState = initState,
-       _onEvent = onEvent,
-       _onClose = onClose;
+    required this._initState,
+    required this._onEvent,
+    this._onClose,
+  });
 
   final ValueT Function(DelegatingTransformer<InT, ValueT> self) _initState;
   final void Function(

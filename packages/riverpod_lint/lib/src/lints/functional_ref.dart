@@ -65,9 +65,9 @@ class _Visitor extends SimpleAstVisitor<void> {
       return;
     }
 
-    if (refNode is! SimpleFormalParameter) {
+    if (refNode.isNamed || refNode.isOptionalPositional) {
       // Users likely forgot to specify "ref" and the provider has other parameters
-      rule.reportAtToken(refNode.name!, arguments: []);
+      rule.reportAtToken(refNode.name ?? refNode.beginToken, arguments: []);
       return;
     }
 
@@ -108,7 +108,7 @@ class FunctionalRefFix extends ResolvedCorrectionProducer {
     final refNode =
         declaration.node.functionExpression.parameters?.parameters.firstOrNull;
 
-    if (refNode == null || refNode.isNamed) {
+    if (refNode == null || refNode.isNamed || refNode.isOptionalPositional) {
       // No ref parameter, adding one
       await builder.addDartFileEdit(file, (builder) {
         final ref = builder.importRef();
@@ -125,7 +125,7 @@ class FunctionalRefFix extends ResolvedCorrectionProducer {
       return;
     }
 
-    if (refNode is! SimpleFormalParameter) return;
+    if (refNode is! RegularFormalParameter) return;
 
     await builder.addDartFileEdit(file, (builder) {
       final ref = builder.importRef();
@@ -146,10 +146,7 @@ extension LibraryForNode on AstNode {
 }
 
 TypeAnnotation? typeAnnotationFor(FormalParameter param) {
-  if (param is DefaultFormalParameter) {
-    return typeAnnotationFor(param.parameter);
-  }
-  if (param is SimpleFormalParameter) {
+  if (param is RegularFormalParameter) {
     return param.type;
   }
 

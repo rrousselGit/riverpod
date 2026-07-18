@@ -351,11 +351,17 @@ typedef _DataRecord<ValueT> = (ValueT, {DataKind? kind, DataSource? source});
 
 /// Not public
 @internal
-typedef DataFilledRecord<ValueT> =
-    ({ValueT value, DataKind kind, DataSource? source});
+typedef DataFilledRecord<ValueT> = ({
+  ValueT value,
+  DataKind kind,
+  DataSource? source,
+});
 typedef _ErrorRecord = ({Object err, StackTrace stack, bool? retrying});
-typedef _ErrorFilledRecord =
-    ({Object error, StackTrace stackTrace, bool retrying});
+typedef _ErrorFilledRecord = ({
+  Object error,
+  StackTrace stackTrace,
+  bool retrying,
+});
 typedef _LoadingRecord = ({num? progress});
 
 /// [AsyncValue.requireValue] was called on an [AsyncValue] with no error nor a value.
@@ -688,13 +694,8 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
     @internal DataKind? kind,
   }) : this._((value, kind: kind, source: null), loading: null, error: null);
 
-  const AsyncData._(
-    this._value, {
-    required _ErrorRecord? error,
-    required _LoadingRecord? loading,
-  }) : _loading = loading,
-       _error = error,
-       super._();
+  const AsyncData._(this._value, {required this._error, required this._loading})
+    : super._();
 
   @override
   final _LoadingRecord? _loading;
@@ -747,11 +748,9 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
 
   const AsyncLoading._(
     this._loading, {
-    required _DataRecord<ValueT>? value,
-    required _ErrorRecord? error,
-  }) : _value = value,
-       _error = error,
-       super._();
+    required this._value,
+    required this._error,
+  }) : super._();
 
   @override
   final _LoadingRecord _loading;
@@ -781,25 +780,22 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
     AsyncValue<ValueT> previous, {
     bool isRefresh = true,
   }) {
-    final previousValue =
-        isRefresh
-            ? previous._value
-            : previous._value?.copyWith(source: (DataSource.reload,));
+    final previousValue = isRefresh
+        ? previous._value
+        : previous._value?.copyWith(source: (DataSource.reload,));
 
     if (isRefresh) {
       return previous.map(
-        data:
-            (previous) => AsyncData._(
-              previousValue!,
-              error: previous._error,
-              loading: _loading,
-            ),
-        error:
-            (previous) => AsyncError._(
-              previous._error,
-              loading: _loading,
-              value: previousValue,
-            ),
+        data: (previous) => AsyncData._(
+          previousValue!,
+          error: previous._error,
+          loading: _loading,
+        ),
+        error: (previous) => AsyncError._(
+          previous._error,
+          loading: _loading,
+          value: previousValue,
+        ),
         loading: (_) {
           return AsyncLoading<ValueT>._(
             _loading,
@@ -835,11 +831,9 @@ final class AsyncError<ValueT> extends AsyncResult<ValueT> {
 
   const AsyncError._(
     this._error, {
-    required _DataRecord<ValueT>? value,
-    required _LoadingRecord? loading,
-  }) : _value = value,
-       _loading = loading,
-       super._();
+    required this._value,
+    required this._loading,
+  }) : super._();
 
   @override
   final _LoadingRecord? _loading;
