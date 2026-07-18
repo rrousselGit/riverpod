@@ -1,21 +1,21 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
-// 125:   // ignore: riverpod_lint/provider_dependencies
-// 126:   <>[
-// 127:     <>generatedRoot<>,
-// 128:   <>]<>,
+// 125:       // ignore: riverpod_lint/provider_dependencies
+// 126:       <>[
+// 127:         <>generatedRoot<>,
+// 128:       <>]<>,
 // 129: )
 // ```
 // }
 //
 // - @Riverpod(
 // -   dependencies:
-// -   // The dependency is redundant because it is not a scoped provider
-// -   // ignore: riverpod_lint/provider_dependencies
-// -   [
-// -     generatedRoot,
-// -   ],
+// -       // The dependency is redundant because it is not a scoped provider
+// -       // ignore: riverpod_lint/provider_dependencies
+// -       [
+// -         generatedRoot,
+// -       ],
 // - )
 // + @riverpod
 // int watchGeneratedRootAndContainsDependency(
