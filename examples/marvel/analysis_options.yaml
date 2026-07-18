@@ -7,3 +7,11 @@ analyzer:
     # for the sake of consistency.
     unused_element_parameter: ignore
     unrecognized_error_code: ignore
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
