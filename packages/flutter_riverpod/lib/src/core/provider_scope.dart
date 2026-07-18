@@ -315,9 +315,28 @@ final class _UncontrolledProviderScopeState
     _cancelAsyncTask?.call();
     _cancelAsyncTask = null;
 
-    setState(() {
-      _task = task;
-    });
+    try {
+      setState(() {
+        _task = task;
+      });
+    }
+    // Deliberate: the debug-only "called during build" assertion is thrown
+    // as a FlutterError, and letting it escape wedges the scheduler.
+    // ignore: avoid_catching_errors
+    on FlutterError {
+      // "setState() or markNeedsBuild() called during build".
+      //
+      // A refresh was requested while a widget below this scope is building.
+      // This can happen without any user-code mistake: for example, a
+      // widget's `ref.watch` during build can flush a stale keepAlive graph,
+      // which synchronously notifies other dependents, whose `invalidateSelf`
+      // ends up here. Marking an ancestor scope dirty during a descendant's
+      // build is not allowed, but `_task` was assigned before the throw, so
+      // the timer fallback below still schedules the refresh right after the
+      // current frame. Letting the error escape instead would leave the
+      // scheduler with a pending task that never runs, freezing all provider
+      // refreshes (https://github.com/rrousselGit/riverpod/issues/4812).
+    }
 
     _vsyncTimer?.cancel();
     _vsyncTimer = Timer(Duration.zero, () {
