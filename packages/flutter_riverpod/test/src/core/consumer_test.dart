@@ -113,7 +113,7 @@ void main() {
         ),
       );
 
-      unawaited(navigator.pushNamed('/detail'));
+      navigator.pushNamed('/detail');
       await tester.pump();
 
       expect(

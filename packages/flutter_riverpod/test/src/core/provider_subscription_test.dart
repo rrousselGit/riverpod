@@ -1,4 +1,4 @@
-import 'dart:async';
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,12 +27,12 @@ void main() {
     final container = tester.container();
     final navigator = tester.state<NavigatorState>(find.byType(Navigator));
 
-    unawaited(navigator.pushNamed('/settings'));
+    navigator.pushNamed('/settings');
     await tester.pumpAndSettle();
 
     container.read(dep.notifier).state++;
 
-    unawaited(navigator.maybePop());
+    navigator.maybePop();
     await tester.pumpAndSettle();
 
     expect(find.text('1'), findsOneWidget);
