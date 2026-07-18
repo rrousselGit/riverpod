@@ -997,10 +997,7 @@ final class ProviderContainer implements MutationTarget {
   Future<void> pump() async {
     final a = scheduler.pendingFuture;
 
-    await Future.wait<void>([
-      ?a,
-      if (parent case final parent?) parent.pump(),
-    ]);
+    await Future.wait<void>([?a, if (parent case final parent?) parent.pump()]);
   }
 
   /// Reads a provider without listening to it and returns the currently

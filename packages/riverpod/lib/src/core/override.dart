@@ -141,10 +141,7 @@ class TransitiveFamilyOverride implements $FamilyOverride {
 /// An [Override] for families
 class _FamilyOverrideImpl implements $FamilyOverride {
   /// An [Override] for families
-  _FamilyOverrideImpl({
-    required this._createElement,
-    required this.from,
-  });
+  _FamilyOverrideImpl({required this._createElement, required this.from});
 
   @override
   final Family from;

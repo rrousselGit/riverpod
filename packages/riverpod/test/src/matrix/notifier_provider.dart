@@ -118,11 +118,7 @@ abstract class TestNotifier<ValueT> implements $Notifier<ValueT> {
 
 class DeferredNotifier<ValueT> extends Notifier<ValueT>
     implements TestNotifier<ValueT> {
-  DeferredNotifier(
-    this._create, {
-    this._updateShouldNotify,
-    this.arg,
-  });
+  DeferredNotifier(this._create, {this._updateShouldNotify, this.arg});
 
   final Object? arg;
 

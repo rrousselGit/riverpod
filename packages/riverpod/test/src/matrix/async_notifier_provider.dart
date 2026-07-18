@@ -134,11 +134,7 @@ abstract class TestAsyncNotifier<ValueT> implements $AsyncNotifier<ValueT> {}
 
 class DeferredAsyncNotifier<ValueT> extends AsyncNotifier<ValueT>
     implements TestAsyncNotifier<ValueT> {
-  DeferredAsyncNotifier(
-    this._create, {
-    this._updateShouldNotify,
-    this.arg,
-  });
+  DeferredAsyncNotifier(this._create, {this._updateShouldNotify, this.arg});
 
   final Object? arg;
 

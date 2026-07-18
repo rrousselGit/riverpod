@@ -694,11 +694,8 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
     @internal DataKind? kind,
   }) : this._((value, kind: kind, source: null), loading: null, error: null);
 
-  const AsyncData._(
-    this._value, {
-    required this._error,
-    required this._loading,
-  }) : super._();
+  const AsyncData._(this._value, {required this._error, required this._loading})
+    : super._();
 
   @override
   final _LoadingRecord? _loading;

@@ -2,11 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:riverpod_devtool/src/tree_list.dart';
 
 class TestNode extends Node<TestNode> {
-  TestNode(
-    this.name, {
-    List<TestNode>? children,
-    this._onRemove,
-  }) : children = children ?? const [];
+  TestNode(this.name, {List<TestNode>? children, this._onRemove})
+    : children = children ?? const [];
 
   final String name;
   @override
