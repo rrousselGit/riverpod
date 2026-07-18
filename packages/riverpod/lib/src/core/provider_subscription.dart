@@ -108,6 +108,7 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   bool get $hasParent => _parent != null;
 
   ProviderSubscriptionImpl<void>? _parent;
+  bool _attachedToElement = false;
 
   /// Whether an event was sent while this subscription was paused.
   ///
@@ -131,13 +132,17 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   @mustCallSuper
   @override
   void pause() {
+    if (!_attachedToElement) {
+      super.pause();
+      return;
+    }
     _listenedElement.onSubscriptionPauseOrDeactivate(this, super.pause);
   }
 
   @mustCallSuper
   @override
   void resume() {
-    _listenedElement.onSubscriptionResumeOrReactivate(this, () {
+    void applyResume() {
       final wasPaused = _isPaused;
       super.resume();
 
@@ -156,7 +161,14 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
           _notifyError(error, stackTrace);
         }
       }
-    });
+    }
+
+    if (!_attachedToElement) {
+      applyResume();
+      return;
+    }
+
+    _listenedElement.onSubscriptionResumeOrReactivate(this, applyResume);
 
     _listenedElement.flush();
   }
@@ -164,12 +176,20 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   @mustCallSuper
   @override
   void deactivate() {
+    if (!_attachedToElement) {
+      super.deactivate();
+      return;
+    }
     _listenedElement.onSubscriptionPauseOrDeactivate(this, super.deactivate);
   }
 
   @mustCallSuper
   @override
   void reactivate() {
+    if (!_attachedToElement) {
+      super.reactivate();
+      return;
+    }
     _listenedElement.onSubscriptionResumeOrReactivate(this, super.reactivate);
   }
 
@@ -325,6 +345,18 @@ final class ExternalProviderSubscription<InT, OutT>
   }
 
   @override
+  void deactivate() {
+    super.deactivate();
+    _innerSubscription.impl.deactivate();
+  }
+
+  @override
+  void reactivate() {
+    super.reactivate();
+    _innerSubscription.impl.reactivate();
+  }
+
+  @override
   void close() {
     if (_closed) return;
 
@@ -336,7 +368,7 @@ final class ExternalProviderSubscription<InT, OutT>
   $Result<OutT> _callRead() => _read();
 }
 
-mixin _OnPauseMixin {
+mixin class _OnPauseMixin {
   bool get _isPaused => _pauseCount > 0;
   var _pauseCount = 0;
 

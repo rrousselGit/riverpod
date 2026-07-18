@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use_from_same_package
-
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
@@ -20,12 +18,10 @@ void main() {
     final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
     final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
-    final listenable = SyncDelegatingTransformer<int, String>(provider, (
-      context,
-    ) {
-      return ProviderTransformer(
-        initState: (self) => 'Hello ${context.sourceState.requireValue}',
-        listener: (self, prev, next) {
+    final listenable = DelegatingListenable<int, String>(provider, () {
+      return DelegatingTransformer<int, String>(
+        initState: (self) => 'Hello ${self.sourceState.requireValue}',
+        onEvent: (self, prev, next) {
           if (next.value == 2) {
             self.state = AsyncError('Error at 2', StackTrace.current);
           } else {
@@ -65,12 +61,10 @@ void main() {
     final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
     final listenerTransformer = utils.Listener<AsyncResult<int>>();
 
-    final listenable = SyncDelegatingTransformer<int, String>(provider, (
-      context,
-    ) {
-      return ProviderTransformer(
-        initState: (self) => 'Hello ${context.sourceState.requireValue}',
-        listener: (self, prev, next) {
+    final listenable = DelegatingListenable<int, String>(provider, () {
+      return DelegatingTransformer<int, String>(
+        initState: (self) => 'Hello ${self.sourceState.requireValue}',
+        onEvent: (self, prev, next) {
           listenerTransformer(prev, next);
           if (next.value == 2) {
             self.state = AsyncError('Error at 2', StackTrace.current);
@@ -128,12 +122,10 @@ void main() {
     final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
     final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
-    final listenable = SyncDelegatingTransformer<int, String>(provider, (
-      context,
-    ) {
-      return ProviderTransformer(
-        initState: (self) => 'Hello ${context.sourceState.requireValue}',
-        listener: (self, prev, next) {
+    final listenable = DelegatingListenable<int, String>(provider, () {
+      return DelegatingTransformer<int, String>(
+        initState: (self) => 'Hello ${self.sourceState.requireValue}',
+        onEvent: (self, prev, next) {
           listener(prev, next);
         },
       );
@@ -146,7 +138,7 @@ void main() {
     verifyOnly(listener, listener(const AsyncData(0), const AsyncData(1)));
   });
 
-  group('ProviderTransformerContext', () {
+  group('ProviderTransformer2', () {
     group('sourceState', () {
       test('returns the current state of the source provider', () async {
         final container = ProviderContainer.test();
@@ -154,44 +146,38 @@ void main() {
           return 42;
         });
         final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
-        late final ProviderTransformerContext<int, String> context;
+        late final DelegatingTransformer<int, String> transformer;
 
-        final listenable = SyncDelegatingTransformer<int, String>(provider, (
-          c,
-        ) {
-          context = c;
-          return ProviderTransformer(
+        final listenable = DelegatingListenable<int, String>(provider, () {
+          return transformer = DelegatingTransformer(
             initState: (self) => '',
-            listener: (self, prev, next) {},
+            onEvent: (self, prev, next) {},
           );
         });
 
         final sub = container.listen(listenable, (a, b) {});
 
-        expect(context.sourceState, const AsyncData(42));
+        expect(transformer.sourceState, const AsyncData(42));
         notifier.state = 50;
-        expect(context.sourceState, const AsyncData(50));
+        expect(transformer.sourceState, const AsyncData(50));
       });
 
       test('Converts dependency error into AsyncError', () async {
         final container = ProviderContainer.test();
-        late final ProviderTransformerContext<int, String> context;
+        late final DelegatingTransformer<int, String> transformer;
         final provider = Provider<int>(
           (ref) => throw Exception('Dependency error'),
         );
 
         late final AsyncResult<int> initialState;
 
-        final listenable = SyncDelegatingTransformer<int, String>(provider, (
-          c,
-        ) {
-          context = c;
-          return ProviderTransformer(
+        final listenable = DelegatingListenable<int, String>(provider, () {
+          return transformer = DelegatingTransformer(
             initState: (self) {
-              initialState = context.sourceState;
+              initialState = self.sourceState;
               return '';
             },
-            listener: (self, prev, next) {},
+            onEvent: (self, prev, next) {},
           );
         });
 
@@ -214,7 +200,7 @@ void main() {
         await container.pump();
 
         expect(
-          context.sourceState,
+          transformer.sourceState,
           isA<AsyncError<int>>().having(
             (e) => e.error,
             'error',
@@ -239,13 +225,11 @@ void main() {
     final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
     final listener = utils.Listener<AsyncValue<int>>();
     var listenableCallCount = 0;
-    final listenable = SyncDelegatingTransformer<int, String>(provider, (
-      context,
-    ) {
+    final listenable = DelegatingListenable<int, String>(provider, () {
       listenableCallCount++;
-      return ProviderTransformer(
-        initState: (self) => 'Hello ${context.sourceState.requireValue}',
-        listener: (self, prev, next) {
+      return DelegatingTransformer<int, String>(
+        initState: (self) => 'Hello ${self.sourceState.requireValue}',
+        onEvent: (self, prev, next) {
           listener(prev, next);
           self.state = AsyncData('Hello ${next.requireValue}');
         },
@@ -255,7 +239,8 @@ void main() {
     final sub = container.listen(listenable, (a, b) {}, weak: true);
 
     expect(callCount, 0);
-    expect(listenableCallCount, 0);
+    // createTransformer is invoked eagerly, unlike the deprecated `transform`.
+    expect(listenableCallCount, 1);
     verifyZeroInteractions(listener);
 
     container.listen(provider, (a, b) {});
@@ -278,12 +263,12 @@ void main() {
     final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
     final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
     var callCount = 0;
-    final listenable = SyncDelegatingTransformer<bool, String>(
+    final listenable = DelegatingListenable<bool, String>(
       provider.select((v) => v.isEven),
-      (context) {
-        return ProviderTransformer(
-          initState: (self) => 'Hello ${context.sourceState.requireValue}',
-          listener: (self, prev, next) {
+      () {
+        return DelegatingTransformer(
+          initState: (self) => 'Hello ${self.sourceState.requireValue}',
+          onEvent: (self, prev, next) {
             callCount++;
             self.state = AsyncData('Hello ${next.requireValue}');
           },
@@ -307,7 +292,7 @@ void main() {
     expect(callCount, 1);
   });
 
-  group('ProviderTransformer', () {
+  group('ProviderTransformer2', () {
     group('onClose', () {
       test('guards the listener', () {
         final errors = <Object>[];
@@ -318,12 +303,10 @@ void main() {
             )!;
         final provider = Provider<int>((ref) => 0);
 
-        final listenable = SyncDelegatingTransformer<int, String>(provider, (
-          context,
-        ) {
-          return ProviderTransformer(
+        final listenable = DelegatingListenable<int, String>(provider, () {
+          return DelegatingTransformer(
             initState: (self) => 'Hello',
-            listener: (self, prev, next) {},
+            onEvent: (self, prev, next) {},
             onClose: () {
               throw Exception('Close error');
             },
@@ -348,12 +331,10 @@ void main() {
             return 0;
           });
 
-          final listenable = SyncDelegatingTransformer<int, String>(provider, (
-            context,
-          ) {
-            return ProviderTransformer(
+          final listenable = DelegatingListenable<int, String>(provider, () {
+            return DelegatingTransformer(
               initState: (self) => 'Hello',
-              listener: (self, prev, next) {},
+              onEvent: (self, prev, next) {},
               onClose: () {},
             );
           });
@@ -376,12 +357,10 @@ void main() {
         final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
         var callCount = 0;
-        final listenable = SyncDelegatingTransformer<int, String>(provider, (
-          context,
-        ) {
-          return ProviderTransformer(
+        final listenable = DelegatingListenable<int, String>(provider, () {
+          return DelegatingTransformer(
             initState: (self) => 'Hello',
-            listener: (self, prev, next) {},
+            onEvent: (self, prev, next) {},
             onClose: () {
               callCount++;
             },
@@ -400,29 +379,33 @@ void main() {
   });
 
   group('error handling', () {
-    test('If transform throws, reports to onError', () {
-      final errors = <Object>[];
-      final container =
-          runZonedGuarded(ProviderContainer.test, (err, _) => errors.add(err))!;
+    test('If initState throws, the initial container.listen rethrows', () {
       final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
       final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
+      final container = ProviderContainer.test();
 
-      final listenable = SyncDelegatingTransformer<int, String>(provider, (
-        context,
-      ) {
-        throw Exception('Error in transformer');
+      final listenable = DelegatingListenable<int, String>(provider, () {
+        return DelegatingTransformer(
+          initState: (self) {
+            throw Exception('Error in transformer');
+          },
+          onEvent: (self, prev, next) {},
+        );
       });
 
-      final sub = container.listen(listenable, (a, b) {});
-      notifier.state = 1;
-
-      expect(errors, [
-        isException.having(
-          (e) => e.toString(),
-          'toString',
-          'Exception: Error in transformer',
+      // Unlike the deprecated `transform`, `initState` is read eagerly
+      // by a non-weak `container.listen`, so the error is thrown
+      // synchronously instead of going through `onError`.
+      expect(
+        () => container.listen(listenable, (a, b) {}),
+        throwsA(
+          isA<ProviderException>().having(
+            (e) => e.exception.toString(),
+            'exception',
+            contains('Error in transformer'),
+          ),
         ),
-      ]);
+      );
     });
 
     test('If listener throws, reports to onError', () {
@@ -432,12 +415,10 @@ void main() {
       final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
       final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
-      final listenable = SyncDelegatingTransformer<int, String>(provider, (
-        context,
-      ) {
-        return ProviderTransformer(
-          initState: (self) => 'Hello ${context.sourceState.requireValue}',
-          listener: (self, prev, next) {
+      final listenable = DelegatingListenable<int, String>(provider, () {
+        return DelegatingTransformer(
+          initState: (self) => 'Hello ${self.sourceState.requireValue}',
+          onEvent: (self, prev, next) {
             throw Exception('Error in listener');
           },
         );
@@ -461,12 +442,10 @@ void main() {
       final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
       final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
-      final listenable = SyncDelegatingTransformer<int, String>(provider, (
-        context,
-      ) {
-        return ProviderTransformer(
-          initState: (self) => 'Hello ${context.sourceState.requireValue}',
-          listener: (self, prev, next) {
+      final listenable = DelegatingListenable<int, String>(provider, () {
+        return DelegatingTransformer(
+          initState: (self) => 'Hello ${self.sourceState.requireValue}',
+          onEvent: (self, prev, next) {
             self.state = AsyncError('Error in listener', StackTrace.current);
           },
         );
@@ -491,14 +470,23 @@ void main() {
       final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
       final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
-      final listenable = SyncDelegatingTransformer<int, String>(provider, (
-        context,
-      ) {
-        throw Exception('Error in transformer');
+      final listenable = DelegatingListenable<int, String>(provider, () {
+        return DelegatingTransformer(
+          initState: (self) {
+            throw Exception('Error in transformer');
+          },
+          onEvent: (self, prev, next) {},
+        );
       });
 
-      final sub = container.listen(listenable, (a, b) {}, onError: (e, s) {});
-      notifier.state = 1;
+      // Using `weak: true` so that `initState` isn't read eagerly, allowing
+      // us to observe the error being thrown lazily from `sub.read()`.
+      final sub = container.listen(
+        listenable,
+        (a, b) {},
+        onError: (e, s) {},
+        weak: true,
+      );
 
       expect(
         sub.read,
@@ -514,22 +502,56 @@ void main() {
   });
 }
 
-final class SyncDelegatingTransformer<InT, ValueT>
-    with SyncProviderTransformerMixin<InT, ValueT> {
-  SyncDelegatingTransformer(this.source, this.transformCb);
+final class DelegatingListenable<InT, ValueT>
+    extends CustomProviderListenable<InT, ValueT> {
+  DelegatingListenable(this.source, this.createTransformerCb);
 
   @override
   final ProviderListenable<InT> source;
 
-  final ProviderTransformer<InT, ValueT> Function(
-    ProviderTransformerContext<InT, ValueT> context,
-  )
-  transformCb;
+  final DelegatingTransformer<InT, ValueT> Function() createTransformerCb;
 
   @override
-  ProviderTransformer<InT, ValueT> transform(
-    ProviderTransformerContext<InT, ValueT> context,
-  ) {
-    return transformCb(context);
-  }
+  DelegatingTransformer<InT, ValueT> createTransformer() =>
+      createTransformerCb();
+}
+
+final class DelegatingTransformer<InT, ValueT>
+    extends
+        SyncProviderTransformer2<
+          InT,
+          ValueT,
+          DelegatingListenable<InT, ValueT>
+        > {
+  DelegatingTransformer({
+    required ValueT Function(DelegatingTransformer<InT, ValueT> self) initState,
+    required void Function(
+      DelegatingTransformer<InT, ValueT> self,
+      AsyncResult<InT> prev,
+      AsyncResult<InT> next,
+    )
+    onEvent,
+    void Function()? onClose,
+  }) : _initState = initState,
+       _onEvent = onEvent,
+       _onClose = onClose;
+
+  final ValueT Function(DelegatingTransformer<InT, ValueT> self) _initState;
+  final void Function(
+    DelegatingTransformer<InT, ValueT> self,
+    AsyncResult<InT> prev,
+    AsyncResult<InT> next,
+  )
+  _onEvent;
+  final void Function()? _onClose;
+
+  @override
+  ValueT initState() => _initState(this);
+
+  @override
+  void onEvent(AsyncResult<InT> prev, AsyncResult<InT> next) =>
+      _onEvent(this, prev, next);
+
+  @override
+  void onClose() => _onClose?.call();
 }

@@ -43,6 +43,37 @@ final dep = Provider((ref) {
   ref.watch(legacy(const Object()));
   ref.watch(legacy(FreezedExample()));
   ref.watch(legacy(ClassicFreezed(42)));
+  ref.watch(legacy(TypeId(1)));
+
+  // Extension types are unwrapped to check the underlying representation type.
+  ref.watch(legacy(GoodTypeId(ClassThatOverridesEqual())));
+  ref.watch(legacy(GoodTypeId(const ClassThatOverridesEqual())));
+  // ignore: riverpod_lint/provider_parameters
+  ref.watch(legacy(BadTypeId(NoEqualsClass())));
+  // Nested extension types are unwrapped recursively.
+  ref.watch(legacy(NestedGoodTypeId(GoodTypeId(ClassThatOverridesEqual()))));
+  // ignore: riverpod_lint/provider_parameters
+  ref.watch(legacy(NestedBadTypeId(BadTypeId(NoEqualsClass()))));
+
+  // Generic extension types are unwrapped using the substituted type argument.
+  ref.watch(legacy(Box<ClassThatOverridesEqual>(ClassThatOverridesEqual())));
+  // ignore: riverpod_lint/provider_parameters
+  ref.watch(legacy(Box<NoEqualsClass>(NoEqualsClass())));
+
+  // Triple-nested extension types are unwrapped recursively.
+  ref.watch(
+    legacy(TripleGoodTypeId(NestedGoodTypeId(GoodTypeId(ClassThatOverridesEqual())))),
+  );
+  // ignore: riverpod_lint/provider_parameters
+  ref.watch(
+    legacy(TripleBadTypeId(NestedBadTypeId(BadTypeId(NoEqualsClass())))),
+  );
+
+  // A generic extension type wrapping another generic extension type is
+  // unwrapped recursively too.
+  ref.watch(legacy(Box<Box<ClassThatOverridesEqual>>(Box(ClassThatOverridesEqual()))));
+  // ignore: riverpod_lint/provider_parameters
+  ref.watch(legacy(Box<Box<NoEqualsClass>>(Box(NoEqualsClass()))));
 
   void fn() {}
 
@@ -72,6 +103,7 @@ final dep = Provider((ref) {
   // ignore: riverpod_lint/provider_parameters
   ref.watch(generatorProvider(value: Object()));
   ref.watch(generatorProvider(value: const Object()));
+  ref.watch(generatorProvider(value: TypeId(1)));
 
   ref.watch(generatorProvider(value: ClassThatOverridesEqual()));
   ref.watch(generatorProvider(value: const ClassThatOverridesEqual()));
@@ -143,6 +175,7 @@ class MyWidget extends ConsumerWidget {
     // ignore: riverpod_lint/provider_parameters
     ref.watch(legacy(Object()));
     ref.watch(legacy(const Object()));
+    ref.watch(legacy(TypeId(1)));
 
     ref.watch(legacy(ClassThatOverridesEqual()));
     ref.watch(legacy(const ClassThatOverridesEqual()));
@@ -171,6 +204,7 @@ class MyWidget extends ConsumerWidget {
     // ignore: riverpod_lint/provider_parameters
     ref.watch(generatorProvider(value: Object()));
     ref.watch(generatorProvider(value: const Object()));
+    ref.watch(generatorProvider(value: TypeId(1)));
 
     ref.watch(generatorProvider(value: ClassThatOverridesEqual()));
     ref.watch(generatorProvider(value: const ClassThatOverridesEqual()));
@@ -190,6 +224,20 @@ class MyWidget extends ConsumerWidget {
     return const Placeholder();
   }
 }
+
+extension type TypeId(int id) {}
+
+class NoEqualsClass {
+  NoEqualsClass();
+}
+
+extension type GoodTypeId(ClassThatOverridesEqual value) {}
+extension type BadTypeId(NoEqualsClass value) {}
+extension type NestedGoodTypeId(GoodTypeId value) {}
+extension type NestedBadTypeId(BadTypeId value) {}
+extension type TripleGoodTypeId(NestedGoodTypeId value) {}
+extension type TripleBadTypeId(NestedBadTypeId value) {}
+extension type Box<T>(T value) {}
 
 // Regression test for https://github.com/rrousselGit/riverpod/issues/3302
 mixin Equatable {
