@@ -2,12 +2,12 @@ name: riverpod_devtool_generator
 publish_to: none
 
 environment:
-  sdk: ^3.8.0
+  sdk: ^3.12.0
 
 resolution: workspace
 
 dependencies:
-  analyzer: ^12.0.0
+  analyzer: ^13.0.0
   analyzer_buffer: ^0.3.0
   build: ^4.0.0
   build_config: ^1.1.0

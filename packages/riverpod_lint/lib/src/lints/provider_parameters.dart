@@ -63,10 +63,10 @@ class _Visitor extends SimpleAstVisitor<void> {
 
     for (final argument in arguments.arguments) {
       Expression value;
-      if (argument is NamedExpression) {
-        value = argument.expression;
+      if (argument is NamedArgument) {
+        value = argument.argumentExpression;
       } else {
-        value = argument;
+        value = argument as Expression;
       }
 
       if (value is TypedLiteral && !value.isConst) {

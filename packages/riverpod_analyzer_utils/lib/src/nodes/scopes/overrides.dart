@@ -1,13 +1,12 @@
 part of '../../nodes.dart';
 
 @_ast
-extension ProviderOverrideExpressionX on CollectionElement {
+extension ProviderOverrideExpressionX on Expression {
   static final _cache = Expando<Box<ProviderOverrideExpression?>>();
 
   ProviderOverrideExpression? get providerOverride {
     return _cache.upsert(this, () {
       final expression = this;
-      if (expression is! Expression) return null;
 
       final type = expression.staticType;
       if (type == null || !overrideType.isAssignableFromType(type)) return null;
@@ -32,7 +31,7 @@ final class ProviderOverrideExpression {
     required this.providerPrefix,
   });
 
-  final CollectionElement node;
+  final Expression node;
   final ProviderIdentifier? provider;
   final SimpleIdentifier? providerPrefix;
 
@@ -59,6 +58,7 @@ extension ProviderOverrideListX on Expression {
       if (expression is ListLiteral) {
         overrides =
             expression.elements
+                .whereType<Expression>()
                 .map((e) => e.providerOverride)
                 .nonNulls
                 .toList();
