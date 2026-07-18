@@ -249,6 +249,42 @@ void main() {
         verifyNoMoreInteractions(listener);
       });
 
+      test('an in-flight run error does not override the reset state', () async {
+        final mut = Mutation<int>();
+        final container = ProviderContainer.test();
+        final completer = Completer<int>();
+        final listener = Listener<MutationState<int>>();
+
+        container.listen(mut, listener.call);
+
+        final future = mut.run(container, (_) => completer.future);
+        expect(future, throwsA(42));
+        verifyOnly(
+          listener,
+          listener(
+            argThat(isMutationIdle<int>()),
+            argThat(isMutationPending<int>()),
+          ),
+        );
+
+        mut.reset(container);
+        verifyOnly(
+          listener,
+          listener(
+            argThat(isMutationPending<int>()),
+            argThat(isMutationIdle<int>()),
+          ),
+        );
+
+        // The run completes with an error after the reset. Its result must not be applied,
+        // as the mutation has been explicitly reset to idle in the meantime.
+        completer.completeError(42);
+        await null;
+
+        expect(container.read(mut), isMutationIdle<int>());
+        verifyNoMoreInteractions(listener);
+      });
+
       test(
         'a run started by a synchronous reset listener is not invalidated',
         () async {
