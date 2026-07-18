@@ -207,38 +207,23 @@ class InvalidateProviderButton extends ConsumerWidget {
   const InvalidateProviderButton({super.key, required this.element});
 
   /// The live ProviderElement backing the provider to invalidate.
-  final RootCachedObject element;
+  final ElementMeta element;
 
-  Future<void> _invalidate(BuildContext context, WidgetRef ref) async {
+  Future<void> _invalidate(WidgetRef ref) async {
     final isAlive = Disposable();
 
     String? errorMessage;
     try {
       final evalFactory = await ref.read(evalProvider.future);
-      final elementByte = await element.readRef(evalFactory, isAlive);
-
-      switch (elementByte) {
-        case ByteError(error: final error):
-          errorMessage = error.toString();
-        case ByteVariable(:final instance):
-          final result = await evalFactory.riverpodFramework.eval(
-            'that.container.invalidate(that.origin)',
-            isAlive: isAlive,
-            scope: {'that': instance.id!},
-          );
-
-          if (result case ByteError(error: final error)) {
-            errorMessage = error.toString();
-          }
-      }
+      await element.invalidate(evalFactory, isAlive: isAlive);
     } catch (error) {
       errorMessage = error.toString();
     } finally {
       isAlive.dispose();
     }
 
-    if (errorMessage != null && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+    if (errorMessage != null && ref.context.mounted) {
+      ScaffoldMessenger.of(ref.context).showSnackBar(
         SnackBar(content: Text('Failed to invalidate: $errorMessage')),
       );
     }
@@ -247,7 +232,7 @@ class InvalidateProviderButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DevtoolIconButton(
-      onPressed: () => _invalidate(context, ref),
+      onPressed: () => _invalidate(ref),
       tooltip: 'Invalidate provider',
       icon: const Icon(Icons.refresh),
     );
@@ -278,7 +263,7 @@ class ProviderViewer extends StatelessWidget {
               includeTopBorder: false,
               title: const Text('State'),
               actions: [
-                InvalidateProviderButton(element: element.provider.element),
+                InvalidateProviderButton(element: element),
                 const InspectorSettingsButton(),
               ],
             ),
