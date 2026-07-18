@@ -1,0 +1,169 @@
+---
+title: ProviderContainers/ProviderScopes
+---
+import { Link } from "/src/components/Link";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+import allProviders from 'raw-loader!./containers/all_providers.dart';
+import familyProviders from 'raw-loader!./containers/all_providers_family.dart';
+
+[ProviderContainer] — _центральный_ элемент архитектуры Riverpod.  
+В Riverpod [Providers](./providers.mdx) сами по себе не хранят состояние. 
+Вместо этого состояние конкретного provider хранится внутри этого объекта-контейнера.
+
+[ProviderScope] — это виджет, который создаёт [ProviderContainer] и предоставляет его дереву виджетов. 
+Именно поэтому при использовании Riverpod вы всегда увидите scope в корне приложения.  
+Без него Riverpod не смог бы хранить состояние providers!
+
+### Использование ProviderContainer в приложениях на чистом Dart
+
+[ProviderContainer] — полезный объект, если вы хотите использовать Riverpod в проектах на чистом Dart, 
+например в консольных или серверных приложениях.
+
+Вы можете создать [ProviderContainer] в функции `main` и использовать его для чтения и изменения providers:
+
+```dart
+import 'package:riverpod/riverpod.dart';
+
+void main() {
+  final container = ProviderContainer();
+
+  try {
+    final sub = container.listen(counterProvider, (previous, next) {
+      print('Counter changed from $previous to $next');
+    });
+    print('Counter starts at ${sub.read()}');
+  } finally {
+    // Освободите контейнер после завершения работы
+    container.dispose();
+  }
+}
+```
+
+:::note
+В тестах не используйте [ProviderContainer] напрямую.
+Вместо этого используйте [ProviderContainer.test](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderContainer/ProviderContainer.test.html).
+Это автоматически освободит контейнер после завершения теста.
+
+```dart
+test('Counter starts at 0 and can be incremented', () {
+  // Нет необходимости освобождать контейнер после завершения теста
+  final container = ProviderContainer.test();
+
+  // Используйте контейнер для тестирования своих providers
+});
+```
+:::
+
+### Получение списка активных providers в контейнере
+
+`ProviderContainer` предоставляет метод `allProviders()`, который возвращает активные providers, 
+находящиеся в данном контейнере и его родительских контейнерах.
+
+
+Это может быть полезно для отладки, тестирования или применения одной и той 
+же операции ко всем активным providers:
+
+<AutoSnippet raw={allProviders} />
+
+При необходимости можно указать `family`, чтобы получить только активные providers конкретного family:
+
+<AutoSnippet raw={familyProviders} />
+
+
+### Использование ProviderScope в Flutter-приложениях
+
+В Flutter-приложениях не следует использовать [ProviderContainer] напрямую.
+Вместо этого используйте [ProviderScope], который является виджетом-аналогом [ProviderContainer].
+
+Конечный результат будет тем же: создайте [ProviderScope] в функции `main`. После этого вы сможете использовать 
+[Consumers](./consumers.mdx) для чтения и изменения providers в своих виджетах.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+void main() {
+  runApp(
+    ProviderScope(
+      child: Consumer(
+        builder: (context, ref, _) {
+          final counter = ref.watch(counterProvider);
+
+          // TODO используйте "counter"
+        },
+      ),
+    ),
+  );
+}
+```
+
+## Зачем хранить состояние providers внутри контейнера?
+
+Можно задаться вопросом: почему providers не хранят своё состояние самостоятельно.
+Если это требование убрать, можно было бы представить мир, в котором мы писали бы:
+
+```dart
+print(helloWorldProvider.value); // Выведет "Hello world!"
+```
+
+вместо того, чтобы писать `ref.watch(helloWorldProvider)`.
+
+Riverpod делает это по нескольким причинам, которые сводятся к одной идее: "Никакого глобального состояния".
+
+1. Лучшее разделение ответственности.
+  Если бы Riverpod позволял providers хранить собственное состояние, 
+  это означало бы, что _что угодно_ в приложении могло бы читать и изменять это состояние. 
+  В таком случае было бы сложно контролировать, как и когда состояние изменяется.  
+
+  В архитектуре Riverpod обновление состояния централизовано: вся логика 
+  изменения provider находится внутри самого provider. 
+  Обычно UI вызывает только один метод у Notifier данного provider.
+
+1. Более удобное тестирование.
+  Хранение состояния providers внутри контейнера позволяет не заботиться 
+  о сбросе состояния между тестами. Достаточно создавать новый контейнер 
+  для каждого теста — и для каждого provider будет формироваться новое, "чистое" состояние.
+
+  ```dart
+  test('Counter starts at 0 and can be incremented', () {
+    final container = ProviderContainer.test();
+
+    expect(container.read(counterProvider), 0);
+    container.read(counterProvider.notifier).increment();
+    expect(container.read(counterProvider), 1);
+  });
+
+  test('Counter cannot go below 0', () {
+    final container = ProviderContainer.test();
+
+    expect(container.read(counterProvider), 0);
+    container.read(counterProvider.notifier).decrement();
+    expect(container.read(counterProvider), 0);
+  });
+  ```
+  В примере выше видно, что оба теста используют один и тот же provider, 
+  но изменения состояния в одном тесте не влияют на другой.
+
+  То же самое относится и к использованию [ProviderScope] и тестированию виджетов.
+
+1. Централизованное место настройки приложения.  
+  Через [ProviderContainer] и [ProviderScope], можно настраивать различные аспекты приложения на уровне всего Riverpod. 
+  Например:
+    * Можно определить кастомный [ProviderObserver], чтобы отслеживать все изменения состояния в приложении.
+      См. <Link documentID="concepts2/observers"/>.
+    * Можно переопределять providers локально или глобально — 
+      это полезно для тестирования, разных окружений или разработки.
+      См. <Link documentID="concepts2/overrides"/>.
+
+1. Поддержка <Link documentID="concepts2/scoping"/>.
+  Так как состояние provider хранится внутри контейнера, один и тот же provider 
+  может возвращать разные значения в зависимости от того, где именно в дереве виджетов он используется.
+  Это довольно продвинутая возможность и обычно не рекомендуется к использованию без необходимости, 
+  но может быть полезна для оптимизации производительности.
+
+
+[ProviderContainer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderContainer-class.html
+[ProviderScope]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderScope-class.html
+[ProviderObserver]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderObserver-class.html

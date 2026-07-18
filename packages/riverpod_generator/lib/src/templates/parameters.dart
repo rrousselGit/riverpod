@@ -108,9 +108,7 @@ extension ParameterType on FormalParameter {
   String get typeDisplayString {
     final that = this;
     switch (that) {
-      case DefaultFormalParameter():
-        return that.parameter.typeDisplayString;
-      case SimpleFormalParameter():
+      case RegularFormalParameter():
         try {
           // No type, so let's just return 'dynamic'
           return that.type?.type?.toCode() ?? 'dynamic';
@@ -121,7 +119,6 @@ extension ParameterType on FormalParameter {
           );
         }
       case FieldFormalParameter():
-      case FunctionTypedFormalParameter():
       case SuperFormalParameter():
         throw UnsupportedError(
           'Only parameters of the form "Type name" are supported',

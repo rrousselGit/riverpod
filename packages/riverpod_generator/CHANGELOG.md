@@ -1,3 +1,7 @@
+## Unreleased
+
+- Upgraded `analyzer` to `<15.0.0`
+
 ## 4.0.4 - 2026-06-10
 
 - Fix `AsyncNotifierProvider`/`StreamNotifierProvider` disposing dependencies

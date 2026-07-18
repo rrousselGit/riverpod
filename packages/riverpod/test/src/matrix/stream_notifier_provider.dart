@@ -140,11 +140,7 @@ abstract class TestStreamNotifier<ValueT> implements $StreamNotifier<ValueT> {}
 
 class DeferredStreamNotifier<ValueT> extends StreamNotifier<ValueT>
     implements TestStreamNotifier<ValueT> {
-  DeferredStreamNotifier(
-    this._create, {
-    bool Function(AsyncValue<ValueT>, AsyncValue<ValueT>)? updateShouldNotify,
-    this.arg,
-  }) : _updateShouldNotify = updateShouldNotify;
+  DeferredStreamNotifier(this._create, {this._updateShouldNotify, this.arg});
 
   final Object? arg;
 

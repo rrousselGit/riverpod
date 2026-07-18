@@ -1,3 +1,8 @@
+## Unreleased fix
+
+- Upgraded `analyzer` to `<15.0.0`
+- Fixed `provider_parameters` false positive for extension type arguments.
+
 ## 3.1.4 - 2026-06-10
 ### Dependency changes
 
@@ -371,4 +376,3 @@ Fix quick-fix for provider_dependencies
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-

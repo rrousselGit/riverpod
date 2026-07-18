@@ -3,12 +3,12 @@ description: "A new Flutter project."
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: ^3.7.0
+  sdk: ^3.12.0
 
 resolution: workspace
 
 dependencies:
-  dio: 5.9.2
+  dio: 5.10.0
   flutter:
     sdk: flutter
   flutter_riverpod:

@@ -2,7 +2,7 @@ name: riverpod_lint_flutter_test
 publish_to: none
 
 environment:
-  sdk: ^3.7.0
+  sdk: ^3.12.0
   flutter: ">=3.0.0"
 
 resolution: workspace
@@ -17,10 +17,10 @@ dependencies:
   riverpod_annotation:
 
 dev_dependencies:
-  analyzer: ^12.0.0
+  analyzer: ^13.0.0
   analyzer_plugin: ^0.14.0
   build_runner: ^2.11.0
-  freezed: ^3.2.0
+  freezed: ">=3.2.6-dev.1 <5.0.0"
   json_serializable: ^6.6.1
   riverpod_generator:
   test: ^1.24.9

@@ -1,6 +1,6 @@
 ---
 title: What's new in Riverpod 3.0
-version: 1
+version: 2
 ---
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -1141,29 +1141,37 @@ See the [WidgetTester.container] extension for more information.
 ## Custom ProviderListenables
 
 It is now possible to create custom [ProviderListenable]s in Riverpod 3.0.
-This is doable using [SyncProviderTransformerMixin].
+This is doable by extending [CustomProviderListenable].
 
 The following example implements a variable of `provider.select`,
 where the callback returns a boolean instead of the selected value.
 
 ```dart
-final class Where<T> with SyncProviderTransformerMixin<T, T> {
+final class Where<T> extends CustomProviderListenable<T, T> {
   Where(this.source, this.where);
+
   @override
   final ProviderListenable<T> source;
   final bool Function(T previous, T value) where;
 
   @override
-  ProviderTransformer<T, T> transform(
-    ProviderTransformerContext<T, T> context,
+  _WhereTransformer<T> createTransformer() => _WhereTransformer<T>();
+}
+
+final class _WhereTransformer<T>
+    extends SyncProviderTransformer2<T, T, Where<T>> {
+  @override
+  T initState() => sourceState.requireValue;
+
+  @override
+  void onEvent(
+    ProviderTransformer2<T, T, Where<T>> self,
+    AsyncResult<T> prev,
+    AsyncResult<T> next,
   ) {
-     return ProviderTransformer(
-       initState: (_) => context.sourceState.requireValue,
-       listener: (self, previous, next) {
-         if (where(previous, next))
-           self.state = next;
-       },
-     );
+    if (listenable.where(prev.requireValue, next.requireValue)) {
+      state = next;
+    }
   }
 }
 
@@ -1400,7 +1408,7 @@ regarding combining multiple "sources of truth" in a single provider.
 [AsyncValue]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/AsyncValue-class.html
 [ProviderObserver]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderObserver-class.html
 [WidgetTester.container]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/RiverpodWidgetTesterX/container.html
-[SyncProviderTransformerMixin]: https://pub.dev/documentation/riverpod/latest/misc/SyncProviderTransformerMixin-mixin.html
+[CustomProviderListenable]: https://pub.dev/documentation/riverpod/latest/misc/CustomProviderListenable-class.html
 [ProviderListenable]: https://pub.dev/documentation/riverpod/latest/misc/ProviderListenable-class.html
 [StreamProvider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamProvider-class.html
 [StreamNotifier]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamNotifier-class.html

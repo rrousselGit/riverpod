@@ -174,6 +174,25 @@ void main() {
     );
   });
 
+  test('run does not throw if the container is disposed mid-run', () async {
+    final mut = Mutation<int>();
+    final container = ProviderContainer.test();
+    final completer = Completer<int>();
+
+    container.listen(mut, (_, _) {});
+
+    final future = mut.run(container, (_) => completer.future);
+
+    // Dispose while the mutation is still pending. This closes the internal
+    // subscription used by `run`.
+    container.dispose();
+    completer.complete(42);
+
+    // The run should still complete with its value instead of throwing a
+    // "subscription was closed" StateError.
+    await expectLater(future, completion(42));
+  });
+
   group('Mutation', () {
     group('.reset', () {
       test('simple flow', () async {
@@ -225,6 +244,42 @@ void main() {
         // as the mutation has been explicitly reset to idle in the meantime.
         completer.complete(42);
         await future;
+
+        expect(container.read(mut), isMutationIdle<int>());
+        verifyNoMoreInteractions(listener);
+      });
+
+      test('an in-flight run error does not override the reset state', () async {
+        final mut = Mutation<int>();
+        final container = ProviderContainer.test();
+        final completer = Completer<int>();
+        final listener = Listener<MutationState<int>>();
+
+        container.listen(mut, listener.call);
+
+        final future = mut.run(container, (_) => completer.future);
+        expect(future, throwsA(42));
+        verifyOnly(
+          listener,
+          listener(
+            argThat(isMutationIdle<int>()),
+            argThat(isMutationPending<int>()),
+          ),
+        );
+
+        mut.reset(container);
+        verifyOnly(
+          listener,
+          listener(
+            argThat(isMutationPending<int>()),
+            argThat(isMutationIdle<int>()),
+          ),
+        );
+
+        // The run completes with an error after the reset. Its result must not be applied,
+        // as the mutation has been explicitly reset to idle in the meantime.
+        completer.completeError(42);
+        await null;
 
         expect(container.read(mut), isMutationIdle<int>());
         verifyNoMoreInteractions(listener);

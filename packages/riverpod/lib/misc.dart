@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 export 'src/internals.dart'
     show
         ProviderListenableOrFamily,
@@ -18,4 +20,7 @@ export 'src/internals.dart'
         ProviderTransformerContext,
         ProviderTransformer,
         SyncProviderTransformerMixin,
-        AsyncProviderListenable;
+        AsyncProviderListenable,
+        CustomProviderListenable,
+        ProviderTransformer2,
+        SyncProviderTransformer2;

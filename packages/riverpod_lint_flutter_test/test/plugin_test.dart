@@ -683,9 +683,10 @@ String _renderOffsetsWithContext({
         final lastBlock = displayedBlocks.removeLast();
         displayedBlocks.add((
           startLineIndex: lastBlock.startLineIndex,
-          endLineIndex: endDisplayedLineIndex > lastBlock.endLineIndex
-              ? endDisplayedLineIndex
-              : lastBlock.endLineIndex,
+          endLineIndex:
+              endDisplayedLineIndex > lastBlock.endLineIndex
+                  ? endDisplayedLineIndex
+                  : lastBlock.endLineIndex,
         ));
       } else {
         displayedBlocks.add((
