@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'user.dart';
@@ -9,6 +9,7 @@ part of 'user.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -66,7 +67,7 @@ class _$UserCopyWithImpl<$Res>
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? reputation = null,Object? userId = null,Object? badgeCounts = freezed,Object? displayName = null,Object? profileImage = null,Object? link = null,}) {
-  return _then(_self.copyWith(
+  return _then(User(
 reputation: null == reputation ? _self.reputation : reputation // ignore: cast_nullable_to_non_nullable
 as int,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as int,badgeCounts: freezed == badgeCounts ? _self.badgeCounts : badgeCounts // ignore: cast_nullable_to_non_nullable
@@ -362,7 +363,7 @@ class _$BadgeCountCopyWithImpl<$Res>
 /// Create a copy of BadgeCount
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? bronze = null,Object? silver = null,Object? gold = null,}) {
-  return _then(_self.copyWith(
+  return _then(BadgeCount(
 bronze: null == bronze ? _self.bronze : bronze // ignore: cast_nullable_to_non_nullable
 as int,silver: null == silver ? _self.silver : silver // ignore: cast_nullable_to_non_nullable
 as int,gold: null == gold ? _self.gold : gold // ignore: cast_nullable_to_non_nullable

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'pub_repository.dart';
@@ -9,6 +9,7 @@ part of 'pub_repository.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -72,7 +73,7 @@ class _$PackageMetricsScoreCopyWithImpl<$Res>
 /// Create a copy of PackageMetricsScore
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? grantedPoints = null,Object? maxPoints = null,Object? likeCount = null,Object? tags = null,}) {
-  return _then(_self.copyWith(
+  return _then(PackageMetricsScore(
 grantedPoints: null == grantedPoints ? _self.grantedPoints : grantedPoints // ignore: cast_nullable_to_non_nullable
 as int,maxPoints: null == maxPoints ? _self.maxPoints : maxPoints // ignore: cast_nullable_to_non_nullable
 as int,likeCount: null == likeCount ? _self.likeCount : likeCount // ignore: cast_nullable_to_non_nullable
@@ -212,7 +213,7 @@ return $default(_that.grantedPoints,_that.maxPoints,_that.likeCount,_that.tags);
 @JsonSerializable()
 
 class _PackageMetricsScore with DiagnosticableTreeMixin implements PackageMetricsScore {
-   _PackageMetricsScore({required this.grantedPoints, required this.maxPoints, required this.likeCount, required final  List<String> tags}): _tags = tags;
+   _PackageMetricsScore({required this.grantedPoints, required this.maxPoints, required this.likeCount, required  List<String> tags}): _tags = tags;
   factory _PackageMetricsScore.fromJson(Map<String, dynamic> json) => _$PackageMetricsScoreFromJson(json);
 
 @override final  int grantedPoints;
@@ -356,7 +357,7 @@ class _$PackageMetricsResponseCopyWithImpl<$Res>
 /// Create a copy of PackageMetricsResponse
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? score = null,}) {
-  return _then(_self.copyWith(
+  return _then(PackageMetricsResponse(
 score: null == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
 as PackageMetricsScore,
   ));
@@ -643,7 +644,7 @@ class _$PackageDetailsCopyWithImpl<$Res>
 /// Create a copy of PackageDetails
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? version = null,Object? pubspec = null,}) {
-  return _then(_self.copyWith(
+  return _then(PackageDetails(
 version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
 as String,pubspec: null == pubspec ? _self.pubspec : pubspec // ignore: cast_nullable_to_non_nullable
 as Pubspec,
@@ -915,7 +916,7 @@ class _$PackageCopyWithImpl<$Res>
 /// Create a copy of Package
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? latest = null,}) {
-  return _then(_self.copyWith(
+  return _then(Package(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,latest: null == latest ? _self.latest : latest // ignore: cast_nullable_to_non_nullable
 as PackageDetails,
@@ -1205,7 +1206,7 @@ class _$LikedPackageCopyWithImpl<$Res>
 /// Create a copy of LikedPackage
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? package = null,Object? liked = null,}) {
-  return _then(_self.copyWith(
+  return _then(LikedPackage(
 package: null == package ? _self.package : package // ignore: cast_nullable_to_non_nullable
 as String,liked: null == liked ? _self.liked : liked // ignore: cast_nullable_to_non_nullable
 as bool,
@@ -1484,7 +1485,7 @@ class _$LikedPackagesResponseCopyWithImpl<$Res>
 /// Create a copy of LikedPackagesResponse
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? likedPackages = null,}) {
-  return _then(_self.copyWith(
+  return _then(LikedPackagesResponse(
 likedPackages: null == likedPackages ? _self.likedPackages : likedPackages // ignore: cast_nullable_to_non_nullable
 as List<LikedPackage>,
   ));
@@ -1621,7 +1622,7 @@ return $default(_that.likedPackages);case _:
 @JsonSerializable()
 
 class _LikesPackagesResponse with DiagnosticableTreeMixin implements LikedPackagesResponse {
-   _LikesPackagesResponse({required final  List<LikedPackage> likedPackages}): _likedPackages = likedPackages;
+   _LikesPackagesResponse({required  List<LikedPackage> likedPackages}): _likedPackages = likedPackages;
   factory _LikesPackagesResponse.fromJson(Map<String, dynamic> json) => _$LikesPackagesResponseFromJson(json);
 
  final  List<LikedPackage> _likedPackages;
@@ -1759,7 +1760,7 @@ class _$PubPackagesResponseCopyWithImpl<$Res>
 /// Create a copy of PubPackagesResponse
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? packages = null,}) {
-  return _then(_self.copyWith(
+  return _then(PubPackagesResponse(
 packages: null == packages ? _self.packages : packages // ignore: cast_nullable_to_non_nullable
 as List<Package>,
   ));
@@ -1896,7 +1897,7 @@ return $default(_that.packages);case _:
 @JsonSerializable()
 
 class _PubPackagesResponse with DiagnosticableTreeMixin implements PubPackagesResponse {
-   _PubPackagesResponse({required final  List<Package> packages}): _packages = packages;
+   _PubPackagesResponse({required  List<Package> packages}): _packages = packages;
   factory _PubPackagesResponse.fromJson(Map<String, dynamic> json) => _$PubPackagesResponseFromJson(json);
 
  final  List<Package> _packages;
@@ -2034,7 +2035,7 @@ class _$SearchPackageCopyWithImpl<$Res>
 /// Create a copy of SearchPackage
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? package = null,}) {
-  return _then(_self.copyWith(
+  return _then(SearchPackage(
 package: null == package ? _self.package : package // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -2303,7 +2304,7 @@ class _$PubSearchResponseCopyWithImpl<$Res>
 /// Create a copy of PubSearchResponse
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? packages = null,}) {
-  return _then(_self.copyWith(
+  return _then(PubSearchResponse(
 packages: null == packages ? _self.packages : packages // ignore: cast_nullable_to_non_nullable
 as List<SearchPackage>,
   ));
@@ -2440,7 +2441,7 @@ return $default(_that.packages);case _:
 @JsonSerializable()
 
 class _PubSearchResponse with DiagnosticableTreeMixin implements PubSearchResponse {
-   _PubSearchResponse({required final  List<SearchPackage> packages}): _packages = packages;
+   _PubSearchResponse({required  List<SearchPackage> packages}): _packages = packages;
   factory _PubSearchResponse.fromJson(Map<String, dynamic> json) => _$PubSearchResponseFromJson(json);
 
  final  List<SearchPackage> _packages;
