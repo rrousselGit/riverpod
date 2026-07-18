@@ -5,6 +5,9 @@
 - Added `CustomProviderListenable`, a slightly simplified way of making custom provider extensions
 - Added the ability to do `ValueListenable<int> listenable = ref.watch(counterProvider.listenable)`.
   This uses the new `pkg:listen`.
+- Fix `invalidate`/`refresh` not finding providers and families when called
+  from a scoped `ProviderContainer`/`ProviderScope` with overrides, if the
+  provider was never read through that scope. (thanks to @itsUndefined)
 
 ## 3.3.2 - 2026-06-10
 

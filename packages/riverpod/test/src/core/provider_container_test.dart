@@ -1940,7 +1940,6 @@ void main() {
     group('invalidate', () {
       test(
         'can invalidate non-scoped family from a scoped container with overrides',
-        skip: 'TO FIX',
         () {
           final root = ProviderContainer.test();
           final family = Provider.family<Object?, int>(
@@ -1966,6 +1965,122 @@ void main() {
           final afterInvalidate = leaf.read(provider);
 
           expect(initial, isNot(same(afterInvalidate)));
+        },
+      );
+
+      test(
+        'can invalidate a non-scoped family member from a scoped container with overrides',
+        () {
+          final root = ProviderContainer.test();
+          final family = Provider.family<Object?, int>(
+            (ref, arg) => Object(),
+            name: 'family',
+          );
+          final scoped = Provider(
+            (ref) => 0,
+            dependencies: const [],
+            name: 'scoped',
+          );
+          final leaf = ProviderContainer.test(
+            parent: root,
+            overrides: [scoped.overrideWithValue(42)],
+          );
+
+          final initial = root.read(family(0));
+          leaf.invalidate(family(0));
+          final afterInvalidate = root.read(family(0));
+
+          expect(initial, isNot(same(afterInvalidate)));
+        },
+      );
+
+      test(
+        'can invalidate family members mounted after the scoped container was created',
+        () {
+          final root = ProviderContainer.test();
+          final family = Provider.family<Object?, int>(
+            (ref, arg) => Object(),
+            name: 'family',
+          );
+          final scoped = Provider(
+            (ref) => 0,
+            dependencies: const [],
+            name: 'scoped',
+          );
+          final leaf = ProviderContainer.test(
+            parent: root,
+            overrides: [scoped.overrideWithValue(42)],
+          );
+
+          // Mounts the family directory in both "root" and "leaf",
+          // then adds a new member only visible in "root".
+          leaf.read(family(0));
+          final initial = root.read(family(1));
+          leaf.invalidate(family);
+          final afterInvalidate = root.read(family(1));
+
+          expect(initial, isNot(same(afterInvalidate)));
+        },
+      );
+
+      test(
+        'can invalidate a non-scoped provider from a sibling scoped container with overrides',
+        () {
+          // Regression test for https://github.com/rrousselGit/riverpod/issues/4784
+          var buildCount = 0;
+          final provider = Provider((ref) => ++buildCount, name: 'provider');
+          final scoped = Provider(
+            (ref) => 0,
+            dependencies: const [],
+            name: 'scoped',
+          );
+
+          final root = ProviderContainer.test();
+          final mid = ProviderContainer.test(
+            parent: root,
+            overrides: [scoped.overrideWithValue(0)],
+          );
+          final a = ProviderContainer.test(
+            parent: mid,
+            overrides: [scoped.overrideWithValue(1)],
+          );
+          final b = ProviderContainer.test(
+            parent: mid,
+            overrides: [scoped.overrideWithValue(2)],
+          );
+
+          expect(a.read(provider), 1);
+
+          // "b" never read "provider", so its pointers do not know about it.
+          b.invalidate(provider);
+
+          expect(a.read(provider), 2);
+        },
+      );
+
+      test(
+        'does not invalidate scoped providers from unrelated containers',
+        () {
+          final root = ProviderContainer.test();
+          var buildCount = 0;
+          final scoped = Provider(
+            (ref) => ++buildCount,
+            dependencies: const [],
+            name: 'scoped',
+          );
+          final a = ProviderContainer.test(
+            parent: root,
+            overrides: [scoped.overrideWithValue(42)],
+          );
+          final b = ProviderContainer.test(parent: root, overrides: [scoped]);
+
+          expect(b.read(scoped), 1);
+
+          // "scoped" is mounted in "b", which is not visible from "a".
+          a.invalidate(scoped);
+
+          expect(b.read(scoped), 1);
+          expect(buildCount, 1);
         },
       );
 
