@@ -126,10 +126,9 @@ extension<PointerT extends _PointerBase, ProviderT extends ProviderOrFamily>
 
     if (targetResult.target == currentContainer) {
       return this[provider] = scope(
-        override:
-            targetResult.deepestTransitiveDependencyContainer == null
-                ? null
-                : provider,
+        override: targetResult.deepestTransitiveDependencyContainer == null
+            ? null
+            : provider,
       );
     }
 
@@ -507,11 +506,10 @@ class ProviderPointerManager {
     // The provider was never read through this container.
     // Determine the container in which a read would mount the provider,
     // the same way "_upsert" would, and look there instead.
-    final target =
-        _getTargetContainer(
-          provider,
-          readDirectory(provider)?.targetContainer,
-        ).target;
+    final target = _getTargetContainer(
+      provider,
+      readDirectory(provider)?.targetContainer,
+    ).target;
 
     if (target == container) return null;
 
@@ -570,11 +568,10 @@ class ProviderPointerManager {
       // The directory was inherited from another container. Providers mounted
       // in that container after the directory was forked are not in the local
       // copy of the directory, so they need to be included separately.
-      final targetPointers =
-          _familyPointers
-              .targetContainer
-              ._pointerManager
-              .familyPointers[family];
+      final targetPointers = _familyPointers
+          .targetContainer
+          ._pointerManager
+          .familyPointers[family];
 
       if (targetPointers != null && targetPointers != _familyPointers) {
         pointers = pointers.followedBy(

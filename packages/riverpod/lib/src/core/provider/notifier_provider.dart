@@ -544,16 +544,15 @@ abstract class $ClassProviderElement<
     // ignore: not public
     $Ref<StateT, ValueT> ref,
   ) {
-    final result =
-        classListenable.result ??= $Result.guard(() {
-          final notifier = provider.create();
-          if (notifier._element != null) {
-            throw StateError(alreadyInitializedError);
-          }
+    final result = classListenable.result ??= $Result.guard(() {
+      final notifier = provider.create();
+      if (notifier._element != null) {
+        throw StateError(alreadyInitializedError);
+      }
 
-          notifier._element = this;
-          return notifier;
-        });
+      notifier._element = this;
+      return notifier;
+    });
 
     WhenComplete whenComplete;
     switch (result) {

@@ -33,8 +33,9 @@ class FamilyTemplate extends Template {
     final topLevelBuffer = StringBuffer();
 
     final parametersPassThrough = provider.argumentToRecord();
-    final argument =
-        provider.parameters.isEmpty ? '' : 'argument: $parametersPassThrough,';
+    final argument = provider.parameters.isEmpty
+        ? ''
+        : 'argument: $parametersPassThrough,';
 
     final mixinTypes = <String>[
       ...switch (provider) {
@@ -135,7 +136,8 @@ Override overrideWith($createType create) =>
     ClassBasedProviderDeclaration provider, {
     required StringBuffer topLevelBuffer,
   }) {
-    final runNotifierBuildType = '''
+    final runNotifierBuildType =
+        '''
 ${provider.providerElement.createdTypeNode} Function$_genericsDefinition(
   Ref ref,
   $_notifierType notifier

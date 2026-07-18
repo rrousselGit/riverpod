@@ -141,12 +141,11 @@ void _testFixes(
           :testIds,
         ) = result();
 
-        final rules =
-            pluginRegistry.rules
-                .where(
-                  (e) => e.$1.diagnosticCodes.contains(fix.code),
-                )
-                .single;
+        final rules = pluginRegistry.rules
+            .where(
+              (e) => e.$1.diagnosticCodes.contains(fix.code),
+            )
+            .single;
 
         final diagnostics = _runRules(
           unit: unit,
@@ -180,7 +179,8 @@ void _verifyAllIdsExist(_PluginRegistry plugin, Set<String> testIds) {
   expect(
     actualIds,
     containsAll(testIds),
-    reason: '''
+    reason:
+        '''
 class TestFor {
   const TestFor(this.id);
   ${actualIds.map((e) => "static const $e = TestFor('$e');").join('\n')}
@@ -359,8 +359,9 @@ extension on File {
 }
 
 Set<String> _findTestIds(ResolvedUnitResult unit) {
-  final library =
-      unit.unit.directives.whereType<LibraryDirective>().firstOrNull;
+  final library = unit.unit.directives
+      .whereType<LibraryDirective>()
+      .firstOrNull;
   final testIds = <String>{};
 
   for (final meta in library?.metadata ?? <Annotation>[]) {
@@ -416,37 +417,38 @@ Future<void> _verifyGoldensMatchProducers(
   required String producerId,
   required String groupName,
 }) async {
-  final goldens =
-      file.goldensForFile(id: producerId).map((e) => e.path).toSet();
+  final goldens = file
+      .goldensForFile(id: producerId)
+      .map((e) => e.path)
+      .toSet();
   final mismatch = <({String? expected, String actual})>[];
   final missing = <({String filePath})>[];
   final sourceContent = file.readAsStringSync();
 
-  final actualFiles =
-      uniqueSourceOutputs.entries.map(
-        (entry) {
-          final lineLabel = _goldenLineLabel(
-            sourceContent: sourceContent,
-            offsets: entry.value.map((e) => e.offset),
-          );
-          final goldenFile = file.goldenFile(
-            id: producerId,
-            groupName: groupName,
-            lineLabel: lineLabel,
-          );
+  final actualFiles = uniqueSourceOutputs.entries.map(
+    (entry) {
+      final lineLabel = _goldenLineLabel(
+        sourceContent: sourceContent,
+        offsets: entry.value.map((e) => e.offset),
+      );
+      final goldenFile = file.goldenFile(
+        id: producerId,
+        groupName: groupName,
+        lineLabel: lineLabel,
+      );
 
-          return (
-            goldenFile,
-            _encodeProducerOutput(
-              sourceFile: file,
-              source: entry.key,
-              goldenFile: goldenFile,
-              producerId: producerId,
-              offsets: entry.value.map((e) => e.offset),
-            ),
-          );
-        },
-      ).toList();
+      return (
+        goldenFile,
+        _encodeProducerOutput(
+          sourceFile: file,
+          source: entry.key,
+          goldenFile: goldenFile,
+          producerId: producerId,
+          offsets: entry.value.map((e) => e.offset),
+        ),
+      );
+    },
+  ).toList();
 
   for (final (file, actual) in actualFiles) {
     try {
@@ -683,10 +685,9 @@ String _renderOffsetsWithContext({
         final lastBlock = displayedBlocks.removeLast();
         displayedBlocks.add((
           startLineIndex: lastBlock.startLineIndex,
-          endLineIndex:
-              endDisplayedLineIndex > lastBlock.endLineIndex
-                  ? endDisplayedLineIndex
-                  : lastBlock.endLineIndex,
+          endLineIndex: endDisplayedLineIndex > lastBlock.endLineIndex
+              ? endDisplayedLineIndex
+              : lastBlock.endLineIndex,
         ));
       } else {
         displayedBlocks.add((

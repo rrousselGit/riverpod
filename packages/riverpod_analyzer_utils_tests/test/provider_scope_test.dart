@@ -55,10 +55,14 @@ class Example extends ConsumerWidget {
 
       final scopes = result.providerScopeInstanceCreationExpressions;
 
-      final provider =
-          result.manualProviderDeclarations.takeAll(['provider']).values.single;
-      final family =
-          result.manualProviderDeclarations.takeAll(['family']).values.single;
+      final provider = result.manualProviderDeclarations
+          .takeAll(['provider'])
+          .values
+          .single;
+      final family = result.manualProviderDeclarations
+          .takeAll(['family'])
+          .values
+          .single;
 
       expect(scopes, hasLength(5));
 

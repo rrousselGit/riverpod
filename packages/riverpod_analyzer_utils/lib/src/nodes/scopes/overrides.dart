@@ -56,12 +56,11 @@ extension ProviderOverrideListX on Expression {
 
       List<ProviderOverrideExpression>? overrides;
       if (expression is ListLiteral) {
-        overrides =
-            expression.elements
-                .whereType<Expression>()
-                .map((e) => e.providerOverride)
-                .nonNulls
-                .toList();
+        overrides = expression.elements
+            .whereType<Expression>()
+            .map((e) => e.providerOverride)
+            .nonNulls
+            .toList();
       }
 
       return ProviderOverrideList._(node: expression, overrides: overrides);

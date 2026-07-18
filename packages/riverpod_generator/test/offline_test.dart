@@ -11,8 +11,9 @@ extension on FutureOr<Object?> {
 void main() {
   test('Custom annotation', () async {
     final container = ProviderContainer.test();
-    final persist =
-        await container.listen(storageProvider.future, (a, b) {}).read();
+    final persist = await container
+        .listen(storageProvider.future, (a, b) {})
+        .read();
     persist.write('CustomAnnotation', '21', const StorageOptions()).unawaited();
 
     expect(
@@ -25,16 +26,16 @@ void main() {
 
   test('CustomJson', () async {
     final container = ProviderContainer.test();
-    final persist =
-        await container.listen(storageProvider.future, (a, b) {}).read();
+    final persist = await container
+        .listen(storageProvider.future, (a, b) {})
+        .read();
     persist
         .write('CustomJson', '{"foo": {"value": 42}}', const StorageOptions())
         .unawaited();
 
-    final result =
-        await container
-            .listen(customJsonProvider.future, (prev, next) {})
-            .read();
+    final result = await container
+        .listen(customJsonProvider.future, (prev, next) {})
+        .read();
 
     expect(result, hasLength(1));
     expect(result.keys, ['foo']);
@@ -43,16 +44,16 @@ void main() {
 
   test('CustomKey', () async {
     final container = ProviderContainer.test();
-    final persist =
-        await container.listen(storageProvider.future, (a, b) {}).read();
+    final persist = await container
+        .listen(storageProvider.future, (a, b) {})
+        .read();
     persist
         .write('My key', '{"foo": {"value": 42}}', const StorageOptions())
         .unawaited();
 
-    final result =
-        await container
-            .listen(customKeyProvider.future, (prev, next) {})
-            .read();
+    final result = await container
+        .listen(customKeyProvider.future, (prev, next) {})
+        .read();
 
     expect(result, hasLength(1));
     expect(result.keys, ['foo']);
@@ -61,8 +62,9 @@ void main() {
 
   test('CustomJsonWithArgs', () async {
     final container = ProviderContainer.test();
-    final persist =
-        await container.listen(storageProvider.future, (a, b) {}).read();
+    final persist = await container
+        .listen(storageProvider.future, (a, b) {})
+        .read();
     persist
         .write(
           'CustomJsonWithArgs((42, a, arg3: null))',
@@ -71,10 +73,9 @@ void main() {
         )
         .unawaited();
 
-    final result =
-        await container
-            .listen(customJsonWithArgsProvider(42, 'a').future, (prev, next) {})
-            .read();
+    final result = await container
+        .listen(customJsonWithArgsProvider(42, 'a').future, (prev, next) {})
+        .read();
 
     expect(result, hasLength(1));
     expect(result.keys, ['foo']);
@@ -83,22 +84,21 @@ void main() {
 
   test('PassEncodeDecodeByHand', () async {
     final container = ProviderContainer.test();
-    final persist =
-        await container.listen(storageProvider.future, (a, b) {}).read();
+    final persist = await container
+        .listen(storageProvider.future, (a, b) {})
+        .read();
     persist.write('Foo', 'Hello world', const StorageOptions()).unawaited();
 
-    final result =
-        await container
-            .listen(passEncodeDecodeByHandProvider.future, (prev, next) {})
-            .read();
+    final result = await container
+        .listen(passEncodeDecodeByHandProvider.future, (prev, next) {})
+        .read();
 
     expect(result, hasLength(1));
     expect(result.keys, ['value']);
     expect(result.values, ['Hello world']);
 
-    container
-        .read(passEncodeDecodeByHandProvider.notifier)
-        .state = const AsyncData({'value': 'Hello world2'});
+    container.read(passEncodeDecodeByHandProvider.notifier).state =
+        const AsyncData({'value': 'Hello world2'});
     await null;
 
     final persisted = await persist.read('Foo');

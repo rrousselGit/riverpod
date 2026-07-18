@@ -460,8 +460,9 @@ final class MutationImpl<ResultT>
     ProviderSubscription<_MutationNotifier<ResultT>> sub,
     MutationTransaction ref,
   ) {
-    final _MutationNotifier(:state, :setState, :setRef) =
-        sub.readSafe().valueOrRawException;
+    final _MutationNotifier(:state, :setState, :setRef) = sub
+        .readSafe()
+        .valueOrRawException;
 
     setRef(ref);
 
@@ -477,8 +478,9 @@ final class MutationImpl<ResultT>
     // disposed while the mutation was still running. In that case there is
     // no state left to update.
     if (sub.closed) return;
-    final _MutationNotifier(:state, :setState) =
-        sub.readSafe().valueOrRawException;
+    final _MutationNotifier(:state, :setState) = sub
+        .readSafe()
+        .valueOrRawException;
 
     setState(MutationSuccess<ResultT>._(result), ref);
   }
@@ -492,8 +494,9 @@ final class MutationImpl<ResultT>
     // See [_mutationSuccess]: the subscription may have been closed by a
     // disposal that happened while the mutation was running.
     if (sub.closed) return;
-    final _MutationNotifier(:state, :setState) =
-        sub.readSafe().valueOrRawException;
+    final _MutationNotifier(:state, :setState) = sub
+        .readSafe()
+        .valueOrRawException;
 
     setState(MutationError<ResultT>._(error, stackTrace), ref);
   }

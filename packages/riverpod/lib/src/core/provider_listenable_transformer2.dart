@@ -79,11 +79,10 @@ abstract class CustomProviderListenable<InT, ValueT>
     required void Function()? onDependencyMayHaveChanged,
     required bool weak,
   }) {
-    final transformer =
-        createTransformer()
-          .._source = source
-          .._listenable = this
-          .._node = node;
+    final transformer = createTransformer()
+      .._source = source
+      .._listenable = this
+      .._node = node;
 
     return transformer._listenSource(
       weak: weak,
@@ -196,15 +195,14 @@ abstract base class ProviderTransformer2<
     required void Function(ValueT? previous, ValueT next) listener,
     required void Function(Object error, StackTrace stackTrace) onError,
   }) {
-    final innerSub =
-        _innerSub = _source._addListener(
-          _node,
-          (previous, next) => _setSourceState(AsyncData(next)),
-          onError:
-              (err, stackTrace) => _setSourceState(AsyncError(err, stackTrace)),
-          onDependencyMayHaveChanged: onDependencyMayHaveChanged,
-          weak: weak,
-        );
+    final innerSub = _innerSub = _source._addListener(
+      _node,
+      (previous, next) => _setSourceState(AsyncData(next)),
+      onError: (err, stackTrace) =>
+          _setSourceState(AsyncError(err, stackTrace)),
+      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
+      weak: weak,
+    );
 
     ExternalProviderSubscription<InT, ValueT>? outerSub;
     $Result<ValueT>? currentRead;
@@ -225,14 +223,13 @@ abstract base class ProviderTransformer2<
       }
     };
 
-    outerSub =
-        _outerSub = ExternalProviderSubscription.fromSub(
-          innerSubscription: innerSub,
-          listener: listener,
-          onError: onError,
-          onClose: () => _node.container.runGuarded(onClose),
-          read: () => currentRead = _read(_flush()),
-        );
+    outerSub = _outerSub = ExternalProviderSubscription.fromSub(
+      innerSubscription: innerSub,
+      listener: listener,
+      onError: onError,
+      onClose: () => _node.container.runGuarded(onClose),
+      read: () => currentRead = _read(_flush()),
+    );
 
     // 'weak' is lazy loaded, but weak:false isn't.
     if (!weak) outerSub.read();

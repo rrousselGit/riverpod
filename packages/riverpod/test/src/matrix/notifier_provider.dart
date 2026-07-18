@@ -13,19 +13,17 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>({
         ),
       );
     },
-    provider:
-        <ValueT>(create) => NotifierProvider<Notifier<ValueT>, ValueT>(
-          () => create() as Notifier<ValueT>,
-        ),
-    value:
-        (create, {name, dependencies, retry}) => ([arg]) {
-          return NotifierProvider<Notifier<Object?>, Object?>(
-            () => create(null, arg) as Notifier<Object?>,
-            name: name,
-            dependencies: dependencies,
-            retry: retry,
-          );
-        },
+    provider: <ValueT>(create) => NotifierProvider<Notifier<ValueT>, ValueT>(
+      () => create() as Notifier<ValueT>,
+    ),
+    value: (create, {name, dependencies, retry}) => ([arg]) {
+      return NotifierProvider<Notifier<Object?>, Object?>(
+        () => create(null, arg) as Notifier<Object?>,
+        name: name,
+        dependencies: dependencies,
+        retry: retry,
+      );
+    },
   ),
   'NotifierProvider.autoDispose': NotifierTestFactory(
     isAutoDispose: true,
@@ -44,15 +42,14 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>({
         () => create() as Notifier<ValueT>,
       );
     },
-    value:
-        (create, {name, dependencies, retry}) => ([arg]) {
-          return NotifierProvider.autoDispose<Notifier<Object?>, Object?>(
-            () => create(null, arg) as Notifier<Object?>,
-            name: name,
-            dependencies: dependencies,
-            retry: retry,
-          );
-        },
+    value: (create, {name, dependencies, retry}) => ([arg]) {
+      return NotifierProvider.autoDispose<Notifier<Object?>, Object?>(
+        () => create(null, arg) as Notifier<Object?>,
+        name: name,
+        dependencies: dependencies,
+        retry: retry,
+      );
+    },
   ),
   'NotifierProvider.family': NotifierTestFactory(
     isAutoDispose: false,
@@ -69,15 +66,14 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>({
         (arg) => create() as Notifier<ValueT>,
       ).call(42);
     },
-    value:
-        (create, {name, dependencies, retry}) => ([arg]) {
-          return NotifierProvider.family<Notifier<Object?>, Object?, Object?>(
-            (arg) => create(null, arg) as Notifier<Object?>,
-            name: name,
-            dependencies: dependencies,
-            retry: retry,
-          )(arg);
-        },
+    value: (create, {name, dependencies, retry}) => ([arg]) {
+      return NotifierProvider.family<Notifier<Object?>, Object?, Object?>(
+        (arg) => create(null, arg) as Notifier<Object?>,
+        name: name,
+        dependencies: dependencies,
+        retry: retry,
+      )(arg);
+    },
   ),
   'NotifierProvider.autoDispose.family': NotifierTestFactory(
     isAutoDispose: true,
@@ -100,16 +96,15 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>({
           )
           .call(42);
     },
-    value:
-        (create, {name, dependencies, retry}) => ([arg]) {
-          return NotifierProvider.autoDispose
-              .family<Notifier<Object?>, Object?, Object?>(
-                (arg) => create(null, arg) as Notifier<Object?>,
-                name: name,
-                dependencies: dependencies,
-                retry: retry,
-              )(arg);
-        },
+    value: (create, {name, dependencies, retry}) => ([arg]) {
+      return NotifierProvider.autoDispose
+          .family<Notifier<Object?>, Object?, Object?>(
+            (arg) => create(null, arg) as Notifier<Object?>,
+            name: name,
+            dependencies: dependencies,
+            retry: retry,
+          )(arg);
+    },
   ),
 });
 

@@ -219,8 +219,9 @@ class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 
   @override
   WhenComplete create(Ref ref) {
-    final notifierResult =
-        _notifierNotifier.result = $Result.guard(() => provider.create(ref));
+    final notifierResult = _notifierNotifier.result = $Result.guard(
+      () => provider.create(ref),
+    );
 
     final notifier = notifierResult.valueOrRawException;
 
@@ -282,28 +283,29 @@ final class ChangeNotifierProviderFamily<
     super.retry,
     bool disposeNotifier = true,
   }) : super(
-         providerFactory: (
-           create, {
-           required $allTransitiveDependencies,
-           required argument,
-           required dependencies,
-           required from,
-           required isAutoDispose,
-           required name,
-           required retry,
-         }) {
-           return ChangeNotifierProvider<NotifierT>.internal(
-             create,
-             disposeNotifier: disposeNotifier,
-             name: name,
-             dependencies: dependencies,
-             $allTransitiveDependencies: $allTransitiveDependencies,
-             isAutoDispose: isAutoDispose,
-             argument: argument,
-             from: from,
-             retry: retry,
-           );
-         },
+         providerFactory:
+             (
+               create, {
+               required $allTransitiveDependencies,
+               required argument,
+               required dependencies,
+               required from,
+               required isAutoDispose,
+               required name,
+               required retry,
+             }) {
+               return ChangeNotifierProvider<NotifierT>.internal(
+                 create,
+                 disposeNotifier: disposeNotifier,
+                 name: name,
+                 dependencies: dependencies,
+                 $allTransitiveDependencies: $allTransitiveDependencies,
+                 isAutoDispose: isAutoDispose,
+                 argument: argument,
+                 from: from,
+                 retry: retry,
+               );
+             },
          $allTransitiveDependencies: computeAllTransitiveDependencies(
            dependencies,
          ),
