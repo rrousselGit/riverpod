@@ -39,8 +39,9 @@ void main() {
       final future = container.listen(someProvider.future, (_, _) {}).read();
       await future;
 
-      final future2 =
-          container.listen(selectAsyncProvider.future, (_, _) {}).read();
+      final future2 = container
+          .listen(selectAsyncProvider.future, (_, _) {})
+          .read();
 
       final sub = container.listen(isZeroProvider, (previous, next) {});
 

@@ -615,12 +615,11 @@ depending on itself.
   /// to dependencies that are no-longer used.
   void _performRebuild() {
     runOnDispose();
-    final ref =
-        this.ref = $Ref(
-          this,
-          isFirstBuild: false,
-          isReload: _didChangeDependency,
-        );
+    final ref = this.ref = $Ref(
+      this,
+      isFirstBuild: false,
+      isReload: _didChangeDependency,
+    );
     final previousValue = value;
 
     if (kDebugMode) _debugDidSetState = false;
@@ -1001,17 +1000,16 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void addDependentSubscription(ProviderSubscriptionImpl<Object?> sub) {
-    assert(
-      !sub.isPaused && sub.impl.active,
-      'Expected subscription to be active and not paused',
-    );
-
     _onChangeSubscription(sub, () {
+      sub._attachedToElement = true;
+
       if (sub.weak) {
         weakDependents.add(sub);
       } else {
         final dependents = this.dependents ??= [];
         dependents.add(sub);
+
+        if (sub.isPaused || !sub.impl.active) pausedActiveSubscriptionCount++;
       }
 
       if (sub.source case ProviderNode(:final element)) {
@@ -1019,6 +1017,17 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         subs.add(sub);
       }
     });
+
+    // The provider was initialized with a paused subscription. As such, we
+    // need to immediately call onCancel to respect life-cycles.
+    if (!sub.weak &&
+        !_didCancelOnce &&
+        !isActive &&
+        (sub.isPaused || !sub.impl.active)) {
+      _didCancelOnce = true;
+      _runCallbacks(container, ref?._onCancelListeners);
+      onCancel();
+    }
   }
 
   void removeDependentSubscription(

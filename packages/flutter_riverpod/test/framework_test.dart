@@ -76,11 +76,10 @@ void main() {
       ),
     );
 
-    final containers =
-        tester.allElements
-            .where((e) => e.widget is Consumer)
-            .map(ProviderScope.containerOf)
-            .toList();
+    final containers = tester.allElements
+        .where((e) => e.widget is Consumer)
+        .map(ProviderScope.containerOf)
+        .toList();
 
     expect(containers, hasLength(2));
 
@@ -641,7 +640,9 @@ void main() {
     final key = GlobalKey();
 
     await tester.pumpWidget(
-      ProviderScope(child: ProviderScope(key: key, child: Container())),
+      ProviderScope(
+        child: ProviderScope(key: key, child: Container()),
+      ),
     );
 
     expect(find.byType(Container), findsOneWidget);
@@ -794,11 +795,7 @@ class _InitStateState extends ConsumerState<_InitState> {
 }
 
 final class _TestVsync implements Vsync {
-  _TestVsync({
-    required void Function()? Function(Task task) scheduleRefresh,
-    required void Function()? Function(Task task) scheduleDispose,
-  }) : _scheduleRefresh = scheduleRefresh,
-       _scheduleDispose = scheduleDispose;
+  _TestVsync({required this._scheduleRefresh, required this._scheduleDispose});
 
   final void Function()? Function(Task task) _scheduleRefresh;
   final void Function()? Function(Task task) _scheduleDispose;

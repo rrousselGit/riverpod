@@ -6,15 +6,16 @@ final class ManualProviderDependencies {
     required this.node,
   });
 
-  static ManualProviderDependencies? _parse(NamedExpression? dependenciesNode) {
+  static ManualProviderDependencies? _parse(NamedArgument? dependenciesNode) {
     if (dependenciesNode == null) return null;
 
-    final value = dependenciesNode.expression;
+    final value = dependenciesNode.argumentExpression;
 
     List<ManualProviderDependency>? dependencies;
     if (value is ListLiteral) {
-      dependencies =
-          value.elements.map(ManualProviderDependency._parse).toList();
+      dependencies = value.elements
+          .map(ManualProviderDependency._parse)
+          .toList();
     }
 
     return ManualProviderDependencies._(
@@ -24,7 +25,7 @@ final class ManualProviderDependencies {
   }
 
   final List<ManualProviderDependency>? dependencies;
-  final NamedExpression node;
+  final NamedArgument node;
 }
 
 final class ManualProviderDependency {
@@ -110,7 +111,7 @@ extension LegacyProviderDeclarationX on VariableDeclaration {
       if (build is! FunctionExpression) return null;
 
       final dependenciesElement = arguments.namedArguments().firstWhereOrNull(
-        (e) => e.name.label.name == 'dependencies',
+        (e) => e.name.lexeme == 'dependencies',
       );
       final dependencies = ManualProviderDependencies._parse(
         dependenciesElement,
@@ -258,11 +259,10 @@ class ManualProviderDeclarationElement implements ProviderDeclarationElement {
 
       ManualFamilyInvocationElement? familyElement;
       if (familyType.isAssignableFromType(element.type)) {
-        final callFn =
-            (element.type as InterfaceType).lookUpMethod(
-              'call',
-              element.library!,
-            )!;
+        final callFn = (element.type as InterfaceType).lookUpMethod(
+          'call',
+          element.library!,
+        )!;
         final parameter = callFn.formalParameters.single;
 
         familyElement = ManualFamilyInvocationElement._(parameter.type);

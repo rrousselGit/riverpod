@@ -63,10 +63,10 @@ class _Visitor extends SimpleAstVisitor<void> {
 
     for (final argument in arguments.arguments) {
       Expression value;
-      if (argument is NamedExpression) {
-        value = argument.expression;
+      if (argument is NamedArgument) {
+        value = argument.argumentExpression;
       } else {
-        value = argument;
+        value = argument as Expression;
       }
 
       if (value is TypedLiteral && !value.isConst) {
@@ -78,9 +78,19 @@ class _Visitor extends SimpleAstVisitor<void> {
       } else if (value is InstanceCreationExpression && !value.isConst) {
         final instantiatedObject = value.constructorName.element
             ?.applyRedirectedConstructors();
+        var instantiatedType = instantiatedObject?.enclosingElement;
 
-        final operatorEqual = instantiatedObject?.enclosingElement
-            .recursiveGetMethod('==');
+        // Extension types don't have their own identity/equality. Unwrap
+        // them (including generic ones, e.g. `Box<Foo>`) to check the
+        // underlying representation type instead.
+        if (instantiatedType is ExtensionTypeElement) {
+          final erasureElement = value.staticType?.extensionTypeErasure.element;
+          instantiatedType = erasureElement is InterfaceElement
+              ? erasureElement
+              : null;
+        }
+
+        final operatorEqual = instantiatedType?.recursiveGetMethod('==');
 
         if (operatorEqual == null) {
           // Doing `provider(new Class())` is bad if the class does not override ==

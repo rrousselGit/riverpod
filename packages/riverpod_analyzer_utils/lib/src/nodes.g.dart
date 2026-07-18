@@ -146,6 +146,11 @@ abstract class RecursiveRiverpodAstVisitor extends GeneralizingAstVisitor<void>
       return;
     }
 
+    if (node.providerOverride case final value?) {
+      visitProviderOverrideExpression(value);
+      return;
+    }
+
     if (node.overrides case final value?) {
       visitProviderOverrideList(value);
       return;
@@ -167,16 +172,6 @@ abstract class RecursiveRiverpodAstVisitor extends GeneralizingAstVisitor<void>
     }
 
     super.visitMethodInvocation(node);
-  }
-
-  @override
-  void visitCollectionElement(CollectionElement node) {
-    if (node.providerOverride case final value?) {
-      visitProviderOverrideExpression(value);
-      return;
-    }
-
-    super.visitCollectionElement(node);
   }
 
   @override
@@ -255,7 +250,7 @@ abstract class RecursiveRiverpodAstVisitor extends GeneralizingAstVisitor<void>
   }
 
   void visitProviderOverrideExpression(ProviderOverrideExpression node) {
-    super.visitCollectionElement(node.node);
+    super.visitExpression(node.node);
   }
 
   void visitProviderOverrideList(ProviderOverrideList node) {
@@ -424,15 +419,6 @@ class CollectionRiverpodAst extends SimpleRiverpodAstVisitor {
     final previousList = list;
     _pendingList = list;
     super.visitMethodInvocation(node);
-    _pendingList = previousList;
-  }
-
-  @override
-  void visitCollectionElement(CollectionElement node) {
-    final list = riverpodAst.putIfAbsent('CollectionElement', () => []);
-    final previousList = list;
-    _pendingList = list;
-    super.visitCollectionElement(node);
     _pendingList = previousList;
   }
 

@@ -47,14 +47,13 @@ String? _stringForStackTrace(StackTrace? stackTrace) {
   };
 
   final trace = Trace.from(stackTrace);
-  final firstNonRiverpodFrame =
-      trace.frames
-          .where(
-            (frame) =>
-                !_riverpodPackages.contains(frame.package) &&
-                !frame.uri.path.endsWith('.g.dart'),
-          )
-          .firstOrNull;
+  final firstNonRiverpodFrame = trace.frames
+      .where(
+        (frame) =>
+            !_riverpodPackages.contains(frame.package) &&
+            !frame.uri.path.endsWith('.g.dart'),
+      )
+      .firstOrNull;
   if (firstNonRiverpodFrame == null) return null;
 
   final newTrace = Trace([firstNonRiverpodFrame]);
@@ -282,8 +281,9 @@ class ProviderContainerAddEvent extends Event {
   final ProviderContainer container;
 
   ContainerId get containerId => container.id;
-  late final List<ContainerId> parentIds =
-      container.parents.map((e) => e.id).toList();
+  late final List<ContainerId> parentIds = container.parents
+      .map((e) => e.id)
+      .toList();
 }
 
 @devtool
@@ -387,18 +387,17 @@ extension on Node {
 class ProviderDependencyChangeEvent extends Event {
   ProviderDependencyChangeEvent(ProviderElement element)
     : elementId = element._debugId,
-      dependents =
-          ((element.dependents ?? const [])
-              .map((sub) => sub.source.meta)
-              .toSet()),
-      weakDependents =
-          (element.weakDependents.map((sub) => sub.source.meta).toSet()),
-      dependencies =
-          ((element.subscriptions ?? const [])
-              .map((sub) => sub.impl.source.meta)
-              .cast<ProviderNodeMeta>()
-              .map((e) => e.provider.elementId)
-              .toSet());
+      dependents = ((element.dependents ?? const [])
+          .map((sub) => sub.source.meta)
+          .toSet()),
+      weakDependents = (element.weakDependents
+          .map((sub) => sub.source.meta)
+          .toSet()),
+      dependencies = ((element.subscriptions ?? const [])
+          .map((sub) => sub.impl.source.meta)
+          .cast<ProviderNodeMeta>()
+          .map((e) => e.provider.elementId)
+          .toSet());
 
   final ElementId elementId;
   final Set<NodeMeta> dependents;

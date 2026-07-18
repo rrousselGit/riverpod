@@ -36,8 +36,7 @@ class _MockEval extends Mock implements Eval {
 }
 
 class _FakeEvalFactory implements EvalFactory {
-  _FakeEvalFactory({required this.dartCore, required Eval riverpodFramework})
-    : _riverpodFramework = riverpodFramework;
+  _FakeEvalFactory({required this.dartCore, required this._riverpodFramework});
 
   @override
   final Eval dartCore;

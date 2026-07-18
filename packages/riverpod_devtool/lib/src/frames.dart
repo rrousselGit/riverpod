@@ -543,7 +543,7 @@ class _FrameTooltipBody extends StatelessWidget {
         child: Container(
           foregroundDecoration: BoxDecoration(
             borderRadius: borderRadius,
-            border: .all(color: Theme.of(context).panelBorderColor, width: 1),
+            border: .all(color: Theme.of(context).panelBorderColor),
           ),
           child: child,
         ),

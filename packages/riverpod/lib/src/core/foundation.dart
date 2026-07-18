@@ -203,7 +203,7 @@ String shortHash(Object? object) {
 /// Should override ==/hashCode when possible
 ///
 /// See also:
-/// - [SyncProviderTransformerMixin] for making custom [ProviderListenable]s.
+/// - [CustomProviderListenable] for making custom [ProviderListenable]s.
 @publicInCodegen
 @publicInMisc
 abstract interface class ProviderListenable<StateT>

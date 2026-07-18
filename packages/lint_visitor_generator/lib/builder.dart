@@ -31,25 +31,22 @@ class _LintVisitorGenerator extends Generator {
   }
 
   void _writeRiverpodAstVisitor(LibraryReader library, StringBuffer buffer) {
-    final allAst =
-        library.element.extensions
-            .where(
-              (e) => e.metadata.annotations.firstOrNull?.toSource() == '@_ast',
-            )
-            .expand((extension) {
-              final constraint = extension.extendedType;
+    final allAst = library.element.extensions
+        .where((e) => e.metadata.annotations.firstOrNull?.toSource() == '@_ast')
+        .expand((extension) {
+          final constraint = extension.extendedType;
 
-              return extension.getters
-                  .map(
-                    (e) => (
-                      constraint: constraint.element!.name!,
-                      type: e.returnType.element!.name!,
-                      name: e.name!,
-                    ),
-                  )
-                  .where((e) => !e.name.startsWith('_cache'));
-            })
-            .toList();
+          return extension.getters
+              .map(
+                (e) => (
+                  constraint: constraint.element!.name!,
+                  type: e.returnType.element!.name!,
+                  name: e.name!,
+                ),
+              )
+              .where((e) => !e.name.startsWith('_cache'));
+        })
+        .toList();
 
     final byConstraint =
         <({String type, String name}), List<({String type, String name})>>{};
