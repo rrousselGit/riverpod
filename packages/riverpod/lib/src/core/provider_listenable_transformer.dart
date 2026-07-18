@@ -14,8 +14,7 @@ final class ProviderTransformerContext<InT, OutT> {
     'Use CustomProviderListenable/ProviderTransformer2 instead. '
     'This will be removed in a future version.',
   )
-  ProviderTransformerContext._({required AsyncResult<InT> sourceState})
-    : _sourceState = sourceState;
+  ProviderTransformerContext._({required this._sourceState});
 
   /// The current state of [SyncProviderTransformerMixin.source].
   AsyncResult<InT> get sourceState => _sourceState;

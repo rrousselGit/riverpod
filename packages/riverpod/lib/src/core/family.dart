@@ -136,14 +136,13 @@ base class FunctionalFamily<
   /// This API is not meant for public consumption.
   FunctionalFamily(
     this._createFn, {
-    required FunctionalProviderFactory<ProviderT, CreatedT, ArgT>
-    providerFactory,
+    required this._providerFactory,
     required super.name,
     required super.dependencies,
     required super.$allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
-  }) : _providerFactory = providerFactory;
+  });
 
   final FunctionalProviderFactory<ProviderT, CreatedT, ArgT> _providerFactory;
 
@@ -251,14 +250,13 @@ base class ClassFamily<
   /// This API is not meant for public consumption.
   ClassFamily(
     this._createFn, {
-    required ClassProviderFactory<NotifierT, ProviderT, CreatedT, ArgT>
-    providerFactory,
+    required this._providerFactory,
     required super.name,
     required super.dependencies,
     required super.$allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
-  }) : _providerFactory = providerFactory;
+  });
 
   final ClassProviderFactory<NotifierT, ProviderT, CreatedT, ArgT>
   _providerFactory;

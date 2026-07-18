@@ -900,12 +900,11 @@ extension on Object? {
 // ignore: avoid_types_as_parameter_names
 final class DelegatingStorage<KeyT, EncodedT> extends Storage<KeyT, EncodedT> {
   DelegatingStorage({
-    required FutureOr<PersistedData<EncodedT>?> Function(KeyT key) read,
+    required this._read,
     FutureOr<void> Function(KeyT key, EncodedT value, StorageOptions options)?
     write,
     FutureOr<void> Function(KeyT key)? delete,
-  }) : _read = read,
-       _write = write ?? ((_, _, _) {}),
+  }) : _write = write ?? ((_, _, _) {}),
        _delete = delete ?? ((_) {});
 
   final FutureOr<PersistedData<EncodedT>?> Function(KeyT key) _read;

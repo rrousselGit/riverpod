@@ -120,9 +120,9 @@ class DeferredNotifier<ValueT> extends Notifier<ValueT>
     implements TestNotifier<ValueT> {
   DeferredNotifier(
     this._create, {
-    bool Function(ValueT, ValueT)? updateShouldNotify,
+    this._updateShouldNotify,
     this.arg,
-  }) : _updateShouldNotify = updateShouldNotify;
+  });
 
   final Object? arg;
 

@@ -5,9 +5,8 @@ class TestNode extends Node<TestNode> {
   TestNode(
     this.name, {
     List<TestNode>? children,
-    void Function(String)? onRemove,
-  }) : children = children ?? const [],
-       _onRemove = onRemove;
+    this._onRemove,
+  }) : children = children ?? const [];
 
   final String name;
   @override

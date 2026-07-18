@@ -525,17 +525,10 @@ final class DelegatingTransformer<InT, ValueT>
           DelegatingListenable<InT, ValueT>
         > {
   DelegatingTransformer({
-    required ValueT Function(DelegatingTransformer<InT, ValueT> self) initState,
-    required void Function(
-      DelegatingTransformer<InT, ValueT> self,
-      AsyncResult<InT> prev,
-      AsyncResult<InT> next,
-    )
-    onEvent,
-    void Function()? onClose,
-  }) : _initState = initState,
-       _onEvent = onEvent,
-       _onClose = onClose;
+    required this._initState,
+    required this._onEvent,
+    this._onClose,
+  });
 
   final ValueT Function(DelegatingTransformer<InT, ValueT> self) _initState;
   final void Function(

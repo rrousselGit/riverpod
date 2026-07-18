@@ -257,15 +257,13 @@ ProviderSubscription<$OutT>#${shortHash(this)}(
 final class ProviderProviderSubscription<StateT>
     extends ProviderSubscriptionImpl<StateT> {
   ProviderProviderSubscription({
-    required ProviderElement<StateT, Object?> listenedElement,
+    required this._listenedElement,
     required OnError onError,
     required this.source,
     required this.weak,
     super.onClose,
-    required void Function(StateT? prev, StateT next) listener,
-  }) : _errorListener = onError,
-       _listener = listener,
-       _listenedElement = listenedElement;
+    required this._listener,
+  }) : _errorListener = onError;
 
   @override
   final OnError _errorListener;
@@ -293,14 +291,12 @@ final class ExternalProviderSubscription<InT, OutT>
     extends ProviderSubscriptionImpl<OutT> {
   ExternalProviderSubscription.fromSub({
     required ProviderSubscription<InT> innerSubscription,
-    required $Result<OutT> Function() read,
+    required this._read,
     super.onClose,
-    required void Function(OutT? prev, OutT next) listener,
+    required this._listener,
     required OnError? onError,
     bool attachToInner = true,
-  }) : _read = read,
-       _innerSubscription = innerSubscription,
-       _listener = listener,
+  }) : _innerSubscription = innerSubscription,
        _source = switch (innerSubscription.impl) {
          final ProviderProviderSubscription<Object?> sub => sub,
          final ExternalProviderSubscription<Object?, Object?> sub =>

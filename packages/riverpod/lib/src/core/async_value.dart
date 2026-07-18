@@ -696,11 +696,9 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
 
   const AsyncData._(
     this._value, {
-    required _ErrorRecord? error,
-    required _LoadingRecord? loading,
-  }) : _loading = loading,
-       _error = error,
-       super._();
+    required this._error,
+    required this._loading,
+  }) : super._();
 
   @override
   final _LoadingRecord? _loading;
@@ -753,11 +751,9 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
 
   const AsyncLoading._(
     this._loading, {
-    required _DataRecord<ValueT>? value,
-    required _ErrorRecord? error,
-  }) : _value = value,
-       _error = error,
-       super._();
+    required this._value,
+    required this._error,
+  }) : super._();
 
   @override
   final _LoadingRecord _loading;
@@ -838,11 +834,9 @@ final class AsyncError<ValueT> extends AsyncResult<ValueT> {
 
   const AsyncError._(
     this._error, {
-    required _DataRecord<ValueT>? value,
-    required _LoadingRecord? loading,
-  }) : _value = value,
-       _loading = loading,
-       super._();
+    required this._value,
+    required this._loading,
+  }) : super._();
 
   @override
   final _LoadingRecord? _loading;

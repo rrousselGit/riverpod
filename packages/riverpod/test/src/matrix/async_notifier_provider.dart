@@ -136,9 +136,9 @@ class DeferredAsyncNotifier<ValueT> extends AsyncNotifier<ValueT>
     implements TestAsyncNotifier<ValueT> {
   DeferredAsyncNotifier(
     this._create, {
-    bool Function(AsyncValue<ValueT>, AsyncValue<ValueT>)? updateShouldNotify,
+    this._updateShouldNotify,
     this.arg,
-  }) : _updateShouldNotify = updateShouldNotify;
+  });
 
   final Object? arg;
 
