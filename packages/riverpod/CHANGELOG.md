@@ -1,3 +1,10 @@
+## Unreleased minor
+
+- Deprecated `SyncProviderTransformerMixin`. It is replaced by the newly added APIs
+- Added `CustomProviderListenable`, a slightly simplified way of making custom provider extensions
+- Added the ability to do `ValueListenable<int> listenable = ref.watch(counterProvider.listenable)`.
+  This uses the new `pkg:listen`.
+
 ## 3.3.2 - 2026-06-10
 
 - Fixes assertion error when providers are unpaused.
@@ -1542,4 +1549,3 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-

@@ -3,5 +3,12 @@ analyzer:
   exclude:
     - build/**
     - i18n/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
   errors:
     todo: ignore
+    invalid_use_of_visible_for_testing_member: ignore

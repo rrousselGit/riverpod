@@ -4,12 +4,16 @@ import 'package:test/test.dart';
 
 import 'integration/offline.dart';
 
+extension on FutureOr<Object?> {
+  void unawaited() {}
+}
+
 void main() {
   test('Custom annotation', () async {
     final container = ProviderContainer.test();
     final persist =
         await container.listen(storageProvider.future, (a, b) {}).read();
-    persist.write('CustomAnnotation', '21', const StorageOptions());
+    persist.write('CustomAnnotation', '21', const StorageOptions()).unawaited();
 
     expect(
       await container
@@ -23,11 +27,9 @@ void main() {
     final container = ProviderContainer.test();
     final persist =
         await container.listen(storageProvider.future, (a, b) {}).read();
-    persist.write(
-      'CustomJson',
-      '{"foo": {"value": 42}}',
-      const StorageOptions(),
-    );
+    persist
+        .write('CustomJson', '{"foo": {"value": 42}}', const StorageOptions())
+        .unawaited();
 
     final result =
         await container
@@ -43,7 +45,9 @@ void main() {
     final container = ProviderContainer.test();
     final persist =
         await container.listen(storageProvider.future, (a, b) {}).read();
-    persist.write('My key', '{"foo": {"value": 42}}', const StorageOptions());
+    persist
+        .write('My key', '{"foo": {"value": 42}}', const StorageOptions())
+        .unawaited();
 
     final result =
         await container
@@ -59,11 +63,13 @@ void main() {
     final container = ProviderContainer.test();
     final persist =
         await container.listen(storageProvider.future, (a, b) {}).read();
-    persist.write(
-      'CustomJsonWithArgs((42, a, arg3: null))',
-      '{"foo": {"value": 42}}',
-      const StorageOptions(),
-    );
+    persist
+        .write(
+          'CustomJsonWithArgs((42, a, arg3: null))',
+          '{"foo": {"value": 42}}',
+          const StorageOptions(),
+        )
+        .unawaited();
 
     final result =
         await container
@@ -79,7 +85,7 @@ void main() {
     final container = ProviderContainer.test();
     final persist =
         await container.listen(storageProvider.future, (a, b) {}).read();
-    persist.write('Foo', 'Hello world', const StorageOptions());
+    persist.write('Foo', 'Hello world', const StorageOptions()).unawaited();
 
     final result =
         await container
