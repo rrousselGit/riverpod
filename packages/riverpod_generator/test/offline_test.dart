@@ -63,11 +63,13 @@ void main() {
     final container = ProviderContainer.test();
     final persist =
         await container.listen(storageProvider.future, (a, b) {}).read();
-    persist.write(
-      'CustomJsonWithArgs((42, a, arg3: null))',
-      '{"foo": {"value": 42}}',
-      const StorageOptions(),
-    ).unawaited();
+    persist
+        .write(
+          'CustomJsonWithArgs((42, a, arg3: null))',
+          '{"foo": {"value": 42}}',
+          const StorageOptions(),
+        )
+        .unawaited();
 
     final result =
         await container

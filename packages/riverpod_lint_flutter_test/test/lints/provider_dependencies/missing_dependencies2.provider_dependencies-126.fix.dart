@@ -135,9 +135,9 @@ int watchGeneratedRootAndContainsDependency(Ref ref) {
 
 @Riverpod(
   dependencies:
-      // generatedRoot is extra
-      // ignore: riverpod_lint/provider_dependencies
-      [dep, generatedRoot],
+  // generatedRoot is extra
+  // ignore: riverpod_lint/provider_dependencies
+  [dep, generatedRoot],
 )
 int specifiedDependencyButNeverUsed(Ref ref) {
   ref.watch(depProvider);
