@@ -119,25 +119,21 @@ extension<PointerT extends _PointerBase, ProviderT extends ProviderOrFamily>
     final pointer = this[provider];
     if (pointer != null) return pointer;
 
-    final deepestTransitiveDependencyContainer = currentContainer
-        ._pointerManager
-        .findDeepestTransitiveDependencyProviderContainer(provider);
+    final targetResult = currentContainer._pointerManager._getTargetContainer(
+      provider,
+      targetContainer,
+    );
 
-    final target =
-        deepestTransitiveDependencyContainer ??
-        pointer?.targetContainer ??
-        targetContainer ??
-        currentContainer._root ??
-        currentContainer;
-
-    if (target == currentContainer) {
+    if (targetResult.target == currentContainer) {
       return this[provider] = scope(
         override:
-            deepestTransitiveDependencyContainer == null ? null : provider,
+            targetResult.deepestTransitiveDependencyContainer == null
+                ? null
+                : provider,
       );
     }
 
-    return this[provider] = inherit(target);
+    return this[provider] = inherit(targetResult.target);
   }
 }
 
@@ -401,6 +397,20 @@ class ProviderPointerManager {
     }
   }
 
+  /// Determines the container in which a provider/family would be mounted.
+  ({
+    ProviderContainer target,
+    ProviderContainer? deepestTransitiveDependencyContainer,
+  })
+  _getTargetContainer(
+    ProviderOrFamily provider,
+    ProviderContainer? fallbackTarget,
+  ) {
+    final deepest = findDeepestTransitiveDependencyProviderContainer(provider);
+    final target = deepest ?? fallbackTarget ?? container._root ?? container;
+    return (target: target, deepestTransitiveDependencyContainer: deepest);
+  }
+
   /// Obtains the [ProviderContainer] in which provider/family should be mounted,
   /// if the provider is locally scoped.
   ///
@@ -504,11 +514,12 @@ class ProviderPointerManager {
     // Determine the container in which a read would mount the provider,
     // the same way "_upsert" would, and look there instead.
     final target =
-        findDeepestTransitiveDependencyProviderContainer(provider) ??
-        readDirectory(provider)?.targetContainer ??
-        container._root;
+        _getTargetContainer(
+          provider,
+          readDirectory(provider)?.targetContainer,
+        ).target;
 
-    if (target == null || target == container) return null;
+    if (target == container) return null;
 
     return target._pointerManager.readElement(provider);
   }
@@ -552,11 +563,9 @@ class ProviderPointerManager {
       // The family was never read through this container.
       // Determine the container in which a read would mount the family,
       // the same way "_mountFamily" would, and look there instead.
-      final target =
-          findDeepestTransitiveDependencyProviderContainer(family) ??
-          container._root;
+      final target = _getTargetContainer(family, null).target;
 
-      if (target == null || target == container) return const [];
+      if (target == container) return const [];
 
       return target._pointerManager.listFamily(family);
     }
