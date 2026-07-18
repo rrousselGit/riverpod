@@ -78,9 +78,18 @@ class _Visitor extends SimpleAstVisitor<void> {
       } else if (value is InstanceCreationExpression && !value.isConst) {
         final instantiatedObject = value.constructorName.element
             ?.applyRedirectedConstructors();
-        final instantiatedType = instantiatedObject?.enclosingElement;
+        var instantiatedType = instantiatedObject?.enclosingElement;
 
-        if (instantiatedType is ExtensionTypeElement) return;
+        // Extension types don't have their own identity/equality. Unwrap
+        // them (including generic ones, e.g. `Box<Foo>`) to check the
+        // underlying representation type instead.
+        if (instantiatedType is ExtensionTypeElement) {
+          final erasureElement =
+              value.staticType?.extensionTypeErasure.element;
+          instantiatedType = erasureElement is InterfaceElement
+              ? erasureElement
+              : null;
+        }
 
         final operatorEqual = instantiatedType?.recursiveGetMethod('==');
 
