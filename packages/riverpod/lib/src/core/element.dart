@@ -683,25 +683,34 @@ depending on itself.
     $Ref<StateT, ValueT> ref,
   );
 
-  /// A utility for re-initializing a provider when needed.
+  var _isFlushing = false;
+
+  /// Recomputes the state of the provider if necessary.
   ///
-  /// Calling [flush] will only re-initialize the provider if it needs to rerun.
-  /// This can involve:
+  /// This is called when:
+  /// - a provider is read
+  /// - a provider is listened
   /// - a previous call to [Ref.invalidateSelf]
   /// - a dependency of the provider has changed (such as when using [Ref.watch]).
   ///
   /// This is not meant for public consumption. Public API should hide
   /// [flush] from users, such that they don't need to care about invoking this function.
   void flush() {
-    if (!_didMount) {
-      _didMount = true;
-      mount();
-    }
+    final wasFlushing = _isFlushing;
+    _isFlushing = true;
+    try {
+      if (!_didMount) {
+        _didMount = true;
+        mount();
+      }
 
-    _maybeRebuildDependencies();
-    if (_mustRecomputeState) {
-      _mustRecomputeState = false;
-      _performRebuild();
+      _maybeRebuildDependencies();
+      if (_mustRecomputeState) {
+        _mustRecomputeState = false;
+        _performRebuild();
+      }
+    } finally {
+      _isFlushing = wasFlushing;
     }
   }
 
@@ -817,7 +826,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     runOnDispose();
     mayNeedDispose();
-    container.scheduler.scheduleProviderRefresh(this);
+    if (!_isFlushing) {
+      container.scheduler.scheduleProviderRefresh(this);
+    }
 
     // We don't call this._markDependencyMayHaveChanged here because we voluntarily
     // do not want to set the _dependencyMayHaveChanged flag to true.
