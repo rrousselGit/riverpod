@@ -904,6 +904,58 @@ void main() {
 
     expect(find.text('21'), findsOneWidget);
   });
+
+  testWidgets('Dependencies are closed even if dispose throws', (tester) async {
+    final container = ProviderContainer();
+    var show = true;
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: StatefulBuilder(
+          builder: (context, setState) {
+            return Column(
+              children: [
+                if (show) const _ThrowingDisposeConsumer(),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      show = false;
+                    });
+                  },
+                  child: const Text('Remove', textDirection: TextDirection.ltr),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+
+    // Tap to remove the Consumer, which triggers its dispose()
+    // We expect a FlutterError because of the simulated exception in dispose
+    final exceptions = <dynamic>[];
+    final originalOnError = FlutterError.onError;
+    FlutterError.onError = (details) {
+      exceptions.add(details.exception);
+    };
+
+    await tester.tap(find.text('Remove'));
+    await tester.pump();
+
+    // Restore error handler
+    FlutterError.onError = originalOnError;
+
+    expect(exceptions, isNotEmpty);
+    expect(exceptions.first.toString(), contains('Simulated dispose exception'));
+
+    // Now modify the provider.
+    // If the subscriptions were not closed because dispose threw, 
+    // markNeedsBuild() will be called on the defunct widget, crashing the test.
+    container.read(_counterProvider.notifier).increment();
+
+    // The provider update should succeed without any defunct assertion errors.
+  });
 }
 
 class TestNotifier extends StateNotifier<int> {
@@ -988,5 +1040,35 @@ class _CallbackConsumerWidgetState
   @override
   Widget build(BuildContext context) {
     return Container();
+  }
+}
+
+class _Counter extends Notifier<int> {
+  @override
+  int build() => 0;
+
+  void increment() => state++;
+}
+
+final _counterProvider = NotifierProvider<_Counter, int>(_Counter.new);
+
+class _ThrowingDisposeConsumer extends ConsumerStatefulWidget {
+  const _ThrowingDisposeConsumer({super.key});
+
+  @override
+  _ThrowingDisposeConsumerState createState() => _ThrowingDisposeConsumerState();
+}
+
+class _ThrowingDisposeConsumerState extends ConsumerState<_ThrowingDisposeConsumer> {
+  @override
+  void dispose() {
+    super.dispose();
+    throw Exception('Simulated dispose exception');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ref.watch(_counterProvider);
+    return const SizedBox();
   }
 }

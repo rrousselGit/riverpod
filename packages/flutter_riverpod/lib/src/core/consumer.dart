@@ -501,9 +501,6 @@ base class ConsumerStatefulElement extends StatefulElement
 
   @override
   void unmount() {
-    /// Calling `super.unmount()` will call `dispose` on the state
-    /// And [ListenManual] subscriptions should be closed after `dispose`
-    super.unmount();
     _tickerModeNotifier?.removeListener(_updateTickerMode);
 
     for (final dependency in _dependencies.values) {
@@ -512,12 +509,20 @@ base class ConsumerStatefulElement extends StatefulElement
     for (var i = 0; i < _listeners.length; i++) {
       _listeners[i].close();
     }
-    final manualListeners = _manualListeners?.toList();
-    if (manualListeners != null) {
-      for (final listener in manualListeners) {
-        listener.close();
+
+    // Prevents memory leaks if State.dispose throws.
+    try {
+      /// Calling `super.unmount()` will call `dispose` on the state
+      /// And [ListenManual] subscriptions should be closed after `dispose`
+      super.unmount();
+    } finally {
+      final manualListeners = _manualListeners?.toList();
+      if (manualListeners != null) {
+        for (final listener in manualListeners) {
+          listener.close();
+        }
+        _manualListeners = null;
       }
-      _manualListeners = null;
     }
   }
 
