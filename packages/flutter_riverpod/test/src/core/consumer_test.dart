@@ -214,6 +214,35 @@ void main() {
         ),
       );
     });
+
+    testWidgets(
+      'mounting a Consumer that watches a paused provider does not throw',
+      (tester) async {
+        var count = 0;
+        final dep = Provider((ref) => count++);
+        final provider = Provider((ref) => ref.watch(dep));
+
+        await tester.pumpWidget(const ProviderScope(child: SizedBox()));
+
+        final container = tester.container();
+
+        container.read(provider);
+        container.invalidate(dep);
+
+        await tester.pumpWidget(
+          ProviderScope(
+            child: Consumer(
+              builder: (c, ref, _) {
+                ref.watch(provider);
+                return const SizedBox();
+              },
+            ),
+          ),
+        );
+
+        expect(tester.takeException(), isNull);
+      },
+    );
   });
 
   testWidgets('Riverpod test', (tester) async {
