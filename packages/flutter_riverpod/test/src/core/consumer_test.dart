@@ -947,10 +947,13 @@ void main() {
     FlutterError.onError = originalOnError;
 
     expect(exceptions, isNotEmpty);
-    expect(exceptions.first.toString(), contains('Simulated dispose exception'));
+    expect(
+      exceptions.first.toString(),
+      contains('Simulated dispose exception'),
+    );
 
     // Now modify the provider.
-    // If the subscriptions were not closed because dispose threw, 
+    // If the subscriptions were not closed because dispose threw,
     // markNeedsBuild() will be called on the defunct widget, crashing the test.
     container.read(_counterProvider.notifier).increment();
 
@@ -1056,10 +1059,12 @@ class _ThrowingDisposeConsumer extends ConsumerStatefulWidget {
   const _ThrowingDisposeConsumer({super.key});
 
   @override
-  _ThrowingDisposeConsumerState createState() => _ThrowingDisposeConsumerState();
+  _ThrowingDisposeConsumerState createState() =>
+      _ThrowingDisposeConsumerState();
 }
 
-class _ThrowingDisposeConsumerState extends ConsumerState<_ThrowingDisposeConsumer> {
+class _ThrowingDisposeConsumerState
+    extends ConsumerState<_ThrowingDisposeConsumer> {
   @override
   void dispose() {
     super.dispose();
