@@ -1,4 +1,4 @@
-// ignore_for_file: use_key_in_widget_constructors, unreachable_from_main
+// ignore_for_file: use_key_in_widget_constructors
 
 /* SNIPPET START */
 import 'dart:convert';

@@ -96,4 +96,3 @@ Map<internals.ElementId, ElementMeta> computeElementsForFrame(
 
   return state.build();
 }
-
