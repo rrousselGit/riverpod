@@ -12,6 +12,7 @@
   from a scoped `ProviderContainer`/`ProviderScope` with overrides, if the
   provider was never read through that scope. (thanks to @itsUndefined)
 - Fix markNeedsBuild exception when flushing a provider inside Widget lifecycle
+- Fixed a listener leak if `ConsumerState.dispose` threw.
 
 ## 3.3.2 - 2026-06-10
 

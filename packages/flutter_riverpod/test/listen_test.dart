@@ -150,6 +150,48 @@ void main() {
       ref.read(provider.notifier).state++;
       verifyNoMoreInteractions(listener);
     });
+
+    testWidgets('removes listeners on dispose even if State.dispose throws', (
+      tester,
+    ) async {
+      final provider = StateProvider((ref) => 0);
+      final listener = Listener<int>();
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: ThrowingDisposeConsumer(
+            onDispose: () => throw Exception('Simulated dispose exception'),
+            builder: (context, ref) {
+              ref.listenManual(provider, listener.call);
+              ref.listen(provider, listener.call);
+              return Container();
+            },
+          ),
+        ),
+      );
+
+      final container = tester.container();
+
+      // Tap or just pump another widget to trigger unmount
+      final exceptions = <dynamic>[];
+      final originalOnError = FlutterError.onError;
+      FlutterError.onError = (details) {
+        exceptions.add(details.exception);
+      };
+
+      await tester.pumpWidget(ProviderScope(child: Container()));
+
+      FlutterError.onError = originalOnError;
+
+      expect(exceptions, isNotEmpty);
+      expect(
+        exceptions.first.toString(),
+        contains('Simulated dispose exception'),
+      );
+
+      container.read(provider.notifier).state++;
+      verifyZeroInteractions(listener);
+    });
   });
 
   group('WidgetRef.listen', () {
@@ -393,5 +435,34 @@ class _DisposeListenOnceState extends ConsumerState<DisposeListenManual> {
   void dispose() {
     sub.read();
     super.dispose();
+  }
+}
+
+class ThrowingDisposeConsumer extends ConsumerStatefulWidget {
+  const ThrowingDisposeConsumer({
+    super.key,
+    required this.onDispose,
+    required this.builder,
+  });
+
+  final void Function() onDispose;
+  final Widget Function(BuildContext context, WidgetRef ref) builder;
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _ThrowingDisposeConsumerState();
+}
+
+class _ThrowingDisposeConsumerState
+    extends ConsumerState<ThrowingDisposeConsumer> {
+  @override
+  Widget build(BuildContext context) {
+    return widget.builder(context, ref);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.onDispose();
   }
 }
