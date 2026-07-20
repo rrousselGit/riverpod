@@ -1,0 +1,163 @@
+---
+title: Çevrimdışı kalıcılık (deneysel)
+---
+import { Link } from "/src/components/Link";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+import storage from '/docs/concepts2/offline/storage'
+import manualPersist from '/docs/concepts2/offline/manual_persist'
+import destroyKey from '/docs/concepts2/offline/destroy_key';
+import waitPersist from 'raw-loader!/docs/concepts2/offline/wait_persist.dart';
+import jsonPersist from 'raw-loader!/docs/concepts2/offline/json_persist.dart'
+import customDuration from 'raw-loader!/docs/concepts2/offline/custom_duration.dart';
+import inMemoryTest from 'raw-loader!/docs/concepts2/offline/in_memory_test.dart';
+
+Çevrimdışı kalıcılık, <Link documentID="concepts2/providers" /> durumunu kullanıcının cihazında
+saklayarak kullanıcı çevrimdışıyken ya da uygulama yeniden başlatıldığında bile bu duruma erişilebilmesidir.
+
+Riverpod, verinin saklandığı veritabanından veya kullanılan protokolden bağımsızdır.
+Ancak varsayılan olarak Riverpod, temel JSON serileştirmesinin yanı sıra [riverpod_sqflite] paketini sunar.
+
+:::caution DİKKAT
+Riverpod'un çevrimdışı kalıcılığı, veritabanlarının etrafında basit bir sarmalayıcı olacak
+şekilde tasarlanmıştır. Bir veritabanıyla etkileşim kuran kodun tamamının yerini alması amaçlanmamıştır.
+
+Şu durumlar için hâlâ veritabanıyla elle etkileşim kurmanız gerekebilir:
+- İleri düzey veritabanı geçişleri (migration)
+- Daha optimize edilmiş depolama stratejileri
+- Sıra dışı kullanım senaryoları
+:::
+
+
+Çevrimdışı kalıcılık iki parçadan oluşur:
+1. Veritabanınızla etkileşim kurmaya yarayan bir arayüz olan [Storage].
+  Bu genellikle bir paket tarafından uygulanır (örneğin [riverpod_sqflite]).
+1. Kalıcılığı devreye almak için notifier'ların içinde kullanılan [AnyNotifier.persist] fonksiyonu.
+
+## Bir Storage oluşturmak {#creating-a-storage}
+
+Notifier'ları kalıcı hale getirmeye başlamadan önce, [Storage] arayüzünü uygulayan bir nesne
+oluşturmamız gerekir. Bu nesne, Riverpod'u veritabanınıza bağlamaktan sorumlu olacaktır.
+
+Şunlardan birini yapmanız gerekir:
+- Riverpod'u tercih ettiğiniz veritabanına bağlamanın bir yolunu sunan bir paket kurmak.
+- [Storage]'ı elle uygulamak
+
+SQFlite kullanıyorsanız [riverpod_sqflite] paketini kullanabilirsiniz:
+
+```sh
+dart pub add riverpod_sqflite sqflite
+```
+
+Ardından [JsonSqFliteStorage] örneği oluşturarak bir Storage yaratabilirsiniz:
+
+<AutoSnippet {...storage} />
+
+## Bir provider'ın durumunu kalıcı hale getirmek {#persisting-the-state-of-a-provider}
+
+Bir [Storage] oluşturduktan sonra provider'ların durumunu kalıcı hale getirmeye başlayabiliriz.  
+Şu anda yalnızca "Notifier"lar kalıcı hale getirilebilir. Bunlar hakkında daha fazla bilgi için <Link documentID="concepts2/providers" /> sayfasına bakın.
+
+Bir notifier'ın durumunu kalıcı hale getirmek için genellikle notifier'ınızın `build` metodu içinde [AnyNotifier.persist] çağırmanız gerekir.
+
+<AutoSnippet {...manualPersist} />
+
+### Basitleştirilmiş JSON serileştirmesini kullanmak (kod üretimi) {#using-simplified-json-serialization-code-generation}
+
+[riverpod_sqflite] ile birlikte kod üretimi kullanıyorsanız, [JsonPersist] anotasyonunu
+kullanarak `persist` çağrısını basitleştirebilirsiniz:
+
+<AutoSnippet raw={jsonPersist} />
+
+## Persist anahtarlarını anlamak {#understanding-persist-keys}
+
+Önceki kod parçalarının bazılarında [AnyNotifier.persist] metoduna bir `key` parametresi geçtik. 
+Bu anahtar, veritabanınızın bir provider'ın durumunu veritabanında nerede saklayacağını bilmesini sağlar.
+Veritabanına bağlı olarak bu anahtar benzersiz bir satır kimliği olabilir.
+
+`key` belirtirken şunlardan emin olmanız kritik önemdedir:
+- Anahtar, kalıcı hale getirdiğiniz tüm provider'lar arasında benzersiz olmalıdır.  
+  Aksi takdirde iki provider veritabanındaki aynı satıra yazmaya çalışabileceği için veri bozulmasına
+  yol açabilirsiniz. Riverpod aynı anahtarı kullanan iki provider tespit ederse bir assertion fırlatılır.
+- Anahtar, uygulama yeniden başlatıldığında değişmemelidir.
+  Anahtar değişirse Riverpod, uygulama yeniden başlatıldığında provider'ın durumunu geri yükleyemez
+  ve provider hiç kalıcı hale getirilmemiş gibi başlatılır
+- Anahtar, provider'ın aldığı tüm parametreleri içermelidir.
+  "Family" kullanırken (bkz. <Link documentID="concepts2/family" />) anahtarın family parametresini içermesi gerekir.
+
+
+## Önbellek süresini değiştirmek {#changing-the-cache-duration}
+
+Varsayılan olarak durum yalnızca 2 gün boyunca önbellekte tutulur. Bu varsayılan,
+sızıntı olmamasını ve silinen provider'ların veritabanında süresiz kalmamasını sağlar
+
+Riverpod öncelikli olarak IO işlemleri (ağ istekleri, veritabanı sorguları vb.) için bir
+önbellek olarak kullanılmak üzere tasarlandığından bu genellikle güvenlidir.
+Ancak bu varsayılan, örneğin kullanıcı tercihlerini saklamak istediğinizde olduğu gibi
+her kullanım senaryosu için uygun olmayacaktır.
+
+Bu varsayılanı değiştirmek için `options` parametresini şu şekilde belirtin:
+
+<AutoSnippet raw={customDuration} />
+
+:::caution DİKKAT
+Önbellek süresini sonsuz olarak ayarlarsanız, provider'ı bir gün silmeniz durumunda
+kalıcı hale getirilmiş durumu veritabanından elle silmeyi unutmayın.
+
+Bunun için veritabanınızın dokümantasyonuna bakın.
+:::
+
+
+## Basit veri geçişleri için "destroy key" kullanmak {#using-destroy-key-for-simple-data-migration}
+
+Veriyi kalıcı hale getirirken sık karşılaşılan bir zorluk, veri yapısı değiştiğinde bunun nasıl ele alınacağıdır.
+Bir nesnenin serileştirilme biçimini değiştirirseniz, veritabanında saklanan veriyi taşımanız gerekebilir.
+
+Riverpod tam anlamıyla bir veri geçişi yapmanın yolunu sunmasa da, eski kalıcı durumu
+yepyeni bir durumla kolayca değiştirmenin bir yolunu sunar: Destroy key'ler.
+
+<AutoSnippet {...destroyKey} />
+
+Destroy key'ler, eski kalıcı durumun ne zaman atılması gerektiğini Riverpod'un bilmesini
+sağlayarak basit veri geçişlerine yardımcı olur. Uygulamanın farklı bir destroyKey ile
+yeni bir sürümü yayınlandığında eski kalıcı durum atılır ve provider
+hiç kalıcı hale getirilmemiş gibi başlatılır.
+
+## Kalıcılık çözümlemesini beklemek {#waiting-for-persistence-decoding}
+
+Şimdiye kadar [AnyNotifier.persist] metodunun tamamlanmasını hiç beklemedik.  
+Bu bilinçli bir tercihtir; çünkü bu sayede provider ağ isteklerine mümkün olan en kısa sürede başlayabilir.
+Ancak bu, provider'ın `persist` çağrısının hemen ardından kalıcı duruma kolayca
+erişemeyeceği anlamına gelir.
+
+Bazı durumlarda provider'ı bir ağ isteğiyle başlatmak yerine kalıcı durumla
+başlatmak isteyebilirsiniz.
+
+Bu durumda `persist` sonucunu şu şekilde bekleyebilirsiniz:
+
+```dart
+await persist(...).future;
+```
+
+Bu, `build` içinde `this.state` üzerinden kalıcı duruma erişmenizi sağlar:
+
+<AutoSnippet raw={waitPersist} />
+
+## Kalıcılığı test etmek {#testing-persistence}
+
+Uygulamanızı test ederken gerçek bir veritabanı kullanmak zahmetli olabilir.
+Özellikle birim testleri ve widget testleri bir cihaza erişemeyeceğinden
+veritabanı kullanamaz.
+
+Bu nedenle Riverpod, [Storage.inMemory] ile bellek içi bir veritabanı kullanmanın yolunu sunar.  
+Testinizin bu bellek içi veritabanını kullanması için <Link documentID="concepts2/overrides" /> kullanabilirsiniz:
+
+<AutoSnippet raw={inMemoryTest} />
+
+[riverpod_sqflite]: https://pub.dev/packages/riverpod_sqflite
+[Storage]: https://pub.dev/documentation/hooks_riverpod/latest/experimental_persist/Storage-class.html
+[AnyNotifier.persist]: https://pub.dev/documentation/hooks_riverpod/latest/experimental_persist/NotifierPersistX/persist.html
+[JsonSqFliteStorage]: https://pub.dev/documentation/riverpod_sqflite/latest/riverpod_sqflite/JsonSqFliteStorage-class.html
+[JsonPersist]: https://pub.dev/documentation/riverpod_annotation/latest/experimental_json_persist/JsonPersist-class.html
+[Storage.inMemory]: https://pub.dev/documentation/hooks_riverpod/latest/experimental_persist/Storage/Storage.inMemory.html

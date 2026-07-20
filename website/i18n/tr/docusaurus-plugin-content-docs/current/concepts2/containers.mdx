@@ -1,0 +1,169 @@
+---
+title: ProviderContainers/ProviderScopes
+---
+import { Link } from "/src/components/Link";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+import allProviders from 'raw-loader!/docs/concepts2/containers/all_providers.dart';
+import familyProviders from 'raw-loader!/docs/concepts2/containers/all_providers_family.dart';
+
+[ProviderContainer], Riverpod mimarisinin _asıl_ merkezi parçasıdır.  
+Riverpod'da <Link documentID="concepts2/providers" /> kendi durumlarını tutmaz. Bunun yerine
+belirli bir provider'ın durumu bu container nesnesinin içinde saklanır.
+
+[ProviderScope] ise bir [ProviderContainer] oluşturup onu widget ağacına sunan bir widget'tır.
+Bu yüzden Riverpod kullandığınızda uygulamaların kökünde her zaman bir scope görürsünüz.  
+O olmadan Riverpod, provider'ların durumunu saklayamazdı!
+
+### Saf Dart uygulamaları için ProviderContainer kullanmak {#using-a-providercontainer-for-pure-dart-applications}
+
+[ProviderContainer], Riverpod'u komut satırı uygulamaları veya sunucu tarafı uygulamalar gibi
+saf Dart kod tabanlarında kullanmak istediğinizde işinize yarayan bir nesnedir.
+
+`main` içinde bir [ProviderContainer] oluşturup provider'ları okumak ve değiştirmek için kullanabilirsiniz:
+
+```dart
+import 'package:riverpod/riverpod.dart';
+
+void main() {
+  final container = ProviderContainer();
+
+  try {
+    final sub = container.listen(counterProvider, (previous, next) {
+      print('Counter changed from $previous to $next');
+    });
+    print('Counter starts at ${sub.read()}');
+  } finally {
+    // İşiniz bittiğinde container'ı yok edin
+    container.dispose();
+  }
+}
+```
+
+:::note NOT
+Testlerin içinde [ProviderContainer]'ı doğrudan kullanmayın.
+Bunun yerine [ProviderContainer.test](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderContainer/ProviderContainer.test.html) kullanın.
+Bu, test bittiğinde container'ı otomatik olarak yok eder.
+
+```dart
+test('Counter starts at 0 and can be incremented', () {
+  // Test bittiğinde container'ı yok etmeye gerek yok
+  final container = ProviderContainer.test();
+
+  // Provider'larınızı test etmek için container'ı kullanın
+});
+```
+:::
+
+### Bir container'daki etkin provider'ları listelemek {#listing-active-providers-in-a-container}
+
+`ProviderContainer`, o container'da ve üst container'larında bağlı olan etkin provider'ları
+döndüren `allProviders()` metodunu sunar.
+
+Bu; hata ayıklamak, test etmek veya o anda canlı olan tüm provider'lara aynı işlemi
+uygulamak için kullanışlı olabilir:
+
+<AutoSnippet raw={allProviders} />
+
+İsteğe bağlı olarak `family` belirterek yalnızca bir family'ye ait etkin provider'ları listeleyebilirsiniz:
+
+<AutoSnippet raw={familyProviders} />
+
+
+### Flutter uygulamaları için ProviderScope kullanmak {#using-a-providerscope-for-flutter-applications}
+
+Flutter uygulamalarında [ProviderContainer]'ı doğrudan kullanmamalısınız.
+Bunun yerine, [ProviderContainer]'ın widget karşılığı olan [ProviderScope]'u kullanmalısınız.
+
+Sonuç aynıdır: `main` içinde bir [ProviderScope] oluşturun. Ardından widget'larınızda
+provider'ları okumak ve değiştirmek için <Link documentID="concepts2/consumers" /> kullanabilirsiniz.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+void main() {
+  runApp(
+    ProviderScope(
+      child: Consumer(
+        builder: (context, ref, _) {
+          final counter = ref.watch(counterProvider);
+
+          // YAPILACAK: "counter"ı kullan
+        },
+      ),
+    ),
+  );
+}
+```
+
+## Provider'ların durumu neden bir container içinde saklanıyor? {#why-store-the-state-of-providers-inside-a-container}
+
+Provider'ların durumlarını neden kendilerinin tutmadığı merak edilebilir.
+Bu koşulu ortadan kaldırsaydık, şöyle yazabildiğimiz bir dünya hayal edebilirdik:
+
+```dart
+print(helloWorldProvider.value); // "Hello world!" yazdırır
+```
+
+`ref.watch(helloWorldProvider)` yazmak zorunda kalmak yerine.
+
+Riverpod bunu birkaç nedenden dolayı yapıyor ve hepsi aynı mantığa dayanıyor: "Global durum yok".
+
+1. Sorumlulukların daha iyi ayrılması.  
+  Riverpod, provider'ların kendi durumlarını saklamasına izin verseydi,
+  bu _her şeyin_ o duruma okuma/yazma yapabileceği anlamına gelirdi. Yani
+  bir durumun nasıl/ne zaman değiştirildiğini denetlemek zorlaşırdı.
+
+  Riverpod'un mimarisiyle durum güncellemeleri merkezileştirilmiştir: Bir provider'ı
+  değiştirmeye dair tüm mantık provider'ın kendi içinde yer alır.
+  Genellikle de kullanıcı arayüzü, provider'ın Notifier'ı üzerinde yalnızca tek bir metot çağırır.
+
+1. Daha iyi test edilebilirlik.
+  Provider'ların durumunu bir container içinde saklayarak, testler arasında uygulama durumunu
+  sıfırlamayı dert etmemiz gerekmez. Her test için basitçe yeni bir container oluşturabiliriz ve
+  her provider için taze bir durum oluşturulur:
+
+  ```dart
+  test('Counter starts at 0 and can be incremented', () {
+    final container = ProviderContainer.test();
+
+    expect(container.read(counterProvider), 0);
+    container.read(counterProvider.notifier).increment();
+    expect(container.read(counterProvider), 1);
+  });
+
+  test('Counter cannot go below 0', () {
+    final container = ProviderContainer.test();
+
+    expect(container.read(counterProvider), 0);
+    container.read(counterProvider.notifier).decrement();
+    expect(container.read(counterProvider), 0);
+  });
+  ```
+  Burada her iki testin de aynı provider'a dayandığını görebiliriz. Yine de bir testteki
+  durum değişiklikleri diğer testi etkilemez.
+
+  Elbette aynısı [ProviderScope] ve widget testleri için de geçerlidir.
+
+1. Uygulamanızı yapılandırmak için merkezi bir yer.  
+  [ProviderContainer] ve [ProviderScope] üzerinden Riverpod'un uygulama genelindeki
+  çeşitli yönlerini yapılandırabiliriz. Örneğin:
+    * Uygulamadaki tüm durum değişikliklerini dinlemek için özel bir [ProviderObserver] tanımlayabiliriz.
+      <Link documentID="concepts2/observers"/> sayfasına bakın.
+    * Provider'ları yerel olarak ya da global olarak geçersiz kılabiliriz. Bu;
+      testler için, farklı ortamlara sahip uygulamalar için veya
+      geliştirme sırasında kullanışlı olabilir.
+      <Link documentID="concepts2/overrides"/> sayfasına bakın.
+
+1. <Link documentID="concepts2/scoping"/> desteği.
+  Bir provider'ın durumunu bir container içinde saklayarak, aynı provider'ın widget ağacında
+  kullanıldığı yere göre farklı bir duruma karşılık gelmesini sağlayabiliriz.
+  Bu özellik oldukça ileri düzeydir ve genel olarak önerilmez, ancak performans
+  optimizasyonları için kullanışlıdır.
+
+
+[ProviderContainer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderContainer-class.html
+[ProviderScope]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderScope-class.html
+[ProviderObserver]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderObserver-class.html

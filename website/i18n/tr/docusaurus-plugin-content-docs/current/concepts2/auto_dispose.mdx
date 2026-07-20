@@ -1,0 +1,201 @@
+---
+title: Otomatik yok etme
+version: 2
+---
+import { Link } from "/src/components/Link";
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import onDisposeExample from "/docs/concepts2/auto_dispose/on_dispose_example";
+import invalidateExample from "!!raw-loader!/docs/concepts2/auto_dispose/invalidate_example.dart";
+import keepAlive from "/docs/concepts2/auto_dispose/keep_alive";
+import cacheForExtension from "!!raw-loader!/docs/concepts2/auto_dispose/cache_for_extension.dart";
+import cacheForUsage from "/docs/concepts2/auto_dispose/cache_for_usage";
+import invalidateFamilyExample from '/docs/concepts2/auto_dispose/invalidate_family_example'
+
+Riverpod'da, bir provider artık kullanılmadığında onunla ilişkili kaynakları
+otomatik olarak yok etmesini framework'e söyleyebilirsiniz.
+
+## Otomatik yok etmeyi etkinleştirmek/devre dışı bırakmak {#enablingdisabling-automatic-disposal}
+
+Kod üretimi kullanıyorsanız bu özellik varsayılan olarak etkindir ve
+anotasyon üzerinden devre dışı bırakılabilir:
+```dart
+// Otomatik yok etmeyi devre dışı bırak
+@Riverpod(keepAlive: true)
+String helloWorld(Ref ref) => 'Hello world!';
+```
+
+Kod üretimi kullanmıyorsanız, provider'ı oluştururken `isAutoDispose: true`
+belirterek etkinleştirebilirsiniz:
+```dart
+final helloWorldProvider = Provider<String>(
+  // Otomatik yok etmeyi devreye al
+  isAutoDispose: true,
+  (ref) => 'Hello world!',
+);
+```
+
+:::note NOT
+Otomatik yok etmeyi etkinleştirmek ya da devre dışı bırakmak, provider yeniden
+hesaplandığında durumun yok edilip edilmeyeceğini etkilemez.  
+Provider yeniden hesaplandığında durum her zaman yok edilir.
+:::
+
+:::caution DİKKAT
+Provider'lar parametre aldığında otomatik yok etmeyi etkinleştirmeniz önerilir.
+Aksi takdirde her parametre kombinasyonu için ayrı bir durum oluşturulur ve
+bu da bellek sızıntılarına yol açabilir.
+:::
+
+## Otomatik yok etme ne zaman tetiklenir? {#when-is-automatic-disposal-triggered}
+
+Otomatik yok etme etkinken Riverpod, bir provider'ın dinleyicisi olup olmadığını takip eder.
+Bu takip, [Ref.watch](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/watch.html)/[Ref.listen](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/listen.html)
+çağrıları (ve birkaç benzeri çağrı) üzerinden yapılır.  
+
+Bu sayaç sıfıra ulaştığında provider "kullanılmıyor" kabul edilir ve
+[Ref.onCancel](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/onCancel.html)
+tetiklenir. 
+Bu noktada Riverpod bir kare bekler (bkz. `await null`). O kareden sonra provider hâlâ
+kullanılmıyorsa provider yok edilir ve
+[Ref.onDispose](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/onDispose.html)
+tetiklenir.
+## Durumun yok edilmesine tepki vermek {#reacting-to-state-disposal}
+
+Riverpod'da bir durumun yok edilmesi için birkaç yerleşik yol vardır:
+
+- Provider artık kullanılmıyordur ve "auto dispose" modundadır (buna birazdan değineceğiz).
+  Bu durumda provider ile ilişkili tüm durum yok edilir.
+- Provider, örneğin `ref.watch` nedeniyle yeniden hesaplanır.
+  Bu durumda önceki durum yok edilir ve yeni bir durum oluşturulur.
+
+Her iki durumda da bu gerçekleştiğinde bir miktar mantık çalıştırmak isteyebilirsiniz.  
+Bunu `ref.onDispose` ile yapabilirsiniz. Bu metot, durum her yok edildiğinde
+çalışacak bir dinleyici kaydetmenizi sağlar.
+
+Örneğin, etkin bir `StreamController`'ı kapatmak için kullanabilirsiniz:
+
+<AutoSnippet
+  {...onDisposeExample}
+  translations={{
+    onDispose: `  // Durum yok edildiğinde StreamController'ı kapatıyoruz.`,
+    todo: `  // YAPILACAK: StreamController'a birkaç değer gönderin`,
+  }}
+/>
+
+:::caution DİKKAT
+`ref.onDispose` geri çağırması yan etki tetiklememelidir.
+`onDispose` içinde provider'ları değiştirmek beklenmedik davranışlara yol açabilir.
+:::
+
+:::info
+Şunlar gibi başka kullanışlı yaşam döngüsü metotları da vardır:
+
+- `ref.onCancel`, bir provider'ın son dinleyicisi kaldırıldığında çağrılır.
+- `ref.onResume`, `onCancel` çağrıldıktan sonra yeni bir dinleyici eklendiğinde çağrılır.
+
+:::
+
+:::info
+`ref.onDispose`u istediğiniz kadar çağırabilirsiniz.
+Provider'ınızdaki yok edilebilir her nesne için bir kez çağırmaktan çekinmeyin. Bu alışkanlık,
+bir şeyi yok etmeyi unuttuğumuzda bunu fark etmeyi kolaylaştırır.
+:::
+
+## `ref.invalidate` ile bir provider'ın yok edilmesini elle zorlamak {#manually-forcing-the-destruction-of-a-provider-using-refinvalidate}
+
+Bazen bir provider'ın yok edilmesini zorlamak isteyebilirsiniz.
+Bu, başka bir provider'dan ya da bir widget'tan çağrılabilen `ref.invalidate` ile yapılabilir.
+
+`ref.invalidate` kullanmak provider'ın mevcut durumunu yok eder.
+Ardından iki olası sonuç vardır:
+
+- Provider dinleniyorsa yeni bir durum oluşturulur.
+- Provider dinlenmiyorsa provider tamamen yok edilir.
+
+<AutoSnippet
+  raw={invalidateExample}
+  translations={{
+    invalidate: `        // Tıklandığında provider'ı yok et.`,
+  }}
+/>
+
+:::info
+Provider'lar `ref.invalidateSelf` kullanarak kendilerini de geçersiz kılabilir.
+Ancak bu durumda sonuç her zaman yeni bir durumun oluşturulması olur.
+:::
+
+:::tip
+Parametre alan bir provider'ı geçersiz kılmaya çalışırken, ister tek bir
+parametre kombinasyonunu, ister tüm parametre kombinasyonlarını
+tek seferde geçersiz kılabilirsiniz:
+
+<AutoSnippet
+  {...invalidateFamilyExample}
+  translations={{
+    invalidateAll: `  // Bu provider'ın olası tüm parametre kombinasyonlarını geçersiz kıl.`,
+    invalidate: `  // Yalnızca belirli bir kombinasyonu geçersiz kıl`,
+  }}
+/>
+:::
+
+## `ref.keepAlive` ile ince ayarlı yok etme {#fine-tuned-disposal-with-refkeepalive}
+
+Yukarıda belirtildiği gibi, otomatik yok etme etkinken provider'ın bir kare
+boyunca hiç dinleyicisi kalmadığında durum yok edilir.
+
+Ancak bu davranış üzerinde daha fazla denetim isteyebilirsiniz. Örneğin,
+başarılı ağ isteklerinin durumunu saklamak ama başarısız istekleri
+önbelleğe almamak isteyebilirsiniz.
+
+Bu, otomatik yok etmeyi etkinleştirdikten sonra `ref.keepAlive` ile yapılabilir.
+Bunu kullanarak durumun _ne zaman_ otomatik olarak yok edilmeyi bırakacağına karar verebilirsiniz.
+
+<AutoSnippet
+  {...keepAlive}
+  translations={{
+    keepAlive: `  // Provider'ı yalnızca istek başarıyla tamamlandıktan sonra canlı tutuyoruz.
+  // İstek başarısız olursa (ve bir istisna fırlatırsa), provider dinlenmeyi
+  // bıraktığında durum yok edilecektir.`,
+    closeLink: `  // Otomatik yok etme davranışını geri getirmek için \`link\`i şöyle kullanabiliriz:`,
+  }}
+/>
+
+:::note NOT
+Provider yeniden hesaplanırsa otomatik yok etme yeniden etkinleşir.
+
+Ayrıca `ref.keepAlive`in dönüş değerini kullanarak otomatik yok etmeye
+geri dönmek de mümkündür.
+:::
+
+## Örnek: durumu belirli bir süre boyunca canlı tutmak {#example-keeping-state-alive-for-a-specific-amount-of-time}
+
+Riverpod şu anda durumu belirli bir süre boyunca canlı tutmak için
+yerleşik bir yol sunmuyor.  
+Ancak böyle bir özelliği şimdiye kadar gördüğümüz araçlarla uygulamak hem kolay hem de yeniden kullanılabilir.
+
+Bir `Timer` ile `ref.keepAlive`i birlikte kullanarak durumu belirli bir süre canlı tutabiliriz.
+Bu mantığı yeniden kullanılabilir hale getirmek için bir uzantı (extension) metodu olarak yazabiliriz:
+
+<AutoSnippet
+  raw={cacheForExtension}
+  translations={{
+    cacheFor: `  /// Provider'ı [duration] süresince canlı tutar.`,
+    keepAlive: `    // Durumun yok edilmesini anında engelliyoruz.`,
+    timer: `    // Süre dolduktan sonra otomatik yok etmeyi yeniden etkinleştiriyoruz.`,
+    onDispose: `    // İsteğe bağlı: provider yeniden hesaplandığında (örneğin ref.watch ile),
+    // bekleyen zamanlayıcıyı iptal ediyoruz.`,
+  }}
+/>
+
+Ardından bunu şu şekilde kullanabiliriz:
+
+<AutoSnippet
+  {...cacheForUsage}
+  translations={{
+    cacheFor: `  /// Durumu 5 dakika boyunca canlı tutar`,
+  }}
+/>
+
+Bu mantığı ihtiyaçlarınıza göre uyarlayabilirsiniz. 
+Örneğin, bir provider belirli bir süre boyunca dinlenmediyse durumu yok etmek için
+`ref.onCancel`/`ref.onResume` kullanabilirsiniz.

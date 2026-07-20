@@ -1,0 +1,64 @@
+---
+title: Provider'ları kapsamlama
+---
+import { Link } from "/src/components/Link";
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import usage from '/docs/concepts2/scoping/usage';
+import dependencies from '/docs/concepts2/scoping/dependencies';
+import override from 'raw-loader!/docs/concepts2/scoping/override.dart';
+
+Kapsamlama (scoping), bir provider'ın davranışını yalnızca uygulamanızın küçük bir bölümü için değiştirme işlemidir.
+
+Şunlar için kullanışlıdır:
+- Sayfaya/widget'a özel özelleştirme (örneğin uygulamanızın temasını yalnızca belirli bir sayfa için değiştirmek)
+- Performans optimizasyonu (örneğin bir `ListView` içinde yalnızca değişen öğeyi yeniden oluşturmak)
+- Parametreleri elden ele taşımak zorunda kalmamak (örneğin <Link documentID="concepts2/family" /> için)
+
+Kapsamlama, uygulamanızın kökü _olmayan_ <Link documentID="concepts2/containers" /> içindeki bir provider'ı
+geçersiz kılarak, <Link documentID="concepts2/overrides" /> aracılığıyla gerçekleştirilir.
+
+:::caution DİKKAT
+Kapsamlama özelliği oldukça karmaşıktır ve gelecekte daha kullanışlı hale getirmek için
+büyük olasılıkla yeniden düzenlenecektir.  
+
+Dikkatli ilerleyin.
+:::
+
+
+## Kapsamlı bir provider tanımlamak {#defining-a-scoped-provider}
+
+Riverpod varsayılan olarak bir provider'ı kapsamlamanıza izin vermez. Bu özelliği kullanmak için
+provider üzerinde `dependencies` belirterek açıkça devreye almanız gerekir.
+
+Uygulamanızdaki ilk kapsamlı provider genellikle `dependencies: []` belirtir.  
+Aşağıdaki kod parçası, o anda gösterilmekte olan öğenin ID'sini sunan kapsamlı bir provider tanımlar:
+
+<AutoSnippet {...usage} />
+
+## Kapsamlı bir provider'ı dinlemek {#listening-to-a-scoped-provider}
+
+Kapsamlı bir provider'ı dinlemek için, <Link documentID="concepts2/refs" /> elde ederek
+(örneğin <Link documentID="concepts2/consumers" /> ile) provider'ı her zamanki gibi kullanın.
+
+```dart
+final currentItemId = ref.watch(currentItemIdProvider);
+```
+
+Bir provider kapsamlı bir provider'ı dinliyorsa, o kapsamlı provider'ın,
+kendisini dinleyen provider'ın `dependencies` listesine dahil edilmesi gerekir:
+
+<AutoSnippet {...dependencies} />
+
+:::info
+`dependencies` içinde yalnızca kapsamlı provider'ları listelemeniz gerekir.
+Kapsamlı olmayan provider'ları listelemenize gerek yoktur.
+:::
+
+## Kapsamlı bir provider'ın değerini belirlemek {#setting-the-value-of-a-scoped-provider}
+
+Kapsamlı bir provider'ın değerini belirlemek için <Link documentID="concepts2/overrides" /> kullanabilirsiniz.
+Tipik bir örnek, [ProviderScope] üzerinde `overrides` belirtmektir:
+
+<AutoSnippet raw={override} />
+
+[ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html

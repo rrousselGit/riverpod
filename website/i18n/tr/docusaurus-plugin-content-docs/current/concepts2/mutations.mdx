@@ -1,0 +1,121 @@
+---
+title: Mutation'lar (deneysel)
+---
+import { Link } from "/src/components/Link";
+import CodeBlock from "@theme/CodeBlock";
+import { trimSnippet } from "/src/components/CodeSnippet";
+import listener from 'raw-loader!/docs/concepts2/mutations/listening.dart';
+import keyed from 'raw-loader!/docs/concepts2/mutations/keyed.dart';
+import generic from 'raw-loader!/docs/concepts2/mutations/generic.dart';
+import triggering from 'raw-loader!/docs/concepts2/mutations/triggering.dart';
+import switching from 'raw-loader!/docs/concepts2/mutations/switching.dart';
+import resetting from 'raw-loader!/docs/concepts2/mutations/resetting.dart';
+
+:::caution DİKKAT
+Mutation'lar deneyseldir ve API, ana sürüm numarası artırılmadan
+geriye dönük uyumsuz şekilde değişebilir.
+:::
+
+Riverpod'da mutation'lar, kullanıcı arayüzünün durum değişikliklerine
+tepki vermesini sağlayan nesnelerdir.
+Yaygın bir kullanım senaryosu, bir form gönderilirken yükleniyor göstergesi göstermektir
+
+Kısacası mutation'lar şuna benzer etkiler elde etmek içindir:
+![Gönderim ilerleme göstergesi](/img/concepts2/mutations/spinner.gif)
+
+Mutation'lar olmasaydı, form gönderiminin ilerlemesini doğrudan bir provider'ın
+durumu içinde saklamanız gerekirdi. Bu ideal değildir; çünkü provider'ınızın durumunu
+kullanıcı arayüzüne ait kaygılarla kirletir ve yükleniyor durumu, hata durumu ve başarı
+durumunu yönetmek için bolca standart şablon kod gerektirir.
+
+Mutation'lar bu kaygıları daha zarif bir şekilde ele almak için tasarlanmıştır.
+
+## Bir mutation tanımlamak {#defining-a-mutation}
+
+Mutation'lar, bir yerde final bir değişkende saklanan [Mutation] nesnesi örnekleridir.
+
+```dart
+// "todo ekleme" işlemini takip etmek için bir mutation.
+// Generic tip isteğe bağlıdır ve kullanıcı arayüzünün mutation'ın sonucuyla
+// etkileşime girebilmesi için belirtilebilir.
+final addTodo = Mutation<Todo>();
+```
+
+:::note NOT
+Bu değişken tipik olarak ya global olur ya da bir [Notifier] üzerinde
+`static final` bir değişken olarak tanımlanır.
+:::
+
+## Bir mutation'ı dinlemek {#listening-to-a-mutation}
+
+Bir mutation tanımladıktan sonra, onu <Link documentID="concepts2/consumers" /> veya <Link documentID="concepts2/providers" /> içinde kullanmaya başlayabiliriz.  
+Bunun için bir <Link documentID="concepts2/refs" /> elde etmemiz ve tercih ettiğimiz bir dinleme
+metodunu (tipik olarak [Ref.watch]) seçmemiz gerekir.
+
+Tipik bir örnek şöyledir:
+
+<CodeBlock>{trimSnippet(listener)}</CodeBlock>
+
+### Bir mutation'ı kapsamlamak {#scoping-a-mutation}
+
+Bazen aynı mutation'ın birden fazla örneğine sahip olmak isteyebilirsiniz.
+
+Bu, bir id ya da mutation'ı benzersiz kılan başka herhangi bir parametre olabilir.
+
+Bir listedeki belirli bir öğeyi silmek gibi, aynı mutation'ın birden fazla örneğine
+ihtiyaç duyduğunuzda bu kullanışlıdır
+
+Mutation'ı benzersiz anahtarla çağırmanız yeterlidir:
+
+<CodeBlock>{trimSnippet(keyed)}</CodeBlock>
+
+Bazen bu mutation'lar generic bir dönüş tipine sahip olur; örneğin bir API yanıtının,
+serileştirmede olduğu gibi, girdi parametrelerine bağlı olarak farklı yanıt tipleri
+döndürebildiği durumlarda.
+
+<CodeBlock>{trimSnippet(generic)}</CodeBlock>
+
+### Bir mutation'ı tetiklemek {#triggering-a-mutation}
+
+Şimdiye kadar bir mutation'ın durumunu dinledik, ama henüz gerçekte bir şey olmuyor.
+
+Bir mutation'ı tetiklemek için [Mutation.run] kullanabilir, mutation'ımızı iletebilir ve
+istediğimiz durumu güncelleyen asenkron bir geri çağırma sağlayabiliriz. Son olarak, mutation'ın
+generic tipiyle eşleşen bir değer döndürmemiz gerekir.
+
+<CodeBlock>{trimSnippet(triggering)}</CodeBlock>
+
+### Farklı mutation durumları ve anlamları {#the-different-mutation-states-and-their-meaning}
+
+Mutation'lar şu durumlardan birinde olabilir:
+- [MutationPending]: Mutation başlamıştır ve şu anda yükleniyordur.
+- [MutationError]: Mutation başarısız olmuştur ve bir hata mevcuttur.
+- [MutationSuccess]: Mutation başarılı olmuştur ve sonuç mevcuttur.
+- [MutationIdle]: Mutation henüz çağrılmamıştır veya sıfırlanmıştır.
+
+Farklı durumlar arasında bir `switch` ifadesiyle geçiş yapabilirsiniz:
+
+<CodeBlock>{trimSnippet(switching)}</CodeBlock>
+
+### Bir mutation bir kez başlatıldıktan sonra, boşta (idle) durumuna nasıl sıfırlanır? {#after-a-mutation-has-been-started-once-how-to-reset-it-to-its-idle-state}
+
+Mutation'lar şu durumlarda kendilerini doğal olarak [MutationIdle] durumuna sıfırlar:
+- Tamamlandıklarında (başarıyla veya bir hatayla).
+- Tüm dinleyiciler kaldırıldığında (örneğin spinner widget'ı kaldırıldığında)
+
+Bu, <Link documentID="concepts2/auto_dispose"/> özelliğinin çalışma şekline benzer; ancak mutation'lar için geçerlidir.
+
+Alternatif olarak, [Mutation.reset] metodunu çağırarak bir mutation'ı
+elle boşta durumuna sıfırlayabilirsiniz:
+
+<CodeBlock>{trimSnippet(resetting)}</CodeBlock>
+
+[MutationPending]: https://pub.dev/documentation/riverpod/latest/experimental_mutation/MutationPending-class.html
+[MutationError]: https://pub.dev/documentation/riverpod/latest/experimental_mutation/MutationError-class.html
+[MutationSuccess]: https://pub.dev/documentation/riverpod/latest/experimental_mutation/MutationSuccess-class.html
+[MutationIdle]: https://pub.dev/documentation/riverpod/latest/experimental_mutation/MutationIdle-class.html
+[Mutation.reset]: https://pub.dev/documentation/riverpod/latest/experimental_mutation/Mutation/reset.html
+[Mutation.run]: https://pub.dev/documentation/riverpod/latest/experimental_mutation/Mutation/run.html
+[Mutation]: https://pub.dev/documentation/riverpod/latest/experimental_mutation/Mutation-class.html
+[Notifier]: https://pub.dev/documentation/riverpod/latest/riverpod/Notifier-class.html
+[Ref.watch]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/watch.html
