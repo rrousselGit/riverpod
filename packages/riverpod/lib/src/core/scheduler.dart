@@ -167,11 +167,11 @@ class ProviderScheduler {
 
     _performRefresh();
     _performDispose();
-    stateToRefresh.clear();
     _stateToDispose.clear();
     _pendingTask = null;
 
     _pendingTaskCompleter = null;
+    if (stateToRefresh.isNotEmpty) _scheduleTask(taskNeedsRefresh: true);
   }
 
   void debugNotifyDidBuild(ProviderElement element) {
@@ -188,14 +188,25 @@ class ProviderScheduler {
   Set<ProviderElement>? _builtWithinFrame;
   void _performRefresh() {
     if (kDebugMode) _builtWithinFrame = {};
+    List<ProviderElement>? deferred;
 
     /// No need to traverse entries from top to bottom, because refreshing a
     /// child will automatically refresh its parent when it will try to read it
     for (var i = 0; i < stateToRefresh.length; i++) {
       final element = stateToRefresh[i];
-      if (element.isActive) element.flush();
+      if (!element.isActive) continue;
+      if (kDebugMode && (_builtWithinFrame?.contains(element) ?? false)) {
+        if (deferred == null || !deferred.contains(element)) {
+          (deferred ??= []).add(element);
+        }
+        continue;
+      }
+
+      element.flush();
     }
 
+    stateToRefresh.clear();
+    if (deferred != null) stateToRefresh.addAll(deferred);
     if (kDebugMode) _builtWithinFrame = null;
   }
 
