@@ -93,7 +93,9 @@ export const documentTitles = {
     "concepts/combining_providers": "Combinando providers",
     "concepts/modifiers/family": ".family",
     "concepts/modifiers/auto_dispose": ".autoDispose",
+    "whats_new": "Riverpod 3.0'daki yenilikler",
     "getting_started": "Başlarken",
+    "3.0_migration": "2.0'dan 3.0'a geçiş",
   },
   'ru': {
     "providers/stream_provider": "StreamProvider",
@@ -116,8 +118,10 @@ export const documentTitles = {
     "cookbooks/refresh": "Pull-to-refresh / Retry-on-error",
     "concepts2/refs": "Refs",
     "concepts2/providers": "Providers",
+    "concepts2/family": "Family",
     "concepts2/containers": "ProviderContainers/ProviderScopes",
     "concepts2/consumers": "Consumers",
+    "concepts2/auto_dispose": "Automatic disposal",
   },
   'ko': {
     "providers/stream_provider": "StreamProvider",
@@ -335,15 +339,16 @@ export const documentTitles = {
   },
   'ar': {
     "introduction/getting_started": "الشروع في العمل مع Riverpod",
-    "concepts2/providers": "مفاهيم Providers",
     "whats_new": "ما الجديد في Riverpod 3.0",
     "3.0_migration": "الانتقال من الإصدار 2.0 إلى 3.0",
+    "concepts2/providers": "مفاهيم Providers",
     "tutorials/first_app": "تطبيقك الأول مع Riverpod",
     "root/faq": "الأسئلة الشائعة",
     "root/do_dont": "افعل/لا تفعل",
   },
 };
 export const outdatedTranslations = [
+{"countryCode":"ar","id":"whats_new","englishPath":"/docs/whats_new"},
 {"countryCode":"bn","id":"migration/0.13.0_to_0.14.0","englishPath":"/docs/migration/0.13.0_to_0.14.0"},
 {"countryCode":"bn","id":"migration/0.14.0_to_1.0.0","englishPath":"/docs/migration/0.14.0_to_1.0.0"},
 {"countryCode":"de","id":"migration/0.13.0_to_0.14.0","englishPath":"/docs/migration/0.13.0_to_0.14.0"},
@@ -379,6 +384,7 @@ export const outdatedTranslations = [
 {"countryCode":"ko","id":"migration/0.14.0_to_1.0.0","englishPath":"/docs/migration/0.14.0_to_1.0.0"},
 {"countryCode":"ko","id":"migration/from_change_notifier","englishPath":"/docs/migration/from_change_notifier"},
 {"countryCode":"ko","id":"migration/from_state_notifier","englishPath":"/docs/migration/from_state_notifier"},
+{"countryCode":"ko","id":"whats_new","englishPath":"/docs/whats_new"},
 {"countryCode":"ru","id":"migration/0.13.0_to_0.14.0","englishPath":"/docs/migration/0.13.0_to_0.14.0"},
 {"countryCode":"ru","id":"migration/0.14.0_to_1.0.0","englishPath":"/docs/migration/0.14.0_to_1.0.0"},
 {"countryCode":"tr","id":"migration/0.13.0_to_0.14.0","englishPath":"/docs/migration/0.13.0_to_0.14.0"},
