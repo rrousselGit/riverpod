@@ -1,0 +1,502 @@
+---
+title: İlk Riverpod uygulamanız
+version: 2
+---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+import { DartPad } from "/src/components/DartPad";
+
+Bu öğreticide Riverpod kullanarak rastgele şaka üreten bir uygulama geliştireceğiz:
+
+<DartPad id="6bf918e3fc97a40b53d1ea80fd937146" />
+
+## Önemli noktalar {#key-points}
+- Riverpod'u kurmayı öğrenin
+- Ağ isteği yapmak için ilk provider'ınızı oluşturun
+- Veriyi göstermek için [Consumer] kullanın
+- Yükleme ve hata durumlarını göstermek için [AsyncValue]'yu ele alın
+
+## Projeyi hazırlamak {#setting-up-the-project}
+
+### Bir Flutter projesi oluşturmak {#creating-a-flutter-project}
+
+Başlangıç olarak yeni bir Flutter projesi oluşturalım:
+
+```sh
+flutter create first_app
+```
+
+Ardından projeyi tercih ettiğiniz editörde açın.
+
+### Sahte bir arayüz oluşturmak {#creating-a-mocked-ui}
+
+Herhangi bir mantık yazmaya başlamadan önce uygulamamızın arayüzünü oluşturalım.
+Gerçek bir API kullanmak yerine statik veriyle başlayacağız.
+
+Projemizin `lib` dizininde `home.dart` adında yeni bir dosya oluşturalım.
+İçine aşağıdaki kodu yapıştırabilirsiniz:
+
+<AutoSnippet
+  title="lib/home.dart"
+  raw={`
+  import 'package:flutter/material.dart';
+  
+  class HomeView extends StatelessWidget {
+    const HomeView({super.key});
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Random Joke Generator')),
+        body: SizedBox.expand(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              const SelectableText(
+                'What kind of bagel can fly?\\n\\n'
+                'A plain bagel.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 24),
+              ),
+  
+              Positioned(
+                bottom: 20,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: const Text('Get another joke'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+`}
+/>
+
+Ardından `main.dart` dosyamızı bu yeni `HomeView` widget'ını kullanacak şekilde güncelleyebiliriz:
+
+<AutoSnippet
+  title="lib/main.dart"
+  raw={`
+  import 'package:flutter/material.dart';
+  
+  import 'home.dart';
+  
+  void main() {
+    runApp(const MyApp());
+  }
+  
+  class MyApp extends StatelessWidget {
+    const MyApp({super.key});
+  
+    @override
+    Widget build(BuildContext context) {
+      return const MaterialApp(home: HomeView());
+    }
+  }
+`}
+/>
+
+Uygulamayı şimdi çalıştırırsanız şunu görmelisiniz:
+
+![Sahte arayüz](/img/tutorials/first_app/mocked_ui.png)
+
+### Projeye Riverpod eklemek {#adding-riverpod-to-the-project}
+
+Projeyi oluşturduktan sonra Riverpod'u bağımlılık olarak eklememiz gerekiyor.
+
+Riverpod'u Flutter ile kullanacağımız için [flutter_riverpod] paketini kuracağız.  
+Benzer şekilde ağ isteklerini [Dio] paketiyle yapacağımız için onu da kuracağız.
+
+Bunu terminalinizde aşağıdaki komutu yazarak yapabilirsiniz:
+
+```sh
+flutter pub add flutter_riverpod dio
+```
+
+Bu komut, Riverpod'un en son sürümünü Dio ile birlikte projenize ekleyecektir.
+
+### (İsteğe bağlı) riverpod_lint eklemek {#optional-adding-riverpod_lint}
+
+Daha iyi Riverpod kodu yazmanıza yardımcı olması için [riverpod_lint] paketini kurabilirsiniz.  
+Bu paket, Riverpod kodunu daha kolay yazmanızı sağlayan yeniden düzenleme (refactoring) seçenekleri ve sık yapılan hatalardan kaçınmanıza yardımcı olan lint kuralları sunar.
+
+Riverpod_lint, [analysis_server_plugin] kullanılarak geliştirilmiştir. Bu nedenle `analysis_options.yaml` üzerinden kurulur.
+
+Kısacası, `pubspec.yaml` dosyanızın yanına bir `analysis_options.yaml` oluşturun ve şunu ekleyin:
+
+```yaml title="analysis_options.yaml"
+plugins:
+  riverpod_lint: <https://pub.dev/packages/riverpod_lint adresindeki en son sürüm>
+```
+
+### main fonksiyonumuza ProviderScope eklemek {#adding-providerscope-in-our-main-function}
+
+Riverpod'un çalışabilmesi için `main` fonksiyonumuzu bir [ProviderScope] içerecek şekilde güncellememiz gerekir.  
+Bu nesneler hakkında <Link documentID="concepts2/containers" /> bölümünden bilgi edinebilirsiniz.
+
+Güncellenmiş `main` fonksiyonu şöyle:
+
+<AutoSnippet
+  title="lib/main.dart"
+  raw={`
+void main() {
+  runApp(
+    // Uygulamanızın üstüne ProviderScope ekleyin
+    // highlight-next-line
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
+  `}
+/>
+
+## Bir model sınıfı oluşturmak {#creating-a-model-class}
+
+Bu öğreticide veriyi bir [rastgele şaka üreteci](https://official-joke-api.appspot.com/random_joke) API'sinden çekeceğiz.
+
+Bu API şuna benzeyen bir JSON nesnesi döndürür:
+
+```json
+{
+  "type": "general",
+  "setup": "Why did the scarecrow win an award?",
+  "punchline": "Because he was outstanding in his field.",
+  "id": 333
+}
+```
+
+Bu veriyi uygulamamızda temsil etmek için `Joke` adında bir model sınıfı oluşturacağız.  
+
+Bunun için projemizin `lib` dizininde `joke.dart` adında yeni bir dosya oluşturalım.
+`Joke` sınıfı şöyle görünüyor:
+
+<AutoSnippet
+  title="lib/joke.dart"
+  raw={`
+class Joke {
+  Joke({
+    required this.type,
+    required this.setup,
+    required this.punchline,
+    required this.id,
+  });
+  
+  factory Joke.fromJson(Map<String, Object?> json) {
+    return Joke(
+      type: json['type']! as String,
+      setup: json['setup']! as String,
+      punchline: json['punchline']! as String,
+      id: json['id']! as int,
+    );
+  }
+  
+  final String type;
+  final String setup;
+  final String punchline;
+  final int id;
+}
+  `}
+/>
+
+
+`fromJson` factory kurucusuna dikkat edin.  
+API'miz bir JSON nesnesi döndürdüğü için, JSON verisini `Joke` sınıfımıza dönüştürecek bir yola ihtiyacımız var.
+Bu kurucu bir `Map<String, Object?>` alır ve bir `Joke` örneği döndürür.
+
+## API'yi çağıran bir fonksiyon yazmak {#writing-a-function-that-calls-the-api}
+
+Model sınıfımız hazır olduğuna göre, veriyi API'den çeken bir fonksiyon yazabiliriz.
+Burada [Dio] paketini kullanacağız; çünkü bir istek başarısız olduğunda doğal olarak exception fırlatıyor ve bu bizim senaryomuz için elverişli.
+Ancak tercih ettiğiniz herhangi bir HTTP istemcisini kullanabilirsiniz.
+
+Bu mantığı, `Joke` sınıfıyla yakından ilişkili olduğu için az önce oluşturduğumuz
+`joke.dart` dosyasına yerleştirebiliriz.
+
+<AutoSnippet
+  title="lib/joke.dart"
+  raw={`
+  final dio = Dio();
+  
+  Future<Joke> fetchRandomJoke() async {
+    // Herkese açık bir API'den rastgele bir şaka çekiyoruz
+    final response = await dio.get<Map<String, Object?>>(
+      'https://official-joke-api.appspot.com/random_joke',
+    );
+  
+    return Joke.fromJson(response.data!);
+  }
+  `}
+/>
+
+:::info
+API çağrısından gelen hiçbir hatayı yakalamadığımıza dikkat edin.  
+Bu bilinçli bir tercih. Riverpod hataları bizim için ele alacak, dolayısıyla bunu elle yapmamıza gerek yok.
+:::
+
+## Veriyi çeken bir provider oluşturmak {#creating-a-provider-that-fetches-the-data}
+
+API'yi sorgulayan bir fonksiyonumuz olduğuna göre, artık o API'nin sonucunu önbelleğe almaktan
+sorumlu bir "provider" oluşturabiliriz.  
+Provider'lar hakkında daha fazla bilgi için <Link documentID="concepts2/providers" /> sayfasına bakın.
+
+`fetchRandomJoke` fonksiyonumuz bir `Future<Joke>` döndürdüğü için [FutureProvider] kullanacağız.
+Provider'ı da `Joke` sınıfıyla ilişkili olduğu için aynı `joke.dart` dosyasına yerleştirebiliriz.
+
+Bunu yaparak `fetchRandomJoke` fonksiyonunun çalıştırılması önbelleğe alınacak ve değere
+kaç kez erişirsek erişelim ağ isteği yalnızca bir kez yapılacaktır.
+
+<AutoSnippet
+  title="lib/joke.dart"
+  raw={`
+  final randomJokeProvider = FutureProvider<Joke>((ref) async {
+    // Rastgele bir şaka almak için fetchRandomJoke fonksiyonunu kullanıyoruz
+    return fetchRandomJoke();
+  });
+  `}
+/>
+
+:::info
+`fetchRandomJoke` fonksiyonumuz ile `randomJokeProvider` arasındaki ayrım zorunlu değildir.  
+Dilerseniz `fetchRandomJoke` içeriğini doğrudan provider'ın içine de yazabilirsiniz:
+
+```dart
+final randomJokeProvider = FutureProvider<Joke>((ref) async {
+  final response = await dio.get<Map<String, Object?>>(
+    'https://official-joke-api.appspot.com/random_joke',
+  );
+
+  return Joke.fromJson(response.data!);
+});
+```
+:::
+
+## Veriyi arayüzde göstermek {#displaying-the-data-in-the-ui}
+
+### Arayüzümüzü bir Consumer ile sarmalamak {#wrapping-our-ui-in-a-consumer}
+
+Artık bir provider'ımız olduğuna göre, `HomeView` widget'ımızı veriyi dinamik olarak yükleyecek şekilde güncelleme zamanı geldi.
+
+Bunun için Riverpod'un bir başka özelliğine ihtiyacımız olacak: [Consumer] widget'ı.  
+Bu widget, bir provider'ın değerini okumamızı ve değer değiştiğinde arayüzü yeniden oluşturmamızı sağlar.
+Kullanımı [StreamBuilder] gibi widget'ları andırır.
+
+Özellikle `Stack`'i bir `Consumer` widget'ı içine almak isteyeceğiz.  
+Önceki adımda [riverpod_lint]'i kurduysanız, yerleşik yeniden düzenleme seçeneklerinden birini kullanabilirsiniz:
+
+![Consumer ile sarmalama yeniden düzenlemesi iş başında](/img/tutorials/first_app/wrap_in_consumer.gif)
+
+Güncellenmiş `home.dart` kodu şöyle görünmeli:
+
+<AutoSnippet
+  title="lib/home.dart"
+  raw={`
+  import 'package:flutter/material.dart';
+  import 'package:flutter_riverpod/flutter_riverpod.dart';
+  
+  class HomeView extends StatelessWidget {
+    const HomeView({super.key});
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Random Joke Generator')),
+        body: SizedBox.expand(
+          // highlight-next-line
+          child: Consumer(
+            // highlight-next-line
+            builder: (context, ref, child) {
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  const SelectableText(
+                    'What kind of bagel can fly?\\n\\n'
+                    'A plain bagel.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 24),
+                  ),
+  
+                  Positioned(
+                    bottom: 20,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: const Text('Get another joke'),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      );
+    }
+  }
+  `}
+/>
+
+### Şakamızı elde etmek ve değişikliklerini dinlemek {#obtaining-our-joke-and-listening-to-its-changes}
+
+Artık bir `Consumer`'ımız olduğuna göre, provider'ımızı okumak için onun `ref` parametresini kullanabiliriz.  
+Bu nesneyi kullanarak, provider'ın geçerli değerini elde etmek için `ref.watch(randomJokeProvider)` çağırabiliriz.
+Ancak provider'larla etkileşime girmenin başka yolları da var! Daha fazla bilgi için <Link documentID="concepts2/refs" /> sayfasına bakın.
+
+Güncellenmiş `Consumer`'ımız şöyle görünmeli:
+
+```dart
+Consumer(
+  builder: (context, ref, child) {
+    // highlight-next-line
+    final randomJoke = ref.watch(randomJokeProvider);
+    // ...
+  },
+)
+```
+
+Bu satırla birlikte Riverpod, şakayı API'mizden otomatik olarak çekecek ve sonucu önbelleğe alacaktır.
+Artık şakayı arayüzümüzde göstermek için `randomJoke` değişkenini kullanabiliriz.
+
+### Yükleme ve hata durumlarını ele almak {#handling-loading-and-error-states}
+
+Az önce oluşturduğumuz `randomJoke` değişkeni `Joke` türünde değil, `AsyncValue<Joke>` türündedir.  
+[AsyncValue], ağ isteği gibi asenkron bir işlemin durumunu temsil eden bir Riverpod türüdür.
+Yükleme, başarı ve hata durumları hakkında bilgi içerir. `AsyncValue` birçok bakımdan [StreamBuilder]'da kullanılan `AsyncSnapshot` türüne benzer.
+
+Farklı durumları ele almanın elverişli bir yolu Dart'ın `switch` özelliğini kullanmaktır. Bir
+`if`/`else if` zincirine benzer, ancak belirli bir nesne üzerindeki koşulları ele almak için özelleştirilmiştir.
+
+`AsyncValue` ile birlikte kullanılan yaygın bir yöntem şöyledir:
+
+```dart
+switch (asyncValue) {
+  // "value" null değilse, elimizde veri var demektir.
+  case AsyncValue(:final value?):
+    return Text(value);
+  // "error" null değilse, işlem başarısız olmuş demektir.
+  case AsyncValue(error: != null):
+    return Text('Error: ${asyncValue.error}');
+  // Ne veri ne de hata durumundaysak, yükleme durumundayız demektir.
+  case AsyncValue():
+    return const CircularProgressIndicator();
+}
+```
+
+:::caution DİKKAT
+İşlem sırası önemlidir!  
+Yukarıdaki sözdizimini kullanıyorsanız, değerleri hatalardan _önce_ kontrol etmek
+ve yükleme durumunu en sona bırakmak önemlidir.
+
+Farklı bir sıra kullanırsanız, istek çoktan tamamlanmışken ilerleme göstergesi
+görüntülenmesi gibi hatalı davranışlarla karşılaşabilirsiniz.
+:::
+
+
+Artık `Stack`'imizi, `randomJoke`'un durumuna göre şakayı, yükleme göstergesini veya hata mesajını gösterecek şekilde güncelleyebiliriz:
+
+<AutoSnippet
+  raw={`
+  return Stack(
+    alignment: Alignment.center,
+    children: [
+      switch (randomJoke) {
+        // İstek başarıyla tamamlandığında şakayı gösteriyoruz.
+        AsyncValue(:final value?) => SelectableText(
+          '$\{value.setup}\\n\\n$\{value.punchline}',
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 24),
+        ),
+        // Hata durumunda basit bir hata mesajı gösteriyoruz.
+        AsyncValue(error: != null) => const Text('Error fetching joke'),
+        // İstek yüklenirken bir ilerleme göstergesi gösteriyoruz.
+        AsyncValue() => const CircularProgressIndicator(),
+      },
+  
+      // <buton kodu değişmeden kalıyor>
+    ],
+  );
+`}
+/>
+
+
+Bu aşamada uygulamamız internete bağlandı ve uygulama açıldığında rastgele bir şaka gösteriliyor!
+
+### "Get another joke" butonunu bağlamak {#connecting-the-get-another-joke-button}
+
+Şu anda uygulama açıldığında rastgele bir şaka gösteriyoruz, ancak butona tıklamak
+hiçbir şey yapmıyor. Butonu, tıklandığında yeni bir şaka çekecek şekilde güncelleyelim.
+
+[ChangeNotifier]'a benzer bir kalıp kullanıp durumu elle yönetebilir_dik_.  
+Riverpod bu tür kalıpları destekler, ancak burada buna gerek yok.
+
+Bunun yerine, butona tıklandığında Riverpod'a provider'ımızın mantığını yeniden çalıştırmasını söyleyebiliriz.
+Bu, [Ref.invalidate] kullanılarak şöyle yapılabilir:
+
+```dart
+ElevatedButton(
+  // highlight-next-line
+  onPressed: () => ref.invalidate(randomJokeProvider),
+  child: const Text('Get another joke'),
+),
+```
+
+Yapmamız gereken tek şey bu!  
+Butona tıklandığında Riverpod, `randomJokeProvider`'ın mantığını yeniden çalıştıracak; bu da
+API'den yeni bir şaka çekecek ve arayüzü buna göre güncelleyecektir.
+
+### Yeni bir şaka çekilirken `LinearProgressIndicator` eklemek {#adding-a-linearprogressindicator-when-a-new-joke-is-being-fetched}
+
+"Get another joke" butonuna tıklandığında uygulamanın herhangi bir yükleme göstergesi göstermediğini fark etmiş olabilirsiniz.
+
+Bunun nedeni, [Ref.invalidate] çağırdığımızda mevcut önbelleğin yok edilmemesidir.
+Bunun yerine, yeni şaka çekilirken önceki şakaya dair bilgiyi elimizde tutarız.
+Bu da yeni şaka çekilirken önceki şakayı göstermemizi sağlar.
+
+Ancak kullanıcı arayüzleri bu durumları ele alıp hem bir yükleme göstergesini hem de önceki şakayı göstermek isteyebilir.
+Bunun yaygın bir yolu [LinearProgressIndicator] kullanmaktır. Bu göstergeyi eklemek için
+[AsyncValue.isRefreshing] değerini kontrol edebiliriz. Bu bayrak, eski veri mevcutken yeni bir istek yapılıyorsa `true` olur.
+
+Güncellenmiş `Stack`'imiz şöyle görünmeli:
+
+```dart
+return Stack(
+  alignment: Alignment.center,
+  children: [
+    // İkinci istek sırasında özel bir yükleme göstergesi gösteriyoruz
+    // highlight-next-line
+    if (randomJoke.isRefreshing)
+      const Positioned(
+        top: 0,
+        left: 0,
+        right: 0,
+        child: LinearProgressIndicator(),
+      ),
+
+    // Veriyi ve butonu önceki gibi göster
+  ],
+);
+```
+
+Hepsi bu kadar!  
+Artık API'den şaka çeken ve bunları arayüzde gösteren, tamamen çalışır durumda bir rastgele şaka üreteci uygulamamız var.  
+Üstelik yükleme ve hata durumları gibi tüm uç durumları da ele almış olduk.
+
+Hiçbir yerde `try/catch` yazmak ya da `isLoading = true/false` gibi bir kod yazmak zorunda kalmadığımıza dikkat edin.
+
+[ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[FutureProvider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/FutureProvider-class.html
+[Dio]: https://pub.dev/packages/dio
+[Consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html
+[AsyncValue]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/AsyncValue-class.html
+[StreamBuilder]: https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html
+[ChangeNotifier]: https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html
+[Ref.invalidate]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref/invalidate.html
+[LinearProgressIndicator]: https://api.flutter.dev/flutter/material/LinearProgressIndicator-class.html
+[AsyncValue.isRefreshing]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/AsyncValueX/isRefreshing.html
+[riverpod_lint]: https://pub.dev/packages/riverpod_lint
+[ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[analysis_server_plugin]: https://pub.dev/packages/analysis_server_plugin

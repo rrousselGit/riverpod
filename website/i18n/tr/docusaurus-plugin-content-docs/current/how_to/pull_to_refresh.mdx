@@ -1,0 +1,154 @@
+---
+title: Pull-to-refresh (aşağı çekerek yenileme) uygulama
+version: 1
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
+import activity from "/docs/how_to/pull_to_refresh/activity";
+import fetchActivity from "/docs/how_to/pull_to_refresh/fetch_activity";
+import displayActivity from "!!raw-loader!/docs/how_to/pull_to_refresh/display_activity.dart";
+import displayActivity2 from "!!raw-loader!/docs/how_to/pull_to_refresh/display_activity2.dart";
+import displayActivity3 from "!!raw-loader!/docs/how_to/pull_to_refresh/display_activity3.dart";
+import displayActivity4 from "!!raw-loader!/docs/how_to/pull_to_refresh/display_activity4.dart";
+import fullApp from "/docs/how_to/pull_to_refresh/full_app";
+
+Riverpod, bildirimsel yapısı sayesinde pull-to-refresh'i doğrudan destekler.
+
+Genel olarak pull-to-refresh karmaşık olabilir, çünkü çözülmesi gereken birden
+fazla sorun vardır:
+
+- Bir sayfaya ilk girildiğinde bir spinner göstermek isteriz.
+  Ancak yenileme sırasında bunun yerine yenileme göstergesini göstermek isteriz.
+  Yenileme göstergesi _ve_ spinner'ı aynı anda göstermemeliyiz.
+- Bir yenileme beklemedeyken önceki veriyi/hatayı göstermek isteriz.
+- Yenileme devam ettiği sürece yenileme göstergesini göstermemiz gerekir.
+
+Bunu Riverpod ile nasıl çözeceğimize bakalım.  
+Bunun için kullanıcılara rastgele bir aktivite öneren basit bir örnek yapacağız.  
+Ve aşağı çekerek yenileme yapmak yeni bir öneri getirecek:
+
+<img
+  alt="A gif of the previously described application working"
+  src="/img/how_to/pull_to_refresh/app.gif"
+/>
+
+## Temel bir uygulama oluşturma {#making-a-bare-bones-application}
+
+Pull-to-refresh'i uygulamadan önce, öncelikle yenileyecek bir şeye ihtiyacımız var.  
+Kullanıcılara rastgele bir aktivite önermek için [Bored API](https://www.boredapi.com/)
+kullanan basit bir uygulama yapabiliriz.
+
+Önce bir `Activity` sınıfı tanımlayalım:
+
+<AutoSnippet {...activity} />
+
+Bu sınıf, önerilen bir aktiviteyi tip güvenli bir şekilde temsil etmekten ve
+JSON kodlama/çözme işlemlerini yönetmekten sorumlu olacak.  
+Freezed/json_serializable kullanmak zorunlu değildir ama önerilir.
+
+Şimdi tek bir aktivite getirmek için HTTP GET isteği yapan bir provider
+tanımlayalım:
+
+<AutoSnippet {...fetchActivity} />
+
+Artık bu provider'ı rastgele bir aktivite göstermek için kullanabiliriz.  
+Şimdilik yükleme/hata durumunu yönetmeyeceğiz ve aktiviteyi yalnızca hazır
+olduğunda göstereceğiz:
+
+<AutoSnippet
+  raw={displayActivity}
+  translations={{
+    render: `        // Bir activity varsa gösterin, yoksa bekleyin`,
+  }}
+/>
+
+## `RefreshIndicator` ekleme {#adding-refreshindicator}
+
+Elimizde basit bir uygulama olduğuna göre, artık ona bir `RefreshIndicator`
+ekleyebiliriz.  
+Bu widget, kullanıcı ekranı aşağı çektiğinde yenileme göstergesini görüntülemekten
+sorumlu resmi bir Material widget'ıdır.
+
+`RefreshIndicator` kullanmak kaydırılabilir bir yüzey gerektirir. Ancak şu ana
+kadar böyle bir şeyimiz yok. Bunu bir `ListView`/`GridView`/`SingleChildScrollView`/vb.
+kullanarak çözebiliriz:
+
+<AutoSnippet raw={displayActivity2} />
+
+Kullanıcılar artık ekranı aşağı çekebilir. Ama verimiz henüz yenilenmiyor.
+
+## Yenileme mantığını ekleme {#adding-the-refresh-logic}
+
+Kullanıcılar ekranı aşağı çektiğinde `RefreshIndicator`, `onRefresh` geri
+çağırmasını çalıştırır. Verimizi yenilemek için bu geri çağırmayı kullanabiliriz.
+Orada, seçtiğimiz provider'ı yenilemek için `ref.refresh` kullanabiliriz.
+
+**Not**: `onRefresh`in bir `Future` döndürmesi beklenir.
+Ve bu future'ın yenileme tamamlandığında sonuçlanması önemlidir.
+
+Böyle bir future elde etmek için provider'ımızın `.future` özelliğini
+okuyabiliriz. Bu, provider'ımız çözümlendiğinde sonuçlanan bir future döndürür.
+
+Bu nedenle `RefreshIndicator`ımızı şu şekilde güncelleyebiliriz:
+
+<AutoSnippet
+  raw={displayActivity3}
+  translations={{
+    onRefresh: `        // "activityProvider.future" yenilenip sonucu geri döndürüldüğü için,
+        // yenileme göstergesi yeni activity getirilene kadar görünmeye
+        // devam eder.`,
+  }}
+/>
+
+## Spinner'ı yalnızca ilk yükleme sırasında gösterme ve hataları yönetme {#showing-a-spinner-only-during-initial-load-and-handling-errors}
+
+Şu anda kullanıcı arayüzümüz hata/yükleme durumlarını yönetmiyor.  
+Bunun yerine, yükleme/yenileme bittiğinde veri sihirli bir şekilde beliriveriyor.
+
+Bu durumları düzgünce yöneterek bunu değiştirelim. İki durum söz konusu:
+
+- İlk yükleme sırasında tam ekran bir spinner göstermek istiyoruz.
+- Yenileme sırasında yenileme göstergesini ve önceki veriyi/hatayı göstermek
+  istiyoruz.
+
+Neyse ki Riverpod'da asenkron bir provider dinlerken Riverpod bize ihtiyacımız
+olan her şeyi sunan bir `AsyncValue` verir.
+
+Bu `AsyncValue`, Dart 3.0'ın desen eşleme (pattern matching) özelliğiyle şu
+şekilde birleştirilebilir:
+
+<AutoSnippet
+  raw={displayActivity4}
+  translations={{
+    data: `              // Veri mevcutsa onu gösteriyoruz.
+              // Yenileme sırasında da verinin hâlâ mevcut olacağını unutmayın.`,
+    error: `              // Bir hata mevcut, dolayısıyla onu gösteriyoruz.`,
+    loading: `              // Veri/hata yok, yani yükleme durumundayız.`,
+  }}
+/>
+
+:::caution DİKKAT
+Burada `valueOrNull` kullanıyoruz, çünkü şu anda `value` kullanmak hata/yükleme
+durumundayken istisna fırlatıyor.
+
+Riverpod 3.0 bunu değiştirecek ve `value`, `valueOrNull` gibi davranacak.
+Ama şimdilik `valueOrNull`da kalalım.
+:::
+
+:::tip
+Desen eşlememizde `:final valueOrNull?` sözdiziminin kullanımına dikkat edin.
+Bu sözdizimi yalnızca `activityProvider` null olamayan bir `Activity`
+döndürdüğü için kullanılabiliyor.
+
+Verileriniz `null` olabiliyorsa bunun yerine
+`AsyncValue(hasData: true, :final valueOrNull)` kullanabilirsiniz.
+Bu, birkaç fazladan karakter pahasına verinin `null` olduğu durumları da doğru
+şekilde yönetir.
+:::
+
+## Toparlayalım: uygulamanın tamamı {#wrapping-up-full-application}
+
+İşte şimdiye kadar ele aldığımız her şeyin birleştirilmiş kaynak kodu:
+
+<AutoSnippet {...fullApp} />
