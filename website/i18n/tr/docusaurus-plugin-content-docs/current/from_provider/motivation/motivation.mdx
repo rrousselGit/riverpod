@@ -1,0 +1,203 @@
+---
+title: Motivasyon
+version: 2
+---
+
+import sameType from "/docs/from_provider/motivation/same_type";
+import combine from "/docs/from_provider/motivation/combine";
+import asyncValues from "/docs/from_provider/motivation/async_values";
+import autoDispose from "/docs/from_provider/motivation/auto_dispose";
+import override from "/docs/from_provider/motivation/override";
+import sideEffects from "/docs/from_provider/motivation/side_effects";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+
+Bu derinlemesine yazının amacı, Riverpod'un neden var olduğunu göstermektir.
+
+Özellikle bu bölüm şu sorulara yanıt vermelidir:
+  - Provider bu kadar yaygınken, neden Riverpod'a geçilsin?
+  - Somut olarak ne gibi avantajlar elde ediyorum?
+  - Riverpod'a nasıl geçebilirim?
+  - Kademeli olarak geçiş yapabilir miyim?
+  - vb.
+
+Bu bölümün sonunda, Riverpod'un Provider'a tercih edilmesi gerektiğine ikna olmuş olmalısınız.
+
+**Riverpod, Provider ile karşılaştırıldığında gerçekten de daha modern, önerilen ve güvenilir bir yaklaşımdır**.
+
+Riverpod daha iyi durum yönetimi yetenekleri, daha iyi önbellekleme stratejileri ve sadeleştirilmiş bir tepkisellik modeli sunar.
+Provider ise şu anda pek çok alanda yetersiz kalıyor ve ilerlemek için bir yol da yok.
+
+## Provider'ın kısıtlamaları {#providers-limitations}
+
+Provider, InheritedWidget API'si tarafından sınırlandırıldığı için temel sorunlara sahiptir.  
+Doğası gereği Provider "daha basit bir `InheritedWidget`"tir;
+Provider yalnızca bir InheritedWidget sarmalayıcısıdır ve dolayısıyla onunla sınırlıdır.
+
+İşte bilinen Provider sorunlarının bir listesi.
+
+### Provider aynı "tip"ten iki (veya daha fazla) provider'ı bir arada tutamaz {#provider-cant-keep-two-or-more-providers-of-the-same-type}
+İki `Provider<Item>` tanımlamak güvenilmez bir davranışa yol açar: `InheritedWidget`'ın API'si
+*ikisinden yalnızca birini* elde eder: en yakın `Provider<Item>` atasını.  
+Provider'ın dokümantasyonunda bir [geçici çözüm][workaround] anlatılsa da,
+Riverpod'da bu sorun hiç yoktur.
+
+Bu kısıtlamayı ortadan kaldırarak mantığı şu şekilde küçük parçalara özgürce bölebiliriz:
+
+<AutoSnippet language="dart" {...sameType}></AutoSnippet>
+
+
+### Provider'lar makul biçimde tek seferde yalnızca bir değer yayar {#providers-reasonably-emit-only-one-value-at-a-time}
+Harici bir RESTful API okunurken, yeni bir çağrı bir sonraki değeri yüklerken
+son okunan değeri göstermek oldukça yaygındır.  
+Riverpod bu davranışa, `AsyncValue` API'leri sayesinde tek seferde iki değer yayarak
+(yani önceki veri değeri ve gelen yeni yükleniyor değeri) izin verir:
+
+<AutoSnippet language="dart" {...asyncValues}></AutoSnippet>
+
+Önceki kod parçasında `evenItemsProvider`'ı dinlemek şu etkileri doğuracaktır:
+1. Başlangıçta istek yapılır. Boş bir liste elde ederiz;
+2. Ardından, diyelim ki bir hata oluştu. `[Item(id: -1)]` elde ederiz;
+3. Sonra, aşağı çekerek yenileme mantığıyla isteği yeniden deneriz (örneğin `ref.invalidate` ile);
+4. İlk provider'ı yeniden yüklerken, ikincisi hâlâ `[Item(id: -1)]` sunmaya devam eder;
+5. Bu kez ayrıştırılmış veri doğru şekilde alınır: çift sayılı öğelerimiz doğru biçimde döndürülür.
+
+Provider ile yukarıdaki özelliklere yaklaşmak bile mümkün değildir ve geçici çözüm bulmak daha da zordur.
+
+### Provider'ları birleştirmek zor ve hataya açıktır {#combining-providers-is-hard-and-error-prone}
+Provider ile, provider'ın `create` metodunun içinde `context.watch` kullanmak cazip gelebilir.  
+Bu güvenilmez olurdu; çünkü hiçbir bağımlılık değişmemiş olsa bile `didChangeDependencies`
+tetiklenebilir (örneğin widget ağacında bir GlobalKey söz konusu olduğunda).
+
+Yine de Provider'ın `ProxyProvider` adında özel bir çözümü var, ancak bu yorucu ve hataya açık kabul edilir.
+
+Durumu birleştirmek Riverpod'un temel mekanizmalarından biridir; [ref.watch] ve [ref.listen] gibi
+basit ama güçlü araçlarla değerleri sıfır ek yükle tepkisel biçimde birleştirip önbelleğe alabiliriz:
+
+<AutoSnippet language="dart" {...combine}></AutoSnippet>
+
+Riverpod ile değerleri birleştirmek doğal hissettirir: bağımlılıklar okunabilirdir ve API'ler aynı kalır.
+
+
+### Güvenlik eksikliği {#lack-of-safety}
+Provider ile, yeniden düzenlemeler ve/veya büyük değişiklikler sırasında bir `ProviderNotFoundException` ile karşılaşmak yaygındır.  
+Gerçekten de bu çalışma zamanı istisnası, Riverpod'un en başta oluşturulmasının başlıca nedenlerinden biri *idi*.
+
+Bundan çok daha fazla fayda sağlamasının yanı sıra, Riverpod bu istisnayı basitçe fırlatamaz.
+
+### Durumu yok etmek zordur {#disposing-of-state-is-difficult}
+`InheritedWidget` [bir tüketici onu dinlemeyi bıraktığında tepki veremez][can't react when a consumer stops listening to them].  
+Bu, Provider'ın artık kullanılmayan provider'larının durumunu otomatik olarak
+yok etme yeteneğine sahip olmasını engeller.  
+Provider ile, durum kullanılmayı bıraktığında yok etmek için provider'ları kapsamlamaya (scoping) [güvenmek zorundayız][we have to].  
+Ancak bu kolay değildir; çünkü durum sayfalar arasında paylaşıldığında işler çetrefilleşir.
+
+Riverpod bunu [autodispose] ve [Ref.keepAlive] gibi anlaşılması kolay API'lerle çözer.  
+Bu iki API, esnek ve yaratıcı önbellekleme stratejilerine (örneğin zamana dayalı önbellekleme) olanak tanır:
+
+<AutoSnippet
+  language="dart"
+  {...autoDispose}
+  translations={{
+    codegen_autoDispose: `// Kod üretimiyle birlikte .autoDispose varsayılandır`,
+    dice: `  // Bu provider .autoDispose olduğu için, onu dinlemeyi bırakmak
+  // o anda sunduğu durumu yok edecektir.
+  // Ardından bu provider yeniden dinlendiğinde,
+  // yeni bir zar atılıp tekrar sunulacaktır.`,
+    keepAlive: `  // Yukarıdaki koşul başarısız olabilir;
+  // Olmazsa, aşağıdaki komut Provider'a artık kimse onu dinlemese bile
+  // önbelleğe alınmış durumunu korumasını söyler.`,
+  }}
+></AutoSnippet>
+
+
+Ne yazık ki bunu ham bir `InheritedWidget` ile, dolayısıyla Provider ile uygulamanın hiçbir yolu yoktur.
+
+### Güvenilir bir parametreleme mekanizmasının olmayışı {#lack-of-a-reliable-parametrization-mechanism}
+Riverpod, kullanıcısının [.family değiştiricisi][.family modifier] ile "parametreli" Provider'lar tanımlamasına izin verir.  
+Gerçekten de `.family`, Riverpod'un en güçlü özelliklerinden biridir ve yeniliklerinin merkezinde yer alır;
+örneğin mantığın muazzam ölçüde sadeleşmesini sağlar.
+
+Benzer bir şeyi Provider kullanarak uygulamak isteseydik, bu parametreler üzerinde
+hem kullanım kolaylığından *hem de* tip güvenliğinden vazgeçmemiz gerekirdi.
+
+Dahası, Provider ile benzer bir `.autoDispose` mekanizması uygulanamaması,
+doğası gereği `.family`nin eşdeğer bir uygulamasını da engeller; çünkü bu iki özellik el ele gider.
+
+Son olarak, daha önce gösterildiği gibi, widget'ların bir `InheritedWidget`'ı dinlemeyi *asla* bırakmadığı [ortaya çıkıyor][it turns out].  
+Bu, bir provider durumu "dinamik olarak" bağlanıyorsa, yani bir Provider'ı oluşturmak için parametreler
+kullanılıyorsa -ki `.family` tam olarak bunu yapar- ciddi bellek sızıntıları anlamına gelir.  
+Dolayısıyla Provider için `.family` eşdeğeri elde etmek şu an itibarıyla temelden imkânsızdır.
+
+### Test etmek yorucudur {#testing-is-tedious}
+Bir test yazabilmek için provider'ları her testin içinde yeniden tanımlamak *zorundasınız*.
+
+Riverpod ile provider'lar varsayılan olarak testlerin içinde kullanıma hazırdır. Ayrıca Riverpod,
+Provider'ların sahtesini oluştururken kritik öneme sahip kullanışlı bir "geçersiz kılma" araç koleksiyonu sunar.
+
+Yukarıdaki birleştirilmiş durum kod parçasını test etmek şu kadar basit olurdu:
+
+<AutoSnippet language="dart" {...override}></AutoSnippet>
+
+### Yan etkileri tetiklemek doğrudan değildir {#triggering-side-effects-isnt-straightforward}
+`InheritedWidget`'ın bir `onChange` geri çağırması olmadığı için Provider'ın da olamaz.  
+Bu, snackbar'lar, modal'lar vb. gibi gezinme senaryoları için sorun yaratır.  
+
+Bunun yerine Riverpod, Flutter ile iyi bütünleşen [ref.listen]'ı sunar.
+
+<AutoSnippet language="dart" {...sideEffects}></AutoSnippet>
+
+## Riverpod'a doğru {#towards-riverpod}
+
+Kavramsal olarak Riverpod ve Provider oldukça benzerdir.
+Her iki paket de benzer bir rolü doldurur. Her ikisi de şunları yapmaya çalışır:
+
+- durum tutan bazı nesneleri önbelleğe almak ve yok etmek;
+- testler sırasında bu nesnelerin sahtesini oluşturmanın bir yolunu sunmak;
+- Widget'ların bu nesneleri basit bir şekilde dinlemesi için bir yol sunmak.
+
+Riverpod'u, Provider birkaç yıl daha olgunlaşmaya devam etseydi olabileceği şey olarak düşünebilirsiniz.
+
+### Neden ayrı bir paket? {#why-a-separate-package}
+Başlangıçta, yukarıda bahsedilen sorunları çözmenin bir yolu olarak Provider'ın
+büyük bir sürümünün yayınlanması planlanıyordu.  
+Ancak daha sonra bundan vazgeçildi; çünkü yeni `ConsumerWidget` API'si nedeniyle bu
+"fazla kırıcı" ve hatta tartışmalı olurdu.  
+Provider hâlâ en çok kullanılan Flutter paketlerinden biri olduğu için, bunun yerine
+ayrı bir paket oluşturulmasına karar verildi ve böylece Riverpod doğdu.
+
+Ayrı bir paket oluşturmak şunları mümkün kıldı:
+  - İsteyen herkes için geçiş kolaylığı; her iki yaklaşımın *aynı anda* geçici olarak kullanılmasına da olanak tanıyarak;
+  - Riverpod'u ilkesel olarak beğenmeyen ya da henüz yeterince güvenilir bulmayan kişilerin Provider'da kalabilmesi;
+  - Deneysellik; Riverpod'un Provider'ın çeşitli teknik kısıtlamalarına üretime hazır çözümler arayabilmesi.
+
+Gerçekten de Riverpod, Provider'ın manevi halefi olacak şekilde tasarlanmıştır. "Riverpod" adı da buradan gelir ("Provider" kelimesinin bir anagramıdır).
+
+### Kırıcı değişiklik {#the-breaking-change}
+Riverpod'un tek gerçek dezavantajı, çalışması için widget tipinin değiştirilmesini gerektirmesidir:
+
+- `StatelessWidget` yerine, Riverpod ile `ConsumerWidget`'tan türetmelisiniz.
+- `StatefulWidget` yerine, Riverpod ile `ConsumerStatefulWidget`'tan türetmelisiniz.
+
+Ancak bu rahatsızlık, işin bütünü içinde oldukça küçüktür. Ve bu gereklilik bir gün ortadan kalkabilir.
+
+### Doğru kütüphaneyi seçmek {#choosing-the-right-library}
+Muhtemelen kendinize şunu soruyorsunuz:
+*"Peki, bir Provider kullanıcısı olarak Provider mı yoksa Riverpod mu kullanmalıyım?"*.
+
+Bu soruyu çok net biçimde yanıtlamak istiyoruz:
+
+    Muhtemelen Riverpod kullanmalısınız
+
+Riverpod genel olarak daha iyi tasarlanmıştır ve mantığınızın çarpıcı biçimde sadeleşmesini sağlayabilir.
+
+[ref.watch]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/watch.html
+[ref.listen]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/listen.html
+[autodispose]: /docs/concepts2/auto_dispose
+[workaround]: https://pub.dev/packages/provider#can-i-obtain-two-different-providers-using-the-same-type
+[.family modifier]: /docs/concepts2/family
+[keepAlive]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/keepAlive.html
+[we have to]: https://github.com/flutter/flutter/issues/128432
+[it turns out]: https://github.com/flutter/flutter/issues/106549
+[can't react when a consumer stops listening to them]: https://github.com/flutter/flutter/issues/106546
