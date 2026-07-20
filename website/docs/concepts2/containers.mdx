@@ -9,7 +9,7 @@ import allProviders from 'raw-loader!./containers/all_providers.dart';
 import familyProviders from 'raw-loader!./containers/all_providers_family.dart';
 
 [ProviderContainer] is _the_ central piece of Riverpod's architecture.  
-In Riverpod, [Providers](./providers.mdx) hold no state themselves. Instead,
+In Riverpod, <Link documentID="concepts2/providers" /> hold no state themselves. Instead,
 the state of a given provider is stored inside this container object.
 
 [ProviderScope] is a widget that creates a [ProviderContainer] and exposes it to the 
@@ -77,7 +77,7 @@ In Flutter applications, you shouldn't use [ProviderContainer] directly.
 Instead, you should use [ProviderScope], which is a widget equivalent of [ProviderContainer].
 
 The end-result is the same: Create a [ProviderScope] in your `main`. After that, you can
-use [Consumers](./consumers.mdx) to read and modify providers in your widgets.
+use <Link documentID="concepts2/consumers" /> to read and modify providers in your widgets.
 
 ```dart
 import 'package:flutter/material.dart';
