@@ -1,0 +1,174 @@
+---
+title: YAPIN/YAPMAYIN
+version: 2
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
+
+Kodunuzun iyi bir sürdürülebilirliğe sahip olmasını sağlamak için, Riverpod
+kullanırken izlemeniz gereken iyi uygulamaların bir listesi aşağıdadır.
+
+Bu liste kapsamlı değildir ve değişebilir.  
+Önerileriniz varsa çekinmeden [bir issue açın](https://github.com/rrousselGit/riverpod/issues/new?assignees=rrousselGit&labels=documentation%2C+needs+triage&projects=&template=example_request.md&title=).
+
+Listedeki maddeler belirli bir sıraya göre dizilmemiştir.
+
+Bu önerilerin önemli bir kısmı [riverpod_lint](https://pub.dev/packages/riverpod_lint) ile denetlenebilir.
+Kurulum talimatları için <Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint"/>
+sayfasına bakın.
+
+## Provider'ları bir widget içinde başlatmaktan KAÇININ {#avoid-initializing-providers-in-a-widget}
+
+Provider'lar kendi kendilerini başlatmalıdır.  
+Widget gibi harici bir öğe tarafından başlatılmamalıdırlar.
+
+Buna uymamak yarış koşullarına (race condition) ve beklenmedik davranışlara yol açabilir.
+
+**YAPMAYIN**
+
+```dart
+class WidgetState extends State<MyWidget> {
+  @override
+  void initState() {
+    super.initState();
+    // Kötü: provider kendi kendini başlatmalı
+    ref.read(provider).init();
+  }
+}
+```
+
+**DEĞERLENDİRİN**
+
+Bu sorunun "herkese uyan" tek bir çözümü yoktur.  
+Başlatma mantığınız provider'ın dışındaki etkenlere bağlıysa, böyle bir mantığı
+koymak için doğru yer çoğu zaman yönlendirmeyi tetikleyen bir butonun `onPressed`
+metodudur:
+
+```dart
+ElevatedButton(
+  onPressed: () {
+    ref.read(provider).init();
+    Navigator.of(context).push(...);
+  },
+  child: Text('Navigate'),
+)
+```
+
+## Geçici (ephemeral) durum için provider kullanmaktan KAÇININ. {#avoid-using-providers-for-ephemeral-state}
+
+Provider'lar paylaşılan iş durumu için tasarlanmıştır.
+Şunlar gibi [geçici durumlar](https://docs.flutter.dev/data-and-backend/state-mgmt/ephemeral-vs-app#ephemeral-state) için kullanılmak üzere düşünülmemişlerdir:
+
+- O anda seçili olan öğe.
+- Form durumu.
+  Çünkü formdan çıkıp yeniden girmek tipik olarak form durumunu sıfırlamalıdır.
+  Çok sayfalı formlarda geri butonuna basmak da buna dahildir.
+- Animasyonlar.
+- Genel olarak Flutter'ın bir "controller" ile ele aldığı her şey (örneğin `TextEditingController`)
+
+Yerel widget durumunu yönetmenin bir yolunu arıyorsanız, bunun yerine
+[flutter_hooks](https://pub.dev/packages/flutter_hooks) kullanmayı düşünün.
+
+Bunun önerilmemesinin bir nedeni, böyle bir durumun çoğu zaman bir rotaya özgü
+olmasıdır.  
+Buna uymamak, yeni bir sayfanın önceki sayfanın durumunu geçersiz kılması nedeniyle
+uygulamanızın geri butonunu bozabilir.
+
+Örneğin, o anda seçili olan `book` değerini bir provider'da sakladığımızı varsayalım:
+
+```dart
+final selectedBookProvider = StateProvider<String?>((ref) => null);
+```
+Karşılaşabileceğimiz bir zorluk şudur: gezinme geçmişi şöyle görünebilir:
+```
+/books
+/books/42
+/books/21
+```
+
+Bu senaryoda geri butonuna bastığımızda `/books/42`ye dönmeyi bekleriz.
+Ancak seçili kitabı saklamak için `selectedBookProvider` kullanacak olsaydık,
+seçili ID önceki değerine sıfırlanmaz ve `/books/21`i görmeye devam ederdik.
+
+## Bir provider'ın başlatılması sırasında yan etki gerçekleştirMEYİN {#dont-perform-side-effects-during-the-initialization-of-a-provider}
+
+Provider'lar genel olarak bir "okuma" işlemini temsil etmek için kullanılmalıdır.
+Bir formu göndermek gibi "yazma" işlemleri için kullanmamalısınız.
+
+Provider'ları bu tür işlemler için kullanmak, önceki bir yan etki gerçekleştirilmişse
+yenisinin atlanması gibi beklenmedik davranışlara yol açabilir.
+
+Bir yan etkinin yükleniyor/hata durumlarını ele almanın bir yolunu arıyorsanız,
+<Link documentID="concepts2/mutations"/> sayfasına bakın.
+
+**YAPMAYIN**:
+
+```dart
+final submitProvider = FutureProvider((ref) async {
+  final formState = ref.watch(formState);
+
+  // Kötü: Provider'lar "yazma" işlemleri için kullanılmamalıdır.
+  return http.post('https://my-api.com', body: formState.toJson());
+});
+```
+
+## ref.watch/read/listen (ve benzeri API'leri) statik olarak bilinen provider'larla kullanmayı TERCİH EDİN {#prefer-refwatchreadlisten-and-similar-apis-with-statically-known-providers}
+
+Riverpod, lint kurallarının (`riverpod_lint` aracılığıyla) etkinleştirilmesini
+kuvvetle önerir.  
+Ancak lint'lerin etkili olabilmesi için kodunuzun statik olarak analiz edilebilir
+biçimde yazılması gerekir.
+
+Buna uymamak hataları fark etmeyi zorlaştırabilir veya lint'lerde yanlış
+pozitiflere yol açabilir.
+
+**Yapın**:
+
+```dart
+final provider = Provider((ref) => 42);
+
+...
+
+// Provider statik olarak bilindiği için sorun yok
+ref.watch(provider);
+```
+
+**Yapmayın**:
+
+```dart
+class Example extends ConsumerWidget {
+  Example({required this.provider});
+  final Provider<int> provider;
+
+  @override
+  Widget build(context, ref) {
+    // Kötü, çünkü statik analiz `provider`ın ne olduğunu bilemez
+    ref.watch(provider);
+  }
+}
+```
+
+## Provider'ları dinamik olarak oluşturmaktan KAÇININ {#avoid-dynamically-creating-providers}
+
+Provider'lar yalnızca üst düzey (top-level) final değişkenler olmalıdır.
+
+**Yapın**:
+
+```dart
+final provider = Provider<String>((ref) => 'Hello world');
+```
+
+**Yapmayın**:
+
+```dart
+class Example {
+  // Desteklenmeyen kullanım. Bellek sızıntılarına ve beklenmedik davranışlara yol açabilir.
+  final provider = Provider<String>((ref) => 'Hello world');
+}
+```
+
+:::info
+Provider'ları static final değişkenler olarak oluşturmak mümkündür,
+ancak kod üretici tarafından desteklenmez.
+:::

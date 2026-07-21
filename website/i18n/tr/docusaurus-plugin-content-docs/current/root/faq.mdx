@@ -1,0 +1,198 @@
+---
+title: SSS
+version: 2
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
+
+Topluluktan sıkça gelen bazı sorular:
+
+## `ref.refresh` ile `ref.invalidate` arasındaki fark nedir? {#what-is-the-difference-between-refrefresh-and-refinvalidate}
+
+`ref`in, bir provider'ı yeniden hesaplamaya zorlayan iki metodu olduğunu fark etmiş
+ve aralarındaki farkı merak ediyor olabilirsiniz.
+
+Sandığınızdan daha basit: `ref.refresh`, `invalidate` + `read` çağrılarının
+sözdizimsel kısaltmasından başka bir şey değildir:
+
+```dart
+T refresh<T>(provider) {
+  invalidate(provider);
+  return read(provider);
+}
+```
+
+Bir provider'ı yeniden hesapladıktan sonra yeni değeriyle ilgilenmiyorsanız
+`invalidate` doğru tercihtir.  
+İlgileniyorsanız bunun yerine `refresh` kullanın.
+
+:::info
+Bu mantık lint kuralları aracılığıyla otomatik olarak denetlenir.  
+`ref.refresh`i, döndürdüğü değeri kullanmadan çağırmaya kalkarsanız
+bir uyarı alırsınız.
+:::
+
+Davranıştaki temel fark şudur: Provider'ı geçersiz kıldıktan hemen sonra okumak
+provider'ın **anında** yeniden hesaplanmasını sağlar.  
+Oysa `invalidate` çağırıp hemen ardından okumazsak güncelleme _daha sonra_ tetiklenir.
+
+Bu "daha sonra" güncellemesi genellikle bir sonraki karenin başında gerçekleşir.
+Yine de, o anda dinlenmeyen bir provider geçersiz kılınırsa, tekrar dinlenene
+kadar güncellenmeyecektir.
+
+## Ref ile WidgetRef arasında neden ortak bir arayüz yok? {#why-is-there-no-shared-interface-between-ref-and-widgetref}
+
+Riverpod, `Ref` ile `WidgetRef`i bilinçli olarak birbirinden ayırır.  
+Bu, koşullu olarak birine veya diğerine bağlı kod yazılmasını önlemek için
+kasıtlı yapılmıştır.
+
+Sorunlardan biri, `Ref` ile `WidgetRef`in benzer görünmelerine rağmen
+ince farklara sahip olmalarıdır.  
+Her ikisine birden dayanan kod, fark edilmesi zor şekillerde güvenilmez olurdu.
+
+Aynı zamanda `WidgetRef`e dayanmak, `BuildContext`e dayanmakla eşdeğerdir.
+Bu, mantığınızı fiilen kullanıcı arayüzü katmanına koymak demektir ki bu önerilmez.
+
+---
+
+Böyle bir kod, **her zaman** `Ref` kullanacak şekilde yeniden düzenlenmelidir.
+
+Bu sorunun çözümü genellikle mantığınızı bir `Notifier` içine taşımak
+(bkz. <Link documentID="concepts2/providers" />) ve ardından mantığınızı
+o `Notifier`ın bir metodu hâline getirmektir.
+
+Böylece widget'larınız bu mantığı çağırmak istediğinde şuna benzer bir şey
+yazabilirler:
+
+```dart
+ref.read(yourNotifierProvider.notifier).yourMethod();
+```
+
+`yourMethod`, diğer provider'larla etkileşmek için `Notifier`ın `Ref`ini kullanır.
+
+## Neden ham StatelessWidget kullanmak yerine ConsumerWidget'tan türetmemiz gerekiyor? {#why-do-we-need-to-extend-consumerwidget-instead-of-using-the-raw-statelesswidget}
+
+Bunun nedeni `InheritedWidget` API'sindeki talihsiz bir kısıtlamadır.
+
+Birkaç sorun var:
+
+- `InheritedWidget` ile bir "değişiklik anında" dinleyicisi uygulamak mümkün değildir.
+  Bu da `ref.listen` gibi bir şeyin `BuildContext` ile kullanılamayacağı anlamına gelir.
+
+  `State.didChangeDependencies` buna en yakın şeydir, ancak güvenilir değildir.
+  Sorunlardan biri, hiçbir bağımlılık değişmemiş olsa bile bu yaşam döngüsü
+  metodunun tetiklenebilmesidir; özellikle de widget ağacınız GlobalKey kullanıyorsa
+  (bazı Flutter widget'ları bunu zaten dahilî olarak yapar).
+
+- Bir `InheritedWidget`ı dinleyen widget'lar onu dinlemeyi asla bırakmaz.
+  Bu, "theme" veya "media query" gibi saf meta veriler için genellikle sorun değildir.
+
+  Ancak iş mantığı için bu bir sorundur.
+  Diyelim ki sayfalanmış bir API'yi temsil etmek için bir provider kullanıyorsunuz.
+  Sayfa konumu değiştiğinde, widget'ınızın daha önce görünen sayfaları dinlemeyi
+  sürdürmesini istemezsiniz.
+
+- `InheritedWidget`ın, widget'ların kendisini dinlemeyi ne zaman bıraktığını
+  takip etmesinin bir yolu yoktur.
+  Riverpod ise bazen bir provider'ın dinlenip dinlenmediğini takip etmeye dayanır.
+
+Bu işlevsellik, hem otomatik yok etme mekanizması hem de provider'lara argüman
+aktarabilme yeteneği için hayati önemdedir.  
+Riverpod'u bu kadar güçlü kılan da bu özelliklerdir.
+
+Belki uzak bir gelecekte bu sorunlar giderilir. O durumda Riverpod, `Ref` yerine
+`BuildContext` kullanmaya geçerdi.
+Bu da `ConsumerWidget` yerine `StatelessWidget` kullanılmasını mümkün kılardı.  
+Ama o başka bir zamanın konusu!
+
+## hooks_riverpod neden flutter_hooks'u dışa aktarmıyor? {#why-doesnt-hooks_riverpod-export-flutter_hooks}
+
+Bu, iyi sürümleme pratiklerine saygı göstermek içindir.
+
+`hooks_riverpod`u `flutter_hooks` olmadan kullanamasanız da, iki paket birbirinden
+bağımsız olarak sürümlenir. Birinde kırıcı bir değişiklik olurken diğerinde
+olmayabilir.
+
+## Tüm provider'ları tek seferde sıfırlamanın bir yolu var mı? {#is-there-a-way-to-reset-all-providers-at-once}
+
+Hayır, tüm provider'ları tek seferde sıfırlamanın bir yolu yoktur.
+
+Bu kasıtlıdır, çünkü bir anti-pattern olarak kabul edilir. Tüm provider'ları tek
+seferde sıfırlamak, çoğu zaman sıfırlamayı hiç istemediğiniz provider'ları da
+sıfırlar.
+
+Bu soru genellikle, kullanıcı çıkış yaptığında uygulamalarının durumunu sıfırlamak
+isteyenlerden gelir.  
+Aradığınız buysa, bunun yerine kullanıcının durumuna bağlı olan her şeyin "user"
+provider'ını `ref.watch` etmesini sağlamalısınız.
+
+Böylece kullanıcı çıkış yaptığında, ona bağlı tüm provider'lar otomatik olarak
+sıfırlanır, geri kalan her şey ise olduğu gibi kalır.
+
+## "Using "ref" when a widget is about to or has been unmounted is unsafe." hatasını widget yok edildikten sonra alıyorum, sorun ne? {#i-have-the-error-using-ref-when-a-widget-is-about-to-or-has-been-unmounted-is-unsafe-after-the-widget-was-disposed-whats-wrong}
+
+Aynı sorunun daha eski bir hata mesajı olan "Bad state: No ProviderScope found"
+ifadesini de görebilirsiniz.
+
+Bu hata, artık ağaca bağlı olmayan (unmounted) bir widget içinde `ref` kullanmaya
+çalıştığınızda ortaya çıkar. Bu genellikle bir `await` sonrasında olur:
+
+```dart
+ElevatedButton(
+  onPressed: () async {
+    await future;
+    ref.read(...); // "Using "ref" when a widget is about to or has been unmounted is unsafe." fırlatabilir
+  }
+)
+```
+
+Çözüm, tıpkı `BuildContext`te olduğu gibi, `ref` kullanmadan önce `mounted`
+kontrolü yapmaktır:
+
+```dart
+ElevatedButton(
+  onPressed: () async {
+    await future;
+    if (!context.mounted) return;
+    ref.read(...); // Artık hata fırlatmaz
+  }
+)
+```
+
+## Bilinen bir kısıt: bir provider, widget'ı kaldırılmadan bir kare önce yeniden hesaplanabilir (ve hata fırlatabilir) {#known-caveat-a-provider-may-recompute-and-throw-one-frame-before-its-widget-is-removed}
+
+Bu, önden yeniden hesaplamanın bilinen bir kısıtıdır ve henüz temiz bir çözümü yoktur.
+
+Bir provider'ın bağımlılığı değiştiğinde, hâlâ dinleyicisi olan her bağımlı provider
+**anında** yeniden hesaplanır; bu, dinleyen widget'ların yeniden oluşturulacağı ya da
+kaldırılacağı sonraki kareden öncedir.
+
+Dolayısıyla dinleyiciyi kaldıran şey de aynı değişiklikse (çıkış yapmak ya da bir
+filtrenin listeyi daraltması gibi), bağımlı provider, widget'ı ağaçtan kaldırılmadan
+önce yeni değere karşı bir kez daha yeniden hesaplanır. O hesaplama önceki değeri
+varsaymışsa hata fırlatır:
+
+```dart
+final userNameProvider = Provider((ref) {
+  final user = ref.watch(userProvider);
+  return user!.name; // çıkışta, ekran kaldırılmadan bir kare önce hata fırlatır
+});
+```
+
+:::caution DİKKAT
+Şu anda bu son yeniden hesaplamayı atlamanın bir yolu yoktur. Bir yol çıkana kadar
+önerilen geçici çözüm, hesaplamayı toplam (total) hâle getirmektir: geçici durum için
+hata fırlatmak yerine `null` (ya da bir nöbetçi değer) döndürün.
+:::
+
+```dart
+final userNameProvider = Provider((ref) {
+  final user = ref.watch(userProvider);
+  if (user == null) return null; // kısa süreli geçersiz aralığı ele alır
+  return user.name;
+});
+```
+
+Bu yaklaşım gürültülüdür, ancak istisnayı önler. `throw` ifadesini yalnızca geçici
+değil, gerçekten imkânsız olan durumlar için saklayın.
