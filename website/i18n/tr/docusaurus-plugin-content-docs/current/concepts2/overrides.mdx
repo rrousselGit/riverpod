@@ -1,0 +1,58 @@
+---
+title: Provider'ları geçersiz kılma
+---
+import { Link } from "/src/components/Link";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+Riverpod'da _tüm_ provider'lar, davranışlarını değiştirmek için geçersiz kılınabilir.
+Bu; test etmek, hata ayıklamak, farklı ortamlarda farklı uygulamalar sunmak,
+hatta <Link documentID="concepts2/scoping"/> için kullanışlıdır.
+
+Bir provider'ı geçersiz kılma işlemi, `overrides` parametresi kullanılarak <Link documentID="concepts2/containers"/> üzerinde yapılır.
+Bu parametrede, belirli bir provider'ın nasıl geçersiz kılınacağına dair bir talimat listesi belirtebilirsiniz.
+
+Böyle bir "talimat", provider'ınız ile `overrideWithSomething` biçiminde adlandırılan değer metotları birleştirilerek oluşturulur.  
+Bu metotlardan birçoğu mevcuttur, ancak hepsinin adı `overrideWith` ile başlar.
+Bunlar arasında şunlar bulunur:
+- [overrideWith](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Provider/overrideWith.html)
+- [overrideWithValue](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/FutureProvider/overrideWithValue.html)
+- [overrideWithBuild](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/StreamProvider/overrideWithBuild.html)
+
+Tipik bir geçersiz kılma şöyle görünür:
+
+<Tabs>
+<TabItem value="scope" label="ProviderScope">
+
+```dart
+void main() {
+  runApp(
+    ProviderScope(
+      overrides: [
+        // Geçersiz kılmalarınız burada tanımlanır.
+        // Aşağıdaki örnek, farklı bir başlangıç değeri kullanmak için
+        // bir "counter provider"ın nasıl geçersiz kılınacağını gösterir.
+        counterProvider.overrideWith((ref) => 42),
+      ]
+    )
+  );
+}
+```
+</TabItem>
+<TabItem value="container" label="ProviderContainer">
+
+```dart
+final container = ProviderContainer(
+  overrides: [
+    // Geçersiz kılmalarınız burada tanımlanır.
+    // Aşağıdaki örnek, farklı bir başlangıç değeri kullanmak için
+    // bir "counter provider"ın nasıl geçersiz kılınacağını gösterir.
+    counterProvider.overrideWith((ref) => 42),
+  ]
+);
+```
+</TabItem>
+</Tabs>

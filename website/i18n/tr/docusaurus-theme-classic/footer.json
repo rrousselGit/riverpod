@@ -9,11 +9,11 @@
   },
   "link.item.label.Getting started": {
     "message": "Başlangıç",
-    "description": "The label of footer link with label=Getting started linking to docs/getting_started"
+    "description": "The label of footer link with label=Getting started linking to docs/introduction/getting_started"
   },
   "link.item.label.Stack Overflow": {
     "message": "Stack Overflow",
-    "description": "The label of footer link with label=Stack Overflow linking to https://stackoverflow.com/questions/tagged/flutter"
+    "description": "The label of footer link with label=Stack Overflow linking to https://stackoverflow.com/questions/tagged/riverpod"
   },
   "link.item.label.Twitter": {
     "message": "Twitter",
@@ -26,5 +26,37 @@
   "copyright": {
     "message": "Telif Hakkı © 2023 Remi Rousselet. <br /> Docusaurus ile inşa edilmiştir.",
     "description": "The footer copyright"
+  },
+  "link.title.Sponsors": {
+    "message": "Sponsorlar",
+    "description": "The title of the footer links column with title=Sponsors in the footer"
+  },
+  "link.item.label.What's new in Riverpod 3.0": {
+    "message": "Riverpod 3.0'daki yenilikler",
+    "description": "The label of footer link with label=What's new in Riverpod 3.0 linking to docs/whats_new"
+  },
+  "link.item.label.FAQ": {
+    "message": "SSS",
+    "description": "The label of footer link with label=FAQ linking to docs/root/FAQ"
+  },
+  "link.item.label.DO/DON'T": {
+    "message": "YAP/YAPMA",
+    "description": "The label of footer link with label=DO/DON'T linking to docs/root/do_dont"
+  },
+  "link.item.label.Discord": {
+    "message": "Discord",
+    "description": "The label of footer link with label=Discord linking to https://discord.gg/GSt793j6eT"
+  },
+  "link.item.label.Code of conduct": {
+    "message": "Davranış kuralları",
+    "description": "The label of footer link with label=Code of conduct linking to https://github.com/rrousselGit/riverpod/blob/master/CODE_OF_CONDUCT.md"
+  },
+  "link.item.label.Contributing guide": {
+    "message": "Katkı kılavuzu",
+    "description": "The label of footer link with label=Contributing guide linking to https://github.com/rrousselGit/riverpod/blob/master/CONTRIBUTING.md"
+  },
+  "logo.alt": {
+    "message": "Riverpod",
+    "description": "The alt text of footer logo"
   }
 }

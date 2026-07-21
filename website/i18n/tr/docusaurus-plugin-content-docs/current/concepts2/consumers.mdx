@@ -1,0 +1,113 @@
+---
+title: Consumer'lar
+---
+import { Link } from "/src/components/Link";
+
+"Consumer", widget ağacı ile provider ağacı arasındaki boşluğu dolduran bir widget türüdür.
+
+Bir Consumer ile sıradan widget'lar arasındaki tek gerçek fark, Consumer'ların bir [Ref]'e
+erişebilmesidir. Bu sayede provider'ları okuyabilir ve değişikliklerini dinleyebilirler.
+Daha fazla bilgi için <Link documentID="concepts2/refs" /> sayfasına bakın.
+
+Consumer'lar, çoğunlukla kişisel tercihe bağlı olarak birkaç farklı biçimde gelir. Şunları bulacaksınız:
+- [Consumer], bir "builder" widget'ı ([FutureBuilder](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html)'a benzer).
+  Widget'ların, `StatelessWidget` veya `StatefulWidget` dışında bir sınıftan türetilmek zorunda kalmadan provider'larla etkileşime girmesini sağlar.
+  ```dart
+  // Her zamanki gibi StatelessWidget'tan türetiyoruz
+  class MyWidget extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      // FutureBuilder benzeri bir widget
+      return Consumer(
+        // "builder" geri çağırması bize bir "ref" parametresi verir
+        builder: (context, ref, _) {
+          // Bu "ref"i provider'ları dinlemek için kullanabiliriz
+          final value = ref.watch(myProvider);
+          return Text(value.toString());
+        },
+      );
+    }
+  }
+  ```
+- [ConsumerWidget], `StatelessWidget` widget'ının bir çeşidi.
+  `StatelessWidget` yerine `ConsumerWidget`'tan türetirsiniz. `build` metodunun fazladan bir
+  [WidgetRef] parametresi alması dışında aynı şekilde davranır.
+  ```dart
+  // StatelessWidget yerine ConsumerWidget'tan türetiyoruz
+  class MyWidget extends ConsumerWidget {
+    // "build" fazladan bir parametre alır
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      // Bu "ref"i provider'ları dinlemek için kullanabiliriz
+      final value = ref.watch(myProvider);
+      return Text(value.toString());
+    }
+  }
+  ```
+- [ConsumerStatefulWidget], `StatefulWidget` widget'ının bir çeşidi.  
+  Yine, `StatefulWidget` yerine `ConsumerStatefulWidget`'tan türetirsiniz.
+  `State` yerine de [ConsumerState]'ten türetirsiniz.
+  Buradaki fark, [ConsumerState]'in bir `ref` özelliğine sahip olmasıdır.
+  ```dart
+  // StatefulWidget yerine ConsumerStatefulWidget'tan türetiyoruz
+  class MyWidget extends ConsumerStatefulWidget {
+    @override
+    ConsumerState<MyWidget> createState() => _MyWidgetState();
+  }
+  // State yerine ConsumerState'ten türetiyoruz
+  class _MyWidgetState extends ConsumerState<MyWidget> {
+    // Bir "this.ref" özelliği kullanılabilir durumdadır
+    @override
+    Widget build(BuildContext context) {
+      // Bu "ref"i provider'ları dinlemek için kullanabiliriz
+      final value = ref.watch(myProvider);
+      return Text(value.toString());
+    }
+  }
+  ```
+
+Bunlara ek olarak, [hooks_riverpod](https://pub.dev/packages/hooks_riverpod) paketinde başka Consumer'lar da bulacaksınız.
+Bunlar Riverpod Consumer'larını [flutter_hooks](https://pub.dev/packages/flutter_hooks) ile birleştirir.
+Hook'larla ilgilenmiyorsanız bunları göz ardı edebilirsiniz.
+
+
+### Hangisini kullanmalı? {#which-one-to-use}
+
+Hangi Consumer'ı kullanacağınız çoğunlukla kişisel tercih meselesidir.
+Her şey için [Consumer]'ı kullanabilirsiniz. Diğerlerine göre biraz daha uzun bir seçenektir.
+Ancak Riverpod'un `StatelessWidget` ve `StatefulWidget`'ı ele geçirme biçiminden hoşlanmıyorsanız, bu makul bir bedeldir.
+
+Güçlü bir tercihiniz yoksa, [ConsumerWidget] kullanmanızı öneririz (bir `State`'e ihtiyacınız olduğunda ise [ConsumerStatefulWidget]).
+
+### Neden `StatelessWidget` + `context.watch` kullanamıyoruz? {#why-cant-we-use-statelesswidget--contextwatch}
+
+[provider](https://pub.dev/packages/provider) gibi alternatif paketlerde, provider'ları dinlemek için `context.watch` kullanabilirsiniz.
+Bu, elinizde bir `BuildContext` olduğu sürece herhangi bir widget içinde çalışır. Peki Riverpod'da neden böyle değil?
+
+Bunun nedeni, [Ref] yerine yalnızca `BuildContext`'e dayanmanın, Riverpod'un
+<Link documentID="concepts2/auto_dispose" /> özelliğinin güvenilir bir şekilde geliştirilmesini engelleyecek olmasıdır.
+`BuildContext` ile "çoğunlukla çalışan" bir uygulama yazmanın yolları _var_.
+Sorun şu ki, otomatik yok etme özelliğini sessizce bozabilecek çok sayıda ince uç durum bulunuyor.
+
+Bu, bellek sızıntılarına yol açardı; ama asıl mesele bu değil.  
+Otomatik yok etme, daha çok artık gerek duyulmayan kodun çalışmasını durdurmakla ilgilidir.
+Otomatik yok etme bir provider'ı yok edemezse, o provider arka planda sürekli olarak
+ağ istekleri yapmayı sürdürebilir.
+
+Riverpod, birazcık kolaylık uğruna güvenilirlikten ödün vermemeyi tercih etti.
+
+:::note NOT
+`StatelessWidget`/`StatefulWidget` yerine [ConsumerWidget]/[ConsumerStatefulWidget] kullanmak zorunda olmanın
+olumsuz yanlarını hafifletmek için Riverpod, VSCode ve Android Studio gibi IDE'lerde çeşitli yeniden düzenleme (refactoring) seçenekleri sunar.
+
+![Consumer'a dönüştür](/img/intro/convert_to_class_provider.gif)
+
+Bunları IDE'nizde etkinleştirmek için <Link documentID="introduction/getting_started" hash="enabling-riverpod_lint" /> bölümüne bakın.
+:::
+
+[ref]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref-class.html
+[consumer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Consumer-class.html
+[consumerWidget]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ConsumerWidget-class.html
+[consumerStatefulWidget]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ConsumerStatefulWidget-class.html
+[consumerState]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ConsumerState-class.html
+[widgetref]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/WidgetRef-class.html

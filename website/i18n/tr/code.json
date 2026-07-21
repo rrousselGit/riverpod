@@ -223,7 +223,8 @@
     "message": "Durumu her yerden paylaşın"
   },
   "home.shared_state_body": {
-    "message": "{main} ve kullanıcı arayüzü dosyalarınız arasında geçiş yapmanıza gerek yok. Paylaşılan durum kodunuzu, ayrı bir pakette veya ihtiyaç duyulan Widget'ın hemen yanında, test yapma yeteneğini kaybetmeden yazın."
+    "message": "{main} ve kullanıcı arayüzü dosyalarınız arasında geçiş yapmanıza gerek yok. Paylaşılan durum kodunuzu, ayrı bir pakette veya ihtiyaç duyulan Widget'ın hemen yanında, test yapma yeteneğini kaybetmeden yazın.",
+    "description": "The homepage input placeholder"
   },
   "home.recompute_title": {
     "message": "Durumu ve kullanıcı arayüzünü yalnızca gerektiğinde yeniden hesaplayın"
@@ -254,5 +255,258 @@
   },
   "home.async_img": {
     "message": "img/intro/tr/async.png"
+  },
+  "homepage.features_title": {
+    "message": "Özellikler"
+  },
+  "home.refactors_title": {
+    "message": "Günlük işinizi yeniden düzenlemelerle kolaylaştırın"
+  },
+  "home.refactors_body": {
+    "message": "Riverpod, \"Widget'ı Consumer ile sarmala\" gibi çeşitli yeniden düzenleme (refactoring) seçenekleri sunar.\n        {warnings} listesine göz atın."
+  },
+  "home.refactors_list_link": {
+    "message": "yeniden düzenlemeler"
+  },
+  "home.lint_title": {
+    "message": "Lint kurallarıyla kodunuzun bakımını kolay tutun"
+  },
+  "home.lint_body": {
+    "message": "Riverpod'a özgü yeni lint kuralları geliştirildi ve sürekli yenileri ekleniyor.\n  Bu, kodunuzun en iyi durumda kalmasını sağlar. {warnings} listesine göz atın."
+  },
+  "home.lint_rules_list_link": {
+    "message": "lint kuralları"
+  },
+  "homepage.declarative_title": {
+    "message": "Bildirimsel programlama"
+  },
+  "homepage.declarative_body": {
+    "message": "İş mantığınızı Stateless widget'lara benzer bir biçimde yazın.{br}Ağ isteklerinizin\n        gerektiğinde otomatik olarak yeniden hesaplanmasını sağlayın ve\n        mantığınızı kolayca yeniden kullanılabilir/birleştirilebilir/bakımı kolay hale getirin."
+  },
+  "homepage.common_ui_patterns_title": {
+    "message": "Yaygın arayüz kalıplarını kolayca uygulayın"
+  },
+  "homepage.common_ui_patterns_body": {
+    "message": "Riverpod ile \"yenilemek için çek\" / \"yazdıkça ara\" gibi yaygın ama karmaşık arayüz kalıpları yalnızca birkaç satır kod uzağınızda."
+  },
+  "homepage.tooling_ready_title": {
+    "message": "Araçlarla uyumlu"
+  },
+  "homepage.tooling_ready_body": {
+    "message": "Riverpod, sık yapılan hataları derleme hatasına dönüştürerek derleyiciyi güçlendirir. Ayrıca özel lint kuralları ve yeniden düzenleme seçenekleri sunar. Hatta doküman üretmek için bir komut satırı aracı bile vardır."
+  },
+  "custom.outdatedTranslations": {
+    "message": "Bu sayfanın içeriği güncel olmayabilir. Bunun yerine {englishLink} sayfasını incelemeyi düşünün.",
+    "description": "The label used inside the outdated translation banner"
+  },
+  "custom.outdatedTranslationLink": {
+    "message": "İngilizce sürümünü",
+    "description": "The link that redirects to the equivalent English doc"
+  },
+  "theme.ErrorPageContent.title": {
+    "message": "Bu sayfa çöktü.",
+    "description": "The title of the fallback page when the page crashed"
+  },
+  "theme.admonition.note": {
+    "message": "not",
+    "description": "The default label used for the Note admonition (:::note)"
+  },
+  "theme.admonition.tip": {
+    "message": "ipucu",
+    "description": "The default label used for the Tip admonition (:::tip)"
+  },
+  "theme.admonition.danger": {
+    "message": "tehlike",
+    "description": "The default label used for the Danger admonition (:::danger)"
+  },
+  "theme.admonition.info": {
+    "message": "bilgi",
+    "description": "The default label used for the Info admonition (:::info)"
+  },
+  "theme.admonition.caution": {
+    "message": "uyarı",
+    "description": "The default label used for the Caution admonition (:::caution)"
+  },
+  "theme.BackToTopButton.buttonAriaLabel": {
+    "message": "Sayfa başına dön",
+    "description": "The ARIA label for the back to top button"
+  },
+  "theme.blog.archive.title": {
+    "message": "Arşiv",
+    "description": "The page & hero title of the blog archive page"
+  },
+  "theme.blog.archive.description": {
+    "message": "Arşiv",
+    "description": "The page & hero description of the blog archive page"
+  },
+  "theme.colorToggle.ariaLabel": {
+    "message": "Karanlık ve aydınlık mod arasında geçiş yapın (şu anda {mode})",
+    "description": "The ARIA label for the navbar color mode toggle"
+  },
+  "theme.colorToggle.ariaLabel.mode.dark": {
+    "message": "Karanlık mod",
+    "description": "The name for the dark color mode"
+  },
+  "theme.colorToggle.ariaLabel.mode.light": {
+    "message": "Aydınlık mod",
+    "description": "The name for the light color mode"
+  },
+  "theme.docs.breadcrumbs.navAriaLabel": {
+    "message": "İçerik haritası",
+    "description": "The ARIA label for the breadcrumbs"
+  },
+  "theme.docs.DocCard.categoryDescription": {
+    "message": "{count} öğe",
+    "description": "The default description for a category card in the generated index about how many items this category includes"
+  },
+  "theme.docs.tagDocListPageTitle.nDocsTagged": {
+    "message": "Bir doküman etiketlendi|{count} doküman etiketlendi",
+    "description": "Pluralized label for \"{count} docs tagged\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.docs.tagDocListPageTitle": {
+    "message": "\"{tagName}\" ile etiketlenmiş {nDocsTagged}",
+    "description": "The title of the page for a docs tag"
+  },
+  "theme.docs.versionBadge.label": {
+    "message": "Sürüm: {versionLabel}"
+  },
+  "theme.navbar.mobileVersionsDropdown.label": {
+    "message": "Versiyonlar",
+    "description": "The label for the navbar versions dropdown on mobile view"
+  },
+  "theme.CodeBlock.wordWrapToggle": {
+    "message": "Kelime kaydırmayı aç/kapat",
+    "description": "The title attribute for toggle word wrapping button of code block lines"
+  },
+  "theme.DocSidebarItem.toggleCollapsedCategoryAriaLabel": {
+    "message": "Katlanabilir kenar çubuğu kategorisini aç/kapat: '{label}'",
+    "description": "The ARIA label to toggle the collapsible sidebar category"
+  },
+  "theme.NavBar.navAriaLabel": {
+    "message": "Ana",
+    "description": "The ARIA label for the main navigation"
+  },
+  "theme.navbar.mobileLanguageDropdown.label": {
+    "message": "Diller",
+    "description": "The label for the mobile language switcher dropdown"
+  },
+  "theme.blog.post.readMoreLabel": {
+    "message": "{title} hakkında daha fazla bilgi edinin",
+    "description": "The ARIA label for the link to full blog posts from excerpts"
+  },
+  "theme.docs.breadcrumbs.home": {
+    "message": "Ana sayfa",
+    "description": "The ARIA label for the home page in the breadcrumbs"
+  },
+  "theme.docs.sidebar.navAriaLabel": {
+    "message": "Doküman kenar çubuğu",
+    "description": "The ARIA label for the sidebar navigation"
+  },
+  "theme.docs.sidebar.closeSidebarButtonAriaLabel": {
+    "message": "Gezinme çubuğunu kapat",
+    "description": "The ARIA label for close button of mobile sidebar"
+  },
+  "theme.docs.sidebar.toggleSidebarButtonAriaLabel": {
+    "message": "Gezinme çubuğunu aç/kapat",
+    "description": "The ARIA label for hamburger menu button of mobile navigation"
+  },
+  "theme.SearchBar.seeAll": {
+    "message": "{count} sonucun tümünü görün"
+  },
+  "theme.SearchModal.searchBox.resetButtonTitle": {
+    "message": "Sorguyu temizle",
+    "description": "The label and ARIA label for search box reset button"
+  },
+  "theme.SearchModal.searchBox.cancelButtonText": {
+    "message": "İptal",
+    "description": "The label and ARIA label for search box cancel button"
+  },
+  "theme.SearchModal.startScreen.recentSearchesTitle": {
+    "message": "Son",
+    "description": "The title for recent searches"
+  },
+  "theme.SearchModal.startScreen.noRecentSearchesText": {
+    "message": "Son arama yok",
+    "description": "The text when no recent searches"
+  },
+  "theme.SearchModal.startScreen.saveRecentSearchButtonTitle": {
+    "message": "Bu aramayı kaydet",
+    "description": "The label for save recent search button"
+  },
+  "theme.SearchModal.startScreen.removeRecentSearchButtonTitle": {
+    "message": "Bu aramayı geçmişten kaldır",
+    "description": "The label for remove recent search button"
+  },
+  "theme.SearchModal.startScreen.favoriteSearchesTitle": {
+    "message": "Favori",
+    "description": "The title for favorite searches"
+  },
+  "theme.SearchModal.startScreen.removeFavoriteSearchButtonTitle": {
+    "message": "Bu aramayı favorilerden kaldır",
+    "description": "The label for remove favorite search button"
+  },
+  "theme.SearchModal.errorScreen.titleText": {
+    "message": "Sonuçlar alınamadı",
+    "description": "The title for error screen of search modal"
+  },
+  "theme.SearchModal.errorScreen.helpText": {
+    "message": "Ağ bağlantınızı kontrol etmek isteyebilirsiniz.",
+    "description": "The help text for error screen of search modal"
+  },
+  "theme.SearchModal.footer.selectText": {
+    "message": "Seç",
+    "description": "The explanatory text of the action for the enter key"
+  },
+  "theme.SearchModal.footer.selectKeyAriaLabel": {
+    "message": "Enter tuşu",
+    "description": "The ARIA label for the Enter key button that makes the selection"
+  },
+  "theme.SearchModal.footer.navigateText": {
+    "message": "yönlendir",
+    "description": "The explanatory text of the action for the Arrow up and Arrow down key"
+  },
+  "theme.SearchModal.footer.navigateUpKeyAriaLabel": {
+    "message": "Yukarı ok",
+    "description": "The ARIA label for the Arrow up key button that makes the navigation"
+  },
+  "theme.SearchModal.footer.navigateDownKeyAriaLabel": {
+    "message": "Aşağı ok",
+    "description": "The ARIA label for the Arrow down key button that makes the navigation"
+  },
+  "theme.SearchModal.footer.closeText": {
+    "message": "Kapat",
+    "description": "The explanatory text of the action for Escape key"
+  },
+  "theme.SearchModal.footer.closeKeyAriaLabel": {
+    "message": "ESC Tuşu",
+    "description": "The ARIA label for the Escape key button that close the modal"
+  },
+  "theme.SearchModal.footer.searchByText": {
+    "message": "Şuna göre ara:",
+    "description": "The text explain that the search is making by Algolia"
+  },
+  "theme.SearchModal.noResultsScreen.noResultsText": {
+    "message": "için sonuç yok",
+    "description": "The text explains that there are no results for the following search"
+  },
+  "theme.SearchModal.noResultsScreen.suggestedQueryText": {
+    "message": "Aramayı deneyin",
+    "description": "The text for the suggested query when no results are found for the following search"
+  },
+  "theme.SearchModal.noResultsScreen.reportMissingResultsText": {
+    "message": "Bu sorgunun sonuç döndürmesi gerektiğine inanıyor musunuz?",
+    "description": "The text for the question where the user thinks there are missing results"
+  },
+  "theme.SearchModal.noResultsScreen.reportMissingResultsLinkText": {
+    "message": "Bilmemize izin ver.",
+    "description": "The text for the link to report missing results"
+  },
+  "theme.SearchModal.placeholder": {
+    "message": "Dokümanlarda ara",
+    "description": "The placeholder of the input of the DocSearch pop-up modal"
+  },
+  "theme.ErrorPageContent.tryAgain": {
+    "message": "Tekrar deneyin",
+    "description": "The label of the button to try again rendering when the React error boundary captures an error"
   }
 }

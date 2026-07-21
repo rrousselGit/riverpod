@@ -1,0 +1,64 @@
+---
+title: ProviderObserver'lar
+---
+import { Link } from "/src/components/Link";
+import CodeBlock from "@theme/CodeBlock";
+import logger from "!!raw-loader!/docs/concepts2/provider_observer_logger.dart";
+import { trimSnippet } from "/src/components/CodeSnippet";
+
+[ProviderObserver], uygulamadaki provider yaşam döngüsü olaylarını gözlemlemek için kullanılan bir nesnedir.
+Genellikle günlük kaydı (logging), analitik veya hata ayıklama amacıyla kullanılırlar. 
+
+## Kullanım {#usage}
+
+Bir [ProviderObserver] kullanmak için sınıfı genişletmeniz ve gözlemlemek istediğiniz yaşam döngüsü metotlarını geçersiz kılmanız gerekir.
+Kullanılabilecek çok sayıda metot vardır. Ayrıntılar için [dokümantasyonunu][ProviderObserver] incelemeniz önerilir.
+
+## Örnek: Logger {#example-logger}
+
+Aşağıdaki gözlemci, uygulamadaki herhangi bir provider'ın tüm durum değişikliklerini günlüğe kaydeder:
+
+<CodeBlock>{trimSnippet(logger)}</CodeBlock>
+
+Artık provider'ımızın değeri her güncellendiğinde logger bunu kaydedecektir:
+
+```
+{
+  "provider": "Provider<int>",
+  "newValue": "1"
+}
+```
+
+Hata ayıklamayı kolaylaştırmak için provider'larınıza isteğe bağlı olarak bir ad verebilirsiniz:  
+```dart
+final myProvider = Provider<int>((ref) => 0, name: 'MyProvider');
+```
+
+Bu değişiklikle birlikte günlük kaydı şuna dönüşür:
+```
+{
+  "provider": "MyProvider",
+  "newValue": "1"
+}
+```
+
+:::tip
+Kod üretimi kullanıldığında provider'lara otomatik olarak bir ad atanır.
+:::
+
+
+:::note NOT
+Bir provider'ın durumu yerinde değiştirilirse (genellikle [Ref.notifyListeners] ile birlikte kullanılan List'lerde),
+`didUpdateProvider` metodunun `previousValue` ve `newValue` değerlerini aynı değer olarak alması olasıdır.
+
+Bunun nedeni, Dart'ın nesneleri "referans" yoluyla güncellemesidir.
+Bunu değiştirmek isterseniz, nesnelerinizi değiştirmeden önce kopyalamanız gerekir.
+:::
+
+
+
+
+[ProviderContainer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderContainer-class.html
+[ProviderScope]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderScope-class.html
+[ProviderObserver]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderObserver-class.html
+[Ref.notifyListeners]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/notifyListeners.html

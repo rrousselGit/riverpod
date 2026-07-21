@@ -1,0 +1,113 @@
+---
+title: Family
+---
+import { Link } from "/src/components/Link";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+import functionalFamily from '/docs/concepts2/family/functional';
+import notifierFamily from '/docs/concepts2/family/notifier';
+import singleOverride from 'raw-loader!/docs/concepts2/family/single_override.dart';
+import allOverride from 'raw-loader!/docs/concepts2/family/all_overrides.dart';
+import activeProviders from 'raw-loader!/docs/concepts2/family/all_of.dart';
+
+Riverpod'un en güçlü özelliklerinden biri "Family"lerdir.  
+Kısaca, bir provider'ın benzersiz bir parametre kombinasyonuna dayanarak
+birden fazla bağımsız durumla ilişkilendirilmesini sağlar.
+
+Tipik bir kullanım senaryosu, yanıtın bazı parametrelere (kullanıcı ID'si, arama sorgusu
+veya sayfa numarası gibi) bağlı olduğu uzak bir API'den veri çekmektir.
+Bu sayede, olası her parametre kombinasyonunu çekmek ve önbelleğe almak için
+tek bir provider tanımlayabilirsiniz.
+
+![Bir family'nin bir provider'ı birden fazla bağımsız duruma nasıl bağladığını gösteren grafik](/img/concepts2/family/users.svg)
+
+
+:::info
+Sıradan provider'lar bir değişkene benzetilebiliyorsa, "family" provider'ları da bir Map'e benzetilebilir.
+:::
+
+## Bir Family oluşturmak {#creating-a-family}
+
+Bir family tanımlamak, provider tanımını bir parametre alacak şekilde
+hafifçe değiştirmekten ibarettir.
+
+Fonksiyonel provider'lar için sözdizimi şu şekildedir:
+
+<AutoSnippet  {...functionalFamily} />
+
+Notifier provider'lar için ise sözdizimi şöyledir:
+
+<AutoSnippet {...notifierFamily} />
+
+:::info
+Kesinlikle zorunlu olmasa da, family kullanırken <Link documentID="concepts2/auto_dispose" />
+özelliğini etkinleştirmeniz şiddetle tavsiye edilir.
+
+Bu sayede, parametre değiştiğinde ve önceki duruma artık ihtiyaç kalmadığında
+bellek sızıntılarının önüne geçilir.
+:::
+
+## Bir Family kullanmak {#using-a-family}
+
+Parametre alan provider'ların kullanımı da biraz farklılaşır.
+
+Uzun lafın kısası, provider'ınızın beklediği parametreleri şu şekilde
+iletmeniz gerekir:
+
+```dart
+final user = ref.watch(userProvider('123'));
+```
+
+:::caution DİKKAT
+İletilen parametrelerin tutarlı bir `==`/`hashCode` davranışına sahip olması gerekir.
+
+"family"yi bir Map olarak düşünün: parametreler anahtar, provider'ın durumu ise değerdir.
+Dolayısıyla bir parametrenin `==`/`hashCode` değeri değişirse, elde edilen değer de
+farklı olacaktır.
+
+Bu nedenle aşağıdaki gibi bir kod yanlıştır:
+
+```dart
+// Hatalı parametre, çünkü `[1, 2, 3] != [1, 2, 3]`
+ref.watch(myProvider([1, 2, 3]));
+```
+
+Bu hatayı fark etmenize yardımcı olması için [riverpod_lint](https://pub.dev/packages/riverpod_lint)
+paketini kullanmanız ve [provider_parameters](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#provider_parameters)
+lint kuralını etkinleştirmeniz önerilir. Böylece yukarıdaki kod parçası bir uyarı gösterir.
+Kurulum adımları için <Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint" /> bölümüne bakın.
+:::
+
+
+İstediğiniz kadar "family" provider'ı okuyabilirsiniz; hepsi birbirinden bağımsız olacaktır.
+Dolayısıyla şu kullanım geçerlidir:
+
+```dart
+class Example extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user1 = ref.watch(userProvider('123'));
+    final user2 = ref.watch(userProvider('456'));
+
+    // user1 ve user2 birbirinden bağımsızdır.
+  }
+}
+```
+
+## Bir family'nin tüm aktif provider'larına erişmek {#accessing-all-active-providers-of-a-family}
+
+<Link documentID="concepts2/containers" /> kullanarak, bir `Family` ile ilişkili tüm
+provider'lara `allProviders` metodu sayesinde erişebilirsiniz:
+
+<AutoSnippet raw={activeProviders} />
+
+## Family'leri geçersiz kılmak {#overriding-families}
+
+Testlerde bir provider'ı sahte bir örnekle değiştirmek isterken, bir family provider'ını geçersiz kılmak isteyebilirsiniz.  
+
+Bu durumda iki seçeneğiniz vardır:
+- Yalnızca belirli bir parametre kombinasyonunu geçersiz kılmak:
+  <AutoSnippet raw={singleOverride} />
+- Tüm parametre kombinasyonlarını geçersiz kılmak:
+  <AutoSnippet raw={allOverride} />

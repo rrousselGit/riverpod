@@ -1,0 +1,183 @@
+---
+title: Başlarken
+version: 8
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import pubspec from "/docs/introduction/getting_started/pubspec";
+import dartHelloWorld from "/docs/introduction/getting_started/dart_hello_world";
+import pubadd from "/docs/introduction/getting_started/pub_add";
+import helloWorld from "/docs/introduction/getting_started/hello_world";
+import dartPubspec from "/docs/introduction/getting_started/dart_pubspec";
+import dartPubadd from "/docs/introduction/getting_started/dart_pub_add";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+
+## Riverpod'u çevrimiçi deneyin {#try-riverpod-online}
+
+Riverpod'u tanımak için [Dartpad](https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2)
+veya [Zapp](https://zapp.run/new) üzerinde çevrimiçi deneyebilirsiniz:
+
+<iframe
+  src="https://zapp.run/edit/zv2060sv306?theme=dark&lazy=false"
+  style={{ width: "100%", border: 0, overflow: "hidden", aspectRatio: "1.5" }}
+></iframe>
+
+## Paketi kurmak {#installing-the-package}
+
+Riverpod, kendi başına yeterli olan bir ana "riverpod" paketi olarak gelir; buna kod üretimi (<Link documentID="concepts/about_code_generation" />) ve hook'lar (<Link documentID="concepts/about_hooks" />) için isteğe bağlı paketler eşlik eder.
+
+Hangi paket(ler)i kurmak istediğinizi belirledikten sonra, bağımlılığı uygulamanıza tek satırda şu şekilde ekleyin:
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: 'Flutter', value: 'flutter_riverpod', },
+    { label: 'Yalnızca Dart', value: 'riverpod', },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet {...pubadd}></AutoSnippet>
+
+</TabItem>
+
+<TabItem value="riverpod">
+
+<AutoSnippet {...dartPubadd}></AutoSnippet>
+
+</TabItem>
+
+</Tabs>
+
+Alternatif olarak, bağımlılığı `pubspec.yaml` dosyanızdan elle de ekleyebilirsiniz:
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: 'Flutter', value: 'flutter_riverpod', },
+    { label: 'Yalnızca Dart', value: 'riverpod', },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet title="pubspec.yaml" language="yaml" {...pubspec}></AutoSnippet>
+
+Ardından paketleri `flutter pub get` ile kurun.
+
+
+</TabItem>
+<TabItem value="riverpod">
+
+<AutoSnippet
+  title="pubspec.yaml"
+  language="yaml"
+  {...dartPubspec}
+></AutoSnippet>
+
+Ardından paketleri `dart pub get` ile kurun.
+
+</TabItem>
+</Tabs>
+
+:::info
+Kod üretimi kullanıyorsanız, kod üreticisini şu komutla çalıştırabilirsiniz:
+```sh
+dart run build_runner watch -d
+```
+:::
+
+Hepsi bu kadar. [Riverpod]'u uygulamanıza eklediniz!
+
+## riverpod_lint'i etkinleştirmek {#enabling-riverpod_lint}
+
+Riverpod, daha iyi kod yazmanıza yardımcı olacak lint kuralları ve özel yeniden düzenleme (refactoring)
+seçenekleri sunan, isteğe bağlı bir [riverpod_lint] paketiyle birlikte gelir.
+
+Riverpod_lint, [analysis_server_plugin] kullanılarak geliştirilmiştir. Bu nedenle `analysis_options.yaml` üzerinden kurulur.
+
+Kısacası, `pubspec.yaml` dosyanızın yanına bir `analysis_options.yaml` oluşturun ve şunu ekleyin:
+
+```yaml title="analysis_options.yaml"
+plugins:
+  riverpod_lint: <https://pub.dev/packages/riverpod_lint adresindeki en son sürüm>
+```
+
+Artık Riverpod'u kullanırken hata yaptığınızda IDE'nizde uyarılar görmelisiniz.
+
+Uyarıların ve yeniden düzenleme seçeneklerinin tam listesi için [riverpod_lint] sayfasına göz atın.
+
+## Kullanım örneği: Merhaba dünya {#usage-example-hello-world}
+
+[Riverpod]'u kurduğumuza göre artık kullanmaya başlayabiliriz.
+
+Aşağıdaki kod parçaları, yeni bağımlılığımızı kullanarak nasıl bir "Merhaba dünya" yazılacağını gösteriyor:
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: "Flutter", value: "flutter_riverpod" },
+    { label: "Yalnızca Dart", value: "riverpod" },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...helloWorld}
+  translations={{
+    helloWorld: `// Bir değer saklayacak (burada "Hello world") bir "provider" oluşturuyoruz.
+// Bir provider kullanmak, sunulan değeri sahteleyebilmemizi/geçersiz kılabilmemizi sağlar.`,
+    ProviderScope: `    // Widget'ların provider'ları okuyabilmesi için tüm uygulamayı bir
+    // "ProviderScope" widget'ı ile sarmalamamız gerekir.
+    // Provider'larımızın durumu burada saklanır.`,
+    ConsumerWidget: `// Riverpod tarafından sunulan ConsumerWidget'tan türetin, StatelessWidget'tan değil`,
+  }}
+></AutoSnippet>
+
+Ardından uygulamayı `flutter run` ile başlatın.  
+Bu, cihazınızda "Hello world" yazısını gösterecektir.
+
+</TabItem>
+<TabItem value="riverpod">
+
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...dartHelloWorld}
+></AutoSnippet>
+
+Ardından uygulamayı `dart lib/main.dart` ile başlatın.  
+Bu, konsola "Hello world" yazdıracaktır.
+
+</TabItem>
+</Tabs>
+
+## Daha ileriye: kod parçacıklarını kurmak {#going-further-installing-code-snippets}
+`Flutter` ve `VS Code` kullanıyorsanız [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets) eklentisini değerlendirin.
+
+`Flutter` ve `Android Studio` veya `IntelliJ` kullanıyorsanız [Riverpod Gen Shortcuts](https://plugins.jetbrains.com/plugin/30670-riverpod-gen-shortcuts) ya da [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets) eklentisini değerlendirin.
+
+**Örnek: Üreticiyi kullanmak - Riverpod Stream (`riverpodStream`) **
+![riverpod-class](/img/snippets/riverpod-stream.gif)
+
+**Örnek: Üreticiyi kullanmak - Riverpod Class (`riverpodClassKeepAlive`)**
+![riverpod-stream](/img/snippets/riverpod-keep-alive-class.gif)
+
+**Flutter Riverpod Snippets**
+![img](/img/snippets/greetingProvider.gif)
+
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+[riverpod_lint]: https://pub.dev/packages/riverpod_lint
+[analysis_server_plugin]: https://pub.dev/packages/analysis_server_plugin

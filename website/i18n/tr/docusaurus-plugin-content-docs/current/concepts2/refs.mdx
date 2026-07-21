@@ -1,0 +1,404 @@
+---
+title: Ref'ler
+---
+import { Link } from "/src/components/Link";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+
+Ref'ler, <Link documentID="concepts2/providers"/> ile etkileşime girmenin başlıca yoludur.  
+Ref'ler Flutter'daki `BuildContext`'e oldukça benzer, ancak widget'lar yerine provider'lar içindir.
+Bir ref ile yapabileceklerinizin eksiksiz olmayan bir listesi:
+- bir provider'ın durumunu okumak/gözlemlemek
+- bir provider'ın o anda yüklü olup olmadığını kontrol etmek
+- bir provider'ın durumunu sıfırlamak
+
+Bunlara ek olarak [Ref], bir provider'ın kendi durumuyla ilgili yaşam döngüsü olaylarını gözlemlemesini de sağlar.
+Provider'lar için "initState" ve "dispose" gibi düşünün. Şu metotlar buna dahildir:
+- [onDispose]
+- [onCancel]
+
+- vb.
+
+## Bir [Ref] nasıl elde edilir {#how-to-obtain-a-ref}
+
+Bir [Ref] elde etmek, uygulamanızın neresinde olduğunuza bağlıdır.
+
+Provider'lar doğal olarak bir Ref'e erişebilir. Onu başlatıcı fonksiyonun parametresi olarak
+veya Notifier sınıflarının bir özelliği olarak bulabilirsiniz.
+
+<AutoSnippet
+  codegen={`
+  @riverpod
+  int myProvider(Ref ref) {
+    // ref burada kullanılabilir
+    ...
+  }
+  
+  @riverpod
+  class MyNotifier extends _$MyNotifier {
+    @override
+    int build() {
+      // this.ref, notifier'ların içinde her yerde kullanılabilir
+      ref.watch(someProvider);
+      ...
+    }
+  }
+  `}
+  raw={`
+  final myProvider = Provider<int>((ref) {
+    // ref burada kullanılabilir
+    ...
+  });
+  
+  final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
+  
+  class MyNotifier extends Notifier<int> {
+    @override
+    int build() {
+      // this.ref, notifier'ların içinde her yerde kullanılabilir
+      ref.watch(someProvider);
+      ...
+    }
+  }
+  `}
+/>
+
+Widget'ların içinde bir [Ref] elde etmek için <Link documentID="concepts2/consumers"/> gerekir.
+
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    // ref burada kullanılabilir
+    final value = ref.watch(myProvider);
+    return Text('$value');
+  },
+);
+```
+
+**Ne bir widget'ın ne de bir provider'ın içindeyim. O halde nasıl Ref elde ederim?**  
+Ne widget'ların ne de provider'ların içindeyseniz, kullandığınız şey büyük olasılıkla
+yine de bir widget'a/provider'a gevşek biçimde bağlıdır.
+
+Bu durumda, widget'ınızdan/provider'ınızdan elde ettiğiniz ref'i seçtiğiniz fonksiyona/nesneye aktarmanız yeterlidir:
+
+```dart
+void myFunction(WidgetRef ref) {
+  // Ref'i elden ele aktarabilirsiniz!
+}
+
+...
+
+Consumer(
+  builder: (context, ref, _) {
+    return ElevatedButton(
+      onPressed: () => myFunction(ref), // Ref'i fonksiyonunuza aktarın
+      child: Text('Click me'),
+    );
+  },
+);
+```
+
+## Provider'larla etkileşim için Ref kullanmak {#using-refs-to-interact-with-providers}
+
+Provider'larla etkileşimler genellikle iki kategoriye ayrılır:
+- Bir provider'ın durumunu dinlemek
+- Bir provider'ın durumunu değiştirmek 
+  (örneğin sıfırlamak, güncellemek vb.)
+
+### Bir provider'ın durumunu dinlemek {#listening-to-a-providers-state}
+
+Riverpod, bir provider'ın durumunu dinlemek için iki yol sunar:
+- [Ref.watch] - Provider'ları dinlemenin "bildirimsel" yoludur.  
+  Provider'ları dinlemenin en yaygın yoludur ve ilk tercihiniz olmalıdır.
+- [Ref.listen] - Provider'ları dinlemenin "elle" yapılan yoludur.  
+  Alışılmış "addListener" tarzı bir dinleme kullanır. Güçlüdür, ancak daha karmaşıktır.
+
+Aşağıdaki örnekler için, her saniye güncellenen bir provider düşünün:
+
+<AutoSnippet
+  codegen={`
+  @riverpod
+  class Tick extends _$Tick {
+    @override
+    int build() {
+      final timer = Timer.periodic(Duration(seconds: 1), (_) => state++);
+      ref.onDispose(timer.cancel);
+      return 0;
+    }
+  }
+  `}
+  raw={`
+  final tickProvider = NotifierProvider<Tick, int>(Tick.new);
+  class Tick extends Notifier<int> {
+    @override
+    int build() {
+      final timer = Timer.periodic(Duration(seconds: 1), (_) => state++);
+      ref.onDispose(timer.cancel);
+      return 0;
+    }
+  }
+  `}
+/>
+
+#### Ref.watch {#refwatch}
+
+[Ref.watch], Riverpod'un ayırt edici özelliğidir. Provider'ları sorunsuz biçimde birleştirmenizi
+ve bir provider'ın durumu değiştiğinde kullanıcı arayüzünüzün kolayca güncellenmesini sağlar.
+
+[Ref.watch] kullanmak, Flutter'da bir `InheritedWidget` kullanmaya benzer.
+Flutter'da `Theme.of(context)` çağırdığınızda widget'ınız `Theme`'e abone olur
+ve `Theme` her değiştiğinde yeniden oluşturulur. Benzer şekilde, `ref.watch(myProvider)` çağırdığınızda
+widget'ınız/provider'ınız `myProvider`'a abone olur ve `myProvider` her değiştiğinde yeniden oluşturulur.
+
+Aşağıdaki kod, `Tick` provider'ımız her güncellendiğinde otomatik olarak güncellenen bir <Link documentID="concepts2/consumers"/> gösteriyor:
+
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    final tick = ref.watch(tickProvider);
+    return Text('Tick: $tick');
+  },
+);
+```
+
+[Ref.watch]'ın en ilginç yanı, provider'ların da onu kullanabilmesidir!  
+Örneğin, "tick 4'e bölünebiliyor mu?" sorusunun yanıtını döndüren bir provider oluşturabiliriz:
+
+<AutoSnippet
+  codegen={`
+  @riverpod
+  bool isDivisibleBy4(Ref ref) {
+    final tick = ref.watch(tickProvider);
+    return tick % 4 == 0;
+  }
+  `}
+  raw={`
+  final isDivisibleBy4Provider = Provider<bool>((ref) {
+    final tick = ref.watch(tickProvider);
+    return tick % 4 == 0;
+  });
+  `}
+/>
+
+Ardından, kullanıcı arayüzümüzde bunun yerine bu yeni provider'ı dinleyebiliriz:
+
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    final isDivisibleBy4 = ref.watch(isDivisibleBy4Provider);
+    return Text('Can tick be divided by 4? ${isDivisibleBy4}');
+  },
+);
+```
+
+Artık kullanıcı arayüzümüz her saniye güncellenmek yerine, yalnızca
+boolean değer değiştiğinde güncellenecek.  
+
+#### Ref.listen {#reflisten}
+
+[Ref.listen], provider'ları dinlemenin daha elle yapılan bir yoludur.
+`ChangeNotifier`'ın `addListener` metoduna veya `Stream.listen` metoduna benzer.
+
+Bu metot, bir provider'ın durumu değiştiğinde bir yan etki gerçekleştirmek istediğinizde kullanışlıdır; örneğin:
+- Bir dialog göstermek
+- Yeni bir ekrana yönlendirmek
+- Bir mesajı günlüğe kaydetmek
+- vb.
+
+<AutoSnippet
+  codegen={`
+  @riverpod
+  int example(Ref ref) {
+    ref.listen(tickProvider, (previous, next) {
+      // Bu, tickProvider her değiştiğinde çağrılır
+      print('Tick changed from $previous to $next');
+    });
+  
+    return 0;
+  }
+  `}
+  raw={`
+  final exampleProvider = Provider<int>((ref) {
+    ref.listen(tickProvider, (previous, next) {
+      // Bu, tickProvider her değiştiğinde çağrılır
+      print('Tick changed from $previous to $next');
+    });
+  
+    return 0;
+  });
+  `}
+/>
+
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    ref.listen(tickProvider, (previous, next) {
+      // Bu, tickProvider her değiştiğinde çağrılır
+      print('Tick changed from $previous to $next');
+    });
+  
+    return Text('Listening to tick changes');
+  },
+);
+```
+
+:::note NOT
+[WidgetRef.listen]'ı bir widget'ın `build` metodu içinde kullanmak güvenlidir. Metot zaten
+bu şekilde kullanılmak üzere tasarlanmıştır.  
+Provider'ları `build` dışında dinlemek isterseniz (örneğin `State.initState` içinde), bunun yerine [WidgetRef.listenManual] kullanın.
+:::
+
+
+### Bir provider'ın durumunu sıfırlamak {#resetting-a-providers-state}
+
+[Ref.invalidate] kullanarak bir provider'ın durumunu sıfırlayabilirsiniz.  
+Bu, Riverpod'a mevcut durumu atmasını ve provider bir sonraki okunuşunda yeniden değerlendirmesini söyler.
+
+Aşağıdaki örnek tick değerini `0`'a sıfırlayacaktır:
+
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    return ElevatedButton(
+      onPressed: () {
+        // tick provider'ı sıfırla
+        // Bu, tick'i 0'dan yeniden başlatacaktır
+        ref.invalidate(tickProvider);
+      },
+      child: Text('Reset Tick'),
+    );
+  },
+);
+```
+
+:::tip
+Sıfırladıktan hemen sonra yeni durumu elde etmeniz gerekiyorsa [Ref.read] çağırabilirsiniz:
+
+```dart
+ref.invalidate(tickProvider);
+final newTick = ref.read(tickProvider);
+```
+Alternatif olarak, provider'ı sıfırlamak ve yeni durumunu tek seferde okumak için [Ref.refresh] kullanabilirsiniz:
+```dart
+final newTick = ref.refresh(tickProvider);
+```
+
+Her iki kod tamamen eşdeğerdir. [Ref.refresh], [Ref.invalidate] ardından [Ref.read] çağrılmasının sözdizimsel kısaltmasıdır.
+:::
+
+
+### Kullanıcı etkileşimleri içinde provider'ın durumuyla etkileşmek {#interacting-with-the-providers-state-inside-user-interactions}
+
+Son bir kullanım senaryosu, buton tıklamaları içinde bir provider'ın durumuyla etkileşmektir.
+Bu senaryoda durumu "dinlemek" istemeyiz. Bu durum için [Ref.read] vardır.
+
+İş yapmak üzere buton tıklamalarında [Ref.read]'i güvenle çağırabilirsiniz. Aşağıdaki örnek,
+butona tıklandığında geçerli tick değerini yazdıracaktır:
+
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    return ElevatedButton(
+      onPressed: () {
+        // Geçerli tick değerini oku
+        final tick = ref.read(tickProvider);
+        print('Current tick: $tick');
+      },
+      child: Text('Print Tick'),
+    );
+  },
+);
+```
+
+:::danger Uyarı
+[Ref.read]'i, [Ref.watch]'tan kaçınarak kodunuzu "optimize etmenin" bir yolu olarak kullanmayın.
+Bu, kodunuzu daha kırılgan hale getirir; çünkü provider'ınızın davranışındaki değişiklikler
+kullanıcı arayüzünüzün provider'ın durumuyla uyumsuz kalmasına yol açabilir.
+
+Ya yine de [Ref.watch] kullanın (aradaki fark ihmal edilebilir düzeydedir) ya da [select] kullanın:
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    // ❌ "read"i değişiklikleri göz ardı etmenin bir yolu olarak kullanmayın
+    final tick = ref.read(tickProvider);
+
+    // ✅ Değişiklikleri dinlemek için "watch" kullanın.
+    // Bu, uygulamalarınızda bir darboğaz olmamalıdır. Aşırı optimizasyon yapmayın.
+    final tick = ref.watch(tickProvider);
+
+    // ✅ Yalnızca ilgilendiğiniz durum parçasını dinlemek için "select" kullanın
+    final isEven = ref.watch(
+      tickProvider.select((tick) => tick.isEven),
+    );
+
+    ...
+  },
+);
+```
+:::
+
+
+### Yaşam döngüsü olaylarını dinlemek {#listening-to-life-cycle-events}
+
+[Ref]'in provider'lara özgü bir özelliği, yaşam döngüsü olaylarını dinleyebilmesidir.
+Bu olaylar, Flutter widget'larındaki `initState`, `dispose` ve diğer yaşam döngüsü metotlarına benzer.
+
+Yaşam döngüsü dinleyicileri "addListener" tarzı bir API ile kaydedilir.
+Dinleyiciler, [onDispose] veya [onCancel] gibi adı `on` ile başlayan metotlardır.
+
+<AutoSnippet
+  codegen={`
+  @riverpod
+  int counter(Ref ref) {
+    ref.onDispose(() {
+      // Bu, provider yok edildiğinde çağrılır
+      print('Counter provider is being disposed');
+    });
+    
+    return 0;
+  }
+  `}
+  raw={`
+  final counterProvider = Provider<int>((ref) {
+    ref.onDispose(() {
+      // Bu, provider yok edildiğinde çağrılır
+      print('Counter provider is being disposed');
+    });
+    
+    return 0;
+  });
+  `}
+/>
+
+
+:::tip
+Bu dinleyicilerin kaydını "silmeniz" gerekmez.  
+Provider sıfırlandığında Riverpod bunları otomatik olarak temizler.
+
+Yine de kayıtlarını elle silmek isterseniz, dinleyici metodunun döndürdüğü
+değeri kullanarak bunu yapabilirsiniz.
+
+```dart
+final unregister = ref.onDispose(() {
+  print('This will never be called');
+});
+
+// Bu, "onDispose" dinleyicisinin kaydını silecektir
+unregister();
+```
+:::
+
+[Ref]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref-class.html
+[Ref.watch]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/watch.html
+[Ref.listen]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/listen.html
+[Ref.invalidate]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/invalidate.html
+[Ref.refresh]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/refresh.html
+[Ref.read]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/read.html
+[WidgetRef.listen]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/WidgetRef/listen.html
+[WidgetRef.listenManual]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/WidgetRef/listenManual.html
+[WidgetRef]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/WidgetRef-class.html
+[onDispose]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/onDispose.html
+[onCancel]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/onCancel.html
+[select]: https://pub.dev/documentation/hooks_riverpod/latest/misc/ProviderListenable/select.html
+[ProviderSubscription]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderSubscription-class.html
