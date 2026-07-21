@@ -1,0 +1,222 @@
+---
+title: Provider'larınızı test etme
+version: 4
+---
+
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import unitTest from "!!raw-loader!/docs/how_to/testing/unit_test.dart";
+import widgetTest from "!!raw-loader!/docs/how_to/testing/widget_test.dart";
+import fullWidgetTest from "!!raw-loader!/docs/how_to/testing/full_widget_test.dart";
+import testerContainer from "!!raw-loader!/docs/how_to/testing/tester_container.dart";
+import providerToMock from "/docs/how_to/testing/provider_to_mock";
+import mockProvider from "!!raw-loader!/docs/how_to/testing/mock_provider.dart";
+import autoDisposeListen from "!!raw-loader!/docs/how_to/testing/auto_dispose_listen.dart";
+import listenProvider from "!!raw-loader!/docs/how_to/testing/listen_provider.dart";
+import awaitFuture from "!!raw-loader!/docs/how_to/testing/await_future.dart";
+import notifierMock from "/docs/how_to/testing/notifier_mock";
+import notifierUsage from "!!raw-loader!/docs/how_to/testing/notifier_usage.dart";
+
+Riverpod API'sinin temel parçalarından biri, provider'larınızı izole bir şekilde
+test edebilme imkânıdır.
+
+Düzgün bir test paketi için aşılması gereken birkaç zorluk vardır:
+
+- Testler durum paylaşmamalıdır. Yani yeni testler önceki
+  testlerden etkilenmemelidir.
+- Testler, istenen duruma ulaşabilmemiz için belirli işlevlerin sahtesini
+  oluşturma imkânı vermelidir.
+- Test ortamı, gerçek ortama mümkün olduğunca yakın
+  olmalıdır.
+
+Neyse ki Riverpod, bu hedeflerin tümüne ulaşmayı kolaylaştırır.
+
+## Bir test kurmak {#setting-up-a-test}
+
+Riverpod ile bir test tanımlarken iki ana senaryo vardır:
+
+- Genellikle Flutter bağımlılığı olmayan birim testleri.
+  Bu, bir provider'ın davranışını izole bir şekilde test etmek için faydalı olabilir.
+- Genellikle Flutter bağımlılığı olan widget testleri.
+  Bu, bir provider kullanan bir widget'ın davranışını test etmek için faydalı olabilir.
+
+### Birim testleri {#unit-tests}
+
+Birim testleri, [package:test](https://pub.dev/packages/test) paketindeki `test` fonksiyonu kullanılarak tanımlanır.
+
+Diğer testlerden temel farkı, bir `ProviderContainer` nesnesi oluşturmak
+isteyecek olmamızdır. Bu nesne, testimizin provider'larla
+etkileşime geçmesini sağlar.
+
+`ProviderContainer` kullanan tipik bir test şöyle görünür:
+
+<AutoSnippet
+  raw={unitTest}
+  translations={{
+    container: `    // Bu test için bir ProviderContainer oluşturun.
+    // ProviderContainer'ları testler arasında PAYLAŞMAYIN.`,
+    useProvider: `    // TODO: uygulamanızı test etmek için container'ı kullanın.`,
+  }}
+/>
+
+Artık bir ProviderContainer'ımız olduğuna göre, provider'ları okumak için şunları
+kullanabiliriz:
+
+- `container.read`, bir provider'ın mevcut değerini okumak için.
+- `container.listen`, bir provider'ı dinlemek ve değişikliklerden haberdar olmak için.
+
+:::caution DİKKAT
+Provider'lar otomatik olarak yok edildiğinde `container.read` kullanırken dikkatli olun.  
+Provider'ınız dinlenmiyorsa, durumunun testinizin ortasında yok edilmesi
+kuvvetle muhtemeldir.
+
+Bu durumda `container.listen` kullanmayı düşünün.  
+Döndürdüğü değer yine de provider'ın mevcut değerini okumanızı sağlar,
+ayrıca provider'ın testinizin ortasında yok edilmemesini de garanti eder:
+
+<AutoSnippet
+  raw={autoDisposeListen}
+  translations={{
+    read: `  // \`container.read(provider)\` ile eşdeğerdir.
+  // Ancak "subscription" yok edilmediği sürece provider yok edilmez.`,
+  }}
+/>
+:::
+
+### Widget testleri {#widget-tests}
+
+Widget testleri, [package:flutter_test](https://pub.dev/packages/flutter_test) paketindeki `testWidgets` fonksiyonu kullanılarak tanımlanır.
+
+Bu durumda, alışılmış widget testlerinden temel fark, `tester.pumpWidget`
+çağrısının köküne bir `ProviderScope` widget'ı eklememiz gerektiğidir:
+
+<AutoSnippet raw={widgetTest} />
+
+Bu, Flutter uygulamamızda Riverpod'u etkinleştirirken yaptığımıza benzer.
+
+Ardından, widget'ımızla etkileşime geçmek için `tester`ı kullanabiliriz.
+Alternatif olarak provider'larla etkileşime geçmek isterseniz,
+bir `ProviderContainer` elde edebilirsiniz.
+Bunu `tester.container()` ile elde etmek mümkündür.  
+Böylece `tester` sayesinde şunu yazabiliriz:
+
+<AutoSnippet raw={testerContainer} />
+
+Daha sonra bunu provider'ları okumak için kullanabiliriz. İşte tam bir örnek:
+
+<AutoSnippet
+  raw={fullWidgetTest}
+  translations={{
+    useProvider: `    // TODO provider'larınızla etkileşime geçin`,
+  }}
+/>
+
+## Provider'ların sahtesini oluşturma {#mocking-providers}
+
+Şimdiye kadar bir testin nasıl kurulacağını ve provider'larla temel etkileşimleri gördük.
+Ancak bazı durumlarda bir provider'ın sahtesini oluşturmak isteyebiliriz.
+
+İşin güzel yanı: Tüm provider'ların sahtesi, ek bir kuruluma gerek kalmadan varsayılan olarak oluşturulabilir.  
+Bu, `ProviderScope` veya `ProviderContainer` üzerindeki `overrides` parametresi
+belirtilerek mümkündür.
+
+Aşağıdaki provider'ı ele alalım:
+
+<AutoSnippet
+  {...providerToMock}
+  translations={{
+    provider: `// Önden başlatılan (eager initialization) bir provider.`,
+  }}
+/>
+
+Sahtesini şu şekilde oluşturabiliriz:
+
+<AutoSnippet
+  raw={mockProvider}
+  translations={{
+    container: `// Birim testlerinde, daha önceki "createContainer" yardımcımızı yeniden kullanarak.`,
+    providers: `  // Sahtesini oluşturacağımız provider'ların listesini belirtebiliriz:`,
+    exampleProvider: `    // Bu durumda "exampleProvider"ın sahtesini oluşturuyoruz.`,
+    note: `      // Bu fonksiyon, bir provider'ın tipik başlatma fonksiyonudur.\n      // Normalde "ref.watch" çağırdığınız ve başlangıç durumunu döndürdüğünüz yer burasıdır.\n\n      // Varsayılan "Hello world" değerini özel bir değerle değiştirelim.\n      // Ardından \`exampleProvider\` ile etkileşime geçmek bu değeri döndürecektir.`,
+    providerScope: `// Aynı şeyi widget testlerinde ProviderScope kullanarak da yapabiliriz:`,
+    overrides: `    // ProviderScope'lar da birebir aynı "overrides" parametresine sahiptir`,
+    sameAsBefore: `      // Öncekiyle aynı`,
+  }}
+/>
+
+## Bir provider'daki değişiklikleri gözetleme {#spying-on-changes-in-a-provider}
+
+Testlerimizde bir `ProviderContainer` elde ettiğimize göre, bunu bir provider'ı
+"dinlemek" için kullanabiliriz:
+
+<AutoSnippet raw={listenProvider} />
+
+Bunu daha sonra [mockito](https://pub.dev/packages/mockito)
+veya [mocktail](https://pub.dev/packages/mocktail) gibi paketlerle birleştirip `verify` API'lerini kullanabilirsiniz.  
+Ya da daha basitçe, tüm değişiklikleri bir listeye ekleyip liste üzerinde doğrulama yapabilirsiniz.
+
+## Asenkron provider'ları beklemek {#awaiting-asynchronous-providers}
+
+Riverpod'da provider'ların bir Future/Stream döndürmesi çok yaygındır.  
+Bu durumda, testlerimizin bu asenkron işlemin tamamlanmasını beklemesi
+gerekecektir.
+
+Bunu yapmanın bir yolu, bir provider'ın `.future`unu okumaktır:
+
+<AutoSnippet
+  raw={awaitFuture}
+  translations={{
+    note: `// TODO: uygulamanızı test etmek için container'ı kullanın.
+// Beklentimiz asenkron olduğu için "expectLater" kullanmalıyız`,
+    read: `  // "provider" yerine "provider.future"ı okuyoruz.
+  // Bu, asenkron provider'larda mümkündür ve provider'ın değeriyle
+  // sonuçlanacak bir Future döndürür.`,
+    completion: `  // Future'ın beklenen değerle sonuçlandığını doğrulayabiliriz.
+  // Alternatif olarak hatalar için "throwsA" kullanabiliriz.`,
+  }}
+/>
+
+## Notifier'ların sahtesini oluşturma {#mocking-notifiers}
+
+Notifier'ların sahtesini oluşturmak genel olarak önerilmez. Bunun nedeni, Notifier'ların
+tek başlarına örneklenememesi ve yalnızca bir Provider'ın parçası olarak kullanıldıklarında çalışmalarıdır.
+
+Bunun yerine, muhtemelen Notifier'ınızın mantığına bir soyutlama katmanı eklemeli ve
+o soyutlamanın sahtesini oluşturmalısınız.
+Örneğin, bir Notifier'ın sahtesini oluşturmak yerine, Notifier'ın veri çekmek için
+kullandığı bir "repository"nin sahtesini oluşturabilirsiniz.
+
+Yine de bir Notifier'ın sahtesini oluşturmakta ısrar ediyorsanız, böyle bir sahte
+oluştururken dikkat edilmesi gereken özel bir nokta vardır: Sahteniz, orijinal
+Notifier temel sınıfından türemelidir. Notifier'ı "implement" edemezsiniz, çünkü bu arayüzü bozar.
+
+Bu nedenle, bir Notifier'ın sahtesini oluştururken aşağıdaki mockito kodunu yazmak yerine:
+
+```dart
+class MyNotifierMock with Mock implements MyNotifier {}
+```
+
+Şunu yazmalısınız:
+
+<AutoSnippet
+  {...notifierMock}
+  translations={{
+    mock: `// Sahteniz, notifier'ınızın kullandığı Notifier temel sınıfından
+// türemek zorundadır`,
+  }}
+/>
+
+:::info
+Kod üretimi kullanıyorsanız, yukarıdakinin çalışması için sahtenizin,
+sahtesini oluşturduğunuz Notifier ile aynı dosyaya yerleştirilmesi gerekir.
+Aksi takdirde `_$MyNotifier` sınıfına erişiminiz olmaz.
+
+Ardından, notifier'ınızı kullanmak için şunu yapabilirsiniz:
+
+<AutoSnippet
+  raw={notifierUsage}
+  translations={{
+    overrides: `      // Sahte Notifier'ımızı oluşturması için provider'ı geçersiz kılın.`,
+    readNotifier: `    // Ardından sahte notifier'ı container üzerinden elde edin:`,
+    interactNotifier: `    // Daha sonra notifier ile gerçeğiyle yapacağınız gibi etkileşime geçebilirsiniz:`,
+  }}
+/>

@@ -1,0 +1,184 @@
+---
+title: Ağ isteklerini debounce etme/iptal etme
+version: 1
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
+import homeScreen from "!raw-loader!/docs/how_to/cancel/home_screen.dart";
+import extension from "!raw-loader!/docs/how_to/cancel/extension.dart";
+import detailScreen from "/docs/how_to/cancel/detail_screen";
+import detailScreenCancel from "/docs/how_to/cancel/detail_screen_cancel";
+import detailScreenDebounce from "/docs/how_to/cancel/detail_screen_debounce";
+import providerWithExtension from "/docs/how_to/cancel/provider_with_extension";
+
+Uygulamalar karmaşıklaştıkça, aynı anda birden fazla ağ isteğinin
+havada olması sıkça karşılaşılan bir durumdur. Örneğin bir kullanıcı arama kutusuna
+yazı yazarken her tuş vuruşunda yeni bir istek tetikleyebilir. Kullanıcı hızlı yazarsa,
+uygulamada aynı anda çok sayıda istek beklemede olabilir.
+
+Ya da bir kullanıcı bir isteği tetikleyip, istek tamamlanmadan başka bir sayfaya
+geçebilir. Bu durumda uygulamada artık ihtiyaç duyulmayan bir istek
+beklemede kalır.
+
+Bu durumlarda performansı optimize etmek için kullanabileceğiniz birkaç
+teknik vardır:
+
+- İstekleri "debounce" etmek. Bu, isteği göndermeden önce kullanıcının belirli
+  bir süre boyunca yazmayı bırakmasını beklemek anlamına gelir. Böylece kullanıcı
+  hızlı yazsa bile belirli bir girdi için yalnızca tek bir istek
+  gönderilir.
+- İstekleri "iptal etmek". Bu, istek tamamlanmadan kullanıcı sayfadan ayrılırsa
+  isteği iptal etmek anlamına gelir. Böylece kullanıcının asla göremeyeceği bir
+  yanıtı işlemek için zaman harcamazsınız.
+
+Riverpod'da bu tekniklerin ikisi de benzer şekilde uygulanabilir.
+Kilit nokta, istenen davranışa ulaşmak için `ref.onDispose`u "otomatik yok etme"
+veya `ref.watch` ile birlikte kullanmaktır.
+
+Bunu göstermek için iki sayfalı basit bir uygulama yapacağız:
+
+- Yeni bir sayfa açan bir butona sahip bir ana ekran
+- [Bored API](https://www.boredapi.com/)'den rastgele bir aktivite gösteren ve
+  aktiviteyi yenileme imkânı sunan bir detay sayfası.  
+  Pull-to-refresh'in nasıl uygulanacağı hakkında bilgi için
+  <Link documentID="how_to/pull_to_refresh" /> sayfasına bakın.
+
+Ardından şu davranışları uygulayacağız:
+
+- Kullanıcı detay sayfasını açıp hemen geri dönerse,
+  aktivite isteğini iptal edeceğiz.
+- Kullanıcı aktiviteyi arka arkaya birden fazla kez yenilerse, istekleri debounce
+  edeceğiz; böylece yalnızca kullanıcı yenilemeyi bıraktıktan sonra tek bir istek göndereceğiz.
+
+## Uygulama {#the-application}
+
+<img
+  src="/img/how_to/cancel/app.gif"
+  alt="Uygulamayı, detay sayfasının açılışını ve aktivitenin yenilenmesini gösteren gif."
+/>
+
+Önce, herhangi bir debounce veya iptal olmadan uygulamayı oluşturalım.  
+Burada süslü bir şey kullanmayacağız; detay sayfasını açmak için `Navigator.push`
+içeren sade bir `FloatingActionButton` ile yetineceğiz.
+
+İlk olarak ana ekranımızı tanımlayarak başlayalım. Her zamanki gibi,
+uygulamamızın köküne bir `ProviderScope` yerleştirmeyi unutmayalım.
+
+<AutoSnippet title="lib/src/main.dart" raw={homeScreen} />
+
+Ardından detay sayfamızı tanımlayalım.
+Aktiviteyi çekmek ve pull-to-refresh uygulamak için
+<Link documentID="how_to/pull_to_refresh" /> örnek çalışmasına bakın.
+
+<AutoSnippet title="lib/src/detail_screen.dart" {...detailScreen} />
+
+## İstekleri iptal etme {#cancelling-requests}
+
+Artık çalışan bir uygulamamız olduğuna göre, iptal mantığını uygulayalım.
+
+Bunun için, kullanıcı sayfadan ayrıldığında isteği iptal etmek üzere
+`ref.onDispose`u kullanacağız. Bunun çalışması için provider'ların
+otomatik yok edilmesinin etkin olması önemlidir.
+
+İsteği iptal etmek için gereken kod, HTTP client'ına göre değişir.
+Bu örnekte `package:http` kullanacağız, ancak aynı prensip
+diğer client'lar için de geçerlidir.
+
+Buradaki kilit nokta, kullanıcı sayfadan ayrıldığında `ref.onDispose`un çağrılacak olmasıdır.
+Çünkü provider'ımız artık kullanılmadığından, otomatik yok etme sayesinde
+yok edilir.  
+Dolayısıyla bu geri çağırmayı isteği iptal etmek için kullanabiliriz. `package:http`
+kullanırken bu, HTTP client'ımızı kapatarak yapılabilir.
+
+<AutoSnippet
+  {...detailScreenCancel}
+  translations={{
+    client: `  // package:http kullanarak bir HTTP client'ı oluşturuyoruz`,
+    onDispose: `  // Yok edilirken client'ı kapatıyoruz.
+  // Bu, client'ın bekleyen tüm isteklerini iptal edecektir.`,
+    get: `  // Artık isteği yapmak için "get" fonksiyonu yerine client'ı kullanıyoruz.`,
+    jsonDecode: `  // Kodun geri kalanı öncekiyle aynı`,
+  }}
+/>
+
+## İstekleri debounce etme {#debouncing-requests}
+
+İptal işlemini uyguladığımıza göre, şimdi de debounce'u uygulayalım.  
+Şu anda kullanıcı aktiviteyi arka arkaya birden fazla kez yenilerse,
+her yenileme için bir istek göndeririz.
+
+Teknik olarak bakıldığında, iptal işlemini uyguladığımız için bu
+bir sorun değil. Kullanıcı aktiviteyi arka arkaya birden fazla kez yenilerse,
+yeni bir istek yapıldığında önceki istek iptal edilecektir.
+
+Yine de bu ideal değil. Hâlâ birden fazla istek gönderiyor,
+bant genişliğini ve sunucu kaynaklarını boşa harcıyoruz.  
+Bunun yerine yapabileceğimiz şey, kullanıcı belirli bir süre boyunca aktiviteyi
+yenilemeyi bırakana kadar isteklerimizi geciktirmektir.
+
+Buradaki mantık iptal mantığına çok benziyor. Yine
+`ref.onDispose`u kullanacağız. Ancak buradaki fikir, bir HTTP client'ını
+kapatmak yerine, isteği başlamadan önce iptal etmek için `onDispose`a
+güvenmemizdir.  
+Ardından isteği göndermeden önce keyfi olarak 500ms bekleyeceğiz.
+Kullanıcı 500ms dolmadan aktiviteyi tekrar yenilerse,
+`onDispose` çağrılacak ve istek iptal edilecektir.
+
+:::info
+İstekleri iptal etmek için yaygın bir uygulama, bilinçli olarak hata fırlatmaktır.  
+Provider yok edildikten sonra provider'ın içinde hata fırlatmak güvenlidir.
+Bu exception doğal olarak Riverpod tarafından yakalanır ve yok sayılır.
+:::
+
+<AutoSnippet
+  {...detailScreenDebounce}
+  translations={{
+    didDispose: `  // Provider'ın şu anda yok edilmiş olup olmadığını yakalıyoruz.`,
+    delayed: `  // Kullanıcının yenilemeyi bırakmasını beklemek için isteği 500ms geciktiriyoruz.`,
+    cancelled: `  // Gecikme sırasında provider yok edildiyse, bu kullanıcının tekrar
+  // yenilediği anlamına gelir. İsteği iptal etmek için bir exception fırlatıyoruz.
+  // Burada exception kullanmak güvenlidir, çünkü Riverpod tarafından yakalanacaktır.`,
+    http: `  // Aşağıdaki kod bir önceki snippet'e göre değişmedi`,
+  }}
+/>
+
+## Daha ileri gitmek: İkisini aynı anda yapmak {#going-further-doing-both-at-once}
+
+Artık istekleri nasıl debounce edeceğimizi ve iptal edeceğimizi biliyoruz.  
+Ancak şu anda başka bir istek yapmak istersek, aynı mantığı
+birden fazla yere kopyalayıp yapıştırmamız gerekiyor. Bu ideal değil.
+
+Ne var ki daha ileri gidip, ikisini aynı anda yapan, yeniden kullanılabilir bir yardımcı yazabiliriz.
+
+Buradaki fikir, `Ref` üzerinde hem iptali hem de debounce'u tek bir metotta
+ele alan bir extension metodu yazmaktır.
+
+<AutoSnippet
+  raw={extension}
+  translations={{
+    note: `  /// [duration] süresi kadar (varsayılan 500ms) bekler ve ardından istek yapmak
+  /// için kullanılabilecek bir [http.Client] döndürür.
+  ///
+  /// Bu client, provider yok edildiğinde otomatik olarak kapatılır.`,
+    didDispose: `    // Önce debounce işlemini ele alıyoruz.`,
+    delay: `    // Kullanıcının yenilemeyi bırakmasını beklemek için isteği 500ms geciktiriyoruz.`,
+    cancel: `    // Gecikme sırasında provider yok edildiyse, bu kullanıcının tekrar
+    // yenilediği anlamına gelir. İsteği iptal etmek için bir exception fırlatıyoruz.
+    // Burada exception kullanmak güvenlidir, çünkü Riverpod tarafından yakalanacaktır.`,
+    client: `    // Şimdi client'ı oluşturuyoruz ve provider yok edildiğinde kapatıyoruz.`,
+    return: `    // Son olarak, provider'ımızın isteği yapabilmesi için client'ı döndürüyoruz.`,
+  }}
+/>
+
+Bu extension metodunu provider'larımızda şu şekilde kullanabiliriz:
+
+<AutoSnippet
+  {...providerWithExtension}
+  translations={{
+    client: `  // Daha önce oluşturduğumuz extension'ı kullanarak bir HTTP client'ı elde ediyoruz.`,
+    get: `  // Artık isteği yapmak için "get" fonksiyonu yerine client'ı kullanıyoruz.
+  // İsteğimiz doğal olarak debounce edilecek ve kullanıcı sayfadan ayrılırsa
+  // iptal edilecektir.`,
+  }}
+/>
