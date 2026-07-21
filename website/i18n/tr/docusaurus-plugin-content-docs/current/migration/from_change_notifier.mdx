@@ -1,0 +1,131 @@
+---
+title: "`ChangeNotifier`'dan geçiş"
+version: 2
+---
+
+import old from "!!raw-loader!/docs/migration/from_change_notifier/old.dart";
+import declaration from "/docs/migration/from_change_notifier/declaration";
+import initialization from "/docs/migration/from_change_notifier/initialization";
+import migrated from "/docs/migration/from_change_notifier/migrated";
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet } from "/src/components/CodeSnippet";
+
+
+Riverpod içinde `ChangeNotifierProvider`, pkg:provider'dan yumuşak bir geçiş sunmak
+amacıyla kullanılmak üzere tasarlanmıştır.
+
+pkg:riverpod'a geçişe henüz başladıysanız, kendisine ayrılmış rehberi okuduğunuzdan emin olun
+(bkz. <Link documentID="from_provider/quickstart" />).
+Bu yazı, riverpod'a çoktan geçmiş ama `ChangeNotifier`'dan uzaklaşmak isteyen kişiler
+içindir.
+
+Sonuç olarak `ChangeNotifier`'dan `AsyncNotifier`'a geçiş bir paradigma değişimi
+gerektirir, ancak geçişi yapılmış kodda büyük bir sadeleşme getirir.
+
+Şu (kusurlu) örneği ele alalım:
+<AutoSnippet raw={old} />
+
+Bu uygulama, şunlar gibi birkaç zayıf tasarım tercihini gözler önüne seriyor:
+- Farklı asenkron durumları ele almak için `isLoading` ve `hasError` kullanımı
+- İstekleri yorucu `try`/`catch`/`finally` ifadeleriyle dikkatle ele alma gerekliliği
+- Bu uygulamanın çalışması için `notifyListeners`'ın doğru anlarda çağrılması gerekliliği
+- Tutarsız veya muhtemelen istenmeyen durumların varlığı, örneğin boş bir listeyle başlatma
+
+Bu örneğin, `ChangeNotifier`'ın yeni başlayan geliştiricileri nasıl kusurlu tasarım tercihlerine
+sürükleyebileceğini göstermek için özellikle kurgulandığına dikkat edin; ayrıca bir başka çıkarım da,
+değiştirilebilir durumun başta vaat ettiğinden çok daha zor olabileceğidir.
+
+`Notifier`/`AsyncNotifier`, değişmez (immutable) durumla birleştiğinde daha iyi tasarım tercihlerine
+ve daha az hataya yol açabilir.
+
+Yukarıdaki kod parçasını adım adım en yeni API'lere nasıl geçireceğimize bakalım.
+
+
+## Geçişinize başlayın {#start-your-migration}
+Öncelikle yeni provider'ı / notifier'ı tanımlamalıyız: bu, kendine özgü iş mantığınıza bağlı olan
+bir düşünme sürecini gerektirir.
+
+Yukarıdaki gereksinimleri özetleyelim:
+- Durum, parametresiz bir ağ çağrısıyla elde edilen `List<Todo>` ile temsil ediliyor
+- Durum, *ayrıca* `loading`, `error` ve `data` durumları hakkında bilgi sunmalı
+- Durum, dışa açılan bazı metotlarla değiştirilebilmeli; dolayısıyla bir fonksiyon yeterli değil
+
+:::tip
+Yukarıdaki düşünme süreci şu soruları yanıtlamaya indirgenir:
+1. Bazı yan etkiler gerekiyor mu?
+    - `y`: riverpod'un sınıf tabanlı API'sini kullanın
+    - `n`: riverpod'un fonksiyon tabanlı API'sini kullanın
+2. Durumun asenkron olarak yüklenmesi gerekiyor mu?
+    - `y`: `build` bir `Future<T>` döndürsün
+    - `n`: `build` doğrudan `T` döndürsün
+3. Bazı parametreler gerekiyor mu?
+    - `y`: `build` (veya fonksiyonunuz) bunları kabul etsin
+    - `n`: `build` (veya fonksiyonunuz) fazladan parametre kabul etmesin
+:::
+
+:::info
+Kod üretimi kullanıyorsanız yukarıdaki düşünme süreci yeterlidir.  
+Doğru sınıf adlarını ve onların *özel* API'lerini düşünmenize gerek yoktur.  
+`@riverpod` sizden yalnızca dönüş tipiyle birlikte bir sınıf yazmanızı ister, gerisi hallolur.
+:::
+
+Teknik olarak buradaki en uygun seçim, yukarıdaki tüm gereksinimleri karşılayan bir
+`AsyncNotifier<List<Todo>>` tanımlamaktır. Önce biraz sözde kod yazalım.
+
+<AutoSnippet language="dart" {...declaration}></AutoSnippet>
+
+:::tip
+Unutmayın: yol göstermesi için ya da yalnızca kod yazmanızı hızlandırmak için IDE'nizdeki snippet'leri kullanın.
+Bkz. <Link documentID="introduction/getting_started" hash="going-further-installing-code-snippets" />.
+:::
+
+`ChangeNotifier`'ın uygulamasına kıyasla artık `todos`u tanımlamamıza gerek yok;
+bu değişkenin karşılığı, `build` ile örtük olarak yüklenen `state`tir.
+
+Gerçekten de riverpod'un notifier'ları tek seferde *bir* varlık sunabilir.
+
+:::tip
+Riverpod'un API'si ince taneli olacak şekilde tasarlanmıştır; yine de geçiş sırasında birden fazla değeri
+tutmak için özel bir varlık tanımlayabilirsiniz. Başlangıçta geçişi yumuşatmak için
+[Dart 3'ün record'larını](https://dart.dev/language/records) kullanmayı düşünün.
+:::
+
+
+### Başlatma {#initialization}
+Bir notifier'ı başlatmak kolaydır: başlatma mantığını `build` içine yazmanız yeterli.
+Artık eski `_init` fonksiyonundan kurtulabiliriz.
+
+<AutoSnippet language="dart" {...initialization}></AutoSnippet>
+
+Eski `_init`e kıyasla yeni `build` hiçbir şeyi eksik bırakmıyor: artık `isLoading` veya `hasError`
+gibi değişkenleri başlatmaya gerek yok.
+
+Riverpod, bir `AsyncValue<List<Todo>>` sunarak her asenkron provider'ı otomatik olarak çevirir
+ve asenkron durumun inceliklerini iki basit boolean bayrağın yapabileceğinden çok daha iyi ele alır.
+
+Gerçekten de her `AsyncNotifier`, asenkron durumu ele almak için ek `try`/`catch`/`finally` yazmayı
+fiilen bir anti-desen hâline getirir.
+
+
+### Mutation'lar ve yan etkiler {#mutations-and-side-effects}
+Tıpkı başlatmada olduğu gibi, yan etkiler gerçekleştirirken de `hasError` gibi boolean bayrakları
+yönetmeye ya da ek `try`/`catch`/`finally` blokları yazmaya gerek yoktur.
+
+Aşağıda tüm standart şablon kodu kaldırdık ve yukarıdaki örneğin geçişini başarıyla tamamladık:
+<AutoSnippet language="dart" {...migrated} />
+
+:::tip
+Sözdizimi ve tasarım tercihleri değişebilir, ancak sonuçta tek yapmamız gereken isteğimizi yazmak ve
+ardından durumu güncellemektir. Bkz. <Link documentID="concepts2/providers" />.
+:::
+
+## Geçiş sürecinin özeti {#migration-process-summary}
+
+Yukarıda uyguladığımız geçiş sürecinin tamamını işlemsel bir bakış açısıyla gözden geçirelim.
+
+1. Başlatmayı, yapıcıda çağrılan özel bir metottan alıp `build` içine taşıdık
+2. `todos`, `isLoading` ve `hasError` özelliklerini kaldırdık: içerideki `state` yeterli olacak
+3. Tüm `try`-`catch`-`finally` bloklarını kaldırdık: future'ı döndürmek yeterli
+4. Aynı sadeleştirmeyi yan etkilere de (`addTodo`) uyguladık
+5. Mutation'ları, yalnızca `state`i yeniden atayarak uyguladık

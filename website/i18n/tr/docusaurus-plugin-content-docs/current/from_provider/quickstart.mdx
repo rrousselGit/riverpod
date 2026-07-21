@@ -1,0 +1,185 @@
+---
+title: Hızlı başlangıç
+version: 2
+---
+
+Bu bölüm, [Provider] paketini bilen ve Riverpod'u öğrenmek isteyen
+kişiler için hazırlanmıştır.
+
+Her şeyden önce kısa [başlangıç][getting started] yazısını okuyun ve Riverpod'un özelliklerini
+denemek için küçük [sandbox] örneğini kurcalayın. Orada gördüklerinizi
+beğendiyseniz, artık bir geçişi ciddi ciddi düşünebilirsiniz.
+
+Gerçekten de Provider'dan Riverpod'a geçmek son derece basit olabilir.  
+
+Geçiş temelde, *artımlı* biçimde yapılabilen birkaç adımdan oluşur.
+
+## `ChangeNotifierProvider` ile başlayın {#start-with-changenotifierprovider}
+
+Riverpod'a geçiş sürecinde `ChangeNotifier` kullanmaya devam etmek ve
+en yeni gösterişli özellikleri hemen kullanmamak gayet normaldir.
+  
+Nitekim başlangıç için aşağıdaki kod tamamen yeterlidir:
+
+```dart
+// Elinizde bu varsa...
+class MyNotifier extends ChangeNotifier {
+  int state = 0;
+
+  void increment() {
+    state++;
+    notifyListeners();
+  }
+}
+
+// ... sadece şunu ekleyin!
+final myNotifierProvider = ChangeNotifierProvider<MyNotifier>((ref) {
+  return MyNotifier();
+});
+```
+
+Gördüğünüz gibi Riverpod, tam da pkg:Provider'dan geçişleri desteklemek için
+var olan bir [ChangeNotifierProvider] sınıfı sunuyor.
+
+Bu provider'ın yeni kod yazarken önerilmediğini ve Riverpod'u kullanmanın en iyi
+yolu olmadığını unutmayın; ancak geçişinize başlamak için yumuşak ve çok kolay bir yoldur.
+
+:::tip
+`ChangeNotifier`'larınızı *hemen* daha modern [Notifier'lara][Notifiers] dönüştürmek için acele etmenize gerek yok.
+Bazıları biraz paradigma değişikliği gerektirir, bu yüzden başlangıçta zor gelebilir.  
+
+Acele etmeyin; önce Riverpod'a alışmanız önemli.
+pkg:provider'daki Provider'ların *neredeyse* tamamının pkg:riverpod'da birebir karşılığı olduğunu kısa sürede fark edeceksiniz.
+:::
+
+## *Yapraklarla* başlayın {#start-with-leaves}
+
+Başka hiçbir şeye bağımlı olmayan Provider'larla, yani bağımlılık ağacınızdaki *yapraklarla* başlayın.  
+Tüm yaprakları geçirdikten sonra, yapraklara bağımlı olan provider'lara geçebilirsiniz.
+
+Başka bir deyişle, ilk etapta `ProxyProvider`'ları geçirmekten kaçının; onları tüm bağımlılıkları geçirildikten sonra ele alın.
+
+Bu yaklaşım, geçiş sürecini hızlandırıp basitleştirirken hataları da en aza indirir ve izlenebilir kılar.
+
+
+## Riverpod ve Provider bir arada yaşayabilir {#riverpod-and-provider-can-coexist}
+*Provider ve Riverpod'u aynı anda kullanmanın tamamen mümkün olduğunu unutmayın.*
+
+Gerçekten de import takma adları (import aliases) kullanarak iki API'yi birlikte kullanabilirsiniz.  
+Bu aynı zamanda okunabilirlik açısından harikadır ve belirsiz API kullanımını ortadan kaldırır.
+
+Bunu yapmayı planlıyorsanız, kod tabanınızdaki her Provider import'u için import takma adları kullanmayı düşünün.
+
+:::info
+Import takma adlarının etkili biçimde nasıl uygulanacağına dair kapsamlı bir rehber yakında geliyor.
+:::
+
+## Her seferinde tek bir Provider geçirin {#migrate-one-provider-at-a-time}
+
+Mevcut bir uygulamanız varsa, tüm provider'larınızı bir anda geçirmeye çalışmayın!
+
+Uzun vadede uygulamanızın tamamını Riverpod'a taşımayı hedeflemelisiniz, ancak 
+**kendinizi tüketmeyin**.  
+Bunu her seferinde tek bir provider ile yapın.  
+
+Yukarıdaki örneği ele alalım. O `myNotifierProvider`'ı Riverpod'a **tamamen** geçirmek şunu yazmak anlamına gelir:
+
+```dart
+class MyNotifier extends Notifier<int> {
+  @override
+  int build() => 0;
+
+  void increment() => state++;
+}
+
+final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
+```
+
+.. ve ayrıca o provider'ın nasıl tüketildiğini de değiştirmek gerekir, yani bu provider için her `context.watch` yerine `ref.watch` yazmak gerekir.
+
+Bu işlem biraz zaman alabilir ve bazı hatalara yol açabilir, bu yüzden hepsini bir anda yapmak için acele etmeyin.
+
+## `ProxyProvider`'ları geçirmek {#migrating-proxyproviders}
+pkg:Provider içinde `ProxyProvider`, diğer Provider'lardan gelen değerleri birleştirmek için kullanılır;
+oluşturulması, diğer provider'ların değerine tepkisel biçimde bağlıdır.
+
+Riverpod'da ise Provider'lar [varsayılan olarak birleştirilebilir][are composable by default]; dolayısıyla bir `ProxyProvider`'ı geçirirken,
+bir Provider'dan diğerine doğrudan bir bağımlılık tanımlamak istiyorsanız yalnızca `ref.watch` yazmanız yeterlidir.
+
+Aksine, Riverpod ile değerleri birleştirmek daha basit ve doğrudan gelmelidir; bu nedenle geçiş kodunuzu
+büyük ölçüde sadeleştirecektir.
+
+Üstelik ikiden fazla provider'ı birleştirmek konusunda hiçbir zorluk yoktur:
+sadece bir `ref.watch` daha ekleyin, hepsi bu.
+
+## Önden başlatma (eager initialization) {#eager-initialization}
+
+Notifier'lar final global değişkenler olduğundan varsayılan olarak tembeldirler.
+
+Başlangıçta bir miktar hazırlık verisi ya da faydalı bir servis başlatmanız gerekiyorsa,
+bunu yapmanın en iyi yolu, provider'ınızı daha önce `MultiProvider` koyduğunuz yerde okumaktır.
+
+Başka bir deyişle, Riverpod önden başlatmaya zorlanamadığından, provider'lar başlangıç aşamanızda
+okunup önbelleğe alınabilir; böylece uygulamanızın geri kalanında ihtiyaç duyulduğunda hazır olurlar.
+
+pkg:Notifier'ların önden başlatılmasına dair kapsamlı bir rehbere [buradan ulaşabilirsiniz][is available here].
+
+## Kod Üretimi {#code-generation}
+Riverpod'u *geleceğe dönük* biçimde kullanmak için [Kod üretimi][Code generation] önerilir.  
+Bir not olarak: metaprogramlama gerçek olduğunda, kod üretiminin Riverpod için varsayılan hale gelmesi kuvvetle muhtemel.
+
+Maalesef `@riverpod`, `ChangeNotifierProvider` için kod üretemiyor.  
+Bunu aşmak için aşağıdaki yardımcı uzantı (extension) metodunu kullanabilirsiniz:
+```dart
+extension ChangeNotifierWithCodeGenExtension on Ref {
+  T listenAndDisposeChangeNotifier<T extends ChangeNotifier>(T notifier) {
+    notifier.addListener(notifyListeners);
+    onDispose(() => notifier.removeListener(notifyListeners));
+    onDispose(notifier.dispose);
+    return notifier;
+  }
+}
+```
+
+Ardından `ChangeNotifier`'ınızı aşağıdaki kod üretimi sözdizimiyle sunabilirsiniz:
+```dart
+// ignore_for_file: unsupported_provider_value
+@riverpod
+MyNotifier example(Ref ref) {
+  return ref.listenAndDisposeChangeNotifier(MyNotifier());
+}
+```
+
+"Temel" geçiş tamamlandığında `ChangeNotifier`'ınızı `Notifier`'a dönüştürebilir,
+böylece geçici uzantılara olan ihtiyacı ortadan kaldırabilirsiniz.  
+Önceki örnekleri ele alırsak, "tamamen geçirilmiş" bir `Notifier` şöyle olur:
+
+```dart
+@riverpod
+class MyNotifier extends _$MyNotifier {
+  @override
+  int build() => 0;
+
+  void increment() => state++;
+}
+```
+
+Bu iş bittiğinde ve kod tabanınızda artık hiç `ChangeNotifierProvider` kalmadığından 
+eminseniz, geçici uzantıdan tamamen kurtulabilirsiniz.
+
+Kod üretiminin önerilmesine rağmen *zorunlu* olmadığını unutmayın.  
+Geçişleri artımlı olarak düşünmek iyidir:
+bu geçişi kod üretimi sözdizimine geçerken *aynı anda* tek seferde
+uygulamak size fazla geliyorsa, *sorun değil*.
+
+Bu rehberi izleyerek kod üretimine daha sonra, bir sonraki adım olarak *geçebilirsiniz*.
+
+[getting started]: /docs/introduction/getting_started
+[sandbox]: https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2
+[provider]: https://pub.dev/packages/provider
+[ChangeNotifierProvider]: https://pub.dev/documentation/hooks_riverpod/latest/legacy/ChangeNotifierProvider-class.html
+[Code generation]: /docs/concepts/about_code_generation
+[Notifiers]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/NotifierProvider-class.html
+[are composable by default]: /docs/from_provider/motivation#combining-providers-is-hard-and-error-prone
+[as mentioned above]: /docs/from_provider/quickstart#start-with-changenotifierprovider
+[is available here]: /docs/how_to/eager_initialization
