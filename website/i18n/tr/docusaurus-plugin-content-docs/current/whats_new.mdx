@@ -585,9 +585,9 @@ Bu değişikliklerden etkileniyorsanız, özel bir uygulama kullanmak için
     @override
     Stream<Todo> build() => Stream(...);
   
-      // Özel uygulama
+    @override
     bool updateShouldNotify(AsyncValue<Todo> previous, AsyncValue<Todo> next) {
-      // Custom implementation
+      // Özel uygulama
       return true;
     }
   }
@@ -692,13 +692,13 @@ Bunun birden fazla faydası var:
 class MyObserver extends ProviderObserver {
   @override
   void providerDidFail(ProviderObserverContext context, Object error, StackTrace stackTrace) {
+    if (error is ProviderException) {
       // Provider doğrudan başarısız olmadı; başarısız olan bir provider'a bağlı.
       // Dolayısıyla hata zaten günlüğe kaydedilmişti.
-      // The error was therefore already logged.
       return;
     }
+
     // Hatayı günlüğe kaydet
-    // Log the error
     print('Provider failed: $error');
   }
 }
@@ -709,8 +709,8 @@ Bu, Riverpod'un otomatik yeniden deneme mekanizmasında dahili olarak kullanıl�
 
 ```dart
 ProviderContainer(
-  // Example of the default retry behavior
   // Varsayılan yeniden deneme davranışının örneği
+  retry: (retryCount, error) {
     if (error is ProviderException) return null;
 
     // ...
@@ -993,10 +993,10 @@ try {
   ref.watch(failingProvider);
 } on ProviderException catch (e) {
   switch (e.exception) {
+    case SomeSpecificError():
       // Belirli hatayı işle
-      // Handle the specific error
+    default:
       // Diğer hataları işle
-      // Handle other errors
       rethrow;
   }
 }
