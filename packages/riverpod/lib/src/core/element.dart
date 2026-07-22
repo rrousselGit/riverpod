@@ -447,6 +447,7 @@ abstract class ProviderElement<StateT, ValueT> {
 
   bool _debugDidSetState = false;
   bool _didBuild = false;
+  var _didBuildInSchedulerPass = false;
 
   /// Subscriptions for an element are only added after the first frame of the
   /// `build()` is run.
@@ -735,9 +736,8 @@ depending on itself.
     if (_didChangeDependency) _retryCount = 0;
 
     _didChangeDependency = false;
+    container.scheduler.notifyDidBuild(this);
     if (kDebugMode) {
-      container.scheduler.debugNotifyDidBuild(this);
-
       assert(
         _debugCurrentlyBuildingElement == this,
         'Bad state, expected $this, got $_debugCurrentlyBuildingElement',

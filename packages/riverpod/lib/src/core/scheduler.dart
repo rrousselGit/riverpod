@@ -174,40 +174,57 @@ class ProviderScheduler {
     if (stateToRefresh.isNotEmpty) _scheduleTask(taskNeedsRefresh: true);
   }
 
-  void debugNotifyDidBuild(ProviderElement element) {
-    if (kDebugMode) {
-      final set = _builtWithinFrame;
-      if (set != null && !set.add(element)) {
+  void notifyDidBuild(ProviderElement element) {
+    if (!_isRefreshing) return;
+
+    if (element._didBuildInSchedulerPass) {
+      if (kDebugMode) {
         throw StateError(
           'Tried to rebuild ${element.origin} multiple times in the same frame',
         );
       }
+
+      return;
     }
+
+    element._didBuildInSchedulerPass = true;
+    (_builtWithinFrame ??= []).add(element);
   }
 
-  Set<ProviderElement>? _builtWithinFrame;
+  var _isRefreshing = false;
+  List<ProviderElement>? _builtWithinFrame;
   void _performRefresh() {
-    if (kDebugMode) _builtWithinFrame = {};
+    _isRefreshing = true;
     List<ProviderElement>? deferred;
 
-    /// No need to traverse entries from top to bottom, because refreshing a
-    /// child will automatically refresh its parent when it will try to read it
-    for (var i = 0; i < stateToRefresh.length; i++) {
-      final element = stateToRefresh[i];
-      if (!element.isActive) continue;
-      if (kDebugMode && (_builtWithinFrame?.contains(element) ?? false)) {
-        if (deferred == null || !deferred.contains(element)) {
-          (deferred ??= []).add(element);
+    try {
+      /// No need to traverse entries from top to bottom, because refreshing a
+      /// child will automatically refresh its parent when it will try to read it
+      for (var i = 0; i < stateToRefresh.length; i++) {
+        final element = stateToRefresh[i];
+        if (!element.isActive) continue;
+        if (element._didBuildInSchedulerPass) {
+          if (deferred == null || !deferred.contains(element)) {
+            (deferred ??= []).add(element);
+          }
+          continue;
         }
-        continue;
+
+        element.flush();
       }
 
-      element.flush();
+      stateToRefresh.clear();
+      if (deferred != null) stateToRefresh.addAll(deferred);
+    } finally {
+      _isRefreshing = false;
+      final builtWithinFrame = _builtWithinFrame;
+      if (builtWithinFrame != null) {
+        for (final element in builtWithinFrame) {
+          element._didBuildInSchedulerPass = false;
+        }
+        _builtWithinFrame = null;
+      }
     }
-
-    stateToRefresh.clear();
-    if (deferred != null) stateToRefresh.addAll(deferred);
-    if (kDebugMode) _builtWithinFrame = null;
   }
 
   void debugScheduleFrame(void Function() onEvent) {
