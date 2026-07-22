@@ -115,7 +115,7 @@ class ProviderScheduler {
       return;
     }
 
-    _pendingTaskCompleter ??= Completer<void>();
+    _pendingTaskCompleter = Completer<void>();
     final task = Task(_task);
     _pendingTask = task;
     _pendingTaskNeedsRefresh = taskNeedsRefresh;
@@ -163,22 +163,18 @@ class ProviderScheduler {
     final pendingTask = _pendingTask;
     final pendingTaskCompleter = _pendingTaskCompleter;
     if (pendingTask == null || pendingTaskCompleter == null) return;
+    pendingTaskCompleter.complete();
 
     _performRefresh();
     _performDispose();
     _stateToDispose.clear();
     _pendingTask = null;
 
+    _pendingTaskCompleter = null;
     // Refreshes scheduled while flushing the current pass are left in the queue
     // for the next task, so providers rebuilt earlier in this pass can be
     // refreshed again without stale ordering assumptions.
-    if (stateToRefresh.isNotEmpty) {
-      _scheduleTask(taskNeedsRefresh: true);
-      return;
-    }
-
-    _pendingTaskCompleter = null;
-    pendingTaskCompleter.complete();
+    if (stateToRefresh.isNotEmpty) _scheduleTask(taskNeedsRefresh: true);
   }
 
   void notifyDidBuild(ProviderElement element) {

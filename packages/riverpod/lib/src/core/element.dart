@@ -434,6 +434,7 @@ abstract class ProviderElement<StateT, ValueT> {
   final weakDependents = <ProviderSubscriptionImpl<Object?>>[];
 
   var _mustRecomputeState = false;
+  var _preserveManualInvalidationListeners = false;
   var _dependencyMayHaveChanged = false;
   var _didChangeDependency = false;
 
@@ -616,11 +617,12 @@ depending on itself.
   /// to dependencies that are no-longer used.
   void _performRebuild() {
     runOnDispose();
-    final ref = this.ref = $Ref(
-      this,
-      isFirstBuild: false,
-      isReload: _didChangeDependency,
-    );
+    final ref =
+        this.ref = $Ref(
+          this,
+          isFirstBuild: false,
+          isReload: _didChangeDependency,
+        );
     final previousValue = value;
 
     if (kDebugMode) _debugDidSetState = false;
@@ -817,14 +819,22 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (!_didMount) return;
 
     if (asReload) _didChangeDependency = true;
-    if (_mustRecomputeState) return;
+    if (_mustRecomputeState) {
+      if (manual) _runManualInvalidationCallbacks(container, ref);
+      return;
+    }
 
     _mustRecomputeState = true;
 
     // Call manual invalidation listeners before runOnDispose clears them
     if (manual) _runManualInvalidationCallbacks(container, ref);
 
-    runOnDispose();
+    _preserveManualInvalidationListeners = !manual;
+    try {
+      runOnDispose();
+    } finally {
+      _preserveManualInvalidationListeners = false;
+    }
     mayNeedDispose();
     if (!_isFlushing) {
       container.scheduler.scheduleProviderRefresh(this);
@@ -1264,7 +1274,9 @@ $this''',
     ref._onRemoveListeners = null;
     ref._onChangeSelfListeners = null;
     ref._onErrorSelfListeners = null;
-    ref._onManualInvalidationListeners = null;
+    if (!_preserveManualInvalidationListeners) {
+      ref._onManualInvalidationListeners = null;
+    }
     _didCancelOnce = false;
 
     assert(
