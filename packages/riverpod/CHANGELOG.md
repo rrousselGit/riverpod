@@ -12,7 +12,8 @@
   from a scoped `ProviderContainer`/`ProviderScope` with overrides, if the
   provider was never read through that scope. (thanks to @itsUndefined)
 - Fix markNeedsBuild exception when flushing a provider inside Widget lifecycle
-
+- Fix a provider rebuilt earlier in a scheduler refresh pass being rebuilt
+  again in that same pass. (thanks to @xianjianlf2)
 
 ## 3.3.2 - 2026-06-10
 

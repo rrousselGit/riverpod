@@ -167,36 +167,72 @@ class ProviderScheduler {
 
     _performRefresh();
     _performDispose();
-    stateToRefresh.clear();
     _stateToDispose.clear();
     _pendingTask = null;
 
     _pendingTaskCompleter = null;
+    // Refreshes scheduled while flushing the current pass are left in the queue
+    // for the next task, so providers rebuilt earlier in this pass can be
+    // refreshed again without stale ordering assumptions.
+    if (stateToRefresh.isNotEmpty) _scheduleTask(taskNeedsRefresh: true);
   }
 
-  void debugNotifyDidBuild(ProviderElement element) {
-    if (kDebugMode) {
-      final set = _builtWithinFrame;
-      if (set != null && !set.add(element)) {
+  void notifyDidBuild(ProviderElement element) {
+    if (!_isRefreshing) return;
+
+    if (element._didBuildInSchedulerPass) {
+      if (kDebugMode) {
         throw StateError(
           'Tried to rebuild ${element.origin} multiple times in the same frame',
         );
       }
+
+      return;
     }
+
+    element._didBuildInSchedulerPass = true;
+    (_builtWithinFrame ??= []).add(element);
   }
 
-  Set<ProviderElement>? _builtWithinFrame;
+  var _isRefreshing = false;
+  List<ProviderElement>? _builtWithinFrame;
   void _performRefresh() {
-    if (kDebugMode) _builtWithinFrame = {};
+    _isRefreshing = true;
+    final endOfCurrentPass = stateToRefresh.length;
+    Set<ProviderElement>? deferred;
 
-    /// No need to traverse entries from top to bottom, because refreshing a
-    /// child will automatically refresh its parent when it will try to read it
-    for (var i = 0; i < stateToRefresh.length; i++) {
-      final element = stateToRefresh[i];
-      if (element.isActive) element.flush();
+    try {
+      /// No need to traverse entries from top to bottom, because refreshing a
+      /// child will automatically refresh its parent when it will try to read it
+      for (var i = 0; i < endOfCurrentPass; i++) {
+        final element = stateToRefresh[i];
+        if (!element.isActive) continue;
+        if (element._didBuildInSchedulerPass) {
+          (deferred ??= {}).add(element);
+          continue;
+        }
+
+        element.flush();
+      }
+
+      stateToRefresh.removeRange(0, endOfCurrentPass);
+      final deferredElements = deferred;
+      if (deferredElements != null) {
+        final scheduledElements = stateToRefresh.toSet();
+        for (final element in deferredElements) {
+          if (scheduledElements.add(element)) stateToRefresh.add(element);
+        }
+      }
+    } finally {
+      _isRefreshing = false;
+      final builtWithinFrame = _builtWithinFrame;
+      if (builtWithinFrame != null) {
+        for (final element in builtWithinFrame) {
+          element._didBuildInSchedulerPass = false;
+        }
+        _builtWithinFrame = null;
+      }
     }
-
-    if (kDebugMode) _builtWithinFrame = null;
   }
 
   void debugScheduleFrame(void Function() onEvent) {
