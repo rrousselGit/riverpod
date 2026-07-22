@@ -171,6 +171,9 @@ class ProviderScheduler {
     _pendingTask = null;
 
     _pendingTaskCompleter = null;
+    // Refreshes scheduled while flushing the current pass are left in the queue
+    // for the next task, so providers rebuilt earlier in this pass are not
+    // rebuilt again with stale ordering assumptions.
     if (stateToRefresh.isNotEmpty) _scheduleTask(taskNeedsRefresh: true);
   }
 
@@ -195,26 +198,20 @@ class ProviderScheduler {
   List<ProviderElement>? _builtWithinFrame;
   void _performRefresh() {
     _isRefreshing = true;
-    List<ProviderElement>? deferred;
+    final endOfCurrentPass = stateToRefresh.length;
 
     try {
       /// No need to traverse entries from top to bottom, because refreshing a
       /// child will automatically refresh its parent when it will try to read it
-      for (var i = 0; i < stateToRefresh.length; i++) {
+      for (var i = 0; i < endOfCurrentPass; i++) {
         final element = stateToRefresh[i];
         if (!element.isActive) continue;
-        if (element._didBuildInSchedulerPass) {
-          if (deferred == null || !deferred.contains(element)) {
-            (deferred ??= []).add(element);
-          }
-          continue;
-        }
+        if (element._didBuildInSchedulerPass) continue;
 
         element.flush();
       }
 
-      stateToRefresh.clear();
-      if (deferred != null) stateToRefresh.addAll(deferred);
+      stateToRefresh.removeRange(0, endOfCurrentPass);
     } finally {
       _isRefreshing = false;
       final builtWithinFrame = _builtWithinFrame;
