@@ -172,8 +172,8 @@ class ProviderScheduler {
 
     _pendingTaskCompleter = null;
     // Refreshes scheduled while flushing the current pass are left in the queue
-    // for the next task, so providers rebuilt earlier in this pass are not
-    // rebuilt again with stale ordering assumptions.
+    // for the next task, so providers rebuilt earlier in this pass can be
+    // refreshed again without stale ordering assumptions.
     if (stateToRefresh.isNotEmpty) _scheduleTask(taskNeedsRefresh: true);
   }
 
@@ -199,6 +199,7 @@ class ProviderScheduler {
   void _performRefresh() {
     _isRefreshing = true;
     final endOfCurrentPass = stateToRefresh.length;
+    Set<ProviderElement>? deferred;
 
     try {
       /// No need to traverse entries from top to bottom, because refreshing a
@@ -206,12 +207,22 @@ class ProviderScheduler {
       for (var i = 0; i < endOfCurrentPass; i++) {
         final element = stateToRefresh[i];
         if (!element.isActive) continue;
-        if (element._didBuildInSchedulerPass) continue;
+        if (element._didBuildInSchedulerPass) {
+          (deferred ??= {}).add(element);
+          continue;
+        }
 
         element.flush();
       }
 
       stateToRefresh.removeRange(0, endOfCurrentPass);
+      final deferredElements = deferred;
+      if (deferredElements != null) {
+        final scheduledElements = stateToRefresh.toSet();
+        for (final element in deferredElements) {
+          if (scheduledElements.add(element)) stateToRefresh.add(element);
+        }
+      }
     } finally {
       _isRefreshing = false;
       final builtWithinFrame = _builtWithinFrame;
