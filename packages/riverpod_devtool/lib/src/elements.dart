@@ -42,6 +42,43 @@ class ElementMeta {
         }
     }
   }
+
+  Future<void> resetTo(
+    EvalFactory evalFactory,
+    ProviderStateRef oldState, {
+    required Disposable isAlive,
+  }) async {
+    final notifierRef = notifier;
+    if (notifierRef == null) {
+      throw Exception('Provider is not a Notifier-backed provider.');
+    }
+
+    final notifierByte = await notifierRef.state.readRef(evalFactory, isAlive);
+    final oldStateByte = await oldState.state.readRef(evalFactory, isAlive);
+
+    switch ((notifierByte, oldStateByte)) {
+      case (ByteError(error: final error), _):
+        throw Exception(error.toString());
+      case (_, ByteError(error: final error)):
+        throw Exception(error.toString());
+      case (
+          ByteVariable(instance: final notifierInstance),
+          ByteVariable(instance: final oldStateInstance)
+        ):
+        final result = await evalFactory.riverpodFramework.eval(
+          'notifier.state = oldState',
+          isAlive: isAlive,
+          scope: {
+            'notifier': notifierInstance.id!,
+            'oldState': oldStateInstance.id!,
+          },
+        );
+
+        if (result case ByteError(error: final error)) {
+          throw Exception(error.toString());
+        }
+    }
+  }
 }
 
 Map<internals.ElementId, ElementMeta> computeElementsForFrame(
