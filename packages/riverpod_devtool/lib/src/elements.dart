@@ -48,23 +48,23 @@ class ElementMeta {
     ProviderStateRef oldState, {
     required Disposable isAlive,
   }) async {
-    final currentStateByte = await state.state.readRef(evalFactory, isAlive);
+    final elementByte = await provider.element.readRef(evalFactory, isAlive);
     final oldStateByte = await oldState.state.readRef(evalFactory, isAlive);
 
-    switch ((currentStateByte, oldStateByte)) {
+    switch ((elementByte, oldStateByte)) {
       case (ByteError(error: final error), _):
         throw Exception(error.toString());
       case (_, ByteError(error: final error)):
         throw Exception(error.toString());
       case (
-          ByteVariable(instance: final currentStateInstance),
+          ByteVariable(instance: final elementInstance),
           ByteVariable(instance: final oldStateInstance)
         ):
         final result = await evalFactory.riverpodFramework.eval(
-          'state = oldState',
+          'element.state = oldState',
           isAlive: isAlive,
           scope: {
-            'state': currentStateInstance.id!,
+            'element': elementInstance.id!,
             'oldState': oldStateInstance.id!,
           },
         );
