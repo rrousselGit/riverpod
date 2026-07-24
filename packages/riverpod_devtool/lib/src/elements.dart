@@ -42,6 +42,38 @@ class ElementMeta {
         }
     }
   }
+
+  Future<void> resetTo(
+    EvalFactory evalFactory,
+    ProviderStateRef oldState, {
+    required Disposable isAlive,
+  }) async {
+    final elementByte = await provider.element.readRef(evalFactory, isAlive);
+    final oldStateByte = await oldState.state.readRef(evalFactory, isAlive);
+
+    switch ((elementByte, oldStateByte)) {
+      case (ByteError(error: final error), _):
+        throw Exception(error.toString());
+      case (_, ByteError(error: final error)):
+        throw Exception(error.toString());
+      case (
+          ByteVariable(instance: final elementInstance),
+          ByteVariable(instance: final oldStateInstance)
+        ):
+        final result = await evalFactory.riverpodFramework.eval(
+          'element.state = oldState',
+          isAlive: isAlive,
+          scope: {
+            'element': elementInstance.id!,
+            'oldState': oldStateInstance.id!,
+          },
+        );
+
+        if (result case ByteError(error: final error)) {
+          throw Exception(error.toString());
+        }
+    }
+  }
 }
 
 Map<internals.ElementId, ElementMeta> computeElementsForFrame(
