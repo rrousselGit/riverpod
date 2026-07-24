@@ -155,6 +155,71 @@ To have your test use this in-memory database, you can use <Link documentID="con
 
 <AutoSnippet raw={inMemoryTest} />
 
+## Working with Persisted State
+
+### Understanding Persisted State
+
+When using `@JsonPersist()`, persisted data is emitted as `AsyncLoading(value: ...)` rather than `AsyncData`. This allows you to show cached data while fetching fresh data in the background.
+
+### Approach 1: Handle AsyncLoading with value (Use when())
+
+```dart
+@riverpod
+Future<List<Todo>> sortedTodos(Ref ref) async {
+  final todosState = ref.watch(todosProvider);
+  
+  final todos = todosState.when(
+    data: (data) => data,
+    loading: () {
+      // Loading state may have persisted data
+      return todosState.value ?? [];
+    },
+    error: (error, stack) {
+      // Error state may still have persisted data
+      if (todosState.hasValue) {
+        return todosState.value!;
+      }
+      throw error;
+    },
+  );
+  
+  return List<Todo>.from(todos)..sort((a, b) => a.name.compareTo(b.name));
+}
+```
+
+### Approach 2: Promote persisted data to AsyncData
+
+If you prefer to use `.future`, you can promote persisted data to `AsyncData`:
+
+```dart
+@riverpod
+class Todos extends _$Todos {
+  @override
+  FutureOr<List<Todo>> build() async {
+    // Load persisted data and promote to AsyncData
+    await persist(ref.watch(riverpodCacheProvider.future), key: 'todos_list');
+    
+    // Optionally, you can set the state to AsyncData after loading
+    // state = AsyncData(persistedValue);
+    
+    // Then fetch fresh data
+    return await fetchFreshData();
+  }
+}
+
+@riverpod
+Future<List<Todo>> sortedTodos(Ref ref) async {
+  // Now .future will work because state is AsyncData
+  final todos = await ref.watch(todosProvider.future);
+  return List<Todo>.from(todos)..sort((a, b) => a.name.compareTo(b.name));
+}
+```
+
+### When to use each approach
+
+- **Approach 1**: When you want to show cached data immediately while loading.
+- **Approach 2**: When you only care about the final data state and want to use `.future`.
+
 [riverpod_sqflite]: https://pub.dev/packages/riverpod_sqflite
 [Storage]: https://pub.dev/documentation/hooks_riverpod/latest/experimental_persist/Storage-class.html
 [AnyNotifier.persist]: https://pub.dev/documentation/hooks_riverpod/latest/experimental_persist/NotifierPersistX/persist.html
