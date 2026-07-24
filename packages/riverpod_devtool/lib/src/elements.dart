@@ -48,60 +48,30 @@ class ElementMeta {
     ProviderStateRef oldState, {
     required Disposable isAlive,
   }) async {
+    final currentStateByte = await state.state.readRef(evalFactory, isAlive);
     final oldStateByte = await oldState.state.readRef(evalFactory, isAlive);
-    final notifierRef = notifier;
 
-    if (notifierRef != null) {
-      final notifierByte =
-          await notifierRef.state.readRef(evalFactory, isAlive);
+    switch ((currentStateByte, oldStateByte)) {
+      case (ByteError(error: final error), _):
+        throw Exception(error.toString());
+      case (_, ByteError(error: final error)):
+        throw Exception(error.toString());
+      case (
+          ByteVariable(instance: final currentStateInstance),
+          ByteVariable(instance: final oldStateInstance)
+        ):
+        final result = await evalFactory.riverpodFramework.eval(
+          'state = oldState',
+          isAlive: isAlive,
+          scope: {
+            'state': currentStateInstance.id!,
+            'oldState': oldStateInstance.id!,
+          },
+        );
 
-      switch ((notifierByte, oldStateByte)) {
-        case (ByteError(error: final error), _):
+        if (result case ByteError(error: final error)) {
           throw Exception(error.toString());
-        case (_, ByteError(error: final error)):
-          throw Exception(error.toString());
-        case (
-            ByteVariable(instance: final notifierInstance),
-            ByteVariable(instance: final oldStateInstance)
-          ):
-          final result = await evalFactory.riverpodFramework.eval(
-            'notifier.state = oldState',
-            isAlive: isAlive,
-            scope: {
-              'notifier': notifierInstance.id!,
-              'oldState': oldStateInstance.id!,
-            },
-          );
-
-          if (result case ByteError(error: final error)) {
-            throw Exception(error.toString());
-          }
-      }
-    } else {
-      final currentStateByte = await state.state.readRef(evalFactory, isAlive);
-
-      switch ((currentStateByte, oldStateByte)) {
-        case (ByteError(error: final error), _):
-          throw Exception(error.toString());
-        case (_, ByteError(error: final error)):
-          throw Exception(error.toString());
-        case (
-            ByteVariable(instance: final currentStateInstance),
-            ByteVariable(instance: final oldStateInstance)
-          ):
-          final result = await evalFactory.riverpodFramework.eval(
-            'state = oldState',
-            isAlive: isAlive,
-            scope: {
-              'state': currentStateInstance.id!,
-              'oldState': oldStateInstance.id!,
-            },
-          );
-
-          if (result case ByteError(error: final error)) {
-            throw Exception(error.toString());
-          }
-      }
+        }
     }
   }
 }
