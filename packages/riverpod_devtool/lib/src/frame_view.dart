@@ -240,9 +240,14 @@ class InvalidateProviderButton extends ConsumerWidget {
 }
 
 class ResetProviderButton extends ConsumerWidget {
-  const ResetProviderButton({super.key, required this.element});
+  const ResetProviderButton({
+    super.key,
+    required this.element,
+    required this.isEnabled,
+  });
 
   final ElementMeta element;
+  final bool isEnabled;
 
   Future<void> _reset(WidgetRef ref) async {
     final isAlive = Disposable();
@@ -281,8 +286,10 @@ class ResetProviderButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DevtoolIconButton(
-      onPressed: () => _reset(ref),
-      tooltip: 'Reset to this state',
+      onPressed: isEnabled ? () => _reset(ref) : null,
+      tooltip: isEnabled
+          ? 'Reset to this older state'
+          : 'Select an older frame to reset',
       icon: const Icon(Icons.history),
     );
   }
@@ -314,7 +321,6 @@ class ProviderViewer extends StatelessWidget {
               actions: [
                 Consumer(
                   builder: (context, ref, child) {
-                    if (element.notifier == null) return const SizedBox.shrink();
                     final framesAsync = ref.watch(filteredFramesProvider);
                     final selectedFrame = ref.watch(selectedFrameProvider);
                     final frames = framesAsync.value;
@@ -322,8 +328,10 @@ class ProviderViewer extends StatelessWidget {
                         frames == null ||
                         frames.isEmpty ||
                         selectedFrame.id == frames.last.id;
-                    if (isLatestFrame) return const SizedBox.shrink();
-                    return ResetProviderButton(element: element);
+                    return ResetProviderButton(
+                      element: element,
+                      isEnabled: !isLatestFrame,
+                    );
                   },
                 ),
                 InvalidateProviderButton(element: element),
