@@ -31,7 +31,7 @@ base mixin _ProviderRefreshable<OutT, InT> implements Refreshable<OutT> {
 void Function()? debugCanModifyProviders;
 
 /// A Future-like that support synchronous completion.
-@internal
+@publicInMisc
 @publicInCodegen
 typedef WhenComplete = void Function(void Function() cb)?;
 

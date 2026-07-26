@@ -23,4 +23,5 @@ export 'src/internals.dart'
         AsyncProviderListenable,
         CustomProviderListenable,
         ProviderTransformer2,
-        SyncProviderTransformer2;
+        SyncProviderTransformer2,
+        WhenComplete;
