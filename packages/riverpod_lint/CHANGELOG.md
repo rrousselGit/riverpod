@@ -1,9 +1,14 @@
-## Unreleased fix
+## 3.1.5 - 2026-07-26
 
 - Upgraded `analyzer` to `<15.0.0`
 - Fixed `provider_parameters` false positive for extension type arguments.
 
+### Dependency changes
+
+- `riverpod` upgraded to `3.4.0`
+
 ## 3.1.4 - 2026-06-10
+
 ### Dependency changes
 
 - `riverpod` upgraded to `3.3.2`
@@ -376,3 +381,4 @@ Fix quick-fix for provider_dependencies
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

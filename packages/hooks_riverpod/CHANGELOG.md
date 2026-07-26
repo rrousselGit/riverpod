@@ -1,4 +1,4 @@
-## Unreleased build
+## 3.4.0 - 2026-07-26
 
 - Deprecated `SyncProviderTransformerMixin`. It is replaced by the newly added APIs
 - Devtool-only: Better support for scoped providers with multiple overrides.
@@ -14,6 +14,11 @@
   from a scoped `ProviderScope` with overrides, if the provider was never
   read through that scope. (thanks to @itsUndefined)
 - Fixed a listener leak if `ConsumerState.dispose` threw.
+
+### Dependency changes
+
+- `flutter_riverpod` upgraded to `3.4.0`
+- `riverpod` upgraded to `3.4.0`
 
 ## 3.3.2 - 2026-06-10
 
@@ -1785,3 +1790,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

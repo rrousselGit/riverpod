@@ -1,4 +1,4 @@
-## Unreleased build
+## 3.4.0 - 2026-07-26
 
 - Deprecated `SyncProviderTransformerMixin`. It is replaced by the newly added APIs
 - Devtool-only: Better support for scoped providers with multiple overrides.
@@ -1560,3 +1560,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+
