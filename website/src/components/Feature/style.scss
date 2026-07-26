@@ -2,9 +2,9 @@
   &__card {
     display: flex;
     flex-direction: column;
-    max-width: 1280px;
-    margin: 2rem auto;
-    padding: 2rem;
+    max-width: 1380px;
+    margin: 1.5rem auto;
+    padding: 1.5rem;
     border-radius: 24px;
     background: var(--ifm-color-emphasis-100);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -19,8 +19,8 @@
     @include min-width(lg) {
       flex-direction: row;
       align-items: center;
-      margin: 4rem auto;
-      padding: 4rem;
+      margin: 3rem auto;
+      padding: 2.5rem 3rem;
 
       &--reverse {
         flex-direction: row-reverse;
@@ -31,10 +31,10 @@
   &__content {
     display: flex;
     flex-direction: column;
-    flex: 2;
+    flex: 1.8;
 
     h1 {
-      font-size: 30px;
+      font-size: 28px;
       font-weight: 800;
       letter-spacing: -0.5px;
       margin-bottom: 1rem;
@@ -43,7 +43,7 @@
       -webkit-text-fill-color: transparent;
 
       @include min-width(lg) {
-        font-size: 36px;
+        font-size: 34px;
       }
     }
 
@@ -56,20 +56,27 @@
   }
 
   &__space {
-    width: 2rem;
-    height: 2rem;
+    width: 1.5rem;
+    height: 1.5rem;
 
     @include min-width(lg) {
-      width: 4rem;
-      height: 4rem;
+      width: 2.5rem;
+      height: 2.5rem;
     }
   }
 
   &__preview {
-    flex: 3;
+    flex: 3.8;
+
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+    }
 
     > * {
-      border-radius: 14px;
+      border-radius: 12px;
       box-shadow: 0px 20px 50px -20px rgba(0, 0, 0, 0.5);
     }
   }
