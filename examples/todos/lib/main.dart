@@ -40,33 +40,27 @@ final todoListFilter = StateProvider(
 ///
 /// This will also optimize unneeded rebuilds if the todo-list changes, but the
 /// number of uncompleted todos doesn't (such as when editing a todo).
-final uncompletedTodosCount = Provider<int>(
-  (ref) {
-    return ref.watch(todoListProvider).where((todo) => !todo.completed).length;
-  },
-  name: 'uncompletedTodosCount',
-);
+final uncompletedTodosCount = Provider<int>((ref) {
+  return ref.watch(todoListProvider).where((todo) => !todo.completed).length;
+}, name: 'uncompletedTodosCount');
 
 /// The list of todos after applying of [todoListFilter].
 ///
 /// This too uses [Provider], to avoid recomputing the filtered list unless either
 /// the filter of or the todo-list updates.
-final filteredTodos = Provider<List<Todo>>(
-  (ref) {
-    final filter = ref.watch(todoListFilter);
-    final todos = ref.watch(todoListProvider);
+final filteredTodos = Provider<List<Todo>>((ref) {
+  final filter = ref.watch(todoListFilter);
+  final todos = ref.watch(todoListProvider);
 
-    switch (filter) {
-      case TodoListFilter.completed:
-        return todos.where((todo) => todo.completed).toList();
-      case TodoListFilter.active:
-        return todos.where((todo) => !todo.completed).toList();
-      case TodoListFilter.all:
-        return todos;
-    }
-  },
-  name: 'filteredTodos',
-);
+  switch (filter) {
+    case TodoListFilter.completed:
+      return todos.where((todo) => todo.completed).toList();
+    case TodoListFilter.active:
+      return todos.where((todo) => !todo.completed).toList();
+    case TodoListFilter.all:
+      return todos;
+  }
+}, name: 'filteredTodos');
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
