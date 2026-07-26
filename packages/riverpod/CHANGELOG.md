@@ -1,3 +1,7 @@
+## 3.4.1 - 2026-07-26
+
+- Update devtool extension
+
 ## 3.4.0 - 2026-07-26
 
 - Deprecated `SyncProviderTransformerMixin`. It is replaced by the newly added APIs

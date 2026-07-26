@@ -1,3 +1,12 @@
+## 3.4.1 - 2026-07-26
+
+- Update devtool extension
+
+### Dependency changes
+
+- `flutter_riverpod` upgraded to `3.4.1`
+- `riverpod` upgraded to `3.4.1`
+
 ## 3.4.0 - 2026-07-26
 
 - Deprecated `SyncProviderTransformerMixin`. It is replaced by the newly added APIs

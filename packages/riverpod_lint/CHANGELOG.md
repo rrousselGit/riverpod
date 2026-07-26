@@ -1,3 +1,8 @@
+## 3.1.6 - 2026-07-26
+### Dependency changes
+
+- `riverpod` upgraded to `3.4.1`
+
 ## 3.1.5 - 2026-07-26
 
 - Upgraded `analyzer` to `<15.0.0`
