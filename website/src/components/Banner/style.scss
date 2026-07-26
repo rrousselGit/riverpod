@@ -1,59 +1,177 @@
 @use "sass:math";
 
 .banner {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 1rem;
-  background-color: var(--ifm-color-emphasis-100);
+  padding: 2.5rem 1.5rem;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(0, 150, 255, 0.05) 0%, rgba(138, 43, 226, 0.05) 100%),
+              var(--ifm-color-emphasis-100);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 
   @include min-width(lg) {
     flex-direction: row;
     align-items: center;
-    padding: 4rem 6rem;
+    padding: 5rem 6rem;
+    gap: 4rem;
+  }
+
+  &__bg_glow {
+    position: absolute;
+    top: -30%;
+    left: -10%;
+    width: 60%;
+    height: 160%;
+    background: radial-gradient(circle, rgba(0, 168, 255, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+    pointer-events: none;
+    z-index: 0;
   }
 
   &__content {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     flex: 1;
     max-width: math.div($max-width, 2);
-    padding: 1rem;
+
+    &--text {
+      align-items: flex-start;
+    }
+
+    &--snippets {
+      gap: 1.5rem;
+      margin-top: 2rem;
+
+      @include min-width(lg) {
+        margin-top: 0;
+      }
+    }
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    margin-bottom: 1.25rem;
+    border-radius: 9999px;
+    background: rgba(0, 150, 255, 0.1);
+    border: 1px solid rgba(0, 150, 255, 0.25);
+    color: var(--ifm-color-primary);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+
+    &_icon {
+      font-size: 14px;
+    }
   }
 
   &__logo {
-    display: inline;
-    font-size: 28px;
-    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 1rem;
 
-    @include min-width(lg) {
-      margin-top: -64px;
+    &_img {
+      width: 38px;
+      height: 38px;
+      margin-right: 14px;
+      filter: drop-shadow(0 4px 12px rgba(0, 168, 255, 0.3));
     }
 
-    > img {
-      width: 26px;
-      margin-right: 16px;
+    &_text {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--ifm-font-color-base) 30%, var(--ifm-color-primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
   }
 
   &__headline {
-    font-size: 48px;
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.8px;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--ifm-font-color-base) 0%, rgba(255, 255, 255, 0.75) 100%);
+    -webkit-background-clip: text;
+
+    @include min-width(lg) {
+      font-size: 46px;
+    }
+  }
+
+  &__subheadline {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--ifm-color-emphasis-700);
+    margin-bottom: 2rem;
+    max-width: 540px;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
   }
 
   &__cta {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 12px 40px;
-    border-radius: 8px;
-    background-color: var(--ifm-color-primary);
-    color: white;
-    font-size: 18px;
-    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
 
-    &:hover {
-      background-color: var(--ifm-color-primary-dark);
+    &--primary {
+      background: linear-gradient(135deg, var(--ifm-color-primary) 0%, var(--ifm-color-primary-dark) 100%);
       color: white;
-      text-decoration: none;
+      box-shadow: 0 8px 24px -6px rgba(0, 150, 255, 0.4);
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px -4px rgba(0, 150, 255, 0.55);
+        color: white;
+        text-decoration: none;
+      }
     }
+
+    &--secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--ifm-font-color-base);
+      backdrop-filter: blur(8px);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.3);
+        color: var(--ifm-font-color-base);
+        transform: translateY(-2px);
+        text-decoration: none;
+      }
+    }
+
+    &_arrow {
+      transition: transform 0.2s ease;
+    }
+
+    &--primary:hover &_arrow {
+      transform: translateX(4px);
+    }
+  }
+
+  &__github_icon {
+    display: inline-block;
+    vertical-align: middle;
   }
 }
