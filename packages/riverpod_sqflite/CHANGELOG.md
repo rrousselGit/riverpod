@@ -1,4 +1,10 @@
+## 0.4.6 - 2026-07-28
+### Dependency changes
+
+- `riverpod` upgraded to `3.4.2`
+
 ## 0.4.5 - 2026-07-26
+
 ### Dependency changes
 
 - `riverpod` upgraded to `3.4.1`

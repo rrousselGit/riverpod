@@ -1,4 +1,4 @@
-## Unreleased patch
+## 3.4.2 - 2026-07-28
 
 Fix a different source of `markNeedsBuild` error. Those are tricky!
 
@@ -1568,3 +1568,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

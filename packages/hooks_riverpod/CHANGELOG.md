@@ -1,6 +1,11 @@
-## Unreleased patch
+## 3.4.2 - 2026-07-28
 
 Fix a different source of `markNeedsBuild` error. Those are tricky!
+
+### Dependency changes
+
+- `flutter_riverpod` upgraded to `3.4.2`
+- `riverpod` upgraded to `3.4.2`
 
 ## 3.4.1 - 2026-07-26
 
@@ -1803,3 +1808,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+
