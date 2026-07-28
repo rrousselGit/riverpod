@@ -1,3 +1,7 @@
+## Unreleased patch
+
+Fix a different source of `markNeedsBuild` error. Those are tricky!
+
 ## 3.4.1 - 2026-07-26
 
 - Update devtool extension
@@ -1799,4 +1803,3 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-
