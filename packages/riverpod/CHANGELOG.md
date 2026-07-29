@@ -1,5 +1,6 @@
 ## Unreleased build
 
+- Added `emitAsLoadingState` parameter to `persist()` to control whether restored cache is emitted as `AsyncLoading` (default) or `AsyncData`.
 - Fix `invalidate`/`refresh` not finding providers and families when called
   from a scoped `ProviderScope` with overrides, if the provider was never
   read through that scope. (thanks to @itsUndefined)
