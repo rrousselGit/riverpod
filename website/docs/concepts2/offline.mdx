@@ -159,9 +159,11 @@ To have your test use this in-memory database, you can use <Link documentID="con
 
 ### Understanding Persisted State
 
-When using `@JsonPersist()`, persisted data is emitted as `AsyncLoading(value: ...)` rather than `AsyncData`. This allows you to show cached data while fetching fresh data in the background.
+By default, when using `@JsonPersist()` or `persist()`, restored cache data is emitted as `AsyncLoading(value: ...)` rather than `AsyncData`. This allows you to show cached data while fetching fresh data in the background.
 
-### Approach 1: Handle AsyncLoading with value (Use when())
+### Approach 1: Default behavior (Use when() or value)
+
+By default (`emitAsLoadingState: true`), you can inspect `state.value` or handle `loading:` using `when()`:
 
 ```dart
 @riverpod
@@ -170,55 +172,45 @@ Future<List<Todo>> sortedTodos(Ref ref) async {
   
   final todos = todosState.when(
     data: (data) => data,
-    loading: () {
-      // Loading state may have persisted data
-      return todosState.value ?? [];
-    },
-    error: (error, stack) {
-      // Error state may still have persisted data
-      if (todosState.hasValue) {
-        return todosState.value!;
-      }
-      throw error;
-    },
+    loading: () => todosState.value ?? [],
+    error: (error, stack) => todosState.hasValue ? todosState.value! : throw error,
   );
   
   return List<Todo>.from(todos)..sort((a, b) => a.name.compareTo(b.name));
 }
 ```
 
-### Approach 2: Promote persisted data to AsyncData
+### Approach 2: Emit directly as AsyncData (`emitAsLoadingState: false`)
 
-If you prefer to use `.future`, you can promote persisted data to `AsyncData`:
+If you prefer to use `.future` on a persisted provider, pass `emitAsLoadingState: false` to `persist()`:
 
 ```dart
 @riverpod
 class Todos extends _$Todos {
   @override
   FutureOr<List<Todo>> build() async {
-    // Load persisted data and promote to AsyncData
-    await persist(ref.watch(riverpodCacheProvider.future), key: 'todos_list');
+    // Restored data is emitted as AsyncData, allowing .future to resolve immediately
+    persist(
+      ref.watch(riverpodCacheProvider.future),
+      key: 'todos_list',
+      emitAsLoadingState: false,
+    );
     
-    // Optionally, you can set the state to AsyncData after loading
-    // state = AsyncData(persistedValue);
-    
-    // Then fetch fresh data
     return await fetchFreshData();
   }
 }
 
 @riverpod
 Future<List<Todo>> sortedTodos(Ref ref) async {
-  // Now .future will work because state is AsyncData
+  // .future resolves immediately with the restored AsyncData
   final todos = await ref.watch(todosProvider.future);
   return List<Todo>.from(todos)..sort((a, b) => a.name.compareTo(b.name));
 }
 ```
 
-### When to use each approach
-
-- **Approach 1**: When you want to show cached data immediately while loading.
-- **Approach 2**: When you only care about the final data state and want to use `.future`.
+:::caution
+Using `emitAsLoadingState: false` causes the provider to skip the `loading` state when restoring cached data. Only use this if you want to treat persisted data as ready immediately.
+:::
 
 [riverpod_sqflite]: https://pub.dev/packages/riverpod_sqflite
 [Storage]: https://pub.dev/documentation/hooks_riverpod/latest/experimental_persist/Storage-class.html
