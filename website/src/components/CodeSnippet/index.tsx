@@ -98,6 +98,13 @@ export function trimSnippet(
     transformedLines.push(line);
   }
 
+  while (
+    transformedLines.length > 0 &&
+    transformedLines[transformedLines.length - 1].trim() === ""
+  ) {
+    transformedLines.pop();
+  }
+
   return transformedLines.join("\n");
 }
 

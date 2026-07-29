@@ -37,13 +37,14 @@ typedef RunNotifierBuild<NotifierT, CreatedT> =
 /// ```dart
 /// mixin MyMixin<T> extends AnyNotifier<T, FutureOr<T>> {
 ///   @override
-///   void runBuild() {
+///   WhenComplete runBuild() {
 ///     // It is safe to use "ref" here.
 ///     listenSelf((prev, next) => print("New state $next"));
 ///
 ///     print('Before build');
-///     super.runBuild();
+///     final result = super.runBuild();
 ///     print('After build');
+///     return result;
 ///   }
 /// }
 /// ```
@@ -148,10 +149,11 @@ abstract class AnyNotifier<StateT, ValueT> {
   /// ```dart
   /// mixin LoggingMixin<T> on AnyNotifier<T> {
   ///   @override
-  ///   void runBuild() {
+  ///   WhenComplete runBuild() {
   ///     print('Will build $this');
-  ///     super.runBuild();
+  ///     final result = super.runBuild();
   ///     print('Did build $this');
+  ///     return result;
   ///   }
   /// }
   /// ```

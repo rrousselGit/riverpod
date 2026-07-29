@@ -1,3 +1,20 @@
+## 4.0.6 - 2026-07-28
+### Dependency changes
+
+- `riverpod` upgraded to `3.4.2`
+
+## 4.0.5 - 2026-07-26
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.4.1`
+
+## 4.0.4 - 2026-07-26
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.4.0`
+
 ## 4.0.3 - 2026-06-10
 
 - Fix `AsyncNotifierProvider`/`StreamNotifierProvider` disposing dependencies

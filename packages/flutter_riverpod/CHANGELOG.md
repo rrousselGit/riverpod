@@ -1,10 +1,24 @@
-## Unreleased build
+## 3.4.2 - 2026-07-28
 
-- Fix `invalidate`/`refresh` not finding providers and families when called
-  from a scoped `ProviderScope` with overrides, if the provider was never
-  read through that scope. (thanks to @itsUndefined)
-- Upgraded `analyzer` to `<15.0.0`
+Fix a different source of `markNeedsBuild` error. Those are tricky!
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.4.2`
+
+## 3.4.1 - 2026-07-26
+
+- Update devtool extension
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.4.1`
+
+## 3.4.0 - 2026-07-26
+
 - Deprecated `SyncProviderTransformerMixin`. It is replaced by the newly added APIs
+- Devtool-only: Better support for scoped providers with multiple overrides.
+- Upgraded `analyzer` to `<15.0.0`
 - Added `CustomProviderListenable`, a slightly simplified way of making custom provider extensions
 - Added the ability to do `ValueListenable<int> listenable = ref.watch(counterProvider.listenable)`.
   This uses the new `pkg:listen`.
@@ -12,7 +26,14 @@
   from a scoped `ProviderContainer`/`ProviderScope` with overrides, if the
   provider was never read through that scope. (thanks to @itsUndefined)
 - Fix markNeedsBuild exception when flushing a provider inside Widget lifecycle
+- Fix `invalidate`/`refresh` not finding providers and families when called
+  from a scoped `ProviderScope` with overrides, if the provider was never
+  read through that scope. (thanks to @itsUndefined)
 - Fixed a listener leak if `ConsumerState.dispose` threw.
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.4.0`
 
 ## 3.3.2 - 2026-06-10
 
@@ -1582,3 +1603,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

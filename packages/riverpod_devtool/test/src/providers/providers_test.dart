@@ -10,14 +10,21 @@ ProviderElementAddEvent _addEvent({
   required String originId,
   required String originLabel,
   String arg = '',
+  bool? isFamily,
   String? stateId,
 }) {
+  final family = isFamily ?? arg.isNotEmpty;
   return ProviderElementAddEvent(
     provider: ProviderMeta.test(
       elementId: elementId,
       originId: originId,
       label: originLabel,
       argToStringValue: arg,
+      origin: OriginMeta.test(
+        id: originId,
+        label: originLabel,
+        isFamily: family,
+      ),
     ),
     state: ProviderStateRef.test(cacheId: stateId ?? 'state-$elementId'),
     notifier: null,
@@ -29,14 +36,21 @@ ProviderElementUpdateEvent _updateEvent({
   required String originId,
   required String originLabel,
   String arg = '',
+  bool? isFamily,
   String? stateId,
 }) {
+  final family = isFamily ?? arg.isNotEmpty;
   return ProviderElementUpdateEvent(
     provider: ProviderMeta.test(
       elementId: elementId,
       originId: originId,
       label: originLabel,
       argToStringValue: arg,
+      origin: OriginMeta.test(
+        id: originId,
+        label: originLabel,
+        isFamily: family,
+      ),
     ),
     next: ProviderStateRef.test(cacheId: stateId ?? 'state-$elementId'),
     notifier: null,
@@ -357,6 +371,42 @@ void main() {
             ),
           ),
         );
+      },
+    );
+
+    test(
+      'filteredProvidersProvider uses scoped in ProviderContainer#hash as label match for non-family providers',
+      () async {
+        final frames = _foldedFrames([
+          Frame.test(
+            index: 0,
+            events: [
+              _addEvent(
+                elementId: 'todo-1',
+                originId: 'origin-todo',
+                originLabel: 'Provider<Todo>',
+                isFamily: false,
+              ),
+            ],
+          ),
+        ]);
+        final container = _createContainer([
+          framesProvider.overrideWithBuild((ref, self) => frames),
+        ]);
+
+        await _settleProviders(container);
+
+        final result = container.read(
+          filteredProvidersProvider((
+            search: 'scoped at #container-hash-todo-1',
+            frame: FrameId(0),
+          )),
+        );
+        final todo = result[internals.OriginId('origin-todo')];
+
+        expect(todo, isNotNull);
+        expect(todo!.elements, hasLength(1));
+        expect(todo.elements.single.argMatch.didMatch, isTrue);
       },
     );
   });

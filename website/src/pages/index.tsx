@@ -45,21 +45,31 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="features">
-          <h2>
-            <Translate
-              id="homepage.features_title"
-            >
-              {`Features`}
-            </Translate>
-          </h2>
-          <ul>
-            {checkBoxes.map((check) => (
-              <li key={check.key}>
-                ✅ <Translate id={`homepage.features_${check.key}`}>{check.value}</Translate>
-              </li>
-            ))}
-          </ul>
+        <section className="features_checklist">
+          <div className="features_checklist__container">
+            <h2 className="features_checklist__title">
+              <Translate id="homepage.features_title">Features</Translate>
+            </h2>
+            <p className="features_checklist__subtitle">
+              <Translate id="homepage.features_subtitle">
+                Everything you need to build robust, scalable, and maintainable Dart & Flutter applications.
+              </Translate>
+            </p>
+            <div className="features_checklist__grid">
+              {checkBoxes.map((check) => (
+                <div className="features_checklist__card" key={check.key}>
+                  <div className="features_checklist__icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </div>
+                  <span className="features_checklist__text">
+                    <Translate id={`homepage.features_${check.key}`}>{check.value}</Translate>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
 
         <section>
@@ -70,6 +80,44 @@ export default function Home() {
               direction={index % 2 == 0 ? "normal" : "reverse"}
             />
           ))}
+        </section>
+
+        <section className="sponsors_section">
+          <div className="sponsors_section__container">
+            <h2 className="sponsors_section__title">
+              <Translate id="homepage.sponsors_title">Sponsors</Translate>
+            </h2>
+            <p className="sponsors_section__subtitle">
+              <Translate id="homepage.sponsors_subtitle">
+                Riverpod is open source software funded by the community and our generous sponsors.
+              </Translate>
+            </p>
+            <div className="sponsors_section__content">
+              <a
+                href="https://github.com/sponsors/rrousselGit"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="sponsors_section__link"
+              >
+                <img
+                  src="https://raw.githubusercontent.com/rrousselGit/freezed/master/sponsorkit/sponsors.svg"
+                  alt="Riverpod Sponsors"
+                  className="sponsors_section__img"
+                />
+              </a>
+            </div>
+            <div className="sponsors_section__cta_wrap">
+              <a
+                href="https://github.com/sponsors/rrousselGit"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="sponsors_section__cta"
+              >
+                <span className="sponsors_section__heart">💖</span>
+                <Translate id="homepage.sponsors_cta">Become a Sponsor</Translate>
+              </a>
+            </div>
+          </div>
         </section>
       </main>
     </Layout>

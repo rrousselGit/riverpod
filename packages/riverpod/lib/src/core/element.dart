@@ -31,7 +31,7 @@ base mixin _ProviderRefreshable<OutT, InT> implements Refreshable<OutT> {
 void Function()? debugCanModifyProviders;
 
 /// A Future-like that support synchronous completion.
-@internal
+@publicInMisc
 @publicInCodegen
 typedef WhenComplete = void Function(void Function() cb)?;
 
@@ -826,7 +826,14 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     runOnDispose();
     mayNeedDispose();
-    if (!_isFlushing) {
+
+    if (
+    // It is redundant to request for a refresh during flushing as the rebuild
+    // will happen immediately
+    !_isFlushing
+        // Don't schedule refresh for paused providers. Those are paused afterall!
+        &&
+        isActive) {
       container.scheduler.scheduleProviderRefresh(this);
     }
 

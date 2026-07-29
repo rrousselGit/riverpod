@@ -170,7 +170,10 @@ final filteredProvidersProvider = Provider.autoDispose
         final originMatch = element.provider.origin.toStringValue.fuzzyMatch(
           search,
         );
-        final argMatch = element.provider.argToStringValue.fuzzyMatch(search);
+        final label = element.provider.origin.isFamily
+            ? element.provider.argToStringValue
+            : 'scoped at #${element.provider.containerHashValue}';
+        final argMatch = label.fuzzyMatch(search);
 
         if (!originMatch.didMatch && !argMatch.didMatch) continue;
 
