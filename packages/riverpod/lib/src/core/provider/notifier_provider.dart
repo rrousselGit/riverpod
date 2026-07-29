@@ -282,10 +282,7 @@ extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
             }
 
             final decoded = decode(value.data);
-            _setStateFromValue(
-              decoded,
-              emitAsLoadingState: emitAsLoadingState,
-            );
+            _setStateFromValue(decoded, emitAsLoadingState: emitAsLoadingState);
           }),
         );
 
@@ -316,10 +313,7 @@ abstract class $AsyncNotifierBase<ValueT>
         error: state._error,
       );
     } else {
-      state = AsyncData(
-        value,
-        kind: DataKind.cache,
-      );
+      state = AsyncData(value, kind: DataKind.cache);
     }
   }
 
