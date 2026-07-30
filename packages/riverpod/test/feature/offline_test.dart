@@ -98,7 +98,7 @@ void main() {
         );
 
         final listener = container.listen(provider, (_, _) {});
-        await Future.delayed(Duration.zero);
+        await Future<void>.delayed(Duration.zero);
         expect(listener.read(), const AsyncData<int>(42));
       },
     );
