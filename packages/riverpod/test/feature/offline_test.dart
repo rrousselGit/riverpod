@@ -98,6 +98,7 @@ void main() {
         );
 
         final listener = container.listen(provider, (_, _) {});
+        await null;
         expect(listener.read(), const AsyncData<int>(42));
       },
     );
