@@ -99,6 +99,7 @@ void main() {
         );
 
         final listener = container.listen(provider, (_, _) {});
+        print('STATE: ${listener.read()}');
         expect(listener.read(), const AsyncData<int>(42));
 
         completer.complete(0);
