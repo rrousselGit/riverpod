@@ -94,7 +94,7 @@ abstract class AnyNotifier<StateT, ValueT> {
     ref._element.setValueFromState(newState);
   }
 
-  void _setStateFromValue(ValueT value);
+  void _setStateFromValue(ValueT value, {bool emitAsLoadingState = true});
 
   FutureOr<void> _callEncode<KeyT, EncodedT>(
     FutureOr<Storage<KeyT, EncodedT>> storage,
@@ -243,6 +243,7 @@ extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
     required EncodedT Function(ValueT state) encode,
     required ValueT Function(EncodedT encoded) decode,
     StorageOptions options = const StorageOptions(),
+    bool emitAsLoadingState = true,
   }) {
     _debugAssertNoDuplicateKey(key, this);
 
@@ -283,7 +284,7 @@ extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
             }
 
             final decoded = decode(value.data);
-            _setStateFromValue(decoded);
+            _setStateFromValue(decoded, emitAsLoadingState: emitAsLoadingState);
           }),
         );
 
@@ -306,12 +307,16 @@ extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
 abstract class $AsyncNotifierBase<ValueT>
     extends AnyNotifier<AsyncValue<ValueT>, ValueT> {
   @override
-  void _setStateFromValue(ValueT value) {
-    state = AsyncLoading._(
-      (progress: state.progress),
-      value: (value, kind: DataKind.cache, source: DataSource.liveOrRefresh),
-      error: state._error,
-    );
+  void _setStateFromValue(ValueT value, {bool emitAsLoadingState = true}) {
+    if (emitAsLoadingState) {
+      state = AsyncLoading._(
+        (progress: state.progress),
+        value: (value, kind: DataKind.cache, source: DataSource.liveOrRefresh),
+        error: state._error,
+      );
+    } else {
+      state = AsyncData(value, kind: DataKind.cache);
+    }
   }
 
   @override
@@ -337,7 +342,8 @@ abstract class $AsyncNotifierBase<ValueT>
 @internal
 abstract class $SyncNotifierBase<ValueT> extends AnyNotifier<ValueT, ValueT> {
   @override
-  void _setStateFromValue(ValueT value) => state = value;
+  void _setStateFromValue(ValueT value, {bool emitAsLoadingState = true}) =>
+      state = value;
 
   @override
   FutureOr<void> _callEncode<KeyT, EncodedT>(
