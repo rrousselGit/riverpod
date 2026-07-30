@@ -86,7 +86,6 @@ void main() {
         final container = ProviderContainer.test();
         final provider = AsyncNotifierProvider<DeferredAsyncNotifier<int>, int>(
           () => DeferredAsyncNotifier((ref, self) {
-            print('=== DEBUG: calling self.persist with emitAsLoadingState: false');
             self.persist(
               DelegatingStorage(read: (_) => const PersistedData(42)),
               key: 'key',
@@ -98,12 +97,7 @@ void main() {
           }),
         );
 
-        print('=== DEBUG: immediate state = ${container.read(provider)}');
-        final value = await container.read(provider.future);
-        print('=== DEBUG: future resolved to $value');
-        print('=== DEBUG: final state = ${container.read(provider)}');
-
-        expect(value, 42);
+        expect(await container.read(provider.future), 42);
         expect(container.read(provider), const AsyncData<int>(42));
       },
     );
