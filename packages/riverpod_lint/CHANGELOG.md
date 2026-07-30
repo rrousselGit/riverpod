@@ -1,3 +1,7 @@
+## Unreleased
+
+- Require Dart 3.13: the analysis server protocol needed by `analysis_server_plugin` 0.3.18 (pulled in by the analyzer 13 upgrade) ships in Dart 3.13. On earlier SDKs the plugin previously hung `dart analyze`; now version solving fails with a clear error instead (#4839).
+
 ## 3.1.8 - 2026-07-28
 ### Dependency changes
 
