@@ -83,6 +83,7 @@ void main() {
     test(
       'emitAsLoadingState: false emits AsyncData instead of AsyncLoading',
       () async {
+        final completer = Completer<int>();
         final container = ProviderContainer.test();
         final provider = AsyncNotifierProvider<DeferredAsyncNotifier<int>, int>(
           () => DeferredAsyncNotifier((ref, self) {
@@ -93,12 +94,14 @@ void main() {
               decode: (encoded) => encoded,
               emitAsLoadingState: false,
             );
-            return Completer<int>().future;
+            return completer.future;
           }),
         );
 
-        expect(await container.read(provider.future), 42);
-        expect(container.read(provider), const AsyncData<int>(42));
+        final listener = container.listen(provider, (_, _) {});
+        expect(listener.read(), const AsyncData<int>(42));
+
+        completer.complete(0);
       },
     );
 
