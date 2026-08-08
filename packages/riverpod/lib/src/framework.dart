@@ -12,7 +12,7 @@ import 'package:listen/listen.dart';
 import 'package:meta/meta.dart';
 import 'package:stack_trace/stack_trace.dart';
 import 'package:state_notifier/state_notifier.dart';
-import 'package:test/test.dart' as test;
+import 'package:test_api/scaffolding.dart' as test;
 import 'package:uuid/uuid.dart';
 
 import './common/tenable.dart';

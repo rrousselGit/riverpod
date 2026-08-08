@@ -1,3 +1,11 @@
+## Unreleased fix
+
+- Depend on `test_api` instead of `test`. Riverpod only used `addTearDown`, which
+  `test` re-exports unchanged from `test_api`, so `ProviderContainer.test` is
+  unaffected. This removes 34 transitive packages from the dependency graph of
+  every project that uses Riverpod, including `analyzer`, whose version ceiling
+  was blocking other tooling. (thanks to @samithahansaka)
+
 ## 3.4.2 - 2026-07-28
 
 Fix a different source of `markNeedsBuild` error. Those are tricky!
