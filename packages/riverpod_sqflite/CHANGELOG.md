@@ -1,3 +1,8 @@
+## Unreleased fix
+
+- Moved `test` to `dev_dependencies`. It was never imported from `lib/`.
+  (thanks to @samithahansaka)
+
 ## 0.4.6 - 2026-07-28
 ### Dependency changes
 

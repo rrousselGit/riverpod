@@ -27,7 +27,7 @@ dependencies:
   meta: ^1.15.0
   stack_trace: ^1.12.1
   state_notifier: ">=0.7.2 <2.0.0"
-  test: ^1.0.0
+  test_api: ^0.7.0
   uuid: ^4.5.1
 
 dev_dependencies:
@@ -37,4 +37,5 @@ dev_dependencies:
   mockito: ^5.0.0
   path: ^1.9.0
   riverpod_devtool_generator: ^0.0.0
+  test: ^1.0.0
   trotter: ^2.0.0-dev.1
