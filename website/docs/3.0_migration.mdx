@@ -225,7 +225,7 @@ Specifically, `ProviderRef.state`, `Ref.listenSelf` and `FutureProviderRef.futur
     @override
     Future<int> build() async {
       ref.listen(anotherProvider, (previous, next) {
-        ref.state++;
+        state++;
       });
     
       listenSelf((previous, next) {
@@ -264,7 +264,7 @@ Specifically, `ProviderRef.state`, `Ref.listenSelf` and `FutureProviderRef.futur
     @override
     Future<int> build() async {
       ref.listen(anotherProvider, (previous, next) {
-        ref.state++;
+        state++;
       });
     
       listenSelf((previous, next) {
