@@ -1,3 +1,7 @@
+## Unreleased fix
+
+- Added missing `ProviderListenableListenable` export. (thanks to @arthurbcd)
+
 ## 3.4.2 - 2026-07-28
 
 Fix a different source of `markNeedsBuild` error. Those are tricky!
