@@ -131,6 +131,23 @@ Future<Raw<int>> value3(Ref ref) async => 0;
   );
 
   testSource(
+    'Ignores invalid provider types',
+    source: '''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+@riverpod
+MissingType invalid(Ref ref) => throw UnimplementedError();
+
+@riverpod
+Future<MissingType> invalidFuture(Ref ref) async => throw UnimplementedError();
+''',
+    (resolver, unit, units) async {
+      expect(unit.declarations.findByName('invalid').provider, isNull);
+      expect(unit.declarations.findByName('invalidFuture').provider, isNull);
+    },
+  );
+
+  testSource(
     'Decode isScoped',
     source: '''
 import 'package:riverpod_annotation/riverpod_annotation.dart';

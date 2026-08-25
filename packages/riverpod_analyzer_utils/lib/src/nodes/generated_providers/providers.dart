@@ -116,25 +116,29 @@ sealed class GeneratorProviderDeclarationElement
   SupportedCreatedType supportedCreatedType,
 })?
 _computeTypes(DartType buildReturnValue, CompilationUnit unit) {
-  final valueType = _getValueType(
-    buildReturnValue,
-    typeProvider: unit.declaredFragment!.element.typeProvider,
-  );
+  try {
+    final valueType = _getValueType(
+      buildReturnValue,
+      typeProvider: unit.declaredFragment!.element.typeProvider,
+    );
 
-  final (createdType, supportedCreatedType) = _computeCreatedType(
-    buildReturnValue,
-    unit,
-    valueType: valueType,
-  );
+    final (createdType, supportedCreatedType) = _computeCreatedType(
+      buildReturnValue,
+      unit,
+      valueType: valueType,
+    );
 
-  final exposedType = _computeExposedType(createdType);
+    final exposedType = _computeExposedType(createdType);
 
-  return (
-    createdType: createdType.toCode(),
-    valueType: valueType,
-    exposedType: exposedType,
-    supportedCreatedType: supportedCreatedType,
-  );
+    return (
+      createdType: createdType.toCode(),
+      valueType: valueType,
+      exposedType: exposedType,
+      supportedCreatedType: supportedCreatedType,
+    );
+  } on InvalidTypeException {
+    return null;
+  }
 }
 
 (DartType, SupportedCreatedType) _computeCreatedType(
