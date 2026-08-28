@@ -7,7 +7,7 @@ environment:
 resolution: workspace
 
 dependencies:
-  analyzer: ^13.0.0
+  analyzer: ">=13.0.0 <15.0.0"
   analyzer_buffer: ^0.3.0
   build: ^4.0.0
   build_config: ^1.1.0

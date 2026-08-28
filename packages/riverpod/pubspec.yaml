@@ -31,7 +31,7 @@ dependencies:
   uuid: ^4.5.1
 
 dev_dependencies:
-  analyzer: ^13.0.0
+  analyzer: ">=13.0.0 <15.0.0"
   build_runner: ^2.11.0
   expect_error: ^1.0.0
   mockito: ^5.0.0

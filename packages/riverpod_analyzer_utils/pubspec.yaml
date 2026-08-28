@@ -12,7 +12,7 @@ environment:
 resolution: workspace
 
 dependencies:
-  analyzer: ^13.0.0
+  analyzer: ">=13.0.0 <15.0.0"
   analyzer_buffer: ^0.3.0
   collection: ^1.16.0
   crypto: ^3.0.2
