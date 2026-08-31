@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Avoid crashing while parsing providers with incomplete or unresolved types.
+
 ## 1.0.0-dev.11 - 2026-07-27
 
 - Upgraded `analyzer` to `<15.0.0`
