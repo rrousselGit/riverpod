@@ -620,6 +620,65 @@ void main() {
       });
 
       test(
+        'errors emitted by a watched provider after build (e.g. on retry) '
+        'can be caught by the dependent provider',
+        () {
+          // Regression test for https://github.com/rrousselGit/riverpod/issues/4432
+          // The counterpart of the WidgetRef.watch fix: errors emitted by a
+          // dependency after the initial build (such as from retries) must
+          // rebuild the dependent provider so that `ref.watch` rethrows the
+          // error, instead of being sent to the zone's uncaught handler.
+          final errors = <Object>[];
+          runZonedGuarded(
+            () => fakeAsync((fake) {
+              final container = ProviderContainer.test(
+                retry: (_, _) => const Duration(milliseconds: 200),
+              );
+
+              var attempt = 0;
+              final dep = Provider<int>((ref) {
+                attempt++;
+                throw Exception('Test error $attempt');
+              });
+
+              var buildCount = 0;
+              final provider = Provider<String>((ref) {
+                buildCount++;
+                try {
+                  ref.watch(dep);
+                  return 'no error';
+                } catch (_) {
+                  return 'caught';
+                }
+              });
+
+              final listener = Listener<String>();
+              container.listen(
+                provider,
+                listener.call,
+                fireImmediately: true,
+                onError: (e, s) => errors.add(e),
+              );
+
+              verifyOnly(listener, listener(null, 'caught'));
+              expect(buildCount, 1);
+
+              // Let several retries fire.
+              fake.elapse(const Duration(seconds: 30));
+
+              // The dependent provider rebuilt on each retry but kept catching
+              // the error; none of them escaped to the zone.
+              expect(buildCount, greaterThan(1));
+              verifyNoMoreInteractions(listener);
+            }),
+            (e, s) => errors.add(e),
+          );
+
+          expect(errors, isEmpty);
+        },
+      );
+
+      test(
         'disposes of the timer when the element is disposed',
         () => fakeAsync((fake) {
           final retry = RetryMock();
