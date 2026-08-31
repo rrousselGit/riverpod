@@ -61,7 +61,7 @@ class Activity {
       activity: json['activity']! as String,
       type: json['type']! as String,
       participants: json['participants']! as int,
-      price: json['price']! as double,
+      price: (json['price']! as num).toDouble(),
     );
   }
 
