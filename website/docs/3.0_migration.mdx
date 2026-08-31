@@ -110,6 +110,38 @@ class MyWidget extends StatelessWidget {
 }
 ```
 
+## Using a Ref after the provider is disposed now throws
+
+In Riverpod 3.0, using a [Ref] after its provider has been disposed throws an
+`UnmountedRefException`. This most commonly happens when a `Ref` is used after
+an `await`, if the provider was disposed (for example rebuilt, or no longer
+listened) while the asynchronous operation was still pending.
+
+In Riverpod 2.0, this did not throw. The new behavior is intentional: continuing
+to use a disposed `Ref` would otherwise silently run stale logic and hide
+life-cycle bugs.
+
+To migrate, guard any usage of `Ref` that happens after an async gap with
+`ref.mounted`, or cancel the pending work with `ref.onDispose`:
+
+```dart
+@riverpod
+class Example extends _$Example {
+  @override
+  Future<int> build() async {
+    final value = await fetchSomething();
+
+    // The provider may have been disposed during the `await`.
+    if (!ref.mounted) return value;
+
+    // Safe to use `ref` again here.
+    ref.read(anotherProvider);
+
+    return value;
+  }
+}
+```
+
 ## StateProvider, StateNotifierProvider, and ChangeNotifierProvider are moved to a new import
 
 In Riverpod 3.0, `StateProvider`, `StateNotifierProvider`, and `ChangeNotifierProvider` are considered "legacy".  
