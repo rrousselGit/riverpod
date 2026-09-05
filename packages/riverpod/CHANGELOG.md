@@ -4,6 +4,10 @@
 
 ## Unreleased fix
 
+- Fixed a debug-only infinite loop in the circular-dependency check. Closing a
+  dependency ring left the offending subscription in the graph, so a subsequent
+  rebuild could make the check walk the cycle forever. The subscription is now
+  removed when the check throws, and the walk keeps a visited set. (thanks to @chiliec)
 - Depend on `test_api` instead of `test`. Riverpod only used `addTearDown`, which
   `test` re-exports unchanged from `test_api`, so `ProviderContainer.test` is
   unaffected. This removes 34 transitive packages from the dependency graph of

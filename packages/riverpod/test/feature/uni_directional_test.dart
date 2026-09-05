@@ -134,6 +134,33 @@ void main() {
     });
   });
 
+  test('closing a dependency ring throws once and later reads terminate', () {
+    // regression for #4872
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    final root = Provider<int>((ref) => 0, name: 'root');
+    final closeTheRing = StateProvider<bool>((ref) => false, name: 'switch');
+
+    late Provider<int> a;
+    final b = Provider<int>((ref) => ref.watch(a) + 1, name: 'b');
+    a = Provider<int>(name: 'a', (ref) {
+      ref.watch(root);
+      if (ref.watch(closeTheRing)) return ref.watch(b) + 1;
+      return 0;
+    });
+
+    expect(container.read(b), 1);
+
+    container.read(closeTheRing.notifier).state = true;
+
+    expect(container.read(root), 0);
+    expect(
+      () => container.read(a),
+      throwsProviderException(isA<CircularDependencyError>()),
+    );
+  }, timeout: const Timeout(Duration(seconds: 15)));
+
   group('ref.read cannot end-up in a circular dependency', () {
     test('direct dependency', () {
       final provider = Provider((ref) => ref);
