@@ -1000,7 +1000,14 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     sub.impl._listenedElement.addDependentSubscription(sub.impl);
 
-    if (kDebugMode) ref._debugAssertCanDependOn(listenable);
+    if (kDebugMode) {
+      try {
+        ref._debugAssertCanDependOn(listenable);
+      } catch (_) {
+        sub.close();
+        rethrow;
+      }
+    }
 
     return sub;
   }

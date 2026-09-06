@@ -1,3 +1,7 @@
+## 1.0.0-dev.12 - 2026-09-04
+
+- Upgraded `analyzer` to `<15.0.0`
+
 ## 1.0.0-dev.11 - 2026-07-27
 
 - Upgraded `analyzer` to `<15.0.0`

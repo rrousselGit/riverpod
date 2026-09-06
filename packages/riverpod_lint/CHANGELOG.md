@@ -3,7 +3,16 @@
 - Added `prefer_keep_alive_annotation`, which warns when the body of a generated
   provider starts with `ref.keepAlive()`, and suggests `@Riverpod(keepAlive: true)`
   instead (#3855).
+
+## 3.1.9 - 2026-09-04
+
+- Upgraded `analyzer` to `<15.0.0`
 - Require Dart 3.13: the analysis server protocol needed by `analysis_server_plugin` 0.3.18 (pulled in by the analyzer 13 upgrade) ships in Dart 3.13. On earlier SDKs the plugin previously hung `dart analyze`; now version solving fails with a clear error instead (#4839).
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.4.3`
+- `riverpod_analyzer_utils` upgraded to `1.0.0-dev.12`
 
 ## 3.1.8 - 2026-07-28
 
@@ -406,3 +415,4 @@ Fix quick-fix for provider_dependencies
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

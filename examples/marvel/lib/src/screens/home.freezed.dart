@@ -26,16 +26,21 @@ $CharacterPaginationCopyWith<CharacterPagination> get copyWith => _$CharacterPag
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CharacterPagination&&(identical(other.page, page) || other.page == page)&&(identical(other.name, name) || other.name == name));
+  final _this = this as CharacterPagination;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CharacterPagination&&(identical(other.page, _this.page) || other.page == _this.page)&&(identical(other.name, _this.name) || other.name == _this.name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,page,name);
+int get hashCode {
+  final _this = this as CharacterPagination;
+  return Object.hash(runtimeType,_this.page,_this.name);
+}
 
 @override
 String toString() {
-  return 'CharacterPagination(page: $page, name: $name)';
+  final _this = this as CharacterPagination;
+  return 'CharacterPagination(page: ${_this.page}, name: ${_this.name})';
 }
 
 
@@ -218,16 +223,18 @@ _$CharacterPaginationCopyWith<_CharacterPagination> get copyWith => __$Character
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CharacterPagination&&(identical(other.page, page) || other.page == page)&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CharacterPagination&&(identical(other.page, page) || other.page == page)&&(identical(other.name, name) || other.name == name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,page,name);
+int get hashCode {
+    return Object.hash(runtimeType,page,name);
+}
 
 @override
 String toString() {
-  return 'CharacterPagination(page: $page, name: $name)';
+    return 'CharacterPagination(page: $page, name: $name)';
 }
 
 
@@ -280,16 +287,21 @@ $CharacterOffsetCopyWith<CharacterOffset> get copyWith => _$CharacterOffsetCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CharacterOffset&&(identical(other.offset, offset) || other.offset == offset)&&(identical(other.name, name) || other.name == name));
+  final _this = this as CharacterOffset;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CharacterOffset&&(identical(other.offset, _this.offset) || other.offset == _this.offset)&&(identical(other.name, _this.name) || other.name == _this.name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,offset,name);
+int get hashCode {
+  final _this = this as CharacterOffset;
+  return Object.hash(runtimeType,_this.offset,_this.name);
+}
 
 @override
 String toString() {
-  return 'CharacterOffset(offset: $offset, name: $name)';
+  final _this = this as CharacterOffset;
+  return 'CharacterOffset(offset: ${_this.offset}, name: ${_this.name})';
 }
 
 
@@ -472,16 +484,18 @@ _$CharacterOffsetCopyWith<_CharacterOffset> get copyWith => __$CharacterOffsetCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CharacterOffset&&(identical(other.offset, offset) || other.offset == offset)&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CharacterOffset&&(identical(other.offset, offset) || other.offset == offset)&&(identical(other.name, name) || other.name == name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,offset,name);
+int get hashCode {
+    return Object.hash(runtimeType,offset,name);
+}
 
 @override
 String toString() {
-  return 'CharacterOffset(offset: $offset, name: $name)';
+    return 'CharacterOffset(offset: $offset, name: $name)';
 }
 
 

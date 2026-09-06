@@ -26,16 +26,21 @@ $TagThemeCopyWith<TagTheme> get copyWith => _$TagThemeCopyWithImpl<TagTheme>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TagTheme&&(identical(other.style, style) || other.style == style)&&(identical(other.padding, padding) || other.padding == padding)&&(identical(other.backgroundColor, backgroundColor) || other.backgroundColor == backgroundColor)&&(identical(other.borderRadius, borderRadius) || other.borderRadius == borderRadius));
+  final _this = this as TagTheme;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TagTheme&&(identical(other.style, _this.style) || other.style == _this.style)&&(identical(other.padding, _this.padding) || other.padding == _this.padding)&&(identical(other.backgroundColor, _this.backgroundColor) || other.backgroundColor == _this.backgroundColor)&&(identical(other.borderRadius, _this.borderRadius) || other.borderRadius == _this.borderRadius));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,style,padding,backgroundColor,borderRadius);
+int get hashCode {
+  final _this = this as TagTheme;
+  return Object.hash(runtimeType,_this.style,_this.padding,_this.backgroundColor,_this.borderRadius);
+}
 
 @override
 String toString() {
-  return 'TagTheme(style: $style, padding: $padding, backgroundColor: $backgroundColor, borderRadius: $borderRadius)';
+  final _this = this as TagTheme;
+  return 'TagTheme(style: ${_this.style}, padding: ${_this.padding}, backgroundColor: ${_this.backgroundColor}, borderRadius: ${_this.borderRadius})';
 }
 
 
@@ -222,16 +227,18 @@ _$TagThemeCopyWith<_TagTheme> get copyWith => __$TagThemeCopyWithImpl<_TagTheme>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TagTheme&&(identical(other.style, style) || other.style == style)&&(identical(other.padding, padding) || other.padding == padding)&&(identical(other.backgroundColor, backgroundColor) || other.backgroundColor == backgroundColor)&&(identical(other.borderRadius, borderRadius) || other.borderRadius == borderRadius));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TagTheme&&(identical(other.style, style) || other.style == style)&&(identical(other.padding, padding) || other.padding == padding)&&(identical(other.backgroundColor, backgroundColor) || other.backgroundColor == backgroundColor)&&(identical(other.borderRadius, borderRadius) || other.borderRadius == borderRadius));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,style,padding,backgroundColor,borderRadius);
+int get hashCode {
+    return Object.hash(runtimeType,style,padding,backgroundColor,borderRadius);
+}
 
 @override
 String toString() {
-  return 'TagTheme(style: $style, padding: $padding, backgroundColor: $backgroundColor, borderRadius: $borderRadius)';
+    return 'TagTheme(style: $style, padding: $padding, backgroundColor: $backgroundColor, borderRadius: $borderRadius)';
 }
 
 
