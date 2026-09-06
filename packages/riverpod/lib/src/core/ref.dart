@@ -648,6 +648,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// });
   /// ```
   /// {@endtemplate}
+  @Deprecated('Use `ref.read/watch/listen(provider.exist)` instead')
   @override
   bool exists(ProviderBase<Object?> provider) {
     _throwIfInvalidUsage();

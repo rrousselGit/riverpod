@@ -1075,6 +1075,7 @@ final class ProviderContainer implements MutationTarget {
   }
 
   /// {@macro riverpod.exists}
+  @Deprecated('Use `ref.read/watch/listen(provider.exist)` instead')
   bool exists(ProviderBase<Object?> provider) {
     switch (provider) {
       case $ProviderBaseImpl():
