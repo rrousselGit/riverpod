@@ -165,9 +165,12 @@ final class _ProviderSelector<InputT, OutputT>
           return $Result.error(error, stackTrace);
         }
 
-        // Using ! because since `sub.read` flushes the inner subscription,
-        // it is guaranteed that `lastSelectedValue` is not null.
-        return lastSelectedValue!;
+        // A weak subscription is never eagerly initialized (doing so would
+        // force-flush the provider it observes, defeating the point of
+        // `weak`) and never receives the initial notification either, so
+        // `lastSelectedValue` may still be unset here. Compute it lazily,
+        // from the value `readSafe` just flushed, and cache it.
+        return lastSelectedValue ??= _select(result);
       },
     );
   }

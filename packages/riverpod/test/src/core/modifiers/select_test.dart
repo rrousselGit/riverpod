@@ -161,6 +161,86 @@ void main() {
           verifyNoMoreInteractions(listener);
         },
       );
+
+      test(
+        'supports calling ProviderSubscription.read when the provider was '
+        'already mounted by a strong listener before the weak listener was added',
+        () {
+          final container = ProviderContainer.test();
+          final provider = StateProvider((ref) => 'Hello');
+
+          // A strong listener mounts the provider first, which is the whole
+          // point of a weak listener: something else keeps it alive.
+          container.listen(provider, (previous, next) {});
+
+          final sub = container.listen(
+            provider.select((value) => value[0]),
+            (previous, next) {},
+            weak: true,
+          );
+
+          expect(sub.read(), 'H');
+        },
+      );
+
+      test('supports two weak listeners on an already-mounted provider', () {
+        final container = ProviderContainer.test();
+        final provider = StateProvider((ref) => 'Hello');
+
+        container.listen(provider, (previous, next) {});
+
+        final subA = container.listen(
+          provider.select((value) => value[0]),
+          (previous, next) {},
+          weak: true,
+        );
+        final subB = container.listen(
+          provider.select((value) => value.toUpperCase()),
+          (previous, next) {},
+          weak: true,
+        );
+
+        expect(subA.read(), 'H');
+        expect(subB.read(), 'HELLO');
+      });
+
+      test('supports reading the same weak subscription twice', () {
+        final container = ProviderContainer.test();
+        final provider = StateProvider((ref) => 'Hello');
+
+        container.listen(provider, (previous, next) {});
+
+        final sub = container.listen(
+          provider.select((value) => value[0]),
+          (previous, next) {},
+          weak: true,
+        );
+
+        expect(sub.read(), 'H');
+        expect(sub.read(), 'H');
+      });
+
+      test(
+        'does not return a stale cached value once the selected value changes',
+        () {
+          final container = ProviderContainer.test();
+          final provider = StateProvider((ref) => 'Hello');
+
+          container.listen(provider, (previous, next) {});
+
+          final sub = container.listen(
+            provider.select((value) => value[0]),
+            (previous, next) {},
+            weak: true,
+          );
+
+          expect(sub.read(), 'H');
+
+          container.read(provider.notifier).state = 'World';
+
+          expect(sub.read(), 'W');
+        },
+      );
     });
   });
 
