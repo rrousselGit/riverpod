@@ -46,12 +46,12 @@ Long story short:
 
   ```dart
   @riverpod
-  Future<String> boredSuggestion(Ref ref) async {
+  Future<String> breweryName(Ref ref) async {
     final response = await http.get(
-      Uri.https('boredapi.com', '/api/activity'),
+      Uri.https('api.openbrewerydb.org', '/v1/breweries/random'),
     );
-    final json = jsonDecode(response.body);
-    return json['activity']! as String;
+    final json = jsonDecode(response.body) as List;
+    return (json.first as Map)['name']! as String;
   }
   ```
 
@@ -61,9 +61,9 @@ Long story short:
   class Home extends ConsumerWidget {
     @override
     Widget build(BuildContext context, WidgetRef ref) {
-      final boredSuggestion = ref.watch(boredSuggestionProvider);
+      final breweryName = ref.watch(breweryNameProvider);
       // Perform a switch-case on the result to handle loading/error states
-      return switch (boredSuggestion) {
+      return switch (breweryName) {
         AsyncData(:final value) => Text('data: $value'),
         AsyncError(:final error) => Text('error: $error'),
         _ => const Text('loading'),

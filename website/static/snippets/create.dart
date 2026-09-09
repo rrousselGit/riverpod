@@ -9,10 +9,10 @@ part 'create.g.dart';
 /* SNIPPET START */
 
 @riverpod
-Future<String> boredSuggestion(Ref ref) async {
+Future<String> breweryName(Ref ref) async {
   final response = await http.get(
-    Uri.https('boredapi.com', '/api/activity'),
+    Uri.https('api.openbrewerydb.org', '/v1/breweries/random'),
   );
-  final json = jsonDecode(response.body) as Map;
-  return json['activity']! as String;
+  final json = jsonDecode(response.body) as List;
+  return (json.first as Map)['name']! as String;
 }

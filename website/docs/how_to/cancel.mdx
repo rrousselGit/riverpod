@@ -1,6 +1,6 @@
 ---
 title: How to debounce/cancel network requests
-version: 1
+version: 2
 ---
 
 import { Link } from "/src/components/Link";
@@ -39,23 +39,23 @@ to achieve the desired behavior.
 To showcase this, we will make a simple application with two pages:
 
 - A home screen, with a button which opens a new page
-- A detail page, which displays a random activity from the [Bored API](https://www.boredapi.com/),
-  with the ability to refresh the activity.  
+- A detail page, which displays a random brewery from the [Open Brewery DB](https://www.openbrewerydb.org/),
+  with the ability to refresh the brewery.  
   See <Link documentID="how_to/pull_to_refresh" /> for information
   on how to implement pull-to-refresh.
 
 We will then implement the following behaviors:
 
 - If the user opens the detail page and then navigates back immediately,
-  we will cancel the request for the activity.
-- If the user refreshes the activity multiple times in a row, we will debounce
+  we will cancel the request for the brewery.
+- If the user refreshes the brewery multiple times in a row, we will debounce
   the requests so that we only send one request after the user stops refreshing.
 
 ## The application
 
 <img
   src="/img/how_to/cancel/app.gif"
-  alt="Gif showcasing the application, opening the detail page and refreshing the activity."
+  alt="Gif showcasing the application, opening the detail page and refreshing the brewery."
 />
 
 First, let's create the application, without any debouncing or cancelling.  
@@ -68,7 +68,7 @@ let's not forget to specify a `ProviderScope` at the root of our application.
 <AutoSnippet title="lib/src/main.dart" raw={homeScreen} />
 
 Then, let's define our detail page.
-To fetch the activity and implement pull-to-refresh, refer
+To fetch the brewery and implement pull-to-refresh, refer
 to the <Link documentID="how_to/pull_to_refresh" /> case study.
 
 <AutoSnippet title="lib/src/detail_screen.dart" {...detailScreen} />
@@ -96,24 +96,24 @@ this can be done by closing our HTTP client.
 ## Debouncing requests
 
 Now that we have implemented cancellation, let's implement debouncing.  
-At the moment, if the user refreshes the activity multiple times in a row,
+At the moment, if the user refreshes the brewery multiple times in a row,
 we will send a request for each refresh.
 
 Technically speaking, now that we have implemented cancellation, this is not
-a problem. If the user refreshes the activity multiple times in a row,
+a problem. If the user refreshes the brewery multiple times in a row,
 the previous request will be cancelled, when a new request is made.
 
 However, this is not ideal. We are still sending multiple requests, and
 wasting bandwidth and server resources.  
 What we could instead do is delay our requests until the user stops refreshing
-the activity for a fixed amount of time.
+the brewery for a fixed amount of time.
 
 The logic here is very similar to the cancellation logic. We will again
 use `ref.onDispose`. However, the idea here is that instead of
 closing an HTTP client, we will rely on `onDispose` to abort the request
 before it starts.  
 We will then arbitrarily wait for 500ms before sending the request.
-Then, if the user refreshes the activity again before the 500ms have elapsed,
+Then, if the user refreshes the brewery again before the 500ms have elapsed,
 `onDispose` will be invoked, aborting the request.
 
 :::info

@@ -11,26 +11,26 @@ part 'codegen.g.dart';
 
 /* SNIPPET START */
 @freezed
-sealed class Activity with _$Activity {
-  factory Activity({
-    required String activity,
-    required String type,
-    required int participants,
-    required double price,
-  }) = _Activity;
+sealed class Brewery with _$Brewery {
+  factory Brewery({
+    required String name,
+    @JsonKey(name: 'brewery_type') required String breweryType,
+    required String city,
+    required String country,
+  }) = _Brewery;
 
-  factory Activity.fromJson(Map<String, dynamic> json) =>
-      _$ActivityFromJson(json);
+  factory Brewery.fromJson(Map<String, dynamic> json) =>
+      _$BreweryFromJson(json);
 }
 
 @riverpod
-Future<Activity> activity(Ref ref) async {
+Future<Brewery> brewery(Ref ref) async {
   final response = await http.get(
-    Uri.https('www.boredapi.com', '/api/activity'),
+    Uri.https('api.openbrewerydb.org', '/v1/breweries/random'),
   );
 
-  final json = jsonDecode(response.body) as Map;
-  return Activity.fromJson(Map.from(json));
+  final json = (jsonDecode(response.body) as List).first as Map;
+  return Brewery.fromJson(Map.from(json));
 }
 
 class DetailPageView extends ConsumerWidget {
@@ -38,18 +38,18 @@ class DetailPageView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activity = ref.watch(activityProvider);
+    final brewery = ref.watch(breweryProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detail page'),
       ),
       body: RefreshIndicator(
-        onRefresh: () => ref.refresh(activityProvider.future),
+        onRefresh: () => ref.refresh(breweryProvider.future),
         child: ListView(
           children: [
-            switch (activity) {
-              AsyncValue(:final value?) => Text(value.activity),
+            switch (brewery) {
+              AsyncValue(:final value?) => Text(value.name),
               AsyncValue(:final error?) => Text('Error: $error'),
               _ => const Center(child: CircularProgressIndicator()),
             },
