@@ -14,6 +14,9 @@
   every project that uses Riverpod, including `analyzer`, whose version ceiling
   was blocking other tooling. (thanks to @samithahansaka)
 - Fix `selectAsync` notifying a closed subscription after an upstream refresh.
+- Fix `ProviderSubscription.read` throwing a null-check error on a `.select()`
+  subscription created with `weak: true` when the underlying provider was
+  already mounted by something else.
 
 ## 3.4.2 - 2026-07-28
 
