@@ -138,7 +138,7 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   @mustCallSuper
   @override
   void pause() {
-    if (!_attachedToElement) {
+    if (!_attachedToElement || _listenedElement == null) {
       super.pause();
       return;
     }
@@ -182,7 +182,7 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   @mustCallSuper
   @override
   void deactivate() {
-    if (!_attachedToElement) {
+    if (!_attachedToElement || _listenedElement == null) {
       super.deactivate();
       return;
     }

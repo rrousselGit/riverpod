@@ -1725,6 +1725,65 @@ void main() {
       });
 
       test(
+        'closes ref.listen existence subscriptions when the provider is invalidated',
+        () async {
+          final other = Provider((ref) => 0);
+          final subscriptions = <ProviderSubscription<bool>>[];
+          final provider = Provider((ref) {
+            subscriptions.add(ref.listen(other.exists, (_, _) {}));
+            return 0;
+          });
+          final container = ProviderContainer.test();
+          final providerSubscription = container.listen(provider, (_, _) {});
+
+          expect(subscriptions.single.closed, isFalse);
+          expect(
+            container.pointerManager.readPointer(other)!.subscriptions,
+            contains(subscriptions.single),
+          );
+
+          container.invalidate(provider);
+          await container.pump();
+
+          expect(subscriptions.first.closed, isTrue);
+          expect(
+            container.pointerManager.readPointer(other)!.subscriptions,
+            contains(subscriptions.last),
+          );
+          expect(
+            container.pointerManager.readPointer(other)!.subscriptions,
+            isNot(contains(subscriptions.first)),
+          );
+
+          providerSubscription.close();
+        },
+      );
+
+      test(
+        'supports manually pausing and resuming ref.listen existence subscriptions',
+        () {
+          final other = Provider((ref) => 0);
+          late ProviderSubscription<bool> subscription;
+          final provider = Provider((ref) {
+            subscription = ref.listen(other.exists, (_, _) {});
+            return 0;
+          });
+          final container = ProviderContainer.test();
+          final providerSubscription = container.listen(provider, (_, _) {});
+
+          expect(subscription.isPaused, isFalse);
+
+          subscription.pause();
+          expect(subscription.isPaused, isTrue);
+
+          subscription.resume();
+          expect(subscription.isPaused, isFalse);
+
+          providerSubscription.close();
+        },
+      );
+
+      test(
         'removes an unmounted autoDispose pointer when its subscription closes',
         () {
           final provider = Provider.autoDispose((ref) => 0);
