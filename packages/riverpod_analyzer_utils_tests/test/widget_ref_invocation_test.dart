@@ -118,10 +118,7 @@ class MyWidget extends ConsumerWidget {
       expect(result.widgetRefWatchInvocations, hasLength(3));
       expect(result.widgetRefInvocations, result.widgetRefWatchInvocations);
 
-      expect(
-        result.widgetRefWatchInvocations[0].node.toSource(),
-        '..watch(dep)',
-      );
+      expect(result.widgetRefWatchInvocations[0].node.toSource(), 'watch(dep)');
       expect(result.widgetRefWatchInvocations[0].function.toSource(), 'watch');
       expect(
         result.widgetRefWatchInvocations[0].listenable.node.toSource(),
@@ -149,7 +146,7 @@ class MyWidget extends ConsumerWidget {
 
       expect(
         result.widgetRefWatchInvocations[1].node.toSource(),
-        '..watch(dep2Provider)',
+        'watch(dep2Provider)',
       );
       expect(result.widgetRefWatchInvocations[1].function.toSource(), 'watch');
       expect(
@@ -180,7 +177,7 @@ class MyWidget extends ConsumerWidget {
 
       expect(
         result.widgetRefWatchInvocations[2].node.toSource(),
-        '..watch(dep3Provider)',
+        'watch(dep3Provider)',
       );
       expect(result.widgetRefWatchInvocations[2].function.toSource(), 'watch');
       expect(

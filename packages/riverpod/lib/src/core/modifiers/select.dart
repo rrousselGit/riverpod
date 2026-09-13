@@ -165,9 +165,9 @@ final class _ProviderSelector<InputT, OutputT>
           return $Result.error(error, stackTrace);
         }
 
-        // Using ! because since `sub.read` flushes the inner subscription,
-        // it is guaranteed that `lastSelectedValue` is not null.
-        return lastSelectedValue!;
+        // A weak subscription to a listenable without an element may not
+        // receive an initialization notification when read.
+        return lastSelectedValue ??= _select(result);
       },
     );
   }

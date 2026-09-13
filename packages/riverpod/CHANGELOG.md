@@ -1,9 +1,9 @@
-## 3.4.3 - 2026-09-04
-
-- Upgraded `analyzer` to `<15.0.0`
-
 ## Unreleased fix
 
+- Deprecated `Ref.exist`.
+- Added `provider.exist`, which is listenable.
+  This enables writing `ref.listen(provider.exist, ...)`.
+- Fix `selectAsync` notifying a closed subscription after an upstream refresh.
 - Fixed a debug-only infinite loop in the circular-dependency check. Closing a
   dependency ring left the offending subscription in the graph, so a subsequent
   rebuild could make the check walk the cycle forever. The subscription is now
@@ -13,7 +13,10 @@
   unaffected. This removes 34 transitive packages from the dependency graph of
   every project that uses Riverpod, including `analyzer`, whose version ceiling
   was blocking other tooling. (thanks to @samithahansaka)
-- Fix `selectAsync` notifying a closed subscription after an upstream refresh.
+
+## 3.4.3 - 2026-09-04
+
+- Upgraded `analyzer` to `<15.0.0`
 
 ## 3.4.2 - 2026-07-28
 
@@ -1585,4 +1588,3 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-
