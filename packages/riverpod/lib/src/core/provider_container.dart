@@ -414,7 +414,11 @@ class ProviderPointerManager {
     for (final pointer in pointers) {
       for (final subscription in pointer.subscriptions.toList()) {
         if (subscription.ownerContainer == ownerContainer) {
-          subscription.close();
+          ProviderSubscriptionImpl<void> outerSubscription = subscription;
+          while (outerSubscription._parent != null) {
+            outerSubscription = outerSubscription._parent!;
+          }
+          outerSubscription.close();
         }
       }
     }
