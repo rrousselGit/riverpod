@@ -78,11 +78,16 @@ class $ProviderPointer implements _PointerBase {
           providerOverride == null &&
           (origin.$allTransitiveDependencies?.isNotEmpty ?? false));
 
+  bool get permanent =>
+      providerOverride != null &&
+      providerOverride is! TransitiveProviderOverride;
+
+  bool get removable =>
+      !permanent && !(element?._didMount ?? false) && subscriptions.isEmpty;
+
   final ProviderBase<Object?> origin;
 
   /// The override associated with this provider, if any.
-  ///
-  /// If non-null, this pointer should **never** be removed.
   ///
   /// This override may be implicitly created by [ProviderOrFamily.$allTransitiveDependencies].
   // ignore: library_private_types_in_public_api, not public API
@@ -706,7 +711,7 @@ class ProviderPointerManager {
 
   /// Try to remove a provider from this container.
   ///
-  /// Noop if the provider is from an override or doesn't exist.
+  /// Noop if the provider isn't [$ProviderPointer.removable] or doesn't exist.
   ///
   /// Returns the provider's pointer, even if it was not removed.
   $ProviderPointer? tryRemove(ProviderBase<Object?> provider) {
@@ -714,11 +719,7 @@ class ProviderPointerManager {
     if (directory == null) return null;
 
     final pointer = directory.pointers[provider];
-    if (pointer == null ||
-        pointer.subscriptions.isNotEmpty ||
-        // If from an override, must not be removed unless it is a transitive override
-        (pointer.providerOverride != null &&
-            pointer.providerOverride is! TransitiveProviderOverride)) {
+    if (pointer == null || !pointer.removable) {
       return pointer;
     }
 
@@ -1276,12 +1277,12 @@ final class ProviderContainer implements MutationTarget {
     // The provider is already disposed, so we don't need to do anything
     if (pointer == null) return;
 
-    _recursivePointerRemoval(provider, pointer);
-
     pointer._onExistenceChanged(false);
 
     pointer.element?.dispose();
     pointer.element = null;
+
+    _recursivePointerRemoval(provider, pointer);
   }
 
   /// Updates the list of provider overrides.

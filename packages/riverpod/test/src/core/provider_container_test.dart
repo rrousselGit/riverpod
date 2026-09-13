@@ -1740,6 +1740,21 @@ void main() {
         },
       );
 
+      test(
+        'keeps an active pointer when its existence subscription closes',
+        () {
+          final provider = Provider.autoDispose((ref) => 0);
+          final container = ProviderContainer.test();
+          final sub = container.listen(provider.exists, (_, _) {});
+
+          container.read(provider);
+          sub.close();
+
+          expect(container.pointerManager.readPointer(provider), isNotNull);
+          expect(container.pointerManager.readElement(provider), isNotNull);
+        },
+      );
+
       test('supports fireImmediately', () {
         final provider = Provider((ref) => 0);
         final container = ProviderContainer.test();
