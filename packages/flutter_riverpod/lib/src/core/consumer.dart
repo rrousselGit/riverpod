@@ -551,7 +551,7 @@ base class ConsumerStatefulElement extends StatefulElement
     _listeners.add(sub);
   }
 
-@Deprecated('Use `ref.read/watch/listen(provider.exist)` instead')
+  @Deprecated('Use `ref.read/watch/listen(provider.exist)` instead')
   @override
   bool exists(ProviderBase<Object?> provider) {
     _assertNotDisposed();
