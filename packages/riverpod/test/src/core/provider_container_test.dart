@@ -651,7 +651,7 @@ void main() {
       });
     });
 
-    group('remove', () {
+    group('tryRemove', () {
       test('if called on a provider that is not mounted, is no-op', () {});
 
       test('removes non-family providers from orphan list', () {
@@ -664,7 +664,7 @@ void main() {
           provider: isPointer(),
         });
 
-        final removed = container.pointerManager.remove(provider);
+        final removed = container.pointerManager.tryRemove(provider);
 
         expect(removed, pointer);
         expect(container.pointerManager.orphanPointers.pointers, isEmpty);
@@ -683,7 +683,7 @@ void main() {
           family(21): isPointer(),
         });
 
-        final removed = container.pointerManager.remove(family(42));
+        final removed = container.pointerManager.tryRemove(family(42));
 
         expect(removed, pointer);
         expect(container.pointerManager.familyPointers[family]!.pointers, {
@@ -703,7 +703,7 @@ void main() {
             family: isProviderDirectory(),
           });
 
-          final removed = container.pointerManager.remove(family(42));
+          final removed = container.pointerManager.tryRemove(family(42));
 
           expect(removed, pointer);
           expect(container.pointerManager.familyPointers, isEmpty);
@@ -723,7 +723,7 @@ void main() {
           ),
         });
 
-        final removed = container.pointerManager.remove(family(42));
+        final removed = container.pointerManager.tryRemove(family(42));
 
         expect(removed, pointer);
         expect(container.pointerManager.familyPointers, {
@@ -742,7 +742,7 @@ void main() {
           provider: isPointer(override: override),
         });
 
-        final removed = container.pointerManager.remove(provider);
+        final removed = container.pointerManager.tryRemove(provider);
 
         expect(removed, pointer);
         expect(container.pointerManager.orphanPointers.pointers, {
@@ -763,7 +763,7 @@ void main() {
             family(21): isPointer(override: override),
           });
 
-          final removed = container.pointerManager.remove(family(21));
+          final removed = container.pointerManager.tryRemove(family(21));
 
           expect(removed, pointer);
           expect(container.pointerManager.familyPointers, {
@@ -791,7 +791,7 @@ void main() {
             ),
           });
 
-          final removed = container.pointerManager.remove(family(21));
+          final removed = container.pointerManager.tryRemove(family(21));
 
           expect(removed, pointer);
           expect(container.pointerManager.familyPointers, {
@@ -817,7 +817,7 @@ void main() {
           provider: isPointer(override: isTransitiveProviderOverride(provider)),
         });
 
-        final removed = container.pointerManager.remove(provider);
+        final removed = container.pointerManager.tryRemove(provider);
 
         expect(removed, pointer);
         expect(container.pointerManager.orphanPointers.pointers, {
@@ -847,7 +847,7 @@ void main() {
           ),
         });
 
-        final removed = container.pointerManager.remove(family(42));
+        final removed = container.pointerManager.tryRemove(family(42));
 
         expect(removed, pointer);
         expect(container.pointerManager.familyPointers, isEmpty);
@@ -1652,6 +1652,178 @@ void main() {
     });
 
     group('exists', () {
+      test('exist listenables compare equal for the same provider', () {
+        final provider = Provider((ref) => 0);
+
+        expect(provider.exist, provider.exist);
+        expect({provider.exist}, contains(provider.exist));
+      });
+
+      test('is reactive without initializing the provider', () async {
+        final provider = Provider((ref) => 0);
+        final container = ProviderContainer.test();
+        final listener = Listener<bool>();
+
+        expect(container.read(provider.exist), false);
+        expect(
+          container.getAllProviderElements().map((e) => e.origin),
+          isNot(contains(provider)),
+        );
+
+        container.listen(provider.exist, listener.call);
+
+        container.read(provider);
+
+        verifyZeroInteractions(listener);
+        await container.pump();
+        verifyOnly(listener, listener(false, true));
+        expect(container.exists(provider), true);
+      });
+
+      test('follows provider overrides in child containers', () async {
+        final provider = Provider((ref) => 0);
+        final root = ProviderContainer.test();
+        final child = ProviderContainer.test(
+          parent: root,
+          overrides: [provider.overrideWith((ref) => 1)],
+        );
+        final listener = Listener<bool>();
+
+        child.listen(provider.exist, listener.call);
+
+        root.read(provider);
+        await root.pump();
+        verifyZeroInteractions(listener);
+
+        child.read(provider);
+        await child.pump();
+        verifyOnly(listener, listener(false, true));
+      });
+
+      test('notifies after an autoDispose provider is removed', () async {
+        final provider = Provider.autoDispose((ref) => 0);
+        final container = ProviderContainer.test();
+        final listener = Listener<bool>();
+
+        container.listen(provider.exist, listener.call);
+
+        expect(container.read(provider.exist), false);
+        final providerSub = container.listen(provider, (_, _) {});
+        await container.pump();
+
+        verifyOnly(listener, listener(false, true));
+
+        providerSub.close();
+        await Future<void>.delayed(.zero);
+
+        verifyOnly(listener, listener(true, false));
+
+        container.listen(provider, (_, _) {});
+        await Future<void>.delayed(.zero);
+
+        verifyOnly(listener, listener(false, true));
+      });
+
+      test(
+        'removes an unmounted autoDispose pointer when its subscription closes',
+        () {
+          final provider = Provider.autoDispose((ref) => 0);
+          final container = ProviderContainer.test();
+          final sub = container.listen(provider.exist, (_, _) {});
+
+          expect(container.pointerManager.readPointer(provider), isNotNull);
+          expect(container.pointerManager.readElement(provider), isNull);
+
+          sub.close();
+
+          expect(container.pointerManager.readPointer(provider), isNull);
+        },
+      );
+
+      test('supports fireImmediately', () {
+        final provider = Provider((ref) => 0);
+        final container = ProviderContainer.test();
+        final listener = Listener<bool>();
+
+        container.listen(provider.exist, listener.call, fireImmediately: true);
+
+        verifyOnly(listener, listener(null, false));
+      });
+
+      test('closes existence subscriptions when the container is disposed', () {
+        final provider = Provider((ref) => 0);
+        final overriddenProvider = Provider((ref) => 0);
+        final family = Provider.family<int, int>((ref, value) => value);
+        final container = ProviderContainer.test(
+          overrides: [
+            overriddenProvider.overrideWithValue(0),
+            family.overrideWith((ref, value) => value),
+          ],
+        );
+        final sub = container.listen(provider.exist, (_, _) {});
+        final overriddenSub = container.listen(
+          overriddenProvider.exist,
+          (_, _) {},
+        );
+        final familySub = container.listen(family(0).exist, (_, _) {});
+
+        container.dispose();
+
+        expect(sub.closed, isTrue);
+        expect(overriddenSub.closed, isTrue);
+        expect(familySub.closed, isTrue);
+      });
+
+      test('supports select', () async {
+        final provider = Provider((ref) => 0);
+        final container = ProviderContainer.test();
+        final listener = Listener<bool>();
+
+        container.listen(
+          provider.exist.select((exists) => exists),
+          listener.call,
+          fireImmediately: true,
+        );
+
+        verifyOnly(listener, listener(null, false));
+
+        container.read(provider);
+        await container.pump();
+
+        verifyOnly(listener, listener(false, true));
+      });
+
+      test('allows callbacks to initialize other observed providers', () async {
+        final provider = Provider((ref) => 0);
+        final dependency = Provider((ref) => 0);
+        final container = ProviderContainer.test();
+        final dependencyListener = Listener<bool>();
+        final providerListener = Listener<bool>();
+
+        final dependencySub = container.listen(
+          dependency.exist,
+          dependencyListener.call,
+          fireImmediately: true,
+        );
+        final providerSub = container.listen(
+          provider.exist,
+          fireImmediately: true,
+          (prev, next) {
+            providerListener(prev, next);
+            if (next) container.read(dependency);
+          },
+        );
+
+        verifyOnly(providerListener, providerListener(null, false));
+        verifyOnly(dependencyListener, dependencyListener(null, false));
+
+        container.read(provider);
+        await Future<void>.delayed(.zero);
+
+        verifyOnly(dependencyListener, dependencyListener(false, true));
+        verifyOnly(providerListener, providerListener(false, true));
+      });
+
       test('simple use-case', () {
         final container = ProviderContainer.test();
         final provider = Provider((ref) => 0);

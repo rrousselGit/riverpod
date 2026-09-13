@@ -56,6 +56,22 @@ sealed class ProviderBase<StateT> extends ProviderOrFamily
   /// On generated providers, this will be a record of all arguments.
   final Object? argument;
 
+  /// Whether this provider is initialized in the current container.
+  ///
+  /// Reading this listenable does not initialize the provider.
+  ///
+  /// This value represents the 'current value at the time of read'. It is
+  /// possible to have a short race-condition if you check [exist] before
+  /// listening the associated provider:
+  ///
+  /// ```dart
+  /// print(ref.watch(provider.exist)); // false initially
+  /// ref.watch(provider); // `provider` was mounted right after the exist check
+  /// ```
+  ProviderListenable<bool> get exist => _exist;
+
+  late final _ExistenceListenable _exist = _ExistenceListenable(this);
+
   /// An internal method that defines how a provider behaves.
   /// @nodoc
   @visibleForOverriding
@@ -89,6 +105,38 @@ sealed class ProviderBase<StateT> extends ProviderOrFamily
     }
 
     return '$label$leading';
+  }
+}
+
+@immutable
+final class _ExistenceListenable implements ProviderListenable<bool> {
+  const _ExistenceListenable(this.target);
+
+  final ProviderBase<Object?> target;
+
+  @override
+  bool operator ==(Object other) =>
+      other is _ExistenceListenable && other.target == target;
+
+  @override
+  int get hashCode => target.hashCode;
+
+  @override
+  ProviderSubscriptionImpl<bool> _addListener(
+    Node source,
+    // ignore: avoid_positional_boolean_parameters, false positive, https://github.com/dart-lang/sdk/issues/64219
+    void Function(bool? previous, bool next) listener, {
+    required void Function(Object error, StackTrace stackTrace) onError,
+    required void Function()? onDependencyMayHaveChanged,
+    required bool weak,
+  }) {
+    return source.container._pointerManager.listenToExistence(
+      target,
+      source: source,
+      listener: listener,
+      onError: onError,
+      weak: weak,
+    );
   }
 }
 

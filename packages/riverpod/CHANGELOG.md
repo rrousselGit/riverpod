@@ -1,9 +1,12 @@
+## Unreleased fix
+
+- Deprecated `Ref.exist`.
+- Added `provider.exist`, which is listenable.
+  This enables writing `ref.listen(provider.exist, ...)`.
+
 ## 3.4.3 - 2026-09-04
 
 - Upgraded `analyzer` to `<15.0.0`
-
-## Unreleased fix
-
 - Fixed a debug-only infinite loop in the circular-dependency check. Closing a
   dependency ring left the offending subscription in the graph, so a subsequent
   rebuild could make the check walk the cycle forever. The subscription is now
@@ -1584,4 +1587,3 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-
