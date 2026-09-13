@@ -123,7 +123,15 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
 
   ProviderContainer get container;
 
-  void _attachToProviderElement(ProviderElement<Object?, Object?> element) {}
+  ProviderElement<Object?, Object?>? _owner;
+
+  @mustCallSuper
+  void _attachToProviderElement(ProviderElement<Object?, Object?> element) {
+    if (_listenedElement != null) return;
+
+    _owner = element;
+    (element.subscriptions ??= []).add(this);
+  }
 
   void _attach(ProviderSubscriptionImpl<void> parent) {
     assert(_parent == null, 'Already attached to a parent: $_parent');
@@ -230,6 +238,9 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
     onClose?.call();
     final listenedElement = _listenedElement;
     if (listenedElement == null) {
+      _owner
+        ?..subscriptions?.remove(this)
+        .._inactiveSubscriptions?.remove(this);
       _closed = true;
     } else {
       listenedElement.removeDependentSubscription(this, () {
@@ -281,8 +292,6 @@ final class _ExistenceSubscription extends ProviderSubscriptionImpl<bool> {
   @override
   final bool weak;
 
-  ProviderElement<Object?, Object?>? _owner;
-
   @override
   ProviderElement<Object?, Object?>? get _listenedElement => null;
 
@@ -290,59 +299,12 @@ final class _ExistenceSubscription extends ProviderSubscriptionImpl<bool> {
   ProviderContainer get container => ownerContainer;
 
   @override
-  void _attachToProviderElement(ProviderElement<Object?, Object?> element) {
-    _owner = element;
-    element.addDependentSubscription(this);
-  }
-
-  @override
-  void pause() {
-    if (_owner case final owner?) {
-      owner.onSubscriptionPauseOrDeactivate(this, super.pause);
-    } else {
-      super.pause();
-    }
-  }
-
-  @override
-  void resume() {
-    if (_owner case final owner?) {
-      owner.onSubscriptionResumeOrReactivate(this, super.resume);
-    } else {
-      super.resume();
-    }
-  }
-
-  @override
-  void deactivate() {
-    if (_owner case final owner?) {
-      owner.onSubscriptionPauseOrDeactivate(this, super.deactivate);
-    } else {
-      super.deactivate();
-    }
-  }
-
-  @override
-  void reactivate() {
-    if (_owner case final owner?) {
-      owner.onSubscriptionResumeOrReactivate(this, super.reactivate);
-    } else {
-      super.reactivate();
-    }
-  }
-
-  @override
   void close() {
     if (closed) return;
     pointer.subscriptions.remove(this);
     pointer.targetContainer._recursivePointerRemoval(pointer.origin, pointer);
 
-    final owner = _owner;
-    if (owner == null) {
-      super.close();
-    } else {
-      owner.removeDependentSubscription(this, super.close);
-    }
+    super.close();
   }
 
   @override

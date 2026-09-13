@@ -392,7 +392,7 @@ class ProviderPointerManager {
     required OnError onError,
     required bool weak,
   }) {
-    final pointer = _ensurePointer(provider);
+    final pointer = upsertPointer(provider);
     final sub = _ExistenceSubscription(
       pointer: pointer,
       ownerContainer: source.container,
@@ -602,17 +602,13 @@ class ProviderPointerManager {
   $ProviderPointer upsertPointer(ProviderBase<Object?> provider) {
     return upsertDirectory(
       provider,
-    ).mount(provider, currentContainer: container);
+    ).upsertPointer(provider, currentContainer: container);
   }
 
   ProviderElement upsertElement(ProviderBase<Object?> provider) {
-    return upsertPointer(provider).element!;
-  }
-
-  $ProviderPointer _ensurePointer(ProviderBase<Object?> provider) {
     return upsertDirectory(
       provider,
-    ).upsertPointer(provider, currentContainer: container);
+    ).mount(provider, currentContainer: container).element!;
   }
 
   /// Traverse the [ProviderElement]s associated with this [ProviderContainer].

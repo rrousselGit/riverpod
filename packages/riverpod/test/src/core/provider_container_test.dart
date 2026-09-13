@@ -645,7 +645,7 @@ void main() {
           isPointer(
             targetContainer: container,
             override: null,
-            element: isNotNull,
+            element: isNull,
           ),
         );
       });
@@ -1700,6 +1700,47 @@ void main() {
         verifyOnly(listener, listener(false, true));
       });
 
+      test('reading inherited existence does not initialize the provider', () {
+        final provider = Provider((ref) => 0);
+        final unrelated = Provider((ref) => 0);
+        final root = ProviderContainer.test();
+        final child = ProviderContainer.test(
+          parent: root,
+          overrides: [unrelated.overrideWithValue(1)],
+        );
+
+        expect(child.read(provider.exists), isFalse);
+        expect(root.getAllProviderElements(), isEmpty);
+        expect(child.getAllProviderElements(), isEmpty);
+
+        root.read(provider);
+
+        expect(child.read(provider.exists), isTrue);
+      });
+
+      test('ref.listen existence does not keep its owner alive', () async {
+        final other = Provider((ref) => 0);
+        var disposed = false;
+        late ProviderSubscription<bool> existenceSubscription;
+        final provider = Provider.autoDispose((ref) {
+          existenceSubscription = ref.listen(other.exists, (_, _) {});
+          ref.onDispose(() => disposed = true);
+          return 0;
+        });
+        final container = ProviderContainer.test();
+        final subscription = container.listen(provider, (_, _) {});
+
+        expect(disposed, isFalse);
+        expect(existenceSubscription.closed, isFalse);
+
+        subscription.close();
+        await container.pump();
+
+        expect(disposed, isTrue);
+        expect(existenceSubscription.closed, isTrue);
+        expect(container.read(provider.exists), isFalse);
+      });
+
       test('notifies after an autoDispose provider is removed', () async {
         final provider = Provider.autoDispose((ref) => 0);
         final container = ProviderContainer.test();
@@ -1888,6 +1929,38 @@ void main() {
 
         verifyOnly(listener, listener(false, true));
       });
+
+      test(
+        'closes selected ref.listen existence subscriptions on rebuild',
+        () async {
+          final other = Provider((ref) => 0);
+          final subscriptions = <ProviderSubscription<bool>>[];
+          final notifications = <int>[];
+          final provider = Provider((ref) {
+            final build = subscriptions.length;
+            subscriptions.add(
+              ref.listen(
+                other.exists.select((exists) => exists),
+                (_, _) => notifications.add(build),
+              ),
+            );
+            return 0;
+          });
+          final container = ProviderContainer.test();
+          container.listen(provider, (_, _) {});
+
+          container.invalidate(provider);
+          await container.pump();
+          expect(subscriptions, hasLength(2));
+
+          container.read(other);
+          await container.pump();
+
+          expect(notifications, [1]);
+          expect(subscriptions.first.closed, isTrue);
+          expect(subscriptions.last.closed, isFalse);
+        },
+      );
 
       test('allows callbacks to initialize other observed providers', () async {
         final provider = Provider((ref) => 0);
