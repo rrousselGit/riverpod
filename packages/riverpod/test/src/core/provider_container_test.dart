@@ -1948,6 +1948,33 @@ void main() {
         verifyOnly(listener, listener(false, true));
       });
 
+      test('weak selected existence can be read before any notification', () {
+        var builds = 0;
+        final provider = Provider((ref) => ++builds);
+        final container = ProviderContainer.test();
+        final sub = container.listen(
+          provider.exists.select((exists) => exists),
+          (_, _) {},
+          weak: true,
+        );
+
+        expect(sub.read(), isFalse);
+        expect(builds, 0);
+      });
+
+      test('closes selected existence subscriptions on container disposal', () {
+        final provider = Provider((ref) => 0);
+        final container = ProviderContainer.test();
+        final sub = container.listen(
+          provider.exists.select((exists) => exists),
+          (_, _) {},
+        );
+
+        container.dispose();
+
+        expect(sub.closed, isTrue);
+      });
+
       test(
         'closes selected ref.listen existence subscriptions on rebuild',
         () async {
