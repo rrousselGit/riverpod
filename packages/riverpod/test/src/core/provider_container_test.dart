@@ -1755,6 +1755,28 @@ void main() {
         },
       );
 
+      test(
+        'removes inherited pointers when an existence subscription closes',
+        () {
+          final provider = Provider.autoDispose((ref) => 0);
+          final unrelated = Provider((ref) => 0);
+          final root = ProviderContainer.test();
+          final child = ProviderContainer.test(
+            parent: root,
+            overrides: [unrelated],
+          );
+          final sub = child.listen(provider.exists, (_, _) {});
+
+          expect(root.pointerManager.readPointer(provider), isNotNull);
+          expect(child.pointerManager.readPointer(provider), isNotNull);
+
+          sub.close();
+
+          expect(root.pointerManager.readPointer(provider), isNull);
+          expect(child.pointerManager.readPointer(provider), isNull);
+        },
+      );
+
       test('supports fireImmediately', () {
         final provider = Provider((ref) => 0);
         final container = ProviderContainer.test();

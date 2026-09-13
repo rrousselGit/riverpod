@@ -335,7 +335,7 @@ final class _ExistenceSubscription extends ProviderSubscriptionImpl<bool> {
   void close() {
     if (closed) return;
     pointer.subscriptions.remove(this);
-    pointer.targetContainer._pointerManager.tryRemove(pointer.origin);
+    pointer.targetContainer._recursivePointerRemoval(pointer.origin, pointer);
 
     final owner = _owner;
     if (owner == null) {

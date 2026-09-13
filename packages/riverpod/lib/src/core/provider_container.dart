@@ -1273,7 +1273,7 @@ final class ProviderContainer implements MutationTarget {
   }
 
   void _disposeProvider(ProviderBase<Object?> provider) {
-    final pointer = _pointerManager.tryRemove(provider);
+    final pointer = _pointerManager.readPointer(provider);
     // The provider is already disposed, so we don't need to do anything
     if (pointer == null) return;
 
