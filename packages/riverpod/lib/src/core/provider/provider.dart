@@ -61,16 +61,16 @@ sealed class ProviderBase<StateT> extends ProviderOrFamily
   /// Reading this listenable does not initialize the provider.
   ///
   /// This value represents the 'current value at the time of read'. It is
-  /// possible to have a short race-condition if you check [exist] before
+  /// possible to have a short race-condition if you check [exists] before
   /// listening the associated provider:
   ///
   /// ```dart
   /// print(ref.watch(provider.exist)); // false initially
   /// ref.watch(provider); // `provider` was mounted right after the exist check
   /// ```
-  ProviderListenable<bool> get exist => _exist;
+  ProviderListenable<bool> get exists => _exists;
 
-  late final _ExistenceListenable _exist = _ExistenceListenable(this);
+  late final _ExistenceListenable _exists = _ExistenceListenable(this);
 
   /// An internal method that defines how a provider behaves.
   /// @nodoc

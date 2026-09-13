@@ -1655,8 +1655,8 @@ void main() {
       test('exist listenables compare equal for the same provider', () {
         final provider = Provider((ref) => 0);
 
-        expect(provider.exist, provider.exist);
-        expect({provider.exist}, contains(provider.exist));
+        expect(provider.exists, provider.exists);
+        expect({provider.exists}, contains(provider.exists));
       });
 
       test('is reactive without initializing the provider', () async {
@@ -1664,13 +1664,13 @@ void main() {
         final container = ProviderContainer.test();
         final listener = Listener<bool>();
 
-        expect(container.read(provider.exist), false);
+        expect(container.read(provider.exists), false);
         expect(
           container.getAllProviderElements().map((e) => e.origin),
           isNot(contains(provider)),
         );
 
-        container.listen(provider.exist, listener.call);
+        container.listen(provider.exists, listener.call);
 
         container.read(provider);
 
@@ -1689,7 +1689,7 @@ void main() {
         );
         final listener = Listener<bool>();
 
-        child.listen(provider.exist, listener.call);
+        child.listen(provider.exists, listener.call);
 
         root.read(provider);
         await root.pump();
@@ -1705,9 +1705,9 @@ void main() {
         final container = ProviderContainer.test();
         final listener = Listener<bool>();
 
-        container.listen(provider.exist, listener.call);
+        container.listen(provider.exists, listener.call);
 
-        expect(container.read(provider.exist), false);
+        expect(container.read(provider.exists), false);
         final providerSub = container.listen(provider, (_, _) {});
         await container.pump();
 
@@ -1729,7 +1729,7 @@ void main() {
         () {
           final provider = Provider.autoDispose((ref) => 0);
           final container = ProviderContainer.test();
-          final sub = container.listen(provider.exist, (_, _) {});
+          final sub = container.listen(provider.exists, (_, _) {});
 
           expect(container.pointerManager.readPointer(provider), isNotNull);
           expect(container.pointerManager.readElement(provider), isNull);
@@ -1745,7 +1745,7 @@ void main() {
         final container = ProviderContainer.test();
         final listener = Listener<bool>();
 
-        container.listen(provider.exist, listener.call, fireImmediately: true);
+        container.listen(provider.exists, listener.call, fireImmediately: true);
 
         verifyOnly(listener, listener(null, false));
       });
@@ -1760,12 +1760,12 @@ void main() {
             family.overrideWith((ref, value) => value),
           ],
         );
-        final sub = container.listen(provider.exist, (_, _) {});
+        final sub = container.listen(provider.exists, (_, _) {});
         final overriddenSub = container.listen(
-          overriddenProvider.exist,
+          overriddenProvider.exists,
           (_, _) {},
         );
-        final familySub = container.listen(family(0).exist, (_, _) {});
+        final familySub = container.listen(family(0).exists, (_, _) {});
 
         container.dispose();
 
@@ -1780,7 +1780,7 @@ void main() {
         final listener = Listener<bool>();
 
         container.listen(
-          provider.exist.select((exists) => exists),
+          provider.exists.select((exists) => exists),
           listener.call,
           fireImmediately: true,
         );
@@ -1801,12 +1801,12 @@ void main() {
         final providerListener = Listener<bool>();
 
         final dependencySub = container.listen(
-          dependency.exist,
+          dependency.exists,
           dependencyListener.call,
           fireImmediately: true,
         );
         final providerSub = container.listen(
-          provider.exist,
+          provider.exists,
           fireImmediately: true,
           (prev, next) {
             providerListener(prev, next);
