@@ -82,8 +82,9 @@ class $ProviderPointer implements _PointerBase {
       providerOverride != null &&
       providerOverride is! TransitiveProviderOverride;
 
-  bool get removable =>
-      !permanent && !(element?._didMount ?? false) && subscriptions.isEmpty;
+  // An unmounted element may already hold weak listeners. Keep its pointer
+  // until the element is disposed so those listeners survive initialization.
+  bool get removable => !permanent && element == null && subscriptions.isEmpty;
 
   final ProviderBase<Object?> origin;
 

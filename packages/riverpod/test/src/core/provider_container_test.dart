@@ -1680,6 +1680,24 @@ void main() {
         expect(container.exists(provider), true);
       });
 
+      test(
+        'reading existence preserves weak listeners before initialization',
+        () {
+          final provider = Provider((ref) => 42);
+          final container = ProviderContainer.test();
+          final listener = Listener<int>();
+
+          container.listen(provider, listener.call, weak: true);
+
+          container.read(provider.exists);
+          verifyZeroInteractions(listener);
+
+          expect(container.read(provider), 42);
+
+          verifyOnly(listener, listener(null, 42));
+        },
+      );
+
       test('follows provider overrides in child containers', () async {
         final provider = Provider((ref) => 0);
         final root = ProviderContainer.test();
