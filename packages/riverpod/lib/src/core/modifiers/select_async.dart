@@ -52,6 +52,8 @@ final class _AsyncSelector<InputT, OutputT>
         selectedCompleter!.complete(data);
         selectedCompleter = null;
       } else {
+        if (providerSub.closed) return;
+
         selectedFuture = Future.value(data);
         if (callListeners) {
           providerSub._notifyData(previousFuture, selectedFuture!);
@@ -70,6 +72,8 @@ final class _AsyncSelector<InputT, OutputT>
         selectedCompleter!.completeError(error, stack);
         selectedCompleter = null;
       } else {
+        if (providerSub.closed) return;
+
         selectedFuture = Future.error(error, stack);
         if (callListeners) {
           providerSub._notifyData(previousFuture, selectedFuture!);
