@@ -118,10 +118,7 @@ class MyWidget extends ConsumerWidget {
       expect(result.widgetRefWatchInvocations, hasLength(3));
       expect(result.widgetRefInvocations, result.widgetRefWatchInvocations);
 
-      expect(
-        result.widgetRefWatchInvocations[0].node.toSource(),
-        'watch(dep)',
-      );
+      expect(result.widgetRefWatchInvocations[0].node.toSource(), 'watch(dep)');
       expect(result.widgetRefWatchInvocations[0].function.toSource(), 'watch');
       expect(
         result.widgetRefWatchInvocations[0].listenable.node.toSource(),
