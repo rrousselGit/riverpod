@@ -6,12 +6,12 @@ import 'package:riverpod/riverpod.dart';
 import '../activity/raw.dart';
 
 /* SNIPPET START */
-final activityProvider = FutureProvider.autoDispose<Activity>((ref) async {
+final breweryProvider = FutureProvider.autoDispose<Brewery>((ref) async {
   final response = await http.get(
-    Uri.https('www.boredapi.com', '/api/activity'),
+    Uri.https('api.openbrewerydb.org', '/v1/breweries/random'),
   );
 
-  final json = jsonDecode(response.body) as Map;
-  return Activity.fromJson(json);
+  final json = (jsonDecode(response.body) as List).first as Map;
+  return Brewery.fromJson(json);
 });
 /* SNIPPET END */

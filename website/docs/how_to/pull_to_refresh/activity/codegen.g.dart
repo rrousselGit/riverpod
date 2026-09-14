@@ -8,16 +8,16 @@ part of 'codegen.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_Activity _$ActivityFromJson(Map<String, dynamic> json) => _Activity(
-  activity: json['activity'] as String,
-  type: json['type'] as String,
-  participants: (json['participants'] as num).toInt(),
-  price: (json['price'] as num).toDouble(),
+_Brewery _$BreweryFromJson(Map<String, dynamic> json) => _Brewery(
+  name: json['name'] as String,
+  breweryType: json['brewery_type'] as String,
+  city: json['city'] as String,
+  country: json['country'] as String,
 );
 
-Map<String, dynamic> _$ActivityToJson(_Activity instance) => <String, dynamic>{
-  'activity': instance.activity,
-  'type': instance.type,
-  'participants': instance.participants,
-  'price': instance.price,
+Map<String, dynamic> _$BreweryToJson(_Brewery instance) => <String, dynamic>{
+  'name': instance.name,
+  'brewery_type': instance.breweryType,
+  'city': instance.city,
+  'country': instance.country,
 };
