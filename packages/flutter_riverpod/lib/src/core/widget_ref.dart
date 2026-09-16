@@ -146,6 +146,7 @@ sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
   ///   return Item.fromJson(json);
   /// });
   /// ```
+  @Deprecated('Use `ref.read/watch/listen(provider.exist)` instead')
   @override
   bool exists(ProviderBase<Object?> provider);
 
