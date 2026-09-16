@@ -6,7 +6,16 @@ import 'package:test/test.dart';
 
 import '../../utils.dart';
 
+class _StringNotifier extends Notifier<String> {
+  @override
+  String build() => 'Hello';
+}
+
 void main() {
+  final stringProvider = NotifierProvider<_StringNotifier, String>(
+    _StringNotifier.new,
+  );
+
   group('provider.select', () {
     test('handles when the selector throws', () {
       final provider = Provider((ref) => Object());
@@ -167,14 +176,13 @@ void main() {
         'already mounted by a strong listener before the weak listener was added',
         () {
           final container = ProviderContainer.test();
-          final provider = StateProvider((ref) => 'Hello');
 
           // A strong listener mounts the provider first, which is the whole
           // point of a weak listener: something else keeps it alive.
-          container.listen(provider, (previous, next) {});
+          container.listen(stringProvider, (previous, next) {});
 
           final sub = container.listen(
-            provider.select((value) => value[0]),
+            stringProvider.select((value) => value[0]),
             (previous, next) {},
             weak: true,
           );
@@ -185,17 +193,16 @@ void main() {
 
       test('supports two weak listeners on an already-mounted provider', () {
         final container = ProviderContainer.test();
-        final provider = StateProvider((ref) => 'Hello');
 
-        container.listen(provider, (previous, next) {});
+        container.listen(stringProvider, (previous, next) {});
 
         final subA = container.listen(
-          provider.select((value) => value[0]),
+          stringProvider.select((value) => value[0]),
           (previous, next) {},
           weak: true,
         );
         final subB = container.listen(
-          provider.select((value) => value.toUpperCase()),
+          stringProvider.select((value) => value.toUpperCase()),
           (previous, next) {},
           weak: true,
         );
@@ -206,12 +213,11 @@ void main() {
 
       test('supports reading the same weak subscription twice', () {
         final container = ProviderContainer.test();
-        final provider = StateProvider((ref) => 'Hello');
 
-        container.listen(provider, (previous, next) {});
+        container.listen(stringProvider, (previous, next) {});
 
         final sub = container.listen(
-          provider.select((value) => value[0]),
+          stringProvider.select((value) => value[0]),
           (previous, next) {},
           weak: true,
         );
@@ -224,19 +230,18 @@ void main() {
         'does not return a stale cached value once the selected value changes',
         () {
           final container = ProviderContainer.test();
-          final provider = StateProvider((ref) => 'Hello');
 
-          container.listen(provider, (previous, next) {});
+          container.listen(stringProvider, (previous, next) {});
 
           final sub = container.listen(
-            provider.select((value) => value[0]),
+            stringProvider.select((value) => value[0]),
             (previous, next) {},
             weak: true,
           );
 
           expect(sub.read(), 'H');
 
-          container.read(provider.notifier).state = 'World';
+          container.read(stringProvider.notifier).state = 'World';
 
           expect(sub.read(), 'W');
         },
