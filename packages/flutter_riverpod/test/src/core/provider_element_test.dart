@@ -63,4 +63,52 @@ void main() {
           'never rebuilt',
     );
   });
+
+  testWidgets(
+    'resuming a TickerMode consumer with a diamond dependency does not throw',
+    (tester) async {
+      // https://github.com/rrousselGit/riverpod/issues/4882
+      final container = ProviderContainer.test();
+      addTearDown(container.dispose);
+
+      final seed = NotifierProvider<DeferredNotifier<int>, int>(
+        () => DeferredNotifier((ref, self) => 0),
+      );
+      final shared = Provider<int>((ref) => ref.watch(seed));
+      final left = Provider<int>((ref) => ref.watch(shared) + 1);
+      final rightLeaf = Provider<int>((ref) => ref.watch(shared) * 2);
+      final right = Provider<int>((ref) => ref.watch(rightLeaf));
+      final top = Provider<int>(
+        (ref) => ref.watch(left) + ref.watch(right),
+      );
+
+      Widget app({required bool enabled}) {
+        return UncontrolledProviderScope(
+          container: container,
+          child: TickerMode(
+            enabled: enabled,
+            child: Consumer(
+              builder: (context, ref, _) {
+                final value = ref.watch(top);
+                return Text('$value', textDirection: TextDirection.ltr);
+              },
+            ),
+          ),
+        );
+      }
+
+      await tester.pumpWidget(app(enabled: true));
+      expect(find.text('1'), findsOneWidget);
+
+      await tester.pumpWidget(app(enabled: false));
+      container.read(seed.notifier).state++;
+
+      await tester.pumpWidget(app(enabled: true));
+      expect(find.text('4'), findsOneWidget);
+
+      container.read(seed.notifier).state++;
+      await tester.pump();
+      expect(find.text('7'), findsOneWidget);
+    },
+  );
 }
