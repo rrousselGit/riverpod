@@ -1,0 +1,34 @@
+name: PR 4884 full flutter_riverpod validation
+
+on:
+  push:
+    branches:
+      - fix-ticker-mode-diamond-resume
+
+permissions:
+  contents: write
+
+jobs:
+  full-flutter-riverpod-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+      - name: Resolve flutter_riverpod dependencies
+        working-directory: packages/flutter_riverpod
+        run: flutter pub get
+      - name: Format check changed Dart files
+        run: dart format --output=none --set-exit-if-changed packages/riverpod/lib/src/core/provider_subscription.dart packages/riverpod/lib/src/core/scheduler.dart packages/flutter_riverpod/test/framework_test.dart
+      - name: Run full flutter_riverpod test suite
+        working-directory: packages/flutter_riverpod
+        run: flutter test
+      - name: Remove temporary validation workflow
+        run: |
+          git config user.name "Yazan Arafeh"
+          git config user.email "32390922+yazanmg@users.noreply.github.com"
+          git rm .github/workflows/pr4884-full-package.yml
+          git commit -m "ci: remove temporary PR 4884 full validation"
+          git push origin HEAD:fix-ticker-mode-diamond-resume
