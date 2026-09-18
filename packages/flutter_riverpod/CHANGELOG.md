@@ -1,3 +1,7 @@
+## Unreleased fix
+
+- Fix a `setState() or markNeedsBuild() called during build` error when resuming a consumer with a diamond-shaped provider dependency graph. (thanks to @yazanmg)
+
 ## 3.4.3 - 2026-09-04
 ### Dependency changes
 
