@@ -309,49 +309,15 @@ final class _UncontrolledProviderScopeState
     assert(mounted, 'Cannot schedule a task on an unmounted element');
   }
 
-  bool _shouldDeferTickerModeRefresh() {
-    final consumer = _tickerModeResumingConsumer;
-    if (consumer == null) return false;
-
-    Element? resumingTickerMode;
-    consumer.visitAncestorElements((ancestor) {
-      if (ancestor.widget is TickerMode) {
-        resumingTickerMode = ancestor;
-        return false;
-      }
-      return true;
-    });
-
-    final tickerMode = resumingTickerMode;
-    if (tickerMode == null) return false;
-
-    var isInsideResumingTickerMode = false;
-    context.visitAncestorElements((ancestor) {
-      if (identical(ancestor, tickerMode)) {
-        isInsideResumingTickerMode = true;
-        return false;
-      }
-      return true;
-    });
-
-    return !isInsideResumingTickerMode;
-  }
-
   @override
   void Function()? scheduleRefresh(Task task) {
     _debugAssertCanScheduleTask(task);
     _cancelAsyncTask?.call();
     _cancelAsyncTask = null;
 
-    if (_shouldDeferTickerModeRefresh()) {
-      // Resuming a Consumer may flush providers while its subtree is building.
-      // Let the existing vsync timer dirty this scope after that build.
+    setState(() {
       _task = task;
-    } else {
-      setState(() {
-        _task = task;
-      });
-    }
+    });
 
     _vsyncTimer?.cancel();
     _vsyncTimer = Timer(Duration.zero, () {

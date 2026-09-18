@@ -360,8 +360,6 @@ abstract class ConsumerState<WidgetT extends ConsumerStatefulWidget>
   late final ref = context as WidgetRef;
 }
 
-ConsumerStatefulElement? _tickerModeResumingConsumer;
-
 /// The [Element] for a [ConsumerStatefulWidget]
 @internal
 base class ConsumerStatefulElement extends StatefulElement
@@ -423,18 +421,10 @@ base class ConsumerStatefulElement extends StatefulElement
     final isActive = _tickerModeNotifier!.value;
     if (isActive != _isActive) {
       _isActive = isActive;
-      if (isActive) {
-        final previousResumingConsumer = _tickerModeResumingConsumer;
-        _tickerModeResumingConsumer = this;
-        try {
-          for (final sub in _dependencies.values) {
-            sub.resume();
-          }
-        } finally {
-          _tickerModeResumingConsumer = previousResumingConsumer;
-        }
-      } else {
-        for (final sub in _dependencies.values) {
+      for (final sub in _dependencies.values) {
+        if (isActive) {
+          sub.resume();
+        } else {
           sub.pause();
         }
       }
