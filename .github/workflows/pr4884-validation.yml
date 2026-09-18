@@ -1,0 +1,19 @@
+name: PR 4884 targeted validation
+
+on:
+  push:
+    branches:
+      - fix-ticker-mode-diamond-resume
+
+jobs:
+  flutter-riverpod-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2.21.0
+        with:
+          channel: master
+      - run: flutter pub get
+      - name: Run targeted regression tests
+        working-directory: packages/flutter_riverpod
+        run: flutter test test/src/core/provider_element_test.dart
