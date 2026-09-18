@@ -182,9 +182,11 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
       return;
     }
 
-    _listenedElement?.onSubscriptionResumeOrReactivate(this, applyResume);
-    if (_listenedElement == null) applyResume();
-    _listenedElement?.flush();
+    container.scheduler.runWithDeferredRefreshScheduling(() {
+      _listenedElement?.onSubscriptionResumeOrReactivate(this, applyResume);
+      if (_listenedElement == null) applyResume();
+      _listenedElement?.flush();
+    });
   }
 
   @mustCallSuper
