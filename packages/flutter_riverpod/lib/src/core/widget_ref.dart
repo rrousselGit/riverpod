@@ -218,6 +218,16 @@ sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
   /// Listeners will automatically be removed if a widget rebuilds and stops
   /// listening to a provider.
   ///
+  /// - [pauseWhenInactive] (false by default) can be optionally passed to have
+  ///   the subscription paused for as long as the widget is not visible
+  ///   (based off [TickerMode], like [watch] is).
+  ///   By default, [listen] keeps notifying its `listener` even when the
+  ///   widget is not visible. That is because [listen] is typically used for
+  ///   side-effects, and it is generally undesirable for a side-effect to
+  ///   silently stop.
+  ///
+  ///   {@macro riverpod.pause}
+  ///
   /// See also:
   /// - [listenManual], for listening to a provider from outside `build`.
   /// - [watch], to listen to providers in a declarative manner.
@@ -230,6 +240,7 @@ sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
     void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool weak = false,
+    bool pauseWhenInactive = false,
   });
 
   /// Listen to a provider and call `listener` whenever its value changes.
@@ -246,6 +257,12 @@ sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
   /// It is not necessary to call [ProviderSubscription.close] inside [State.dispose].
   /// When the widget that calls [listenManual] is disposed, the subscription
   /// will be disposed automatically.
+  ///
+  /// - [pauseWhenInactive] (false by default) can be optionally passed to have
+  ///   the subscription paused for as long as the widget is not visible
+  ///   (based off [TickerMode], like [watch] is).
+  ///
+  ///   {@macro riverpod.pause}
   @override
   ProviderSubscription<StateT> listenManual<StateT>(
     ProviderListenable<StateT> provider,
@@ -253,6 +270,7 @@ sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately,
     bool weak = false,
+    bool pauseWhenInactive = false,
   });
 
   /// Reads a provider without listening to it.

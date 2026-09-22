@@ -1,5 +1,6 @@
 ---
 title: Refs
+version: 2
 ---
 import { Link } from "/src/components/Link";
 import {
@@ -248,6 +249,35 @@ It is safe to use [WidgetRef.listen] inside the `build` method of a widget. This
 method is designed to be used.  
 If you want to listen to providers outside of `build` (such as `State.initState`), use [WidgetRef.listenManual] instead.
 :::
+
+##### Pausing a listener
+
+Riverpod pauses providers that nothing listens to, and widgets that are not visible.
+[Ref.watch] follows that: a paused provider stops watching its dependencies.
+
+[Ref.listen] does not. Its listener keeps being called even while the provider is
+paused. This is on purpose: listeners typically perform side-effects, and silently
+dropping a side-effect is rarely what you want.
+
+When you'd rather have a listener stop along with its provider (or its widget), pass
+`pauseWhenInactive: true`:
+
+```dart
+ref.listen(
+  tickProvider,
+  (previous, next) {
+    print('Tick changed from $previous to $next');
+  },
+  pauseWhenInactive: true,
+);
+```
+
+The listener then stops being called for as long as the provider is paused (or, inside a
+widget, for as long as the widget is not visible). If events were emitted in the
+meantime, the listener receives the last one upon resuming.
+
+This is useful for listeners that hold onto a resource, such as a socket that you want
+to close while the screen using it is not visible.
 
 
 ### Resetting a provider's state

@@ -1086,6 +1086,339 @@ void main() {
         verifyZeroInteractions(listener);
       });
 
+      group('pauseWhenInactive', () {
+        test('defaults to false, so the listener fires while paused', () {
+          final container = ProviderContainer.test();
+          final dep = StateProvider((ref) => 0);
+          final listener = Listener<int>();
+          final provider = Provider<void>((ref) {
+            ref.listen(dep, listener.call);
+          });
+
+          // Keeps `dep` active while `provider` is paused.
+          container.listen(dep, (_, _) {});
+          final sub = container.listen(provider, (_, _) {});
+
+          sub.pause();
+          container.read(dep.notifier).state = 42;
+
+          verifyOnly(listener, listener(0, 42));
+        });
+
+        test('stops notifying the listener while the provider is paused', () {
+          final container = ProviderContainer.test();
+          final dep = StateProvider((ref) => 0);
+          final listener = Listener<int>();
+          final provider = Provider<void>((ref) {
+            ref.listen(dep, listener.call, pauseWhenInactive: true);
+          });
+
+          container.listen(dep, (_, _) {});
+          final sub = container.listen(provider, (_, _) {});
+
+          sub.pause();
+          container.read(dep.notifier).state = 42;
+
+          verifyZeroInteractions(listener);
+        });
+
+        test('notifies the last missed event when the provider resumes', () {
+          final container = ProviderContainer.test();
+          final dep = StateProvider((ref) => 0);
+          final listener = Listener<int>();
+          final provider = Provider<void>((ref) {
+            ref.listen(dep, listener.call, pauseWhenInactive: true);
+          });
+
+          container.listen(dep, (_, _) {});
+          final sub = container.listen(provider, (_, _) {});
+
+          sub.pause();
+          container.read(dep.notifier).state = 21;
+          container.read(dep.notifier).state = 42;
+
+          verifyZeroInteractions(listener);
+
+          sub.resume();
+
+          verifyOnly(listener, listener(21, 42));
+        });
+
+        test('notifies the last missed error when the provider resumes', () {
+          final container = ProviderContainer.test();
+          final stack = StackTrace.current;
+          late Error toThrow;
+          final dep = Provider<void>((ref) {
+            Error.throwWithStackTrace(toThrow, stack);
+          });
+          final errorListener = ErrorListener();
+          final provider = Provider<void>((ref) {
+            ref.listen(
+              dep,
+              (_, _) {},
+              onError: errorListener.call,
+              pauseWhenInactive: true,
+            );
+          });
+
+          final err = Error();
+          final err2 = Error();
+          toThrow = err;
+
+          container.listen(dep, (_, _) {}, onError: (_, _) {});
+          final sub = container.listen(provider, (_, _) {});
+
+          sub.pause();
+
+          toThrow = err2;
+          try {
+            container.refresh(dep);
+          } catch (e) {
+            // Will rethrow the error, but we don't care about it here
+          }
+
+          verifyZeroInteractions(errorListener);
+
+          sub.resume();
+
+          verifyOnly(errorListener, errorListener(err2, stack));
+        });
+
+        test('does not notify the listener if no event was missed', () {
+          final container = ProviderContainer.test();
+          final dep = StateProvider((ref) => 0);
+          final listener = Listener<int>();
+          final provider = Provider<void>((ref) {
+            ref.listen(dep, listener.call, pauseWhenInactive: true);
+          });
+
+          container.listen(dep, (_, _) {});
+          final sub = container.listen(provider, (_, _) {});
+
+          sub.pause();
+          sub.resume();
+
+          verifyZeroInteractions(listener);
+        });
+
+        test('keeps notifying the listener after the provider resumed', () {
+          final container = ProviderContainer.test();
+          final dep = StateProvider((ref) => 0);
+          final listener = Listener<int>();
+          final provider = Provider<void>((ref) {
+            ref.listen(dep, listener.call, pauseWhenInactive: true);
+          });
+
+          container.listen(dep, (_, _) {});
+          final sub = container.listen(provider, (_, _) {});
+
+          sub.pause();
+          sub.resume();
+
+          container.read(dep.notifier).state = 42;
+
+          verifyOnly(listener, listener(0, 42));
+        });
+
+        test('pauses the subscription if the provider is already paused', () {
+          final container = ProviderContainer.test();
+          final dep = StateProvider((ref) => 0);
+          final listener = Listener<int>();
+          late Ref providerRef;
+          final provider = Provider<void>((ref) {
+            providerRef = ref;
+          });
+
+          container.listen(dep, (_, _) {});
+          final sub = container.listen(provider, (_, _) {});
+
+          sub.pause();
+
+          // Simulates `listen` being called outside of `build`, such as from
+          // a Notifier method or after an asynchronous gap.
+          providerRef.listen(dep, listener.call, pauseWhenInactive: true);
+
+          container.read(dep.notifier).state = 42;
+
+          verifyZeroInteractions(listener);
+
+          sub.resume();
+
+          verifyOnly(listener, listener(0, 42));
+        });
+
+        test('fireImmediately notifies even if the provider is paused', () {
+          final container = ProviderContainer.test();
+          final dep = StateProvider((ref) => 0);
+          final listener = Listener<int>();
+          late Ref providerRef;
+          final provider = Provider<void>((ref) {
+            providerRef = ref;
+          });
+
+          container.listen(dep, (_, _) {});
+          final sub = container.listen(provider, (_, _) {});
+
+          sub.pause();
+
+          providerRef.listen(
+            dep,
+            listener.call,
+            fireImmediately: true,
+            pauseWhenInactive: true,
+          );
+
+          verifyOnly(listener, listener(null, 0));
+
+          // Only the immediate notification is emitted. Later events are
+          // withheld until the provider resumes.
+          container.read(dep.notifier).state = 42;
+
+          verifyNoMoreInteractions(listener);
+
+          sub.resume();
+
+          verifyOnly(listener, listener(0, 42));
+        });
+
+        test('a manually paused subscription needs a manual resume', () {
+          final container = ProviderContainer.test();
+          final dep = StateProvider((ref) => 0);
+          final listener = Listener<int>();
+          late ProviderSubscription<int> depSub;
+          final provider = Provider<void>((ref) {
+            depSub = ref.listen(dep, listener.call, pauseWhenInactive: true);
+          });
+
+          container.listen(dep, (_, _) {});
+          final sub = container.listen(provider, (_, _) {});
+
+          depSub.pause();
+          sub.pause();
+
+          container.read(dep.notifier).state = 42;
+
+          sub.resume();
+
+          verifyZeroInteractions(listener);
+
+          depSub.resume();
+
+          verifyOnly(listener, listener(0, 42));
+        });
+
+        test('closing a paused subscription does not notify on resume', () {
+          final container = ProviderContainer.test();
+          final dep = StateProvider((ref) => 0);
+          final listener = Listener<int>();
+          late ProviderSubscription<int> depSub;
+          final provider = Provider<void>((ref) {
+            depSub = ref.listen(dep, listener.call, pauseWhenInactive: true);
+          });
+
+          container.listen(dep, (_, _) {});
+          final sub = container.listen(provider, (_, _) {});
+
+          sub.pause();
+          depSub.close();
+          sub.resume();
+
+          container.read(dep.notifier).state = 42;
+
+          verifyZeroInteractions(listener);
+        });
+
+        test('a closed subscription is unaffected by pause/resume', () {
+          final container = ProviderContainer.test();
+          final dep = StateProvider((ref) => 0);
+          final listener = Listener<int>();
+          late ProviderSubscription<int> depSub;
+          final provider = Provider<void>((ref) {
+            depSub = ref.listen(dep, listener.call, pauseWhenInactive: true);
+          });
+
+          container.listen(dep, (_, _) {});
+          final sub = container.listen(provider, (_, _) {});
+
+          depSub.close();
+
+          sub.pause();
+          sub.resume();
+
+          container.read(dep.notifier).state = 42;
+
+          verifyZeroInteractions(listener);
+        });
+
+        test('does not pause the listeners of other providers', () {
+          final container = ProviderContainer.test();
+          final dep = StateProvider((ref) => 0);
+          final pausedListener = Listener<int>();
+          final activeListener = Listener<int>();
+          final paused = Provider<void>((ref) {
+            ref.listen(dep, pausedListener.call, pauseWhenInactive: true);
+          });
+          final active = Provider<void>((ref) {
+            ref.listen(dep, activeListener.call, pauseWhenInactive: true);
+          });
+
+          final pausedSub = container.listen(paused, (_, _) {});
+          container.listen(active, (_, _) {});
+
+          pausedSub.pause();
+          container.read(dep.notifier).state = 42;
+
+          verifyZeroInteractions(pausedListener);
+          verifyOnly(activeListener, activeListener(0, 42));
+        });
+
+        test('supports weak listeners', () {
+          final container = ProviderContainer.test();
+          final dep = StateProvider((ref) => 0);
+          final listener = Listener<int>();
+          final provider = Provider<void>((ref) {
+            ref.listen(dep, listener.call, weak: true, pauseWhenInactive: true);
+          });
+
+          container.listen(dep, (_, _) {});
+          final sub = container.listen(provider, (_, _) {});
+
+          sub.pause();
+          container.read(dep.notifier).state = 42;
+
+          verifyZeroInteractions(listener);
+
+          sub.resume();
+
+          verifyOnly(listener, listener(0, 42));
+        });
+
+        test('supports listenables such as select', () {
+          final container = ProviderContainer.test();
+          final dep = StateProvider((ref) => 0);
+          final listener = Listener<bool>();
+          final provider = Provider<void>((ref) {
+            ref.listen(
+              dep.select((value) => value.isEven),
+              listener.call,
+              pauseWhenInactive: true,
+            );
+          });
+
+          container.listen(dep, (_, _) {});
+          final sub = container.listen(provider, (_, _) {});
+
+          sub.pause();
+          container.read(dep.notifier).state = 1;
+
+          verifyZeroInteractions(listener);
+
+          sub.resume();
+
+          verifyOnly(listener, listener(true, false));
+        });
+      });
+
       group('weak', () {
         test('Mounts the element but does not initialize the provider', () {
           final container = ProviderContainer.test();
