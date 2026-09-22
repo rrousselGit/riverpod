@@ -71,6 +71,42 @@ class ProviderScheduler {
   void Function()? _cancelTask;
   var _taskUsesVsync = false;
   var _pendingTaskNeedsRefresh = false;
+  var _deferRefreshSchedulingCount = 0;
+  var _deferredRefreshPending = false;
+  var _deferredRefreshMicrotaskScheduled = false;
+
+  /// Runs [cb] while deferring refresh scheduling until the current synchronous
+  /// operation completes.
+  ///
+  /// This is used when resuming a subscription synchronously flushes a provider
+  /// graph. A dependency may invalidate a sibling branch while that graph is
+  /// still being reconciled, in which case scheduling a refresh immediately is
+  /// redundant and can re-enter host-framework scheduling from the middle of the
+  /// synchronous flush.
+  T runWithDeferredRefreshScheduling<T>(T Function() cb) {
+    _deferRefreshSchedulingCount++;
+    try {
+      return cb();
+    } finally {
+      _deferRefreshSchedulingCount--;
+      if (_deferRefreshSchedulingCount == 0 && _deferredRefreshPending) {
+        _deferredRefreshPending = false;
+        _scheduleDeferredRefreshMicrotask();
+      }
+    }
+  }
+
+  void _scheduleDeferredRefreshMicrotask() {
+    if (_deferredRefreshMicrotaskScheduled || _disposed) return;
+    _deferredRefreshMicrotaskScheduled = true;
+
+    Future.microtask(() {
+      _deferredRefreshMicrotaskScheduled = false;
+      if (_disposed || stateToRefresh.isEmpty) return;
+
+      _scheduleTask(taskNeedsRefresh: true);
+    });
+  }
 
   /// Schedules a provider to be refreshed.
   ///
@@ -82,6 +118,11 @@ class ProviderScheduler {
       'Tried to refresh ${element.origin}, but it does not belong to this scheduler',
     );
     stateToRefresh.add(element);
+
+    if (_deferRefreshSchedulingCount > 0) {
+      _deferredRefreshPending = true;
+      return;
+    }
 
     _scheduleTask(taskNeedsRefresh: true);
   }
@@ -252,6 +293,7 @@ class ProviderScheduler {
   /// Disposes the scheduler.
   void dispose() {
     _disposed = true;
+    _deferredRefreshPending = false;
     _pendingTaskCompleter?.complete();
     _pendingTaskCompleter = null;
     _pendingTask = null;
