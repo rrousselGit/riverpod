@@ -276,8 +276,14 @@ The listener then stops being called for as long as the provider is paused (or, 
 widget, for as long as the widget is not visible). If events were emitted in the
 meantime, the listener receives the last one upon resuming.
 
-This is useful for listeners that hold onto a resource, such as a socket that you want
-to close while the screen using it is not visible.
+This is useful for side-effects that only make sense while the user is looking at the
+screen, such as showing a snackbar or playing a sound. Rather than firing for a screen
+nobody can see, the listener stays quiet and catches up on the latest value once the
+screen is visible again.
+
+Note that `pauseWhenInactive` only withholds notifications. It does not notify you when
+the provider becomes paused, so it cannot be used to release a resource. Use
+[Ref.onCancel]/[Ref.onResume] for that.
 
 
 ### Resetting a provider's state
@@ -422,6 +428,8 @@ unregister();
 [Ref]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref-class.html
 [Ref.watch]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/watch.html
 [Ref.listen]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/listen.html
+[Ref.onCancel]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/onCancel.html
+[Ref.onResume]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/onResume.html
 [Ref.invalidate]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/invalidate.html
 [Ref.refresh]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/refresh.html
 [Ref.read]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/read.html
