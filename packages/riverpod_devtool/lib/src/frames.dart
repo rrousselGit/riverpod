@@ -312,8 +312,11 @@ class FrameStepper extends HookConsumerWidget {
 
     void select(FrameId frame) {
       onSelect(frame);
+    }
 
-      // Scroll to selected frame
+    void scrollToFrame(FrameId frame) {
+      if (!controller.hasClients) return;
+
       final framesValue = frames.value;
       if (framesValue == null) return;
 
@@ -339,6 +342,17 @@ class FrameStepper extends HookConsumerWidget {
         );
       }
     }
+
+    // Keep the stepper scrolled to the selected frame, whether the
+    // selection changed from a manual tap/button press or automatically
+    // (e.g. a new frame streaming in becomes the selected one).
+    useEffect(() {
+      final frame = selectedFrame;
+      if (frame != null) {
+        scrollToFrame(frame.id);
+      }
+      return null;
+    }, [selectedFrame, frames]);
 
     switch (frames) {
       case AsyncValue(:final value?):
