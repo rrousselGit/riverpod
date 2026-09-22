@@ -406,6 +406,19 @@ base class ConsumerStatefulElement extends StatefulElement
     if (_isActive == false) sub.pause();
   }
 
+  /// The subscriptions which pause while the widget is not visible.
+  ///
+  /// This is all of [watch], plus the [listen]/[listenManual] subscriptions
+  /// which opted into `pauseWhenInactive`.
+  Iterable<ProviderSubscription<Object?>> get _pausableSubscriptions sync* {
+    yield* _dependencies.values;
+    yield* _listeners.where((sub) => sub.impl.pauseWhenInactive);
+    final manualListeners = _manualListeners;
+    if (manualListeners != null) {
+      yield* manualListeners.where((sub) => sub.impl.pauseWhenInactive);
+    }
+  }
+
   void _updateTickerModeNotifier() {
     final newTickerModeNotifier = TickerMode.getNotifier(context);
 
@@ -421,7 +434,12 @@ base class ConsumerStatefulElement extends StatefulElement
     final isActive = _tickerModeNotifier!.value;
     if (isActive != _isActive) {
       _isActive = isActive;
-      for (final sub in _dependencies.values) {
+      // Copied, as resuming a subscription notifies its listener, which may
+      // in turn close subscriptions.
+      for (final sub in _pausableSubscriptions.toList()) {
+        // The subscription may have been closed by a previous listener.
+        if (sub.closed) continue;
+
         if (isActive) {
           sub.resume();
         } else {
@@ -532,6 +550,7 @@ base class ConsumerStatefulElement extends StatefulElement
     void Function(StateT? previous, StateT value) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool weak = false,
+    bool pauseWhenInactive = false,
   }) {
     _assertNotDisposed();
     assert(
@@ -549,6 +568,11 @@ base class ConsumerStatefulElement extends StatefulElement
       weak: weak,
     );
     _listeners.add(sub);
+
+    if (pauseWhenInactive) {
+      sub.impl.pauseWhenInactive = true;
+      _applyTickerMode(sub);
+    }
   }
 
   @Deprecated('Use `ref.read/watch/listen(provider.exist)` instead')
@@ -583,6 +607,7 @@ base class ConsumerStatefulElement extends StatefulElement
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately = false,
     bool weak = false,
+    bool pauseWhenInactive = false,
   }) {
     _assertNotDisposed();
     final listeners = _manualListeners ??= [];
@@ -609,6 +634,11 @@ base class ConsumerStatefulElement extends StatefulElement
     };
 
     listeners.add(sub);
+
+    if (pauseWhenInactive) {
+      sub.impl.pauseWhenInactive = true;
+      _applyTickerMode(sub);
+    }
 
     return sub;
   }

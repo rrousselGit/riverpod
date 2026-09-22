@@ -116,6 +116,20 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   ///
   /// This enables re-rending the last missing event when the subscription is resumed.
   ({(OutT?, OutT)? data, (Object, StackTrace)? error})? _missedCalled;
+
+  /// Whether this subscription should stop notifying its listener while the
+  /// object that created it is inactive.
+  ///
+  /// This is opt-in, as `listen` is typically used for side-effects, and it is
+  /// generally undesirable for a side-effect to silently stop.
+  /// It is enabled by `pauseWhenInactive: true` on `Ref.listen`,
+  /// `WidgetRef.listen` and `WidgetRef.listenManual`.
+  bool pauseWhenInactive = false;
+
+  /// Whether events should be withheld from [_listener] instead of being
+  /// emitted.
+  bool get _isBuffering => pauseWhenInactive ? pausedOrDeactivated : _isPaused;
+
   void Function(OutT? prev, OutT next) get _listener;
   OnError get _errorListener;
 
@@ -153,28 +167,31 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
     _listenedElement?.onSubscriptionPauseOrDeactivate(this, super.pause);
   }
 
+  /// Emits the event that was withheld while [_isBuffering] was true, if any.
+  void _flushMissedCall() {
+    if (_missedCalled?.data case final event?) {
+      final prev = event.$1;
+      final next = event.$2;
+
+      _missedCalled = null;
+      _notifyData(prev, next);
+    } else if (_missedCalled?.error case final event?) {
+      final error = event.$1;
+      final stackTrace = event.$2;
+
+      _missedCalled = null;
+      _notifyError(error, stackTrace);
+    }
+  }
+
   @mustCallSuper
   @override
   void resume() {
     void applyResume() {
-      final wasPaused = _isPaused;
+      final wasBuffering = _isBuffering;
       super.resume();
 
-      if (wasPaused && !isPaused) {
-        if (_missedCalled?.data case final event?) {
-          final prev = event.$1;
-          final next = event.$2;
-
-          _missedCalled = null;
-          _notifyData(prev, next);
-        } else if (_missedCalled?.error case final event?) {
-          final error = event.$1;
-          final stackTrace = event.$2;
-
-          _missedCalled = null;
-          _notifyError(error, stackTrace);
-        }
-      }
+      if (wasBuffering && !_isBuffering) _flushMissedCall();
     }
 
     if (!_attachedToElement) {
@@ -200,16 +217,23 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   @mustCallSuper
   @override
   void reactivate() {
-    if (!_attachedToElement) {
+    void applyReactivate() {
+      final wasBuffering = _isBuffering;
       super.reactivate();
+
+      if (wasBuffering && !_isBuffering) _flushMissedCall();
+    }
+
+    if (!_attachedToElement) {
+      applyReactivate();
       return;
     }
-    _listenedElement?.onSubscriptionResumeOrReactivate(this, super.reactivate);
+    _listenedElement?.onSubscriptionResumeOrReactivate(this, applyReactivate);
   }
 
   void _notifyData(OutT? prev, OutT next) {
     assert(!closed, 'cannot notify after close');
-    if (isPaused) {
+    if (_isBuffering) {
       _missedCalled = (data: (prev, next), error: null);
       return;
     }
@@ -219,7 +243,7 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
 
   void _notifyError(Object error, StackTrace stackTrace) {
     assert(!closed, 'cannot notify after close');
-    if (isPaused) {
+    if (_isBuffering) {
       _missedCalled = (data: null, error: (error, stackTrace));
       return;
     }
