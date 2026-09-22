@@ -1,5 +1,3 @@
-// ignore_for_file: inference_failure_on_generic_invocation
-
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
@@ -27,37 +25,53 @@ typedef Factory<CreatedT> = CreatedT Function({bool isAutoDispose});
 
 final matrix = [
   // Functional
-  Builder(Provider.new).build((ref) => throw UnimplementedError()),
-  Builder(Provider.family.call).build((ref, arg) => throw UnimplementedError()),
-  Builder(FutureProvider.new).build((ref) => throw UnimplementedError()),
+  Builder(Provider<Object?>.new).build((ref) => throw UnimplementedError()),
   Builder(
-    FutureProvider.family.call,
+    Provider.family.call<Object?, Object?>,
   ).build((ref, arg) => throw UnimplementedError()),
-  Builder(StreamProvider.new).build((ref) => throw UnimplementedError()),
+  Builder(FutureProvider<Object?>.new).build(
+    (ref) => throw UnimplementedError(),
+  ),
   Builder(
-    StreamProvider.family.call,
+    FutureProvider.family.call<Object?, Object?>,
+  ).build((ref, arg) => throw UnimplementedError()),
+  Builder(StreamProvider<Object?>.new).build(
+    (ref) => throw UnimplementedError(),
+  ),
+  Builder(
+    StreamProvider.family.call<Object?, Object?>,
   ).build((ref, arg) => throw UnimplementedError()),
   // Notifier
-  Builder(NotifierProvider.new).build(() => throw UnimplementedError()),
+  Builder(NotifierProvider<Notifier<Object?>, Object?>.new).build(
+    () => throw UnimplementedError(),
+  ),
   Builder(
-    NotifierProvider.family.call,
+    NotifierProvider.family.call<Notifier<Object?>, Object?, Object?>,
   ).build((arg) => throw UnimplementedError()),
-  Builder(AsyncNotifierProvider.new).build(() => throw UnimplementedError()),
+  Builder(AsyncNotifierProvider<AsyncNotifier<Object?>, Object?>.new).build(
+    () => throw UnimplementedError(),
+  ),
   Builder(
-    AsyncNotifierProvider.family.call,
+    AsyncNotifierProvider.family.call<AsyncNotifier<Object?>, Object?, Object?>,
   ).build((arg) => throw UnimplementedError()),
-  Builder(StreamNotifierProvider.new).build(() => throw UnimplementedError()),
+  Builder(StreamNotifierProvider<StreamNotifier<Object?>, Object?>.new).build(
+    () => throw UnimplementedError(),
+  ),
   Builder(
-    StreamNotifierProvider.family.call,
+    StreamNotifierProvider.family.call<StreamNotifier<Object?>, Object?, Object?>,
   ).build((arg) => throw UnimplementedError()),
   // Legacy
-  Builder(StateProvider.new).build((ref) => throw UnimplementedError()),
+  Builder(StateProvider<Object?>.new).build(
+    (ref) => throw UnimplementedError(),
+  ),
   Builder(
-    StateProvider.family.call,
+    StateProvider.family.call<Object?, Object?>,
   ).build((ref, arg) => throw UnimplementedError()),
-  Builder(StateNotifierProvider.new).build((ref) => throw UnimplementedError()),
+  Builder(StateNotifierProvider<StateNotifier<Object?>, Object?>.new).build(
+    (ref) => throw UnimplementedError(),
+  ),
   Builder(
-    StateNotifierProvider.family.call,
+    StateNotifierProvider.family.call<StateNotifier<Object?>, Object?, Object?>,
   ).build((ref, arg) => throw UnimplementedError()),
 ];
 

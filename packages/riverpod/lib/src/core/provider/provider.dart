@@ -124,7 +124,7 @@ final class _ExistenceListenable implements ProviderListenable<bool> {
   @override
   ProviderSubscriptionImpl<bool> _addListener(
     Node source,
-    // ignore: avoid_positional_boolean_parameters, false positive, https://github.com/dart-lang/sdk/issues/64219
+    // ignore: false positive, https://github.com/dart-lang/sdk/issues/64219
     void Function(bool? previous, bool next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
