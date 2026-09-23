@@ -155,6 +155,63 @@ To have your test use this in-memory database, you can use <Link documentID="con
 
 <AutoSnippet raw={inMemoryTest} />
 
+## Working with Persisted State
+
+### Understanding Persisted State
+
+By default, when using `@JsonPersist()` or `persist()`, restored cache data is emitted as `AsyncLoading(value: ...)` rather than `AsyncData`. This allows you to show cached data while fetching fresh data in the background.
+
+### Approach 1: Default behavior (Use when() or value)
+
+By default (`emitAsLoadingState: true`), you can inspect `state.value` or handle `loading:` using `when()`:
+
+```dart
+@riverpod
+Future<List<Todo>> sortedTodos(Ref ref) async {
+  final todosState = ref.watch(todosProvider);
+  
+  final todos = todosState.when(
+    data: (data) => data,
+    loading: () => todosState.value ?? [],
+    error: (error, stack) => todosState.hasValue ? todosState.value! : throw error,
+  );
+  
+  return List<Todo>.from(todos)..sort((a, b) => a.name.compareTo(b.name));
+}
+```
+
+### Approach 2: Emit directly as AsyncData (`emitAsLoadingState: false`)
+
+If you prefer to use `.future` on a persisted provider, pass `emitAsLoadingState: false` to `persist()`:
+
+```dart
+@riverpod
+class Todos extends _$Todos {
+  @override
+  FutureOr<List<Todo>> build() async {
+    // Restored data is emitted as AsyncData, allowing .future to resolve immediately
+    persist(
+      ref.watch(riverpodCacheProvider.future),
+      key: 'todos_list',
+      emitAsLoadingState: false,
+    );
+    
+    return await fetchFreshData();
+  }
+}
+
+@riverpod
+Future<List<Todo>> sortedTodos(Ref ref) async {
+  // .future resolves immediately with the restored AsyncData
+  final todos = await ref.watch(todosProvider.future);
+  return List<Todo>.from(todos)..sort((a, b) => a.name.compareTo(b.name));
+}
+```
+
+:::caution
+Using `emitAsLoadingState: false` causes the provider to skip the `loading` state when restoring cached data. Only use this if you want to treat persisted data as ready immediately.
+:::
+
 [riverpod_sqflite]: https://pub.dev/packages/riverpod_sqflite
 [Storage]: https://pub.dev/documentation/hooks_riverpod/latest/experimental_persist/Storage-class.html
 [AnyNotifier.persist]: https://pub.dev/documentation/hooks_riverpod/latest/experimental_persist/NotifierPersistX/persist.html

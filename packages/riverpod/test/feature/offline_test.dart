@@ -80,6 +80,32 @@ void main() {
       },
     );
 
+    test(
+      'emitAsLoadingState: false emits AsyncData instead of AsyncLoading',
+      () async {
+        final completer = Completer<int>();
+        final container = ProviderContainer.test();
+        final provider = AsyncNotifierProvider<DeferredAsyncNotifier<int>, int>(
+          () => DeferredAsyncNotifier((ref, self) {
+            self.persist(
+              DelegatingStorage(read: (_) => const PersistedData(42)),
+              key: 'key',
+              encode: (value) => value,
+              decode: (encoded) => encoded,
+              emitAsLoadingState: false,
+            );
+            return completer.future;
+          }),
+        );
+
+        final listener = container.listen(provider, (_, _) {});
+        print('STATE: ${listener.read()}');
+        expect(listener.read(), const AsyncData<int>(42));
+
+        completer.complete(0);
+      },
+    );
+
     matrix.createGroup((factory) {
       test('Persist if the notifier implements NotifierEncoder', () {
         final storage = StorageMock<String, Object?>();
