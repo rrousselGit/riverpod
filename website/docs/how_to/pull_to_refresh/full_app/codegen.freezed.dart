@@ -14,47 +14,47 @@ part of 'codegen.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$Activity {
+mixin _$Brewery {
 
- String get activity; String get type; int get participants; double get price;
-/// Create a copy of Activity
+ String get name;@JsonKey(name: 'brewery_type') String get breweryType; String get city; String get country;
+/// Create a copy of Brewery
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$ActivityCopyWith<Activity> get copyWith => _$ActivityCopyWithImpl<Activity>(this as Activity, _$identity);
+$BreweryCopyWith<Brewery> get copyWith => _$BreweryCopyWithImpl<Brewery>(this as Brewery, _$identity);
 
-  /// Serializes this Activity to a JSON map.
+  /// Serializes this Brewery to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  final _this = this as Activity;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Activity&&(identical(other.activity, _this.activity) || other.activity == _this.activity)&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.participants, _this.participants) || other.participants == _this.participants)&&(identical(other.price, _this.price) || other.price == _this.price));
+  final _this = this as Brewery;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Brewery&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.breweryType, _this.breweryType) || other.breweryType == _this.breweryType)&&(identical(other.city, _this.city) || other.city == _this.city)&&(identical(other.country, _this.country) || other.country == _this.country));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-  final _this = this as Activity;
-  return Object.hash(runtimeType,_this.activity,_this.type,_this.participants,_this.price);
+  final _this = this as Brewery;
+  return Object.hash(runtimeType,_this.name,_this.breweryType,_this.city,_this.country);
 }
 
 @override
 String toString() {
-  final _this = this as Activity;
-  return 'Activity(activity: ${_this.activity}, type: ${_this.type}, participants: ${_this.participants}, price: ${_this.price})';
+  final _this = this as Brewery;
+  return 'Brewery(name: ${_this.name}, breweryType: ${_this.breweryType}, city: ${_this.city}, country: ${_this.country})';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $ActivityCopyWith<$Res>  {
-  factory $ActivityCopyWith(Activity value, $Res Function(Activity) _then) = _$ActivityCopyWithImpl;
+abstract mixin class $BreweryCopyWith<$Res>  {
+  factory $BreweryCopyWith(Brewery value, $Res Function(Brewery) _then) = _$BreweryCopyWithImpl;
 @useResult
 $Res call({
- String activity, String type, int participants, double price
+ String name,@JsonKey(name: 'brewery_type') String breweryType, String city, String country
 });
 
 
@@ -62,30 +62,30 @@ $Res call({
 
 }
 /// @nodoc
-class _$ActivityCopyWithImpl<$Res>
-    implements $ActivityCopyWith<$Res> {
-  _$ActivityCopyWithImpl(this._self, this._then);
+class _$BreweryCopyWithImpl<$Res>
+    implements $BreweryCopyWith<$Res> {
+  _$BreweryCopyWithImpl(this._self, this._then);
 
-  final Activity _self;
-  final $Res Function(Activity) _then;
+  final Brewery _self;
+  final $Res Function(Brewery) _then;
 
-/// Create a copy of Activity
+/// Create a copy of Brewery
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? activity = null,Object? type = null,Object? participants = null,Object? price = null,}) {
-  return _then(Activity(
-activity: null == activity ? _self.activity : activity // ignore: cast_nullable_to_non_nullable
-as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as String,participants: null == participants ? _self.participants : participants // ignore: cast_nullable_to_non_nullable
-as int,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
-as double,
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? breweryType = null,Object? city = null,Object? country = null,}) {
+  return _then(Brewery(
+name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,breweryType: null == breweryType ? _self.breweryType : breweryType // ignore: cast_nullable_to_non_nullable
+as String,city: null == city ? _self.city : city // ignore: cast_nullable_to_non_nullable
+as String,country: null == country ? _self.country : country // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
 }
 
 
-/// Adds pattern-matching-related methods to [Activity].
-extension ActivityPatterns on Activity {
+/// Adds pattern-matching-related methods to [Brewery].
+extension BreweryPatterns on Brewery {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -98,10 +98,10 @@ extension ActivityPatterns on Activity {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _Activity value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _Brewery value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _Activity() when $default != null:
+case _Brewery() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -120,10 +120,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _Activity value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _Brewery value)  $default,){
 final _that = this;
 switch (_that) {
-case _Activity():
+case _Brewery():
 return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -138,10 +138,10 @@ return $default(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _Activity value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _Brewery value)?  $default,){
 final _that = this;
 switch (_that) {
-case _Activity() when $default != null:
+case _Brewery() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -159,10 +159,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String activity,  String type,  int participants,  double price)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name, @JsonKey(name: 'brewery_type')  String breweryType,  String city,  String country)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _Activity() when $default != null:
-return $default(_that.activity,_that.type,_that.participants,_that.price);case _:
+case _Brewery() when $default != null:
+return $default(_that.name,_that.breweryType,_that.city,_that.country);case _:
   return orElse();
 
 }
@@ -180,10 +180,10 @@ return $default(_that.activity,_that.type,_that.participants,_that.price);case _
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String activity,  String type,  int participants,  double price)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name, @JsonKey(name: 'brewery_type')  String breweryType,  String city,  String country)  $default,) {final _that = this;
 switch (_that) {
-case _Activity():
-return $default(_that.activity,_that.type,_that.participants,_that.price);}
+case _Brewery():
+return $default(_that.name,_that.breweryType,_that.city,_that.country);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -197,10 +197,10 @@ return $default(_that.activity,_that.type,_that.participants,_that.price);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String activity,  String type,  int participants,  double price)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name, @JsonKey(name: 'brewery_type')  String breweryType,  String city,  String country)?  $default,) {final _that = this;
 switch (_that) {
-case _Activity() when $default != null:
-return $default(_that.activity,_that.type,_that.participants,_that.price);case _:
+case _Brewery() when $default != null:
+return $default(_that.name,_that.breweryType,_that.city,_that.country);case _:
   return null;
 
 }
@@ -211,51 +211,51 @@ return $default(_that.activity,_that.type,_that.participants,_that.price);case _
 /// @nodoc
 @JsonSerializable()
 
-class _Activity implements Activity {
-   _Activity({required this.activity, required this.type, required this.participants, required this.price});
-  factory _Activity.fromJson(Map<String, dynamic> json) => _$ActivityFromJson(json);
+class _Brewery implements Brewery {
+   _Brewery({required this.name, @JsonKey(name: 'brewery_type') required this.breweryType, required this.city, required this.country});
+  factory _Brewery.fromJson(Map<String, dynamic> json) => _$BreweryFromJson(json);
 
-@override final  String activity;
-@override final  String type;
-@override final  int participants;
-@override final  double price;
+@override final  String name;
+@override@JsonKey(name: 'brewery_type') final  String breweryType;
+@override final  String city;
+@override final  String country;
 
-/// Create a copy of Activity
+/// Create a copy of Brewery
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$ActivityCopyWith<_Activity> get copyWith => __$ActivityCopyWithImpl<_Activity>(this, _$identity);
+_$BreweryCopyWith<_Brewery> get copyWith => __$BreweryCopyWithImpl<_Brewery>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$ActivityToJson(this, );
+  return _$BreweryToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Activity&&(identical(other.activity, activity) || other.activity == activity)&&(identical(other.type, type) || other.type == type)&&(identical(other.participants, participants) || other.participants == participants)&&(identical(other.price, price) || other.price == price));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Brewery&&(identical(other.name, name) || other.name == name)&&(identical(other.breweryType, breweryType) || other.breweryType == breweryType)&&(identical(other.city, city) || other.city == city)&&(identical(other.country, country) || other.country == country));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,activity,type,participants,price);
+    return Object.hash(runtimeType,name,breweryType,city,country);
 }
 
 @override
 String toString() {
-    return 'Activity(activity: $activity, type: $type, participants: $participants, price: $price)';
+    return 'Brewery(name: $name, breweryType: $breweryType, city: $city, country: $country)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$ActivityCopyWith<$Res> implements $ActivityCopyWith<$Res> {
-  factory _$ActivityCopyWith(_Activity value, $Res Function(_Activity) _then) = __$ActivityCopyWithImpl;
+abstract mixin class _$BreweryCopyWith<$Res> implements $BreweryCopyWith<$Res> {
+  factory _$BreweryCopyWith(_Brewery value, $Res Function(_Brewery) _then) = __$BreweryCopyWithImpl;
 @override @useResult
 $Res call({
- String activity, String type, int participants, double price
+ String name,@JsonKey(name: 'brewery_type') String breweryType, String city, String country
 });
 
 
@@ -263,22 +263,22 @@ $Res call({
 
 }
 /// @nodoc
-class __$ActivityCopyWithImpl<$Res>
-    implements _$ActivityCopyWith<$Res> {
-  __$ActivityCopyWithImpl(this._self, this._then);
+class __$BreweryCopyWithImpl<$Res>
+    implements _$BreweryCopyWith<$Res> {
+  __$BreweryCopyWithImpl(this._self, this._then);
 
-  final _Activity _self;
-  final $Res Function(_Activity) _then;
+  final _Brewery _self;
+  final $Res Function(_Brewery) _then;
 
-/// Create a copy of Activity
+/// Create a copy of Brewery
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? activity = null,Object? type = null,Object? participants = null,Object? price = null,}) {
-  return _then(_Activity(
-activity: null == activity ? _self.activity : activity // ignore: cast_nullable_to_non_nullable
-as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as String,participants: null == participants ? _self.participants : participants // ignore: cast_nullable_to_non_nullable
-as int,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
-as double,
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? breweryType = null,Object? city = null,Object? country = null,}) {
+  return _then(_Brewery(
+name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,breweryType: null == breweryType ? _self.breweryType : breweryType // ignore: cast_nullable_to_non_nullable
+as String,city: null == city ? _self.city : city // ignore: cast_nullable_to_non_nullable
+as String,country: null == country ? _self.country : country // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

@@ -6,25 +6,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'fetch_activity/codegen.dart';
 
 /* SNIPPET START */
-class ActivityView extends ConsumerWidget {
+class BreweryView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activity = ref.watch(activityProvider);
+    final brewery = ref.watch(breweryProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Pull to refresh')),
       body: RefreshIndicator(
         // {@template onRefresh}
-        // By refreshing "activityProvider.future", and returning that result,
-        // the refresh indicator will keep showing until the new activity is
+        // By refreshing "breweryProvider.future", and returning that result,
+        // the refresh indicator will keep showing until the new brewery is
         // fetched.
         // {@endtemplate}
         /* highlight-start */
-        onRefresh: () => ref.refresh(activityProvider.future),
+        onRefresh: () => ref.refresh(breweryProvider.future),
         /* highlight-end */
         child: ListView(
           children: [
-            Text(activity.value?.activity ?? ''),
+            Text(brewery.value?.name ?? ''),
           ],
         ),
       ),
