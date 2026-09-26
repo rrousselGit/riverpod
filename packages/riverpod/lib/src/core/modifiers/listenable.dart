@@ -38,8 +38,22 @@ final class _ListenableTransformer2<T>
         >
     with ChangeNotifier
     implements ValueListenable<T> {
+  void _checkSubscriptionIsAlive() {
+    final innerSub = _innerSub;
+    if (innerSub == null || innerSub.closed) {
+      throw StateError(
+        'The subscription backing this `.listenable` was closed. Obtain '
+        '`.listenable` through `ref.watch`, `ref.listen` or '
+        '`container.listen`, not `read`.',
+      );
+    }
+  }
+
   @override
-  T get value => read();
+  T get value {
+    _checkSubscriptionIsAlive();
+    return read();
+  }
 
   @override
   ValueListenable<T> initState() {
@@ -56,6 +70,7 @@ final class _ListenableTransformer2<T>
 
   @override
   void addListener(VoidCallback listener) {
+    _checkSubscriptionIsAlive();
     if (!hasListeners) resume();
 
     super.addListener(listener);
