@@ -56,7 +56,7 @@
     "description": "The label of footer link with label=FAQ linking to docs/root/FAQ"
   },
   "link.item.label.DO/DON'T": {
-    "message": "권장사항(DO/DON'T)",
+    "message": "해야 할 것/하지 말아야 할 것",
     "description": "The label of footer link with label=DO/DON'T linking to docs/root/do_dont"
   }
 }
