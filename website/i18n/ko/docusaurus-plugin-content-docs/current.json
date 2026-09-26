@@ -1,33 +1,11 @@
 {
-  "riverpod.snippets.selectAsync.todo": {
-    "message": "Bar"
-  },
-  "riverpod.snippets.selectAsync.watch": {
-    "message": "Foo"
-  },
   "version.label": {
     "message": "다음",
     "description": "The label for version current"
   },
-  "sidebar.Sidebar.category.Introduction": {
-    "message": "소개(Introduction)",
-    "description": "The label for category Introduction in sidebar Sidebar"
-  },
   "sidebar.Sidebar.category.Riverpod for Provider Users": {
     "message": "Provider 사용자를 위한 Riverpod",
     "description": "The label for category Riverpod for Provider Users in sidebar Sidebar"
-  },
-  "sidebar.Sidebar.category.Essentials": {
-    "message": "필수사항(Essentials)",
-    "description": "The label for category Essentials in sidebar Sidebar"
-  },
-  "sidebar.Sidebar.category.Case studies": {
-    "message": "사례 연구(Case studies)",
-    "description": "The label for category Case studies in sidebar Sidebar"
-  },
-  "sidebar.Sidebar.category.Advanced topics": {
-    "message": "고급 주제(Advanced topics)",
-    "description": "The label for category Advanced topics in sidebar Sidebar"
   },
   "sidebar.Sidebar.category.Concepts": {
     "message": "기본 개념(Concepts)",
@@ -44,22 +22,6 @@
   "sidebar.Sidebar.category.Third party examples": {
     "message": "서드파티 사용예제",
     "description": "The label for category Third party examples in sidebar Sidebar"
-  },
-  "sidebar.Sidebar.category.Concepts 🚧": {
-    "message": "기본 개념(Concepts) 🚧",
-    "description": "The label for category Concepts 🚧 in sidebar Sidebar"
-  },
-  "sidebar.Sidebar.category.Modifiers": {
-    "message": "수식어(Modifiers)",
-    "description": "The label for category Modifiers in sidebar Sidebar"
-  },
-  "sidebar.Sidebar.category.All Providers 🚧": {
-    "message": "전체 Providers 🚧",
-    "description": "The label for category All Providers 🚧 in sidebar Sidebar"
-  },
-  "sidebar.Sidebar.category.Guides 🚧": {
-    "message": "가이드 🚧",
-    "description": "The label for category Guides 🚧 in sidebar Sidebar"
   },
   "sidebar.Sidebar.link.Counter": {
     "message": "카운터 앱",
@@ -157,8 +119,156 @@
     "message": "Google 지도 및 실시간 추적 기능을 갖춘 배달 앱",
     "description": "The label for link Delivery App with Google Maps and Live Tracking in sidebar Sidebar, linking to https://github.com/AhmedLSayed9/deliverzler"
   },
-  "sidebar.Sidebar.link.API reference": {
-    "message": "API 참조",
-    "description": "The label for link API reference in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/hooks_riverpod-library.html"
+  "sidebar.Sidebar.category.Tutorials": {
+    "message": "튜토리얼",
+    "description": "The label for category Tutorials in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Guides": {
+    "message": "가이드",
+    "description": "The label for category Guides in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.References": {
+    "message": "레퍼런스",
+    "description": "The label for category References in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.All Providers": {
+    "message": "모든 Provider",
+    "description": "The label for category All Providers in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Containers/Scopes": {
+    "message": "Container/Scope",
+    "description": "The label for category Containers/Scopes in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Refs": {
+    "message": "Ref",
+    "description": "The label for category Refs in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Consumers": {
+    "message": "Consumer",
+    "description": "The label for category Consumers in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Offline persistence (experimental)": {
+    "message": "오프라인 영속성 (실험적)",
+    "description": "The label for category Offline persistence (experimental) in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Mutations (experimental)": {
+    "message": "Mutation (실험적)",
+    "description": "The label for category Mutations (experimental) in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.core": {
+    "message": "core",
+    "description": "The label for category core in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.link.Provider": {
+    "message": "Provider",
+    "description": "The label for link Provider in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Provider-class.html"
+  },
+  "sidebar.Sidebar.link.FutureProvider": {
+    "message": "FutureProvider",
+    "description": "The label for link FutureProvider in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/FutureProvider-class.html"
+  },
+  "sidebar.Sidebar.link.StreamProvider": {
+    "message": "StreamProvider",
+    "description": "The label for link StreamProvider in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/StreamProvider-class.html"
+  },
+  "sidebar.Sidebar.link.NotifierProvider": {
+    "message": "NotifierProvider",
+    "description": "The label for link NotifierProvider in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/NotifierProvider-class.html"
+  },
+  "sidebar.Sidebar.link.AsyncNotifierProvider": {
+    "message": "AsyncNotifierProvider",
+    "description": "The label for link AsyncNotifierProvider in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/AsyncNotifierProvider-class.html"
+  },
+  "sidebar.Sidebar.link.StreamNotifierProvider": {
+    "message": "StreamNotifierProvider",
+    "description": "The label for link StreamNotifierProvider in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/StreamNotifierProvider-class.html"
+  },
+  "sidebar.Sidebar.link.ChangeNotifierProvider (legacy)": {
+    "message": "ChangeNotifierProvider (레거시)",
+    "description": "The label for link ChangeNotifierProvider (legacy) in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/legacy/ChangeNotifierProvider-class.html"
+  },
+  "sidebar.Sidebar.link.StateNotifierProvider (legacy)": {
+    "message": "StateNotifierProvider (레거시)",
+    "description": "The label for link StateNotifierProvider (legacy) in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/legacy/StateNotifierProvider-class.html"
+  },
+  "sidebar.Sidebar.link.StateProvider (legacy)": {
+    "message": "StateProvider (레거시)",
+    "description": "The label for link StateProvider (legacy) in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/legacy/StateProvider-class.html"
+  },
+  "sidebar.Sidebar.link.ProviderContainer": {
+    "message": "ProviderContainer",
+    "description": "The label for link ProviderContainer in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderContainer-class.html"
+  },
+  "sidebar.Sidebar.link.ProviderScope": {
+    "message": "ProviderScope",
+    "description": "The label for link ProviderScope in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderScope-class.html"
+  },
+  "sidebar.Sidebar.link.UncontrolledProviderScope": {
+    "message": "UncontrolledProviderScope",
+    "description": "The label for link UncontrolledProviderScope in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/UncontrolledProviderScope-class.html"
+  },
+  "sidebar.Sidebar.link.Ref": {
+    "message": "Ref",
+    "description": "The label for link Ref in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref-class.html"
+  },
+  "sidebar.Sidebar.link.WidgetRef": {
+    "message": "WidgetRef",
+    "description": "The label for link WidgetRef in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/WidgetRef-class.html"
+  },
+  "sidebar.Sidebar.link.ConsumerWidget": {
+    "message": "ConsumerWidget",
+    "description": "The label for link ConsumerWidget in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ConsumerWidget-class.html"
+  },
+  "sidebar.Sidebar.link.ConsumerStatefulWidget": {
+    "message": "ConsumerStatefulWidget",
+    "description": "The label for link ConsumerStatefulWidget in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ConsumerStatefulWidget-class.html"
+  },
+  "sidebar.Sidebar.link.Consumer": {
+    "message": "Consumer",
+    "description": "The label for link Consumer in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Consumer-class.html"
+  },
+  "sidebar.Sidebar.link.HookConsumerWidget": {
+    "message": "HookConsumerWidget",
+    "description": "The label for link HookConsumerWidget in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/HookConsumerWidget-class.html"
+  },
+  "sidebar.Sidebar.link.HookConsumer": {
+    "message": "HookConsumer",
+    "description": "The label for link HookConsumer in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/HookConsumer-class.html"
+  },
+  "sidebar.Sidebar.link.Storage (experimental)": {
+    "message": "Storage (실험적)",
+    "description": "The label for link Storage (experimental) in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/experimental_persist/Storage-class.html"
+  },
+  "sidebar.Sidebar.link.Persistable (experimental)": {
+    "message": "Persistable (실험적)",
+    "description": "The label for link Persistable (experimental) in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/experimental_persist/Persistable-mixin.html"
+  },
+  "sidebar.Sidebar.link.Mutation": {
+    "message": "Mutation",
+    "description": "The label for link Mutation in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/experimental_mutation/Mutation-class.html"
+  },
+  "sidebar.Sidebar.link.MutationState": {
+    "message": "MutationState",
+    "description": "The label for link MutationState in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/experimental_mutation/MutationState-class.html"
+  },
+  "sidebar.Sidebar.link.AsyncValue": {
+    "message": "AsyncValue",
+    "description": "The label for link AsyncValue in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/AsyncValue-class.html"
+  },
+  "sidebar.Sidebar.link.ProviderObserver": {
+    "message": "ProviderObserver",
+    "description": "The label for link ProviderObserver in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderObserver-class.html"
+  },
+  "sidebar.Sidebar.link.ProviderSubscription": {
+    "message": "ProviderSubscription",
+    "description": "The label for link ProviderSubscription in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderSubscription-class.html"
+  },
+  "sidebar.Sidebar.link.misc": {
+    "message": "misc",
+    "description": "The label for link misc in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/misc/"
+  },
+  "sidebar.Sidebar.link.ChatGPT Chat App with Riverpod": {
+    "message": "ChatGPT Chat App with Riverpod",
+    "description": "The label for link ChatGPT Chat App with Riverpod in sidebar Sidebar, linking to https://github.com/never-inc/chat_gpt_boilerplate"
   }
 }

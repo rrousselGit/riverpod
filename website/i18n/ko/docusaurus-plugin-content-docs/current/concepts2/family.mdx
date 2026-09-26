@@ -1,0 +1,113 @@
+---
+title: Family
+---
+import { Link } from "/src/components/Link";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+import functionalFamily from '/docs/concepts2/family/functional';
+import notifierFamily from '/docs/concepts2/family/notifier';
+import singleOverride from 'raw-loader!/docs/concepts2/family/single_override.dart';
+import allOverride from 'raw-loader!/docs/concepts2/family/all_overrides.dart';
+import activeProviders from 'raw-loader!/docs/concepts2/family/all_of.dart';
+
+"Family"는 Riverpod의 가장 강력한 기능 중 하나입니다.  
+간단히 말해, family를 사용하면 하나의 provider가 고유한 매개변수 조합에 따라
+서로 독립적인 여러 상태를 가질 수 있습니다.
+
+대표적인 사용 사례는 원격 API에서 데이터를 가져오는 경우입니다. 이때 응답은
+사용자 ID, 검색어, 페이지 번호 같은 매개변수에 따라 달라집니다. 
+family를 사용하면 provider 하나만 정의해도 가능한 모든
+매개변수 조합에 대해 데이터를 가져오고 캐시할 수 있습니다.
+
+![family가 하나의 provider를 여러 독립적인 상태와 연결하는 방식을 보여주는 그래프](/img/concepts2/family/users.svg)
+
+
+:::info
+일반 provider를 변수에 비유할 수 있다면, "family" provider는
+Map에 비유할 수 있습니다.
+:::
+
+## Family 만들기 {#creating-a-family}
+
+family는 provider 정의를 조금 바꿔
+매개변수를 받도록 하면 됩니다.
+
+함수형 provider의 문법은 다음과 같습니다:
+
+<AutoSnippet  {...functionalFamily} />
+
+Notifier provider의 문법은 다음과 같습니다:
+
+<AutoSnippet {...notifierFamily} />
+
+:::info
+필수는 아니지만, family를 사용할 때는 <Link documentID="concepts2/auto_dispose" />를
+활성화할 것을 강력히 권장합니다.
+
+그래야 매개변수가 바뀌어 이전 상태가 더 이상 필요 없을 때 메모리 누수를 막을 수 있습니다.
+:::
+
+## Family 사용하기 {#using-a-family}
+
+매개변수를 받는 provider는 사용 방법도 조금 달라집니다.
+
+간단히 말해, 다음과 같이 provider가 요구하는 매개변수를
+전달하면 됩니다:
+
+```dart
+final user = ref.watch(userProvider('123'));
+```
+
+:::caution 주의
+전달하는 매개변수는 `==`/`hashCode`가 일관되어야 합니다.
+
+"family"를 매개변수가 키이고 provider의 상태가 값인 Map이라고 생각해 보세요.
+따라서 매개변수의 `==`/`hashCode`가 바뀌면
+얻는 값도 달라집니다.
+
+그러므로 다음과 같은 코드는 잘못되었습니다:
+
+```dart
+// `[1, 2, 3] != [1, 2, 3]`이므로 잘못된 매개변수입니다
+ref.watch(myProvider([1, 2, 3]));
+```
+
+이런 실수를 잡아내려면 [riverpod_lint](https://pub.dev/packages/riverpod_lint)를 사용하고
+[provider_parameters](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#provider_parameters)
+린트 규칙을 활성화하는 것이 좋습니다. 그러면 위 코드에서 경고가 표시됩니다.
+설치 방법은 <Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint" />를 참고하세요.
+:::
+
+
+"family" provider는 원하는 만큼 읽을 수 있으며, 각각은 모두 독립적입니다. 따라서
+다음과 같이 작성해도 됩니다:
+
+```dart
+class Example extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user1 = ref.watch(userProvider('123'));
+    final user2 = ref.watch(userProvider('456'));
+
+    // user1과 user2는 서로 독립적입니다.
+  }
+}
+```
+
+## family의 활성화된 모든 provider에 접근하기 {#accessing-all-active-providers-of-a-family}
+
+<Link documentID="concepts2/containers" />를 사용하면 `allProviders` 메서드로
+`Family`에 연결된 모든 provider에 접근할 수 있습니다:
+
+<AutoSnippet raw={activeProviders} />
+
+## Family 오버라이드하기 {#overriding-families}
+
+테스트에서 provider를 모킹할 때 family provider를 오버라이드해야 할 수도 있습니다.  
+
+이 경우 두 가지 방법이 있습니다:
+- 특정 매개변수 조합만 오버라이드하기:
+  <AutoSnippet raw={singleOverride} />
+- 모든 매개변수 조합을 오버라이드하기:
+  <AutoSnippet raw={allOverride} />

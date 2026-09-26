@@ -1,0 +1,169 @@
+---
+title: ProviderContainers/ProviderScopes
+---
+import { Link } from "/src/components/Link";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+import allProviders from 'raw-loader!/docs/concepts2/containers/all_providers.dart';
+import familyProviders from 'raw-loader!/docs/concepts2/containers/all_providers_family.dart';
+
+[ProviderContainer]는 Riverpod 아키텍처의 _핵심_ 요소입니다.  
+Riverpod에서 <Link documentID="concepts2/providers" />는 스스로 상태를 보관하지 않습니다.
+대신 각 provider의 상태는 이 container 객체 안에 저장됩니다.
+
+[ProviderScope]는 [ProviderContainer]를 생성해 위젯 트리에 노출하는 위젯입니다.
+그래서 Riverpod을 사용하는 앱에서는 항상 루트에 scope가 있습니다.  
+이것이 없으면 Riverpod은 provider의 상태를 저장할 수 없습니다!
+
+### 순수 Dart 애플리케이션에서 ProviderContainer 사용하기 {#using-a-providercontainer-for-pure-dart-applications}
+
+[ProviderContainer]는 명령줄 애플리케이션이나 서버 애플리케이션처럼
+순수 Dart 코드베이스에서 Riverpod을 사용할 때 유용합니다.
+
+`main`에서 [ProviderContainer]를 생성한 뒤, 이를 통해 provider를 읽고 수정할 수 있습니다.
+
+```dart
+import 'package:riverpod/riverpod.dart';
+
+void main() {
+  final container = ProviderContainer();
+
+  try {
+    final sub = container.listen(counterProvider, (previous, next) {
+      print('Counter changed from $previous to $next');
+    });
+    print('Counter starts at ${sub.read()}');
+  } finally {
+    // 사용이 끝나면 container를 폐기합니다
+    container.dispose();
+  }
+}
+```
+
+:::note 참고
+테스트에서는 [ProviderContainer]를 직접 사용하지 마세요.
+대신 [ProviderContainer.test](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderContainer/ProviderContainer.test.html)를 사용하세요.
+테스트가 끝나면 container가 자동으로 폐기됩니다.
+
+```dart
+test('Counter starts at 0 and can be incremented', () {
+  // 테스트가 끝날 때 container를 폐기할 필요가 없습니다
+  final container = ProviderContainer.test();
+
+  // container를 사용해 provider를 테스트합니다
+});
+```
+:::
+
+### container의 활성 provider 목록 조회하기 {#listing-active-providers-in-a-container}
+
+`ProviderContainer`는 `allProviders()`를 제공합니다. 이 메서드는 해당 container와
+상위 container에 마운트된 활성 provider를 반환합니다.
+
+디버깅이나 테스트, 또는 현재 살아 있는 모든 provider에 같은 작업을
+적용할 때 유용합니다.
+
+<AutoSnippet raw={allProviders} />
+
+`family`를 지정하면 특정 family의 활성 provider만 조회할 수도 있습니다.
+
+<AutoSnippet raw={familyProviders} />
+
+
+### Flutter 애플리케이션에서 ProviderScope 사용하기 {#using-a-providerscope-for-flutter-applications}
+
+Flutter 애플리케이션에서는 [ProviderContainer]를 직접 사용하지 않습니다.
+대신 [ProviderContainer]의 위젯 버전인 [ProviderScope]를 사용합니다.
+
+결과는 같습니다. `main`에서 [ProviderScope]를 생성하면, 이후 위젯 안에서
+<Link documentID="concepts2/consumers" />를 사용해 provider를 읽고 수정할 수 있습니다.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+void main() {
+  runApp(
+    ProviderScope(
+      child: Consumer(
+        builder: (context, ref, _) {
+          final counter = ref.watch(counterProvider);
+
+          // TODO: "counter" 사용하기
+        },
+      ),
+    ),
+  );
+}
+```
+
+## provider의 상태를 container에 저장하는 이유는? {#why-store-the-state-of-providers-inside-a-container}
+
+provider가 왜 스스로 상태를 보관하지 않는지 궁금할 수 있습니다.
+이 제약이 없다면 다음처럼 작성할 수도 있을 것입니다.
+
+```dart
+print(helloWorldProvider.value); // "Hello world!"를 출력합니다
+```
+
+`ref.watch(helloWorldProvider)`라고 쓰는 대신 말이죠.
+
+Riverpod이 이렇게 설계된 데에는 몇 가지 이유가 있으며, 모두 "전역 상태를 두지 않는다"는 같은 원칙에서 나옵니다.
+
+1. 관심사의 더 나은 분리  
+  provider가 자신의 상태를 직접 저장할 수 있다면,
+  _어디서든_ 그 상태를 읽고 쓸 수 있다는 뜻이 됩니다. 그러면
+  상태가 어떻게, 언제 바뀌는지 통제하기 어려워집니다.
+
+  Riverpod의 아키텍처에서는 상태 업데이트가 한곳에 모입니다. provider를
+  수정하는 로직은 모두 provider 안에 있습니다.
+  그리고 UI는 보통 provider의 Notifier에 있는 메서드 하나만 호출합니다.
+
+1. 더 쉬운 테스트
+  provider의 상태를 container에 저장하므로, 테스트 사이에 애플리케이션 상태를
+  초기화할 걱정을 하지 않아도 됩니다. 테스트마다 새 container를 만들기만 하면
+  각 provider의 상태도 새로 생성됩니다.
+
+  ```dart
+  test('Counter starts at 0 and can be incremented', () {
+    final container = ProviderContainer.test();
+
+    expect(container.read(counterProvider), 0);
+    container.read(counterProvider.notifier).increment();
+    expect(container.read(counterProvider), 1);
+  });
+
+  test('Counter cannot go below 0', () {
+    final container = ProviderContainer.test();
+
+    expect(container.read(counterProvider), 0);
+    container.read(counterProvider.notifier).decrement();
+    expect(container.read(counterProvider), 0);
+  });
+  ```
+  두 테스트 모두 같은 provider를 사용하지만, 한 테스트에서 일어난
+  상태 변경은 다른 테스트에 영향을 주지 않습니다.
+
+  물론 [ProviderScope]와 위젯 테스트를 사용할 때도 마찬가지입니다.
+
+1. 애플리케이션 설정을 한곳에서 관리  
+  [ProviderContainer]와 [ProviderScope]를 통해 Riverpod의 앱 전역
+  동작을 다양하게 설정할 수 있습니다. 예를 들면 다음과 같습니다.
+    * 커스텀 [ProviderObserver]를 정의해 앱의 모든 상태 변경을 수신할 수 있습니다.
+      <Link documentID="concepts2/observers"/>를 참고하세요.
+    * provider를 로컬 또는 전역으로 오버라이드할 수 있습니다. 이는
+      테스트나 환경이 여러 개인 애플리케이션,
+      또는 개발 중에 유용합니다.
+      <Link documentID="concepts2/overrides"/>를 참고하세요.
+
+1. <Link documentID="concepts2/scoping"/> 지원
+  provider의 상태를 container에 저장하므로, 같은 provider라도 위젯 트리의
+  어디에서 사용하느냐에 따라 다른 상태를 갖게 할 수 있습니다.
+  꽤 고급 기능이라 일반적으로 권장하지는 않지만, 성능
+  최적화에는 유용합니다.
+
+
+[ProviderContainer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderContainer-class.html
+[ProviderScope]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderScope-class.html
+[ProviderObserver]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderObserver-class.html

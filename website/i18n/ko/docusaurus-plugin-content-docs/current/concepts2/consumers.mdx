@@ -1,0 +1,112 @@
+---
+title: Consumer
+---
+import { Link } from "/src/components/Link";
+
+"Consumer"는 위젯 트리와 provider 트리를 이어 주는 위젯입니다.
+
+Consumer가 일반 위젯과 실질적으로 다른 점은 [Ref]에 접근할 수 있다는 것 하나뿐입니다.
+덕분에 provider를 읽고 그 변경 사항을 수신할 수 있습니다.
+자세한 내용은 <Link documentID="concepts2/refs" />를 참고하세요.
+
+Consumer에는 몇 가지 형태가 있으며, 어느 것을 쓸지는 대체로 취향 문제입니다.
+- [Consumer]: "builder" 위젯입니다([FutureBuilder](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html)와 비슷합니다).
+  `StatelessWidget`이나 `StatefulWidget` 외의 클래스를 상속하지 않고도 위젯에서 provider를 다룰 수 있습니다.
+  ```dart
+  // 평소처럼 StatelessWidget을 상속합니다
+  class MyWidget extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      // FutureBuilder와 비슷한 위젯
+      return Consumer(
+        // "builder" 콜백이 "ref" 매개변수를 제공합니다
+        builder: (context, ref, _) {
+          // 이 "ref"로 provider를 수신할 수 있습니다
+          final value = ref.watch(myProvider);
+          return Text(value.toString());
+        },
+      );
+    }
+  }
+  ```
+- [ConsumerWidget]: `StatelessWidget`의 변형입니다.
+  `StatelessWidget` 대신 `ConsumerWidget`을 상속합니다. `build`가 [WidgetRef] 매개변수를
+  하나 더 받는다는 점을 빼면 똑같이 동작합니다.
+  ```dart
+  // StatelessWidget 대신 ConsumerWidget을 상속합니다
+  class MyWidget extends ConsumerWidget {
+    // "build"가 매개변수를 하나 더 받습니다
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      // 이 "ref"로 provider를 수신할 수 있습니다
+      final value = ref.watch(myProvider);
+      return Text(value.toString());
+    }
+  }
+  ```
+- [ConsumerStatefulWidget]: `StatefulWidget`의 변형입니다.  
+  마찬가지로 `StatefulWidget` 대신 `ConsumerStatefulWidget`을 상속하고,
+  `State` 대신 [ConsumerState]를 상속합니다.
+  [ConsumerState]에 `ref` 프로퍼티가 있다는 점이 특징입니다.
+  ```dart
+  // StatefulWidget 대신 ConsumerStatefulWidget을 상속합니다
+  class MyWidget extends ConsumerStatefulWidget {
+    @override
+    ConsumerState<MyWidget> createState() => _MyWidgetState();
+  }
+  // State 대신 ConsumerState를 상속합니다
+  class _MyWidgetState extends ConsumerState<MyWidget> {
+    // "this.ref" 프로퍼티를 사용할 수 있습니다
+    @override
+    Widget build(BuildContext context) {
+      // 이 "ref"로 provider를 수신할 수 있습니다
+      final value = ref.watch(myProvider);
+      return Text(value.toString());
+    }
+  }
+  ```
+
+이 밖에 [hooks_riverpod](https://pub.dev/packages/hooks_riverpod) 패키지에도 추가 Consumer가 있습니다.
+Riverpod Consumer와 [flutter_hooks](https://pub.dev/packages/flutter_hooks)를 결합한 것으로,
+hook을 쓰지 않는다면 무시해도 됩니다.
+
+
+### 어떤 것을 써야 하나요? {#which-one-to-use}
+
+어떤 Consumer를 쓸지는 대부분 취향 문제입니다.
+모든 곳에 [Consumer]를 써도 됩니다. 다른 방식보다 코드가 조금 길어지지만,
+Riverpod이 `StatelessWidget`과 `StatefulWidget`을 가로채는 방식이 마음에 들지 않는다면 감수할 만한 비용입니다.
+
+특별히 선호하는 방식이 없다면 [ConsumerWidget]을 권장합니다(`State`가 필요하면 [ConsumerStatefulWidget]).
+
+### 왜 `StatelessWidget` + `context.watch`를 쓸 수 없나요? {#why-cant-we-use-statelesswidget--contextwatch}
+
+[provider](https://pub.dev/packages/provider) 같은 다른 패키지에서는 `context.watch`로 provider를 수신할 수 있습니다.
+`BuildContext`만 있으면 어떤 위젯에서든 동작하죠. 그런데 Riverpod은 왜 그렇지 않을까요?
+
+[Ref] 대신 `BuildContext`에만 의존하면 Riverpod의 <Link documentID="concepts2/auto_dispose" />를
+안정적으로 구현할 수 없기 때문입니다. `BuildContext`로 "대체로 동작하는" 구현을 만드는 요령이 _있기는_ 합니다.
+문제는 자동 폐기 기능을 조용히 망가뜨릴 수 있는 미묘한 예외 상황이 너무 많다는 점입니다.
+
+그러면 메모리 누수가 생기겠지만, 진짜 문제는 그게 아닙니다.  
+자동 폐기의 핵심은 더 이상 필요 없는 코드의 실행을 멈추는 데 있습니다.
+자동 폐기가 provider를 폐기하지 못하면, 그 provider는 백그라운드에서
+계속 네트워크 요청을 보낼 수도 있습니다.
+
+Riverpod은 약간의 편의를 위해 안정성을 타협하지 않는 쪽을 택했습니다.
+
+:::note 참고
+`StatelessWidget`/`StatefulWidget` 대신 [ConsumerWidget]/[ConsumerStatefulWidget]을 써야 하는 불편을 덜기 위해,
+Riverpod은 VSCode와 Android Studio 같은 IDE에서 다양한 리팩터링 기능을 제공합니다.
+
+![Consumer로 리팩터링](/img/intro/convert_to_class_provider.gif)
+
+IDE에서 이 기능을 활성화하려면 <Link documentID="introduction/getting_started" hash="enabling-riverpod_lint" />를 참고하세요.
+:::
+
+[ref]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref-class.html
+[consumer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Consumer-class.html
+[consumerWidget]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ConsumerWidget-class.html
+[consumerStatefulWidget]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ConsumerStatefulWidget-class.html
+[consumerState]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ConsumerState-class.html
+[widgetref]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/WidgetRef-class.html
