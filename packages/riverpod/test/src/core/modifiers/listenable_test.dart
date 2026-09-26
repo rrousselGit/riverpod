@@ -183,7 +183,18 @@ void main() {
 
       final listenable = container.read(counterProvider.listenable);
 
-      expect(() => listenable.addListener(() {}), throwsStateError);
+      expect(
+        () => listenable.addListener(() {}),
+        throwsA(
+          isA<StateError>().having(
+            (e) => e.message,
+            'message',
+            'The subscription backing this `.listenable` was closed. '
+                'Obtain `.listenable` through `ref.watch`, `ref.listen` or '
+                '`container.listen`, not `read`.',
+          ),
+        ),
+      );
     });
   });
 
