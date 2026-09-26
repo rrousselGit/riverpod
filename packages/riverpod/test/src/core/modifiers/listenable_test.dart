@@ -143,4 +143,91 @@ void main() {
       },
     );
   });
+
+  group('container.read(provider.listenable)', () {
+    test('throws a clear StateError instead of an internal one, since the '
+        'returned object needs a live subscription that container.read has '
+        'already closed by the time the caller can touch it', () {
+      final container = ProviderContainer.test();
+
+      final listenable = container.read(counterProvider.listenable);
+
+      expect(
+        () => listenable.value,
+        throwsA(
+          isA<StateError>().having(
+            (e) => e.message,
+            'message',
+            'The subscription backing this `.listenable` was closed. '
+                'Obtain `.listenable` through `ref.watch`, `ref.listen` or '
+                '`container.listen`, not `read`.',
+          ),
+        ),
+      );
+    });
+
+    test('still throws that StateError regardless of whether the provider was '
+        'already mounted before the read', () {
+      final container = ProviderContainer.test();
+      // Mount the provider through an unrelated read first.
+      expect(container.read(counterProvider), 0);
+
+      final listenable = container.read(counterProvider.listenable);
+
+      expect(() => listenable.value, throwsStateError);
+    });
+
+    test('addListener throws the same StateError, since ListenableBuilder '
+        'and AnimatedBuilder call it without ever reading .value first', () {
+      final container = ProviderContainer.test();
+
+      final listenable = container.read(counterProvider.listenable);
+
+      expect(
+        () => listenable.addListener(() {}),
+        throwsA(
+          isA<StateError>().having(
+            (e) => e.message,
+            'message',
+            'The subscription backing this `.listenable` was closed. '
+                'Obtain `.listenable` through `ref.watch`, `ref.listen` or '
+                '`container.listen`, not `read`.',
+          ),
+        ),
+      );
+    });
+  });
+
+  group('provider.listenable on a derived provider (pause bypass)', () {
+    test('reading .value forces a fresh value from a Provider deriving from a '
+        'NotifierProvider, even though the listenable started paused because '
+        'no listener was ever added to it', () {
+      final container = ProviderContainer.test();
+      final doubled = Provider<int>((ref) => ref.watch(counterProvider) * 2);
+
+      final sub = container.listen(doubled.listenable, (_, _) {});
+      final listenable = sub.read();
+      expect(listenable.value, 0);
+
+      container.read(counterProvider.notifier).state = 5;
+
+      expect(listenable.value, 10);
+    });
+
+    test('same as above for a Provider.autoDispose deriving from a '
+        'NotifierProvider', () {
+      final container = ProviderContainer.test();
+      final doubled = Provider.autoDispose<int>(
+        (ref) => ref.watch(counterProvider) * 2,
+      );
+
+      final sub = container.listen(doubled.listenable, (_, _) {});
+      final listenable = sub.read();
+      expect(listenable.value, 0);
+
+      container.read(counterProvider.notifier).state = 5;
+
+      expect(listenable.value, 10);
+    });
+  });
 }
