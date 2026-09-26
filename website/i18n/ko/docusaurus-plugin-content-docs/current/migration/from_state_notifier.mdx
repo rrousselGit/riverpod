@@ -1,6 +1,6 @@
 ---
-title: "`StateNotifier`에서"
-version: 1
+title: "`StateNotifier`에서 마이그레이션"
+version: 3
 ---
 
 import buildInit from "/docs/migration/from_state_notifier/build_init";
@@ -22,253 +22,266 @@ import obtainNotifierOnTests from "!!raw-loader!/docs/migration/from_state_notif
 import { Link } from "/src/components/Link";
 import { AutoSnippet } from "/src/components/CodeSnippet";
 
-[Riverpod 2.0](https://pub.dev/packages/flutter_riverpod/changelog#200)과 함께 새로운 클래스가 도입되었습니다: `Notifier` / `AsyncNotifier`.
-이제 이러한 새로운 API를 위해 `StateNotifier`는 더 이상 사용되지 않습니다.
+[Riverpod 2.0](https://pub.dev/packages/flutter_riverpod/changelog#200)과 함께 새로운 클래스인
+`Notifier` / `AsyncNotifier`가 도입되었습니다.
+이제 `StateNotifier`보다는 이 새로운 API를 사용하는 것이 권장됩니다.
 
-이 페이지는 더 이상 사용되지 않는 `StateNotifier`에서 새로운 API로 마이그레이션하는 방법을 보여줍니다.
+이 페이지에서는 더 이상 사용되지 않는 `StateNotifier`에서 새 API로 마이그레이션하는 방법을 설명합니다.
 
-`AsyncNotifier`가 도입한 주요 이점은 더 나은 `async` 지원입니다,
-실제로 `AsyncNotifier`는 UI에서 수정할 수 있는 방법을 노출하는 `FutureProvider`로 생각할 수 있습니다.
+`AsyncNotifier`가 가져온 가장 큰 이점은 향상된 `async` 지원입니다.
+`AsyncNotifier`는 UI에서 상태를 변경할 수 있는 방법을 노출하는 `FutureProvider`라고 생각할 수 있습니다.
 
-또한, 새로운 `(Async)Notifier`가 추가되었습니다:
+또한 새로운 `(Async)Notifier`는 다음과 같은 특징이 있습니다:
 
-- 클래스 내부에 `Ref` 객체 노출하기
-- 코드 생성 방식(codegen)과 비코드 생성 방식(non-codegen) 간에 유사한 문법 제공
-- 동기화 버전과 비동기 버전 간에 유사한 문법 제공
-- 로직을 provider에서 벗어나 Notifiers 자체로 중앙 집중화하기
+- 클래스 안에서 `Ref` 객체를 노출합니다
+- 코드 생성을 사용할 때와 사용하지 않을 때의 문법이 비슷합니다
+- 동기 버전과 비동기 버전의 문법이 비슷합니다
+- 로직을 Provider에서 떼어 내 Notifier 자체에 모읍니다
 
-`Notifier`를 정의하는 방법, `StateNotifier`와 비교하는 방법, 비동기 상태를 위해 새로운 `AsyncNotifier`를 마이그레이션하는 방법을 살펴봅시다.
+`Notifier`를 정의하는 방법과 `StateNotifier`와의 차이, 그리고 비동기 상태를 위해
+새로운 `AsyncNotifier`로 마이그레이션하는 방법을 살펴보겠습니다.
 
-## 새로운 문법 비교
+## 새 문법 비교 {#new-syntax-comparison}
 
-이 비교를 시작하기 전에 `Notifier`을 정의하는 방법을 알아두세요.
-<Link documentID="essentials/side_effects" hash="defining-a-notifier" />를 참고하세요.
+비교에 앞서 `Notifier`를 정의하는 방법을 알아 두세요.
+자세한 내용은 <Link documentID="concepts2/providers" />를 참고하세요.
 
-이전 `StateNotifier` 문법을 사용하여 예제를 작성해 보겠습니다:
+먼저 기존 `StateNotifier` 문법으로 예제를 작성해 보겠습니다:
 <AutoSnippet raw={buildInitOld}/>
 
-다음은 새로운 `Notifier` API로 작성된 동일한 예시이며, 대략 다음과 같이 변환됩니다:
+같은 예제를 새로운 `Notifier` API로 작성하면 대략 다음과 같습니다:
 <AutoSnippet language="dart" {...buildInit}></AutoSnippet>
 
-`Notifier`와 `StateNotifier`를 비교하면 다음과 같은 주요 차이점을 확인할 수 있습니다:
+`Notifier`와 `StateNotifier`를 비교하면 다음과 같은 주요 차이점을 볼 수 있습니다:
 
-- `StateNotifier`의 반응형 종속성(reactive dependencies)은 provider에서 선언되는 반면, `Notifier`는 이 로직을 `build` 메서드에서 중앙 집중화합니다.
-- `StateNotifier`의 전체 초기화 프로세스는 provider와 생성자 사이에 분할되어 있는 반면, `Notifier`는 이러한 로직을 배치할 수 있는 단일 위치를 예약합니다.
-- `StateNotifier`와는 반대로, `Notifier`의 생성자에는 어떠한 로직도 작성되지 않는 것을 주목하세요.
+- `StateNotifier`는 반응형 의존성을 provider에서 선언하지만, `Notifier`는
+  이 로직을 `build` 메서드에 모읍니다
+- `StateNotifier`는 초기화 과정 전체가 provider와 생성자에 나뉘어 있지만,
+  `Notifier`는 이런 로직을 한곳에 둡니다
+- `StateNotifier`와 달리 `Notifier`의 생성자에는 어떤 로직도 작성하지 않는다는 점에 주목하세요
 
-`Notifier`의 비동기 대응 클래스인 `AsyncNotifier`에서도 비슷한 점을 발견할 수 있습니다.
+`Notifier`의 비동기 버전인 `AsyncNotifier`에서도 같은 결론을 얻을 수 있습니다.
 
-## 비동기 `StateNotifier` 마이그레이션하기
+## 비동기 `StateNotifier` 마이그레이션하기 {#migrating-asynchronous-statenotifiers}
 
-새로운 API 구문의 가장 큰 장점은 비동기 데이터에 대한 향상된 DX입니다.  
-다음 예시를 살펴보겠습니다:
+새 API 문법의 가장 큰 매력은 비동기 데이터를 다룰 때 개발 경험(DX)이 좋아졌다는 점입니다.  
+다음 예제를 보겠습니다:
 
 <AutoSnippet raw={asyncNotifierOld}/>
 
-다음은 새로운 `AsyncNotifier` API를 사용하여 재작성된 위의 예시입니다:
+위 예제를 새로운 `AsyncNotifier` API로 다시 작성하면 다음과 같습니다:
 
 <AutoSnippet language="dart" {...asyncNotifier}></AutoSnippet>
 
-`AsyncNotifier`는 `Notifier`와 마찬가지로 더 간단하고 통일된 API를 제공합니다.
-여기서 `AsyncNotifier`는 메서드가 있는 `FutureProvider`로 쉽게 볼 수 있습니다.
+`AsyncNotifier`도 `Notifier`처럼 더 단순하고 일관된 API를 제공합니다.
+여기서는 `AsyncNotifier`를 메서드가 있는 `FutureProvider`로 쉽게 이해할 수 있습니다.
 
-`AsyncNotifier`에는 `StateNotifier`에는 없는 유틸리티와 게터가 함께 제공됩니다,
-예를 들어 [`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/future.html) 
-및 [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/update.html).
-이를 통해 비동기 변이(mutations)와 부수작업(side-effects)을 처리할 때 훨씬 더 간단한 로직을 작성할 수 있습니다.
-<Link documentID="essentials/side_effects" />를 참고하세요.
-
+`AsyncNotifier`에는 `StateNotifier`에 없는 여러 유틸리티와 getter가 있습니다. 예를 들어
+[`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/future.html)와
+[`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/update.html)가 있습니다.
+덕분에 비동기 mutation과 부수 효과를 처리하는 로직을 훨씬 간단하게 작성할 수 있습니다.
+자세한 내용은 <Link documentID="concepts2/providers" />를 참고하세요.
 :::tip
-`StateNotifier<AsyncValue<T>>`에서 `AsyncNotifier<T>`로 마이그레이션하는 방법은 다음과 같습니다:
+다음은 `StateNotifier<AsyncValue<T>>`에서 `AsyncNotifier<T>`로 마이그레이션하는 과정을 요약한 것입니다:
 
-- 초기화 로직을 `build`에 넣기
-- 초기화 또는 부수작업 메서드에서 `catch`/`try` 블록을 제거합니다.
-- `build`에서 `AsyncValue.guard`를 제거합니다. `Future`를 `AsyncValue`로 변환하기 때문입니다.
+- 초기화 로직을 `build`에 넣습니다
+- 초기화나 부수 효과 메서드에 있는 `catch`/`try` 블록을 모두 제거합니다
+- `build`에서 `AsyncValue.guard`를 모두 제거합니다. `build`가 반환한 `Future`는 자동으로 `AsyncValue`로 변환되기 때문입니다
 :::
 
-### 장점
 
-이 몇 가지 예시를 살펴본 후, 이제 `Notifier` 와 `AsyncNotifier`의 주요 장점을 살펴보겠습니다:
-- 새로운 구문은 특히 비동기 상태의 경우 훨씬 더 간단하고 가독성이 높아질 것입니다.
-- 새로운 API에는 일반적으로 상용구 코드가 줄어들 가능성이 높습니다.
-- 이제 작성하는 provider 타입에 관계없이 구문이 통합되어 코드 생성이 가능해졌습니다.
-(<Link documentID="concepts/about_code_generation" /> 참조).
+### 장점 {#advantages}
 
-더 자세히 살펴보고 더 많은 차이점과 유사점을 강조해 보겠습니다.
+몇 가지 예제를 살펴봤으니, 이제 `Notifier`와 `AsyncNotifier`의 주요 장점을 정리해 보겠습니다:
+- 새 문법은 특히 비동기 상태에서 훨씬 단순하고 읽기 쉽습니다
+- 새 API는 대체로 보일러플레이트 코드가 적습니다
+- 어떤 종류의 provider를 작성하든 문법이 통일되어, 코드 생성이 가능해집니다
+(<Link documentID="concepts/about_code_generation" /> 참고)
 
-## 명시적인 `.family` 및 `.autoDispose` 수정사항
+더 나아가 다른 차이점과 공통점도 살펴보겠습니다.
 
-또 다른 중요한 차이점은 새로운 API로 패밀리 및 자동폐기가 처리되는 방식입니다.
+## 명시적인 `.family`와 `.autoDispose` 수식어 {#explicit-family-and-autodispose-modifications}
 
-`Notifier`에는 `FamilyNotifier` 및 `Notifier`와 같은 자체 `.family` 및 `.autoDispose` 대응 항목이 있습니다.  
-항상 그렇듯이, 이러한 수정 사항을 결합할 수 있습니다 (일명 `AutoDisposeFamilyNotifier`).  
-`AsyncNotifier`에는 비동기 버전도 있습니다(예: `FamilyAsyncNotifier`).
+또 하나의 중요한 차이는 새 API에서 family와 자동 폐기를 다루는 방식입니다.
 
-수정 사항(Modifications)은 클래스 내부에 명시적으로 지정(stated)됩니다; 
-모든 매개변수는 `build` 메서드에 직접 주입되어 초기화 로직에서 사용할 수 있습니다.  
-이렇게 하면 가독성이 향상되고 간결해지며 전반적으로 실수가 줄어듭니다.
+수식어는 클래스 안에서 명시적으로 지정되며, 모든 매개변수는 `build` 메서드에 직접 주입되므로
+초기화 로직에서 바로 사용할 수 있습니다.  
+덕분에 가독성이 좋아지고, 코드가 간결해지며, 실수도 줄어듭니다.
 
-다음 예제에서는 `StateNotifierProvider.family`를 정의하고 있습니다.
+`StateNotifierProvider.family`를 정의하는 다음 예제를 보겠습니다.
 <AutoSnippet raw={familyAndDisposeOld}/>
 
-`BugsEncounteredNotifier`은 무겁거나 읽기 어려운 느낌입니다.  
-마이그레이션 된 `AsyncNotifier`를 살펴 보겠습니다:
+`BugsEncounteredNotifier`는... 무겁고 읽기 어렵게 느껴집니다.  
+마이그레이션된 `AsyncNotifier` 버전을 살펴보겠습니다:
 
 <AutoSnippet language="dart" {...familyAndDispose}></AutoSnippet>
 
-마이그레이션된 버전은 가볍게 읽을 수 있는 수준입니다.
+마이그레이션된 버전은 훨씬 가볍게 읽힐 것입니다.
 
 :::info
-`(Async)Notifier`의 `.family` 매개변수는 `this.arg`(또는 코드생성을 사용하는 경우 `this.paramName`)를 통해 사용할 수 있습니다.
+`(Async)Notifier`의 `.family` 매개변수는 `this.arg`(코드 생성을 사용할 때는 `this.paramName`)로 접근할 수 있습니다
 :::
 
-## 라이프사이클에 따라 동작 방식이 다릅니다.
+## 생명주기 동작이 다릅니다 {#lifecycles-have-a-different-behavior}
 
-`Notifier`/`AsyncNotifier`와 `StateNotifier`의 수명 주기는 크게 다릅니다.
+`Notifier`/`AsyncNotifier`와 `StateNotifier`는 생명주기가 크게 다릅니다.
 
-이 예시는 이전 API의 로직이 얼마나 부족한지(sparse)를 다시 한 번 보여줍니다:
+이 예제는 기존 API의 로직이 얼마나 흩어져 있는지 다시 한번 보여 줍니다:
 
-<AutoSnippet 
-    raw={oldLifecyclesOld}
-    translations={{
-    }}
-/>
+<AutoSnippet raw={oldLifecyclesOld}/>
 
-여기서 `durationProvider`가 업데이트되면 `MyNotifier`를 _페기(dispose)_: 인스턴스가 다시 인스턴스화되고 내부 상태가 다시 초기화됩니다.  
-또한 다른 모든 provider와 달리 `dispose` 콜백은 클래스에서 별도로 정의해야 합니다.  
-마지막으로, _provider_에 `ref.onDispose`를 작성하는 것이 여전히 가능하기 때문에, 이 API의 로직이 얼마나 부족한지(sparse)를 다시 한 번 알 수 있습니다; 
-잠재적으로 개발자는 이 Notifier 동작을 이해하기 위해 여덟 곳(8개!)을 살펴봐야 할 수도 있습니다!
+여기서 `durationProvider`가 갱신되면 `MyNotifier`는 *폐기*되고, 인스턴스가 새로 생성되며
+내부 상태도 다시 초기화됩니다.  
+게다가 다른 모든 provider와 달리 `dispose` 콜백을 클래스 안에
+따로 정의해야 합니다.  
+마지막으로 _provider_ 안에 `ref.onDispose`를 작성하는 것도 여전히 가능하므로, 이 API에서는 로직이
+얼마나 흩어질 수 있는지 다시 한번 드러납니다. 개발자는 이 Notifier의 동작을 이해하기 위해
+무려 여덟(8!) 군데를 살펴봐야 할 수도 있습니다!
 
-이러한 모호함은 `Riverpod 2.0`을 통해 해결되었습니다.
+이런 모호함은 `Riverpod 2.0`에서 해결되었습니다.
 
-### 이전의 `dispose` vs `ref.onDispose`
-`StateNotifier`의 `dispose` 메서드는 notifier 자체의 폐기(dispose) 이벤트를 참조하며, 일명 *자신을 처분하기 전에(before disposing of itself)* 호출되는 콜백입니다.
+### 기존 `dispose` vs `ref.onDispose` {#old-dispose-vs-refondispose}
+`StateNotifier`의 `dispose` 메서드는 notifier 자체의 폐기 이벤트를 가리킵니다. 즉,
+*자기 자신이 폐기되기 전에* 호출되는 콜백입니다.
 
-`(Async)Notifier`은 이 속성을 갖지 않는데, *리빌드 시 폐기되지 않고* *내부 상태만 폐기*되기 때문입니다.  
-새로운 notifiers에서 폐기 수명주기는 다른 provider와 마찬가지로 `ref.onDispose`(및 기타)를 통해 _한_ 곳에서만 처리됩니다.
-이렇게 하면 API와 DX가 단순화되어 라이프사이클 부작용을 이해하기 위해 살펴봐야 할 곳이 `build` 메서드 하나만 남게 됩니다.
+`(Async)Notifier`에는 이런 속성이 없습니다. *다시 빌드될 때 notifier 자체는 폐기되지 않고*,
+*내부 상태*만 폐기되기 때문입니다.  
+새 notifier에서는 다른 모든 provider와 마찬가지로 `ref.onDispose`(및 기타 메서드)를 통해
+*한곳*에서만 폐기 생명주기를 처리합니다.
+이렇게 API가 단순해지고 개발 경험도 좋아져, 생명주기와 관련된 부수 효과를 이해하려면
+`build` 메서드 *한곳*만 보면 됩니다.
 
-간단히 말해서, *내부 상태(internal state)*가 다시 빌드되기 전에 실행되는 콜백을 등록하려면 다른 모든 provider와 마찬가지로 `ref.onDispose`를 사용하면 됩니다.
+요약하면, *내부 상태*가 다시 빌드되기 전에 실행될 콜백을 등록하려면
+다른 모든 provider처럼 `ref.onDispose`를 사용하면 됩니다.
 
-위의 스니펫을 다음과 같이 마이그레이션할 수 있습니다:
+위 코드는 다음과 같이 마이그레이션할 수 있습니다:
 
-<AutoSnippet language="dart" 
-    {...oldLifecycles}
-    translations={{
-        period: "    // 코드를 한 곳에서 읽고 쓰기만 하면 됩니다.",
-        update: "    // `mounted`는 더 이상 없습니다!\n    state++; // throw될 수도 있습니다.",
-    }}
-/>
+<AutoSnippet
+  language="dart"
+  {...oldLifecycles}
+  translations={{
+    period: `    // 코드를 여기, 한곳에서만 읽고 쓰면 됩니다`,
+    update: `    // \`mounted\`는 더 이상 없습니다!
+    state++; // 예외가 발생할 수 있습니다.`,
+  }}
+></AutoSnippet>
 
-이 마지막 스니펫에는 확실히 약간의 단순화가 있지만 여전히 열려 있는 문제가 있습니다: 
-이제 `update`를 수행하는 동안 notifiers가 아직 살아(alive)있는지 여부를 파악할 수 없습니다.  
-이로 인해 원치 않는 `StateError`가 발생할 수 있습니다.
+이 코드는 확실히 단순해졌지만, 아직 해결되지 않은 문제가 있습니다.
+`update`를 실행하는 동안 notifier가 아직 살아 있는지 알 수 없다는 점입니다.  
+이 때문에 원치 않는 `StateError`가 발생할 수 있습니다.
 
-### 더 이상 `마운트되지(mounted)` 않음
-이는 `(Async)Notifier`에 `StateNotifier`에서 사용할 수 있는 `mounted` 프로퍼티가 없기 때문에 발생합니다.  
-수명 주기의 차이를 고려하면 이것은 완벽하게 이해가 됩니다; 
-가능하긴 하지만, 새로운 notifiers에서 `mounted` 프로퍼티는 오해의 소지가 있습니다: `mounted`는 거의 항상 `true`이 될 것입니다.
+### 더 이상 `mounted`는 없습니다 {#no-more-mounted}
+이 문제는 `(Async)Notifier`에 `StateNotifier`에서 쓸 수 있던 `mounted` 속성이
+없기 때문에 발생합니다.  
+생명주기의 차이를 생각하면 당연한 결과입니다. 만들 수는 있겠지만, 새 notifier에서 `mounted`
+속성은 오해를 부를 수 있습니다. `mounted`가 *거의 항상* `true`일 것이기 때문입니다.
 
-[커스텀 해결방법](https://github.com/rrousselGit/riverpod/issues/1879#issuecomment-1303189191)을 만들 수는 있지만,
-비동기 작업을 취소하여 이 문제를 해결하는 것이 좋습니다.
+[직접 우회 방법](https://github.com/rrousselGit/riverpod/issues/1879#issuecomment-1303189191)을 만들 수도 있지만,
+비동기 작업을 취소하는 방식으로 해결하는 것을 권장합니다.
 
-작업 취소는 커스텀 [Completer](https://api.flutter.dev/flutter/dart-async/Completer-class.html) 또는 커스텀 파생어(derivative)를 사용하여 수행할 수 있습니다.
+작업 취소는 직접 만든 [Completer](https://api.flutter.dev/flutter/dart-async/Completer-class.html)나
+그와 비슷한 방식으로 구현할 수 있습니다.
 
-예를 들어 `Dio`를 사용하여 네트워크 요청을 수행하는 경우 [cancel token](https://pub.dev/documentation/dio/latest/dio/CancelToken-class.html)을 사용하는 것이 좋습니다.
-(<Link documentID="concepts2/auto_dispose" /> 참고)
+예를 들어 네트워크 요청에 `Dio`를 사용한다면 [cancel token](https://pub.dev/documentation/dio/latest/dio/CancelToken-class.html)을
+사용해 보세요(<Link documentID="concepts2/auto_dispose" />도 참고하세요).
 
-따라서 위의 예는 다음과 같이 마이그레이션됩니다:
+따라서 위 예제는 다음과 같이 마이그레이션됩니다:
+<AutoSnippet
+  language="dart"
+  {...oldLifecyclesFinal}
+  translations={{
+    period: `    // 코드를 여기, 한곳에서만 읽고 쓰면 됩니다`,
+    codegen_cancel: `    // \`cancelToken.cancel\`이 호출되면 커스텀 Exception이 발생합니다`,
+  }}
+></AutoSnippet>
 
-<AutoSnippet language="dart" 
-    {...oldLifecyclesFinal}
-    translations={{
-        period: "    // 코드를 한 곳에서 읽고 쓰기만 하면 됩니다.",
-        codegen_cancel: "    // 취소 토큰이 호출되면 사용자 정의 예외가 발생합니다.",
-    }}
-/>
 
-## 변이(Mutations) API는 이전과 동일합니다
+## 상태 변경(mutation) API는 이전과 같습니다 {#mutations-apis-are-the-same-as-before}
 
-지금까지 `StateNotifier`와 새로운 API의 차이점을 살펴보았습니다.  
-대신, `Notifier`, `AsyncNotifier`, `StateNotifier`가 공유하는 한 가지는 상태를 소비하고 변경할 수 있다는 점입니다.
+지금까지 `StateNotifier`와 새 API의 차이점을 살펴봤습니다.  
+반면 `Notifier`, `AsyncNotifier`, `StateNotifier`에 공통된 점은 상태를
+사용하고 변경하는 방식입니다.
 
-Consumers는 동일한 구문으로 이 세 providers로부터 데이터를 얻을 수 있습니다, 
-이는 `StateNotifier`에서 마이그레이션하는 경우에 유용하며, 이는 notifiers 메서드에도 적용됩니다.
+consumer는 세 provider 모두에서 같은 문법으로 데이터를 가져올 수 있으므로,
+`StateNotifier`에서 마이그레이션할 때 매우 편리합니다. notifier 메서드도 마찬가지입니다.
 
 <AutoSnippet raw={consumersDontChange}></AutoSnippet>
 
-## 기타 마이그레이션
+## 기타 마이그레이션 {#other-migrations}
 
-`StateNotifier`와 `Notifier`(또는 `AsyncNotifier`)의 영향력이 크지 않은 차이점을 살펴봅시다.
+`StateNotifier`와 `Notifier`(또는 `AsyncNotifier`) 사이의 비교적 영향이 적은 차이점들을 살펴보겠습니다.
 
-### `.addListener` 및 `.stream`에서
+### `.addListener`와 `.stream`에서 마이그레이션 {#from-addlistener-and-stream}
 
-`StateNotifier`의 `.addListener`와 `.stream`은 상태 변경을 수신하는 데 사용할 수 있습니다.
-이 두 API는 이제 오래된 것으로 간주됩니다.
+`StateNotifier`의 `.addListener`와 `.stream`은 상태 변화를 구독하는 데 사용할 수 있습니다.
+이제 이 두 API는 구식으로 간주해야 합니다.
 
-이는 `Notifier`, `AsyncNotifier` 및 기타 proviers와 완전한 API 통일성을 달성하기 위한 의도적인 것입니다.  
-실제로 `Notifier`나 `AsyncNotifier`를 사용하는 것은 다른 provier와 다르지 않아야 합니다.
+이는 `Notifier`, `AsyncNotifier` 및 다른 provider와 API를 완전히 통일하기 위한 의도적인 결정입니다.  
+실제로 `Notifier`나 `AsyncNotifier`를 사용하는 방식은 다른 provider와 다를 바가 없어야 합니다.
 
-따라서 이 것이:
-
-<AutoSnippet 
-    raw={addListenerOld}
-    translations={{
-        listener: "  // 또는 동등하게:",
-    }}
+따라서 다음 코드는:
+<AutoSnippet
+  raw={addListenerOld}
+  translations={{
+    listener: `  // 또는 다음과 같이 쓸 수도 있습니다:`,
+  }}
 />
 
-이렇게 됩니다:
+다음과 같이 바뀝니다:
 <AutoSnippet language="dart" {...addListener}></AutoSnippet>
 
-간단히 말해, `Notifier`/`AsyncNotifier`를 수신하려면 `ref.listen`를 사용하면 됩니다.
-<Link documentID="essentials/combining_requests" hash="the-reflistenlistenself-methods" />를 참고하세요
+요약하면, `Notifier`/`AsyncNotifier`를 구독하려면 `ref.listen`을 사용하면 됩니다.
+자세한 내용은 <Link documentID="concepts2/refs" />를 참고하세요.
 
-### 테스트의 `.debugState`에서
+### 테스트에서 `.debugState` 마이그레이션 {#from-debugstate-in-tests}
 
-`StateNotifier`는 `.debugState`를 노출합니다: 
-이 프로퍼티는 개발 모드에서 테스트 목적으로 클래스 외부에서 상태 액세스를 활성화하기 위해 pkg:state_notifier 사용자가 사용할 수 있습니다.
+`StateNotifier`는 `.debugState`를 노출합니다. 이 속성은 pkg:state_notifier 사용자가 개발 모드에서
+테스트를 위해 클래스 바깥에서 상태에 접근할 수 있도록 하는 데 쓰입니다.
 
-테스트에서 상태에 액세스하기 위해 `.debugState`를 사용하는 경우 이 접근 방식을 중단해야 합니다.
+테스트에서 상태에 접근하려고 `.debugState`를 사용하고 있다면, 이 방식은 버려야 할 가능성이
+높습니다.
 
-`Notifier` / `AsyncNotifier`에는 `.debugState`가 없으며, 대신 `.state`, 즉 `@visibleForTesting`을 직접 노출합니다.
+`Notifier` / `AsyncNotifier`에는 `.debugState`가 없습니다. 대신 `@visibleForTesting`으로 지정된
+`.state`를 직접 노출합니다.
 
-:::danger
-AVOID 테스트에서 `.state`에 접근하지 마시고, 꼭 접근해야 한다면 `Notifier` / `AsyncNotifier`가 이미 제대로 인스턴스화된 경우에만 접근하세요;
-그러면 테스트 내부에서 `.state`에 자유롭게 접근할 수 있습니다.
+:::danger 경고
+테스트에서 `.state`에 접근하는 것은 피하세요. 꼭 필요하다면, `Notifier` / `AsyncNotifier`가 이미
+제대로 인스턴스화되어 있는 경우에 _한해서만_ 그렇게 하세요.
+그런 경우라면 테스트 안에서 `.state`에 자유롭게 접근해도 됩니다.
 
-실제로 `Notifier` / `AsyncNotifier`는 직접 인스턴스화해서는 안 됩니다; 
-대신 해당 provider를 사용해 상호작용해야 합니다: 
-그렇게 하지 않으면 notifier가 *중단(break)*됩니다,
-ref와 family 인자가 초기화되지 않기 때문입니다.
+실제로 `Notifier` / `AsyncNotifier`는 직접 인스턴스화해서는 _안 되며_, 반드시 해당 provider를
+통해 다뤄야 합니다. 그렇지 않으면 ref와 family 인자가 초기화되지 않아
+notifier가 *제대로 동작하지 않습니다*.
 :::
 
-`Notifier` 인스턴스가 없으신가요?  
-문제없습니다. 노출된 상태를 읽을 때와 마찬가지로 `ref.read`로 인스턴스를 가져올 수 있습니다:
+`Notifier` 인스턴스가 없나요?  
+문제없습니다. 노출된 상태를 읽을 때처럼 `ref.read`로 인스턴스를 얻을 수 있습니다:
 
-<AutoSnippet 
-    raw={obtainNotifierOnTests}
-    translations={{
-        notifier: "    // notifier 가져오기",
-        state: "    // 노출된 상태 가져오기",
-        test: "    // TODO 테스트 작성하기",
-    }}
+<AutoSnippet
+  raw={obtainNotifierOnTests}
+  translations={{
+    notifier: `    // notifier 가져오기`,
+    state: `    // 노출된 상태 가져오기`,
+    test: `    // TODO 테스트 작성하기`,
+  }}
 />
 
-전용 가이드에서 테스트에 대해 자세히 알아보세요. <Link documentID="essentials/testing" />를 참고하세요.
+테스트에 대해서는 전용 가이드에서 더 알아보세요. <Link documentID="how_to/testing" />를 참고하세요.
 
-### `StateProvider`에서
+### `StateProvider`에서 마이그레이션 {#from-stateprovider}
 
-`StateProvider`는 Riverpod에서 출시 이후 노출된 것으로, `StateNotifierProvider`의 간소화된 버전을 위해 몇 가지 LoC를 절약하기 위해 만들어졌습니다.  
-`StateNotifierProvider`는 더 이상 사용되지 않으므로 `StateProvider`도 피해야 합니다.  
-또한 현재는 새로운 API에 상응하는 `StateProvider`가 없습니다.
+`StateProvider`는 Riverpod 출시 때부터 제공되었으며, 단순한 형태의 `StateNotifierProvider`를
+만들 때 코드 몇 줄을 줄이기 위해 만들어졌습니다.  
+`StateNotifierProvider`가 더 이상 사용되지 않으므로 `StateProvider`도 피해야 합니다.  
+게다가 현재 새 API에는 `StateProvider`에 해당하는 것이 없습니다.
 
-그럼에도 불구하고 `StateProvider`에서 `Notifier`로 마이그레이션하는 것은 간단합니다.
+그래도 `StateProvider`에서 `Notifier`로 마이그레이션하는 것은 간단합니다.
 
-이 코드는:
+다음 코드는:
 <AutoSnippet raw={fromStateProviderOld}/>
 
-이렇게 됩니다:
+다음과 같이 바뀝니다:
 <AutoSnippet language="dart" {...fromStateProvider}></AutoSnippet>
 
-LoC가 몇 개 더 들더라도 `StateProvider`에서 마이그레이션하면 `StateNotifier`를 확실하게 보존(archive)할 수 있습니다.
+코드가 몇 줄 늘어나긴 하지만, `StateProvider`에서 벗어나면
+`StateNotifier`를 완전히 정리할 수 있습니다.

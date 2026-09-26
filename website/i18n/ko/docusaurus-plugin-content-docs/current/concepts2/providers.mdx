@@ -1,0 +1,594 @@
+---
+title: Provider
+version: 1
+---
+
+import declaringManyProviders from "/docs/concepts2/providers/declaring_many_providers";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+import Legend, { colors } from "/src/components/Legend";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+provider는 Riverpod의 핵심 기능입니다. Riverpod을 쓴다는 것은 곧 provider를 쓴다는 뜻입니다.
+
+## provider란? {#what-is-a-provider}
+
+provider는 본질적으로 편의 기능을 더한 "메모이즈된(memoized) 함수"입니다.  
+즉, 같은 매개변수로 호출하면 캐시된 값을 반환하는 함수입니다.
+
+provider의 가장 흔한 사용 사례는 네트워크 요청입니다.  
+API에서 사용자 정보를 가져오는 함수를 생각해 봅시다.
+
+```dart
+Future<User> fetchUser() async {
+  final response = await http.get('https://api.example.com/user/123');
+  return User.fromJson(response.body);
+}
+```
+
+이 함수를 위젯 안에서 사용하려면 한 가지 문제가 있습니다.
+결과를 직접 캐시해야 하고, 그 값이 필요한 모든 위젯이 공유할 방법도
+따로 마련해야 합니다.
+
+바로 여기서 provider가 등장합니다. provider는 함수를 감싸는 래퍼입니다.
+함수의 결과를 캐시하고, 여러 위젯이 같은 값에 접근할 수 있게 해 줍니다.
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+  // fetchUser 함수와 같지만, 결과가 캐시됩니다.
+  // 이 코드는 "userProvider"를 생성합니다. 여러 번 사용해도
+  // 같은 값을 반환합니다.
+  @riverpod
+  Future<User> user(Ref ref) async {
+    final response = await http.get('https://api.example.com/user/123');
+    return User.fromJson(response.body);
+  }
+  `}
+  raw={`
+  // fetchUser 함수와 같지만, 결과가 캐시됩니다.
+  // userProvider를 여러 번 사용해도 같은 값을 반환합니다.
+  final userProvider = FutureProvider<User>((ref) async {
+    final response = await http.get('https://api.example.com/user/123');
+    return User.fromJson(response.body);
+  });
+  `}
+  ></AutoSnippet>
+
+provider는 기본적인 캐싱 외에도 더 강력하게 쓸 수 있도록
+다양한 기능을 제공합니다.
+
+- **내장된 캐시 무효화 메커니즘**  
+  특히 [Ref.watch](https://pub.dev/documentation/riverpod/latest/riverpod/Ref/watch.html)를
+  사용하면 여러 캐시를 조합하고, 필요한 부분을 자동으로 무효화할 수 있습니다.
+- **<Link documentID="concepts2/auto_dispose" />** <br/>
+  provider는 더 이상 필요하지 않은 리소스를 자동으로 해제할 수 있습니다.
+- **데이터 바인딩**  
+  provider를 사용하면 [FutureBuilder](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html)나
+  [StreamBuilder](https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html)가 필요 없습니다.
+- **자동 에러 처리**  
+  provider는 에러를 자동으로 잡아서 UI에 전달할 수 있습니다.
+- **모킹 지원**  
+  테스트 등의 목적으로 모든 provider를 모킹할 수 있습니다.
+  <Link documentID="concepts2/overrides" />를 참고하세요.
+- **<Link documentID="concepts2/offline"/>** <br/>
+  provider의 결과를 디스크에 저장해 두었다가, 앱을 다시 시작할 때
+  자동으로 불러올 수 있습니다.
+- **<Link documentID="concepts2/mutations" />** <br/>
+  provider는 폼 제출 같은 부수 효과를 처리할 때 UI가 로딩 스피너나 에러 상태를 표시할 수 있는 방법을 기본으로 제공합니다.
+
+provider는 6가지 종류가 있습니다.
+
+|              | 동기(Synchronous)      | Future                | Stream                 |
+| ------------ | ---------------- | --------------------- | ---------------------- |
+| 수정 불가 | [Provider]         | [FutureProvider]        | [StreamProvider]         |
+| 수정 가능   | [NotifierProvider] | [AsyncNotifierProvider] | [StreamNotifierProvider] |
+
+처음에는 복잡해 보일 수 있습니다. 하나씩 살펴보겠습니다.
+
+**Sync** vs **Future** vs **Stream**:  
+표의 각 열은 함수에 쓰이는 Dart의 내장 타입을 나타냅니다.
+```dart
+int synchronous() => 0;
+Future<int> future() async => 0;
+Stream<int> stream() => Stream.value(0);
+```
+
+**수정 불가 vs 수정 가능**:  
+기본적으로 provider는 위젯이 수정할 수 없습니다. provider의 "Notifier" 변형을
+사용하면 외부에서 수정할 수 있습니다.  
+이는 private setter("수정 불가" provider)와
+```dart
+// _state는 내부에서는 수정할 수 있지만
+// 외부에서는 수정할 수 없습니다
+var _state = 0;
+int get state => _state;
+```
+public setter("수정 가능" provider)의 차이와 비슷합니다.
+```dart
+// 누구나 "state"를 수정할 수 있습니다
+var state = 0;
+```
+
+:::info
+원리상 **수정 불가**와 **수정 가능**은 각각 `StatelessWidget`과 `StatefulWidget`에 대응한다고 볼 수도 있습니다.  
+
+provider는 위젯이 아니고 두 종류 모두 "상태"를 저장하므로 정확한 비유는 아닙니다.
+하지만 "하나의 불변 객체" vs "두 개의 가변 객체"라는 원리는 비슷합니다.
+:::
+
+
+## provider 만들기 {#creating-a-provider}
+
+provider는 "최상위(top-level)"에 선언해야 합니다.  
+즉, 어떤 클래스나 함수에도 속하지 않은 바깥에 선언해야 합니다.
+
+provider를 만드는 문법은 위 표에서 본 것처럼 "수정 가능"인지
+"수정 불가"인지에 따라 달라집니다.
+
+<Tabs>
+<TabItem value="Unmodifiable" label="수정 불가 (함수형)">
+
+<Tabs groupId="riverpod">
+<TabItem value="riverpod" label="riverpod">
+<Legend
+  code={`
+    final name = SomeProvider.someModifier<Result>((ref) {
+      <your logic here>
+    });
+  `}
+  annotations={[
+    {
+      offset: 6,
+      length: 4,
+      label: "provider 변수",
+        description: <>
+
+이 변수를 통해 provider와 상호작용합니다.  
+변수는 final이어야 하며 "최상위"(전역)에 선언해야 합니다.
+
+:::note 참고
+provider가 전역이라고 걱정할 필요는 없습니다.
+provider는 완전히 불변입니다. provider를 선언하는 것은 함수를 선언하는 것과
+다르지 않으며, 테스트와 유지보수도 쉽습니다.
+:::
+
+</>
+    },
+    {
+      offset: 13,
+      length: 12,
+      label: "provider 타입",
+      description: <>
+
+보통 [Provider], [FutureProvider], [StreamProvider] 중 하나입니다.  
+어떤 provider 타입을 사용할지는 함수의 반환값에 따라 결정됩니다.
+예를 들어 `Future<Activity>`를 만들려면 `FutureProvider<Activity>`를 사용합니다.
+
+가장 많이 쓰게 될 것은 `FutureProvider`입니다.
+
+:::tip
+"어떤 provider를 골라야 할까"라고 고민하지 마세요.
+대신 "무엇을 반환하고 싶은가"를 생각하세요. provider 타입은
+자연스럽게 정해집니다.
+:::
+
+</>
+    },
+    {
+      offset: 25,
+      length: 13,
+      label: "수식자 (선택 사항)",
+      description: <>
+
+provider 타입 뒤에 "수식자(modifier)"가 붙는 경우가 많습니다.  
+수식자는 선택 사항이며, 타입 안전한 방식으로 provider의 동작을
+조정하는 데 사용합니다.
+
+현재 사용할 수 있는 수식자는 두 가지입니다.
+
+- `autoDispose`: provider가 더 이상 사용되지 않으면
+  캐시를 자동으로 비웁니다.  
+  <Link documentID="concepts2/auto_dispose" />도 참고하세요.
+- `family`: provider에 인자를 전달할 수 있게 합니다.  
+  <Link documentID="concepts2/family" />도 참고하세요.
+
+</>
+    },
+    {
+      offset: 48,
+      length: 3,
+      label: "Ref",
+      description: <>
+
+다른 provider와 상호작용할 때 사용하는 객체입니다.  
+모든 provider가 ref를 가지고 있으며, provider 함수의 매개변수로 받거나
+Notifier의 프로퍼티로 접근합니다.
+
+</>
+    },
+    {
+      offset: 57,
+      length: 17,
+      label: "provider 함수",
+      description: <>
+
+provider의 로직을 작성하는 곳입니다.
+이 함수는 provider를 처음 읽을 때 호출됩니다.  
+이후에 다시 읽을 때는 함수를 호출하지 않고 캐시된 값을 반환합니다.
+
+</>
+    },
+  ]}
+/>
+</TabItem>
+<TabItem value="riverpod_generator" label="riverpod_generator">
+<Legend
+  code={`
+    @riverpod
+    Result myFunction(Ref ref) {
+      <your logic here>
+    }
+  `}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "어노테이션",
+      description: <>
+
+생성되는 모든 provider에는 `@riverpod` 또는 `@Riverpod()` 어노테이션을 붙여야 합니다.
+이 어노테이션은 전역 함수나 클래스에 붙일 수 있으며, 이를 통해
+provider를 설정할 수 있습니다.
+
+예를 들어 `@Riverpod(keepAlive: true)`라고 작성하면 "auto-dispose"(뒤에서 다룹니다)를 비활성화할 수 있습니다.
+
+</>
+    },
+    {
+      offset: 17,
+      length: 10,
+      label: "어노테이션이 붙은 함수",
+      description: <>
+
+어노테이션이 붙은 함수의 이름에 따라 provider를
+사용하는 방법이 정해집니다.  
+예를 들어 `myFunction` 함수가 있으면 `myFunctionProvider`가 생성됩니다.
+
+어노테이션이 붙은 함수는 첫 번째 매개변수로 [Ref]를 **반드시** 받아야 합니다.  
+그 밖에는 제네릭을 포함해 매개변수를 몇 개든 가질 수 있습니다.
+원한다면 `Future`/`Stream`을 반환해도 됩니다.
+
+이 함수는 provider를 처음 읽을 때 호출됩니다.  
+이후에 다시 읽을 때는 함수를 호출하지 않고 캐시된 값을 반환합니다.
+
+</>
+    },
+    {
+      offset: 28,
+      length: 7,
+      label: "Ref",
+      description: <>
+
+다른 provider와 상호작용할 때 사용하는 객체입니다.  
+모든 provider가 ref를 가지고 있으며, provider 함수의 매개변수로 받거나
+Notifier의 프로퍼티로 접근합니다.  
+이 객체의 타입은 함수/클래스의 이름에 따라 결정됩니다.
+
+</>
+    },
+]}
+/>
+</TabItem>
+</Tabs>
+
+</TabItem>
+
+<TabItem value="Modifiable" label="수정 가능 (notifier)">
+<Tabs groupId="riverpod">
+<TabItem value="riverpod" label="riverpod">
+<Legend
+  code={`final name = SomeNotifierProvider.someModifier<MyNotifier, Result>(MyNotifier.new);
+ 
+class MyNotifier extends SomeNotifier<Result> {
+  @override
+  Result build() {
+    <your logic here>
+  }
+
+  <your methods here>
+}`}
+  annotations={[
+    {
+      offset: 6,
+      length: 4,
+      label: "provider 변수",
+       description: <>
+
+이 변수를 통해 provider와 상호작용합니다.  
+변수는 final이어야 하며 "최상위"(전역)에 선언해야 합니다.
+
+:::note 참고
+provider가 전역이라고 걱정할 필요는 없습니다.
+provider는 완전히 불변입니다. provider를 선언하는 것은 함수를 선언하는 것과
+다르지 않으며, 테스트와 유지보수도 쉽습니다.
+:::
+
+</>
+    },
+    {
+      offset: 13,
+      length: 20,
+      label: "provider 타입",
+       description: <>
+
+보통 [NotifierProvider], [AsyncNotifierProvider], [StreamNotifierProvider] 중 하나입니다.  
+어떤 provider 타입을 사용할지는 함수의 반환값에 따라 결정됩니다.
+예를 들어 `Future<Activity>`를 만들려면 `AsyncNotifierProvider<Activity>`를 사용합니다.
+
+가장 많이 쓰게 될 것은 [AsyncNotifierProvider]입니다.
+
+:::tip
+함수형 provider와 마찬가지로 "어떤 provider를 골라야 할까"라고 고민하지 마세요.
+만들고 싶은 상태를 만들면 provider 타입은 자연스럽게 정해집니다.
+:::
+
+</>
+    },
+    {
+      offset: 33,
+      length: 13,
+      label: "수식자 (선택 사항)",
+      description: <>
+
+provider 타입 뒤에 "수식자(modifier)"가 붙는 경우가 많습니다.  
+수식자는 선택 사항이며, 타입 안전한 방식으로 provider의 동작을
+조정하는 데 사용합니다.
+
+현재 사용할 수 있는 수식자는 두 가지입니다.
+
+- `autoDispose`: provider가 더 이상 사용되지 않으면
+  캐시를 자동으로 비웁니다.  
+  <Link documentID="concepts2/auto_dispose" />도 참고하세요.
+- `family`: provider에 인자를 전달할 수 있게 합니다.  
+  <Link documentID="concepts2/family" />도 참고하세요.
+
+</>
+    },
+    {
+      offset: 67,
+      length: 14,
+      label: "Notifier의 생성자",
+      description: <>
+
+"notifier provider"의 매개변수는 "notifier"를 인스턴스화하는
+함수입니다.  
+보통은 "생성자 tear-off"를 사용합니다.
+
+</>
+    },
+    {
+      offset: 86,
+      length: 16,
+      label: "Notifier",
+      description: <>
+
+`NotifierProvider`가 `StatefulWidget`에 해당한다면, 이 부분은
+`State` 클래스에 해당합니다.
+
+이 클래스는 provider의 상태를 수정하는 방법을 외부에 제공합니다.  
+이 클래스의 public 메서드는 `ref.read(yourProvider.notifier).yourMethod()`로 호출할 수 있습니다.
+
+:::caution 주의
+Notifier의 생성자에 로직을 넣지 마세요.  
+생성자 시점에는 `ref`와 다른 프로퍼티를 아직 사용할 수 없으므로
+Notifier에는 생성자를 두지 않아야 합니다. 로직은 `build` 메서드에 작성하세요.
+
+```dart
+class MyNotifier extends ... {
+  MyNotifier() {
+    // ❌ 이렇게 하지 마세요
+    // 예외가 발생합니다
+    state = AsyncValue.data(42);
+  }
+
+  @override
+  Future<int> build() {
+    // ✅ 대신 이렇게 하세요
+    state = AsyncValue.data(42);
+  }
+}
+```
+:::
+
+</>
+    },
+    {
+      offset: 111,
+      length: 12,
+      label: "Notifier 타입",
+      description: <>
+
+Notifier가 상속하는 기반 클래스는 provider 타입(과 사용하는 경우 "family")과 일치해야 합니다.
+몇 가지 예시는 다음과 같습니다.
+
+- <span style={{ color: colors[0] }}>Notifier</span>Provider -> <span style={{ color: colors[0] }}>Notifier</span>
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider -> <span style={{ color: colors[0] }}>AsyncNotifier</span>
+- <span style={{ color: colors[0] }}>StreamNotifier</span>Provider -> <span style={{ color: colors[0] }}>StreamNotifier</span>
+
+</>
+    },
+    {
+      offset: 136,
+      length: 54,
+      label: "build 메서드",
+      description: <>
+
+모든 Notifier는 `build` 메서드를 오버라이드해야 합니다.  
+이 메서드는 Notifier가 아닌 provider에서 로직을 작성하던 곳에
+해당합니다.
+
+이 메서드를 직접 호출해서는 안 됩니다.
+
+</>
+    },
+]}
+/>
+</TabItem>
+<TabItem value="riverpod_generator" label="riverpod_generator">
+<Legend
+  code={`@riverpod
+class MyNotifier extends _$MyNotifier {
+  @override
+  Result build() {
+    <your logic here>
+  }
+
+  <your methods here>
+}`}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "어노테이션",
+      description: <>
+
+모든 provider에는 `@riverpod` 또는 `@Riverpod()` 어노테이션을 붙여야 합니다.
+이 어노테이션은 전역 함수나 클래스에 붙일 수 있습니다.  
+이 어노테이션을 통해 provider를 설정할 수 있습니다.
+
+예를 들어 `@Riverpod(keepAlive: true)`라고 작성하면 "auto-dispose"(뒤에서 다룹니다)를 비활성화할 수 있습니다.
+
+</>
+    },
+    {
+      offset: 10,
+      length: 16,
+      label: "Notifier",
+       description: <>
+
+클래스에 `@riverpod` 어노테이션을 붙이면 그 클래스를
+"Notifier"라고 부릅니다.  
+이 클래스는 `_$NotifierName`을 상속해야 하며, 여기서 `NotifierName`은 클래스 이름입니다.
+
+Notifier는 provider의 상태를 수정하는 방법을 외부에 제공합니다.  
+이 클래스의 public 메서드는 `ref.read(yourProvider.notifier).yourMethod()`로 호출할 수 있습니다.
+
+:::caution 주의
+Notifier의 생성자에 로직을 넣지 마세요.  
+생성자 시점에는 `ref`와 다른 프로퍼티를 아직 사용할 수 없으므로
+Notifier에는 생성자를 두지 않아야 합니다. 로직은 `build` 메서드에 작성하세요.
+
+```dart
+class MyNotifier extends ... {
+  MyNotifier() {
+    // ❌ 이렇게 하지 마세요
+    // 예외가 발생합니다
+    state = AsyncValue.data(42);
+  }
+
+  @override
+  Future<int> build() {
+    // ✅ 대신 이렇게 하세요
+    state = AsyncValue.data(42);
+  }
+}
+```
+:::
+
+</>
+    },
+    {
+      offset: 52,
+      length: 54,
+      label: "build 메서드",
+      description: <>
+
+모든 Notifier는 `build` 메서드를 오버라이드해야 합니다.  
+이 메서드는 Notifier가 아닌 provider에서 로직을 작성하던 곳에
+해당합니다.
+
+이 메서드를 직접 호출해서는 안 됩니다.
+
+</>
+    },
+]}
+/>
+</TabItem>
+</Tabs>
+</TabItem>
+</Tabs>
+
+:::info
+provider는 제한 없이 원하는 만큼 선언할 수 있습니다.
+`package:provider`와 달리, Riverpod에서는 같은 "타입"의 상태를 노출하는
+provider를 여러 개 만들 수 있습니다.
+
+<AutoSnippet language="dart" {...declaringManyProviders}></AutoSnippet>
+
+두 provider가 모두 `String`을 만든다는 점은 아무 문제가 되지 않습니다.
+:::
+
+
+## provider 사용하기 {#using-providers}
+
+provider는 그 자체로는 아무 일도 하지 않는다는 점에서 위젯과 비슷합니다.  
+위젯이 UI를 기술하듯, provider는 상태를 기술합니다.  
+놀랍게도 provider는 완전히 stateless이며, 문법이 조금 더 장황해지는 문제만
+없었다면 `const`로 인스턴스화할 수도 있었을 것입니다.
+
+provider를 사용하려면 별도의 객체인 [ProviderContainer]가 필요합니다.
+자세한 내용은 <Link documentID="concepts2/containers" />를 참고하세요.
+
+간단히 말해, provider를 사용하기 전에 Flutter 앱을
+[ProviderScope]로 감싸야 합니다.
+
+```dart
+void main() {
+  runApp(ProviderScope(child: MyApp()));
+}
+```
+
+그다음 provider와 상호작용하려면 [Ref]를 얻어야 합니다.
+Ref에 대한 자세한 내용은 <Link documentID="concepts2/refs" />를 참고하세요.
+
+요약하면 [Ref]를 얻는 방법은 두 가지입니다.
+- provider는 자연스럽게 ref에 접근할 수 있습니다.  
+  provider 함수의 첫 번째 매개변수나 Notifier의 `ref` 프로퍼티가 바로 그것입니다.
+  이를 통해 provider끼리 서로 통신할 수 있습니다.
+- 위젯 트리에서는 <Link documentID="concepts2/consumers" />라고 부르는 특별한 위젯이 필요합니다.
+  이 위젯은 [WidgetRef]를 제공하여 위젯 트리와 provider 트리를 연결해 줍니다.
+
+예를 들어 간단한 문자열을 반환하는 `helloWorldProvider`가 있다고 해 봅시다.
+위젯 안에서는 다음과 같이 사용할 수 있습니다.
+
+```dart
+class Example extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer(
+      builder: (context, ref, _) {
+        // provider의 값을 가져옵니다
+        final helloWorld = ref.watch(helloWorldProvider);
+
+        // 가져온 값을 UI에 사용합니다
+        return Text(helloWorld);
+      },
+    );
+  }
+}
+```
+
+[provider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Provider-class.html
+[futureprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/FutureProvider-class.html
+[streamprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/StreamProvider-class.html
+[notifierprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/NotifierProvider-class.html
+[asyncnotifierprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/AsyncNotifierProvider-class.html
+[streamnotifierprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/StreamNotifierProvider-class.html
+[ref]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref-class.html
+[widgetref]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/WidgetRef-class.html
+[providerscope]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderScope-class.html
+[providercontainer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderContainer-class.html

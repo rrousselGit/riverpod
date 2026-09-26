@@ -1,0 +1,64 @@
+---
+title: Provider 스코핑
+---
+import { Link } from "/src/components/Link";
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import usage from '/docs/concepts2/scoping/usage';
+import dependencies from '/docs/concepts2/scoping/dependencies';
+import override from 'raw-loader!/docs/concepts2/scoping/override.dart';
+
+스코핑(scoping)이란 애플리케이션의 일부 영역에서만 provider의 동작을 바꾸는 것을 말합니다.
+
+스코핑은 다음과 같은 경우에 유용합니다:
+- 페이지/위젯별 커스터마이징 (예: 특정 페이지에서만 앱 테마 변경)
+- 성능 최적화 (예: `ListView`에서 변경된 항목만 다시 빌드)
+- 매개변수를 여기저기 전달하지 않아도 되도록 하기 (<Link documentID="concepts2/family" />의 경우처럼)
+
+스코핑은 <Link documentID="concepts2/overrides" />를 사용해 구현합니다.
+애플리케이션의 루트가 _아닌_ <Link documentID="concepts2/containers" />에서 provider를 오버라이드하는 방식입니다.
+
+:::caution 주의
+스코핑 기능은 매우 복잡하며, 앞으로 더 쓰기 편하도록
+개편될 가능성이 높습니다.  
+
+신중하게 사용하세요.
+:::
+
+
+## 스코프 provider 정의하기 {#defining-a-scoped-provider}
+
+기본적으로 Riverpod은 provider의 스코핑을 허용하지 않습니다. 이 기능을 사용하려면
+provider에 `dependencies`를 지정해 명시적으로 활성화해야 합니다.
+
+앱에서 처음 정의하는 스코프 provider는 보통 `dependencies: []`를 지정합니다.  
+다음 코드는 현재 표시 중인 항목의 ID를 제공하는 스코프 provider를 정의합니다:
+
+<AutoSnippet {...usage} />
+
+## 스코프 provider 구독하기 {#listening-to-a-scoped-provider}
+
+스코프 provider를 구독하려면 (<Link documentID="concepts2/consumers" /> 등으로) <Link documentID="concepts2/refs" />를
+얻어 평소처럼 provider를 사용하면 됩니다.
+
+```dart
+final currentItemId = ref.watch(currentItemIdProvider);
+```
+
+어떤 provider가 스코프 provider를 구독한다면, 해당 스코프 provider를
+구독하는 쪽 provider의 `dependencies`에 포함해야 합니다:
+
+<AutoSnippet {...dependencies} />
+
+:::info
+`dependencies`에는 스코프 provider만 나열하면 됩니다.
+스코프가 지정되지 않은 provider는 나열할 필요가 없습니다.
+:::
+
+## 스코프 provider의 값 설정하기 {#setting-the-value-of-a-scoped-provider}
+
+스코프 provider의 값을 설정하려면 <Link documentID="concepts2/overrides" />를 사용합니다.
+대표적인 예는 다음과 같이 [ProviderScope]에 `overrides`를 지정하는 것입니다:
+
+<AutoSnippet raw={override} />
+
+[ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
