@@ -456,11 +456,10 @@ class ProviderPointerManager {
             previousPointer
               ..familyOverride = override
               ..targetContainer = container
-                  // Remove inherited family values and keep only local ones
-                  ..pointers
-                  .removeWhere(
-                    (key, value) => value.targetContainer != container,
-                  );
+              // Remove inherited family values and keep only local ones
+              ..pointers.removeWhere(
+                (key, value) => value.targetContainer != container,
+              );
             continue;
           }
 
