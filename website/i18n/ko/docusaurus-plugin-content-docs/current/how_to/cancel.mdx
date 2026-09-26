@@ -1,0 +1,174 @@
+---
+title: 네트워크 요청 디바운스/취소하기
+version: 1
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import homeScreen from "!raw-loader!/docs/how_to/cancel/home_screen.dart";
+import extension from "!raw-loader!/docs/how_to/cancel/extension.dart";
+import detailScreen from "/docs/how_to/cancel/detail_screen";
+import detailScreenCancel from "/docs/how_to/cancel/detail_screen_cancel";
+import detailScreenDebounce from "/docs/how_to/cancel/detail_screen_debounce";
+import providerWithExtension from "/docs/how_to/cancel/provider_with_extension";
+
+애플리케이션이 복잡해질수록 여러 네트워크 요청이 동시에 진행되는 일이 흔해집니다.
+예를 들어 사용자가 검색창에 입력할 때마다 새 요청이 발생할 수 있습니다.
+사용자가 빠르게 입력하면 애플리케이션에서 수많은 요청이 동시에 진행될 수 있습니다.
+
+또는 사용자가 요청을 보낸 뒤, 요청이 끝나기 전에 다른 페이지로 이동할 수도 있습니다.
+이 경우 더 이상 필요 없는 요청이 계속 진행 중인 상태로 남습니다.
+
+이런 상황에서 성능을 최적화하기 위해 사용할 수 있는 기법이 몇 가지 있습니다.
+
+- 요청 "디바운스(debounce)". 사용자가 일정 시간 동안 입력을 멈출 때까지 기다렸다가
+  요청을 보내는 방식입니다. 사용자가 빠르게 입력하더라도 하나의 입력에 대해
+  요청을 한 번만 보내게 됩니다.
+- 요청 "취소". 요청이 끝나기 전에 사용자가 페이지를 떠나면 요청을 취소하는
+  방식입니다. 사용자가 결코 보지 않을 응답을 처리하느라 시간을 낭비하지 않게 됩니다.
+
+Riverpod에서는 두 기법 모두 비슷한 방식으로 구현할 수 있습니다.
+핵심은 `ref.onDispose`를 "자동 폐기" 또는 `ref.watch`와 함께 사용해
+원하는 동작을 만드는 것입니다.
+
+이를 보여 주기 위해 두 페이지로 된 간단한 애플리케이션을 만들어 보겠습니다.
+
+- 새 페이지를 여는 버튼이 있는 홈 화면
+- [Bored API](https://www.boredapi.com/)에서 가져온 무작위 활동을 표시하고,
+  활동을 새로고침할 수 있는 상세 페이지.  
+  당겨서 새로고침(pull-to-refresh) 구현 방법은
+  <Link documentID="how_to/pull_to_refresh" />를 참고하세요.
+
+그런 다음 다음 동작을 구현합니다.
+
+- 사용자가 상세 페이지를 열었다가 곧바로 뒤로 돌아가면,
+  활동 요청을 취소합니다.
+- 사용자가 활동을 연달아 여러 번 새로고침하면, 요청을 디바운스해서
+  사용자가 새로고침을 멈춘 뒤에 요청을 한 번만 보냅니다.
+
+## 애플리케이션 {#the-application}
+
+<img
+  src="/img/how_to/cancel/app.gif"
+  alt="상세 페이지를 열고 활동을 새로고침하는 애플리케이션을 보여 주는 gif."
+/>
+
+먼저 디바운스나 취소 없이 애플리케이션을 만들어 보겠습니다.  
+특별한 것은 쓰지 않고, 상세 페이지를 여는 `Navigator.push`와
+평범한 `FloatingActionButton`만 사용합니다.
+
+우선 홈 화면을 정의합니다. 언제나처럼
+애플리케이션의 루트에 `ProviderScope`를 지정하는 것을 잊지 마세요.
+
+<AutoSnippet title="lib/src/main.dart" raw={homeScreen} />
+
+다음으로 상세 페이지를 정의합니다.
+활동을 가져오고 당겨서 새로고침을 구현하는 방법은 <Link documentID="how_to/pull_to_refresh" />
+사례를 참고하세요.
+
+<AutoSnippet title="lib/src/detail_screen.dart" {...detailScreen} />
+
+## 요청 취소하기 {#cancelling-requests}
+
+애플리케이션이 동작하니, 이제 취소 로직을 구현해 보겠습니다.
+
+사용자가 페이지를 떠날 때 요청을 취소하기 위해 `ref.onDispose`를 사용합니다.
+이 방식이 동작하려면 provider의 자동 폐기가 활성화되어 있어야 합니다.
+
+요청을 취소하는 구체적인 코드는 HTTP 클라이언트에 따라 다릅니다.
+이 예제에서는 `package:http`를 사용하지만, 다른 클라이언트에도 같은 원리가 적용됩니다.
+
+핵심은 사용자가 페이지를 떠나면 `ref.onDispose`가 호출된다는 점입니다.
+provider가 더 이상 사용되지 않으므로 자동 폐기에 의해 폐기되기 때문입니다.  
+따라서 이 콜백에서 요청을 취소할 수 있습니다. `package:http`를 사용한다면
+HTTP 클라이언트를 닫으면 됩니다.
+
+<AutoSnippet
+  {...detailScreenCancel}
+  translations={{
+    client: `  // package:http로 HTTP 클라이언트를 생성합니다`,
+    onDispose: `  // 폐기될 때 클라이언트를 닫습니다.
+  // 이렇게 하면 클라이언트에 대기 중인 요청이 모두 취소됩니다.`,
+    get: `  // 이제 "get" 함수 대신 클라이언트로 요청을 보냅니다.`,
+    jsonDecode: `  // 나머지 코드는 이전과 같습니다`,
+  }}
+/>
+
+## 요청 디바운스하기 {#debouncing-requests}
+
+취소를 구현했으니, 이제 디바운스를 구현해 보겠습니다.  
+지금은 사용자가 활동을 연달아 여러 번 새로고침하면
+새로고침할 때마다 요청을 보냅니다.
+
+엄밀히 말하면, 취소를 구현했으므로 이는 문제가 되지 않습니다.
+사용자가 연달아 여러 번 새로고침하면,
+새 요청이 만들어질 때 이전 요청은 취소됩니다.
+
+하지만 이상적이지는 않습니다. 여전히 여러 요청을 보내고 있어
+대역폭과 서버 자원이 낭비됩니다.  
+대신 사용자가 일정 시간 동안 새로고침을 멈출 때까지 요청을 미룰 수 있습니다.
+
+로직은 취소 로직과 아주 비슷합니다. 이번에도
+`ref.onDispose`를 사용합니다. 다만 이번에는 HTTP 클라이언트를 닫는 대신,
+`onDispose`를 이용해 요청이 시작되기 전에 중단합니다.  
+요청을 보내기 전에 임의로 500ms를 기다립니다.
+500ms가 지나기 전에 사용자가 다시 새로고침하면
+`onDispose`가 호출되어 요청이 중단됩니다.
+
+:::info
+요청을 중단할 때는 일부러 예외를 던지는 것이 일반적입니다.  
+provider가 폐기된 뒤라면 provider 안에서 예외를 던져도 안전합니다.
+예외는 Riverpod이 자연스럽게 잡아서 무시합니다.
+:::
+
+<AutoSnippet
+  {...detailScreenDebounce}
+  translations={{
+    didDispose: `  // provider가 현재 폐기되었는지 여부를 기록합니다.`,
+    delayed: `  // 사용자가 새로고침을 멈출 때까지 기다리기 위해 요청을 500ms 지연합니다.`,
+    cancelled: `  // 지연되는 동안 provider가 폐기되었다면, 사용자가 다시
+  // 새로고침했다는 뜻입니다. 예외를 던져 요청을 취소합니다.
+  // Riverpod이 예외를 잡아 주므로 여기서 예외를 사용해도 안전합니다.`,
+    http: `  // 아래 코드는 이전 스니펫과 같습니다`,
+  }}
+/>
+
+## 더 나아가기: 두 가지를 한 번에 {#going-further-doing-both-at-once}
+
+이제 요청을 디바운스하고 취소하는 방법을 알게 되었습니다.  
+하지만 지금은 다른 요청을 만들 때마다 같은 로직을 여러 곳에
+복사해 붙여 넣어야 합니다. 이상적이지 않습니다.
+
+한 걸음 더 나아가 두 가지를 한 번에 처리하는 재사용 가능한 유틸리티를 만들 수 있습니다.
+
+아이디어는 `Ref`에 확장 메서드를 구현해서
+취소와 디바운스를 하나의 메서드로 처리하는 것입니다.
+
+<AutoSnippet
+  raw={extension}
+  translations={{
+    note: `  /// [duration](기본값 500ms)만큼 기다린 뒤, 요청을 보내는 데 사용할 수 있는
+  /// [http.Client]를 반환합니다.
+  ///
+  /// 이 클라이언트는 provider가 폐기되면 자동으로 닫힙니다.`,
+    didDispose: `    // 먼저 디바운스를 처리합니다.`,
+    delay: `    // 사용자가 새로고침을 멈출 때까지 기다리기 위해 요청을 500ms 지연합니다.`,
+    cancel: `    // 지연되는 동안 provider가 폐기되었다면, 사용자가 다시
+    // 새로고침했다는 뜻입니다. 예외를 던져 요청을 취소합니다.
+    // Riverpod이 예외를 잡아 주므로 여기서 예외를 사용해도 안전합니다.`,
+    client: `    // 이제 클라이언트를 생성하고, provider가 폐기되면 닫습니다.`,
+    return: `    // 마지막으로 provider가 요청을 보낼 수 있도록 클라이언트를 반환합니다.`,
+  }}
+/>
+
+그런 다음 provider에서 이 확장 메서드를 다음과 같이 사용할 수 있습니다.
+
+<AutoSnippet
+  {...providerWithExtension}
+  translations={{
+    client: `  // 앞에서 만든 확장 메서드로 HTTP 클라이언트를 얻습니다.`,
+    get: `  // 이제 "get" 함수 대신 클라이언트로 요청을 보냅니다.
+  // 요청은 자연스럽게 디바운스되며, 사용자가 페이지를 떠나면
+  // 취소됩니다.`,
+  }}
+/>

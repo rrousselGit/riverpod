@@ -1,0 +1,202 @@
+---
+title: 자동 폐기
+version: 2
+---
+import { Link } from "/src/components/Link";
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import onDisposeExample from "/docs/concepts2/auto_dispose/on_dispose_example";
+import invalidateExample from "!!raw-loader!/docs/concepts2/auto_dispose/invalidate_example.dart";
+import keepAlive from "/docs/concepts2/auto_dispose/keep_alive";
+import cacheForExtension from "!!raw-loader!/docs/concepts2/auto_dispose/cache_for_extension.dart";
+import cacheForUsage from "/docs/concepts2/auto_dispose/cache_for_usage";
+import invalidateFamilyExample from '/docs/concepts2/auto_dispose/invalidate_family_example'
+
+Riverpod에서는 provider가 더 이상 사용되지 않을 때
+해당 provider와 연결된 리소스를 자동으로 폐기하도록 설정할 수 있습니다.
+
+## 자동 폐기 활성화/비활성화 {#enablingdisabling-automatic-disposal}
+
+코드 생성을 사용한다면 자동 폐기는 기본으로 활성화되어 있으며,
+어노테이션에서 끌 수 있습니다:
+```dart
+// 자동 폐기 비활성화
+@Riverpod(keepAlive: true)
+String helloWorld(Ref ref) => 'Hello world!';
+```
+
+코드 생성을 사용하지 않는다면 provider를 만들 때
+`isAutoDispose: true`를 지정해 활성화할 수 있습니다:
+```dart
+final helloWorldProvider = Provider<String>(
+  // 자동 폐기 활성화
+  isAutoDispose: true,
+  (ref) => 'Hello world!',
+);
+```
+
+:::note 참고
+자동 폐기의 활성화 여부는 provider가 다시 계산될 때
+상태가 폐기되는지와는 관계가 없습니다.  
+provider가 다시 계산되면 상태는 항상 폐기됩니다.
+:::
+
+:::caution 주의
+provider가 매개변수를 받는다면 자동 폐기를 활성화하는 것이 좋습니다.
+그렇지 않으면 매개변수 조합마다 상태가 하나씩 생성되어
+메모리 누수로 이어질 수 있습니다.
+:::
+
+## 자동 폐기는 언제 일어나나요? {#when-is-automatic-disposal-triggered}
+
+자동 폐기가 활성화되어 있으면 Riverpod은 provider에 리스너가 있는지 추적합니다.
+이 추적은 [Ref.watch](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/watch.html)/[Ref.listen](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/listen.html)
+호출(및 그 밖의 몇 가지 호출)을 기준으로 이루어집니다.  
+
+리스너 수가 0이 되면 provider는 "사용되지 않는" 것으로 간주되고
+[Ref.onCancel](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/onCancel.html)이
+호출됩니다. 
+이때 Riverpod은 한 프레임을 기다립니다(`await null` 참고). 그 프레임이 지난 뒤에도
+provider가 여전히 사용되지 않으면 provider는 폐기되고
+[Ref.onDispose](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/onDispose.html)가
+호출됩니다.
+## 상태 폐기에 대응하기 {#reacting-to-state-disposal}
+
+Riverpod에서 상태가 폐기되는 경우는 기본적으로 몇 가지가 있습니다:
+
+- provider가 더 이상 사용되지 않고 "auto dispose" 모드인 경우(뒤에서 자세히 다룹니다).
+  이때 provider와 연결된 모든 상태가 폐기됩니다.
+- `ref.watch` 등으로 인해 provider가 다시 계산되는 경우.
+  이때 이전 상태는 폐기되고 새 상태가 만들어집니다.
+
+두 경우 모두, 폐기 시점에 어떤 로직을 실행하고 싶을 수 있습니다.  
+이럴 때는 `ref.onDispose`를 사용합니다. 이 메서드로
+상태가 폐기될 때마다 호출되는 리스너를 등록할 수 있습니다.
+
+예를 들어 열려 있는 `StreamController`를 닫는 데 사용할 수 있습니다:
+
+<AutoSnippet
+  {...onDisposeExample}
+  translations={{
+    onDispose: `  // 상태가 폐기되면 StreamController를 닫습니다.`,
+    todo: `  // TO-DO: StreamController에 값을 추가합니다`,
+  }}
+/>
+
+:::caution 주의
+`ref.onDispose`의 콜백에서는 부수 효과를 일으키면 안 됩니다.
+`onDispose` 안에서 provider를 수정하면 예기치 않은 동작이 발생할 수 있습니다.
+:::
+
+:::info
+이 밖에도 유용한 생명주기 메서드가 있습니다:
+
+- `ref.onCancel`: provider의 마지막 리스너가 제거될 때 호출됩니다.
+- `ref.onResume`: `onCancel`이 호출된 뒤 새 리스너가 추가될 때 호출됩니다.
+
+:::
+
+:::info
+`ref.onDispose`는 원하는 만큼 여러 번 호출할 수 있습니다.
+provider 안의 폐기해야 할 객체마다 한 번씩 호출해도 좋습니다. 이렇게 하면
+폐기를 빠뜨린 객체를 쉽게 찾을 수 있습니다.
+:::
+
+## `ref.invalidate`로 provider를 수동으로 폐기하기 {#manually-forcing-the-destruction-of-a-provider-using-refinvalidate}
+
+때로는 provider를 강제로 폐기하고 싶을 수 있습니다.
+이때는 `ref.invalidate`를 사용합니다. 이 메서드는 다른
+provider나 위젯에서 호출할 수 있습니다.
+
+`ref.invalidate`를 호출하면 provider의 현재 상태가 폐기됩니다.
+그 결과는 두 가지입니다:
+
+- provider를 구독 중인 곳이 있으면 새 상태가 만들어집니다.
+- provider를 구독 중인 곳이 없으면 provider가 완전히 폐기됩니다.
+
+<AutoSnippet
+  raw={invalidateExample}
+  translations={{
+    invalidate: `        // 클릭하면 provider를 폐기합니다.`,
+  }}
+/>
+
+:::info
+provider는 `ref.invalidateSelf`를 사용해 자기 자신을 무효화할 수도 있습니다.
+다만 이 경우에는 항상 새 상태가 만들어집니다.
+:::
+
+:::tip
+매개변수를 받는 provider를 무효화할 때는
+특정 매개변수 조합 하나만 무효화할 수도 있고,
+모든 매개변수 조합을 한 번에 무효화할 수도 있습니다:
+
+<AutoSnippet
+  {...invalidateFamilyExample}
+  translations={{
+    invalidateAll: `  // 이 provider의 가능한 모든 매개변수 조합을 무효화합니다.`,
+    invalidate: `  // 특정 조합만 무효화합니다`,
+  }}
+/>
+:::
+
+## `ref.keepAlive`로 폐기 시점 세밀하게 제어하기 {#fine-tuned-disposal-with-refkeepalive}
+
+앞서 설명했듯이 자동 폐기가 활성화되어 있으면
+provider에 한 프레임 동안 리스너가 없을 때 상태가 폐기됩니다.
+
+하지만 이 동작을 더 세밀하게 제어하고 싶을 수 있습니다. 예를 들어
+성공한 네트워크 요청의 상태는 유지하되,
+실패한 요청은 캐시하고 싶지 않을 수 있습니다.
+
+자동 폐기를 활성화한 상태에서 `ref.keepAlive`를 사용하면 이를 구현할 수 있습니다.
+`ref.keepAlive`를 사용하면 상태의 자동 폐기를 _언제_ 멈출지 직접 정할 수 있습니다.
+
+<AutoSnippet
+  {...keepAlive}
+  translations={{
+    keepAlive: `  // 요청이 성공적으로 완료된 뒤에만 provider를 유지합니다.
+  // 요청이 실패하면(예외가 발생하면) provider를 구독하는 곳이
+  // 없어질 때 상태가 폐기됩니다.`,
+    closeLink: `  // \`link\`를 사용해 자동 폐기 동작을 다시 활성화할 수 있습니다:`,
+  }}
+/>
+
+:::note 참고
+provider가 다시 계산되면 자동 폐기가 다시 활성화됩니다.
+
+`ref.keepAlive`의 반환값을 사용해
+자동 폐기로 되돌릴 수도 있습니다.
+:::
+
+## 예시: 일정 시간 동안 상태 유지하기 {#example-keeping-state-alive-for-a-specific-amount-of-time}
+
+현재 Riverpod에는 상태를 일정 시간 동안 유지하는
+기본 제공 방법이 없습니다.  
+하지만 지금까지 살펴본 도구로 이런 기능을 쉽게, 재사용 가능한 형태로 구현할 수 있습니다.
+
+`Timer`와 `ref.keepAlive`를 함께 사용하면 상태를 일정 시간 동안 유지할 수 있습니다.
+이 로직을 재사용하기 쉽도록 확장 메서드로 구현해 보겠습니다:
+
+<AutoSnippet
+  raw={cacheForExtension}
+  translations={{
+    cacheFor: `  /// [duration] 동안 provider를 유지합니다.`,
+    keepAlive: `    // 상태가 폐기되지 않도록 즉시 막습니다.`,
+    timer: `    // duration이 지나면 자동 폐기를 다시 활성화합니다.`,
+    onDispose: `    // 선택 사항: provider가 (ref.watch 등으로) 다시 계산되면
+    // 대기 중인 타이머를 취소합니다.`,
+  }}
+/>
+
+그런 다음 다음과 같이 사용할 수 있습니다:
+
+<AutoSnippet
+  {...cacheForUsage}
+  translations={{
+    cacheFor: `  /// 상태를 5분 동안 유지합니다`,
+  }}
+/>
+
+이 로직은 필요에 맞게 조정할 수 있습니다. 
+예를 들어 `ref.onCancel`/`ref.onResume`을 사용해
+provider가 일정 시간 동안 구독되지 않았을 때만 상태를 폐기하도록 만들 수 있습니다.
