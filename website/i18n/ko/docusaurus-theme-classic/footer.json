@@ -40,7 +40,7 @@
     "description": "The label of footer link with label=Contributing guide linking to https://github.com/rrousselGit/riverpod/blob/master/CONTRIBUTING.md"
   },
   "copyright": {
-    "message": "Copyright © 2024 Remi Rousselet.<br /> Built with Docusaurus.",
+    "message": "Copyright © 2024 Remi Rousselet.<br /> Docusaurus로 제작되었습니다.",
     "description": "The footer copyright"
   },
   "logo.alt": {

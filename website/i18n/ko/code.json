@@ -502,5 +502,50 @@
   },
   "home.subheadline": {
     "message": "컴파일 타임에 오류를 잡고, 여러 상태를 매끄럽게 조합하고, 보일러플레이트 없이 테스트하세요."
+  },
+  "homepage.features_declarative_check": {
+    "message": "선언형 프로그래밍"
+  },
+  "homepage.features_network_check": {
+    "message": "네트워크 요청 기본 지원"
+  },
+  "homepage.features_error_check": {
+    "message": "로딩/오류 자동 처리"
+  },
+  "homepage.features_compile_check": {
+    "message": "컴파일 안전성"
+  },
+  "homepage.features_typed_query_check": {
+    "message": "타입 안전한 쿼리 매개변수"
+  },
+  "homepage.features_test_check": {
+    "message": "테스트 친화적"
+  },
+  "homepage.features_dart_check": {
+    "message": "순수 Dart 환경에서도 동작 (서버/CLI/...)"
+  },
+  "homepage.features_combine_check": {
+    "message": "쉽게 조합할 수 있는 상태"
+  },
+  "homepage.features_refresh_check": {
+    "message": "당겨서 새로고침 기본 지원"
+  },
+  "homepage.features_lint_check": {
+    "message": "커스텀 린트 규칙"
+  },
+  "homepage.features_refactor_check": {
+    "message": "내장 리팩터링"
+  },
+  "homepage.features_hot_reload_check": {
+    "message": "핫 리로드 지원"
+  },
+  "homepage.features_logger_check": {
+    "message": "로깅"
+  },
+  "homepage.features_socket_check": {
+    "message": "웹소켓 지원"
+  },
+  "homepage.features_graph_check": {
+    "message": "문서 생성기"
   }
 }

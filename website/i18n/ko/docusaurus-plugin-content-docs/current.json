@@ -268,7 +268,7 @@
     "description": "The label for link misc in sidebar Sidebar, linking to https://pub.dev/documentation/hooks_riverpod/latest/misc/"
   },
   "sidebar.Sidebar.link.ChatGPT Chat App with Riverpod": {
-    "message": "ChatGPT Chat App with Riverpod",
+    "message": "Riverpod으로 만든 ChatGPT 채팅 앱",
     "description": "The label for link ChatGPT Chat App with Riverpod in sidebar Sidebar, linking to https://github.com/never-inc/chat_gpt_boilerplate"
   }
 }
