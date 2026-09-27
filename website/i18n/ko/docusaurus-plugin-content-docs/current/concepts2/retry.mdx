@@ -1,0 +1,157 @@
+---
+title: 자동 재시도
+---
+import { Link } from "/src/components/Link";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+
+Riverpod에서 <Link documentID="concepts2/providers"/>는 실패하면 자동으로 재시도됩니다.
+
+재시도는 provider를 계산하는 도중 예외가 발생하면 이루어집니다.
+재시도 로직은 provider별로, 또는 모든 provider에 대해 전역으로 커스터마이즈할 수 있습니다.
+
+기본적으로 provider는 최대 10번까지 재시도되며, 대기 시간은 200ms에서 6.4초까지
+지수적으로 늘어납니다(exponential backoff).
+기본 재시도 로직의 자세한 내용은 [retry]를 참고하세요.
+
+## 재시도 로직 커스터마이즈하기 {#customizing-retry-logic}
+
+커스텀 재시도 로직은 애플리케이션 전체에 적용할 수도 있고, 특정 provider에만 적용할 수도 있습니다.
+
+구현 방식은 두 경우 모두 같습니다. 커스텀 재시도 로직은 `Duration?` 값을 반환하는 함수로,
+이 값은 다음 재시도까지의 대기 시간을 나타냅니다(재시도를 멈추려면 `null`을 반환합니다).
+
+다음은 최대 5번까지 재시도하고, 200ms부터 시작하는 지수 백오프를 사용하며,
+[ProviderException]은 무시하는 커스텀 [retry] 함수입니다.
+
+```dart
+Duration? myRetry(int retryCount, Object error) {
+  // ProviderException이면 재시도를 멈춥니다
+  if (retryCount >= 5) return null;
+  // ProviderException은 무시합니다
+  if (error is ProviderException) return null;
+
+  return Duration(milliseconds: 200 * (1 << retryCount)); // 지수 백오프
+}
+```
+
+이 함수는 provider 안에서 사용해 해당 provider의
+재시도 로직만 바꿀 수 있습니다.
+
+<AutoSnippet
+  codegen={`
+  // highlight-next-line
+  @Riverpod(retry: myRetry)
+  int myProvider(MyProviderRef ref) {
+    return 0;
+  }
+  `}
+  raw={`final myProvider = Provider<int>(
+    // highlight-next-line
+    retry: myRetry,
+    (ref) => 0,
+  );
+  `}
+/>
+
+또는 <Link documentID="concepts2/containers" />에 전달해 전역으로 적용할 수도 있습니다.
+
+```dart
+// 순수 Dart 코드의 경우
+final container = ProviderContainer(
+  // highlight-next-line
+  retry: myRetry,
+);
+
+...
+
+// Flutter 코드의 경우
+runApp(
+  ProviderScope(
+    // highlight-next-line
+    retry: myRetry,
+    child: MyApp(),
+  ),
+);
+```
+
+### 재시도 비활성화하기 {#disabling-retry}
+
+재시도를 비활성화하려면 재시도 함수에서 항상 `null`을 반환하기만 하면 됩니다.
+애플리케이션 전체에서 재시도를 끄려면 다음과 같이 작성합니다.
+
+```dart
+runApp(
+  ProviderScope(
+    // highlight-next-line
+    retry: (retryCount, error) => null,
+    child: MyApp(),
+  ),
+);
+```
+
+## 기본 재시도 로직에 대해 {#about-the-default-retry-logic}
+
+기본 재시도 로직은 단순히 "실패하면 재시도"하는 방식보다 좀 더 영리하게 설계되었습니다.
+특히 [Error]와 [ProviderException]은 재시도하지 않습니다.
+
+Error는 복구할 수 없기 때문에 재시도하지 않습니다. Error는 코드에 버그가 있다는 뜻이므로
+재시도해도 소용이 없습니다. 오히려 쓸모없는 재시도 기록으로 로그만 지저분해질 뿐입니다.
+
+ProviderException을 재시도하지 않는 이유는, 이 예외가 provider 자체의 실패가 아니라
+실패한 다른 provider의 예외를 다시 던진 것임을 나타내기 때문입니다. 다음 예시를 보세요.
+
+<AutoSnippet
+  codegen={`
+  @riverpod
+  int failed(MyProviderRef ref) {
+    throw Exception('This provider always fails');
+  }
+  
+  @riverpod
+  int myProvider(MyProviderRef ref) {
+    // 이 provider는 실패한 provider에 의존하므로
+    // ProviderException을 던집니다
+    return ref.watch(failedProvider);
+  }
+  `}
+  raw={`
+  final failedProvider = Provider<int>(
+    (ref) => throw Exception('This provider always fails'),
+  );
+  
+  final myProvider = Provider<int>(
+    // 이 provider는 실패한 provider에 의존하므로
+    // ProviderException을 던집니다
+    (ref) => ref.watch(failedProvider),
+  );
+  `}
+/>
+
+이 예시에서 `myProvider`는 실패하긴 하지만, 실패의 원인은 아닙니다.
+따라서 이를 재시도해도 소용이 없습니다. 재시도해야 하는 것은 `failedProvider`입니다.
+
+즉, `failedProvider`의 재시도를 비활성화하면 `myProvider`도 재시도되지 않습니다.
+
+## 재시도가 끝날 때까지 기다리기 {#awaiting-for-retries-to-complete}
+
+[FutureProvider.future]를 사용하면 비동기 provider가 완료될 때까지 기다릴 수 있다는 것은 이미 알고 계실 겁니다.
+
+```dart
+final value = await ref.watch(myProvider.future);
+```
+
+그렇다면 자동 재시도와는 어떻게 맞물려 동작할까요?
+
+간단히 말해, 비동기 provider가 실패해 재시도되면 연결된 future는
+다음 중 하나가 될 때까지 계속 기다립니다.
+- 모든 재시도가 소진되거나,
+- provider가 성공할 때까지.
+
+덕분에 `await ref.watch(myProvider.future)`는 중간에 발생한 실패를 건너뜁니다.
+
+[retry]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderContainer/retry.html
+[ProviderException]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderException-class.html
+[Error]: https://api.dart.dev/stable/2.19.6/dart-core/Error-class.html
+[FutureProvider.future]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/FutureProvider/future.html

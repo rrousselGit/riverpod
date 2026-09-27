@@ -1,0 +1,502 @@
+---
+title: 첫 번째 Riverpod 앱
+version: 2
+---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+import { DartPad } from "/src/components/DartPad";
+
+이 튜토리얼에서는 Riverpod을 사용해 무작위 농담 생성기 앱을 만들어 봅니다.
+
+<DartPad id="6bf918e3fc97a40b53d1ea80fd937146" />
+
+## 핵심 내용 {#key-points}
+- Riverpod 설치 방법 익히기
+- 네트워크 요청을 보내는 첫 provider 만들기
+- [Consumer]로 데이터 표시하기
+- [AsyncValue]로 로딩 상태와 에러 상태 표시하기
+
+## 프로젝트 설정하기 {#setting-up-the-project}
+
+### Flutter 프로젝트 만들기 {#creating-a-flutter-project}
+
+먼저 새 Flutter 프로젝트를 만듭니다.
+
+```sh
+flutter create first_app
+```
+
+그런 다음 즐겨 쓰는 에디터에서 프로젝트를 엽니다.
+
+### 목업 UI 만들기 {#creating-a-mocked-ui}
+
+로직을 작성하기 전에 먼저 앱의 UI를 만들어 보겠습니다.
+실제 API 대신 정적 데이터로 시작합니다.
+
+프로젝트의 `lib` 디렉터리에 `home.dart`라는 새 파일을 만들고,
+다음 코드를 붙여 넣습니다.
+
+<AutoSnippet
+  title="lib/home.dart"
+  raw={`
+  import 'package:flutter/material.dart';
+  
+  class HomeView extends StatelessWidget {
+    const HomeView({super.key});
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Random Joke Generator')),
+        body: SizedBox.expand(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              const SelectableText(
+                'What kind of bagel can fly?\\n\\n'
+                'A plain bagel.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 24),
+              ),
+  
+              Positioned(
+                bottom: 20,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: const Text('Get another joke'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+`}
+/>
+
+이제 `main.dart` 파일이 새 `HomeView` 위젯을 사용하도록 수정합니다.
+
+<AutoSnippet
+  title="lib/main.dart"
+  raw={`
+  import 'package:flutter/material.dart';
+  
+  import 'home.dart';
+  
+  void main() {
+    runApp(const MyApp());
+  }
+  
+  class MyApp extends StatelessWidget {
+    const MyApp({super.key});
+  
+    @override
+    Widget build(BuildContext context) {
+      return const MaterialApp(home: HomeView());
+    }
+  }
+`}
+/>
+
+지금 앱을 실행하면 다음과 같은 화면이 보입니다.
+
+![목업 UI](/img/tutorials/first_app/mocked_ui.png)
+
+### 프로젝트에 Riverpod 추가하기 {#adding-riverpod-to-the-project}
+
+프로젝트를 만들었으니 이제 Riverpod을 의존성으로 추가해야 합니다.
+
+Riverpod을 Flutter와 함께 사용할 것이므로 [flutter_riverpod] 패키지를 설치합니다.  
+또 네트워크 요청에는 [Dio] 패키지를 사용할 것이므로 이것도 함께 설치합니다.
+
+터미널에 다음 명령을 입력하면 됩니다.
+
+```sh
+flutter pub add flutter_riverpod dio
+```
+
+이 명령은 최신 버전의 Riverpod과 Dio를 프로젝트에 추가합니다.
+
+### (선택) riverpod_lint 추가하기 {#optional-adding-riverpod_lint}
+
+더 나은 Riverpod 코드를 작성하는 데 도움이 되도록 [riverpod_lint] 패키지를 설치할 수 있습니다.  
+이 패키지는 Riverpod 코드를 더 쉽게 작성할 수 있는 리팩터링 기능과, 흔한 실수를 피하도록 돕는 린트 규칙을 제공합니다.
+
+riverpod_lint는 [analysis_server_plugin]으로 구현되어 있습니다. 그래서 `analysis_options.yaml`을 통해 설치합니다.
+
+간단히 말해, `pubspec.yaml` 옆에 `analysis_options.yaml`을 만들고 다음 내용을 추가하면 됩니다.
+
+```yaml title="analysis_options.yaml"
+plugins:
+  riverpod_lint: <https://pub.dev/packages/riverpod_lint 의 최신 버전>
+```
+
+### main 함수에 ProviderScope 추가하기 {#adding-providerscope-in-our-main-function}
+
+Riverpod이 동작하려면 `main` 함수에 [ProviderScope]를 추가해야 합니다.  
+이 객체에 대해서는 <Link documentID="concepts2/containers" /> 섹션에서 자세히 알아볼 수 있습니다.
+
+수정된 `main` 함수는 다음과 같습니다.
+
+<AutoSnippet
+  title="lib/main.dart"
+  raw={`
+void main() {
+  runApp(
+    // 앱 위에 ProviderScope를 추가합니다
+    // highlight-next-line
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
+  `}
+/>
+
+## 모델 클래스 만들기 {#creating-a-model-class}
+
+이 튜토리얼에서는 [무작위 농담 생성기](https://official-joke-api.appspot.com/random_joke) API에서 데이터를 가져옵니다.
+
+이 API는 다음과 같은 JSON 객체를 반환합니다.
+
+```json
+{
+  "type": "general",
+  "setup": "Why did the scarecrow win an award?",
+  "punchline": "Because he was outstanding in his field.",
+  "id": 333
+}
+```
+
+앱에서 이 데이터를 표현하기 위해 `Joke`라는 모델 클래스를 만들겠습니다.  
+
+프로젝트의 `lib` 디렉터리에 `joke.dart`라는 새 파일을 만듭니다.
+`Joke` 클래스는 다음과 같습니다.
+
+<AutoSnippet
+  title="lib/joke.dart"
+  raw={`
+class Joke {
+  Joke({
+    required this.type,
+    required this.setup,
+    required this.punchline,
+    required this.id,
+  });
+  
+  factory Joke.fromJson(Map<String, Object?> json) {
+    return Joke(
+      type: json['type']! as String,
+      setup: json['setup']! as String,
+      punchline: json['punchline']! as String,
+      id: json['id']! as int,
+    );
+  }
+  
+  final String type;
+  final String setup;
+  final String punchline;
+  final int id;
+}
+  `}
+/>
+
+
+`fromJson` 팩토리 생성자를 눈여겨보세요.  
+API가 JSON 객체를 반환하므로, JSON 데이터를 `Joke` 클래스로 변환할 방법이 필요합니다.
+이 생성자는 `Map<String, Object?>`를 받아 `Joke` 인스턴스를 반환합니다.
+
+## API를 호출하는 함수 작성하기 {#writing-a-function-that-calls-the-api}
+
+모델 클래스가 준비되었으니, API에서 데이터를 가져오는 함수를 작성할 수 있습니다.
+여기서는 [Dio] 패키지를 사용합니다. 요청이 실패하면 자연스럽게 예외를 던지기 때문에 이번 사례에 편리합니다.
+물론 원하는 다른 HTTP 클라이언트를 사용해도 됩니다.
+
+이 로직은 `Joke` 클래스와 밀접하게 관련되어 있으므로,
+방금 만든 `joke.dart` 파일에 두면 됩니다.
+
+<AutoSnippet
+  title="lib/joke.dart"
+  raw={`
+  final dio = Dio();
+  
+  Future<Joke> fetchRandomJoke() async {
+    // 공개 API에서 무작위 농담을 가져옵니다
+    final response = await dio.get<Map<String, Object?>>(
+      'https://official-joke-api.appspot.com/random_joke',
+    );
+  
+    return Joke.fromJson(response.data!);
+  }
+  `}
+/>
+
+:::info
+API 호출에서 발생하는 에러를 전혀 잡지 않았다는 점에 주목하세요.  
+의도한 것입니다. Riverpod이 에러를 대신 처리해 주므로 직접 처리할 필요가 없습니다.
+:::
+
+## 데이터를 가져오는 provider 만들기 {#creating-a-provider-that-fetches-the-data}
+
+API를 조회하는 함수가 생겼으니, 이제 그 API의 결과를 캐시하는
+"provider"를 만들 수 있습니다.  
+provider에 대한 자세한 내용은 <Link documentID="concepts2/providers" />를 참고하세요.
+
+`fetchRandomJoke` 함수는 `Future<Joke>`를 반환하므로 [FutureProvider]를 사용합니다.
+provider 역시 `Joke` 클래스와 관련이 있으므로 같은 `joke.dart` 파일에 둘 수 있습니다.
+
+이렇게 하면 `fetchRandomJoke`의 실행 결과가 캐시되므로, 값에 몇 번을 접근하든
+네트워크 요청은 한 번만 수행됩니다.
+
+<AutoSnippet
+  title="lib/joke.dart"
+  raw={`
+  final randomJokeProvider = FutureProvider<Joke>((ref) async {
+    // fetchRandomJoke 함수로 무작위 농담을 가져옵니다
+    return fetchRandomJoke();
+  });
+  `}
+/>
+
+:::info
+`fetchRandomJoke` 함수와 `randomJokeProvider`를 반드시 분리할 필요는 없습니다.  
+원한다면 `fetchRandomJoke`의 내용을 provider 안에 직접 작성해도 됩니다.
+
+```dart
+final randomJokeProvider = FutureProvider<Joke>((ref) async {
+  final response = await dio.get<Map<String, Object?>>(
+    'https://official-joke-api.appspot.com/random_joke',
+  );
+
+  return Joke.fromJson(response.data!);
+});
+```
+:::
+
+## UI에 데이터 표시하기 {#displaying-the-data-in-the-ui}
+
+### UI를 Consumer로 감싸기 {#wrapping-our-ui-in-a-consumer}
+
+provider가 생겼으니, 이제 `HomeView` 위젯이 데이터를 동적으로 불러오도록 수정할 차례입니다.
+
+이를 위해 Riverpod의 또 다른 기능인 [Consumer] 위젯이 필요합니다.  
+이 위젯을 사용하면 provider의 값을 읽고, 값이 바뀔 때 UI를 다시 빌드할 수 있습니다.
+사용 방식은 [StreamBuilder] 같은 위젯과 비슷합니다.
+
+구체적으로는 `Stack`을 `Consumer` 위젯으로 감싸려고 합니다.  
+앞 단계에서 [riverpod_lint]를 설치했다면 내장된 리팩터링 기능을 사용할 수 있습니다.
+
+![Consumer로 감싸기 리팩터링을 실행하는 모습](/img/tutorials/first_app/wrap_in_consumer.gif)
+
+수정된 `home.dart` 코드는 다음과 같습니다.
+
+<AutoSnippet
+  title="lib/home.dart"
+  raw={`
+  import 'package:flutter/material.dart';
+  import 'package:flutter_riverpod/flutter_riverpod.dart';
+  
+  class HomeView extends StatelessWidget {
+    const HomeView({super.key});
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Random Joke Generator')),
+        body: SizedBox.expand(
+          // highlight-next-line
+          child: Consumer(
+            // highlight-next-line
+            builder: (context, ref, child) {
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  const SelectableText(
+                    'What kind of bagel can fly?\\n\\n'
+                    'A plain bagel.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 24),
+                  ),
+  
+                  Positioned(
+                    bottom: 20,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: const Text('Get another joke'),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      );
+    }
+  }
+  `}
+/>
+
+### 농담을 가져오고 변경 사항 구독하기 {#obtaining-our-joke-and-listening-to-its-changes}
+
+이제 `Consumer`가 있으니 `ref` 매개변수로 provider를 읽을 수 있습니다.  
+이 객체로 `ref.watch(randomJokeProvider)`를 호출하면 provider의 현재 값을 얻을 수 있습니다.
+provider와 상호작용하는 방법은 이 밖에도 더 있습니다! 자세한 내용은 <Link documentID="concepts2/refs" />를 참고하세요.
+
+수정된 `Consumer`는 다음과 같습니다.
+
+```dart
+Consumer(
+  builder: (context, ref, child) {
+    // highlight-next-line
+    final randomJoke = ref.watch(randomJokeProvider);
+    // ...
+  },
+)
+```
+
+이 한 줄로 Riverpod은 API에서 농담을 자동으로 가져오고 결과를 캐시합니다.
+이제 `randomJoke` 변수를 사용해 UI에 농담을 표시할 수 있습니다.
+
+### 로딩 상태와 에러 상태 처리하기 {#handling-loading-and-error-states}
+
+앞에서 만든 `randomJoke` 변수의 타입은 `Joke`가 아니라 `AsyncValue<Joke>`입니다.  
+[AsyncValue]는 네트워크 요청 같은 비동기 작업의 상태를 나타내는 Riverpod 타입입니다.
+로딩, 성공, 에러 상태에 대한 정보를 담고 있습니다. `AsyncValue`는 여러 면에서 [StreamBuilder]에서 쓰는 `AsyncSnapshot` 타입과 비슷합니다.
+
+여러 상태를 편리하게 처리하는 방법은 Dart의 `switch` 기능을 사용하는 것입니다.
+`if`/`else if` 체인과 비슷하지만, 하나의 특정 객체에 대한 조건을 처리하는 데 특화되어 있습니다.
+
+`AsyncValue`와 함께 흔히 사용하는 방식은 다음과 같습니다.
+
+```dart
+switch (asyncValue) {
+  // "value"가 null이 아니면 데이터가 있다는 뜻입니다.
+  case AsyncValue(:final value?):
+    return Text(value);
+  // "error"가 null이 아니면 작업이 실패했다는 뜻입니다.
+  case AsyncValue(error: != null):
+    return Text('Error: ${asyncValue.error}');
+  // 데이터 상태도 에러 상태도 아니라면 로딩 상태입니다.
+  case AsyncValue():
+    return const CircularProgressIndicator();
+}
+```
+
+:::caution 주의
+순서가 중요합니다!  
+위 문법을 사용할 때는 에러보다 값을 _먼저_ 확인하고,
+로딩 상태는 마지막에 처리해야 합니다.
+
+순서가 다르면 요청이 이미 완료되었는데도 진행 표시기가 보이는 등
+잘못된 동작이 나타날 수 있습니다.
+:::
+
+
+이제 `randomJoke`의 상태에 따라 농담, 로딩 표시기, 에러 메시지를 보여 주도록 `Stack`을 수정할 수 있습니다.
+
+<AutoSnippet
+  raw={`
+  return Stack(
+    alignment: Alignment.center,
+    children: [
+      switch (randomJoke) {
+        // 요청이 성공적으로 완료되면 농담을 표시합니다.
+        AsyncValue(:final value?) => SelectableText(
+          '$\{value.setup}\\n\\n$\{value.punchline}',
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 24),
+        ),
+        // 에러가 발생하면 간단한 에러 메시지를 표시합니다.
+        AsyncValue(error: != null) => const Text('Error fetching joke'),
+        // 요청이 로딩 중이면 진행 표시기를 표시합니다.
+        AsyncValue() => const CircularProgressIndicator(),
+      },
+  
+      // <버튼 코드는 그대로입니다>
+    ],
+  );
+`}
+/>
+
+
+이제 앱이 인터넷에 연결되어, 실행하면 무작위 농담이 표시됩니다!
+
+### "Get another joke" 버튼 연결하기 {#connecting-the-get-another-joke-button}
+
+지금은 앱을 실행하면 무작위 농담이 표시되지만, 버튼을 눌러도
+아무 일도 일어나지 않습니다. 버튼을 누르면 새 농담을 가져오도록 수정해 보겠습니다.
+
+[ChangeNotifier]와 비슷한 패턴을 사용해 상태를 직접 관리할 _수도_ 있습니다.  
+Riverpod은 이런 패턴도 지원하지만, 여기서는 필요하지 않습니다.
+
+대신 버튼을 누를 때 provider의 로직을 다시 실행하라고 Riverpod에 알려 주면 됩니다.
+다음과 같이 [Ref.invalidate]를 사용하면 됩니다.
+
+```dart
+ElevatedButton(
+  // highlight-next-line
+  onPressed: () => ref.invalidate(randomJokeProvider),
+  child: const Text('Get another joke'),
+),
+```
+
+이것으로 끝입니다!  
+버튼을 누르면 Riverpod이 `randomJokeProvider`의 로직을 다시 실행해
+API에서 새 농담을 가져오고, 그에 맞게 UI를 업데이트합니다.
+
+### 새 농담을 가져오는 동안 `LinearProgressIndicator` 표시하기 {#adding-a-linearprogressindicator-when-a-new-joke-is-being-fetched}
+
+"Get another joke" 버튼을 눌러도 앱에 로딩 표시기가 나타나지 않는다는 것을 눈치채셨을 수도 있습니다.
+
+[Ref.invalidate]를 호출해도 기존 캐시가 파괴되지 않기 때문입니다.
+새 농담을 가져오는 동안 이전 농담에 대한 정보를 그대로 유지합니다.
+덕분에 새 농담을 가져오는 동안 이전 농담을 계속 표시할 수 있습니다.
+
+하지만 UI에서는 이런 경우를 처리해 로딩 표시기와 이전 농담을 함께 보여 주고 싶을 수 있습니다.
+흔히 [LinearProgressIndicator]를 사용합니다. 이 표시기를 추가하려면
+[AsyncValue.isRefreshing]을 확인하면 됩니다. 이 플래그는 이전 데이터가 있는 상태에서 새 요청이 진행 중일 때 `true`입니다.
+
+수정된 `Stack`은 다음과 같습니다.
+
+```dart
+return Stack(
+  alignment: Alignment.center,
+  children: [
+    // 두 번째 요청부터는 별도의 로딩 표시기를 보여 줍니다
+    // highlight-next-line
+    if (randomJoke.isRefreshing)
+      const Positioned(
+        top: 0,
+        left: 0,
+        right: 0,
+        child: LinearProgressIndicator(),
+      ),
+
+    // 데이터와 버튼은 이전과 같이 표시합니다
+  ],
+);
+```
+
+이것으로 완성입니다!  
+이제 API에서 농담을 가져와 UI에 표시하는, 완전히 동작하는 무작위 농담 생성기 앱이 생겼습니다.  
+로딩 상태와 에러 상태 같은 예외 상황도 모두 처리했습니다.
+
+`try/catch`를 작성하거나 `isLoading = true/false` 같은 코드를 쓸 필요가 전혀 없었다는 점에 주목하세요.
+
+[ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[FutureProvider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/FutureProvider-class.html
+[Dio]: https://pub.dev/packages/dio
+[Consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html
+[AsyncValue]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/AsyncValue-class.html
+[StreamBuilder]: https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html
+[ChangeNotifier]: https://api.flutter.dev/flutter/foundation/ChangeNotifier-class.html
+[Ref.invalidate]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref/invalidate.html
+[LinearProgressIndicator]: https://api.flutter.dev/flutter/material/LinearProgressIndicator-class.html
+[AsyncValue.isRefreshing]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/AsyncValueX/isRefreshing.html
+[riverpod_lint]: https://pub.dev/packages/riverpod_lint
+[ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[analysis_server_plugin]: https://pub.dev/packages/analysis_server_plugin

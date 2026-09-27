@@ -1,55 +1,57 @@
 ---
-title: ^0.14.0에서 ^1.0.0
-version: 1
+title: ^0.14.0에서 ^1.0.0으로
+version: 2
 ---
 
 import { Link } from "/src/components/Link";
 
 
-오랜 기다림 끝에 드디어 Riverpod의 첫 번째 안정 버전이 출시되었습니다 👏.
+오랜 기다림 끝에 드디어 Riverpod의 첫 안정 버전이 출시되었습니다 👏
 
-전체 변경 목록을 보려면 [변경 로그](https://pub.dev/packages/flutter_riverpod/changelog#100)를 참조하세요.  
-이 페이지에서는 기존 Riverpod 애플리케이션을 버전 0.14.x에서 버전 1.0.0으로 마이그레이션하는 방법에 대해 중점적으로 설명합니다.
+전체 변경 사항은 [Changelog](https://pub.dev/packages/flutter_riverpod/changelog#100)를 참고하세요.  
+이 페이지에서는 기존 Riverpod 애플리케이션을 0.14.x 버전에서 1.0.0 버전으로
+마이그레이션하는 방법을 중점적으로 다룹니다.
 
-## 마이그레이션 도구를 사용하여 프로젝트를 새 구문으로 자동 업그레이드하기
+## 마이그레이션 도구로 프로젝트를 새 문법으로 자동 업그레이드하기 {#using-the-migration-tool-to-automatically-upgrade-your-project-to-the-new-syntax}
 
-다양한 변경 사항을 설명하기 전에, Riverpod에는 프로젝트를 자동으로 마이그레이션할 수 있는 명령줄 도구가 함께 제공된다는 점을 알아둘 필요가 있습니다.
+변경 사항을 하나씩 설명하기 전에, Riverpod에는 프로젝트를 자동으로 마이그레이션해 주는
+커맨드라인 도구가 있다는 점을 알아 두면 좋습니다.
 
-### 명령줄 도구 설치하기
+### 커맨드라인 도구 설치하기 {#installing-the-command-line-tool}
 
-마이그레이션 도구를 설치하려면 다음을 실행합니다:
+마이그레이션 도구를 설치하려면 다음을 실행하세요.
 
 ```sh
 dart pub global activate riverpod_cli
 ```
 
-이제 실행할 수 있을 것입니다:
+이제 다음 명령을 실행할 수 있습니다.
 
 ```sh
 riverpod --help
 ```
 
-### 사용법
+### 사용법 {#usage}
 
-이제 명령줄이 설치되었으므로 사용을 시작할 수 있습니다.
+커맨드라인 도구를 설치했으니 이제 사용해 봅시다.
 
-- 먼저 터미널에서 마이그레이션하려는 프로젝트를 엽니다.
-- Riverpod을 **업그레이드하지 마세요.**
-  마이그레이션 도구가 Riverpod의 버전을 업그레이드해 줍니다.
+- 먼저 마이그레이션할 프로젝트를 터미널에서 엽니다.
+- Riverpod을 업그레이드하지 **마세요**.  
+  마이그레이션 도구가 Riverpod 버전을 대신 업그레이드해 줍니다.
 
-  :::danger
+  :::danger 경고
   Riverpod을 업그레이드하지 않는 것이 중요합니다.  
-  이미 버전 1.0.0을 설치한 경우 도구가 제대로 실행되지 않습니다.
-  따라서 도구를 시작하기 전에 이전 버전을 제대로 사용하고 있는지 확인하세요.
+  이미 1.0.0 버전을 설치했다면 도구가 제대로 실행되지 않습니다.
+  따라서 도구를 실행하기 전에 반드시 이전 버전을 사용하고 있는지 확인하세요.
   :::
 
 - 프로젝트에 오류가 없는지 확인합니다.
-- 실행:
+- 다음을 실행합니다.
   ```sh
   riverpod migrate
   ```
 
-그러면 도구가 프로젝트를 분석하고 변경 사항을 제안합니다. 예를 들면 다음과 같습니다:
+그러면 도구가 프로젝트를 분석하고 변경 사항을 제안합니다. 예를 들어 다음과 같은 내용이 표시될 수 있습니다.
 
 ```diff
 -Widget build(BuildContext context, ScopedReader watch) {
@@ -61,21 +63,23 @@ riverpod --help
 Accept change (y = yes, n = no [default], A = yes to all, q = quit)?
 ```
 
-변경을 수락하려면 <kbd>Y</kbd>를 누르면 됩니다. 변경을 거부하려면 <kbd>n</kbd>을 누르세요.
+변경을 수락하려면 <kbd>y</kbd>를 누르고, 거절하려면 <kbd>n</kbd>을 누르면 됩니다.
 
-## 변경사항
+## 변경 사항 {#the-changes}
 
-이제 CLI를 사용하여 프로젝트를 자동으로 업그레이드하는 방법을 살펴봤으니 필요한 변경 사항을 자세히 살펴봅시다.
+CLI로 프로젝트를 자동 업그레이드하는 방법을 살펴보았으니,
+이제 필요한 변경 사항을 자세히 알아보겠습니다.
 
-### 구문(Syntax) 통합
+### 문법 통일 {#syntax-unification}
 
-Riverpod 버전 1.0.0은 providers와 상호작용하기 위한 구문을 통합하는 데 중점을 두었습니다.  
-이전에는 `ref.watch(provider)` 대 `useProvider(provider)` 대 `watch(provider)`와 같이 provider를 읽는 구문이 비슷하지만 서로 다른 구문이 많았습니다.  
-버전 1.0.0에서는 구문이 하나만 남았습니다: ref.watch(provider)`. 나머지는 제거되었습니다.
+Riverpod 1.0.0 버전은 provider와 상호작용하는 문법을 통일하는 데 초점을 맞췄습니다.  
+이전에는 Riverpod에 `ref.watch(provider)`, `useProvider(provider)`, `watch(provider)`처럼
+provider를 읽는 문법이 비슷하면서도 조금씩 다른 형태로 여러 가지 있었습니다.  
+1.0.0 버전부터는 `ref.watch(provider)` 하나만 남고 나머지는 제거되었습니다.
 
-따라서:
+따라서 다음과 같이 바뀌었습니다.
 
-- `useProvider`가 제거되고 `HookConsumerWidget`이 대신 사용됩니다.
+- `useProvider`가 제거되고 `HookConsumerWidget`으로 대체되었습니다.
 
   이전:
 
@@ -90,7 +94,7 @@ Riverpod 버전 1.0.0은 providers와 상호작용하기 위한 구문을 통합
   }
   ```
 
-  변경후:
+  이후:
 
   ```dart
   class Example extends HookConsumerWidget {
@@ -103,7 +107,7 @@ Riverpod 버전 1.0.0은 providers와 상호작용하기 위한 구문을 통합
   }
   ```
 
-- `ConsumerWidget`의 `build` 와 `Consumer`의 `builder`의 프로토타입이 변경되었습니다.
+- `ConsumerWidget`의 `build`와 `Consumer`의 `builder` 시그니처가 바뀌었습니다.
  
   이전:
 
@@ -124,7 +128,7 @@ Riverpod 버전 1.0.0은 providers와 상호작용하기 위한 구문을 통합
   )
   ```
 
-  변경후:
+  이후:
 
   ```dart
   class Example extends ConsumerWidget {
@@ -143,7 +147,7 @@ Riverpod 버전 1.0.0은 providers와 상호작용하기 위한 구문을 통합
   )
   ```
 
-- `context.read`가 `ref.read`로 대체되어 제거됩니다.
+- `context.read`가 제거되고 `ref.read`로 대체되었습니다.
 
   이전:
 
@@ -158,7 +162,7 @@ Riverpod 버전 1.0.0은 providers와 상호작용하기 위한 구문을 통합
   }
   ```
 
-  변경후:
+  이후:
 
   ```dart
   class Example extends ConsumerWidget {
@@ -171,15 +175,15 @@ Riverpod 버전 1.0.0은 providers와 상호작용하기 위한 구문을 통합
   }
   ```
 
-### StateProvider 업데이트
+### StateProvider 변경 {#stateprovider-update}
 
-[StateProvider]가 [StateNotifierProvider]와 일치하도록 업데이트 되었습니다.
+[StateProvider]가 [StateNotifierProvider]와 동작이 같도록 변경되었습니다.
 
-이전에는 `ref.watch(StateProvider)`를 실행하면 `StateController` 인스턴스가 반환되었습니다.
-이제 `StateController`의 상태만 반환합니다.
+이전에는 `ref.watch(StateProvider)`가 `StateController` 인스턴스를 반환했습니다.
+이제는 `StateController`의 상태만 반환합니다.
 
-마이그레이션을 위한 몇 가지 솔루션이 있습니다.  
-코드를 수정하지 않고 상태만 가져온 경우 다음에서 변경할 수 있습니다:
+마이그레이션하는 방법은 몇 가지가 있습니다.  
+코드에서 상태를 변경하지 않고 읽기만 한다면, 다음 코드를
 
 ```dart
 final provider = StateProvider<int>(...);
@@ -193,7 +197,7 @@ Consumer(
 )
 ```
 
-에서 다음과 같이:
+다음과 같이 바꾸면 됩니다.
 
 ```dart
 final provider = StateProvider<int>(...);
@@ -207,7 +211,7 @@ Consumer(
 )
 ```
 
-또는 새로운 `StateProvider.state`를 사용하여 이전 동작을 유지할 수 있습니다.
+또는 새로 추가된 `StateProvider.state`를 사용해 기존 동작을 유지할 수도 있습니다.
 
 ```dart
 final provider = StateProvider<int>(...);
