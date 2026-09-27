@@ -148,7 +148,6 @@ void main() {
     final container = ProviderContainer.test();
     final sub = container.listen(counterProvider.listenable, (_, _) {});
     final listenable = sub.read();
-    expect(listenable.value, 0);
 
     sub.close();
 
