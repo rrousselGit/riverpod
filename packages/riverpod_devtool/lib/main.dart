@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:devtools_app_shared/service.dart';
 import 'package:devtools_extensions/devtools_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,10 @@ final class Observer extends ProviderObserver {
     Object error,
     StackTrace stackTrace,
   ) {
+    // Replacing a frame disposes its inspector providers and cancels their
+    // pending VM requests. Those cancellations are expected, not failures.
+    if (error is CancelledException) return;
+
     // ignore: avoid_print
     print(
       'Error in provider ${context.provider}:'
