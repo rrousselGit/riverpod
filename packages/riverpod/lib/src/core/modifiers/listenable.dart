@@ -8,6 +8,11 @@ extension ProviderListenableListenable<T> on ProviderListenable<T> {
   /// A unique [ValueListenable] is created per listener on this modifier. As such,
   /// doing `ref.read(provider.listenable)` will have the [ValueListenable] immediately get disposed of.
   /// Consider using `listen/watch` methods instead.
+  ///
+  /// Note:
+  /// A unique [ValueListenable] is created per listener on this modifier. As such,
+  /// doing `ref.read(provider.listenable)` will have the [ValueListenable] immediately get disposed of.
+  /// Consider using `listen/watch` methods instead.
   ProviderListenable<ValueListenable<T>> get listenable {
     return _ListenableListenable(this);
   }
