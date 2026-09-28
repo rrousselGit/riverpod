@@ -8,12 +8,14 @@ abstract class BaseWidgetRef {
     ProviderListenable<StateT> provider,
     void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
+    bool pauseWhenInactive,
   });
   void listenManual<StateT>(
     ProviderListenable<StateT> provider,
     void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately,
+    bool pauseWhenInactive,
   });
   void read<StateT>(ProviderListenable<StateT> provider);
   void refresh<StateT>(Refreshable<StateT> provider);
@@ -41,5 +43,6 @@ abstract class BaseRef {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool weak,
     bool fireImmediately,
+    bool pauseWhenInactive,
   });
 }

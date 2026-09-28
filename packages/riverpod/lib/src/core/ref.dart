@@ -760,6 +760,17 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///   This enables listening to changes on a provider, without causing it to
   ///   perform any work if it currently isn't used.
   /// {@endtemplate}
+  ///
+  /// - [pauseWhenInactive] (false by default) can be optionally passed to stop
+  ///   notifying [listener] for as long as this provider is paused
+  ///   (cf [isPaused]).
+  ///   By default, [listen] keeps notifying [listener] even when this provider
+  ///   is paused. That is because [listen] is typically used for side-effects,
+  ///   and it is generally undesirable for a side-effect to silently stop.
+  ///   Passing `true` aligns [listen] with [watch], which stops reacting to
+  ///   changes for as long as nothing listens to this provider.
+  ///
+  ///   {@macro riverpod.pause}
   @override
   ProviderSubscription<StateT> listen<StateT>(
     ProviderListenable<StateT> provider,
@@ -767,6 +778,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     void Function(Object error, StackTrace stackTrace)? onError,
     bool weak = false,
     bool fireImmediately = false,
+    bool pauseWhenInactive = false,
   }) {
     _throwIfInvalidUsage();
     final sub = _element.listen(
@@ -775,6 +787,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
       weak: weak,
       onError: onError,
       fireImmediately: fireImmediately,
+      pauseWhenInactive: pauseWhenInactive,
     );
 
     return sub;

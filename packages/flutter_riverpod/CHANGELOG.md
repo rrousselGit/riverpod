@@ -1,3 +1,14 @@
+## Unreleased minor
+
+- Added `pauseWhenInactive` to `WidgetRef.listen`/`WidgetRef.listenManual`
+  (false by default).
+  When enabled, the subscription stops notifying its listener for as long as
+  the widget is not visible (based off `TickerMode`), and emits the last missed
+  event when it becomes visible again.
+  This is what `WidgetRef.watch` does. `listen`/`listenManual` keep their
+  current behavior by default, as they are typically used for side-effects.
+  (thanks to @tguerin)
+
 ## 3.4.3 - 2026-09-04
 ### Dependency changes
 
