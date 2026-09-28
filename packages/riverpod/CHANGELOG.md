@@ -1,5 +1,7 @@
 ## Unreleased fix
 
+- Added a regression test for reading a weak `select` subscription on a
+  provider that was already mounted by another listener.
 - Deprecated `Ref.exist`.
 - Added `provider.exist`, which is listenable.
   This enables writing `ref.listen(provider.exist, ...)`.
