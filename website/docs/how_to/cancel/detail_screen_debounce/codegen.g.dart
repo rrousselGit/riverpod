@@ -11,36 +11,35 @@ part of 'codegen.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(activity)
-final activityProvider = ActivityProvider._();
+@ProviderFor(brewery)
+final breweryProvider = BreweryProvider._();
 
-final class ActivityProvider
-    extends
-        $FunctionalProvider<AsyncValue<Activity>, Activity, FutureOr<Activity>>
-    with $FutureModifier<Activity>, $FutureProvider<Activity> {
-  ActivityProvider._()
+final class BreweryProvider
+    extends $FunctionalProvider<AsyncValue<Brewery>, Brewery, FutureOr<Brewery>>
+    with $FutureModifier<Brewery>, $FutureProvider<Brewery> {
+  BreweryProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'activityProvider',
+        name: r'breweryProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$activityHash();
+  String debugGetCreateSourceHash() => _$breweryHash();
 
   @$internal
   @override
-  $FutureProviderElement<Activity> $createElement($ProviderPointer pointer) =>
+  $FutureProviderElement<Brewery> $createElement($ProviderPointer pointer) =>
       $FutureProviderElement(pointer);
 
   @override
-  FutureOr<Activity> create(Ref ref) {
-    return activity(ref);
+  FutureOr<Brewery> create(Ref ref) {
+    return brewery(ref);
   }
 }
 
-String _$activityHash() => r'dd7d10807315da17e775b99e8e03f5d9634fc822';
+String _$breweryHash() => r'b70d9d5c77a6f80a0583d423ff09babe30976877';

@@ -8,18 +8,18 @@ part of 'codegen.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_Activity _$ActivityFromJson(Map<String, dynamic> json) => _Activity(
-  activity: json['activity'] as String,
-  type: json['type'] as String,
-  participants: (json['participants'] as num).toInt(),
-  price: (json['price'] as num).toDouble(),
+_Brewery _$BreweryFromJson(Map<String, dynamic> json) => _Brewery(
+  name: json['name'] as String,
+  breweryType: json['brewery_type'] as String,
+  city: json['city'] as String,
+  country: json['country'] as String,
 );
 
-Map<String, dynamic> _$ActivityToJson(_Activity instance) => <String, dynamic>{
-  'activity': instance.activity,
-  'type': instance.type,
-  'participants': instance.participants,
-  'price': instance.price,
+Map<String, dynamic> _$BreweryToJson(_Brewery instance) => <String, dynamic>{
+  'name': instance.name,
+  'brewery_type': instance.breweryType,
+  'city': instance.city,
+  'country': instance.country,
 };
 
 // **************************************************************************
@@ -29,36 +29,35 @@ Map<String, dynamic> _$ActivityToJson(_Activity instance) => <String, dynamic>{
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(activity)
-final activityProvider = ActivityProvider._();
+@ProviderFor(brewery)
+final breweryProvider = BreweryProvider._();
 
-final class ActivityProvider
-    extends
-        $FunctionalProvider<AsyncValue<Activity>, Activity, FutureOr<Activity>>
-    with $FutureModifier<Activity>, $FutureProvider<Activity> {
-  ActivityProvider._()
+final class BreweryProvider
+    extends $FunctionalProvider<AsyncValue<Brewery>, Brewery, FutureOr<Brewery>>
+    with $FutureModifier<Brewery>, $FutureProvider<Brewery> {
+  BreweryProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'activityProvider',
+        name: r'breweryProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$activityHash();
+  String debugGetCreateSourceHash() => _$breweryHash();
 
   @$internal
   @override
-  $FutureProviderElement<Activity> $createElement($ProviderPointer pointer) =>
+  $FutureProviderElement<Brewery> $createElement($ProviderPointer pointer) =>
       $FutureProviderElement(pointer);
 
   @override
-  FutureOr<Activity> create(Ref ref) {
-    return activity(ref);
+  FutureOr<Brewery> create(Ref ref) {
+    return brewery(ref);
   }
 }
 
-String _$activityHash() => r'609ac1c1d8008d8109ea5869c7aa88013032917c';
+String _$breweryHash() => r'c9a98cce6e0baeac2e729fada58916332db6712b';

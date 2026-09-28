@@ -12,23 +12,23 @@ void main() => runApp(ProviderScope(child: MyApp()));
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: ActivityView());
+    return MaterialApp(home: BreweryView());
   }
 }
 
-class ActivityView extends ConsumerWidget {
+class BreweryView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activity = ref.watch(activityProvider);
+    final brewery = ref.watch(breweryProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Pull to refresh')),
       body: RefreshIndicator(
-        onRefresh: () => ref.refresh(activityProvider.future),
+        onRefresh: () => ref.refresh(breweryProvider.future),
         child: ListView(
           children: [
-            switch (activity) {
-              AsyncValue<Activity>(:final value?) => Text(value.activity),
+            switch (brewery) {
+              AsyncValue<Brewery>(:final value?) => Text(value.name),
               AsyncValue(:final error?) => Text('Error: $error'),
               _ => const CircularProgressIndicator(),
             },
@@ -39,34 +39,34 @@ class ActivityView extends ConsumerWidget {
   }
 }
 
-final activityProvider = FutureProvider.autoDispose<Activity>((ref) async {
+final breweryProvider = FutureProvider.autoDispose<Brewery>((ref) async {
   final response = await http.get(
-    Uri.https('www.boredapi.com', '/api/activity'),
+    Uri.https('api.openbrewerydb.org', '/v1/breweries/random'),
   );
 
-  final json = jsonDecode(response.body) as Map;
-  return Activity.fromJson(json);
+  final json = (jsonDecode(response.body) as List).first as Map;
+  return Brewery.fromJson(json);
 });
 
-class Activity {
-  Activity({
-    required this.activity,
-    required this.type,
-    required this.participants,
-    required this.price,
+class Brewery {
+  Brewery({
+    required this.name,
+    required this.breweryType,
+    required this.city,
+    required this.country,
   });
 
-  factory Activity.fromJson(Map<Object?, Object?> json) {
-    return Activity(
-      activity: json['activity']! as String,
-      type: json['type']! as String,
-      participants: json['participants']! as int,
-      price: (json['price']! as num).toDouble(),
+  factory Brewery.fromJson(Map<Object?, Object?> json) {
+    return Brewery(
+      name: json['name']! as String,
+      breweryType: json['brewery_type']! as String,
+      city: json['city']! as String,
+      country: json['country']! as String,
     );
   }
 
-  final String activity;
-  final String type;
-  final int participants;
-  final double price;
+  final String name;
+  final String breweryType;
+  final String city;
+  final String country;
 }
