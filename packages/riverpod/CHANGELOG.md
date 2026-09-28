@@ -4,6 +4,7 @@
 - Added `provider.exist`, which is listenable.
   This enables writing `ref.listen(provider.exist, ...)`.
 - Fix `selectAsync` notifying a closed subscription after an upstream refresh.
+- Fixed `ref.read`/`container.read` of `provider.listenable` throwing an internal `StateError` on `.value`; it now throws a clear one explaining `.listenable` needs `ref.watch`, `ref.listen` or `container.listen` instead (thanks to @Yasser-Ameur)
 - Fixed a debug-only infinite loop in the circular-dependency check. Closing a
   dependency ring left the offending subscription in the graph, so a subsequent
   rebuild could make the check walk the cycle forever. The subscription is now
