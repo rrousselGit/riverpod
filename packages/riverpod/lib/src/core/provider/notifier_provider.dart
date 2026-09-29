@@ -282,6 +282,8 @@ extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
               }
             }
 
+            if (!ref.mounted) return null;
+
             final decoded = decode(value.data);
             _setStateFromValue(decoded);
           }),
