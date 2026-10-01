@@ -74,9 +74,10 @@ class $ProviderPointer implements _PointerBase {
       // as "transitive overrides". Even though they aren't overrides due to
       // being on the root container, they should be treated as such for the sake
       // of automatic scoping.
+      // Family members inherit the dependencies of their family.
       (targetContainer._parent == null &&
           providerOverride == null &&
-          (origin.$allTransitiveDependencies?.isNotEmpty ?? false));
+          (origin.inheritedAllTransitiveDependencies?.isNotEmpty ?? false));
 
   bool get permanent =>
       providerOverride != null &&
@@ -175,9 +176,23 @@ extension<PointerT extends _PointerBase, ProviderT extends ProviderOrFamily>
 
 extension on ProviderOrFamily {
   bool get canBeTransitivelyOverridden {
-    final $allTransitiveDependencies = this.$allTransitiveDependencies;
+    final $allTransitiveDependencies = inheritedAllTransitiveDependencies;
     return $allTransitiveDependencies != null &&
         $allTransitiveDependencies.isNotEmpty;
+  }
+
+  /// The transitive dependencies of this provider or family.
+  ///
+  /// Providers created through a [Family] do not declare their own
+  /// dependencies. They instead inherit the dependencies of their family.
+  Iterable<ProviderOrFamily>? get inheritedAllTransitiveDependencies {
+    final $allTransitiveDependencies = this.$allTransitiveDependencies;
+    if ($allTransitiveDependencies != null) return $allTransitiveDependencies;
+
+    final that = this;
+    if (that is ProviderBase) return that.from?.$allTransitiveDependencies;
+
+    return null;
   }
 }
 
@@ -497,7 +512,23 @@ class ProviderPointerManager {
       return null;
     }
 
-    final overrides = provider.$allTransitiveDependencies!
+    // A manually overridden family takes precedence over automatic scoping:
+    // its members are inherited as-is instead of being re-scoped,
+    // mirroring how manually overridden providers skip auto-scoping.
+    final that = provider;
+    if (that is ProviderBase) {
+      final directory = switch (that.from) {
+        null => null,
+        final family => familyPointers[family],
+      };
+      final familyOverride = directory?.familyOverride;
+      if (familyOverride != null &&
+          familyOverride is! TransitiveFamilyOverride) {
+        return null;
+      }
+    }
+
+    final overrides = provider.inheritedAllTransitiveDependencies!
         .expand<ProviderContainer>((dependency) {
           switch (dependency) {
             case Family():
@@ -604,15 +635,14 @@ class ProviderPointerManager {
   }
 
   $ProviderPointer upsertPointer(ProviderBase<Object?> provider) {
-    return upsertDirectory(
-      provider,
-    ).upsertPointer(provider, currentContainer: container);
+    return upsertDirectory(provider)
+        .upsertPointer(provider, currentContainer: container);
   }
 
   ProviderElement upsertElement(ProviderBase<Object?> provider) {
-    return upsertDirectory(
-      provider,
-    ).mount(provider, currentContainer: container).element!;
+    return upsertDirectory(provider)
+        .mount(provider, currentContainer: container)
+        .element!;
   }
 
   /// Traverse the [ProviderElement]s associated with this [ProviderContainer].
@@ -1602,11 +1632,10 @@ abstract base class ProviderObserver {
 
 /// An implementation detail for the override mechanism of providers
 @internal
-typedef SetupOverride =
-    void Function({
-      required ProviderBase<Object?> origin,
-      required ProviderBase<Object?> override,
-    });
+typedef SetupOverride = void Function({
+  required ProviderBase<Object?> origin,
+  required ProviderBase<Object?> override,
+});
 
 /// An error thrown when a call to [Ref.read]/[Ref.watch]
 /// leads to a provider depending on itself.

@@ -1,5 +1,9 @@
 ## Unreleased fix
 
+- Fixed family providers with `dependencies: [...]` not re-scoping in a child
+  container when a family member was read through the root container first.
+  The child container incorrectly reused the root's element and the override
+  was silently ignored.
 - Deprecated `Ref.exist`.
 - Added `provider.exist`, which is listenable.
   This enables writing `ref.listen(provider.exist, ...)`.
