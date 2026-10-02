@@ -187,7 +187,8 @@ class ProviderDirectory implements _PointerBase {
     ProviderContainer container, {
     required this.familyOverride,
   }) : pointers = HashMap(),
-       targetContainer = container;
+       targetContainer = container,
+       _forkedFrom = null;
 
   ProviderDirectory.from(
     ProviderDirectory pointer, {
@@ -201,7 +202,37 @@ class ProviderDirectory implements _PointerBase {
        targetContainer = targetContainer ?? pointer.targetContainer,
        pointers = HashMap.fromEntries(
          pointer.pointers.entries.where((e) => !e.value.isTransitiveOverride),
-       );
+       ),
+       _forkedFrom = null;
+
+  /// Lazily forks [parent].
+  ///
+  /// Where [ProviderDirectory.from] eagerly copies every inheritable pointer,
+  /// this starts empty and resolves misses through [_forkedFrom] on demand.
+  ///
+  /// The two are equivalent, because the entries [ProviderDirectory.from] keeps
+  /// are exactly the ones a miss re-derives identically. A pointer that is not
+  /// an [$ProviderPointer.isTransitiveOverride] is either a permanent override,
+  /// which can only be declared when its own container is built and so is
+  /// already present up the chain, or it sits on the root container with no
+  /// transitive dependencies, in which case resolving it again returns that
+  /// very same pointer.
+  ///
+  /// This matters because a container is created for every `ProviderScope`:
+  /// copying made scope creation cost O(providers mounted in the whole
+  /// application) instead of O(overrides).
+  ProviderDirectory.fork(
+    ProviderDirectory parent, {
+    ProviderContainer? targetContainer,
+    _FamilyOverride? familyOverride,
+  }) : assert(
+         (familyOverride == null) == (targetContainer == null),
+         'Either both or neither of familyOverride and targetContainer should be null',
+       ),
+       familyOverride = familyOverride ?? parent.familyOverride,
+       targetContainer = targetContainer ?? parent.targetContainer,
+       pointers = HashMap(),
+       _forkedFrom = parent;
 
   @override
   bool get isTransitiveOverride => familyOverride is TransitiveFamilyOverride;
@@ -216,6 +247,38 @@ class ProviderDirectory implements _PointerBase {
   final HashMap<ProviderBase<Object?>, $ProviderPointer> pointers;
   @override
   ProviderContainer targetContainer;
+
+  /// The directory this one was lazily forked from, if any.
+  ///
+  /// Reads that miss [pointers] are resolved through this chain instead.
+  final ProviderDirectory? _forkedFrom;
+
+  /// Resolves [provider] through the fork chain, without creating anything.
+  ///
+  /// This applies, at read time, the `!isTransitiveOverride` filter that
+  /// [ProviderDirectory.from] applies when copying. On finding a transitive
+  /// override we stop and return null, letting normal scoping resolution take
+  /// over, rather than continuing up the chain: an eager copy would have
+  /// dropped that entry at this level, and anything above it was already
+  /// filtered out when the directory holding it was itself built.
+  $ProviderPointer? _readInherited(ProviderBase<Object?> provider) {
+    for (
+      var directory = _forkedFrom;
+      directory != null;
+      directory = directory._forkedFrom
+    ) {
+      final pointer = directory.pointers[provider];
+      if (pointer == null) continue;
+
+      return pointer.isTransitiveOverride ? null : pointer;
+    }
+
+    return null;
+  }
+
+  /// The pointer for [provider], local or inherited, without creating it.
+  $ProviderPointer? readPointer(ProviderBase<Object?> provider) =>
+      pointers[provider] ?? _readInherited(provider);
 
   void addProviderOverride(
     // ignore: library_private_types_in_public_api, not public API
@@ -235,6 +298,13 @@ class ProviderDirectory implements _PointerBase {
     ProviderBase<Object?> provider, {
     required ProviderContainer currentContainer,
   }) {
+    final local = pointers[provider];
+    if (local != null) return local;
+
+    final inherited = _readInherited(provider);
+    // Memoise, exactly as eagerly copying the parent's pointers used to.
+    if (inherited != null) return pointers[provider] = inherited;
+
     return pointers._upsert(
       provider,
       currentContainer: currentContainer,
@@ -359,7 +429,7 @@ class ProviderPointerManager {
       overrides,
       container: container,
       // Always forks orphan pointers, because of possible transitive overrides.
-      orphanPointers: ProviderDirectory.from(
+      orphanPointers: ProviderDirectory.fork(
         parent._pointerManager.orphanPointers,
       ),
 
@@ -572,7 +642,18 @@ class ProviderPointerManager {
     }
   }
 
+  /// The pointer a read of [provider] from this container would land on,
+  /// whether it is stored here or inherited from a forked directory.
   $ProviderPointer? readPointer(ProviderBase<Object?> provider) {
+    return readDirectory(provider)?.readPointer(provider);
+  }
+
+  /// The pointer for [provider] stored *in this container*, if any.
+  ///
+  /// Unlike [readPointer], this does not resolve through forked directories.
+  /// It answers "is a pointer stored here", not "what would a read see" — which
+  /// is the question to ask when checking that pointers are cleaned up.
+  $ProviderPointer? readLocalPointer(ProviderBase<Object?> provider) {
     return readDirectory(provider)?.pointers[provider];
   }
 
@@ -962,27 +1043,6 @@ final class ProviderReference {
 /// {@category Core}
 @publicInRiverpodAndCodegen
 final class ProviderContainer implements MutationTarget {
-  /// The observers of a container, including those inherited from [parent].
-  ///
-  /// [parent]'s list is already flattened, so when this container contributes
-  /// nothing of its own it can be reused as-is instead of being copied. This
-  /// matters because a container is created for every `ProviderScope`.
-  static List<ProviderObserver> _observersFor(
-    List<ProviderObserver>? observers,
-    ProviderContainer? parent,
-  ) {
-    if (observers == null || observers.isEmpty) {
-      if (parent != null) return parent.observers;
-      if (!kDebugMode) return const [];
-    }
-
-    return [
-      ...?observers,
-      if (kDebugMode && parent == null) const DevtoolObserver(),
-      if (parent != null) ...parent.observers,
-    ];
-  }
-
   /// {@macro riverpod.provider_container}
   ProviderContainer({
     ProviderContainer? parent,
@@ -1066,6 +1126,27 @@ final class ProviderContainer implements MutationTarget {
     test.addTearDown(container.dispose);
 
     return container;
+  }
+
+  /// The observers of a container, including those inherited from [parent].
+  ///
+  /// [parent]'s list is already flattened, so when this container contributes
+  /// nothing of its own it can be reused as-is instead of being copied. This
+  /// matters because a container is created for every `ProviderScope`.
+  static List<ProviderObserver> _observersFor(
+    List<ProviderObserver>? observers,
+    ProviderContainer? parent,
+  ) {
+    if (observers == null || observers.isEmpty) {
+      if (parent != null) return parent.observers;
+      if (!kDebugMode) return const [];
+    }
+
+    return [
+      ...?observers,
+      if (kDebugMode && parent == null) const DevtoolObserver(),
+      if (parent != null) ...parent.observers,
+    ];
   }
 
   /// The default implementation of [retry].
