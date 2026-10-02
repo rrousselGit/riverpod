@@ -251,7 +251,14 @@ class ProviderDirectory implements _PointerBase {
   /// The directory this one was lazily forked from, if any.
   ///
   /// Reads that miss [pointers] are resolved through this chain instead.
-  final ProviderDirectory? _forkedFrom;
+  ProviderDirectory? _forkedFrom;
+
+  /// Stops inheriting from the directory this one was forked from.
+  ///
+  /// Overriding a family replaces everything it would otherwise have
+  /// inherited. Copying expressed that by dropping the inherited entries; a
+  /// fork has to drop the inherited view they are reached through.
+  void _dropInherited() => _forkedFrom = null;
 
   /// Resolves [provider] through the fork chain, without creating anything.
   ///
@@ -279,6 +286,41 @@ class ProviderDirectory implements _PointerBase {
   /// The pointer for [provider], local or inherited, without creating it.
   $ProviderPointer? readPointer(ProviderBase<Object?> provider) =>
       pointers[provider] ?? _readInherited(provider);
+
+  /// The entries visible from this directory: its own, plus the inherited ones
+  /// an eager [ProviderDirectory.from] would have copied.
+  ///
+  /// Callers that need to enumerate a directory have to go through this, since
+  /// a forked directory only materialises what has actually been read through
+  /// it.
+  Iterable<MapEntry<ProviderBase<Object?>, $ProviderPointer>>
+  get _visibleEntries sync* {
+    if (_forkedFrom == null) {
+      yield* pointers.entries;
+      return;
+    }
+
+    final seen = HashSet<ProviderBase<Object?>>();
+
+    for (
+      ProviderDirectory? directory = this;
+      directory != null;
+      directory = directory._forkedFrom
+    ) {
+      for (final entry in directory.pointers.entries) {
+        // A nearer level shadows the ones above it, and a transitive override
+        // hides whatever an outer level holds for the same provider, exactly
+        // as it did when copying.
+        if (!seen.add(entry.key)) continue;
+        if (directory != this && entry.value.isTransitiveOverride) continue;
+
+        yield entry;
+      }
+    }
+  }
+
+  Iterable<$ProviderPointer> get _visiblePointers =>
+      _visibleEntries.map((entry) => entry.value);
 
   void addProviderOverride(
     // ignore: library_private_types_in_public_api, not public API
@@ -445,7 +487,7 @@ class ProviderPointerManager {
             .map((e) {
               if (e.key.$allTransitiveDependencies == null) return e;
 
-              return MapEntry(e.key, ProviderDirectory.from(e.value));
+              return MapEntry(e.key, ProviderDirectory.fork(e.value));
             }),
       ),
     );
@@ -527,6 +569,7 @@ class ProviderPointerManager {
               ..familyOverride = override
               ..targetContainer = container
               // Remove inherited family values and keep only local ones
+              .._dropInherited()
               ..pointers.removeWhere(
                 (key, value) => value.targetContainer != container,
               );
@@ -575,7 +618,7 @@ class ProviderPointerManager {
               if (familyPointer == null) return const [];
 
               return [familyPointer.targetContainer].followedBy(
-                familyPointer.pointers.values.map((e) => e.targetContainer),
+                familyPointer._visiblePointers.map((e) => e.targetContainer),
               );
             case $ProviderBaseImpl():
               return [?readPointer(dependency)?.targetContainer];
@@ -722,27 +765,29 @@ class ProviderPointerManager {
       return target._pointerManager.listFamily(family);
     }
 
-    var pointers = _familyPointers.pointers.values;
+    final pointers = <ProviderBase<Object?>, $ProviderPointer>{};
+    for (final entry in _familyPointers._visibleEntries) {
+      pointers.putIfAbsent(entry.key, () => entry.value);
+    }
 
     if (_familyPointers.targetContainer != container) {
       // The directory was inherited from another container. Providers mounted
-      // in that container after the directory was forked are not in the local
-      // copy of the directory, so they need to be included separately.
+      // in that container after the directory was forked are not reachable
+      // from the local copy of the directory, so they need to be included
+      // separately.
       final targetPointers = _familyPointers
           .targetContainer
           ._pointerManager
           .familyPointers[family];
 
       if (targetPointers != null && targetPointers != _familyPointers) {
-        pointers = pointers.followedBy(
-          targetPointers.pointers.entries
-              .where((e) => !_familyPointers.pointers.containsKey(e.key))
-              .map((e) => e.value),
-        );
+        for (final entry in targetPointers._visibleEntries) {
+          pointers.putIfAbsent(entry.key, () => entry.value);
+        }
       }
     }
 
-    return pointers.map((e) => e.element).nonNulls;
+    return pointers.values.map((e) => e.element).nonNulls;
   }
 
   Iterable<ProviderReference> listFamilyProviders(Family family) {
