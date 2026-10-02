@@ -1171,20 +1171,28 @@ void main() {
             overrides: [cOverride, cFamilyOverride, cValueOverride],
           );
 
+          // The scope only stores the family it overrides itself; the ones
+          // overridden further up are reached through it.
           expect(container.pointerManager.familyPointers, {
-            aFamily: isProviderDirectory(
-              override: aFamilyOverride,
-              targetContainer: root,
-            ),
-            bFamily: isProviderDirectory(
-              override: bFamilyOverride,
-              targetContainer: mid,
-            ),
             cFamily: isProviderDirectory(
               override: cFamilyOverride,
               targetContainer: container,
             ),
           });
+          expect(
+            container.pointerManager.readFamilyDirectory(aFamily),
+            isProviderDirectory(
+              override: aFamilyOverride,
+              targetContainer: root,
+            ),
+          );
+          expect(
+            container.pointerManager.readFamilyDirectory(bFamily),
+            isProviderDirectory(
+              override: bFamilyOverride,
+              targetContainer: mid,
+            ),
+          );
 
           // Overridden family instances resolve to the pointer of whichever
           // container declared the override.
