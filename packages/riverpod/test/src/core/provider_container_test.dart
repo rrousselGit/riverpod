@@ -1117,10 +1117,17 @@ void main() {
             ],
           );
 
-          expect(container.pointerManager.orphanPointers.pointers, {
-            dep: isPointer(targetContainer: mid, override: dep),
-            unrelated: isPointer(),
-          });
+          // `dep` is overridden outright, so the scope inherits mid's pointer.
+          expect(
+            container.pointerManager.readPointer(dep),
+            isPointer(targetContainer: mid, override: dep),
+          );
+          expect(container.pointerManager.readPointer(unrelated), isPointer());
+
+          // `provider` and `family` were only *transitively* overridden in mid,
+          // so the scope must not inherit them: reading them resolves anew.
+          expect(container.pointerManager.readPointer(provider), isNull);
+          expect(container.pointerManager.readPointer(family(42)), isNull);
           expect(container.pointerManager.familyPointers, isEmpty);
         });
 
@@ -1202,26 +1209,25 @@ void main() {
 
           expect(
             container.pointerManager.orphanPointers,
-            isProviderDirectory(
-              targetContainer: root,
-              override: null,
-              pointers: {
-                a: isPointer(
-                  override: aOverride,
-                  targetContainer: root,
-                  element: null,
-                ),
-                b: isPointer(
-                  override: bOverride,
-                  targetContainer: mid,
-                  element: null,
-                ),
-                c: isPointer(
-                  override: cOverride,
-                  targetContainer: container,
-                  element: null,
-                ),
-              },
+            isProviderDirectory(targetContainer: root, override: null),
+          );
+
+          // Overrides declared anywhere up the chain resolve to the pointer of
+          // the container that declared them.
+          expect(
+            container.pointerManager.readPointer(a),
+            isPointer(override: aOverride, targetContainer: root, element: null),
+          );
+          expect(
+            container.pointerManager.readPointer(b),
+            isPointer(override: bOverride, targetContainer: mid, element: null),
+          );
+          expect(
+            container.pointerManager.readPointer(c),
+            isPointer(
+              override: cOverride,
+              targetContainer: container,
+              element: null,
             ),
           );
         });
