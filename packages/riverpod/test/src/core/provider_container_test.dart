@@ -1246,6 +1246,151 @@ void main() {
           );
         });
 
+        group('when forking lazily', () {
+          test('resolves an override declared on a grandparent', () {
+            final provider = Provider((_) => 0, name: 'provider');
+            final override = provider.overrideWithValue(42);
+            final unrelated = Provider((_) => 0, dependencies: const []);
+
+            final root = ProviderContainer.test(overrides: [override]);
+            final mid = ProviderContainer.test(
+              parent: root,
+              overrides: [unrelated],
+            );
+            final leaf = ProviderContainer.test(
+              parent: mid,
+              overrides: [unrelated],
+            );
+
+            expect(
+              leaf.pointerManager.readPointer(provider),
+              same(root.pointerManager.readPointer(provider)),
+            );
+            expect(leaf.read(provider), 42);
+          });
+
+          test('does not adopt a transitive override from an ancestor', () {
+            final dep = Provider((_) => 0, dependencies: const [], name: 'dep');
+            final provider = Provider(
+              (ref) => ref.watch(dep),
+              dependencies: [dep],
+              name: 'provider',
+            );
+
+            final root = ProviderContainer.test();
+            final mid = ProviderContainer.test(
+              parent: root,
+              overrides: [dep.overrideWithValue(1)],
+            );
+            // Scopes `provider` into mid, as a transitive override.
+            expect(mid.read(provider), 1);
+
+            final leaf = ProviderContainer.test(
+              parent: mid,
+              overrides: [dep.overrideWithValue(2)],
+            );
+
+            expect(leaf.read(provider), 2);
+            expect(
+              leaf.pointerManager.readPointer(provider),
+              isNot(same(mid.pointerManager.readPointer(provider))),
+            );
+          });
+
+          test('sees a provider the parent mounts after the fork', () {
+            final provider = Provider((_) => 0, name: 'provider');
+            final unrelated = Provider((_) => 0, dependencies: const []);
+
+            final root = ProviderContainer.test();
+            final leaf = ProviderContainer.test(
+              parent: root,
+              overrides: [unrelated],
+            );
+
+            // Mounted only after `leaf` was built, so a copy taken at
+            // construction time would not have held it either.
+            root.read(provider);
+
+            expect(
+              leaf.pointerManager.readPointer(provider),
+              same(root.pointerManager.readPointer(provider)),
+            );
+          });
+
+          test('re-resolves a pointer that was removed from the root', () async {
+            final provider = Provider.autoDispose((_) => 0);
+            final unrelated = Provider((_) => 0, dependencies: const []);
+
+            final root = ProviderContainer.test();
+            final leaf = ProviderContainer.test(
+              parent: root,
+              overrides: [unrelated],
+            );
+
+            leaf.read(provider);
+            expect(leaf.pointerManager.readLocalPointer(provider), isNotNull);
+
+            await root.pump();
+
+            expect(leaf.pointerManager.readLocalPointer(provider), isNull);
+            expect(root.pointerManager.readLocalPointer(provider), isNull);
+
+            leaf.read(provider);
+            expect(
+              leaf.pointerManager.readPointer(provider),
+              same(root.pointerManager.readPointer(provider)),
+            );
+          });
+
+          test('shares the directory of a family that cannot be scoped', () {
+            final family = Provider.family<int, int>((ref, id) => id);
+            final unrelated = Provider((_) => 0, dependencies: const []);
+
+            final root = ProviderContainer.test();
+            root.read(family(1));
+
+            final leaf = ProviderContainer.test(
+              parent: root,
+              overrides: [unrelated],
+            );
+
+            expect(
+              leaf.pointerManager.readFamilyDirectory(family),
+              same(root.pointerManager.readFamilyDirectory(family)),
+            );
+          });
+
+          test('stores only the providers the scope actually reads', () {
+            final unrelated = Provider((_) => 0, dependencies: const []);
+            final providers = List.generate(
+              50,
+              (i) => Provider((_) => i, name: 'p$i'),
+            );
+
+            final root = ProviderContainer.test();
+            providers.forEach(root.read);
+
+            final leaf = ProviderContainer.test(
+              parent: root,
+              overrides: [unrelated],
+            );
+            leaf.read(providers.first);
+            leaf.read(providers.last);
+
+            // All of them stay readable through the scope...
+            for (final provider in providers) {
+              expect(leaf.pointerManager.readPointer(provider), isNotNull);
+            }
+
+            // ...but the scope only holds the override it was given and the two
+            // it read, and owns no element of its own. This is what keeps both
+            // its creation and its disposal independent of how large the
+            // application is.
+            expect(leaf.pointerManager.orphanPointers.pointers, hasLength(3));
+            expect(leaf.getAllProviderElements(), isEmpty);
+          });
+        });
+
         test('with no overrides, uses an identical content as its parent', () {
           final root = ProviderContainer.test();
           final mid = ProviderContainer.test(
