@@ -962,6 +962,27 @@ final class ProviderReference {
 /// {@category Core}
 @publicInRiverpodAndCodegen
 final class ProviderContainer implements MutationTarget {
+  /// The observers of a container, including those inherited from [parent].
+  ///
+  /// [parent]'s list is already flattened, so when this container contributes
+  /// nothing of its own it can be reused as-is instead of being copied. This
+  /// matters because a container is created for every `ProviderScope`.
+  static List<ProviderObserver> _observersFor(
+    List<ProviderObserver>? observers,
+    ProviderContainer? parent,
+  ) {
+    if (observers == null || observers.isEmpty) {
+      if (parent != null) return parent.observers;
+      if (!kDebugMode) return const [];
+    }
+
+    return [
+      ...?observers,
+      if (kDebugMode && parent == null) const DevtoolObserver(),
+      if (parent != null) ...parent.observers,
+    ];
+  }
+
   /// {@macro riverpod.provider_container}
   ProviderContainer({
     ProviderContainer? parent,
@@ -974,11 +995,7 @@ final class ProviderContainer implements MutationTarget {
        _parent = parent,
        _onError = onError ?? Zone.current.handleUncaughtError,
        retry = retry ?? parent?.retry,
-       observers = [
-         ...?observers,
-         if (kDebugMode && parent == null) const DevtoolObserver(),
-         if (parent != null) ...parent.observers,
-       ],
+       observers = _observersFor(observers, parent),
        _root = parent?._root ?? parent {
     if (parent != null) {
       if (parent.disposed) {
@@ -1070,7 +1087,7 @@ final class ProviderContainer implements MutationTarget {
     return delay;
   }
 
-  final _debugId = ContainerId(const Uuid().v4());
+  late final _debugId = ContainerId(const Uuid().v4());
 
   final int _debugOverridesLength;
 
