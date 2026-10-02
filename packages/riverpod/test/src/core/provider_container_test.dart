@@ -1175,37 +1175,43 @@ void main() {
             aFamily: isProviderDirectory(
               override: aFamilyOverride,
               targetContainer: root,
-              pointers: {
-                aFamily(1): isPointer(
-                  override: aValueOverride,
-                  targetContainer: root,
-                  element: null,
-                ),
-              },
             ),
             bFamily: isProviderDirectory(
               override: bFamilyOverride,
               targetContainer: mid,
-              pointers: {
-                bFamily(2): isPointer(
-                  override: bValueOverride,
-                  targetContainer: mid,
-                  element: null,
-                ),
-              },
             ),
             cFamily: isProviderDirectory(
               override: cFamilyOverride,
               targetContainer: container,
-              pointers: {
-                cFamily(3): isPointer(
-                  override: cValueOverride,
-                  targetContainer: container,
-                  element: null,
-                ),
-              },
             ),
           });
+
+          // Overridden family instances resolve to the pointer of whichever
+          // container declared the override.
+          expect(
+            container.pointerManager.readPointer(aFamily(1)),
+            isPointer(
+              override: aValueOverride,
+              targetContainer: root,
+              element: null,
+            ),
+          );
+          expect(
+            container.pointerManager.readPointer(bFamily(2)),
+            isPointer(
+              override: bValueOverride,
+              targetContainer: mid,
+              element: null,
+            ),
+          );
+          expect(
+            container.pointerManager.readPointer(cFamily(3)),
+            isPointer(
+              override: cValueOverride,
+              targetContainer: container,
+              element: null,
+            ),
+          );
 
           expect(
             container.pointerManager.orphanPointers,
