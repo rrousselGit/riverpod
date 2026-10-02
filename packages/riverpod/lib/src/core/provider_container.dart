@@ -456,6 +456,7 @@ class ProviderPointerManager {
     required this.container,
     required this.orphanPointers,
     HashMap<Family, ProviderDirectory>? familyPointers,
+    this.forkedFrom,
   }) : familyPointers = familyPointers ?? HashMap() {
     _initializeOverrides(overrides);
   }
@@ -470,32 +471,72 @@ class ProviderPointerManager {
     return ProviderPointerManager(
       overrides,
       container: container,
-      // Always forks orphan pointers, because of possible transitive overrides.
+      // Both tables are forked rather than copied: a scope materialises only
+      // what is actually read through it.
       orphanPointers: ProviderDirectory.fork(
         parent._pointerManager.orphanPointers,
       ),
-
-      familyPointers: HashMap.fromEntries(
-        parent._pointerManager.familyPointers.entries
-            .where(
-              (e) =>
-                  !e.value.isTransitiveOverride &&
-                  // Exclude families that may be automatically scoped unless they are overridden.
-                  (!e.key.canBeTransitivelyOverridden ||
-                      e.value.familyOverride != null),
-            )
-            .map((e) {
-              if (e.key.$allTransitiveDependencies == null) return e;
-
-              return MapEntry(e.key, ProviderDirectory.fork(e.value));
-            }),
-      ),
+      forkedFrom: parent._pointerManager,
     );
   }
 
   final ProviderContainer container;
   final ProviderDirectory orphanPointers;
   final HashMap<Family, ProviderDirectory> familyPointers;
+
+  /// The manager this one was forked from, if any.
+  final ProviderPointerManager? forkedFrom;
+
+  /// The nearest directory for [family] up the fork chain that this manager may
+  /// inherit, or null if the chain holds nothing inheritable.
+  ///
+  /// This is the lazy form of the filter that copying the family map applied.
+  ProviderDirectory? _inheritableFamilyDirectory(Family family) {
+    for (
+      var manager = forkedFrom;
+      manager != null;
+      manager = manager.forkedFrom
+    ) {
+      final directory = manager.familyPointers[family];
+      if (directory == null) continue;
+
+      // Not inheritable. Stop rather than looking further up: a copy would have
+      // dropped this entry, and whatever sat above it was already filtered out
+      // when the level holding it was itself built.
+      if (directory.isTransitiveOverride) return null;
+      // Families that may be automatically scoped are not inherited unless they
+      // are overridden.
+      if (family.canBeTransitivelyOverridden &&
+          directory.familyOverride == null) {
+        return null;
+      }
+
+      return directory;
+    }
+
+    return null;
+  }
+
+  /// The directory a read of [family] through this container would land on.
+  ProviderDirectory? readFamilyDirectory(Family family) =>
+      familyPointers[family] ?? _inheritableFamilyDirectory(family);
+
+  /// Adopts the inherited directory for [family], if any, and remembers it.
+  ///
+  /// A family that cannot be scoped is adopted by reference, as copying did:
+  /// its instances mount in the same container either way, so both containers
+  /// want the same directory. Callers about to write to the directory pass
+  /// [mutable] to get one of their own instead, so that a local override cannot
+  /// leak into the container the directory came from.
+  ProviderDirectory? _adoptFamily(Family family, {bool mutable = false}) {
+    final inherited = _inheritableFamilyDirectory(family);
+    if (inherited == null) return null;
+
+    return familyPointers[family] =
+        !mutable && family.$allTransitiveDependencies == null
+        ? inherited
+        : ProviderDirectory.fork(inherited);
+  }
 
   ProviderSubscriptionImpl<bool> listenToExistence(
     ProviderBase<Object?> provider, {
@@ -544,10 +585,13 @@ class ProviderPointerManager {
       return;
     }
 
-    final familyPointer = familyPointers[from] ??= ProviderDirectory.empty(
-      container._root ?? container,
-      familyOverride: null,
-    );
+    final familyPointer =
+        familyPointers[from] ??
+        _adoptFamily(from, mutable: true) ??
+        (familyPointers[from] = ProviderDirectory.empty(
+          container._root ?? container,
+          familyOverride: null,
+        ));
 
     familyPointer.addProviderOverride(override, targetContainer: container);
   }
@@ -614,7 +658,7 @@ class ProviderPointerManager {
         .expand<ProviderContainer>((dependency) {
           switch (dependency) {
             case Family():
-              final familyPointer = familyPointers[dependency];
+              final familyPointer = readFamilyDirectory(dependency);
               if (familyPointer == null) return const [];
 
               return [familyPointer.targetContainer].followedBy(
@@ -641,6 +685,12 @@ class ProviderPointerManager {
   ///
   /// Non-overridden families are mounted in the root container.
   ProviderDirectory _mountFamily(Family family) {
+    final local = familyPointers[family];
+    if (local != null) return local;
+
+    final adopted = _adoptFamily(family);
+    if (adopted != null) return adopted;
+
     return familyPointers._upsert(
       family,
       currentContainer: container,
@@ -657,7 +707,9 @@ class ProviderPointerManager {
             ? null
             : TransitiveFamilyOverride(override);
 
-        final parent = container.parent?._pointerManager.familyPointers[family];
+        final parent = container.parent?._pointerManager.readFamilyDirectory(
+          family,
+        );
 
         if (parent != null) {
           return ProviderDirectory.from(
@@ -681,6 +733,20 @@ class ProviderPointerManager {
     if (from == null) {
       return orphanPointers;
     } else {
+      return readFamilyDirectory(from);
+    }
+  }
+
+  /// The directory for [provider] stored *in this container*, if any.
+  ///
+  /// Callers that mutate a directory go through this, so that they never write
+  /// into one inherited from another container.
+  ProviderDirectory? readLocalDirectory(ProviderBase<Object?> provider) {
+    final from = provider.from;
+
+    if (from == null) {
+      return orphanPointers;
+    } else {
       return familyPointers[from];
     }
   }
@@ -697,7 +763,7 @@ class ProviderPointerManager {
   /// It answers "is a pointer stored here", not "what would a read see" — which
   /// is the question to ask when checking that pointers are cleaned up.
   $ProviderPointer? readLocalPointer(ProviderBase<Object?> provider) {
-    return readDirectory(provider)?.pointers[provider];
+    return readLocalDirectory(provider)?.pointers[provider];
   }
 
   ProviderElement? readElement(ProviderBase<Object?> provider) {
@@ -752,7 +818,7 @@ class ProviderPointerManager {
 
   /// Read the [ProviderElement] for a provider, without creating it if it doesn't exist.
   Iterable<ProviderElement> listFamily(Family family) {
-    final _familyPointers = familyPointers[family];
+    final _familyPointers = readFamilyDirectory(family);
 
     if (_familyPointers == null) {
       // The family was never read through this container.
@@ -775,10 +841,8 @@ class ProviderPointerManager {
       // in that container after the directory was forked are not reachable
       // from the local copy of the directory, so they need to be included
       // separately.
-      final targetPointers = _familyPointers
-          .targetContainer
-          ._pointerManager
-          .familyPointers[family];
+      final targetPointers = _familyPointers.targetContainer._pointerManager
+          .readFamilyDirectory(family);
 
       if (targetPointers != null && targetPointers != _familyPointers) {
         for (final entry in targetPointers._visibleEntries) {
@@ -841,7 +905,7 @@ class ProviderPointerManager {
   ///
   /// Returns the provider's pointer, even if it was not removed.
   $ProviderPointer? tryRemove(ProviderBase<Object?> provider) {
-    final directory = readDirectory(provider);
+    final directory = readLocalDirectory(provider);
     if (directory == null) return null;
 
     final pointer = directory.pointers[provider];
