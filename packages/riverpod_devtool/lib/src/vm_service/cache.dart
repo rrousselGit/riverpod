@@ -7,6 +7,9 @@ sealed class CachedObject {
 
   final String? label;
 
+  /// A structural path within an inspector, independent of cached frame values.
+  Object get inspectionPath => 'root';
+
   VmInstanceRef? _lastKnownRef;
 
   String? get _sessionId => null;
@@ -218,6 +221,11 @@ abstract class DerivedCachedObject extends CachedObject {
 
   CachedObject get from;
 
+  Object get pathSegment;
+
+  @override
+  Object get inspectionPath => (from.inspectionPath, pathSegment);
+
   @override
   String? get _sessionId => from._sessionId;
 }
@@ -230,6 +238,9 @@ final class _GetterCachedObject extends DerivedCachedObject {
   final CachedObject from;
   final String name;
   final Uri uri;
+
+  @override
+  Object get pathSegment => ('getter', uri, name);
 
   @override
   Future<Byte<VmInstanceRef>> _fetchInstance(
@@ -258,6 +269,7 @@ final class _GetterCachedObject extends DerivedCachedObject {
 final class _DelegatingDerivedCachedObject extends DerivedCachedObject {
   _DelegatingDerivedCachedObject({
     required this.from,
+    required this.pathSegment,
     required this.obtainRefFromParentInstance,
     super.label,
   });
@@ -268,6 +280,7 @@ final class _DelegatingDerivedCachedObject extends DerivedCachedObject {
   ) {
     return _DelegatingDerivedCachedObject(
       from: object,
+      pathSegment: ('field', name),
       label: switch (name) {
         PositionalFieldKey() => null,
         NamedFieldKey(:final name) => name,
@@ -293,6 +306,7 @@ final class _DelegatingDerivedCachedObject extends DerivedCachedObject {
   ) {
     return _DelegatingDerivedCachedObject(
       from: object,
+      pathSegment: ('element', index),
       obtainRefFromParentInstance: (obj) {
         final elements = obj.elements;
         if (elements == null || index < 0 || index >= elements.length) {
@@ -312,6 +326,7 @@ final class _DelegatingDerivedCachedObject extends DerivedCachedObject {
   ) {
     return _DelegatingDerivedCachedObject(
       from: mapObject,
+      pathSegment: ('mapKey', index),
       label: 'key',
       obtainRefFromParentInstance: (obj) {
         final associations = obj.associations;
@@ -330,6 +345,7 @@ final class _DelegatingDerivedCachedObject extends DerivedCachedObject {
   ) {
     return _DelegatingDerivedCachedObject(
       from: mapObject,
+      pathSegment: ('mapValue', index),
       label: 'value',
       obtainRefFromParentInstance: (obj) {
         final associations = obj.associations;
@@ -344,6 +360,8 @@ final class _DelegatingDerivedCachedObject extends DerivedCachedObject {
 
   @override
   final CachedObject from;
+  @override
+  final Object pathSegment;
   final Byte<VmInstanceRef> Function(VmInstance parent)
   obtainRefFromParentInstance;
 

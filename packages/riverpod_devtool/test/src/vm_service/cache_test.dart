@@ -60,6 +60,46 @@ class _FakeEvalFactory implements EvalFactory {
 
 void main() {
   group('CachedObject', () {
+    test('inspection paths match across roots and distinguish child kinds', () {
+      final first = RootCachedObject(CacheId('first'));
+      final second = RootCachedObject(CacheId('second'));
+      final uri = Uri.parse('package:app/model.dart');
+      final children = <DerivedCachedObject Function(CachedObject)>[
+        (root) => DerivedCachedObject.objectField(root, NamedFieldKey('value')),
+        (root) => DerivedCachedObject.objectField(root, PositionalFieldKey(0)),
+        (root) => DerivedCachedObject.collectionElement(root, 0),
+        (root) => DerivedCachedObject.mapAssociationKey(root, 0),
+        (root) => DerivedCachedObject.mapAssociationValue(root, 0),
+        (root) => DerivedCachedObject.getter(root, name: 'value', uri: uri),
+      ];
+
+      expect(first.inspectionPath, second.inspectionPath);
+      final paths = <Object>{};
+      for (final child in children) {
+        final firstChild = child(first);
+        final secondChild = child(second);
+        expect(firstChild.inspectionPath, secondChild.inspectionPath);
+        paths.add(firstChild.inspectionPath);
+        expect(
+          DerivedCachedObject.collectionElement(firstChild, 1).inspectionPath,
+          DerivedCachedObject.collectionElement(secondChild, 1).inspectionPath,
+        );
+      }
+      expect(paths, hasLength(children.length));
+      expect(
+        DerivedCachedObject.getter(
+          first,
+          name: 'value',
+          uri: Uri.parse('package:other/model.dart'),
+        ).inspectionPath,
+        isNot(children.last(first).inspectionPath),
+      );
+      expect(
+        DerivedCachedObject.collectionElement(first, 1).inspectionPath,
+        isNot(DerivedCachedObject.collectionElement(first, 0).inspectionPath),
+      );
+    });
+
     test(
       'session roots check the lease even when the VM ref remains valid',
       () async {
