@@ -1,5 +1,10 @@
 ## Unreleased fix
 
+- Fixed overriding a single instance of a family in a scope applying that
+  override to the parent container too. Families that declare no `dependencies`
+  have their directory inherited by reference rather than copied, and the
+  override was written into it, so reading that instance from outside the scope
+  returned the scoped value. (thanks to @tguerin)
 - Deprecated `Ref.exist`.
 - Added `provider.exist`, which is listenable.
   This enables writing `ref.listen(provider.exist, ...)`.
