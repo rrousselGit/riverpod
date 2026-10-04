@@ -658,6 +658,7 @@ final _resolvedVariableForObject = FutureProvider.autoDispose
     .family<Byte<ResolvedVariable>, CachedObject>(
       name: '_variableInspectorProvider',
       (ref, object) async {
+        ref.watch(devtoolSessionProvider);
         final eval = await ref.watch(evalProvider.future);
 
         final byte = await object.read(eval, isAlive: ref.disposable());

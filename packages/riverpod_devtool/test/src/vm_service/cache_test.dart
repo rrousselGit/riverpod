@@ -60,6 +60,101 @@ class _FakeEvalFactory implements EvalFactory {
 
 void main() {
   group('CachedObject', () {
+    test(
+      'session roots check the lease even when the VM ref remains valid',
+      () async {
+        final object = RootCachedObject(CacheId('session:result'));
+        final framework = _MockEval();
+        final core = _MockEval();
+        final factory = _FakeEvalFactory(
+          dartCore: core,
+          riverpodFramework: framework,
+        )..sessionId = 'session';
+        final alive = Disposable();
+        final instance = VmInstance.string('still alive in the VM');
+        var fetches = 0;
+        when(
+          framework.eval(
+            'RiverpodDevtool.instance.getCache("session:result")',
+            isAlive: alive,
+          ),
+        ).thenAnswer(
+          (_) async => ++fetches == 1
+              ? ByteVariable(instance.ref)
+              : ByteError(const ExpiredDevtoolSessionType()),
+        );
+        when(
+          core.instance(instance.ref, isAlive: alive),
+        ).thenAnswer((_) async => ByteVariable(instance));
+        expect(
+          await object.read(factory, isAlive: alive),
+          isA<ByteVariable<VmInstance>>(),
+        );
+        final expired = await object.readRef(factory, alive);
+        expect(expired, isA<ByteError<VmInstanceRef>>());
+        expect((expired as ByteError).error, isA<ExpiredDevtoolSessionType>());
+        expect(fetches, 2);
+      },
+    );
+
+    test('old roots and their children expire after reconnect', () async {
+      final object = RootCachedObject(CacheId('old:result'));
+      final child = DerivedCachedObject.collectionElement(object, 0);
+      final framework = _MockEval();
+      final core = _MockEval();
+      final factory = _FakeEvalFactory(
+        dartCore: core,
+        riverpodFramework: framework,
+      )..sessionId = 'old';
+      final alive = Disposable();
+      final value = VmInstance.string('child');
+      final list = VmInstance(
+        vm.Instance(
+          id: 'list',
+          kind: vm.InstanceKind.kList,
+          elements: [value.ref.raw],
+        ),
+      );
+      when(
+        framework.eval(
+          'RiverpodDevtool.instance.getCache("old:result")',
+          isAlive: alive,
+        ),
+      ).thenAnswer((_) async => ByteVariable(list.ref));
+      when(
+        core.instance(list.ref, isAlive: alive),
+      ).thenAnswer((_) async => ByteVariable(list));
+      when(
+        core.instance(value.ref, isAlive: alive),
+      ).thenAnswer((_) async => ByteVariable(value));
+      expect(
+        await child.read(factory, isAlive: alive),
+        isA<ByteVariable<VmInstance>>(),
+      );
+      when(
+        framework.eval(
+          'RiverpodDevtool.instance.getCache("old:result")',
+          isAlive: alive,
+        ),
+      ).thenAnswer((_) async => ByteError(const ExpiredDevtoolSessionType()));
+      final remotelyExpired = await child.read(factory, isAlive: alive);
+      expect(
+        (remotelyExpired as ByteError).error,
+        isA<ExpiredDevtoolSessionType>(),
+      );
+      factory.sessionId = 'new';
+      for (final cached in [object, child]) {
+        final result = await cached.read(factory, isAlive: alive);
+        expect(result, isA<ByteError<VmInstance>>());
+        expect((result as ByteError).error, isA<ExpiredDevtoolSessionType>());
+        expect(
+          await cached.readRef(factory, alive),
+          isA<ByteError<VmInstanceRef>>(),
+        );
+      }
+      verify(core.instance(value.ref, isAlive: alive)).called(1);
+    });
+
     test('keeps the cached ref across non-expired errors', () async {
       final ref = VmInstanceRef.string('value', id: 'cached-ref');
       var fetchCount = 0;

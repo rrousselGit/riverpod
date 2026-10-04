@@ -9,12 +9,42 @@ sealed class CachedObject {
 
   VmInstanceRef? _lastKnownRef;
 
+  String? get _sessionId => null;
+  bool get _reuseRef => true;
+
+  bool _sessionExpired(EvalFactory eval) {
+    final sessionId = _sessionId;
+    return sessionId != null && sessionId != eval.sessionId;
+  }
+
+  Future<ByteErrorType?> _validateCachedSession(
+    EvalFactory eval,
+    Disposable isAlive,
+  ) async {
+    if (_sessionExpired(eval)) return const ExpiredDevtoolSessionType();
+    if (_sessionId == null || _lastKnownRef == null) return null;
+    // Cached children must still validate their root's remote lease, without
+    // rerunning getters just to recover an already inspected value.
+    var root = this;
+    while (root is DerivedCachedObject) {
+      root = root.from;
+    }
+    if (root == this) return null;
+    return switch (await root.readRef(eval, isAlive)) {
+      ByteError(:final error) => error,
+      ByteVariable() => null,
+    };
+  }
+
   Future<Byte<VmInstance>> read(
     EvalFactory eval, {
     required Disposable isAlive,
   }) async {
+    final sessionError = await _validateCachedSession(eval, isAlive);
+    if (sessionError != null) return ByteError(sessionError);
     VmInstanceRef ref;
-    if (_lastKnownRef case final lastKnownRef?) {
+    if (_reuseRef && _lastKnownRef != null) {
+      final lastKnownRef = _lastKnownRef!;
       ref = lastKnownRef;
     } else {
       final byte = await _fetchInstance(eval, isAlive);
@@ -59,9 +89,14 @@ sealed class CachedObject {
     );
   }
 
-  Future<Byte<VmInstanceRef>> readRef(EvalFactory eval, Disposable isAlive) {
-    if (_lastKnownRef case final lastKnownRef?) {
-      return Future.value(ByteVariable(lastKnownRef));
+  Future<Byte<VmInstanceRef>> readRef(
+    EvalFactory eval,
+    Disposable isAlive,
+  ) async {
+    final sessionError = await _validateCachedSession(eval, isAlive);
+    if (sessionError != null) return ByteError(sessionError);
+    if (_reuseRef && _lastKnownRef != null) {
+      return ByteVariable(_lastKnownRef!);
     }
 
     return _fetchInstance(eval, isAlive);
@@ -122,6 +157,17 @@ class RootCachedObject extends CachedObject {
   final CacheId id;
 
   @override
+  String? get _sessionId {
+    final separator = id.value.indexOf(':');
+    return separator == -1 ? null : id.value.substring(0, separator);
+  }
+
+  // Session-owned roots must check the application-side lease even if the VM
+  // object ID is still valid. Expired terminal expressions are never replayed.
+  @override
+  bool get _reuseRef => _sessionId == null;
+
+  @override
   Future<Byte<VmInstanceRef>> _fetchInstance(
     EvalFactory eval,
     Disposable isAlive,
@@ -169,12 +215,18 @@ abstract class DerivedCachedObject extends CachedObject {
     CachedObject mapObject,
     int index,
   ) = _DelegatingDerivedCachedObject.mapAssociationValue;
+
+  CachedObject get from;
+
+  @override
+  String? get _sessionId => from._sessionId;
 }
 
 final class _GetterCachedObject extends DerivedCachedObject {
   _GetterCachedObject(this.from, {required this.name, required this.uri})
     : super(label: name);
 
+  @override
   final CachedObject from;
   final String name;
   final Uri uri;
@@ -290,6 +342,7 @@ final class _DelegatingDerivedCachedObject extends DerivedCachedObject {
     );
   }
 
+  @override
   final CachedObject from;
   final Byte<VmInstanceRef> Function(VmInstance parent)
   obtainRefFromParentInstance;
