@@ -3,6 +3,7 @@
 import 'dart:math' as math;
 
 import 'package:collection/collection.dart';
+import 'package:devtools_app_shared/service.dart' show CancelledException;
 import 'package:devtools_app_shared/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -181,15 +182,18 @@ final class FoldedFrame {
 }
 
 class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
+  List<FoldedFrame>? _lastFrames;
   @override
   Future<List<FoldedFrame>> build() async {
     // On hot-restart, clear the frames list.
     ref.watch(hotRestartEventProvider);
-
-    final service = await ref.watch(vmServiceProvider.future);
-
-    final riverpodEval = await ref.watch(riverpodEvalProvider.future);
+    _lastFrames = null;
     final isAlive = ref.disposable();
+    final serviceFuture = ref.watch(vmServiceProvider.future);
+    final evalFuture = ref.watch(riverpodEvalProvider.future);
+    final service = await serviceFuture;
+    final riverpodEval = await evalFuture;
+    if (isAlive.disposed) throw CancelledException();
 
     final sub = service.onNotification
         // Using asyncMap to ensure that notifications are processed in order
@@ -204,29 +208,17 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
               );
           }
         })
-        .listen((_) {});
+        .listen(
+          (_) {},
+          onError: (Object error, StackTrace stackTrace) {
+            if (isAlive.disposed || error is CancelledException) return;
+            state = AsyncError(error, stackTrace);
+          },
+        );
     ref.onDispose(sub.cancel);
 
     final rawFrames = await _evalFrames(riverpodEval, isAlive);
-    final firstFrame = rawFrames.firstOrNull;
-    if (firstFrame == null) return const [];
-
-    final mappedFrames = List.filled(
-      rawFrames.length,
-      FoldedFrame(frame: firstFrame, previous: null, newFrames: rawFrames),
-    );
-    for (var i = 1; i < rawFrames.length; i++) {
-      final previous = mappedFrames[i - 1];
-      final rawFrame = rawFrames[i];
-
-      mappedFrames[i] = FoldedFrame(
-        frame: rawFrame,
-        previous: previous,
-        newFrames: rawFrames,
-      );
-    }
-
-    return mappedFrames;
+    return _lastFrames = foldFrames(const [], rawFrames);
   }
 
   Future<List<Frame>> _evalFrames(
@@ -235,12 +227,14 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
     int startIndex = 0,
   }) async {
     final code = encodeList(
-      'RiverpodDevtool.instance.frames.sublist($startIndex)',
+      'RiverpodDevtool.instance.frames.skip('
+      'RiverpodDevtool.instance.frames.length == 1 ? 0 : $startIndex)',
       (e, path) => "$e.toBytes(path: '$path')",
       path: 'root',
     );
 
     final instanceByte = await eval.evalInstance(code, isAlive: isAlive);
+    if (isAlive.disposed) throw CancelledException();
     // TODO remove require
     final instance = instanceByte.require.instance;
     final map = Map.fromEntries(
@@ -260,35 +254,42 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
     required Eval riverpodEval,
     required Disposable isAlive,
   }) async {
-    final frames = state.value ?? await future;
-    final alreadyHasNewFrame = notification.offset <= frames.length - 1;
+    final frames = state.value ?? _lastFrames ?? await future;
+    final replacesHistory = notification.offset == 0;
+    final alreadyHasNewFrame =
+        !state.hasError &&
+        !replacesHistory &&
+        notification.offset <= frames.length - 1;
     if (alreadyHasNewFrame) return;
 
     final newFrames = await _evalFrames(
       riverpodEval,
       isAlive,
-      startIndex: math.max(frames.length, 0),
+      startIndex: replacesHistory ? 0 : frames.length,
     );
 
-    final previousFrames = frames;
-    FoldedFrame? lastFrame;
-    state = AsyncData(
-      List.generate(previousFrames.length + newFrames.length, (index) {
-        FoldedFrame result;
-        if (index < previousFrames.length) {
-          result = previousFrames[index];
-        } else {
-          result = FoldedFrame(
-            frame: newFrames[index - previousFrames.length],
-            previous: lastFrame,
-            newFrames: newFrames,
-          );
-        }
+    state = AsyncData(_lastFrames = foldFrames(frames, newFrames));
+  }
+}
 
-        return lastFrame = result;
-      }, growable: false),
+/// A frame at index zero replaces the baseline when history is not retained.
+List<FoldedFrame> foldFrames(
+  List<FoldedFrame> previousFrames,
+  List<Frame> newFrames,
+) {
+  final result = newFrames.firstOrNull?.index == 0
+      ? <FoldedFrame>[]
+      : [...previousFrames];
+  for (final frame in newFrames) {
+    result.add(
+      FoldedFrame(
+        frame: frame,
+        previous: result.lastOrNull,
+        newFrames: newFrames,
+      ),
     );
   }
+  return result;
 }
 
 class FrameStepper extends HookConsumerWidget {

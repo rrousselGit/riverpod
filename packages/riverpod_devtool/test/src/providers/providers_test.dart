@@ -91,6 +91,154 @@ ProviderContainer _createContainer([
 void main() {
   group('provider state', () {
     test(
+      'selection and origins recover when snapshots discard providers',
+      () async {
+        List<FoldedFrame> snapshot(List<String> ids) => foldFrames(const [], [
+          Frame.test(
+            index: 0,
+            events: [
+              for (final id in ids)
+                _addEvent(elementId: id, originId: id, originLabel: id),
+            ],
+          ),
+        ]);
+        final container = _createContainer([
+          framesProvider.overrideWithBuild((ref, self) => snapshot(['a', 'b'])),
+        ]);
+        await _settleProviders(container);
+        final selected = container.listen(
+          selectedProviderProvider(''),
+          (_, _) {},
+        );
+        final origins = container.listen(
+          allDiscoveredOriginsProvider,
+          (_, _) {},
+        );
+        addTearDown(selected.close);
+        addTearDown(origins.close);
+        await pumpEventQueue();
+        expect(selected.read()?.element.provider.elementId, 'a');
+
+        container.read(framesProvider.notifier).state = AsyncData(
+          snapshot(['b']),
+        );
+        await pumpEventQueue();
+        expect(selected.read()?.element.provider.elementId, 'b');
+        expect(origins.read(), {'b'});
+
+        container.read(framesProvider.notifier).state = AsyncData(snapshot([]));
+        await pumpEventQueue();
+        expect(selected.read(), isNull);
+        expect(container.read(selectedFrameProvider), isNull);
+        expect(origins.read(), isEmpty);
+      },
+    );
+
+    test(
+      'stopping history while an old frame is selected follows the snapshot',
+      () async {
+        final history = foldFrames(const [], [
+          Frame.test(
+            index: 0,
+            events: [
+              _addEvent(elementId: 'old', originId: 'old', originLabel: 'Old'),
+            ],
+          ),
+          Frame.test(
+            index: 1,
+            events: [
+              ProviderElementDisposeEvent(
+                provider: ProviderMeta.test(elementId: 'old', originId: 'old'),
+              ),
+              _addEvent(
+                elementId: 'current',
+                originId: 'current',
+                originLabel: 'Current',
+              ),
+            ],
+          ),
+        ]);
+        final container = _createContainer([
+          framesProvider.overrideWithBuild((ref, self) => history),
+        ]);
+        await _settleProviders(container);
+        final selected = container.listen(
+          selectedProviderProvider(''),
+          (_, _) {},
+        );
+        addTearDown(selected.close);
+        container.read(selectedFrameIdProvider.notifier).state =
+            history.first.id;
+        await pumpEventQueue();
+        expect(selected.read()?.element.provider.elementId, 'old');
+
+        final snapshot = foldFrames(history, [
+          Frame.test(
+            index: 0,
+            events: [
+              _updateEvent(
+                elementId: 'current',
+                originId: 'current',
+                originLabel: 'Current',
+              ),
+            ],
+          ),
+        ]);
+        container.read(framesProvider.notifier).state = AsyncData(snapshot);
+        await pumpEventQueue();
+        expect(container.read(selectedFrameProvider), same(snapshot.single));
+        expect(selected.read()?.element.provider.elementId, 'current');
+        expect(container.read(allDiscoveredOriginsProvider), {'current'});
+      },
+    );
+
+    test(
+      'latest snapshots update the selected provider without history',
+      () async {
+        List<FoldedFrame> snapshot(String stateId) => foldFrames(const [], [
+          Frame.test(
+            index: 0,
+            events: [
+              _updateEvent(
+                elementId: 'counter',
+                originId: 'counter-origin',
+                originLabel: 'Counter',
+                stateId: stateId,
+              ),
+            ],
+          ),
+        ]);
+
+        final container = _createContainer([
+          framesProvider.overrideWithBuild((ref, self) => snapshot('initial')),
+        ]);
+        await _settleProviders(container);
+        final updates = <CacheId?>[];
+        final selected = container.listen(
+          selectedProviderProvider(''),
+          (_, next) => updates.add(next?.element.state.state.id),
+        );
+        addTearDown(selected.close);
+        await pumpEventQueue();
+        expect(selected.read()?.element.state.state.id, CacheId('initial'));
+        updates.clear();
+
+        for (final stateId in ['second', 'third']) {
+          container.read(framesProvider.notifier).state = AsyncData(
+            snapshot(stateId),
+          );
+          await pumpEventQueue();
+          expect(
+            container.read(selectedFrameProvider),
+            same(container.read(framesProvider).requireValue.single),
+          );
+          expect(selected.read()?.element.state.state.id, CacheId(stateId));
+        }
+        expect(updates, [CacheId('second'), CacheId('third')]);
+      },
+    );
+
+    test(
       'allDiscoveredOriginsProvider tracks unique origins from add events',
       () async {
         final frames = _foldedFrames([
@@ -339,7 +487,7 @@ void main() {
     );
 
     test(
-      'filteredProvidersProvider throws when an element origin was never discovered',
+      'filteredProvidersProvider discovers origins from snapshot update events',
       () async {
         final container = _createContainer([
           framesProvider.overrideWithBuild(
@@ -360,16 +508,13 @@ void main() {
 
         await _settleProviders(container);
 
+        final origins = container.read(
+          filteredProvidersProvider((search: '', frame: FrameId(0))),
+        );
+        expect(origins.keys, [internals.OriginId('origin-ghost')]);
         expect(
-          () => container.read(
-            filteredProvidersProvider((search: '', frame: FrameId(0))),
-          ),
-          throwsA(
-            predicate(
-              (error) => '$error'.contains('discovered origins'),
-              'an error mentioning discovered origins',
-            ),
-          ),
+          origins.values.single.elements.single.element.provider.elementId,
+          internals.ElementId('ghost-1'),
         );
       },
     );

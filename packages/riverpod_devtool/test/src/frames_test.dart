@@ -39,6 +39,29 @@ ProviderElementDisposeEvent disposeEvent(String elementId) {
 }
 
 void main() {
+  test('snapshots replace history and recording appends to the baseline', () {
+    final initial = foldFrames(const [], [
+      Frame.test(index: 0, events: [addEvent('old')]),
+    ]);
+    final snapshot = foldFrames(initial, [
+      Frame.test(index: 0, events: [addEvent('current')]),
+    ]);
+    expect(snapshot, hasLength(1));
+    expect(snapshot.single.previous, isNull);
+    expect(snapshot.single.elements.keys, ['current']);
+
+    final history = foldFrames(snapshot, [
+      Frame.test(index: 1, events: [updateEvent('current')]),
+    ]);
+    expect(history, hasLength(2));
+    expect(history.last.previous, same(snapshot.single));
+
+    final stopped = foldFrames(history, [Frame.test(index: 0, events: [])]);
+    expect(stopped, hasLength(1));
+    expect(stopped.single.elements, isEmpty);
+    expect(stopped.single.previous, isNull);
+  });
+
   group('FoldedFrame', () {
     test('requires the first frame to start at index zero', () {
       expect(

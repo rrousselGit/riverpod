@@ -78,13 +78,19 @@ class AllDiscoveredOriginsNotifier extends Notifier<Set<internals.OriginId>> {
     ref.listen(framesProvider, fireImmediately: true, (previous, next) {
       if (next.isLoading) return;
 
-      final setBuilder = SetBuilder<internals.OriginId>(state);
+      // Discard origins whose creation/update events disappeared when history
+      // was compacted. Retained historical frames still contribute their origins.
+      final setBuilder = SetBuilder<internals.OriginId>({});
 
       final frames = next.value ?? const [];
 
       for (final frame in frames) {
         for (final event in frame.frame.events) {
-          if (event case ProviderElementAddEvent(:final provider)) {
+          // A compacted snapshot may contain the latest update without its
+          // original creation event.
+          if (event
+              case ProviderElementAddEvent(:final provider) ||
+                  ProviderElementUpdateEvent(:final provider)) {
             setBuilder.add(provider.origin.id);
           }
         }
