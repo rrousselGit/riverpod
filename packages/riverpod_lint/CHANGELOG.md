@@ -1,5 +1,7 @@
 ## Unreleased minor
 
+- Updated widget assists to recognize imports from `material_ui` and
+  `cupertino_ui`.
 - Added `prefer_keep_alive_annotation`, which warns when the body of a generated
   provider starts with `ref.keepAlive()`, and suggests `@Riverpod(keepAlive: true)`
   instead (#3855).
@@ -415,4 +417,3 @@ Fix quick-fix for provider_dependencies
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-
