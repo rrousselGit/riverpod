@@ -1,33 +1,24 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
-// 125:       // ignore: riverpod_lint/provider_dependencies
-// 126:       <>[
-// 127:         <>generatedRoot<>,
-// 128:       <>]<>,
-// 129: )
+// 223:   // ignore: riverpod_lint/provider_dependencies
+// 224:   @Dependencies(<>[<>dep<>]<>)
+// 225:   int build() => 0;
 // ```
+// class MemberDependencies {
+//   // ignore: riverpod_lint/provider_dependencies
+// -   @Dependencies([dep])
+// +
+//   int build() => 0;
 // }
-//
-// - @Riverpod(
-// -   dependencies:
-// -       // The dependency is redundant because it is not a scoped provider
-// -       // ignore: riverpod_lint/provider_dependencies
-// -       [
-// -         generatedRoot,
-// -       ],
-// - )
-// + @riverpod
-// int watchGeneratedRootAndContainsDependency(
-//   Ref ref,
 // ```
 // ignore_for_file: unused_field
 
 @TestFor.provider_dependencies
 library;
 
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/experimental/scope.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -35,7 +26,7 @@ import '../../test_annotation.dart';
 import 'another.dart' as import_alias;
 import 'another.dart';
 
-part 'missing_dependencies2.provider_dependencies-126.fix.g.dart';
+part 'missing_dependencies2.provider_dependencies-224.fix.g.dart';
 
 @Riverpod(dependencies: [])
 int dep(Ref ref) => 0;
@@ -127,7 +118,12 @@ int watchGeneratedScopedAndContainsDependency(Ref ref) {
   return ref.watch(generatedScopedProvider);
 }
 
-@riverpod
+@Riverpod(
+  dependencies:
+      // The dependency is redundant because it is not a scoped provider
+      // ignore: riverpod_lint/provider_dependencies
+      [generatedRoot],
+)
 int watchGeneratedRootAndContainsDependency(Ref ref) {
   return ref.watch(generatedRootProvider);
 }
@@ -216,7 +212,7 @@ class RootDependenciesClass {
 // the class too:
 class MemberDependencies {
   // ignore: riverpod_lint/provider_dependencies
-  @Dependencies([dep])
+
   int build() => 0;
 }
 

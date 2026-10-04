@@ -5,11 +5,11 @@ import 'dart:math' as math;
 import 'package:collection/collection.dart';
 import 'package:devtools_app_shared/service.dart' show CancelledException;
 import 'package:devtools_app_shared/utils.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 // ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
+import 'package:material_ui/material_ui.dart';
 
 import 'collection.dart';
 import 'elements.dart';

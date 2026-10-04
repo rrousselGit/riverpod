@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'missing_dependencies2.provider_dependencies-223.fix.dart';
+part of 'missing_dependencies2.provider_dependencies-264.fix.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -1297,9 +1297,13 @@ final class FooProvider extends $FunctionalProvider<int, int, int>
         retry: null,
         name: r'fooProvider',
         isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
+        dependencies: <ProviderOrFamily>[depProvider],
+        $allTransitiveDependencies: <ProviderOrFamily>[
+          FooProvider.$allTransitiveDependencies0,
+        ],
       );
+
+  static final $allTransitiveDependencies0 = depProvider;
 
   @override
   String debugGetCreateSourceHash() => _$fooHash();
@@ -1323,7 +1327,7 @@ final class FooProvider extends $FunctionalProvider<int, int, int>
   }
 }
 
-String _$fooHash() => r'a390b7b969bb0eec183426bfc85bec32750e9475';
+String _$fooHash() => r'2153ac5ba54fd4c4a176d97a763e85e074f589c1';
 
 @ProviderFor(crossFileDependency)
 final crossFileDependencyProvider = CrossFileDependencyProvider._();

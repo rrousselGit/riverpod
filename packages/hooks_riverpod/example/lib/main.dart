@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/legacy.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   runApp(

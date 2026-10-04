@@ -1,29 +1,29 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
-// 279: // ignore: riverpod_lint/provider_dependencies
-// 280: <>class <>WidgetDependencies2 <>extends <>StatelessWidget <>{
-// 281:   <>@<>override
-// 282:   <>Widget <>build<>(<>BuildContext <>context<>) <>{
-// 283:     <>return <>WidgetDependencies<>(<>)<>;
-// 284:   <>}
-// 285: <>}
+// 327: // ignore: riverpod_lint/provider_dependencies
+// 328: <>class <>FindStateFromClassList <>extends <>StatefulWidget <>{
+// 329:   <>const <>FindStateFromClassList<>(<>{<>super<>.<>key<>}<>)<>;
+//
+// 331:   <>@<>override
+// 332:   <>State<><<>FindStateFromClassList<>> <>createState<>(<>) <>=> <>_Stateful3State<>(<>)<>;
+// 333: <>}
 // ```
 //
 // // ignore: riverpod_lint/provider_dependencies
-// - class WidgetDependencies2 extends StatelessWidget {
+// - class FindStateFromClassList extends StatefulWidget {
 // + @Dependencies([dep])
-// + class WidgetDependencies2 extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
+// + class FindStateFromClassList extends StatefulWidget {
+//   const FindStateFromClassList({super.key});
+//
 // ```
 // ignore_for_file: unused_field
 
 @TestFor.provider_dependencies
 library;
 
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/experimental/scope.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -31,7 +31,7 @@ import '../../test_annotation.dart';
 import 'another.dart' as import_alias;
 import 'another.dart';
 
-part 'missing_dependencies2.provider_dependencies-280.fix.g.dart';
+part 'missing_dependencies2.provider_dependencies-328.fix.g.dart';
 
 @Riverpod(dependencies: [])
 int dep(Ref ref) => 0;
@@ -274,7 +274,6 @@ class WidgetDependencies extends StatelessWidget {
 }
 
 // ignore: riverpod_lint/provider_dependencies
-@Dependencies([dep])
 class WidgetDependencies2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -322,6 +321,7 @@ class _Stateful2State extends State<Stateful2> {
 }
 
 // ignore: riverpod_lint/provider_dependencies
+@Dependencies([dep])
 class FindStateFromClassList extends StatefulWidget {
   const FindStateFromClassList({super.key});
 

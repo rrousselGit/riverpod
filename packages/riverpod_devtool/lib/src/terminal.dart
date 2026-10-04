@@ -2,10 +2,10 @@ import 'dart:math' as math;
 
 import 'package:collection/collection.dart';
 import 'package:devtools_app_shared/utils.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/experimental/mutation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'object.dart';
 import 'state_inspector/inspector.dart';

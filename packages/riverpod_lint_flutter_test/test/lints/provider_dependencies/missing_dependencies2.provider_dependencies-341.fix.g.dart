@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'missing_dependencies2.provider_dependencies-92.fix.dart';
+part of 'missing_dependencies2.provider_dependencies-341.fix.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -539,17 +539,14 @@ final class WatchGeneratedScopedButMissingDependenciesProvider
         retry: null,
         name: r'watchGeneratedScopedButMissingDependenciesProvider',
         isAutoDispose: true,
-        dependencies: <ProviderOrFamily>[depProvider, generatedScopedProvider],
+        dependencies: <ProviderOrFamily>[depProvider],
         $allTransitiveDependencies: <ProviderOrFamily>[
           WatchGeneratedScopedButMissingDependenciesProvider
               .$allTransitiveDependencies0,
-          WatchGeneratedScopedButMissingDependenciesProvider
-              .$allTransitiveDependencies1,
         ],
       );
 
   static final $allTransitiveDependencies0 = depProvider;
-  static final $allTransitiveDependencies1 = generatedScopedProvider;
 
   @override
   String debugGetCreateSourceHash() =>
@@ -575,7 +572,7 @@ final class WatchGeneratedScopedButMissingDependenciesProvider
 }
 
 String _$watchGeneratedScopedButMissingDependenciesHash() =>
-    r'809c783d080118c12c34cb6cc54a974d98681cd9';
+    r'fbbb5f1ea3725a7554dc05073f47a6b9ce5d913d';
 
 @ProviderFor(watchRootButMissingDependencies)
 final watchRootButMissingDependenciesProvider =
@@ -1341,9 +1338,16 @@ final class CrossFileDependencyProvider
         retry: null,
         name: r'crossFileDependencyProvider',
         isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
+        dependencies: <ProviderOrFamily>[anotherNonEmptyScopedProvider],
+        $allTransitiveDependencies: <ProviderOrFamily>[
+          CrossFileDependencyProvider.$allTransitiveDependencies0,
+          CrossFileDependencyProvider.$allTransitiveDependencies1,
+        ],
       );
+
+  static final $allTransitiveDependencies0 = anotherNonEmptyScopedProvider;
+  static final $allTransitiveDependencies1 =
+      AnotherNonEmptyScopedProvider.$allTransitiveDependencies0;
 
   @override
   String debugGetCreateSourceHash() => _$crossFileDependencyHash();
@@ -1368,4 +1372,4 @@ final class CrossFileDependencyProvider
 }
 
 String _$crossFileDependencyHash() =>
-    r'3ab740fe1903f2c126412df43ee34eed87a6f4fe';
+    r'11e0df2b10bf3444e1718dfd2e3e1038b7ed48af';

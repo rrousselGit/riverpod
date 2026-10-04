@@ -143,4 +143,24 @@ void main() {
       },
     );
   });
+
+  test('throws a clear StateError once the backing subscription is closed', () {
+    final container = ProviderContainer.test();
+    final sub = container.listen(counterProvider.listenable, (_, _) {});
+    final listenable = sub.read();
+
+    sub.close();
+
+    final matcher = throwsA(
+      isA<StateError>().having(
+        (e) => e.message,
+        'message',
+        'The subscription backing this `.listenable` was closed. '
+            'Obtain `.listenable` through `ref.watch`, `ref.listen` or '
+            '`container.listen`, not `read`.',
+      ),
+    );
+    expect(() => listenable.value, matcher);
+    expect(() => listenable.addListener(() {}), matcher);
+  });
 }

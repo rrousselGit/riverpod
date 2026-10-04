@@ -1,8 +1,8 @@
 import 'package:devtools_app_shared/utils.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/misc.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:vm_service/vm_service.dart';
 
 import '../frame_view.dart';

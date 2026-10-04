@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CounterNotifier extends StateNotifier<int> {
   CounterNotifier() : super(0);

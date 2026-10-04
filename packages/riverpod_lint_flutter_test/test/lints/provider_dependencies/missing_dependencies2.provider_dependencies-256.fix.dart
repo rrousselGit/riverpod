@@ -1,24 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
-// 230:   // ignore: riverpod_lint/provider_dependencies
-// 231:   @Dependencies(<>[<>]<>)
-// 232:   int build(WidgetRef ref) {
+// 255: // ignore: riverpod_lint/provider_dependencies
+// 256: <>void <>fn2<>(<>) <>{
+// 257:   <>fn<>(<>)<>;
+// 258: <>}
 // ```
-// class CanUpdateMultipleDependenciesAtOnce {
-//   // ignore: riverpod_lint/provider_dependencies
-// -   @Dependencies([])
-// +   @Dependencies([dep])
-//   int build(WidgetRef ref) {
-//     ref.watch(depProvider);
+//
+// // ignore: riverpod_lint/provider_dependencies
+// - void fn2() {
+// + @Dependencies([dep])
+// + void fn2() {
+//   fn();
+// }
 // ```
 // ignore_for_file: unused_field
 
 @TestFor.provider_dependencies
 library;
 
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/experimental/scope.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -26,7 +28,7 @@ import '../../test_annotation.dart';
 import 'another.dart' as import_alias;
 import 'another.dart';
 
-part 'missing_dependencies2.provider_dependencies-231.fix.g.dart';
+part 'missing_dependencies2.provider_dependencies-256.fix.g.dart';
 
 @Riverpod(dependencies: [])
 int dep(Ref ref) => 0;
@@ -220,7 +222,7 @@ class MemberDependencies {
 @Dependencies([])
 class CanUpdateMultipleDependenciesAtOnce {
   // ignore: riverpod_lint/provider_dependencies
-  @Dependencies([dep])
+  @Dependencies([])
   int build(WidgetRef ref) {
     ref.watch(depProvider);
     return 0;
@@ -244,6 +246,7 @@ class RiverpodDependencies extends _$RiverpodDependencies {
 void fn() {}
 
 // ignore: riverpod_lint/provider_dependencies
+@Dependencies([dep])
 void fn2() {
   fn();
 }

@@ -1,15 +1,24 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
-// 61: // ignore: riverpod_lint/provider_dependencies
-// 62: @Riverpod(dependencies: <>[<>]<>)
-// 63: int watchGeneratedScopedButEmptyDependencies(
+// 126:       // ignore: riverpod_lint/provider_dependencies
+// 127:       <>[
+// 128:         <>generatedRoot<>,
+// 129:       <>]<>,
+// 130: )
 // ```
+// }
 //
-// // ignore: riverpod_lint/provider_dependencies
-// - @Riverpod(dependencies: [])
-// + @Riverpod(dependencies: [generatedScoped])
-// int watchGeneratedScopedButEmptyDependencies(
+// - @Riverpod(
+// -   dependencies:
+// -       // The dependency is redundant because it is not a scoped provider
+// -       // ignore: riverpod_lint/provider_dependencies
+// -       [
+// -         generatedRoot,
+// -       ],
+// - )
+// + @riverpod
+// int watchGeneratedRootAndContainsDependency(
 //   Ref ref,
 // ```
 // ignore_for_file: unused_field
@@ -17,8 +26,8 @@
 @TestFor.provider_dependencies
 library;
 
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/experimental/scope.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -26,7 +35,7 @@ import '../../test_annotation.dart';
 import 'another.dart' as import_alias;
 import 'another.dart';
 
-part 'missing_dependencies2.provider_dependencies-62.fix.g.dart';
+part 'missing_dependencies2.provider_dependencies-127.fix.g.dart';
 
 @Riverpod(dependencies: [])
 int dep(Ref ref) => 0;
@@ -70,7 +79,7 @@ int watchScopedButEmptyDependencies(Ref ref) {
 }
 
 // ignore: riverpod_lint/provider_dependencies
-@Riverpod(dependencies: [generatedScoped])
+@Riverpod(dependencies: [])
 int watchGeneratedScopedButEmptyDependencies(Ref ref) {
   return ref.watch(generatedScopedProvider);
 }
@@ -118,12 +127,7 @@ int watchGeneratedScopedAndContainsDependency(Ref ref) {
   return ref.watch(generatedScopedProvider);
 }
 
-@Riverpod(
-  dependencies:
-      // The dependency is redundant because it is not a scoped provider
-      // ignore: riverpod_lint/provider_dependencies
-      [generatedRoot],
-)
+@riverpod
 int watchGeneratedRootAndContainsDependency(Ref ref) {
   return ref.watch(generatedRootProvider);
 }

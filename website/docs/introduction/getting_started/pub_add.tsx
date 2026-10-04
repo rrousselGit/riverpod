@@ -17,17 +17,17 @@ export function buildDeps({
   return result;
 }
 
-const raw = buildDeps({ deps: ["flutter_riverpod"] });
+const raw = buildDeps({ deps: ["material_ui", "flutter_riverpod"] });
 
 const codegen = buildDeps({
-  deps: ["flutter_riverpod", "riverpod_annotation"],
+  deps: ["material_ui", "flutter_riverpod", "riverpod_annotation"],
   devDeps: ["riverpod_generator", "build_runner"],
 });
 
-const hooks = buildDeps({ deps: ["hooks_riverpod", "flutter_hooks"] });
+const hooks = buildDeps({ deps: ["material_ui", "hooks_riverpod", "flutter_hooks"] });
 
 const hooksCodegen = buildDeps({
-  deps: ["hooks_riverpod", "flutter_hooks", "riverpod_annotation"],
+  deps: ["material_ui", "hooks_riverpod", "flutter_hooks", "riverpod_annotation"],
   devDeps: ["riverpod_generator", "build_runner"],
 });
 
