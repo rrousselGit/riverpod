@@ -11,6 +11,22 @@ final class _TestNotifier extends Notifier<int> {
   void increment() => state++;
 }
 
+final class _ManualVsync implements Vsync {
+  Task? refreshTask;
+
+  @override
+  void Function()? scheduleRefresh(Task task) {
+    refreshTask = task;
+    return () => refreshTask = null;
+  }
+
+  @override
+  void Function()? scheduleDispose(Task task) {
+    Future.microtask(task.call);
+    return null;
+  }
+}
+
 Future<void> _waitForDevtoolEvent() => Future<void>.delayed(Duration.zero);
 
 void main() {
@@ -155,6 +171,115 @@ void main() {
       debugTrackProviderHistory = false;
       await _waitForDevtoolEvent();
       devtool.frames.clear();
+    });
+
+    for (final recording in [false, true]) {
+      test('batches dependent updates with history recording $recording', () {
+        fakeAsync((async) {
+          debugTrackProviderHistory = recording;
+          final notifications = spyPostEvent();
+          addTearDown(notifications.dispose);
+          final container = ProviderContainer();
+          final counter = NotifierProvider<_TestNotifier, int>(
+            _TestNotifier.new,
+          );
+          final complex = Provider((ref) => ref.watch(counter) * 2);
+          container.listen(complex, (_, _) {});
+          async.flushMicrotasks();
+          expect(devtool.frames, hasLength(1));
+          expect(notifications.logs, hasLength(1));
+
+          for (var value = 1; value <= 2; value++) {
+            final previousFrame = devtool.frames.last;
+            container.read(counter.notifier).increment();
+            async.flushMicrotasks();
+            // The dependent rebuild is scheduled, but has not run yet.
+            expect(devtool.frames.last, same(previousFrame));
+            expect(notifications.logs, hasLength(value));
+            async.elapse(Duration.zero);
+
+            expect(devtool.frames, hasLength(recording ? value + 1 : 1));
+            expect(notifications.logs, hasLength(value + 1));
+            final updates = devtool.frames.last.events
+                .whereType<ProviderElementUpdateEvent>();
+            expect(updates.map((event) => event.next.state), [
+              value,
+              value * 2,
+            ]);
+          }
+          container.dispose();
+          async.flushMicrotasks();
+        });
+      });
+    }
+
+    test('waits for every container contributing to the frame', () {
+      fakeAsync((async) {
+        debugTrackProviderHistory = true;
+        final first = ProviderContainer();
+        final second = ProviderContainer();
+        final firstVsync = _ManualVsync();
+        final secondVsync = _ManualVsync();
+        first.scheduler.flutterVsyncs.add(firstVsync);
+        second.scheduler.flutterVsyncs.add(secondVsync);
+        final counter = NotifierProvider<_TestNotifier, int>(_TestNotifier.new);
+        final complex = Provider((ref) => ref.watch(counter) * 2);
+        for (final container in [first, second]) {
+          container.listen(complex, (_, _) {});
+        }
+        async.flushMicrotasks();
+        expect(devtool.frames, hasLength(1));
+
+        for (final container in [first, second]) {
+          container.read(counter.notifier).increment();
+        }
+        async.flushMicrotasks();
+        firstVsync.refreshTask!.call();
+        async.flushMicrotasks();
+        expect(devtool.frames, hasLength(1));
+
+        secondVsync.refreshTask!.call();
+        async.flushMicrotasks();
+        expect(devtool.frames, hasLength(2));
+        final updates = devtool.frames.last.events
+            .whereType<ProviderElementUpdateEvent>();
+        expect(updates.map((event) => event.next.state), [1, 1, 2, 2]);
+        first.dispose();
+        second.dispose();
+        async.flushMicrotasks();
+      });
+    });
+
+    test('container disposal releases a frame waiting on rebuilds', () {
+      fakeAsync((async) {
+        final container = ProviderContainer();
+        final counter = NotifierProvider<_TestNotifier, int>(_TestNotifier.new);
+        final complex = Provider((ref) => ref.watch(counter) * 2);
+        container.listen(complex, (_, _) {});
+        async.flushMicrotasks();
+        final initialFrame = devtool.frames.single;
+
+        container.read(counter.notifier).increment();
+        async.flushMicrotasks();
+        expect(devtool.frames.single, same(initialFrame));
+        container.dispose();
+        async.flushMicrotasks();
+        expect(devtool.frames.single.events, isEmpty);
+
+        final next = ProviderContainer();
+        next.read(Provider((ref) => 42));
+        async.flushMicrotasks();
+        expect(
+          devtool.frames.single.events
+              .whereType<ProviderElementAddEvent>()
+              .single
+              .state
+              .state,
+          42,
+        );
+        next.dispose();
+        async.flushMicrotasks();
+      });
     });
 
     test('keeps current states and releases disposed providers', () async {

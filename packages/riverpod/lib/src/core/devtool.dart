@@ -86,6 +86,7 @@ class RiverpodDevtool {
   static final instance = RiverpodDevtool._();
 
   Frame? _pendingFrame;
+  final _pendingFrameSchedulers = <ProviderScheduler>{};
 
   final _uniqueOrigins = Expando<String>();
   final _origins = <OriginId, WeakReference<ProviderOrFamily>>{};
@@ -185,10 +186,25 @@ class RiverpodDevtool {
         debugPostEvent(notification);
       }
 
-      // Container disposal must not cancel the final disposal events.
-      Future.microtask(onFrame);
+      // Dependent providers rebuild through the scheduler, which may wait for
+      // Flutter's next frame. Publish after those updates have joined this frame.
+      // Scheduler disposal completes pending futures, so final disposal events
+      // are still delivered even if their container is gone.
+      Future.microtask(() async {
+        while (true) {
+          final pending = [
+            for (final scheduler in _pendingFrameSchedulers)
+              ?scheduler.pendingFuture,
+          ];
+          if (pending.isEmpty) break;
+          await Future.wait(pending);
+        }
+        _pendingFrameSchedulers.clear();
+        onFrame();
+      });
     }
 
+    _pendingFrameSchedulers.add(container.scheduler);
     _pendingFrame!.events.add(event);
   }
 
