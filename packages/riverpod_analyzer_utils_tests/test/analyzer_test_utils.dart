@@ -48,6 +48,24 @@ List<RiverpodAnalysisError> collectErrors(void Function() cb) {
 
 int _testNumber = 0;
 
+// Only Dart library sources are needed to resolve the test snippets. Reading
+// every asset also loads unrelated tests, examples, and binary assets.
+Set<AssetId>? _librarySources;
+
+Set<AssetId> _findLibrarySources(PackageConfig config) {
+  final sources = <AssetId>{};
+  for (final package in config.packages) {
+    final directory = Directory.fromUri(package.packageUriRoot);
+    if (!directory.existsSync()) continue;
+    for (final entity in directory.listSync(recursive: true)) {
+      if (entity is! File || !entity.path.endsWith('.dart')) continue;
+      final relativePath = entity.uri.path.substring(package.root.path.length);
+      sources.add(AssetId(package.name, relativePath));
+    }
+  }
+  return sources;
+}
+
 /// Due to [resolveSource] throwing if trying to interact with the resolver
 /// after the future completed, we change the syntax to make sure our test
 /// executes within the resolver scope.
@@ -101,11 +119,14 @@ void testSource(
       packageConfigUri,
     );
 
+    final librarySources = _librarySources ??= _findLibrarySources(
+      packageConfig,
+    );
+
     String? generated;
     if (runGenerator) {
       generated = await resolveSources(
-        packageConfig: packageConfig,
-        readAllSourcesFromFilesystem: true,
+        nonInputsToReadFromFilesystem: librarySources,
         {'$packageName|lib/foo.dart': sourceWithLibrary, ...otherSources},
         (resolver) async {
           final (units, _) = await getUnits(resolver);
@@ -118,8 +139,7 @@ void testSource(
     }
 
     await resolveSources(
-      packageConfig: packageConfig,
-      readAllSourcesFromFilesystem: true,
+      nonInputsToReadFromFilesystem: librarySources,
       {
         '$packageName|lib/foo.dart': sourceWithLibrary,
         if (generated != null)
