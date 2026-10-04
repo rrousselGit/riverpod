@@ -14,6 +14,32 @@ final class _TestNotifier extends Notifier<int> {
 Future<void> _waitForDevtoolEvent() => Future<void>.delayed(Duration.zero);
 
 void main() {
+  group('frame cache', () {
+    final devtool = RiverpodDevtool.instance;
+
+    test('failed serialization preserves the displayed snapshot', () {
+      fakeAsync((async) {
+        final previous = devtool.withFrameCache(
+          () => devtool.cacheFrame(Object()),
+        );
+        late String partial;
+        expect(
+          () => devtool.withFrameCache(() {
+            partial = devtool.cacheFrame(Object());
+            throw StateError('serialization failed');
+          }),
+          throwsStateError,
+        );
+        expect(devtool.getCache(previous), isNotNull);
+        expect(() => devtool.getCache(partial), throwsStateError);
+      });
+    });
+
+    test('serialization requires an active export', () {
+      expect(() => devtool.cacheFrame(Object()), throwsStateError);
+    });
+  });
+
   group('frame history', () {
     final devtool = RiverpodDevtool.instance;
 
@@ -77,6 +103,7 @@ void main() {
       expect(devtool.frames.map((frame) => frame.index), [0, 1, 2]);
       expect(devtool.frames.first, same(baseline));
 
+      final cached = devtool.withFrameCache(() => devtool.cacheFrame(Object()));
       debugTrackProviderHistory = false;
       expect(devtool.frames.single.index, 0);
       expect(
@@ -87,6 +114,71 @@ void main() {
             .state,
         2,
       );
+      expect(() => devtool.getCache(cached), throwsStateError);
+    });
+
+    test('keeps displayed values until the next snapshot is serialized', () {
+      fakeAsync((async) {
+        final container = ProviderContainer();
+        final provider = NotifierProvider<_TestNotifier, int>(
+          _TestNotifier.new,
+        );
+        container.read(provider);
+        async.flushMicrotasks();
+
+        final unchanged = Object();
+        final terminalResult = Object();
+        final terminalKey = devtool.cache(terminalResult);
+        late String stateKey;
+        late String unchangedKey;
+        devtool.withFrameCache(() {
+          stateKey = devtool.cacheFrame(0);
+          unchangedKey = devtool.cacheFrame(unchanged);
+        });
+
+        container.read(provider.notifier).increment();
+        async.flushMicrotasks();
+        // The application has advanced, but the devtool still displays frame 0.
+        expect(devtool.getCache(stateKey), 0);
+        devtool.withFrameCache(() {
+          devtool.cacheFrame(1);
+          expect(devtool.cacheFrame(unchanged), unchangedKey);
+        });
+        expect(() => devtool.getCache(stateKey), throwsStateError);
+        expect(devtool.getCache(unchangedKey), same(unchanged));
+        expect(devtool.getCache(terminalKey), same(terminalResult));
+
+        debugTrackProviderHistory = true;
+        debugTrackProviderHistory = false;
+        expect(() => devtool.getCache(unchangedKey), throwsStateError);
+        expect(devtool.getCache(terminalKey), same(terminalResult));
+        devtool.deleteCache(terminalKey);
+        expect(() => devtool.getCache(terminalKey), throwsStateError);
+        container.dispose();
+        async.flushMicrotasks();
+      });
+    });
+
+    test('retains historical cache values only while tracking history', () {
+      fakeAsync((async) {
+        final container = ProviderContainer();
+        async.flushMicrotasks();
+        debugTrackProviderHistory = true;
+        final historicalKey = devtool.withFrameCache(
+          () => devtool.cacheFrame(0),
+        );
+        final latestKey = devtool.withFrameCache(() => devtool.cacheFrame(1));
+        expect(devtool.getCache(historicalKey), 0);
+        expect(devtool.getCache(latestKey), 1);
+        debugTrackProviderHistory = false;
+        expect(() => devtool.getCache(historicalKey), throwsStateError);
+        expect(() => devtool.getCache(latestKey), throwsStateError);
+        final nullKey = devtool.withFrameCache(() => devtool.cacheFrame(null));
+        expect(devtool.getCache(nullKey), isNull);
+        container.dispose();
+        async.flushMicrotasks();
+        devtool.clearFrameCache();
+      });
     });
 
     test(
@@ -218,18 +310,22 @@ void main() {
       final simpleElement = container.readProviderElement(simpleProvider);
       final notifierElement = container.readProviderElement(notifierProvider);
 
-      final providerMetaBytes = ProviderMeta.from(
-        simpleElement,
-      ).toBytes(path: 'provider');
-      final originMetaBytes = OriginMeta.from(
-        simpleElement,
-      ).toBytes(path: 'origin');
-      final simpleEventBytes = ProviderElementAddEvent(
-        simpleElement,
-      ).toBytes(path: 'simpleEvent');
-      final notifierEventBytes = ProviderElementAddEvent(
-        notifierElement,
-      ).toBytes(path: 'notifierEvent');
+      final devtool = RiverpodDevtool.instance;
+      final (
+        providerMetaBytes,
+        originMetaBytes,
+        simpleEventBytes,
+        notifierEventBytes,
+      ) = devtool.withFrameCache(
+        () => (
+          ProviderMeta.from(simpleElement).toBytes(path: 'provider'),
+          OriginMeta.from(simpleElement).toBytes(path: 'origin'),
+          ProviderElementAddEvent(simpleElement).toBytes(path: 'simpleEvent'),
+          ProviderElementAddEvent(
+            notifierElement,
+          ).toBytes(path: 'notifierEvent'),
+        ),
+      );
 
       expect(providerMetaBytes['provider.creationStackTrace.__present'], true);
       expect(originMetaBytes['origin.creationStackTrace.__present'], true);

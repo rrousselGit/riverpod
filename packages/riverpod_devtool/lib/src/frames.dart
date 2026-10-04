@@ -233,7 +233,10 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
       path: 'root',
     );
 
-    final instanceByte = await eval.evalInstance(code, isAlive: isAlive);
+    final instanceByte = await eval.evalInstance(
+      'RiverpodDevtool.instance.withFrameCache(() => $code)',
+      isAlive: isAlive,
+    );
     if (isAlive.disposed) throw CancelledException();
     // TODO remove require
     final instance = instanceByte.require.instance;

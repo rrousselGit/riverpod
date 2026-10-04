@@ -35,6 +35,7 @@ set debugTrackProviderHistory(bool value) {
   _debugTrackProviderHistory = value;
   if (kDebugMode && !value) {
     RiverpodDevtool.instance._compactFrames();
+    RiverpodDevtool.instance.clearFrameCache();
   }
   if (kDebugMode) debugPostEvent(NewEventNotification(0));
 }
@@ -92,14 +93,67 @@ class RiverpodDevtool {
   final frames = <Frame>[];
 
   final _cache = <String, Object?>{};
+  final _frameCache = <String, Object?>{};
+  final _frameCacheKeys = Map<Object?, String>.identity();
+  Set<String>? _usedFrameCacheKeys;
+  Set<String>? _createdFrameCacheKeys;
 
   void deleteCache(String key) => _cache.remove(key);
-  Object? getCache(String key) => _cache[key];
+
+  Object? getCache(String key) {
+    if (_cache.containsKey(key)) return _cache[key];
+    if (_frameCache.containsKey(key)) return _frameCache[key];
+    throw StateError('The inspected value is no longer retained: $key');
+  }
+
   String cache(Object? obj) {
     final key = const Uuid().v4();
     _cache[key] = obj;
-
     return key;
+  }
+
+  String cacheFrame(Object? obj) {
+    if (_usedFrameCacheKeys == null) {
+      throw StateError('Frame serialization needs an active export');
+    }
+    final key = _frameCacheKeys.putIfAbsent(obj, () {
+      final key = const Uuid().v4();
+      _createdFrameCacheKeys!.add(key);
+      return key;
+    });
+    _frameCache[key] = obj;
+    _usedFrameCacheKeys!.add(key);
+    return key;
+  }
+
+  T withFrameCache<T>(T Function() encode) {
+    if (_usedFrameCacheKeys != null) {
+      throw StateError('Nested frame serialization');
+    }
+    final used = _usedFrameCacheKeys = <String>{};
+    final created = _createdFrameCacheKeys = <String>{};
+    try {
+      final result = encode();
+      if (!debugTrackProviderHistory) {
+        _frameCache.removeWhere((key, _) => !used.contains(key));
+        _frameCacheKeys.removeWhere((_, key) => !used.contains(key));
+      }
+      return result;
+    } catch (_) {
+      // A failed export must preserve the displayed snapshot and release
+      // partially serialized objects.
+      _frameCache.removeWhere((key, _) => created.contains(key));
+      _frameCacheKeys.removeWhere((_, key) => created.contains(key));
+      rethrow;
+    } finally {
+      _usedFrameCacheKeys = null;
+      _createdFrameCacheKeys = null;
+    }
+  }
+
+  void clearFrameCache() {
+    _frameCache.clear();
+    _frameCacheKeys.clear();
   }
 
   void addEvent(ProviderContainer container, Event event) {
