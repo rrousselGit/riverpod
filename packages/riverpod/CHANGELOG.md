@@ -1,5 +1,7 @@
 ## Unreleased fix
 
+- Fix `selectAsync` initializing providers when listening with `weak: true`.
+  (thanks to @kaluli123123)
 - Deprecated `Ref.exist`.
 - Added `provider.exist`, which is listenable.
   This enables writing `ref.listen(provider.exist, ...)`.

@@ -139,13 +139,15 @@ final class _AsyncSelector<InputT, OutputT>
       onError: onError,
     );
 
-    playValue(switch (sub.readSafe()) {
-      $ResultData<Future<InputT>>() && final d => d.value,
-      $ResultError<Future<InputT>>() && final d => Future.error(
-        d.error,
-        d.stackTrace,
-      )..ignore(),
-    }, callListeners: false);
+    if (!weak) {
+      playValue(switch (sub.readSafe()) {
+        $ResultData<Future<InputT>>() && final d => d.value,
+        $ResultError<Future<InputT>>() && final d => Future.error(
+          d.error,
+          d.stackTrace,
+        )..ignore(),
+      }, callListeners: false);
+    }
 
     return providerSub =
         ExternalProviderSubscription<Future<InputT>, Future<OutputT>>.fromSub(
@@ -157,6 +159,12 @@ final class _AsyncSelector<InputT, OutputT>
             final result = sub.readSafe();
             if (result case $ResultError(:final error, :final stackTrace)) {
               return $Result.error(error, stackTrace);
+            }
+
+            // An already initialized provider may not notify a weak listener
+            // when read, so initialize the selected future lazily.
+            if (selectedFuture == null) {
+              playValue(result.value!, callListeners: false);
             }
 
             return $ResultData(selectedFuture!);
