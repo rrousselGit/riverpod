@@ -1,24 +1,24 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
-// 250: // ignore: riverpod_lint/provider_dependencies
-// 251: @Dependencies(<>[<>dep<>]<>)
-// 252: void fn() {}
+// 36: // ignore: riverpod_lint/provider_dependencies
+// 37: <>@<>riverpod
+// 38: int watchGeneratedScopedButNoDependencies(
 // ```
-// // Handle identifiers with dependencies
-// // ignore: riverpod_lint/provider_dependencies
-// - @Dependencies([dep])
-// +
-// void fn() {}
 //
+// // ignore: riverpod_lint/provider_dependencies
+// - @riverpod
+// + @Riverpod(dependencies: [generatedScoped])
+// int watchGeneratedScopedButNoDependencies(
+//   Ref ref,
 // ```
 // ignore_for_file: unused_field
 
 @TestFor.provider_dependencies
 library;
 
-import 'package:material_ui/material_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/experimental/scope.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -26,7 +26,7 @@ import '../../test_annotation.dart';
 import 'another.dart' as import_alias;
 import 'another.dart';
 
-part 'missing_dependencies2.provider_dependencies-251.fix.g.dart';
+part 'missing_dependencies2.provider_dependencies-37.fix.g.dart';
 
 @Riverpod(dependencies: [])
 int dep(Ref ref) => 0;
@@ -48,7 +48,7 @@ int watchScopedButNoDependencies(Ref ref) {
 }
 
 // ignore: riverpod_lint/provider_dependencies
-@riverpod
+@Riverpod(dependencies: [generatedScoped])
 int watchGeneratedScopedButNoDependencies(Ref ref) {
   return ref.watch(generatedScopedProvider);
 }
@@ -240,7 +240,7 @@ class RiverpodDependencies extends _$RiverpodDependencies {
 
 // Handle identifiers with dependencies
 // ignore: riverpod_lint/provider_dependencies
-
+@Dependencies([dep])
 void fn() {}
 
 // ignore: riverpod_lint/provider_dependencies

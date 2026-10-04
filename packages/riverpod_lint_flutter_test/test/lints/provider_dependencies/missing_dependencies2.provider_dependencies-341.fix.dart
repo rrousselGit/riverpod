@@ -1,9 +1,9 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
-// 339: // ignore: riverpod_lint/provider_dependencies
-// 340: <>@<>riverpod
-// 341: int crossFileDependency(Ref ref) {
+// 340: // ignore: riverpod_lint/provider_dependencies
+// 341: <>@<>riverpod
+// 342: int crossFileDependency(Ref ref) {
 // ```
 //
 // // ignore: riverpod_lint/provider_dependencies
@@ -17,8 +17,8 @@
 @TestFor.provider_dependencies
 library;
 
-import 'package:material_ui/material_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/experimental/scope.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -26,7 +26,7 @@ import '../../test_annotation.dart';
 import 'another.dart' as import_alias;
 import 'another.dart';
 
-part 'missing_dependencies2.provider_dependencies-340.fix.g.dart';
+part 'missing_dependencies2.provider_dependencies-341.fix.g.dart';
 
 @Riverpod(dependencies: [])
 int dep(Ref ref) => 0;

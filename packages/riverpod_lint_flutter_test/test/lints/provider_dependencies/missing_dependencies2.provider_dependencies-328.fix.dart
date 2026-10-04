@@ -1,24 +1,29 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
-// 227: // ignore: riverpod_lint/provider_dependencies
-// 228: @Dependencies(<>[<>]<>)
-// 229: class CanUpdateMultipleDependenciesAtOnce {
+// 327: // ignore: riverpod_lint/provider_dependencies
+// 328: <>class <>FindStateFromClassList <>extends <>StatefulWidget <>{
+// 329:   <>const <>FindStateFromClassList<>(<>{<>super<>.<>key<>}<>)<>;
+//
+// 331:   <>@<>override
+// 332:   <>State<><<>FindStateFromClassList<>> <>createState<>(<>) <>=> <>_Stateful3State<>(<>)<>;
+// 333: <>}
 // ```
 //
 // // ignore: riverpod_lint/provider_dependencies
-// - @Dependencies([])
+// - class FindStateFromClassList extends StatefulWidget {
 // + @Dependencies([dep])
-// class CanUpdateMultipleDependenciesAtOnce {
-//   // ignore: riverpod_lint/provider_dependencies
+// + class FindStateFromClassList extends StatefulWidget {
+//   const FindStateFromClassList({super.key});
+//
 // ```
 // ignore_for_file: unused_field
 
 @TestFor.provider_dependencies
 library;
 
-import 'package:material_ui/material_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/experimental/scope.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -26,7 +31,7 @@ import '../../test_annotation.dart';
 import 'another.dart' as import_alias;
 import 'another.dart';
 
-part 'missing_dependencies2.provider_dependencies-228.fix.g.dart';
+part 'missing_dependencies2.provider_dependencies-328.fix.g.dart';
 
 @Riverpod(dependencies: [])
 int dep(Ref ref) => 0;
@@ -217,7 +222,7 @@ class MemberDependencies {
 }
 
 // ignore: riverpod_lint/provider_dependencies
-@Dependencies([dep])
+@Dependencies([])
 class CanUpdateMultipleDependenciesAtOnce {
   // ignore: riverpod_lint/provider_dependencies
   @Dependencies([])
@@ -316,6 +321,7 @@ class _Stateful2State extends State<Stateful2> {
 }
 
 // ignore: riverpod_lint/provider_dependencies
+@Dependencies([dep])
 class FindStateFromClassList extends StatefulWidget {
   const FindStateFromClassList({super.key});
 

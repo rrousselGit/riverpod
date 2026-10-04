@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'missing_dependencies2.provider_dependencies-340.fix.dart';
+part of 'missing_dependencies2.provider_dependencies-63.fix.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -360,9 +360,14 @@ final class WatchGeneratedScopedButEmptyDependenciesProvider
         retry: null,
         name: r'watchGeneratedScopedButEmptyDependenciesProvider',
         isAutoDispose: true,
-        dependencies: <ProviderOrFamily>[],
-        $allTransitiveDependencies: <ProviderOrFamily>[],
+        dependencies: <ProviderOrFamily>[generatedScopedProvider],
+        $allTransitiveDependencies: <ProviderOrFamily>[
+          WatchGeneratedScopedButEmptyDependenciesProvider
+              .$allTransitiveDependencies0,
+        ],
       );
+
+  static final $allTransitiveDependencies0 = generatedScopedProvider;
 
   @override
   String debugGetCreateSourceHash() =>
@@ -388,7 +393,7 @@ final class WatchGeneratedScopedButEmptyDependenciesProvider
 }
 
 String _$watchGeneratedScopedButEmptyDependenciesHash() =>
-    r'fa4cb564341e7b3f0dd10f70e17381c67859c643';
+    r'2488c0d53483c43a8b5e613f1db93259377bc9d1';
 
 @ProviderFor(watchRootButEmptyDependencies)
 final watchRootButEmptyDependenciesProvider =
@@ -1338,16 +1343,9 @@ final class CrossFileDependencyProvider
         retry: null,
         name: r'crossFileDependencyProvider',
         isAutoDispose: true,
-        dependencies: <ProviderOrFamily>[anotherNonEmptyScopedProvider],
-        $allTransitiveDependencies: <ProviderOrFamily>[
-          CrossFileDependencyProvider.$allTransitiveDependencies0,
-          CrossFileDependencyProvider.$allTransitiveDependencies1,
-        ],
+        dependencies: null,
+        $allTransitiveDependencies: null,
       );
-
-  static final $allTransitiveDependencies0 = anotherNonEmptyScopedProvider;
-  static final $allTransitiveDependencies1 =
-      AnotherNonEmptyScopedProvider.$allTransitiveDependencies0;
 
   @override
   String debugGetCreateSourceHash() => _$crossFileDependencyHash();
@@ -1372,4 +1370,4 @@ final class CrossFileDependencyProvider
 }
 
 String _$crossFileDependencyHash() =>
-    r'11e0df2b10bf3444e1718dfd2e3e1038b7ed48af';
+    r'3ab740fe1903f2c126412df43ee34eed87a6f4fe';

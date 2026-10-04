@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'missing_dependencies2.provider_dependencies-62.fix.dart';
+part of 'missing_dependencies2.provider_dependencies-232.fix.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -360,14 +360,9 @@ final class WatchGeneratedScopedButEmptyDependenciesProvider
         retry: null,
         name: r'watchGeneratedScopedButEmptyDependenciesProvider',
         isAutoDispose: true,
-        dependencies: <ProviderOrFamily>[generatedScopedProvider],
-        $allTransitiveDependencies: <ProviderOrFamily>[
-          WatchGeneratedScopedButEmptyDependenciesProvider
-              .$allTransitiveDependencies0,
-        ],
+        dependencies: <ProviderOrFamily>[],
+        $allTransitiveDependencies: <ProviderOrFamily>[],
       );
-
-  static final $allTransitiveDependencies0 = generatedScopedProvider;
 
   @override
   String debugGetCreateSourceHash() =>
@@ -393,7 +388,7 @@ final class WatchGeneratedScopedButEmptyDependenciesProvider
 }
 
 String _$watchGeneratedScopedButEmptyDependenciesHash() =>
-    r'2488c0d53483c43a8b5e613f1db93259377bc9d1';
+    r'fa4cb564341e7b3f0dd10f70e17381c67859c643';
 
 @ProviderFor(watchRootButEmptyDependencies)
 final watchRootButEmptyDependenciesProvider =

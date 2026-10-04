@@ -15,8 +15,8 @@
 @TestFor.missing_provider_scope
 library;
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../test_annotation.dart';
 
