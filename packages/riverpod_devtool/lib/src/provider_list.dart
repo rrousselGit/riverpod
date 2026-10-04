@@ -16,6 +16,7 @@ class ProviderList extends StatelessWidget {
     this.selectedId,
     this.shrinkWrap = false,
     this.showOthers = true,
+    this.showChanges = true,
   });
 
   final OriginStates originStates;
@@ -23,9 +24,23 @@ class ProviderList extends StatelessWidget {
   final internals.ElementId? selectedId;
   final bool shrinkWrap;
   final bool showOthers;
+  final bool showChanges;
 
   @override
   Widget build(BuildContext context) {
+    if (!showChanges) {
+      final providers = originStates.values.where(
+        (origin) => origin.elements.isNotEmpty,
+      );
+      return ListView(
+        shrinkWrap: shrinkWrap,
+        children: [
+          if (providers.isNotEmpty) const _SectionDivider(label: 'Providers'),
+          for (final provider in providers) ..._buildProviderGroup(provider),
+        ],
+      );
+    }
+
     // Categorize providers by their status in the current frame
     final modifiedProviders = <internals.OriginId, AccumulatedFilter>{};
     final disposedProviders = <internals.OriginId, AccumulatedFilter>{};

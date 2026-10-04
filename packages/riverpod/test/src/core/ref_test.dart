@@ -3954,7 +3954,7 @@ void main() {
             ref.onDispose(onDispose2.call);
           });
 
-          final container = ProviderContainer();
+          final container = ProviderContainer.test();
           addTearDown(container.dispose);
 
           container.read(provider); // register the onDispose hooks
@@ -3983,7 +3983,7 @@ void main() {
             ref.onDispose(onDispose2.call);
           });
 
-          final container = ProviderContainer();
+          final container = ProviderContainer.test();
           addTearDown(container.dispose);
 
           container.listen(provider, (_, _) {});
@@ -4013,7 +4013,7 @@ void main() {
             ref.onDispose(onDispose.call);
           });
 
-          final container = ProviderContainer();
+          final container = ProviderContainer.test();
           addTearDown(container.dispose);
 
           container.listen(provider, (_, _) {});
@@ -4040,7 +4040,7 @@ void main() {
             ref.onDispose(onDispose.call);
           });
 
-          final container = ProviderContainer();
+          final container = ProviderContainer.test();
           addTearDown(container.dispose);
 
           container.listen(provider, (_, _) {});

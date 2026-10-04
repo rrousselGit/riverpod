@@ -2,6 +2,7 @@
 
 export 'src/internals.dart'
     show
+        debugTrackProviderHistory,
         ProviderListenableOrFamily,
         ProviderOrFamily,
         AsyncNotifierProviderFamily,

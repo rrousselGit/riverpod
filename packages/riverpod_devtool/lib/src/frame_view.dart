@@ -267,7 +267,12 @@ class ProviderViewer extends StatelessWidget {
                 const InspectorSettingsButton(),
               ],
             ),
-            Expanded(child: Inspector(object: element.state.state)),
+            Expanded(
+              child: Inspector(
+                key: ValueKey(element.provider.elementId),
+                object: element.state.state,
+              ),
+            ),
           ],
         ),
       ),
@@ -287,7 +292,10 @@ class ProviderViewer extends StatelessWidget {
         content: Material(
           child: Padding(
             padding: const .symmetric(vertical: 8),
-            child: Inspector(object: notifier.state),
+            child: Inspector(
+              key: ValueKey(element.provider.elementId),
+              object: notifier.state,
+            ),
           ),
         ),
       );
@@ -366,6 +374,7 @@ class _ProviderPickerPanel extends HookConsumerWidget {
             Expanded(
               child: ProviderList(
                 originStates: originStates,
+                showChanges: ref.watch(timeTravelProvider).value ?? false,
                 onSelected: onSelected,
                 selectedId: selectedId,
               ),

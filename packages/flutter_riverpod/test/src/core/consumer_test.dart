@@ -906,7 +906,7 @@ void main() {
   });
 
   testWidgets('Dependencies are closed even if dispose throws', (tester) async {
-    final container = ProviderContainer();
+    final container = ProviderContainer.test();
     var show = true;
 
     await tester.pumpWidget(
