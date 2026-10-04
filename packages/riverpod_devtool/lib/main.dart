@@ -4,6 +4,7 @@ import 'package:devtools_app_shared/service.dart';
 import 'package:devtools_app_shared/ui.dart' as shared_ui;
 import 'package:devtools_extensions/devtools_extensions.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' as flutter_material;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -68,7 +69,7 @@ class _RiverpodDevtoolExtensionState
     // This works around it by manually disposing some of the resources that
     // Flutter should have disposed.
     if (kDebugMode && kIsWeb) {
-      _timer = Timer.periodic(Duration.zero, (_) {
+      _timer = Timer.periodic(const Duration(seconds: 1), (_) {
         final binding = WidgetsBinding.instance;
         if (_binding != binding) {
           // Hot-restart detected, and on web it fails to dispose the previous widget
@@ -108,6 +109,10 @@ class _RiverpodDevtoolExtensionState
                 ? shared_ui.darkColorScheme
                 : shared_ui.lightColorScheme;
             return MaterialApp(
+              // DevTools widgets use the SDK's distinct localization type.
+              localizationsDelegates: const [
+                flutter_material.DefaultMaterialLocalizations.delegate,
+              ],
               theme: ThemeData(
                 colorScheme:
                     ColorScheme.fromSeed(
@@ -127,7 +132,7 @@ class _RiverpodDevtoolExtensionState
                       onError: colors.onError,
                     ),
               ),
-              home: const FrameView(),
+              home: const Scaffold(body: FrameView()),
             );
           },
         ),
