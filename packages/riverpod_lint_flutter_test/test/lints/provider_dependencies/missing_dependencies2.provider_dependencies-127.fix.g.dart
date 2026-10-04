@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'missing_dependencies2.provider_dependencies-263.fix.dart';
+part of 'missing_dependencies2.provider_dependencies-127.fix.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -733,14 +733,9 @@ final class WatchGeneratedRootAndContainsDependencyProvider
         retry: null,
         name: r'watchGeneratedRootAndContainsDependencyProvider',
         isAutoDispose: true,
-        dependencies: <ProviderOrFamily>[generatedRootProvider],
-        $allTransitiveDependencies: <ProviderOrFamily>[
-          WatchGeneratedRootAndContainsDependencyProvider
-              .$allTransitiveDependencies0,
-        ],
+        dependencies: null,
+        $allTransitiveDependencies: null,
       );
-
-  static final $allTransitiveDependencies0 = generatedRootProvider;
 
   @override
   String debugGetCreateSourceHash() =>
@@ -766,7 +761,7 @@ final class WatchGeneratedRootAndContainsDependencyProvider
 }
 
 String _$watchGeneratedRootAndContainsDependencyHash() =>
-    r'780392b647f1606186ee0f70c81dd5b03f506284';
+    r'07146f384b6a4c2396cb199aeed5d5573d650ea4';
 
 @ProviderFor(specifiedDependencyButNeverUsed)
 final specifiedDependencyButNeverUsedProvider =
@@ -1297,13 +1292,9 @@ final class FooProvider extends $FunctionalProvider<int, int, int>
         retry: null,
         name: r'fooProvider',
         isAutoDispose: true,
-        dependencies: <ProviderOrFamily>[depProvider],
-        $allTransitiveDependencies: <ProviderOrFamily>[
-          FooProvider.$allTransitiveDependencies0,
-        ],
+        dependencies: null,
+        $allTransitiveDependencies: null,
       );
-
-  static final $allTransitiveDependencies0 = depProvider;
 
   @override
   String debugGetCreateSourceHash() => _$fooHash();
@@ -1327,7 +1318,7 @@ final class FooProvider extends $FunctionalProvider<int, int, int>
   }
 }
 
-String _$fooHash() => r'2153ac5ba54fd4c4a176d97a763e85e074f589c1';
+String _$fooHash() => r'a390b7b969bb0eec183426bfc85bec32750e9475';
 
 @ProviderFor(crossFileDependency)
 final crossFileDependencyProvider = CrossFileDependencyProvider._();

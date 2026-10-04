@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:material_ui/material_ui.dart';
+
 import 'internals.dart';
 
 /// {@template hooks_riverpod.hook_consumer.hook_consumer_widget}

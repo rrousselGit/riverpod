@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'missing_dependencies2.provider_dependencies-126.fix.dart';
+part of 'missing_dependencies2.provider_dependencies-312.fix.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -733,9 +733,14 @@ final class WatchGeneratedRootAndContainsDependencyProvider
         retry: null,
         name: r'watchGeneratedRootAndContainsDependencyProvider',
         isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
+        dependencies: <ProviderOrFamily>[generatedRootProvider],
+        $allTransitiveDependencies: <ProviderOrFamily>[
+          WatchGeneratedRootAndContainsDependencyProvider
+              .$allTransitiveDependencies0,
+        ],
       );
+
+  static final $allTransitiveDependencies0 = generatedRootProvider;
 
   @override
   String debugGetCreateSourceHash() =>
@@ -761,7 +766,7 @@ final class WatchGeneratedRootAndContainsDependencyProvider
 }
 
 String _$watchGeneratedRootAndContainsDependencyHash() =>
-    r'07146f384b6a4c2396cb199aeed5d5573d650ea4';
+    r'780392b647f1606186ee0f70c81dd5b03f506284';
 
 @ProviderFor(specifiedDependencyButNeverUsed)
 final specifiedDependencyButNeverUsedProvider =

@@ -1,30 +1,24 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 // Offsets for "provider_dependencies":
-// 141:       // ignore: riverpod_lint/provider_dependencies
-// 142:       <>[
-// 143:         <>dep<>,
-// 144:         <>generatedRoot<>,
-// 145:       <>]<>,
-// 146: )
+// 340: // ignore: riverpod_lint/provider_dependencies
+// 341: <>@<>riverpod
+// 342: int crossFileDependency(Ref ref) {
 // ```
-//       // generatedRoot is extra
-//       // ignore: riverpod_lint/provider_dependencies
-// -       [
-// -         dep,
-// -         generatedRoot,
-// -       ],
-// +       [dep],
-// )
-// int specifiedDependencyButNeverUsed(Ref ref) {
+//
+// // ignore: riverpod_lint/provider_dependencies
+// - @riverpod
+// + @Riverpod(dependencies: [anotherNonEmptyScoped])
+// int crossFileDependency(Ref ref) {
+//   ref.watch(anotherNonEmptyScopedProvider);
 // ```
 // ignore_for_file: unused_field
 
 @TestFor.provider_dependencies
 library;
 
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/experimental/scope.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -32,7 +26,7 @@ import '../../test_annotation.dart';
 import 'another.dart' as import_alias;
 import 'another.dart';
 
-part 'missing_dependencies2.provider_dependencies-142.fix.g.dart';
+part 'missing_dependencies2.provider_dependencies-341.fix.g.dart';
 
 @Riverpod(dependencies: [])
 int dep(Ref ref) => 0;
@@ -140,7 +134,7 @@ int watchGeneratedRootAndContainsDependency(Ref ref) {
   dependencies:
       // generatedRoot is extra
       // ignore: riverpod_lint/provider_dependencies
-      [dep],
+      [dep, generatedRoot],
 )
 int specifiedDependencyButNeverUsed(Ref ref) {
   ref.watch(depProvider);
@@ -335,7 +329,7 @@ class _Stateful3State extends State<FindStateFromClassList> {
 }
 
 // ignore: riverpod_lint/provider_dependencies
-@riverpod
+@Riverpod(dependencies: [anotherNonEmptyScoped])
 int crossFileDependency(Ref ref) {
   ref.watch(anotherNonEmptyScopedProvider);
   return 0;
