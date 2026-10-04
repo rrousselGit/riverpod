@@ -837,4 +837,137 @@ Future<void> main() async {
       expect(container.getAllProviderElements(), isEmpty);
     },
   );
+
+  group('overriding one instance of an inherited family', () {
+    // Regression test for https://github.com/rrousselGit/riverpod/issues/4902
+    //
+    // A family that declares no `dependencies` can never be scoped, so its
+    // directory is inherited by reference instead of being copied. Writing an
+    // override into it used to apply that override to the parent too.
+
+    test('does not change what the parent resolves', () {
+      final family = Provider.family<String, int>((ref, id) => 'root $id');
+
+      final root = ProviderContainer.test();
+      expect(root.read(family(1)), 'root 1');
+
+      final child = ProviderContainer.test(
+        parent: root,
+        overrides: [family(1).overrideWithValue('child 1')],
+      );
+
+      expect(child.read(family(1)), 'child 1');
+      expect(root.read(family(1)), 'root 1');
+    });
+
+    test('does not change what the parent resolves, '
+        'when the parent mounted a different instance first', () {
+      final family = Provider.family<String, int>((ref, id) => 'root $id');
+
+      final root = ProviderContainer.test();
+      // Any instance is enough to create the directory that gets inherited.
+      expect(root.read(family(2)), 'root 2');
+
+      final child = ProviderContainer.test(
+        parent: root,
+        overrides: [family(1).overrideWithValue('child 1')],
+      );
+
+      expect(child.read(family(1)), 'child 1');
+      expect(root.read(family(1)), 'root 1');
+    });
+
+    test('leaves the instances it does not override '
+        'shared with the parent', () {
+      final family = Provider.family<String, int>((ref, id) => 'root $id');
+
+      final root = ProviderContainer.test();
+      expect(root.read(family(1)), 'root 1');
+      expect(root.read(family(2)), 'root 2');
+
+      final child = ProviderContainer.test(
+        parent: root,
+        overrides: [family(1).overrideWithValue('child 1')],
+      );
+
+      expect(child.read(family(2)), 'root 2');
+      expect(
+        child.pointerManager.readPointer(family(2))!.element,
+        same(root.pointerManager.readPointer(family(2))!.element),
+      );
+    });
+
+    test('supports overriding several instances of the same family', () {
+      final family = Provider.family<String, int>((ref, id) => 'root $id');
+
+      final root = ProviderContainer.test();
+      expect(root.read(family(1)), 'root 1');
+      expect(root.read(family(2)), 'root 2');
+
+      final child = ProviderContainer.test(
+        parent: root,
+        overrides: [
+          family(1).overrideWithValue('child 1'),
+          family(2).overrideWithValue('child 2'),
+        ],
+      );
+
+      expect(child.read(family(1)), 'child 1');
+      expect(child.read(family(2)), 'child 2');
+      expect(root.read(family(1)), 'root 1');
+      expect(root.read(family(2)), 'root 2');
+    });
+
+    test('does not change what the parent resolves '
+        'after the scope is gone', () {
+      final family = Provider.family<String, int>((ref, id) => 'root $id');
+
+      final root = ProviderContainer.test();
+      expect(root.read(family(1)), 'root 1');
+
+      final child = ProviderContainer(
+        parent: root,
+        overrides: [family(1).overrideWithValue('child 1')],
+      );
+      expect(child.read(family(1)), 'child 1');
+      child.dispose();
+
+      expect(root.read(family(1)), 'root 1');
+    });
+
+    test('applies to containers below the overriding one', () {
+      final family = Provider.family<String, int>((ref, id) => 'root $id');
+
+      final root = ProviderContainer.test();
+      expect(root.read(family(1)), 'root 1');
+
+      final mid = ProviderContainer.test(
+        parent: root,
+        overrides: [family(1).overrideWithValue('mid 1')],
+      );
+      final leaf = ProviderContainer.test(parent: mid);
+
+      expect(leaf.read(family(1)), 'mid 1');
+      expect(mid.read(family(1)), 'mid 1');
+      expect(root.read(family(1)), 'root 1');
+    });
+
+    test('keeps working for families that declare dependencies', () {
+      final family = Provider.family<String, int>(
+        (ref, id) => 'root $id',
+        dependencies: const [],
+      );
+
+      final root = ProviderContainer.test();
+      expect(root.read(family(1)), 'root 1');
+
+      final child = ProviderContainer.test(
+        parent: root,
+        overrides: [family(1).overrideWithValue('child 1')],
+      );
+
+      expect(child.read(family(1)), 'child 1');
+      expect(root.read(family(1)), 'root 1');
+    });
+  });
 }

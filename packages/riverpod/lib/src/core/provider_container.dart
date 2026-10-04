@@ -424,6 +424,32 @@ class ProviderPointerManager {
     }
   }
 
+  /// The directory for [family] that this container may write an override to.
+  ///
+  /// A family that cannot be scoped is inherited from the parent by reference
+  /// rather than copied, so the directory stored under [family] may be the
+  /// parent's own. Writing an override into it would apply that override to the
+  /// parent as well, so it is copied first.
+  ProviderDirectory _writableFamilyDirectory(Family family) {
+    final directory = familyPointers[family];
+
+    if (directory == null) {
+      return familyPointers[family] = ProviderDirectory.empty(
+        container._root ?? container,
+        familyOverride: null,
+      );
+    }
+
+    final parentDirectory =
+        container._parent?._pointerManager.familyPointers[family];
+
+    if (identical(directory, parentDirectory)) {
+      return familyPointers[family] = ProviderDirectory.from(directory);
+    }
+
+    return directory;
+  }
+
   void _initializeProviderOverride(_ProviderOverride override) {
     final from = override.origin.from;
 
@@ -432,12 +458,9 @@ class ProviderPointerManager {
       return;
     }
 
-    final familyPointer = familyPointers[from] ??= ProviderDirectory.empty(
-      container._root ?? container,
-      familyOverride: null,
-    );
-
-    familyPointer.addProviderOverride(override, targetContainer: container);
+    _writableFamilyDirectory(
+      from,
+    ).addProviderOverride(override, targetContainer: container);
   }
 
   void _initializeOverrides(List<Override> overrides) {
