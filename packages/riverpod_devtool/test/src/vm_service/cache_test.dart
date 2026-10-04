@@ -6,6 +6,9 @@ import 'package:vm_service/vm_service.dart' as vm;
 
 class _MockEval extends Mock implements Eval {
   @override
+  late EvalFactory factory;
+
+  @override
   Future<Byte<VmInstanceRef>> eval(
     String code, {
     required Disposable isAlive,
@@ -42,6 +45,9 @@ class _FakeEvalFactory implements EvalFactory {
   final Eval dartCore;
 
   final Eval _riverpodFramework;
+
+  @override
+  String? sessionId;
 
   @override
   dynamic noSuchMethod(Invocation invocation) {
@@ -207,6 +213,55 @@ void main() {
   });
 
   group('RootCachedObject', () {
+    test(
+      'creating a terminal result validates ownership and never retries',
+      () async {
+        final framework = _MockEval();
+        final eval = _MockEval();
+        final factory = _FakeEvalFactory(
+          dartCore: eval,
+          riverpodFramework: framework,
+        )..sessionId = 'session';
+        eval.factory = factory;
+        final alive = Disposable();
+        when(
+          framework.eval('RiverpodDevtool.instance', isAlive: alive),
+        ).thenAnswer(
+          (_) async =>
+              ByteVariable(VmInstanceRef.string('devtool', id: 'devtool-ref')),
+        );
+        const expression =
+            '() { RiverpodDevtool.validateSession("session"); '
+            'return RiverpodDevtool.cache((increment()) as Object?, sessionId: "session"); }()';
+        when(
+          eval.eval(
+            expression,
+            isAlive: alive,
+            scope: {'RiverpodDevtool': 'devtool-ref'},
+          ),
+        ).thenAnswer((_) async => ByteError(const ExpiredDevtoolSessionType()));
+        final result = await RootCachedObject.create(
+          'increment()',
+          eval,
+          isAlive: alive,
+        );
+        expect(result, isA<ByteError<RootCachedObject>>());
+        verify(
+          eval.eval(
+            expression,
+            isAlive: alive,
+            scope: {'RiverpodDevtool': 'devtool-ref'},
+          ),
+        ).called(1);
+        factory.sessionId = null;
+        expect(
+          await RootCachedObject.create('increment()', eval, isAlive: alive),
+          isA<ByteError<RootCachedObject>>(),
+        );
+        verifyNoMoreInteractions(eval);
+      },
+    );
+
     test('toString includes the cache id', () {
       expect(
         RootCachedObject(CacheId('cache-1')).toString(),

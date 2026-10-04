@@ -4,6 +4,8 @@
   `debugTrackProviderHistory = true` (imported from `package:riverpod/misc.dart`)
   to opt into time-travel history; setting it back to `false` releases previous
   frames.
+- Devtools inspection caches are released when their client closes or stops
+  renewing its session for 30 seconds, including after an abrupt disconnect.
 - Deprecated `Ref.exist`.
 - Added `provider.exist`, which is listenable.
   This enables writing `ref.listen(provider.exist, ...)`.

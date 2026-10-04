@@ -83,6 +83,8 @@ class RootCachedObject extends CachedObject {
     Map<String, String>? scope,
   }) async {
     // No retry because retrying <code> could have side-effects.
+    final sessionId = eval.factory.sessionId;
+    if (sessionId == null) return ByteError(const ExpiredDevtoolSessionType());
     final devtoolRef = await eval.factory.riverpodFramework.eval(
       'RiverpodDevtool.instance',
       isAlive: isAlive,
@@ -95,7 +97,9 @@ class RootCachedObject extends CachedObject {
     }
     final idByte = await eval.eval(
       // Casting to allow assigning `void`
-      'RiverpodDevtool.cache(($code) as Object?)',
+      '() { RiverpodDevtool.validateSession("$sessionId"); '
+      'return RiverpodDevtool.cache(($code) as Object?, '
+      'sessionId: "$sessionId"); }()',
       isAlive: isAlive,
       scope: {...?scope, 'RiverpodDevtool': devtoolRef.instance.id!},
     );

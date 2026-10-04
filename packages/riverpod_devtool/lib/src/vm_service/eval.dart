@@ -35,6 +35,8 @@ class EvalFactory {
   final VmService vmService;
   final ServiceManager serviceManager;
 
+  String? sessionId;
+
   final _disposable = Disposable();
 
   final _evalCache = <String, Eval>{};
@@ -52,6 +54,7 @@ class EvalFactory {
   }
 
   void dispose() {
+    sessionId = null;
     _disposable.dispose();
     for (final eval in _evalCache.values.toList()) {
       eval.dispose();
@@ -116,6 +119,10 @@ class Eval {
 
       return ByteVariable(ref);
     } on EvalErrorException catch (e) {
+      if (e.errorRef.message?.contains('Riverpod devtool session expired') ??
+          false) {
+        return ByteError(const ExpiredDevtoolSessionType());
+      }
       return ByteError(EvalErrorType(e));
     } on EvalSentinelException catch (e) {
       return ByteError(SentinelExceptionType(e.sentinel));

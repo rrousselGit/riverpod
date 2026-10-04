@@ -189,8 +189,10 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
     ref.watch(hotRestartEventProvider);
     _lastFrames = null;
     final isAlive = ref.disposable();
+    final sessionFuture = ref.watch(devtoolSessionProvider.future);
     final serviceFuture = ref.watch(vmServiceProvider.future);
     final evalFuture = ref.watch(riverpodEvalProvider.future);
+    final sessionId = await sessionFuture;
     final service = await serviceFuture;
     final riverpodEval = await evalFuture;
     if (isAlive.disposed) throw CancelledException();
@@ -203,6 +205,7 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
             case internals.NewEventNotification():
               await _fetchNewNotifications(
                 event,
+                sessionId: sessionId,
                 riverpodEval: riverpodEval,
                 isAlive: isAlive,
               );
@@ -217,13 +220,18 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
         );
     ref.onDispose(sub.cancel);
 
-    final rawFrames = await _evalFrames(riverpodEval, isAlive);
+    final rawFrames = await _evalFrames(
+      riverpodEval,
+      isAlive,
+      sessionId: sessionId,
+    );
     return _lastFrames = foldFrames(const [], rawFrames);
   }
 
   Future<List<Frame>> _evalFrames(
     Eval eval,
     Disposable isAlive, {
+    required String sessionId,
     int startIndex = 0,
   }) async {
     final code = encodeList(
@@ -234,10 +242,16 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
     );
 
     final instanceByte = await eval.evalInstance(
-      'RiverpodDevtool.instance.withFrameCache(() => $code)',
+      'RiverpodDevtool.instance.withFrameCache("$sessionId", () => $code)',
       isAlive: isAlive,
     );
     if (isAlive.disposed) throw CancelledException();
+    if (instanceByte case ByteError(error: ExpiredDevtoolSessionType())) {
+      // A throttled/suspended tab can miss heartbeats. Opening a new session
+      // rebuilds this provider and fetches the full current snapshot.
+      ref.invalidate(devtoolSessionProvider);
+      throw CancelledException();
+    }
     // TODO remove require
     final instance = instanceByte.require.instance;
     final map = Map.fromEntries(
@@ -254,6 +268,7 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
 
   Future<void> _fetchNewNotifications(
     internals.NewEventNotification notification, {
+    required String sessionId,
     required Eval riverpodEval,
     required Disposable isAlive,
   }) async {
@@ -268,6 +283,7 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
     final newFrames = await _evalFrames(
       riverpodEval,
       isAlive,
+      sessionId: sessionId,
       startIndex: replacesHistory ? 0 : frames.length,
     );
 

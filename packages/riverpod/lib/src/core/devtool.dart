@@ -92,68 +92,80 @@ class RiverpodDevtool {
   final _uniqueProviders = Expando<String>();
   final frames = <Frame>[];
 
-  final _cache = <String, Object?>{};
-  final _frameCache = <String, Object?>{};
-  final _frameCacheKeys = Map<Object?, String>.identity();
-  Set<String>? _usedFrameCacheKeys;
-  Set<String>? _createdFrameCacheKeys;
+  /// How long exported values remain available without a DevTools heartbeat.
+  static const sessionLeaseDuration = Duration(seconds: 30);
 
-  void deleteCache(String key) => _cache.remove(key);
+  final _sessions = <String, _DevtoolSession>{};
+  _DevtoolSession? _encodingSession;
+
+  String openSession() {
+    final id = const Uuid().v4();
+    _sessions[id] = _DevtoolSession(id, () => closeSession(id));
+    return id;
+  }
+
+  bool renewSession(String id) {
+    final session = _sessions[id];
+    if (session == null) return false;
+    session.renew();
+    return true;
+  }
+
+  void closeSession(String id) => _sessions.remove(id)?.dispose();
+
+  _DevtoolSession _session(String id) {
+    return _sessions[id] ??
+        (throw StateError('Riverpod devtool session expired'));
+  }
+
+  void validateSession(String id) => _session(id);
+
+  String _sessionIdForKey(String key) => key.split(':').first;
+
+  void deleteCache(String key) {
+    // Deletion is harmless after a session has expired or already been closed.
+    _sessions[_sessionIdForKey(key)]?.cache.remove(key);
+  }
 
   Object? getCache(String key) {
-    if (_cache.containsKey(key)) return _cache[key];
-    if (_frameCache.containsKey(key)) return _frameCache[key];
+    final session = _session(_sessionIdForKey(key));
+    if (session.cache.containsKey(key)) return session.cache[key];
+    if (session.frameCache.containsKey(key)) return session.frameCache[key];
     throw StateError('The inspected value is no longer retained: $key');
   }
 
-  String cache(Object? obj) {
-    final key = const Uuid().v4();
-    _cache[key] = obj;
+  String cache(Object? obj, {required String sessionId}) {
+    final session = _session(sessionId);
+    final key = '$sessionId:${const Uuid().v4()}';
+    session.cache[key] = obj;
     return key;
   }
 
+  // Generated serializers run synchronously within their client's session.
   String cacheFrame(Object? obj) {
-    if (_usedFrameCacheKeys == null) {
-      throw StateError('Frame serialization needs an active export');
+    final session = _encodingSession;
+    if (session == null) {
+      throw StateError('Frame serialization needs a session');
     }
-    final key = _frameCacheKeys.putIfAbsent(obj, () {
-      final key = const Uuid().v4();
-      _createdFrameCacheKeys!.add(key);
-      return key;
-    });
-    _frameCache[key] = obj;
-    _usedFrameCacheKeys!.add(key);
-    return key;
+    return session.cacheFrame(obj);
   }
 
-  T withFrameCache<T>(T Function() encode) {
-    if (_usedFrameCacheKeys != null) {
+  T withFrameCache<T>(String sessionId, T Function() encode) {
+    if (_encodingSession != null) {
       throw StateError('Nested frame serialization');
     }
-    final used = _usedFrameCacheKeys = <String>{};
-    final created = _createdFrameCacheKeys = <String>{};
+    final session = _encodingSession = _session(sessionId);
     try {
-      final result = encode();
-      if (!debugTrackProviderHistory) {
-        _frameCache.removeWhere((key, _) => !used.contains(key));
-        _frameCacheKeys.removeWhere((_, key) => !used.contains(key));
-      }
-      return result;
-    } catch (_) {
-      // A failed export must preserve the displayed snapshot and release
-      // partially serialized objects.
-      _frameCache.removeWhere((key, _) => created.contains(key));
-      _frameCacheKeys.removeWhere((_, key) => created.contains(key));
-      rethrow;
+      return session.withFrameCache(encode);
     } finally {
-      _usedFrameCacheKeys = null;
-      _createdFrameCacheKeys = null;
+      _encodingSession = null;
     }
   }
 
   void clearFrameCache() {
-    _frameCache.clear();
-    _frameCacheKeys.clear();
+    for (final session in _sessions.values) {
+      session.clearFrameCache();
+    }
   }
 
   void addEvent(ProviderContainer container, Event event) {
@@ -233,6 +245,74 @@ class RiverpodDevtool {
   }
 
   ProviderOrFamily? originFromId(OriginId id) => _origins[id]?.target;
+}
+
+// Both kinds of exported values have a session lifetime. Frame values also
+// follow snapshot replacement; terminal results are explicitly deleted by the UI.
+class _DevtoolSession {
+  _DevtoolSession(this.id, this.onExpire) {
+    renew();
+  }
+
+  final String id;
+  final void Function() onExpire;
+  Timer? _expiration;
+  final cache = <String, Object?>{};
+  final frameCache = <String, Object?>{};
+  final _frameCacheKeys = Map<Object?, String>.identity();
+  Set<String>? _usedKeys;
+  Set<String>? _createdKeys;
+
+  void renew() {
+    _expiration?.cancel();
+    _expiration = Timer(RiverpodDevtool.sessionLeaseDuration, onExpire);
+  }
+
+  String cacheFrame(Object? obj) {
+    final key = _frameCacheKeys.putIfAbsent(obj, () {
+      final key = '$id:${const Uuid().v4()}';
+      _createdKeys?.add(key);
+      return key;
+    });
+    frameCache[key] = obj;
+    _usedKeys?.add(key);
+    return key;
+  }
+
+  T withFrameCache<T>(T Function() encode) {
+    final used = _usedKeys = <String>{};
+    final created = _createdKeys = <String>{};
+    try {
+      final result = encode();
+      if (!debugTrackProviderHistory) _removeUnused(used);
+      return result;
+    } catch (_) {
+      // A failed export must neither destroy the displayed snapshot nor retain
+      // partially serialized objects across retries.
+      frameCache.removeWhere((key, _) => created.contains(key));
+      _frameCacheKeys.removeWhere((_, key) => created.contains(key));
+      rethrow;
+    } finally {
+      _usedKeys = null;
+      _createdKeys = null;
+    }
+  }
+
+  void _removeUnused(Set<String> used) {
+    frameCache.removeWhere((key, _) => !used.contains(key));
+    _frameCacheKeys.removeWhere((_, key) => !used.contains(key));
+  }
+
+  void clearFrameCache() {
+    frameCache.clear();
+    _frameCacheKeys.clear();
+  }
+
+  void dispose() {
+    _expiration?.cancel();
+    cache.clear();
+    clearFrameCache();
+  }
 }
 
 /// ID for [ProviderContainer]
