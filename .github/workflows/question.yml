@@ -1,0 +1,39 @@
+name: Remove question label on reply
+
+on:
+  # This event covers both issue and pull request conversation comments.
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  remove_question:
+    if: contains(github.event.issue.labels.*.name, 'question')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v9
+        with:
+          script: |
+            const { data } = await github.rest.repos.getCollaboratorPermissionLevel({
+              ...context.repo,
+              username: context.payload.comment.user.login,
+            });
+
+            // GitHub reports write and maintain access as the "write" permission.
+            if (['write', 'maintain', 'admin'].includes(data.permission)) {
+              return;
+            }
+
+            try {
+              await github.rest.issues.removeLabel({
+                ...context.repo,
+                issue_number: context.payload.issue.number,
+                name: 'question',
+              });
+            } catch (error) {
+              // Another reply or a maintainer may already have removed the label.
+              if (error.status !== 404) throw error;
+            }
