@@ -99,34 +99,38 @@ class _RiverpodDevtoolExtensionState
     return DevToolsExtension(
       // DevTools still supplies the SDK Material app. Give our migrated widgets
       // their own Material theme and localization delegates inside it.
-      child: ValueListenableBuilder<bool>(
-        valueListenable: extensionManager.darkThemeEnabled,
-        builder: (context, isDark, _) {
-          final colors = isDark
-              ? shared_ui.darkColorScheme
-              : shared_ui.lightColorScheme;
-          return MaterialApp(
-            theme: ThemeData(
-              colorScheme:
-                  ColorScheme.fromSeed(
-                    seedColor: colors.primary,
-                    brightness: colors.brightness,
-                  ).copyWith(
-                    primary: colors.primary,
-                    onPrimary: colors.onPrimary,
-                    secondary: colors.secondary,
-                    onSecondary: colors.onSecondary,
-                    surface:
-                        shared_ui.ideTheme.backgroundColor ?? colors.surface,
-                    onSurface:
-                        shared_ui.ideTheme.foregroundColor ?? colors.onSurface,
-                    error: colors.error,
-                    onError: colors.onError,
-                  ),
-            ),
-            home: const FrameView(),
-          );
-        },
+      child: Builder(
+        // DevToolsExtension initializes extensionManager before this builds.
+        builder: (context) => ValueListenableBuilder<bool>(
+          valueListenable: extensionManager.darkThemeEnabled,
+          builder: (context, isDark, _) {
+            final colors = isDark
+                ? shared_ui.darkColorScheme
+                : shared_ui.lightColorScheme;
+            return MaterialApp(
+              theme: ThemeData(
+                colorScheme:
+                    ColorScheme.fromSeed(
+                      seedColor: colors.primary,
+                      brightness: colors.brightness,
+                    ).copyWith(
+                      primary: colors.primary,
+                      onPrimary: colors.onPrimary,
+                      secondary: colors.secondary,
+                      onSecondary: colors.onSecondary,
+                      surface:
+                          shared_ui.ideTheme.backgroundColor ?? colors.surface,
+                      onSurface:
+                          shared_ui.ideTheme.foregroundColor ??
+                          colors.onSurface,
+                      error: colors.error,
+                      onError: colors.onError,
+                    ),
+              ),
+              home: const FrameView(),
+            );
+          },
+        ),
       ),
     );
   }
