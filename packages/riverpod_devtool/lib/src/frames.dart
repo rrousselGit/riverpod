@@ -292,6 +292,44 @@ List<FoldedFrame> foldFrames(
   return result;
 }
 
+final timeTravelProvider =
+    AsyncNotifierProvider.autoDispose<TimeTravelNotifier, bool>(
+      TimeTravelNotifier.new,
+    );
+
+class TimeTravelNotifier extends AsyncNotifier<bool> {
+  @override
+  Future<bool> build() async {
+    // Re-read the application's flag after frames change, including changes
+    // made directly through debugTrackProviderHistory and hot restarts.
+    ref.watch(framesProvider);
+    final isAlive = ref.disposable();
+    final eval = await ref.watch(riverpodEvalProvider.future);
+    final result = await eval.eval(
+      'debugTrackProviderHistory',
+      isAlive: isAlive,
+    );
+    return result.require.instance.valueAsString == 'true';
+  }
+
+  Future<void> setEnabled(bool enabled) async {
+    // Changing the flag emits a frame notification, which can rebuild this
+    // provider before the assignment's VM response arrives.
+    final isAlive = Disposable();
+    try {
+      final eval = await ref.read(riverpodEvalProvider.future);
+      final result = await eval.eval(
+        'debugTrackProviderHistory = $enabled',
+        isAlive: isAlive,
+      );
+      result.require;
+      if (ref.mounted) ref.invalidateSelf();
+    } finally {
+      isAlive.dispose();
+    }
+  }
+}
+
 class FrameStepper extends HookConsumerWidget {
   const FrameStepper({
     super.key,
@@ -299,6 +337,86 @@ class FrameStepper extends HookConsumerWidget {
     required this.selectedFrame,
     required this.selectedElement,
   });
+
+  final void Function(FrameId frame) onSelect;
+  final FoldedFrame? selectedFrame;
+  final FilteredElement? selectedElement;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tracking = ref.watch(timeTravelProvider);
+    final busy = useState(false);
+    final enabled = tracking.value ?? false;
+    final canToggle = !busy.value && tracking.hasValue && !tracking.hasError;
+
+    return Row(
+      children: [
+        Tooltip(
+          message: enabled
+              ? 'Stop time travel and discard previous frames'
+              : 'Start time travel and record future frames',
+          child: IconButton(
+            style: IconButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              side: BorderSide.none,
+              elevation: 0,
+            ),
+            iconSize: 20,
+            padding: const EdgeInsets.all(4),
+            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+            icon: Icon(enabled ? Icons.stop : Icons.play_arrow),
+            onPressed: !canToggle
+                ? null
+                : () async {
+                    busy.value = true;
+                    try {
+                      await ref
+                          .read(timeTravelProvider.notifier)
+                          .setEnabled(!enabled);
+                    } catch (error) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Could not change time travel: $error',
+                            ),
+                          ),
+                        );
+                      }
+                    } finally {
+                      if (context.mounted) busy.value = false;
+                    }
+                  },
+          ),
+        ),
+        Expanded(
+          child: Opacity(
+            opacity: enabled ? 1 : 0.4,
+            child: IgnorePointer(
+              ignoring: !enabled,
+              child: _FrameTimeline(
+                enabled: enabled,
+                onSelect: onSelect,
+                selectedFrame: selectedFrame,
+                selectedElement: selectedElement,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _FrameTimeline extends HookConsumerWidget {
+  const _FrameTimeline({
+    required this.enabled,
+    required this.onSelect,
+    required this.selectedFrame,
+    required this.selectedElement,
+  });
+
+  final bool enabled;
 
   static const _stepperHeight = 50.0;
 
@@ -355,10 +473,10 @@ class FrameStepper extends HookConsumerWidget {
         );
 
         final currentIndex = value.indexOf(selectedFrame!);
-        final canGoFirst = currentIndex > 0;
-        final canGoPrevious = currentIndex > 0;
-        final canGoNext = currentIndex < value.length - 1;
-        final canGoLast = currentIndex < value.length - 1;
+        final canGoFirst = enabled && currentIndex > 0;
+        final canGoPrevious = enabled && currentIndex > 0;
+        final canGoNext = enabled && currentIndex < value.length - 1;
+        final canGoLast = enabled && currentIndex < value.length - 1;
 
         return SizedBox(
           height: _stepperHeight,
@@ -399,7 +517,7 @@ class FrameStepper extends HookConsumerWidget {
                             element.element.provider.elementId,
                           ),
                         },
-                        onTap: () => select(frame.id),
+                        onTap: enabled ? () => select(frame.id) : null,
                       );
                     },
                   ),
@@ -449,7 +567,7 @@ class _FrameStep extends StatelessWidget {
   final FoldedFrame frame;
   final bool isSelected;
   final ProviderStatusInFrame? status;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {

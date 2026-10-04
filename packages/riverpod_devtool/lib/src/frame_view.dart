@@ -366,6 +366,7 @@ class _ProviderPickerPanel extends HookConsumerWidget {
             Expanded(
               child: ProviderList(
                 originStates: originStates,
+                showChanges: ref.watch(timeTravelProvider).value ?? false,
                 onSelected: onSelected,
                 selectedId: selectedId,
               ),
