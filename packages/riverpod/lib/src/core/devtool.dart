@@ -21,6 +21,24 @@ part of '../framework.dart';
 /// The devtool should then automatically pick up the stack trace of providers.
 bool debugTrackProviderCreation = false;
 
+/// Whether Riverpod retains previous frames for time-travel debugging.
+///
+/// Defaults to `false`: only a snapshot of currently mounted providers is kept.
+/// Set this to `true` before creating providers to record their entire history,
+/// or enable it later to record from the current snapshot onwards.
+/// Recording history retains provider states in memory. Set this back to `false`
+/// to release that history. This flag has no effect in release mode.
+bool get debugTrackProviderHistory => _debugTrackProviderHistory;
+bool _debugTrackProviderHistory = false;
+set debugTrackProviderHistory(bool value) {
+  if (_debugTrackProviderHistory == value) return;
+  _debugTrackProviderHistory = value;
+  if (kDebugMode && !value) {
+    RiverpodDevtool.instance._compactFrames();
+  }
+  if (kDebugMode) debugPostEvent(NewEventNotification(0));
+}
+
 @internal
 void inspectInIDE(Object? obj) {
   dev.inspect(obj);
@@ -68,8 +86,9 @@ class RiverpodDevtool {
 
   Frame? _pendingFrame;
 
-  final _uniqueOrigins = <ProviderOrFamily, OriginId>{};
-  final _uniqueProviders = <ProviderOrFamily, ProviderId>{};
+  final _uniqueOrigins = Expando<String>();
+  final _origins = <OriginId, WeakReference<ProviderOrFamily>>{};
+  final _uniqueProviders = Expando<String>();
   final frames = <Frame>[];
 
   final _cache = <String, Object?>{};
@@ -89,38 +108,77 @@ class RiverpodDevtool {
 
       void onFrame() {
         frames.add(newFrame);
-        newFrame.index = frames.length - 1;
+        if (debugTrackProviderHistory) {
+          newFrame.index = frames.length - 1;
+        } else {
+          _compactFrames();
+        }
         _pendingFrame = null;
 
         final notification = NewEventNotification(frames.length - 1);
         debugPostEvent(notification);
       }
 
-      container.scheduler.debugScheduleFrame(onFrame);
+      // Container disposal must not cancel the final disposal events.
+      Future.microtask(onFrame);
     }
 
     _pendingFrame!.events.add(event);
   }
 
+  // Fold incremental events into a snapshot without retaining disposed elements
+  // or obsolete states. The snapshot forms frame zero when recording is enabled.
+  void _compactFrames() {
+    if (frames.isEmpty) return;
+    final containers = <ContainerId, ProviderContainerAddEvent>{};
+    final providers = <ElementId, Event>{};
+    final dependencies = <ElementId, ProviderDependencyChangeEvent>{};
+    for (final frame in frames) {
+      for (final event in frame.events) {
+        switch (event) {
+          case ProviderContainerAddEvent():
+            containers[event.containerId] = event;
+          case ProviderContainerDisposeEvent():
+            containers.remove(event.container.id);
+          case ProviderElementAddEvent(:final provider):
+          case ProviderElementUpdateEvent(:final provider):
+            providers[provider.elementId] = event;
+          case ProviderElementDisposeEvent(:final provider):
+            providers.remove(provider.elementId);
+            dependencies.remove(provider.elementId);
+          case ProviderDependencyChangeEvent(:final elementId):
+            dependencies[elementId] = event;
+        }
+      }
+    }
+    final snapshot = Frame(timestamp: frames.last.timestamp)..index = 0;
+    snapshot.events.addAll([
+      ...containers.values,
+      ...providers.values,
+      ...dependencies.entries
+          .where((entry) => providers.containsKey(entry.key))
+          .map((entry) => entry.value),
+    ]);
+    frames
+      ..clear()
+      ..add(snapshot);
+    _origins.removeWhere((key, value) => value.target == null);
+  }
+
   OriginId _originId(ProviderOrFamily origin) {
-    return _uniqueOrigins.putIfAbsent(
-      origin.from ?? origin,
-      () => OriginId(const Uuid().v4()),
-    );
+    final familyOrProvider = origin.from ?? origin;
+    final existing = _uniqueOrigins[familyOrProvider];
+    if (existing != null) return OriginId(existing);
+    final id = OriginId(_uniqueOrigins[familyOrProvider] = const Uuid().v4());
+    _origins[id] = WeakReference(familyOrProvider);
+    return id;
   }
 
   ProviderId _providerId(ProviderOrFamily origin) {
-    return _uniqueProviders.putIfAbsent(
-      origin,
-      () => ProviderId(const Uuid().v4()),
-    );
+    return ProviderId(_uniqueProviders[origin] ??= const Uuid().v4());
   }
 
-  ProviderOrFamily? originFromId(OriginId id) {
-    return _uniqueOrigins.entries
-        .firstWhereOrNull((entry) => entry.value == id)
-        ?.key;
-  }
+  ProviderOrFamily? originFromId(OriginId id) => _origins[id]?.target;
 }
 
 /// ID for [ProviderContainer]
@@ -184,7 +242,9 @@ final class NewEventNotification extends Notification {
 @devtool
 @internal
 class Frame {
-  final DateTime timestamp = DateTime.now();
+  Frame({DateTime? timestamp}) : timestamp = timestamp ?? DateTime.now();
+
+  final DateTime timestamp;
   late final int index;
   final List<Event> events = [];
 }
