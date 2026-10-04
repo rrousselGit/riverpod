@@ -1,7 +1,6 @@
-import 'package:devtools_app_shared/ui.dart';
-import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
+import 'package:material_ui/material_ui.dart';
 
 import 'frames.dart';
 import 'object.dart';
@@ -184,7 +183,9 @@ class _Tile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: selected
-          ? Theme.of(context).colorScheme.selectedRowBackgroundColor
+          ? (Theme.of(context).brightness == Brightness.light
+                ? const Color(0xFFC7C6CA)
+                : const Color(0xFF5E5E62))
           : null,
       child: InkWell(
         onTap: onTap,

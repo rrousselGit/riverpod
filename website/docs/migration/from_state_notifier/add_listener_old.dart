@@ -1,6 +1,6 @@
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:material_ui/material_ui.dart';
 
 /* SNIPPET START */
 class MyNotifier extends StateNotifier<int> {

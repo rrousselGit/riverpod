@@ -16,6 +16,7 @@ dependencies:
   freezed_annotation: ^3.0.0
   hooks_riverpod:
   json_annotation: ^4.9.0
+  material_ui: ^1.0.0
   mockito: ^5.0.0
   path: ^1.9.1
   riverpod:

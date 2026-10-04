@@ -1,6 +1,6 @@
 // ignore_for_file: omit_local_variable_types, prefer_const_constructors, unused_local_variable
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'activity.dart';

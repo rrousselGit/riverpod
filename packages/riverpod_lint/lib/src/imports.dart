@@ -111,8 +111,9 @@ extension ImportFix on DartFileEditBuilder {
   @useResult
   String _importFlutterWidgets(String name) {
     return _importWithPrefix(name, [
+      Uri(scheme: 'package', path: 'cupertino_ui/cupertino_ui.dart'),
       Uri(scheme: 'package', path: 'flutter/cupertino.dart'),
-      Uri(scheme: 'package', path: 'flutter/material.dart'),
+      Uri(scheme: 'package', path: 'material_ui/material_ui.dart'),
       Uri(scheme: 'package', path: 'flutter/widgets.dart'),
     ]);
   }

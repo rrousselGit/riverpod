@@ -28,6 +28,7 @@ dependencies:
   flutter_riverpod: 3.4.3
   flutter_test:
     sdk: flutter
+  material_ui: ^1.0.0
   riverpod: 3.4.3
   state_notifier: ">=0.7.2 <2.0.0"
 
