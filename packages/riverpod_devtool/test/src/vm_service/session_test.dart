@@ -25,6 +25,7 @@ class _SessionEval implements Eval {
   bool failRenewal = false;
   bool expireFetch = false;
   Completer<Byte<VmInstanceRef>>? pendingOpen;
+  Completer<Byte<VmInstanceRef>>? pendingRenewal;
 
   @override
   Future<Byte<VmInstance>> evalInstance(
@@ -73,6 +74,7 @@ class _SessionEval implements Eval {
       return ByteVariable(VmInstanceRef.string('session-${++sessions}'));
     }
     if (code.contains('renewSession')) {
+      if (pendingRenewal case final pending?) return pending.future;
       if (failRenewal) throw StateError('disconnected');
       return ByteVariable(VmInstance.bool(value: valid).ref);
     }
@@ -166,6 +168,40 @@ void main() {
     expect(eval.commands, commands);
   });
 
+  testWidgets('idle heartbeats do not refresh state or notifier consumers', (
+    tester,
+  ) async {
+    final eval = _SessionEval();
+    final container = _container(eval);
+    final builds = <String, int>{};
+    final inspector = FutureProvider.family<String, String>((ref, name) async {
+      final session = await ref.watch(devtoolSessionProvider.future);
+      builds.update(name, (count) => count + 1, ifAbsent: () => 1);
+      return session;
+    });
+    final changes = <String>[];
+    for (final name in ['state', 'notifier']) {
+      container.listen(
+        inspector(name),
+        (_, value) => changes.add('$name:$value'),
+      );
+      expect(await container.read(inspector(name).future), 'session-1');
+    }
+    changes.clear();
+    for (var i = 0; i < 9; i++) {
+      await tester.pump(DevtoolSessionNotifier.heartbeatInterval);
+    }
+    expect(builds, {'state': 1, 'notifier': 1});
+    expect(changes, isEmpty);
+    expect(eval.sessions, 1);
+    expect(
+      eval.commands.where((code) => code.contains('renewSession')).length,
+      9,
+    );
+    container.dispose();
+    await tester.pump();
+  });
+
   testWidgets('an expired lease refreshes consumers with a new session', (
     tester,
   ) async {
@@ -192,14 +228,57 @@ void main() {
     await tester.pump();
   });
 
-  testWidgets('transport failures replace the lease', (tester) async {
+  testWidgets('transient renewal failures keep inspector consumers stable', (
+    tester,
+  ) async {
     final eval = _SessionEval();
     final container = _container(eval);
-    container.listen(devtoolSessionProvider, (_, _) {});
-    await container.read(devtoolSessionProvider.future);
+    var builds = 0;
+    final inspector = FutureProvider((ref) async {
+      await ref.watch(devtoolSessionProvider.future);
+      return ++builds;
+    });
+    container.listen(inspector, (_, _) {});
+    expect(await container.read(inspector.future), 1);
     eval.failRenewal = true;
     await tester.pump(DevtoolSessionNotifier.heartbeatInterval);
-    expect(await container.read(devtoolSessionProvider.future), 'session-2');
+    expect(await container.read(devtoolSessionProvider.future), 'session-1');
+    expect(await container.read(inspector.future), 1);
+    eval.failRenewal = false;
+    await tester.pump(DevtoolSessionNotifier.heartbeatInterval);
+    expect(await container.read(inspector.future), 1);
+    expect(eval.sessions, 1);
+    expect(
+      eval.commands.where((code) => code.contains('renewSession')).length,
+      2,
+    );
+    container.dispose();
+    await tester.pump();
+  });
+
+  testWidgets('a slow heartbeat does not replace the inspected session', (
+    tester,
+  ) async {
+    final eval = _SessionEval();
+    final container = _container(eval);
+    final states = <AsyncValue<String>>[];
+    container.listen(devtoolSessionProvider, (_, next) => states.add(next));
+    expect(await container.read(devtoolSessionProvider.future), 'session-1');
+    states.clear();
+    final response = eval.pendingRenewal = Completer<Byte<VmInstanceRef>>();
+    await tester.pump(DevtoolSessionNotifier.heartbeatInterval);
+    await tester.pump(DevtoolSessionNotifier.heartbeatInterval);
+    expect(container.read(devtoolSessionProvider).requireValue, 'session-1');
+    eval.pendingRenewal = null;
+    await tester.pump(DevtoolSessionNotifier.heartbeatInterval);
+    response.complete(ByteVariable(VmInstance.bool(value: true).ref));
+    await tester.pump();
+    expect(states, isEmpty);
+    expect(eval.sessions, 1);
+    expect(
+      eval.commands.where((code) => code.contains('renewSession')).length,
+      2,
+    );
     container.dispose();
     await tester.pump();
   });

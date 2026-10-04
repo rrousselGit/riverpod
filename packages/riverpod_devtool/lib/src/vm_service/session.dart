@@ -35,11 +35,14 @@ class DevtoolSessionNotifier extends AsyncNotifier<String> {
               isAlive: alive,
             )
             .timeout(heartbeatInterval);
-        if (result.valueOrNull?.valueAsString != 'true' && !alive.disposed) {
+        // Only a confirmed expired lease should replace the session. A
+        // transient VM error must not discard all inspected state/notifiers.
+        if (result.valueOrNull?.valueAsString == 'false' && !alive.disposed) {
           ref.invalidateSelf();
         }
       } catch (_) {
-        if (!alive.disposed) ref.invalidateSelf();
+        // Retry at the next heartbeat. Disconnect/hot restart invalidates the
+        // eval dependency; expired frame exports also reopen the session.
       } finally {
         renewing = false;
       }
