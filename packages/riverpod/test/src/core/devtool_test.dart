@@ -135,7 +135,7 @@ void main() {
     test('expiry preserves explicitly recorded history', () {
       fakeAsync((async) {
         debugTrackProviderHistory = true;
-        final container = ProviderContainer();
+        final container = ProviderContainer.test();
         container.read(Provider((ref) => Object()));
         async.flushMicrotasks();
         final frames = [...devtool.frames];
@@ -179,7 +179,7 @@ void main() {
           debugTrackProviderHistory = recording;
           final notifications = spyPostEvent();
           addTearDown(notifications.dispose);
-          final container = ProviderContainer();
+          final container = ProviderContainer.test();
           final counter = NotifierProvider<_TestNotifier, int>(
             _TestNotifier.new,
           );
@@ -216,8 +216,8 @@ void main() {
     test('waits for every container contributing to the frame', () {
       fakeAsync((async) {
         debugTrackProviderHistory = true;
-        final first = ProviderContainer();
-        final second = ProviderContainer();
+        final first = ProviderContainer.test();
+        final second = ProviderContainer.test();
         final firstVsync = _ManualVsync();
         final secondVsync = _ManualVsync();
         first.scheduler.flutterVsyncs.add(firstVsync);
@@ -252,7 +252,7 @@ void main() {
 
     test('container disposal releases a frame waiting on rebuilds', () {
       fakeAsync((async) {
-        final container = ProviderContainer();
+        final container = ProviderContainer.test();
         final counter = NotifierProvider<_TestNotifier, int>(_TestNotifier.new);
         final complex = Provider((ref) => ref.watch(counter) * 2);
         container.listen(complex, (_, _) {});
@@ -266,7 +266,7 @@ void main() {
         async.flushMicrotasks();
         expect(devtool.frames.single.events, isEmpty);
 
-        final next = ProviderContainer();
+        final next = ProviderContainer.test();
         next.read(Provider((ref) => 42));
         async.flushMicrotasks();
         expect(
@@ -349,7 +349,7 @@ void main() {
 
     test('keeps displayed values until the next snapshot is serialized', () {
       fakeAsync((async) {
-        final container = ProviderContainer();
+        final container = ProviderContainer.test();
         final provider = NotifierProvider<_TestNotifier, int>(
           _TestNotifier.new,
         );
@@ -391,7 +391,7 @@ void main() {
 
     test('retains historical cache values only while tracking history', () {
       fakeAsync((async) {
-        final container = ProviderContainer();
+        final container = ProviderContainer.test();
         async.flushMicrotasks();
         debugTrackProviderHistory = true;
         final historicalKey = devtool.withFrameCache(
@@ -422,7 +422,7 @@ void main() {
       'stop/start while a frame is pending keeps chronological timestamps',
       () {
         fakeAsync((async) {
-          final container = ProviderContainer();
+          final container = ProviderContainer.test();
           final provider = NotifierProvider<_TestNotifier, int>(
             _TestNotifier.new,
           );

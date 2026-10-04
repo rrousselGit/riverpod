@@ -104,7 +104,7 @@ class _FrameService implements vm.VmService {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-ProviderContainer _container(_SessionEval eval) => ProviderContainer(
+ProviderContainer _container(_SessionEval eval) => ProviderContainer.test(
   overrides: [
     hotRestartEventProvider.overrideWith((ref) {}),
     riverpodEvalProvider.overrideWith((ref) => RiverpodEval(eval)),
@@ -117,7 +117,7 @@ void main() {
   ) async {
     final eval = _SessionEval();
     final service = _FrameService();
-    final container = ProviderContainer(
+    final container = ProviderContainer.test(
       overrides: [
         hotRestartEventProvider.overrideWith((ref) {}),
         riverpodEvalProvider.overrideWith((ref) => RiverpodEval(eval)),
@@ -286,7 +286,7 @@ void main() {
   testWidgets('hot restart replaces the session', (tester) async {
     final eval = _SessionEval();
     late Ref restart;
-    final container = ProviderContainer(
+    final container = ProviderContainer.test(
       overrides: [
         hotRestartEventProvider.overrideWith((ref) {
           restart = ref;

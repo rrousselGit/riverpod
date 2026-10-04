@@ -18,7 +18,7 @@ void main() {
     final devtool = RiverpodDevtool.instance;
     final notifications = spyPostEvent();
     final previousTracking = debugTrackProviderHistory;
-    final container = ProviderContainer();
+    final container = ProviderContainer.test();
     addTearDown(() async {
       await tester.pumpWidget(const SizedBox());
       container.dispose();
