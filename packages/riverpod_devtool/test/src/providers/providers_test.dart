@@ -91,6 +91,65 @@ ProviderContainer _createContainer([
 void main() {
   group('provider state', () {
     test(
+      'filtering during snapshot replacement sees the new origins',
+      () async {
+        List<FoldedFrame> snapshot(String id) => foldFrames(const [], [
+          Frame.test(
+            index: 0,
+            events: [_addEvent(elementId: id, originId: id, originLabel: id)],
+          ),
+        ]);
+        final container = _createContainer([
+          framesProvider.overrideWithBuild((ref, self) => snapshot('old')),
+        ]);
+        await _settleProviders(container);
+        final results = <OriginStates>[];
+        final failures = <Object>[];
+        // Read the picker as soon as frames change, before the origins listener
+        // has a chance to update its separately stored state.
+        final frames = container.listen(framesProvider, (_, next) {
+          if (next.isLoading) return;
+          try {
+            results.add(
+              container.read(
+                filteredProvidersProvider((search: '', frame: FrameId(0))),
+              ),
+            );
+          } catch (error) {
+            failures.add(error);
+          }
+        });
+        addTearDown(frames.close);
+        final origins = container.listen(
+          allDiscoveredOriginsProvider,
+          (_, _) {},
+        );
+        addTearDown(origins.close);
+        for (final id in ['new', 'another']) {
+          container.read(framesProvider.notifier).state = AsyncData(
+            snapshot(id),
+          );
+          await container.pump();
+          expect(failures, isEmpty);
+          expect(results.last.keys, [internals.OriginId(id)]);
+          expect(results.last.values.single.foundCount, 1);
+          expect(
+            results
+                .last
+                .values
+                .single
+                .elements
+                .single
+                .element
+                .provider
+                .elementId,
+            internals.ElementId(id),
+          );
+        }
+      },
+    );
+
+    test(
       'selection and origins recover when snapshots discard providers',
       () async {
         List<FoldedFrame> snapshot(List<String> ids) => foldFrames(const [], [
