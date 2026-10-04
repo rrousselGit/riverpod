@@ -981,6 +981,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     bool weak = false,
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately = false,
+    bool pauseWhenInactive = false,
     // Not part of the public "Ref" API
     void Function()? onDependencyMayHaveChanged,
   }) {
@@ -1004,6 +1005,16 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     sub.impl._listenedElement?.addDependentSubscription(sub.impl);
     sub.impl._attachToProviderElement(this);
+
+    if (pauseWhenInactive) {
+      sub.impl.pauseWhenInactive = true;
+
+      // If this provider is currently paused, `onCancel` was already triggered
+      // and will therefore not deactivate this new subscription.
+      // This happens when `listen` is called outside of `build`, such as after
+      // an asynchronous gap or from a method of a Notifier.
+      if (_didCancelOnce && !isActive) sub.impl.deactivate();
+    }
 
     if (kDebugMode) {
       try {

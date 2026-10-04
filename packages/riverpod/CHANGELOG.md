@@ -1,5 +1,10 @@
-## Unreleased fix
+## Unreleased minor
 
+- Added `pauseWhenInactive` to `Ref.listen` (false by default).
+  When enabled, the subscription stops notifying its listener for as long as
+  the provider is paused, and emits the last missed event when it resumes.
+  This is what `Ref.watch` does. `Ref.listen` keeps its current behavior by
+  default, as it is typically used for side-effects. (thanks to @tguerin)
 - Deprecated `Ref.exist`.
 - Added `provider.exist`, which is listenable.
   This enables writing `ref.listen(provider.exist, ...)`.

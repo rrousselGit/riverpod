@@ -243,6 +243,178 @@ void main() {
         expect(tester.takeException(), isNull);
       },
     );
+
+    group('pauseWhenInactive', () {
+      testWidgets('stops notifying `listen` while the widget is not visible', (
+        tester,
+      ) async {
+        final provider = StateProvider((ref) => 0);
+        final defaultEvents = <int>[];
+        final pausedEvents = <int>[];
+
+        // The same instance is reused, as TickerMode changes do not rebuild
+        // Consumers.
+        final consumer = Consumer(
+          builder: (context, ref, _) {
+            ref.listen(provider, (_, next) => defaultEvents.add(next));
+            ref.listen(
+              provider,
+              (_, next) => pausedEvents.add(next),
+              pauseWhenInactive: true,
+            );
+
+            return const SizedBox();
+          },
+        );
+
+        await tester.pumpWidget(
+          ProviderScope(child: TickerMode(enabled: true, child: consumer)),
+        );
+        final container = tester.container();
+
+        container.read(provider.notifier).state = 1;
+
+        expect(defaultEvents, [1]);
+        expect(pausedEvents, [1]);
+
+        await tester.pumpWidget(
+          ProviderScope(child: TickerMode(enabled: false, child: consumer)),
+        );
+
+        container.read(provider.notifier).state = 2;
+        container.read(provider.notifier).state = 3;
+
+        expect(defaultEvents, [1, 2, 3]);
+        expect(pausedEvents, [1]);
+
+        await tester.pumpWidget(
+          ProviderScope(child: TickerMode(enabled: true, child: consumer)),
+        );
+
+        // Only the last missed event is emitted.
+        expect(pausedEvents, [1, 3]);
+
+        container.read(provider.notifier).state = 4;
+
+        expect(pausedEvents, [1, 3, 4]);
+      });
+
+      testWidgets(
+        'stops notifying `listenManual` while the widget is not visible',
+        (tester) async {
+          final provider = StateProvider((ref) => 0);
+          final events = <int>[];
+
+          final consumer = Consumer(
+            builder: (context, ref, _) {
+              ref.listenManual(
+                provider,
+                (_, next) => events.add(next),
+                pauseWhenInactive: true,
+              );
+
+              return const SizedBox();
+            },
+          );
+
+          await tester.pumpWidget(
+            ProviderScope(child: TickerMode(enabled: true, child: consumer)),
+          );
+          final container = tester.container();
+
+          await tester.pumpWidget(
+            ProviderScope(child: TickerMode(enabled: false, child: consumer)),
+          );
+
+          container.read(provider.notifier).state = 1;
+
+          expect(events, isEmpty);
+
+          await tester.pumpWidget(
+            ProviderScope(child: TickerMode(enabled: true, child: consumer)),
+          );
+
+          expect(events, [1]);
+        },
+      );
+
+      testWidgets('pauses subscriptions created while not visible', (
+        tester,
+      ) async {
+        final provider = StateProvider((ref) => 0);
+        final events = <int>[];
+
+        Widget consumer() {
+          return Consumer(
+            builder: (context, ref, _) {
+              ref.listen(
+                provider,
+                (_, next) => events.add(next),
+                pauseWhenInactive: true,
+              );
+
+              return const SizedBox();
+            },
+          );
+        }
+
+        await tester.pumpWidget(
+          ProviderScope(child: TickerMode(enabled: false, child: consumer())),
+        );
+        final container = tester.container();
+
+        container.read(provider.notifier).state = 1;
+
+        expect(events, isEmpty);
+
+        // A new Consumer instance, to rebuild the widget while still not
+        // visible. The recreated subscription must be paused too.
+        await tester.pumpWidget(
+          ProviderScope(child: TickerMode(enabled: false, child: consumer())),
+        );
+
+        container.read(provider.notifier).state = 2;
+
+        expect(events, isEmpty);
+      });
+
+      testWidgets('closing a paused subscription is a no-op', (tester) async {
+        final provider = StateProvider((ref) => 0);
+        final events = <int>[];
+        late ProviderSubscription<int> sub;
+
+        final consumer = Consumer(
+          builder: (context, ref, _) {
+            sub = ref.listenManual(
+              provider,
+              (_, next) => events.add(next),
+              pauseWhenInactive: true,
+            );
+
+            return const SizedBox();
+          },
+        );
+
+        await tester.pumpWidget(
+          ProviderScope(child: TickerMode(enabled: true, child: consumer)),
+        );
+        final container = tester.container();
+
+        await tester.pumpWidget(
+          ProviderScope(child: TickerMode(enabled: false, child: consumer)),
+        );
+
+        sub.close();
+        container.read(provider.notifier).state = 1;
+
+        await tester.pumpWidget(
+          ProviderScope(child: TickerMode(enabled: true, child: consumer)),
+        );
+
+        expect(events, isEmpty);
+        expect(tester.takeException(), isNull);
+      });
+    });
   });
 
   testWidgets('Riverpod test', (tester) async {
