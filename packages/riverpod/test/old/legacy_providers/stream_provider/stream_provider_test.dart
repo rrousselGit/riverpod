@@ -567,7 +567,7 @@ void main() {
         final error = Error();
         final stream = StreamProvider<int>((ref) => const Stream.empty());
 
-        final container = ProviderContainer(
+        final container = ProviderContainer.test(
           overrides: [
             stream.overrideWithValue(AsyncValue.error(error, StackTrace.empty)),
           ],
@@ -760,7 +760,7 @@ void main() {
     group('from StreamProvider.overrideWithValue', () {
       test('read currentValue before first value', () async {
         final provider = StreamProvider<int>((_) async* {});
-        final container = ProviderContainer(
+        final container = ProviderContainer.test(
           overrides: [provider.overrideWithValue(const AsyncValue.loading())],
         );
 
@@ -776,7 +776,7 @@ void main() {
 
       test('read currentValue before after value', () async {
         final provider = StreamProvider<int>((_) async* {});
-        final container = ProviderContainer(
+        final container = ProviderContainer.test(
           overrides: [provider.overrideWithValue(const AsyncValue.loading())],
         );
 
@@ -792,7 +792,7 @@ void main() {
 
       test('read currentValue before first error', () async {
         final provider = StreamProvider<int>((_) async* {});
-        final container = ProviderContainer(
+        final container = ProviderContainer.test(
           overrides: [provider.overrideWithValue(const AsyncValue.loading())],
         );
 
@@ -810,7 +810,7 @@ void main() {
 
       test('read currentValue before after error', () async {
         final provider = StreamProvider<int>((_) async* {});
-        final container = ProviderContainer(
+        final container = ProviderContainer.test(
           overrides: [provider.overrideWithValue(const AsyncValue.loading())],
         );
 
@@ -828,7 +828,7 @@ void main() {
 
       test('synchronous first event', () async {
         final provider = StreamProvider<int>((_) async* {});
-        final container = ProviderContainer(
+        final container = ProviderContainer.test(
           overrides: [provider.overrideWithValue(const AsyncValue.data(42))],
         );
 

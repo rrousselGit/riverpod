@@ -3,12 +3,13 @@
 import 'dart:math' as math;
 
 import 'package:collection/collection.dart';
+import 'package:devtools_app_shared/service.dart' show CancelledException;
 import 'package:devtools_app_shared/utils.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 // ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
+import 'package:material_ui/material_ui.dart';
 
 import 'collection.dart';
 import 'elements.dart';
@@ -181,15 +182,20 @@ final class FoldedFrame {
 }
 
 class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
+  List<FoldedFrame>? _lastFrames;
   @override
   Future<List<FoldedFrame>> build() async {
     // On hot-restart, clear the frames list.
     ref.watch(hotRestartEventProvider);
-
-    final service = await ref.watch(vmServiceProvider.future);
-
-    final riverpodEval = await ref.watch(riverpodEvalProvider.future);
+    _lastFrames = null;
     final isAlive = ref.disposable();
+    final sessionFuture = ref.watch(devtoolSessionProvider.future);
+    final serviceFuture = ref.watch(vmServiceProvider.future);
+    final evalFuture = ref.watch(riverpodEvalProvider.future);
+    final sessionId = await sessionFuture;
+    final service = await serviceFuture;
+    final riverpodEval = await evalFuture;
+    if (isAlive.disposed) throw CancelledException();
 
     final sub = service.onNotification
         // Using asyncMap to ensure that notifications are processed in order
@@ -199,48 +205,53 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
             case internals.NewEventNotification():
               await _fetchNewNotifications(
                 event,
+                sessionId: sessionId,
                 riverpodEval: riverpodEval,
                 isAlive: isAlive,
               );
           }
         })
-        .listen((_) {});
+        .listen(
+          (_) {},
+          onError: (Object error, StackTrace stackTrace) {
+            if (isAlive.disposed || error is CancelledException) return;
+            state = AsyncError(error, stackTrace);
+          },
+        );
     ref.onDispose(sub.cancel);
 
-    final rawFrames = await _evalFrames(riverpodEval, isAlive);
-    final firstFrame = rawFrames.firstOrNull;
-    if (firstFrame == null) return const [];
-
-    final mappedFrames = List.filled(
-      rawFrames.length,
-      FoldedFrame(frame: firstFrame, previous: null, newFrames: rawFrames),
+    final rawFrames = await _evalFrames(
+      riverpodEval,
+      isAlive,
+      sessionId: sessionId,
     );
-    for (var i = 1; i < rawFrames.length; i++) {
-      final previous = mappedFrames[i - 1];
-      final rawFrame = rawFrames[i];
-
-      mappedFrames[i] = FoldedFrame(
-        frame: rawFrame,
-        previous: previous,
-        newFrames: rawFrames,
-      );
-    }
-
-    return mappedFrames;
+    return _lastFrames = foldFrames(const [], rawFrames);
   }
 
   Future<List<Frame>> _evalFrames(
     Eval eval,
     Disposable isAlive, {
+    required String sessionId,
     int startIndex = 0,
   }) async {
     final code = encodeList(
-      'RiverpodDevtool.instance.frames.sublist($startIndex)',
+      'RiverpodDevtool.instance.frames.skip('
+      'RiverpodDevtool.instance.frames.length == 1 ? 0 : $startIndex)',
       (e, path) => "$e.toBytes(path: '$path')",
       path: 'root',
     );
 
-    final instanceByte = await eval.evalInstance(code, isAlive: isAlive);
+    final instanceByte = await eval.evalInstance(
+      'RiverpodDevtool.instance.withFrameCache("$sessionId", () => $code)',
+      isAlive: isAlive,
+    );
+    if (isAlive.disposed) throw CancelledException();
+    if (instanceByte case ByteError(error: ExpiredDevtoolSessionType())) {
+      // A throttled/suspended tab can miss heartbeats. Opening a new session
+      // rebuilds this provider and fetches the full current snapshot.
+      ref.invalidate(devtoolSessionProvider);
+      throw CancelledException();
+    }
     // TODO remove require
     final instance = instanceByte.require.instance;
     final map = Map.fromEntries(
@@ -257,37 +268,84 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
 
   Future<void> _fetchNewNotifications(
     internals.NewEventNotification notification, {
+    required String sessionId,
     required Eval riverpodEval,
     required Disposable isAlive,
   }) async {
-    final frames = state.value ?? await future;
-    final alreadyHasNewFrame = notification.offset <= frames.length - 1;
+    final frames = state.value ?? _lastFrames ?? await future;
+    final replacesHistory = notification.offset == 0;
+    final alreadyHasNewFrame =
+        !state.hasError &&
+        !replacesHistory &&
+        notification.offset <= frames.length - 1;
     if (alreadyHasNewFrame) return;
 
     final newFrames = await _evalFrames(
       riverpodEval,
       isAlive,
-      startIndex: math.max(frames.length, 0),
+      sessionId: sessionId,
+      startIndex: replacesHistory ? 0 : frames.length,
     );
 
-    final previousFrames = frames;
-    FoldedFrame? lastFrame;
-    state = AsyncData(
-      List.generate(previousFrames.length + newFrames.length, (index) {
-        FoldedFrame result;
-        if (index < previousFrames.length) {
-          result = previousFrames[index];
-        } else {
-          result = FoldedFrame(
-            frame: newFrames[index - previousFrames.length],
-            previous: lastFrame,
-            newFrames: newFrames,
-          );
-        }
+    state = AsyncData(_lastFrames = foldFrames(frames, newFrames));
+  }
+}
 
-        return lastFrame = result;
-      }, growable: false),
+/// A frame at index zero replaces the baseline when history is not retained.
+List<FoldedFrame> foldFrames(
+  List<FoldedFrame> previousFrames,
+  List<Frame> newFrames,
+) {
+  final result = newFrames.firstOrNull?.index == 0
+      ? <FoldedFrame>[]
+      : [...previousFrames];
+  for (final frame in newFrames) {
+    result.add(
+      FoldedFrame(
+        frame: frame,
+        previous: result.lastOrNull,
+        newFrames: newFrames,
+      ),
     );
+  }
+  return result;
+}
+
+final timeTravelProvider =
+    AsyncNotifierProvider.autoDispose<TimeTravelNotifier, bool>(
+      TimeTravelNotifier.new,
+    );
+
+class TimeTravelNotifier extends AsyncNotifier<bool> {
+  @override
+  Future<bool> build() async {
+    // Re-read the application's flag after frames change, including changes
+    // made directly through debugTrackProviderHistory and hot restarts.
+    ref.watch(framesProvider);
+    final isAlive = ref.disposable();
+    final eval = await ref.watch(riverpodEvalProvider.future);
+    final result = await eval.eval(
+      'debugTrackProviderHistory',
+      isAlive: isAlive,
+    );
+    return result.require.instance.valueAsString == 'true';
+  }
+
+  Future<void> setEnabled(bool enabled) async {
+    // Changing the flag emits a frame notification, which can rebuild this
+    // provider before the assignment's VM response arrives.
+    final isAlive = Disposable();
+    try {
+      final eval = await ref.read(riverpodEvalProvider.future);
+      final result = await eval.eval(
+        'debugTrackProviderHistory = $enabled',
+        isAlive: isAlive,
+      );
+      result.require;
+      if (ref.mounted) ref.invalidateSelf();
+    } finally {
+      isAlive.dispose();
+    }
   }
 }
 
@@ -298,6 +356,86 @@ class FrameStepper extends HookConsumerWidget {
     required this.selectedFrame,
     required this.selectedElement,
   });
+
+  final void Function(FrameId frame) onSelect;
+  final FoldedFrame? selectedFrame;
+  final FilteredElement? selectedElement;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tracking = ref.watch(timeTravelProvider);
+    final busy = useState(false);
+    final enabled = tracking.value ?? false;
+    final canToggle = !busy.value && tracking.hasValue && !tracking.hasError;
+
+    return Row(
+      children: [
+        Tooltip(
+          message: enabled
+              ? 'Stop time travel and discard previous frames'
+              : 'Start time travel and record future frames',
+          child: IconButton(
+            style: IconButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              side: BorderSide.none,
+              elevation: 0,
+            ),
+            iconSize: 20,
+            padding: const EdgeInsets.all(4),
+            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+            icon: Icon(enabled ? Icons.stop : Icons.play_arrow),
+            onPressed: !canToggle
+                ? null
+                : () async {
+                    busy.value = true;
+                    try {
+                      await ref
+                          .read(timeTravelProvider.notifier)
+                          .setEnabled(!enabled);
+                    } catch (error) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Could not change time travel: $error',
+                            ),
+                          ),
+                        );
+                      }
+                    } finally {
+                      if (context.mounted) busy.value = false;
+                    }
+                  },
+          ),
+        ),
+        Expanded(
+          child: Opacity(
+            opacity: enabled ? 1 : 0.4,
+            child: IgnorePointer(
+              ignoring: !enabled,
+              child: _FrameTimeline(
+                enabled: enabled,
+                onSelect: onSelect,
+                selectedFrame: selectedFrame,
+                selectedElement: selectedElement,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _FrameTimeline extends HookConsumerWidget {
+  const _FrameTimeline({
+    required this.enabled,
+    required this.onSelect,
+    required this.selectedFrame,
+    required this.selectedElement,
+  });
+
+  final bool enabled;
 
   static const _stepperHeight = 50.0;
 
@@ -354,10 +492,10 @@ class FrameStepper extends HookConsumerWidget {
         );
 
         final currentIndex = value.indexOf(selectedFrame!);
-        final canGoFirst = currentIndex > 0;
-        final canGoPrevious = currentIndex > 0;
-        final canGoNext = currentIndex < value.length - 1;
-        final canGoLast = currentIndex < value.length - 1;
+        final canGoFirst = enabled && currentIndex > 0;
+        final canGoPrevious = enabled && currentIndex > 0;
+        final canGoNext = enabled && currentIndex < value.length - 1;
+        final canGoLast = enabled && currentIndex < value.length - 1;
 
         return SizedBox(
           height: _stepperHeight,
@@ -398,7 +536,7 @@ class FrameStepper extends HookConsumerWidget {
                             element.element.provider.elementId,
                           ),
                         },
-                        onTap: () => select(frame.id),
+                        onTap: enabled ? () => select(frame.id) : null,
                       );
                     },
                   ),
@@ -448,7 +586,7 @@ class _FrameStep extends StatelessWidget {
   final FoldedFrame frame;
   final bool isSelected;
   final ProviderStatusInFrame? status;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {

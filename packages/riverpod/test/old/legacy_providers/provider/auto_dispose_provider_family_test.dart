@@ -84,7 +84,7 @@ void main() {
         return '$value';
       });
       final listener = Listener<String>();
-      final container = ProviderContainer(
+      final container = ProviderContainer.test(
         overrides: [
           provider.overrideWith((ref, value) {
             ref.onDispose(onDispose.call);

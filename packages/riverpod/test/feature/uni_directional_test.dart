@@ -99,7 +99,7 @@ void main() {
     test('direct dependency', () {
       final provider = Provider((ref) => ref);
       final provider2 = Provider((ref) => ref);
-      final container = ProviderContainer();
+      final container = ProviderContainer.test();
 
       final ref = container.read(provider);
       final ref2 = container.read(provider2);
@@ -116,7 +116,7 @@ void main() {
       final provider2 = Provider((ref) => ref);
       final provider3 = Provider((ref) => ref);
       final provider4 = Provider((ref) => ref);
-      final container = ProviderContainer();
+      final container = ProviderContainer.test();
 
       final ref = container.read(provider);
       final ref2 = container.read(provider2);
@@ -168,7 +168,7 @@ void main() {
     test('direct dependency', () {
       final provider = Provider((ref) => ref);
       final provider2 = Provider((ref) => ref);
-      final container = ProviderContainer();
+      final container = ProviderContainer.test();
 
       final ref = container.read(provider);
       final ref2 = container.read(provider2);
@@ -184,7 +184,7 @@ void main() {
       final provider2 = Provider((ref) => ref);
       final provider3 = Provider((ref) => ref);
       final provider4 = Provider((ref) => ref);
-      final container = ProviderContainer();
+      final container = ProviderContainer.test();
 
       final ref = container.read(provider);
       final ref2 = container.read(provider2);

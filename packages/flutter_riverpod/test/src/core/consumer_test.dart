@@ -2,10 +2,10 @@
 
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/src/internals.dart' show ProviderScopeState;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/src/internals.dart'
     show ContainerReadElement, InternalProviderContainer;
@@ -906,7 +906,7 @@ void main() {
   });
 
   testWidgets('Dependencies are closed even if dispose throws', (tester) async {
-    final container = ProviderContainer();
+    final container = ProviderContainer.test();
     var show = true;
 
     await tester.pumpWidget(

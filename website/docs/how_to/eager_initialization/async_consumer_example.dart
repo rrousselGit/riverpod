@@ -1,7 +1,7 @@
 // ignore_for_file: unused_element
 
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 
 final myProvider = FutureProvider<int>((ref) => 0);
 

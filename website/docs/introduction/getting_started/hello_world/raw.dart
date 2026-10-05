@@ -2,8 +2,8 @@
 
 /* SNIPPET START */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 
 // {@template helloWorld}
 // We create a "provider", which will store a value (here "Hello world").

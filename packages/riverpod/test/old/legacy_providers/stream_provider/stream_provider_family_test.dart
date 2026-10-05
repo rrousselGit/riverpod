@@ -96,7 +96,7 @@ void main() {
       final provider = StreamProvider.family<String, int>((ref, a) {
         return Stream.value('$a');
       });
-      final container = ProviderContainer(
+      final container = ProviderContainer.test(
         overrides: [
           provider.overrideWith((ref, a) => Stream.value('override $a')),
         ],
