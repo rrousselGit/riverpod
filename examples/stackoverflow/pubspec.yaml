@@ -9,7 +9,7 @@ environment:
 resolution: workspace
 
 dependencies:
-  dio: 5.10.0
+  dio: 5.11.1
   flutter:
     sdk: flutter
   flutter_hooks: ^0.21.2
@@ -17,6 +17,7 @@ dependencies:
   hooks_riverpod:
   html: ^0.15.0
   json_annotation: ^4.9.0
+  material_ui: ^1.0.0
   riverpod_annotation:
 
 dev_dependencies:

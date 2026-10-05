@@ -29,16 +29,21 @@ $TodoCopyWith<Todo> get copyWith => _$TodoCopyWithImpl<Todo>(this as Todo, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Todo&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.completed, completed) || other.completed == completed));
+  final _this = this as Todo;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Todo&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.completed, _this.completed) || other.completed == _this.completed));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,completed);
+int get hashCode {
+  final _this = this as Todo;
+  return Object.hash(runtimeType,_this.id,_this.title,_this.completed);
+}
 
 @override
 String toString() {
-  return 'Todo(id: $id, title: $title, completed: $completed)';
+  final _this = this as Todo;
+  return 'Todo(id: ${_this.id}, title: ${_this.title}, completed: ${_this.completed})';
 }
 
 
@@ -232,16 +237,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Todo&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.completed, completed) || other.completed == completed));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Todo&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.completed, completed) || other.completed == completed));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,completed);
+int get hashCode {
+    return Object.hash(runtimeType,id,title,completed);
+}
 
 @override
 String toString() {
-  return 'Todo(id: $id, title: $title, completed: $completed)';
+    return 'Todo(id: $id, title: $title, completed: $completed)';
 }
 
 

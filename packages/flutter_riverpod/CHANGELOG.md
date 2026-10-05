@@ -1,9 +1,17 @@
-## Unreleased
+## Unreleased minor
 
+- Migrated Material imports to `package:material_ui/material_ui.dart` and added
+  `material_ui` as a dependency.
+- Updated the DevTools extension to use Material UI themes and localizations.
 - Fixes errors emitted by a watched provider after the initial build (such as
   those produced by automatic retries) being incorrectly reported as uncaught
   to the zone instead of letting the widget handle them. The widget now rebuilds
   so the error is rethrown by `ref.watch` during `build`. (#4432)
+
+## 3.4.3 - 2026-09-04
+### Dependency changes
+
+- `riverpod` upgraded to `3.4.3`
 
 ## 3.4.2 - 2026-07-28
 
@@ -1610,4 +1618,3 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-

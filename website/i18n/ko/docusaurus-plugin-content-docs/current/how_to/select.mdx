@@ -1,0 +1,79 @@
+---
+title: provider/위젯의 다시 빌드를 줄이는 방법
+version: 1
+---
+
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import select from "/docs/how_to/select/select";
+import selectAsync from "/docs/how_to/select/select_async";
+
+지금까지 살펴본 내용만으로도 완전히 동작하는 애플리케이션을 만들 수 있습니다.
+다만 성능에 대해서는 궁금한 점이 남아 있을 수 있습니다.
+
+이 페이지에서는 코드를 최적화하는 데 도움이 될 만한 몇 가지 팁을 소개합니다.
+
+:::caution 주의
+최적화를 하기 전에 반드시 애플리케이션의 성능을 측정하세요.
+최적화로 늘어나는 복잡성에 비해 얻는 이득이 미미할 수도 있습니다.
+:::
+
+## "select"로 위젯/provider의 다시 빌드 걸러내기 {#filtering-widgetprovider-rebuild-using-select}
+
+눈치채셨겠지만, 기본적으로 `ref.watch`를 사용하면 객체의 속성 중
+_하나라도_ 바뀔 때마다 consumer/provider가 다시 빌드됩니다.  
+예를 들어 `User`를 구독하면서 "name"만 사용하더라도,
+"age"가 바뀌면 consumer가 다시 빌드됩니다.
+
+하지만 consumer가 속성의 일부만 사용한다면,
+나머지 속성이 바뀔 때는 위젯을 다시 빌드하고 싶지 않을 것입니다.
+
+이럴 때 provider의 `select` 기능을 사용하면 됩니다.  
+그러면 `ref.watch`는 객체 전체가 아니라
+선택한 속성만 반환합니다.  
+그리고 consumer/provider는 선택한 속성이 바뀔 때만 다시 빌드됩니다.
+
+<AutoSnippet
+  {...select}
+  translations={{
+    watch: `    // 다음과 같이 쓰는 대신:
+    // String name = ref.watch(provider).firstName!;
+    // 이렇게 쓸 수 있습니다:`,
+    note: `    // 이렇게 하면 위젯은 "firstName"의 변경만 구독합니다.`,
+  }}
+/>
+
+:::info
+`select`는 원하는 만큼 여러 번 호출할 수 있습니다.
+필요한 속성마다 한 번씩 호출해도 됩니다.
+:::
+
+:::caution 주의
+선택한 속성은 불변이어야 합니다.
+`List`를 반환한 뒤 그 리스트를 변경해도 다시 빌드가 일어나지 않습니다.
+:::
+
+:::caution 주의
+`select`를 사용하면 개별 읽기 작업이 약간 느려지고
+코드도 아주 조금 더 복잡해집니다.
+"나머지 속성"이 거의 바뀌지 않는다면 굳이 사용할 필요가 없을 수도 있습니다.
+:::
+
+### 비동기 속성 선택하기 {#selecting-asynchronous-properties}
+
+다른 provider를 구독하는 provider를 최적화하려는 경우,
+그 다른 provider는 비동기일 가능성이 높습니다.
+
+보통은 `ref.watch(anotherProvider.future)`로 값을 얻습니다.  
+문제는 `select`가 `AsyncValue`에 적용된다는 점입니다. `AsyncValue`는 await할 수 없습니다.
+
+이럴 때는 대신 `selectAsync`를 사용하면 됩니다. 비동기 코드 전용 기능으로,
+provider가 내보내는 데이터에 대해 `select` 작업을 수행할 수 있게 해 줍니다.  
+사용법은 `select`와 비슷하지만, 대신 `Future`를 반환합니다.
+
+<AutoSnippet
+  {...selectAsync}
+  translations={{
+    watch: `  // 사용자를 사용할 수 있을 때까지 기다린 뒤, "firstName" 속성만 구독합니다`,
+    todo: `  // TODO "firstName"을 사용해 다른 데이터를 가져오기`,
+  }}
+/>

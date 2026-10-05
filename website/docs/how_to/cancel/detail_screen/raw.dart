@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:material_ui/material_ui.dart';
 
 /* SNIPPET START */
 class Activity {
@@ -18,7 +18,7 @@ class Activity {
       activity: json['activity']! as String,
       type: json['type']! as String,
       participants: json['participants']! as int,
-      price: json['price']! as double,
+      price: (json['price']! as num).toDouble(),
     );
   }
 

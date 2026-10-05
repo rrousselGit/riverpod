@@ -12,6 +12,7 @@ part 'notifier/family.dart';
 /// A base class for [$Notifier].
 /// Not meant for public consumption.
 @publicInCodegen
+@internal
 abstract class $Notifier<StateT> extends $SyncNotifierBase<StateT> {
   /// The value currently exposed by this [Notifier].
   ///
@@ -36,6 +37,7 @@ abstract class $Notifier<StateT> extends $SyncNotifierBase<StateT> {
 /// An implementation detail of `riverpod_generator`.
 /// Do not use.
 @publicInCodegen
+@internal
 abstract base class $NotifierProvider //
 <NotifierT extends $Notifier<StateT>, StateT>
     extends $ClassProvider<NotifierT, StateT, StateT, StateT> {

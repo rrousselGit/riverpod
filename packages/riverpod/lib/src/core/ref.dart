@@ -174,10 +174,12 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     }
 
     final queue = Queue<ProviderElement>();
+    final visited = <ProviderElement>{};
     _element.visitChildren(queue.add);
 
     while (queue.isNotEmpty) {
       final current = queue.removeFirst();
+      if (!visited.add(current)) continue;
       current.visitChildren(queue.add);
 
       if (current.origin == dependency) {
@@ -646,6 +648,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// });
   /// ```
   /// {@endtemplate}
+  @Deprecated('Use `ref.read/watch/listen(provider.exist)` instead')
   @override
   bool exists(ProviderBase<Object?> provider) {
     _throwIfInvalidUsage();

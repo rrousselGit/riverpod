@@ -8,10 +8,11 @@ environment:
 resolution: workspace
 
 dependencies:
-  dio: 5.10.0
+  dio: 5.11.1
   flutter:
     sdk: flutter
   flutter_riverpod:
+  material_ui: ^1.0.0
 
 flutter:
   uses-material-design: true

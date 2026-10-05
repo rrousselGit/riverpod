@@ -1,0 +1,404 @@
+---
+title: Ref
+---
+import { Link } from "/src/components/Link";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+
+Ref는 <Link documentID="concepts2/providers"/>와 상호작용하는 기본 수단입니다.  
+Flutter의 `BuildContext`와 꽤 비슷하지만, 위젯이 아니라 provider를 위한 것입니다.
+ref로 할 수 있는 일을 몇 가지 꼽으면 다음과 같습니다.
+- provider의 상태 읽기/관찰
+- provider가 현재 로드되었는지 확인
+- provider의 상태 초기화
+
+그 밖에도 [Ref]를 통해 provider는 자기 상태의 생명주기를 관찰할 수 있습니다.
+provider용 "initState"와 "dispose"라고 생각하면 됩니다. 다음과 같은 메서드가 있습니다.
+- [onDispose]
+- [onCancel]
+
+- 등
+
+## [Ref] 얻기 {#how-to-obtain-a-ref}
+
+[Ref]를 얻는 방법은 앱의 어느 위치에 있느냐에 따라 다릅니다.
+
+provider는 기본적으로 Ref에 접근할 수 있습니다. 초기화 함수의 매개변수나
+Notifier 클래스의 프로퍼티로 제공됩니다.
+
+<AutoSnippet
+  codegen={`
+  @riverpod
+  int myProvider(Ref ref) {
+    // 여기서 ref를 사용할 수 있습니다
+    ...
+  }
+  
+  @riverpod
+  class MyNotifier extends _$MyNotifier {
+    @override
+    int build() {
+      // Notifier 안에서는 어디서든 this.ref를 사용할 수 있습니다
+      ref.watch(someProvider);
+      ...
+    }
+  }
+  `}
+  raw={`
+  final myProvider = Provider<int>((ref) {
+    // 여기서 ref를 사용할 수 있습니다
+    ...
+  });
+  
+  final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
+  
+  class MyNotifier extends Notifier<int> {
+    @override
+    int build() {
+      // Notifier 안에서는 어디서든 this.ref를 사용할 수 있습니다
+      ref.watch(someProvider);
+      ...
+    }
+  }
+  `}
+/>
+
+위젯 안에서 [Ref]를 얻으려면 <Link documentID="concepts2/consumers"/>가 필요합니다.
+
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    // 여기서 ref를 사용할 수 있습니다
+    final value = ref.watch(myProvider);
+    return Text('$value');
+  },
+);
+```
+
+**위젯 안도, provider 안도 아닌 곳에서는 Ref를 어떻게 얻나요?**  
+위젯이나 provider 안이 아니더라도, 지금 사용하는 코드는 대개
+어떤 식으로든 위젯이나 provider와 느슨하게 연결되어 있습니다.
+
+그럴 때는 위젯이나 provider에서 얻은 ref를 원하는 함수나 객체에 그대로 넘기면 됩니다.
+
+```dart
+void myFunction(WidgetRef ref) {
+  // ref를 다른 곳으로 넘길 수 있습니다!
+}
+
+...
+
+Consumer(
+  builder: (context, ref, _) {
+    return ElevatedButton(
+      onPressed: () => myFunction(ref), // ref를 함수에 넘깁니다
+      child: Text('Click me'),
+    );
+  },
+);
+```
+
+## Ref로 provider와 상호작용하기 {#using-refs-to-interact-with-providers}
+
+provider와의 상호작용은 크게 두 가지로 나뉩니다.
+- provider의 상태 수신하기
+- provider의 상태 변경하기
+  (예: 초기화, 업데이트 등)
+
+### provider의 상태 수신하기 {#listening-to-a-providers-state}
+
+Riverpod은 provider의 상태를 수신하는 두 가지 방법을 제공합니다.
+- [Ref.watch] - provider를 "선언적"으로 수신하는 방법입니다.  
+  가장 흔히 쓰는 방법이며, 기본적으로 이것을 선택하면 됩니다.
+- [Ref.listen] - provider를 "수동"으로 수신하는 방법입니다.  
+  익숙한 "addListener" 스타일을 사용합니다. 강력하지만 더 복잡합니다.
+
+아래 예제에서는 매초 업데이트되는 provider를 사용합니다.
+
+<AutoSnippet
+  codegen={`
+  @riverpod
+  class Tick extends _$Tick {
+    @override
+    int build() {
+      final timer = Timer.periodic(Duration(seconds: 1), (_) => state++);
+      ref.onDispose(timer.cancel);
+      return 0;
+    }
+  }
+  `}
+  raw={`
+  final tickProvider = NotifierProvider<Tick, int>(Tick.new);
+  class Tick extends Notifier<int> {
+    @override
+    int build() {
+      final timer = Timer.periodic(Duration(seconds: 1), (_) => state++);
+      ref.onDispose(timer.cancel);
+      return 0;
+    }
+  }
+  `}
+/>
+
+#### Ref.watch {#refwatch}
+
+[Ref.watch]는 Riverpod을 대표하는 기능입니다. provider들을 매끄럽게 조합하고,
+provider의 상태가 바뀔 때 UI를 손쉽게 업데이트할 수 있게 해 줍니다.
+
+[Ref.watch]는 Flutter의 `InheritedWidget`과 비슷합니다.
+Flutter에서 `Theme.of(context)`를 호출하면 위젯이 `Theme`을 구독하고,
+`Theme`이 바뀔 때마다 다시 빌드됩니다. 마찬가지로 `ref.watch(myProvider)`를 호출하면
+위젯이나 provider가 `myProvider`를 구독하고, `myProvider`가 바뀔 때마다 다시 빌드됩니다.
+
+다음 코드는 `Tick` provider가 업데이트될 때마다 자동으로 갱신되는 <Link documentID="concepts2/consumers"/>를 보여 줍니다.
+
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    final tick = ref.watch(tickProvider);
+    return Text('Tick: $tick');
+  },
+);
+```
+
+[Ref.watch]의 가장 흥미로운 점은 provider에서도 쓸 수 있다는 것입니다!  
+예를 들어 "tick이 4로 나누어떨어지는가?"를 반환하는 provider를 만들 수 있습니다.
+
+<AutoSnippet
+  codegen={`
+  @riverpod
+  bool isDivisibleBy4(Ref ref) {
+    final tick = ref.watch(tickProvider);
+    return tick % 4 == 0;
+  }
+  `}
+  raw={`
+  final isDivisibleBy4Provider = Provider<bool>((ref) {
+    final tick = ref.watch(tickProvider);
+    return tick % 4 == 0;
+  });
+  `}
+/>
+
+그런 다음 UI에서는 이 새 provider를 대신 수신하면 됩니다.
+
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    final isDivisibleBy4 = ref.watch(isDivisibleBy4Provider);
+    return Text('Can tick be divided by 4? ${isDivisibleBy4}');
+  },
+);
+```
+
+이제 UI는 매초 업데이트되지 않고,
+불리언 값이 바뀔 때만 업데이트됩니다.  
+
+#### Ref.listen {#reflisten}
+
+[Ref.listen]은 provider를 좀 더 수동으로 수신하는 방법입니다.
+`ChangeNotifier`의 `addListener` 메서드나 `Stream.listen` 메서드와 비슷합니다.
+
+이 메서드는 provider의 상태가 바뀔 때 부수 효과를 실행하고 싶을 때 유용합니다. 예를 들면 다음과 같습니다.
+- 다이얼로그 표시
+- 새 화면으로 이동
+- 메시지 로깅
+- 등
+
+<AutoSnippet
+  codegen={`
+  @riverpod
+  int example(Ref ref) {
+    ref.listen(tickProvider, (previous, next) {
+      // tickProvider가 바뀔 때마다 호출됩니다
+      print('Tick changed from $previous to $next');
+    });
+  
+    return 0;
+  }
+  `}
+  raw={`
+  final exampleProvider = Provider<int>((ref) {
+    ref.listen(tickProvider, (previous, next) {
+      // tickProvider가 바뀔 때마다 호출됩니다
+      print('Tick changed from $previous to $next');
+    });
+  
+    return 0;
+  });
+  `}
+/>
+
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    ref.listen(tickProvider, (previous, next) {
+      // tickProvider가 바뀔 때마다 호출됩니다
+      print('Tick changed from $previous to $next');
+    });
+  
+    return Text('Listening to tick changes');
+  },
+);
+```
+
+:::note 참고
+위젯의 `build` 메서드 안에서 [WidgetRef.listen]을 사용해도 안전합니다. 원래
+그렇게 쓰도록 설계된 메서드입니다.  
+`build` 밖(예: `State.initState`)에서 provider를 수신하려면 대신 [WidgetRef.listenManual]을 사용하세요.
+:::
+
+
+### provider의 상태 초기화하기 {#resetting-a-providers-state}
+
+[Ref.invalidate]로 provider의 상태를 초기화할 수 있습니다.  
+그러면 Riverpod은 현재 상태를 버리고, 다음에 provider를 읽을 때 다시 평가합니다.
+
+다음 예제는 tick을 `0`으로 초기화합니다.
+
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    return ElevatedButton(
+      onPressed: () {
+        // tick provider를 초기화합니다
+        // tick이 0부터 다시 시작됩니다
+        ref.invalidate(tickProvider);
+      },
+      child: Text('Reset Tick'),
+    );
+  },
+);
+```
+
+:::tip
+초기화 직후 새 상태가 필요하다면 [Ref.read]를 호출하면 됩니다.
+
+```dart
+ref.invalidate(tickProvider);
+final newTick = ref.read(tickProvider);
+```
+또는 [Ref.refresh]를 사용해 provider 초기화와 새 상태 읽기를 한 번에 할 수도 있습니다.
+```dart
+final newTick = ref.refresh(tickProvider);
+```
+
+두 코드는 완전히 동일합니다. [Ref.refresh]는 [Ref.invalidate] 뒤에 [Ref.read]를 호출하는 것의 문법적 설탕입니다.
+:::
+
+
+### 사용자 상호작용 안에서 provider의 상태 다루기 {#interacting-with-the-providers-state-inside-user-interactions}
+
+마지막 사용 사례는 버튼 클릭 안에서 provider의 상태를 다루는 경우입니다.
+이때는 상태를 "수신"할 필요가 없습니다. 이런 경우를 위해 [Ref.read]가 있습니다.
+
+버튼 클릭 핸들러에서 [Ref.read]를 호출해 작업을 수행해도 안전합니다. 다음 예제는
+버튼을 클릭하면 현재 tick 값을 출력합니다.
+
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    return ElevatedButton(
+      onPressed: () {
+        // 현재 tick 값을 읽습니다
+        final tick = ref.read(tickProvider);
+        print('Current tick: $tick');
+      },
+      child: Text('Print Tick'),
+    );
+  },
+);
+```
+
+:::danger 경고
+[Ref.watch]를 피해 코드를 "최적화"하려는 목적으로 [Ref.read]를 사용하지 마세요.
+코드가 더 취약해집니다. provider의 동작이 바뀌면
+UI가 provider의 상태와 어긋날 수 있기 때문입니다.
+
+그냥 [Ref.watch]를 쓰거나(차이는 무시할 만한 수준입니다) [select]를 사용하세요.
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    // ❌ 변경 사항을 무시하려고 "read"를 쓰지 마세요
+    final tick = ref.read(tickProvider);
+
+    // ✅ 변경 사항을 수신하려면 "watch"를 사용하세요.
+    // 앱의 병목이 될 일은 거의 없습니다. 과도하게 최적화하지 마세요.
+    final tick = ref.watch(tickProvider);
+
+    // ✅ 관심 있는 상태의 일부만 수신하려면 "select"를 사용하세요
+    final isEven = ref.watch(
+      tickProvider.select((tick) => tick.isEven),
+    );
+
+    ...
+  },
+);
+```
+:::
+
+
+### 생명주기 이벤트 수신하기 {#listening-to-life-cycle-events}
+
+[Ref]에는 provider 전용 기능으로 생명주기 이벤트를 수신하는 기능이 있습니다.
+이 이벤트들은 Flutter 위젯의 `initState`, `dispose` 등 생명주기 메서드와 비슷합니다.
+
+생명주기 리스너는 "addListener" 스타일의 API로 등록합니다.
+리스너 메서드는 [onDispose]나 [onCancel]처럼 이름이 `on`으로 시작합니다.
+
+<AutoSnippet
+  codegen={`
+  @riverpod
+  int counter(Ref ref) {
+    ref.onDispose(() {
+      // provider가 폐기될 때 호출됩니다
+      print('Counter provider is being disposed');
+    });
+    
+    return 0;
+  }
+  `}
+  raw={`
+  final counterProvider = Provider<int>((ref) {
+    ref.onDispose(() {
+      // provider가 폐기될 때 호출됩니다
+      print('Counter provider is being disposed');
+    });
+    
+    return 0;
+  });
+  `}
+/>
+
+
+:::tip
+이 리스너들은 직접 "등록 해제"할 필요가 없습니다.  
+provider가 초기화되면 Riverpod이 자동으로 정리합니다.
+
+그래도 직접 등록을 해제하고 싶다면, 리스너 메서드의 반환값을
+사용하면 됩니다.
+
+```dart
+final unregister = ref.onDispose(() {
+  print('This will never be called');
+});
+
+// "onDispose" 리스너의 등록을 해제합니다
+unregister();
+```
+:::
+
+[Ref]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref-class.html
+[Ref.watch]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/watch.html
+[Ref.listen]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/listen.html
+[Ref.invalidate]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/invalidate.html
+[Ref.refresh]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/refresh.html
+[Ref.read]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/read.html
+[WidgetRef.listen]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/WidgetRef/listen.html
+[WidgetRef.listenManual]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/WidgetRef/listenManual.html
+[WidgetRef]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/WidgetRef-class.html
+[onDispose]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/onDispose.html
+[onCancel]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/onCancel.html
+[select]: https://pub.dev/documentation/hooks_riverpod/latest/misc/ProviderListenable/select.html
+[ProviderSubscription]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderSubscription-class.html

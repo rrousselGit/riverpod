@@ -69,7 +69,7 @@ void main() {
       final provider = StreamProvider.autoDispose.family<int, int>((ref, a) {
         return Stream.value(a * 2);
       });
-      final container = ProviderContainer(
+      final container = ProviderContainer.test(
         overrides: [provider.overrideWith((ref, a) => Stream.value(a * 4))],
       );
       final listener = Listener<AsyncValue<int>>();

@@ -1,3 +1,15 @@
+## Unreleased minor
+
+- Migrated Material imports to `package:material_ui/material_ui.dart` and added
+  `material_ui` as a dependency.
+- Updated the DevTools extension to use Material UI themes and localizations.
+
+## 3.4.3 - 2026-09-04
+### Dependency changes
+
+- `flutter_riverpod` upgraded to `3.4.3`
+- `riverpod` upgraded to `3.4.3`
+
 ## 3.4.2 - 2026-07-28
 
 Fix a different source of `markNeedsBuild` error. Those are tricky!
@@ -1808,4 +1820,3 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-

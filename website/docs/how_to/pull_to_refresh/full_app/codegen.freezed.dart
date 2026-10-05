@@ -29,16 +29,21 @@ $ActivityCopyWith<Activity> get copyWith => _$ActivityCopyWithImpl<Activity>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Activity&&(identical(other.activity, activity) || other.activity == activity)&&(identical(other.type, type) || other.type == type)&&(identical(other.participants, participants) || other.participants == participants)&&(identical(other.price, price) || other.price == price));
+  final _this = this as Activity;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Activity&&(identical(other.activity, _this.activity) || other.activity == _this.activity)&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.participants, _this.participants) || other.participants == _this.participants)&&(identical(other.price, _this.price) || other.price == _this.price));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,activity,type,participants,price);
+int get hashCode {
+  final _this = this as Activity;
+  return Object.hash(runtimeType,_this.activity,_this.type,_this.participants,_this.price);
+}
 
 @override
 String toString() {
-  return 'Activity(activity: $activity, type: $type, participants: $participants, price: $price)';
+  final _this = this as Activity;
+  return 'Activity(activity: ${_this.activity}, type: ${_this.type}, participants: ${_this.participants}, price: ${_this.price})';
 }
 
 
@@ -228,16 +233,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Activity&&(identical(other.activity, activity) || other.activity == activity)&&(identical(other.type, type) || other.type == type)&&(identical(other.participants, participants) || other.participants == participants)&&(identical(other.price, price) || other.price == price));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Activity&&(identical(other.activity, activity) || other.activity == activity)&&(identical(other.type, type) || other.type == type)&&(identical(other.participants, participants) || other.participants == participants)&&(identical(other.price, price) || other.price == price));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,activity,type,participants,price);
+int get hashCode {
+    return Object.hash(runtimeType,activity,type,participants,price);
+}
 
 @override
 String toString() {
-  return 'Activity(activity: $activity, type: $type, participants: $participants, price: $price)';
+    return 'Activity(activity: $activity, type: $type, participants: $participants, price: $price)';
 }
 
 

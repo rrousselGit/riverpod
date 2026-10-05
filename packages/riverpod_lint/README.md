@@ -47,7 +47,8 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [functional\_ref (riverpod\_generator only)](#functional_ref-riverpod_generator-only)
   - [notifier\_extends (riverpod\_generator only)](#notifier_extends-riverpod_generator-only)
   - [avoid\_ref\_inside\_state\_dispose](#avoid_ref_inside_state_dispose)
-  - [avoid\_keep\_alive\_dependency\_inside\_auto\_dispose (riverpod\_generator only)](#avoid_keep_alive_dependency_inside_auto_dispose-riverpod_generator-only)
+  - [only\_use\_keep\_alive\_inside\_keep\_alive (riverpod\_generator only)](#only_use_keep_alive_inside_keep_alive-riverpod_generator-only)
+  - [prefer\_keep\_alive\_annotation (riverpod\_generator only)](#prefer_keep_alive_annotation-riverpod_generator-only)
   - [notifier\_build (riverpod\_generator only)](#notifier_build-riverpod_generator-only)
   - [riverpod\_syntax\_error (riverpod\_generator only)](#riverpod_syntax_error-riverpod_generator-only)
   - [async\_value\_nullable\_pattern](#async_value_nullable_pattern)
@@ -313,7 +314,7 @@ Providers' parameters should have a consistent ==. Meaning either the values sho
 // Parameters may override ==
 ref.watch(myProvider(ClassThatOverridesEqual()));
 
-// Constant objects are canonalized and therefore have a consistent ==
+// Constant objects are canonicalized and therefore have a consistent ==
 ref.watch(myProvider(const Object()));
 ref.watch(myProvider(const [42]));
 
@@ -326,7 +327,7 @@ ref.watch(myProvider(variable));
 ```dart
 // New instances passed as provider parameter must override ==
 ref.watch(myProvider(ClassWithNoCustomEqual()));
-// List/map/set litterals do not have a custom ==
+// List/map/set literals do not have a custom ==
 ref.watch(myProvider([42]));
 ```
 
@@ -509,7 +510,7 @@ class _MyWidgetState extends ConsumerState<MyWidget> {
 }
 ```
 
-### avoid_keep_alive_dependency_inside_auto_dispose (riverpod_generator only)
+### only_use_keep_alive_inside_keep_alive (riverpod_generator only)
 
 Warn when a `keepAlive` provider tries to use a non-`keepAlive` provider.
 
@@ -526,6 +527,52 @@ int nonKeepAlive(Ref ref) => 0;
 int fn(Ref ref) {
   // `keepAlive` providers should only depend on keepAlive providers.
   ref.watch(nonKeepAliveProvider);
+}
+```
+
+### prefer_keep_alive_annotation (riverpod_generator only)
+
+Warn when the body of a provider starts with `ref.keepAlive()`.
+
+Such a provider is always kept alive, which is what `@Riverpod(keepAlive: true)`
+expresses. Using the annotation lets riverpod_lint know that the provider is
+never disposed, which enables other lints such as
+`only_use_keep_alive_inside_keep_alive`.
+
+The lint only fires when `ref.keepAlive()` is the first statement of the body
+and its `KeepAliveLink` is discarded. A `keepAlive` which is conditional, which
+happens after an `await`, or whose link is closed later is a deliberate runtime
+decision that the annotation cannot express.
+
+**Bad**:
+
+```dart
+@riverpod
+int fn(Ref ref) {
+  // The provider is unconditionally kept alive.
+  ref.keepAlive();
+
+  return 0;
+}
+```
+
+**Good**:
+
+```dart
+@Riverpod(keepAlive: true)
+int fn(Ref ref) => 0;
+```
+
+**Good**:
+
+```dart
+@riverpod
+Future<int> fn(Ref ref) async {
+  final value = await fetch();
+  // Only successful results are kept alive.
+  ref.keepAlive();
+
+  return value;
 }
 ```
 

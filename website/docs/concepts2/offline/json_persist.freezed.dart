@@ -29,16 +29,21 @@ $TodoCopyWith<Todo> get copyWith => _$TodoCopyWithImpl<Todo>(this as Todo, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Todo&&(identical(other.task, task) || other.task == task));
+  final _this = this as Todo;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Todo&&(identical(other.task, _this.task) || other.task == _this.task));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,task);
+int get hashCode {
+  final _this = this as Todo;
+  return Object.hash(runtimeType,_this.task);
+}
 
 @override
 String toString() {
-  return 'Todo(task: $task)';
+  final _this = this as Todo;
+  return 'Todo(task: ${_this.task})';
 }
 
 
@@ -228,16 +233,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Todo&&(identical(other.task, task) || other.task == task));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Todo&&(identical(other.task, task) || other.task == task));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,task);
+int get hashCode {
+    return Object.hash(runtimeType,task);
+}
 
 @override
 String toString() {
-  return 'Todo(task: $task)';
+    return 'Todo(task: $task)';
 }
 
 

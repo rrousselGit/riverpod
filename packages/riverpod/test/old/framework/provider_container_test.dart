@@ -47,7 +47,7 @@ void main() {
               return 0;
             },
           );
-          final container = ProviderContainer();
+          final container = ProviderContainer.test();
 
           container.read(noDebugGetCreateSourceHash);
           container.read(constantHash);
@@ -279,7 +279,7 @@ void main() {
       );
 
       test('list the currently mounted providers', () async {
-        final container = ProviderContainer();
+        final container = ProviderContainer.test();
         final unrelated = Provider((_) => 42);
         final provider = Provider.autoDispose((ref) => 0);
 
