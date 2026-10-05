@@ -1,5 +1,10 @@
 ## Unreleased fix
 
+- Creating a scope no longer copies the parent's pointer tables. A
+  `ProviderScope` declaring any override used to cost O(providers mounted in the
+  application) rather than O(overrides), on creation and on disposal alike. The
+  tables are now forked lazily, so a scope only materialises what is read
+  through it. (thanks to @tguerin)
 - Devtools now retain only the current provider snapshot by default. Set
   `debugTrackProviderHistory = true` (imported from `package:riverpod/misc.dart`)
   to opt into time-travel history; setting it back to `false` releases previous
