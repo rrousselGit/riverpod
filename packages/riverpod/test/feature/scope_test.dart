@@ -838,27 +838,24 @@ Future<void> main() async {
     },
   );
 
-  test(
-    'overriding one instance of a family inherited from a parent '
-    'does not leak the override into that parent',
-    () {
-      // The family declares no dependencies, so its directory is shared with
-      // the parent rather than scoped. Writing the override into that shared
-      // directory used to make the parent resolve the child's value.
-      final family = Provider.family<String, int>((ref, id) => 'root $id');
+  test('overriding one instance of a family inherited from a parent '
+      'does not leak the override into that parent', () {
+    // The family declares no dependencies, so its directory is shared with
+    // the parent rather than scoped. Writing the override into that shared
+    // directory used to make the parent resolve the child's value.
+    final family = Provider.family<String, int>((ref, id) => 'root $id');
 
-      final root = ProviderContainer.test();
-      expect(root.read(family(1)), 'root 1');
-      expect(root.read(family(2)), 'root 2');
+    final root = ProviderContainer.test();
+    expect(root.read(family(1)), 'root 1');
+    expect(root.read(family(2)), 'root 2');
 
-      final child = ProviderContainer.test(
-        parent: root,
-        overrides: [family(1).overrideWithValue('child 1')],
-      );
+    final child = ProviderContainer.test(
+      parent: root,
+      overrides: [family(1).overrideWithValue('child 1')],
+    );
 
-      expect(child.read(family(1)), 'child 1');
-      expect(root.read(family(1)), 'root 1');
-      expect(child.read(family(2)), 'root 2');
-    },
-  );
+    expect(child.read(family(1)), 'child 1');
+    expect(root.read(family(1)), 'root 1');
+    expect(child.read(family(2)), 'root 2');
+  });
 }

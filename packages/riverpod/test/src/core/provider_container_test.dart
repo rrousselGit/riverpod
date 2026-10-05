@@ -1230,7 +1230,11 @@ void main() {
           // the container that declared them.
           expect(
             container.pointerManager.readPointer(a),
-            isPointer(override: aOverride, targetContainer: root, element: null),
+            isPointer(
+              override: aOverride,
+              targetContainer: root,
+              element: null,
+            ),
           );
           expect(
             container.pointerManager.readPointer(b),
@@ -1317,7 +1321,8 @@ void main() {
             );
           });
 
-          test('re-resolves a pointer that was removed from the root', () async {
+          test('re-resolves a pointer that was removed '
+              'from the root', () async {
             final provider = Provider.autoDispose((_) => 0);
             final unrelated = Provider((_) => 0, dependencies: const []);
 
