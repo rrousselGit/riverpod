@@ -6,6 +6,8 @@
   frames.
 - Devtools inspection caches are released when their client closes or stops
   renewing its session for 30 seconds, including after an abrupt disconnect.
+- Fix `selectAsync` initializing providers when listening with `weak: true`.
+  (thanks to @kaluli123123)
 - Deprecated `Ref.exist`.
 - Added `provider.exist`, which is listenable.
   This enables writing `ref.listen(provider.exist, ...)`.
