@@ -20,6 +20,9 @@
   unaffected. This removes 34 transitive packages from the dependency graph of
   every project that uses Riverpod, including `analyzer`, whose version ceiling
   was blocking other tooling. (thanks to @samithahansaka)
+- Fixed `persist` throwing `UnmountedRefException` when a provider is disposed
+  before the storage read completes. The decoded value is now ignored if the
+  provider is no longer mounted. Fixes #4895 (thanks to @itsatifsiddiqui)
 
 ## 3.4.3 - 2026-09-04
 
