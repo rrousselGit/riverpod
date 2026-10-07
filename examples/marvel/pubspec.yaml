@@ -10,7 +10,7 @@ resolution: workspace
 
 dependencies:
   crypto: ^3.0.0
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^2.0.0
   dio: 5.11.1
   flutter:
     sdk: flutter
@@ -20,6 +20,7 @@ dependencies:
   freezed_annotation: ^3.0.0
   hooks_riverpod:
   json_annotation: ^4.9.0
+  material_ui: ^1.0.0
 
 dev_dependencies:
   build_runner: ^2.11.0

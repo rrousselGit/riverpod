@@ -1,6 +1,6 @@
 ---
 title: 시작하기
-version: 5
+version: 9
 ---
 
 import Tabs from "@theme/Tabs";
@@ -14,27 +14,28 @@ import dartPubspec from "/docs/introduction/getting_started/dart_pubspec";
 import dartPubadd from "/docs/introduction/getting_started/dart_pub_add";
 import {
   AutoSnippet,
-  When,
 } from "/src/components/CodeSnippet";
 import { Link } from "/src/components/Link";
 import { DartPad } from "/src/components/DartPad";
 
-## 온라인에서 Riverpod 체험해보기
+## Riverpod 온라인으로 체험하기 {#try-riverpod-online}
 
-Riverpod을 체험해보려면 [Dartpad](https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2)에서 온라인으로 사용해보세요:
+Riverpod이 어떤 느낌인지 [Dartpad](https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2)에서 바로 체험해 보세요.
 
 <DartPad id="ef06ab3ce0b822e6cc5db0575248e6e2" />
 
-## 패키지 설치하기
+## 패키지 설치하기 {#installing-the-package}
 
-설치하려는 패키지가 정해지면, 아래와 같이 한 줄로 앱에 종속성을 추가합니다:
+Riverpod은 그 자체로 완결된 메인 패키지인 "riverpod"과, 코드 생성(<Link documentID="concepts/about_code_generation" />) 및 훅(<Link documentID="concepts/about_hooks" />)을 위한 선택적 패키지로 구성되어 있습니다.
+
+설치할 패키지를 정했다면, 다음과 같이 한 줄로 앱에 의존성을 추가합니다.
 
 <Tabs
   groupId="riverpod"
   defaultValue="flutter_riverpod"
   values={[
     { label: 'Flutter', value: 'flutter_riverpod', },
-    { label: 'Dart only', value: 'riverpod', },
+    { label: 'Dart 전용', value: 'riverpod', },
   ]}
 >
 <TabItem value="flutter_riverpod">
@@ -51,26 +52,22 @@ Riverpod을 체험해보려면 [Dartpad](https://dartpad.dev/?null_safety=true&i
 
 </Tabs>
 
-또는, `pubspec.yaml` 내에서 앱에 종속성을 수동으로 추가할 수 있습니다:
+또는 `pubspec.yaml`에 의존성을 직접 추가할 수도 있습니다.
 
 <Tabs
   groupId="riverpod"
   defaultValue="flutter_riverpod"
   values={[
     { label: 'Flutter', value: 'flutter_riverpod', },
-    { label: 'Dart only', value: 'riverpod', },
+    { label: 'Dart 전용', value: 'riverpod', },
   ]}
 >
 <TabItem value="flutter_riverpod">
 
 <AutoSnippet title="pubspec.yaml" language="yaml" {...pubspec}></AutoSnippet>
 
-그리고, `flutter pub get`으로 패키지를 설치합니다.
+그런 다음 `flutter pub get`으로 패키지를 설치합니다.
 
-<When codegen={true}>
-  이제 코드 생성기를 실행할 수 있습니다.{" "}
-  <code>flutter pub run build_runner watch</code>.
-</When>
 
 </TabItem>
 <TabItem value="riverpod">
@@ -81,59 +78,51 @@ Riverpod을 체험해보려면 [Dartpad](https://dartpad.dev/?null_safety=true&i
   {...dartPubspec}
 ></AutoSnippet>
 
-그리고, `dart pub get`으로 패키지를 설치합니다.
-
-<When codegen={true}>
-  이제 코드 생성기를 실행할 수 있습니다.{" "}
-  <code>dart run build_runner watch</code>.
-</When>
+그런 다음 `dart pub get`으로 패키지를 설치합니다.
 
 </TabItem>
 </Tabs>
 
-이게 전부입니다. 당신의 앱에 [Riverpod]을 추가했습니다!
-
-## riverpod_lint/custom_lint 활성화하기
-
-Riverpod은 선택사항으로 [riverpod_lint] 패키지를 제공합니다.
-이 패키지는 더 좋은 코드를 작성하는데 도움이 되는 린트 규칙과 사용자 정의 리팩토링 옵션을 제공합니다.
-
-이전 단계를 수행했다면 이미 패키지가 설치되어 있지만, 활성화하려면 별도의 단계가 필요합니다.
-
-[riverpod_lint]를 활성화하려면, 당신의 `pubspec.yaml`옆에 `analysis_options.yaml`을 추가하고 다음을 포함해야 합니다:
-
-<CodeBlock language="yaml" title="analysis_options.yaml">
-  {`analyzer:
-  plugins:
-    - custom_lint`}
-</CodeBlock>
-
-이제 코드베이스에서 Riverpod을 사용할 때 당신이 실수한 경우, IDE에서 경고가 보이게 됩니다.
-
-전체 경고와 리팩토링 목록을 보려면 [riverpod_lint] 페이지를 참고하세요.
-
-:::note
-이 경고는 `dart analyze` 명령에서는 표시되지 않습니다.
-CI/터미널에서 이 경고를 확인하려면 다음을 실행하세요:
-
+:::info
+코드 생성을 사용한다면, 이제 다음 명령으로 코드 생성기를 실행할 수 있습니다.
 ```sh
-dart run custom_lint
+dart run build_runner watch -d
 ```
-
 :::
 
-## 사용 예시: Hello world
+이것으로 끝입니다. 앱에 [Riverpod]을 추가했습니다!
 
-이제 [Riverpod]를 설치했으니 사용해볼 수 있습니다.
+## riverpod_lint 활성화하기 {#enabling-riverpod_lint}
 
-다음 스니펫은 새로운 종속성을 사용하여 "Hello world"를 만드는 방법을 보여줍니다:
+Riverpod은 선택적으로 [riverpod_lint] 패키지를 제공합니다.
+이 패키지는 더 나은 코드를 작성하도록 돕는 lint 규칙과
+커스텀 리팩터링 옵션을 제공합니다.
+
+riverpod_lint는 [analysis_server_plugin]으로 구현되어 있으므로 `analysis_options.yaml`을 통해 설치합니다.
+
+간단히 말해, `pubspec.yaml` 옆에 `analysis_options.yaml`을 만들고 다음을 추가하세요.
+
+```yaml title="analysis_options.yaml"
+plugins:
+  riverpod_lint: <https://pub.dev/packages/riverpod_lint 의 최신 버전>
+```
+
+이제 코드에서 Riverpod을 잘못 사용하면 IDE에 경고가 표시됩니다.
+
+전체 경고 및 리팩터링 목록은 [riverpod_lint] 페이지에서 확인하세요.
+
+## 사용 예시: Hello world {#usage-example-hello-world}
+
+[Riverpod]을 설치했으니 이제 사용해 봅시다.
+
+다음 코드는 새로 추가한 의존성으로 "Hello world"를 만드는 방법을 보여줍니다.
 
 <Tabs
   groupId="riverpod"
   defaultValue="flutter_riverpod"
   values={[
     { label: "Flutter", value: "flutter_riverpod" },
-    { label: "Dart only", value: "riverpod" },
+    { label: "Dart 전용", value: "riverpod" },
   ]}
 >
 <TabItem value="flutter_riverpod">
@@ -143,16 +132,17 @@ dart run custom_lint
   language="dart"
   {...helloWorld}
   translations={{
-    helloWorld: "// 값을 저장할 \"provider\"를 생성합니다(여기서는 \"Hello world\").\n// provider를 사용하면 노출된 값을 모의(mock)//재정의(override)할 수 있습니다.",
-    ProviderScope: "    // 위젯이 providers를 읽을 수 있게 하려면 전체 애플리케이션을 \"ProviderScope\" 위젯으로 감싸야 합니다.\n    // 여기에 providers의 상태가 저장됩니다.",
-    ConsumerWidget: "// Riverpod에 의해 노출되는 StatelessWidget 대신 ConsumerWidget을 확장합니다.",
-    HookConsumerWidget: "// Riverpod에 의해 노출되는 HookWidget 대신 HookConsumerWidget을 확장합니다.",
-    hooksCodegen_counter: "    // HookConsumerWidget 내부에서 훅을 사용할 수 있습니다.",
+    helloWorld: `// 값(여기서는 "Hello world")을 저장할 "provider"를 만듭니다.
+// provider를 사용하면 노출되는 값을 모킹하거나 오버라이드할 수 있습니다.`,
+    ProviderScope: `    // 위젯이 provider를 읽으려면 앱 전체를
+    // "ProviderScope" 위젯으로 감싸야 합니다.
+    // provider의 상태는 여기에 저장됩니다.`,
+    ConsumerWidget: `// StatelessWidget 대신 Riverpod이 제공하는 ConsumerWidget을 상속합니다`,
   }}
-/>
+></AutoSnippet>
 
-이제 `flutter run`으로 앱을 시작할 수 있습니다.
-이렇게 하면 기기에 "Hello world"가 표시됩니다.
+그런 다음 `flutter run`으로 앱을 실행합니다.  
+기기에 "Hello world"가 표시됩니다.
 
 </TabItem>
 <TabItem value="riverpod">
@@ -161,39 +151,31 @@ dart run custom_lint
   title="lib/main.dart"
   language="dart"
   {...dartHelloWorld}
-  translations={{
-    helloWorld: "// 값을 저장할 \"provider\"를 생성합니다(여기서는 \"Hello world\").\n// provider를 사용하면 노출된 값을 모의(mock)//재정의(override)할 수 있습니다.",
-    container: "  // 이 객체는 providers의 상태가 저장되는 곳입니다.",
-    value: "  // \"컨테이너\" 덕분에 provider를 읽을 수 있습니다.",
-  }}
-/>
+></AutoSnippet>
 
-이제 `dart lib/main.dart`으로 앱을 시작할 수 있습니다.
-이렇게 하면 콘솔에 "Hello world"가 표시됩니다.
+그런 다음 `dart lib/main.dart`로 앱을 실행합니다.  
+콘솔에 "Hello world"가 출력됩니다.
 
 </TabItem>
 </Tabs>
 
-## 더 나아가기: 코드 스니펫 설치하기
+## 더 나아가기: 코드 스니펫 설치하기 {#going-further-installing-code-snippets}
+`Flutter`와 `VS Code`를 사용한다면 [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)를 사용해 보세요.
 
-`Flutter`와 `VS Code`를 사용하고 있다면 [Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)를 사용해보세요.
+`Flutter`와 `Android Studio` 또는 `IntelliJ`를 사용한다면 [Riverpod Gen Shortcuts](https://plugins.jetbrains.com/plugin/30670-riverpod-gen-shortcuts) 또는 [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)를 사용해 보세요.
 
-`Flutter`와 `Android Studio` 또는 `IntelliJ`를 사용하고 있다면 [Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)를 사용해보세요.
+**예시: Generator 사용 - Riverpod Stream (`riverpodStream`) **
+![riverpod-class](/img/snippets/riverpod-stream.gif)
 
+**예시: Generator 사용 - Riverpod Class (`riverpodClassKeepAlive`)**
+![riverpod-stream](/img/snippets/riverpod-keep-alive-class.gif)
+
+**Flutter Riverpod Snippets**
 ![img](/img/snippets/greetingProvider.gif)
-
-## 다음 단계 선택
-
-몇 가지 기본 개념 알아보기:
-
-- <Link documentID="concepts2/providers" />
-
-쿡북(Cookbook) 따라하기:
-
-- <Link documentID="cookbooks/testing" />
 
 [riverpod]: https://github.com/rrousselgit/riverpod
 [hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
 [flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
 [riverpod_lint]: https://pub.dev/packages/riverpod_lint
+[analysis_server_plugin]: https://pub.dev/packages/analysis_server_plugin

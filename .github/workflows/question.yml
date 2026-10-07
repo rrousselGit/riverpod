@@ -1,0 +1,56 @@
+name: Update labels on reply
+
+on:
+  # This event covers both issue and pull request conversation comments.
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  update_labels:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v9
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const target = { ...context.repo, issue_number: issue.number };
+            const hasQuestion = issue.labels.some(label => label.name === 'question');
+
+            // Pull request conversations only use the question label rule.
+            if (issue.pull_request && !hasQuestion) return;
+
+            const { data } = await github.rest.repos.getCollaboratorPermissionLevel({
+              ...context.repo,
+              username: context.payload.comment.user.login,
+            });
+
+            // GitHub reports write and maintain access as the "write" permission.
+            const isMaintainer = ['write', 'maintain', 'admin'].includes(data.permission);
+
+            async function removeLabel(name) {
+              try {
+                await github.rest.issues.removeLabel({ ...target, name });
+              } catch (error) {
+                // Another reply or a maintainer may already have removed the label.
+                if (error.status !== 404) throw error;
+              }
+            }
+
+            if (!issue.pull_request) {
+              if (isMaintainer) {
+                await removeLabel('needs triage');
+              } else {
+                await github.rest.issues.addLabels({
+                  ...target,
+                  labels: ['needs triage'],
+                });
+              }
+            }
+
+            if (!isMaintainer && hasQuestion) {
+              await removeLabel('question');
+            }

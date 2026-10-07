@@ -1,6 +1,6 @@
 // ignore_for_file: avoid_unused_constructor_parameters
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 extension on ProviderBase<dynamic> {

@@ -1,3 +1,9 @@
+## Unreleased minor
+
+- Migrated Material imports to `package:material_ui/material_ui.dart` and added
+  `material_ui` as a dependency.
+- Updated the DevTools extension to use Material UI themes and localizations.
+
 ## 3.4.3 - 2026-09-04
 ### Dependency changes
 
@@ -1608,4 +1614,3 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-

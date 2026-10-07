@@ -93,7 +93,7 @@ void main() {
         return ref.watch(count).isEven;
       });
 
-      final container = ProviderContainer();
+      final container = ProviderContainer.test();
       addTearDown(container.dispose);
 
       expect(container.read(provider), true);

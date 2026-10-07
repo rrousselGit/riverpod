@@ -16,8 +16,7 @@ final myNotifierProvider =
 /* SNIPPET START */
 void main(List<String> args) {
   test('my test', () {
-    final container = ProviderContainer();
-    addTearDown(container.dispose);
+    final container = ProviderContainer.test();
 
     // {@template notifier}
     // Obtaining a notifier

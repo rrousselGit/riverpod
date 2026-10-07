@@ -2,7 +2,7 @@
 
 /* SNIPPET START */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Мы создаем "provider", который будет хранить значение (т.е. "Hello world").

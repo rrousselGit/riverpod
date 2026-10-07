@@ -34,7 +34,7 @@ void main() {
     source: '''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 const gibberish = 0;
 
@@ -83,7 +83,7 @@ class Example extends ConsumerWidget {
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 part 'foo.g.dart';
 
@@ -118,10 +118,7 @@ class MyWidget extends ConsumerWidget {
       expect(result.widgetRefWatchInvocations, hasLength(3));
       expect(result.widgetRefInvocations, result.widgetRefWatchInvocations);
 
-      expect(
-        result.widgetRefWatchInvocations[0].node.toSource(),
-        '..watch(dep)',
-      );
+      expect(result.widgetRefWatchInvocations[0].node.toSource(), 'watch(dep)');
       expect(result.widgetRefWatchInvocations[0].function.toSource(), 'watch');
       expect(
         result.widgetRefWatchInvocations[0].listenable.node.toSource(),
@@ -149,7 +146,7 @@ class MyWidget extends ConsumerWidget {
 
       expect(
         result.widgetRefWatchInvocations[1].node.toSource(),
-        '..watch(dep2Provider)',
+        'watch(dep2Provider)',
       );
       expect(result.widgetRefWatchInvocations[1].function.toSource(), 'watch');
       expect(
@@ -180,7 +177,7 @@ class MyWidget extends ConsumerWidget {
 
       expect(
         result.widgetRefWatchInvocations[2].node.toSource(),
-        '..watch(dep3Provider)',
+        'watch(dep3Provider)',
       );
       expect(result.widgetRefWatchInvocations[2].function.toSource(), 'watch');
       expect(
@@ -219,7 +216,7 @@ class MyWidget extends ConsumerWidget {
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod/misc.dart';
 
 part 'foo.g.dart';
@@ -416,7 +413,7 @@ void fn(WidgetRef ref) {
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 part 'foo.g.dart';
 
@@ -471,7 +468,7 @@ class MyWidget extends ConsumerWidget {
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 part 'foo.g.dart';
 
@@ -577,7 +574,7 @@ class MyWidget extends ConsumerWidget {
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 part 'foo.g.dart';
 
@@ -637,7 +634,7 @@ class MyWidget extends ConsumerWidget {
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod/misc.dart';
 
 part 'foo.g.dart';
@@ -791,7 +788,7 @@ void fn(_Ref ref) {
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 part 'foo.g.dart';
 
@@ -895,7 +892,7 @@ class MyWidget extends ConsumerWidget {
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod/misc.dart';
 
 part 'foo.g.dart';
