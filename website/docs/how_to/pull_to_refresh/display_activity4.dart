@@ -7,23 +7,23 @@ import 'activity/codegen.dart';
 import 'fetch_activity/codegen.dart';
 
 /* SNIPPET START */
-class ActivityView extends ConsumerWidget {
+class BreweryView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activity = ref.watch(activityProvider);
+    final brewery = ref.watch(breweryProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Pull to refresh')),
       body: RefreshIndicator(
-        onRefresh: () => ref.refresh(activityProvider.future),
+        onRefresh: () => ref.refresh(breweryProvider.future),
         child: ListView(
           children: [
-            switch (activity) {
+            switch (brewery) {
               // {@template data}
               // If some data is available, we display it.
               // Note that data will still be available during a refresh.
               // {@endtemplate}
-              AsyncValue<Activity>(:final value?) => Text(value.activity),
+              AsyncValue<Brewery>(:final value?) => Text(value.name),
               // {@template error}
               // An error is available, so we render it.
               // {@endtemplate}

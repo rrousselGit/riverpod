@@ -5,15 +5,15 @@ part 'codegen.freezed.dart';
 
 /* SNIPPET START */
 @freezed
-sealed class Activity with _$Activity {
-  factory Activity({
-    required String activity,
-    required String type,
-    required int participants,
-    required double price,
-  }) = _Activity;
+sealed class Brewery with _$Brewery {
+  factory Brewery({
+    required String name,
+    @JsonKey(name: 'brewery_type') required String breweryType,
+    required String city,
+    required String country,
+  }) = _Brewery;
 
-  factory Activity.fromJson(Map<String, dynamic> json) =>
-      _$ActivityFromJson(json);
+  factory Brewery.fromJson(Map<String, dynamic> json) =>
+      _$BreweryFromJson(json);
 }
 /* SNIPPET END */

@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import '../detail_screen/codegen.dart';
 
 /* SNIPPET START */
-final activityProvider = FutureProvider.autoDispose<Activity>((ref) async {
+final breweryProvider = FutureProvider.autoDispose<Brewery>((ref) async {
   // {@template client}
   // We create an HTTP client using package:http
   // {@endtemplate}
@@ -21,13 +21,13 @@ final activityProvider = FutureProvider.autoDispose<Activity>((ref) async {
   // We now use the client to make the request instead of the "get" function.
   // {@endtemplate}
   final response = await client.get(
-    Uri.https('www.boredapi.com', '/api/activity'),
+    Uri.https('api.openbrewerydb.org', '/v1/breweries/random'),
   );
 
   // {@template jsonDecode}
   // The rest of the code is the same as before
   // {@endtemplate}
-  final json = jsonDecode(response.body) as Map;
-  return Activity.fromJson(Map.from(json));
+  final json = (jsonDecode(response.body) as List).first as Map;
+  return Brewery.fromJson(Map.from(json));
 });
 /* SNIPPET END */
