@@ -1117,10 +1117,17 @@ void main() {
             ],
           );
 
-          expect(container.pointerManager.orphanPointers.pointers, {
-            dep: isPointer(targetContainer: mid, override: dep),
-            unrelated: isPointer(),
-          });
+          // `dep` is overridden outright, so the scope inherits mid's pointer.
+          expect(
+            container.pointerManager.readPointer(dep),
+            isPointer(targetContainer: mid, override: dep),
+          );
+          expect(container.pointerManager.readPointer(unrelated), isPointer());
+
+          // `provider` and `family` were only *transitively* overridden in mid,
+          // so the scope must not inherit them: reading them resolves anew.
+          expect(container.pointerManager.readPointer(provider), isNull);
+          expect(container.pointerManager.readPointer(family(42)), isNull);
           expect(container.pointerManager.familyPointers, isEmpty);
         });
 
@@ -1164,66 +1171,229 @@ void main() {
             overrides: [cOverride, cFamilyOverride, cValueOverride],
           );
 
+          // The scope only stores the family it overrides itself; the ones
+          // overridden further up are reached through it.
           expect(container.pointerManager.familyPointers, {
-            aFamily: isProviderDirectory(
-              override: aFamilyOverride,
-              targetContainer: root,
-              pointers: {
-                aFamily(1): isPointer(
-                  override: aValueOverride,
-                  targetContainer: root,
-                  element: null,
-                ),
-              },
-            ),
-            bFamily: isProviderDirectory(
-              override: bFamilyOverride,
-              targetContainer: mid,
-              pointers: {
-                bFamily(2): isPointer(
-                  override: bValueOverride,
-                  targetContainer: mid,
-                  element: null,
-                ),
-              },
-            ),
             cFamily: isProviderDirectory(
               override: cFamilyOverride,
               targetContainer: container,
-              pointers: {
-                cFamily(3): isPointer(
-                  override: cValueOverride,
-                  targetContainer: container,
-                  element: null,
-                ),
-              },
             ),
           });
+          expect(
+            container.pointerManager.readFamilyDirectory(aFamily),
+            isProviderDirectory(
+              override: aFamilyOverride,
+              targetContainer: root,
+            ),
+          );
+          expect(
+            container.pointerManager.readFamilyDirectory(bFamily),
+            isProviderDirectory(
+              override: bFamilyOverride,
+              targetContainer: mid,
+            ),
+          );
+
+          // Overridden family instances resolve to the pointer of whichever
+          // container declared the override.
+          expect(
+            container.pointerManager.readPointer(aFamily(1)),
+            isPointer(
+              override: aValueOverride,
+              targetContainer: root,
+              element: null,
+            ),
+          );
+          expect(
+            container.pointerManager.readPointer(bFamily(2)),
+            isPointer(
+              override: bValueOverride,
+              targetContainer: mid,
+              element: null,
+            ),
+          );
+          expect(
+            container.pointerManager.readPointer(cFamily(3)),
+            isPointer(
+              override: cValueOverride,
+              targetContainer: container,
+              element: null,
+            ),
+          );
 
           expect(
             container.pointerManager.orphanPointers,
-            isProviderDirectory(
+            isProviderDirectory(targetContainer: root, override: null),
+          );
+
+          // Overrides declared anywhere up the chain resolve to the pointer of
+          // the container that declared them.
+          expect(
+            container.pointerManager.readPointer(a),
+            isPointer(
+              override: aOverride,
               targetContainer: root,
-              override: null,
-              pointers: {
-                a: isPointer(
-                  override: aOverride,
-                  targetContainer: root,
-                  element: null,
-                ),
-                b: isPointer(
-                  override: bOverride,
-                  targetContainer: mid,
-                  element: null,
-                ),
-                c: isPointer(
-                  override: cOverride,
-                  targetContainer: container,
-                  element: null,
-                ),
-              },
+              element: null,
             ),
           );
+          expect(
+            container.pointerManager.readPointer(b),
+            isPointer(override: bOverride, targetContainer: mid, element: null),
+          );
+          expect(
+            container.pointerManager.readPointer(c),
+            isPointer(
+              override: cOverride,
+              targetContainer: container,
+              element: null,
+            ),
+          );
+        });
+
+        group('when forking lazily', () {
+          test('resolves an override declared on a grandparent', () {
+            final provider = Provider((_) => 0, name: 'provider');
+            final override = provider.overrideWithValue(42);
+            final unrelated = Provider((_) => 0, dependencies: const []);
+
+            final root = ProviderContainer.test(overrides: [override]);
+            final mid = ProviderContainer.test(
+              parent: root,
+              overrides: [unrelated],
+            );
+            final leaf = ProviderContainer.test(
+              parent: mid,
+              overrides: [unrelated],
+            );
+
+            expect(
+              leaf.pointerManager.readPointer(provider),
+              same(root.pointerManager.readPointer(provider)),
+            );
+            expect(leaf.read(provider), 42);
+          });
+
+          test('does not adopt a transitive override from an ancestor', () {
+            final dep = Provider((_) => 0, dependencies: const [], name: 'dep');
+            final provider = Provider(
+              (ref) => ref.watch(dep),
+              dependencies: [dep],
+              name: 'provider',
+            );
+
+            final root = ProviderContainer.test();
+            final mid = ProviderContainer.test(
+              parent: root,
+              overrides: [dep.overrideWithValue(1)],
+            );
+            // Scopes `provider` into mid, as a transitive override.
+            expect(mid.read(provider), 1);
+
+            final leaf = ProviderContainer.test(
+              parent: mid,
+              overrides: [dep.overrideWithValue(2)],
+            );
+
+            expect(leaf.read(provider), 2);
+            expect(
+              leaf.pointerManager.readPointer(provider),
+              isNot(same(mid.pointerManager.readPointer(provider))),
+            );
+          });
+
+          test('sees a provider the parent mounts after the fork', () {
+            final provider = Provider((_) => 0, name: 'provider');
+            final unrelated = Provider((_) => 0, dependencies: const []);
+
+            final root = ProviderContainer.test();
+            final leaf = ProviderContainer.test(
+              parent: root,
+              overrides: [unrelated],
+            );
+
+            // Mounted only after `leaf` was built, so a copy taken at
+            // construction time would not have held it either.
+            root.read(provider);
+
+            expect(
+              leaf.pointerManager.readPointer(provider),
+              same(root.pointerManager.readPointer(provider)),
+            );
+          });
+
+          test('re-resolves a pointer that was removed '
+              'from the root', () async {
+            final provider = Provider.autoDispose((_) => 0);
+            final unrelated = Provider((_) => 0, dependencies: const []);
+
+            final root = ProviderContainer.test();
+            final leaf = ProviderContainer.test(
+              parent: root,
+              overrides: [unrelated],
+            );
+
+            leaf.read(provider);
+            expect(leaf.pointerManager.readLocalPointer(provider), isNotNull);
+
+            await root.pump();
+
+            expect(leaf.pointerManager.readLocalPointer(provider), isNull);
+            expect(root.pointerManager.readLocalPointer(provider), isNull);
+
+            leaf.read(provider);
+            expect(
+              leaf.pointerManager.readPointer(provider),
+              same(root.pointerManager.readPointer(provider)),
+            );
+          });
+
+          test('shares the directory of a family that cannot be scoped', () {
+            final family = Provider.family<int, int>((ref, id) => id);
+            final unrelated = Provider((_) => 0, dependencies: const []);
+
+            final root = ProviderContainer.test();
+            root.read(family(1));
+
+            final leaf = ProviderContainer.test(
+              parent: root,
+              overrides: [unrelated],
+            );
+
+            expect(
+              leaf.pointerManager.readFamilyDirectory(family),
+              same(root.pointerManager.readFamilyDirectory(family)),
+            );
+          });
+
+          test('stores only the providers the scope actually reads', () {
+            final unrelated = Provider((_) => 0, dependencies: const []);
+            final providers = List.generate(
+              50,
+              (i) => Provider((_) => i, name: 'p$i'),
+            );
+
+            final root = ProviderContainer.test();
+            providers.forEach(root.read);
+
+            final leaf = ProviderContainer.test(
+              parent: root,
+              overrides: [unrelated],
+            );
+            leaf.read(providers.first);
+            leaf.read(providers.last);
+
+            // All of them stay readable through the scope...
+            for (final provider in providers) {
+              expect(leaf.pointerManager.readPointer(provider), isNotNull);
+            }
+
+            // ...but the scope only holds the override it was given and the two
+            // it read, and owns no element of its own. This is what keeps both
+            // its creation and its disposal independent of how large the
+            // application is.
+            expect(leaf.pointerManager.orphanPointers.pointers, hasLength(3));
+            expect(leaf.getAllProviderElements(), isEmpty);
+          });
         });
 
         test('with no overrides, uses an identical content as its parent', () {

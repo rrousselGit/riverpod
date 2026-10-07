@@ -124,31 +124,34 @@ void main() {
             fireImmediately: true,
           );
 
-          expect(a.pointerManager.readPointer(provider), isNotNull);
-          expect(b.pointerManager.readPointer(provider), isNull);
-          expect(c.pointerManager.readPointer(provider), isNull);
-          expect(d.pointerManager.readPointer(provider), isNotNull);
+          // `readLocalPointer`, not `readPointer`: this checks where pointers
+          // are *stored*. b and c never store one of their own, even though a
+          // read through them would resolve to the one held by a.
+          expect(a.pointerManager.readLocalPointer(provider), isNotNull);
+          expect(b.pointerManager.readLocalPointer(provider), isNull);
+          expect(c.pointerManager.readLocalPointer(provider), isNull);
+          expect(d.pointerManager.readLocalPointer(provider), isNotNull);
 
           subscription.close();
 
-          expect(a.pointerManager.readPointer(provider), isNotNull);
-          expect(b.pointerManager.readPointer(provider), isNull);
-          expect(c.pointerManager.readPointer(provider), isNull);
-          expect(d.pointerManager.readPointer(provider), isNotNull);
+          expect(a.pointerManager.readLocalPointer(provider), isNotNull);
+          expect(b.pointerManager.readLocalPointer(provider), isNull);
+          expect(c.pointerManager.readLocalPointer(provider), isNull);
+          expect(d.pointerManager.readLocalPointer(provider), isNotNull);
 
           await a.pump();
 
-          expect(a.pointerManager.readPointer(provider), isNull);
-          expect(b.pointerManager.readPointer(provider), isNull);
-          expect(c.pointerManager.readPointer(provider), isNull);
-          expect(d.pointerManager.readPointer(provider), isNull);
+          expect(a.pointerManager.readLocalPointer(provider), isNull);
+          expect(b.pointerManager.readLocalPointer(provider), isNull);
+          expect(c.pointerManager.readLocalPointer(provider), isNull);
+          expect(d.pointerManager.readLocalPointer(provider), isNull);
 
           d.listen(provider, (previous, next) {}, fireImmediately: true);
 
-          expect(a.pointerManager.readPointer(provider), isNotNull);
-          expect(b.pointerManager.readPointer(provider), isNull);
-          expect(c.pointerManager.readPointer(provider), isNull);
-          expect(d.pointerManager.readPointer(provider), isNotNull);
+          expect(a.pointerManager.readLocalPointer(provider), isNotNull);
+          expect(b.pointerManager.readLocalPointer(provider), isNull);
+          expect(c.pointerManager.readLocalPointer(provider), isNull);
+          expect(d.pointerManager.readLocalPointer(provider), isNotNull);
         },
       );
 
