@@ -303,7 +303,7 @@ extension ResolverX on TestSourceResolver {
         .expand((e) => e.errors)
         .where((e) => e.severity == Severity.error)
         .toList();
-    if (compilerErrors.isNotEmpty) {
+    if (compilerErrors.isNotEmpty && !ignoreErrors) {
       throw StateError('''
 The parsed library has compiler errors:
 ${compilerErrors.map((e) => '- $e\n').join()}
