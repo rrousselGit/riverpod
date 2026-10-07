@@ -1,3 +1,7 @@
+## Unreleased fix
+
+- Fix bug with latest analyzer
+
 ## 1.0.0-dev.12 - 2026-09-04
 
 - Upgraded `analyzer` to `<15.0.0`
@@ -181,4 +185,3 @@ the `@riverpod external int value()` syntax.
 ## 0.0.1
 
 - Initial version.
-
