@@ -172,7 +172,6 @@ class _StateNotifierProviderElement<
 
     _removeListener = notifier.valueOrRawException.addListener(
       (newState) => setValue(AsyncData(newState)),
-      fireImmediately: true,
     );
 
     return null;
