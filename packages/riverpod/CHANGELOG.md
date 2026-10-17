@@ -1,4 +1,4 @@
-## Unreleased fix
+## Unreleased minor
 
 - Confirmed `Ref.watch` catches errors emitted after build by a watched provider (such as from retries) by rebuilding the dependent provider. (#4432) (thanks to @naghinezhad)
 - Devtools now retain only the current provider snapshot by default. Set
@@ -16,15 +16,18 @@
   dependency ring left the offending subscription in the graph, so a subsequent
   rebuild could make the check walk the cycle forever. The subscription is now
   removed when the check throws, and the walk keeps a visited set. (thanks to @chiliec)
+- Migrated Material imports to `package:material_ui/material_ui.dart` and added
+  `material_ui` as a dependency.
+- Updated the DevTools extension to use Material UI themes and localizations.
+
+## 3.4.3 - 2026-09-04
+
+- Upgraded `analyzer` to `<15.0.0`
 - Depend on `test_api` instead of `test`. Riverpod only used `addTearDown`, which
   `test` re-exports unchanged from `test_api`, so `ProviderContainer.test` is
   unaffected. This removes 34 transitive packages from the dependency graph of
   every project that uses Riverpod, including `analyzer`, whose version ceiling
   was blocking other tooling. (thanks to @samithahansaka)
-
-## 3.4.3 - 2026-09-04
-
-- Upgraded `analyzer` to `<15.0.0`
 
 ## 3.4.2 - 2026-07-28
 
