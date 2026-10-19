@@ -1,0 +1,67 @@
+name: CI
+
+# Every check lives in scripts/check.sh; these jobs only pick which steps to run
+# and spread them across machines. To reproduce a failure locally, run the same
+# command shown in the step.
+
+on:
+  pull_request:
+    paths-ignore:
+      - "**.md"
+      - "**.mdx"
+  push:
+    branches:
+      - master
+      - dev
+    paths-ignore:
+      - "**.md"
+      - "**.mdx"
+  schedule:
+    # runs the CI everyday at 10AM
+    - cron: "0 10 * * *"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  generate:
+    name: Generated code is up to date
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+      - run: scripts/check.sh generate
+
+  analyze:
+    name: Format & analyze
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+      - run: scripts/check.sh format analyze
+
+  test:
+    name: Test (shard ${{ matrix.shard }}/3)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+      - run: scripts/check.sh test --coverage --shard ${{ matrix.shard }}/3
+      - uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
