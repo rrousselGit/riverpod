@@ -26,7 +26,7 @@ concurrency:
 
 jobs:
   generate:
-    name: Generated code is up to date
+    name: Package graph & generated code are up to date
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,7 +34,7 @@ jobs:
         with:
           channel: master
           cache: true
-      - run: scripts/check.sh generate
+      - run: scripts/check.sh graph generate
 
   analyze:
     name: Format & analyze

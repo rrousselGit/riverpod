@@ -8,12 +8,15 @@
 # Usage: scripts/check.sh [options] [step...]
 #
 # Steps (default: all of them). Whatever order they are given in, they run as:
-#   generate    Run build_runner everywhere and fail if any file changed.
+#   graph       Fail if package_graph.yaml is out of date with the pubspecs.
+#   generate    Run build_runner in every package that uses it, layer by layer
+#               in dependency order (from package_graph.yaml), and fail if any
+#               file changed.
 #   format      `dart format` check.
 #   analyze     `flutter analyze` per package.
 #   test        Tests per package (`flutter test` or `dart test`).
 #   changelog   `semantic_changelog check` against --base.
-# generate runs first, alone, since everything else reads generated code;
+# graph then generate run first, since everything else reads generated code;
 # format, analyze, test and changelog then share one parallel pool.
 #
 # Options:
@@ -23,6 +26,7 @@
 #   -j, --jobs N        Max parallel tasks (default: number of CPUs; or set
 #                       CHECK_JOBS). Lower it if analysis servers exhaust RAM.
 #   --fix               format: rewrite files instead of failing.
+#                       graph: rewrite package_graph.yaml.
 #                       generate: keep regenerated files, don't fail.
 #   --coverage          Collect coverage while testing (CI uses this).
 #   --shard I/N         Only run the I-th of N slices of the per-package
@@ -34,7 +38,7 @@
 # Examples:
 #   scripts/check.sh                                # everything, like CI
 #   scripts/check.sh analyze test -p packages/riverpod
-#   scripts/check.sh format generate --fix          # fix what can be fixed
+#   scripts/check.sh graph format generate --fix    # fix what can be fixed
 
 # Tasks are dispatched indirectly via "task_$kind".
 # shellcheck disable=SC2317
@@ -52,8 +56,8 @@ cd "$ROOT" || exit 1
 # never format-checked by the old riverpod_lint.yml and always used `dart test`,
 # so that is preserved here.
 #
-# Code generation is not limited to this list: `generate` runs in every
-# package whose pubspec.yaml mentions build_runner.
+# Code generation is not limited to this list: `generate` covers every
+# package marked `codegen: true` in package_graph.yaml.
 # ---------------------------------------------------------------------------
 PACKAGES="
 packages/riverpod                                  format   dart
@@ -78,9 +82,9 @@ examples/todos                                     format   flutter
 "
 # (Listed roughly slowest-first, so the parallel pool starts long tasks early.)
 
-# Code generation must run in this order before everything else: other
-# packages' builders depend on these packages' generated code.
-GENERATE_FIRST="packages/riverpod_analyzer_utils packages/riverpod"
+# Generated from every pubspec.yaml by tools/package_graph; see `graph` step.
+GRAPH="$ROOT/package_graph.yaml"
+GRAPH_TOOL="tools/package_graph/bin/package_graph.dart"
 
 # Settings. Exported so the parallel workers (this script re-invoked) see them.
 FIX="${CHECK_FIX:-0}"
@@ -110,14 +114,27 @@ normalize() {
 table_paths() { printf '%s\n' "$PACKAGES" | awk 'NF { print $1 }'; }
 table_field() { printf '%s\n' "$PACKAGES" | awk -v p="$1" -v f="$2" '$1 == p { print $f }'; }
 
-# Every package that uses build_runner, as generate.sh used to find them.
-generator_paths() {
-  find . -name pubspec.yaml \
-    -not -path '*/node_modules/*' -not -path '*/.dart_tool/*' \
-    -not -path '*/build/*' -print0 2>/dev/null |
-    xargs -0 grep -l build_runner 2>/dev/null |
-    sed -e 's#^\./##' -e 's#/pubspec\.yaml$##' | sort
+# Readers for package_graph.yaml. The file is generated with a fixed layout
+# (and the `graph` step guarantees it is current), so line matching is safe.
+
+# "<name> <path> <codegen>" for every package.
+graph_packages() {
+  awk '
+    /^[^ #]/            { in_packages = ($0 == "packages:"); next }
+    !in_packages        { next }
+    /^  [^ ]/           { name = substr($0, 3, length($0) - 3); next }
+    /^    path: /       { path[name] = substr($0, 11) }
+    /^    codegen: /    { codegen[name] = substr($0, 14); order[++n] = name }
+    END { for (i = 1; i <= n; i++) print order[i], path[order[i]], codegen[order[i]] }
+  ' "$GRAPH"
 }
+
+# One line per layer, with space-separated package names.
+graph_layers() {
+  sed -n '/^layers:$/,$ s/^  - \[\(.*\)\]$/\1/p' "$GRAPH" | sed 's/, */ /g'
+}
+
+graph_paths() { graph_packages | awk '{ print $2 }'; }
 
 # Apply the -p filter to a list of paths on stdin.
 filter_selected() {
@@ -159,6 +176,25 @@ pub_global_has() {
 # ---------------------------------------------------------------------------
 task_generate() {
   cd "$ROOT/$1" && dart run build_runner build --delete-conflicting-outputs
+}
+
+task_graph() {
+  local fresh="$LOG_DIR/package_graph.yaml"
+  dart run "$GRAPH_TOOL" --output "$fresh" || return 1
+  if cmp -s "$fresh" "$GRAPH"; then
+    echo "package_graph.yaml is up to date."
+    return 0
+  fi
+  if [ "$FIX" = 1 ]; then
+    cp "$fresh" "$GRAPH"
+    echo "Updated package_graph.yaml."
+    return 0
+  fi
+  diff -u "$GRAPH" "$fresh"
+  echo
+  echo "package_graph.yaml is out of date with the pubspec.yaml files."
+  echo "Fix with: scripts/check.sh graph --fix"
+  return 1
 }
 
 task_format() {
@@ -244,7 +280,7 @@ failed_tasks() {
 
 rerun_hint() {
   case "$1" in
-    format|changelog) echo "scripts/check.sh $1" ;;
+    format|changelog|graph) echo "scripts/check.sh $1" ;;
     *) echo "scripts/check.sh $1 -p $2" ;;
   esac
 }
@@ -253,24 +289,36 @@ rerun_hint() {
 # Steps
 # ---------------------------------------------------------------------------
 step_generate() {
-  local before after p first rest selected
+  local before after
   echo "==> generate"
   before="$(snapshot_tree)" || die "could not snapshot the working tree"
 
-  # Ordered stages first, then everything else in parallel.
-  selected="$(generator_paths | filter_selected)"
-  for first in $GENERATE_FIRST; do
-    grep -qx "$first" <<<"$selected" || continue
-    echo "generate $first" | run_pool
-    if [ -n "$(echo "generate $first" | failed_tasks)" ]; then
-      echo "  (stopping: later generators depend on $first)"
+  # One layer at a time, in dependency order; packages within a layer run in
+  # parallel. A failure stops here, since later layers depend on this one.
+  local packages layers layer total number=0 name path codegen tasks
+  [ -f "$GRAPH" ] || die "package_graph.yaml is missing. Create it with: scripts/check.sh graph --fix"
+  packages="$(graph_packages)"
+  layers="$(graph_layers)"
+  total="$(grep -c . <<<"$layers")"
+  while read -r layer <&3; do
+    number=$((number + 1))
+    tasks=""
+    for name in $layer; do
+      read -r path codegen <<<"$(awk -v n="$name" '$1 == n { print $2, $3 }' <<<"$packages")"
+      [ "$codegen" = true ] || continue
+      [ -n "$(echo "$path" | filter_selected)" ] || continue
+      tasks="$tasks
+generate $path"
+    done
+    tasks="$(sed '/^$/d' <<<"$tasks")"
+    [ -z "$tasks" ] && continue
+    echo "  layer $number/$total"
+    printf '%s\n' "$tasks" | run_pool
+    if [ -n "$(failed_tasks <<<"$tasks")" ]; then
+      echo "  (stopping: later layers depend on this one)"
       return 1
     fi
-  done
-  rest="$(printf '%s\n' "$selected" | while read -r p; do
-    [[ " $GENERATE_FIRST " == *" $p "* ]] || echo "generate $p"; done)"
-  printf '%s\n' "$rest" | sed '/^$/d' | run_pool
-  [ -n "$(sed -n '/^generate /p' "$LOG_DIR/tasks" | failed_tasks)" ] && return 1
+  done 3<<<"$layers"
 
   after="$(snapshot_tree)" || die "could not snapshot the working tree"
   if [ "$before" = "$after" ]; then
@@ -381,12 +429,12 @@ while [ $# -gt 0 ]; do
     --base)       [ $# -ge 2 ] || die "$1 needs a ref"; BASE="$2"; shift 2 ;;
     --no-pub-get) PUB_GET=0; shift ;;
     -h|--help)    usage; exit 0 ;;
-    all)          STEPS="$STEPS generate format analyze test changelog"; shift ;;
-    generate|format|analyze|test|changelog) STEPS="$STEPS $1"; shift ;;
+    all)          STEPS="$STEPS graph generate format analyze test changelog"; shift ;;
+    graph|generate|format|analyze|test|changelog) STEPS="$STEPS $1"; shift ;;
     *)            die "unknown argument '$1' (see --help)" ;;
   esac
 done
-[ -z "$STEPS" ] && STEPS="generate format analyze test changelog"
+[ -z "$STEPS" ] && STEPS="graph generate format analyze test changelog"
 has_step() { [[ " $STEPS " == *" $1 "* ]]; }
 
 [ -z "$JOBS" ] && JOBS="$(cpu_count)"
@@ -399,7 +447,7 @@ if [ -n "$SHARD" ]; then
 fi
 
 # Reject unknown packages early, listing the valid ones.
-KNOWN="$( { table_paths; generator_paths; } | sort -u)"
+KNOWN="$( { table_paths; [ -f "$GRAPH" ] && graph_paths; } | sort -u)"
 for p in $PKG_FILTER; do
   grep -qx "$p" <<<"$KNOWN" || die "unknown package '$p'. Known packages:
 $(printf '%s\n' "$KNOWN" | sed 's/^/  /')"
@@ -420,7 +468,7 @@ echo "check.sh: steps:${STEPS}${PKG_FILTER:+ | packages:$PKG_FILTER}${SHARD:+ | 
 
 # Bootstrap. One `pub get` at the root resolves the whole pub workspace; tasks
 # then pass --no-pub so parallel runs never race on dependency resolution.
-if [ "$PUB_GET" = 1 ] && { has_step generate || has_step format || has_step analyze || has_step test; }; then
+if [ "$PUB_GET" = 1 ] && { has_step graph || has_step generate || has_step format || has_step analyze || has_step test; }; then
   echo "==> flutter pub get"
   flutter pub get >"$LOG_DIR/pub_get.log" 2>&1 || {
     cat "$LOG_DIR/pub_get.log"; die "flutter pub get failed"; }
@@ -434,7 +482,12 @@ if has_step changelog && ! pub_global_has semantic_changelog; then
     >/dev/null || die "could not activate semantic_changelog"
 fi
 
-# generate runs alone first: every other step reads the generated code.
+# graph, then generate, run before the rest: generate reads the graph, and
+# every other step reads the generated code.
+if has_step graph; then
+  echo "==> graph"
+  echo "graph -" | run_pool
+fi
 gen_ok=1
 if has_step generate; then
   step_generate || gen_ok=0
