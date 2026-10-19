@@ -1,3 +1,4 @@
+// dart format off
 import 'package:flutter_riverpod/experimental/persist.dart';
 import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

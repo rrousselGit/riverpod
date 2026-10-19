@@ -35,5 +35,11 @@ workspace:
   - packages/riverpod_sqflite/example
   - packages/riverpod_sqflite
   - tools/generate_providers
+  - tools/package_graph
   - other_projects/devtool_debug_app
   - website
+
+dependency_overrides:
+  # source_helper 1.4.0 adds extensions that clash with json_serializable
+  # 6.15.0's, which then fails to compile. Remove once either is fixed.
+  source_helper: ">=1.3.10 <1.4.0"

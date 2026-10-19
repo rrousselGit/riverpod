@@ -1,3 +1,4 @@
+// dart format off
 import 'package:flutter_riverpod/legacy.dart';
 
 /* SNIPPET START */
