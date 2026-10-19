@@ -8,12 +8,20 @@
 # Only packages of this workspace appear. `dependencies`, `dev_dependencies`
 # and `dependency_overrides` all count as edges: a package's dev dependencies
 # (code generators, test utilities...) must be ready before the package is.
+#
+# `test` says how CI runs the tests of each package, from its dependencies:
+#   none      No test/ folder.
+#   chrome    `flutter test --platform chrome`, for DevTools extensions,
+#             which only run on the web.
+#   flutter   `flutter test`, when it depends on Flutter.
+#   dart      `dart test` otherwise.
 
 # Every workspace package, with its direct relationships.
 packages:
   benchmarks:
     path: benchmarks
     codegen: false
+    test: none
     dependencies: [riverpod]
     dev_dependencies: []
     dependency_overrides: []
@@ -21,6 +29,7 @@ packages:
   build_yaml:
     path: packages/riverpod_generator/integration/build_yaml
     codegen: true
+    test: dart
     dependencies: [riverpod, riverpod_annotation]
     dev_dependencies: [riverpod_generator]
     dependency_overrides: []
@@ -28,6 +37,7 @@ packages:
   counter:
     path: examples/counter
     codegen: true
+    test: flutter
     dependencies: [flutter_riverpod, hooks_riverpod, riverpod, riverpod_annotation]
     dev_dependencies: [riverpod_generator]
     dependency_overrides: []
@@ -35,6 +45,7 @@ packages:
   devtool_debug_app:
     path: other_projects/devtool_debug_app
     codegen: true
+    test: none
     dependencies: [flutter_riverpod, hooks_riverpod, riverpod, riverpod_annotation]
     dev_dependencies: [riverpod_generator]
     dependency_overrides: []
@@ -42,6 +53,7 @@ packages:
   example:
     path: packages/riverpod_sqflite/example
     codegen: true
+    test: none
     dependencies: [flutter_riverpod, riverpod, riverpod_annotation, riverpod_sqflite]
     dev_dependencies: [riverpod_generator]
     dependency_overrides: []
@@ -49,6 +61,7 @@ packages:
   first_app:
     path: examples/first_app
     codegen: false
+    test: none
     dependencies: [flutter_riverpod]
     dev_dependencies: []
     dependency_overrides: []
@@ -56,6 +69,7 @@ packages:
   flutter_riverpod:
     path: packages/flutter_riverpod
     codegen: false
+    test: flutter
     dependencies: [riverpod]
     dev_dependencies: []
     dependency_overrides: []
@@ -63,6 +77,7 @@ packages:
   flutter_riverpod_example:
     path: packages/flutter_riverpod/example
     codegen: false
+    test: flutter
     dependencies: [flutter_riverpod, hooks_riverpod, riverpod]
     dev_dependencies: []
     dependency_overrides: []
@@ -70,6 +85,7 @@ packages:
   generate_providers:
     path: tools/generate_providers
     codegen: false
+    test: none
     dependencies: []
     dev_dependencies: []
     dependency_overrides: []
@@ -77,6 +93,7 @@ packages:
   hooks_riverpod:
     path: packages/hooks_riverpod
     codegen: false
+    test: flutter
     dependencies: [flutter_riverpod, riverpod]
     dev_dependencies: []
     dependency_overrides: []
@@ -84,6 +101,7 @@ packages:
   hooks_riverpod_example:
     path: packages/hooks_riverpod/example
     codegen: false
+    test: flutter
     dependencies: [hooks_riverpod]
     dev_dependencies: []
     dependency_overrides: []
@@ -91,6 +109,7 @@ packages:
   internal_lint:
     path: packages/internal_lint
     codegen: false
+    test: none
     dependencies: [riverpod_analyzer_utils]
     dev_dependencies: []
     dependency_overrides: []
@@ -98,6 +117,7 @@ packages:
   lint_visitor_generator:
     path: packages/lint_visitor_generator
     codegen: true
+    test: none
     dependencies: []
     dev_dependencies: []
     dependency_overrides: []
@@ -105,6 +125,7 @@ packages:
   marvel:
     path: examples/marvel
     codegen: true
+    test: none
     dependencies: [hooks_riverpod]
     dev_dependencies: []
     dependency_overrides: []
@@ -112,6 +133,7 @@ packages:
   package_graph:
     path: tools/package_graph
     codegen: false
+    test: none
     dependencies: []
     dev_dependencies: []
     dependency_overrides: []
@@ -119,6 +141,7 @@ packages:
   pub_app:
     path: examples/pub
     codegen: true
+    test: none
     dependencies: [hooks_riverpod, riverpod_annotation]
     dev_dependencies: [riverpod_generator]
     dependency_overrides: []
@@ -126,6 +149,7 @@ packages:
   random_number:
     path: examples/random_number
     codegen: true
+    test: none
     dependencies: [flutter_riverpod]
     dev_dependencies: []
     dependency_overrides: []
@@ -133,6 +157,7 @@ packages:
   riverpod:
     path: packages/riverpod
     codegen: true
+    test: dart
     dependencies: []
     dev_dependencies: [riverpod_devtool_generator]
     dependency_overrides: []
@@ -140,6 +165,7 @@ packages:
   riverpod_analyzer_utils:
     path: packages/riverpod_analyzer_utils
     codegen: true
+    test: none
     dependencies: []
     dev_dependencies: [lint_visitor_generator]
     dependency_overrides: []
@@ -147,6 +173,7 @@ packages:
   riverpod_analyzer_utils_tests:
     path: packages/riverpod_analyzer_utils_tests
     codegen: true
+    test: dart
     dependencies: []
     dev_dependencies: [riverpod_analyzer_utils, riverpod_generator]
     dependency_overrides: []
@@ -154,6 +181,7 @@ packages:
   riverpod_annotation:
     path: packages/riverpod_annotation
     codegen: false
+    test: none
     dependencies: [riverpod]
     dev_dependencies: []
     dependency_overrides: []
@@ -161,6 +189,7 @@ packages:
   riverpod_devtool:
     path: packages/riverpod_devtool
     codegen: true
+    test: chrome
     dependencies: [hooks_riverpod]
     dev_dependencies: [riverpod_devtool_generator]
     dependency_overrides: []
@@ -168,6 +197,7 @@ packages:
   riverpod_devtool_generator:
     path: packages/riverpod_devtool_generator
     codegen: true
+    test: none
     dependencies: [riverpod_analyzer_utils]
     dev_dependencies: []
     dependency_overrides: []
@@ -175,6 +205,7 @@ packages:
   riverpod_example:
     path: packages/riverpod/example
     codegen: true
+    test: none
     dependencies: [riverpod]
     dev_dependencies: []
     dependency_overrides: []
@@ -182,6 +213,7 @@ packages:
   riverpod_generator:
     path: packages/riverpod_generator
     codegen: true
+    test: dart
     dependencies: [riverpod_analyzer_utils, riverpod_annotation]
     dev_dependencies: [riverpod]
     dependency_overrides: []
@@ -189,6 +221,7 @@ packages:
   riverpod_lint:
     path: packages/riverpod_lint
     codegen: false
+    test: none
     dependencies: [riverpod, riverpod_analyzer_utils]
     dev_dependencies: []
     dependency_overrides: []
@@ -196,6 +229,7 @@ packages:
   riverpod_lint_flutter_test:
     path: packages/riverpod_lint_flutter_test
     codegen: true
+    test: flutter
     dependencies: [hooks_riverpod, riverpod_annotation]
     dev_dependencies: [riverpod_generator, riverpod_lint]
     dependency_overrides: []
@@ -203,6 +237,7 @@ packages:
   riverpod_sqflite:
     path: packages/riverpod_sqflite
     codegen: false
+    test: flutter
     dependencies: [riverpod]
     dev_dependencies: []
     dependency_overrides: []
@@ -210,6 +245,7 @@ packages:
   stackoverflow:
     path: examples/stackoverflow
     codegen: true
+    test: none
     dependencies: [hooks_riverpod, riverpod_annotation]
     dev_dependencies: [riverpod_generator]
     dependency_overrides: []
@@ -217,6 +253,7 @@ packages:
   todos:
     path: examples/todos
     codegen: true
+    test: flutter
     dependencies: [hooks_riverpod, riverpod]
     dev_dependencies: []
     dependency_overrides: []
@@ -224,6 +261,7 @@ packages:
   website_snippets:
     path: website
     codegen: true
+    test: none
     dependencies: [flutter_riverpod, hooks_riverpod, riverpod, riverpod_annotation, riverpod_sqflite]
     dev_dependencies: [riverpod_generator]
     dependency_overrides: []
