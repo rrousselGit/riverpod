@@ -1,3 +1,4 @@
+// dart format off
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

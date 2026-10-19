@@ -1,3 +1,4 @@
+// dart format off
 // ignore_for_file: inference_failure_on_function_invocation
 
 import 'package:dio/dio.dart';
