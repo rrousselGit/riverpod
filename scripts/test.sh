@@ -10,8 +10,6 @@
 set -uo pipefail
 # shellcheck source=lib/common.sh
 . "$(dirname "$0")/lib/common.sh"
-# shellcheck source=lib/packages.sh
-. "$SCRIPTS/lib/packages.sh"
 # shellcheck source=lib/pool.sh
 . "$SCRIPTS/lib/pool.sh"
 
@@ -36,6 +34,7 @@ if [ $# -eq 1 ]; then
   cd "$ROOT/$1" || exit 1
   [ -d test ] || { echo "$1 has no tests."; exit 0; }
   case "$(test_runner "$1"):$coverage" in
+    chrome:*)           exec flutter test --no-pub --platform chrome ;;
     flutter:*)          exec flutter test --no-pub $coverage ;;
     dart:--coverage)    exec "$SCRIPTS/coverage.sh" ;;
     *)                  exec dart test ;;

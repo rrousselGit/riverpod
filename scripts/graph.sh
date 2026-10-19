@@ -8,8 +8,6 @@
 set -uo pipefail
 # shellcheck source=lib/common.sh
 . "$(dirname "$0")/lib/common.sh"
-# shellcheck source=lib/packages.sh
-. "$SCRIPTS/lib/packages.sh"
 
 check=0
 for arg in "$@"; do

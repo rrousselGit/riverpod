@@ -9,6 +9,7 @@
 #   pool_inline LABEL CMD   Run CMD now in the foreground, streaming output,
 #                           but still record it for pool_report.
 #   pool_report             Print failed logs and how to re-run each failure.
+#                           Deletes the logs when nothing failed.
 #
 # CMD doubles as the re-run hint, so queue commands a human could paste.
 
@@ -64,12 +65,13 @@ pool_report() {
   failed="$(pool_failed <"$POOL_DIR/tasks")"
   nfailed="$(grep -c . <<<"$failed")"
   echo
-  if [ "$total" = 0 ]; then
-    echo "Nothing to run for these options."
-    return 0
-  fi
   if [ "$nfailed" = 0 ]; then
-    echo "All $total tasks passed in ${secs}s."
+    if [ "$total" = 0 ]; then
+      echo "Nothing to run for these options."
+    else
+      echo "All $total tasks passed in ${secs}s."
+    fi
+    rm -rf "$POOL_DIR"
     return 0
   fi
   while IFS=$'\t' read -r label cmd; do

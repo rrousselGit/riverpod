@@ -8,8 +8,6 @@
 set -uo pipefail
 # shellcheck source=lib/common.sh
 . "$(dirname "$0")/lib/common.sh"
-# shellcheck source=lib/packages.sh
-. "$SCRIPTS/lib/packages.sh"
 
 fix=0
 paths=""
@@ -21,7 +19,7 @@ for arg in "$@"; do
     *) paths="$paths $(normalize "$arg")" ;;
   esac
 done
-[ -z "$paths" ] && paths="$(ci_formatted_packages | tr '\n' ' ')"
+[ -z "$paths" ] && paths="$(ci_packages | tr '\n' ' ')"
 # shellcheck disable=SC2086 # word splitting of the package list is intended
 set -- $paths
 validate_packages "$@"

@@ -9,8 +9,6 @@
 set -uo pipefail
 # shellcheck source=lib/common.sh
 . "$(dirname "$0")/lib/common.sh"
-# shellcheck source=lib/packages.sh
-. "$SCRIPTS/lib/packages.sh"
 # shellcheck source=lib/pool.sh
 . "$SCRIPTS/lib/pool.sh"
 
@@ -30,7 +28,8 @@ validate_packages "$@"
 ensure_deps
 
 if [ $# -eq 1 ]; then
-  cd "$ROOT/$1" && exec flutter analyze --no-pub
+  cd "$ROOT/$1" || exit 1
+  exec flutter analyze --no-pub
 fi
 pool_init
 for p in "$@"; do pool_add "analyze $p" "scripts/analyze.sh $p"; done

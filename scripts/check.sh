@@ -34,8 +34,6 @@
 set -uo pipefail
 # shellcheck source=lib/common.sh
 . "$(dirname "$0")/lib/common.sh"
-# shellcheck source=lib/packages.sh
-. "$SCRIPTS/lib/packages.sh"
 # shellcheck source=lib/pool.sh
 . "$SCRIPTS/lib/pool.sh"
 
@@ -122,14 +120,7 @@ if [ -n "$pool_steps" ]; then
       pool_add "analyze $p" "scripts/analyze.sh $p"
     done
   fi
-  if has_step format; then
-    # Without -p, format.sh's default list is exactly what CI formats.
-    formatted=""
-    [ -n "$selected" ] && formatted="$(ci_formatted_packages | only_selected | tr '\n' ' ')"
-    if [ -z "$selected" ] || [ -n "$formatted" ]; then
-      pool_add "format" "$(echo "scripts/format.sh $(flag --fix "") $formatted" | tr -s ' ' | sed 's/ $//')"
-    fi
-  fi
+  has_step format && pool_add "format" "scripts/format.sh$(flag " --fix" "")$selected"
   has_step changelog && pool_add "changelog" "scripts/changelog.sh $base"
   pool_run
 fi
