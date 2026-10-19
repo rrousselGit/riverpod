@@ -76,7 +76,12 @@ pool_report() {
   fi
   while IFS=$'\t' read -r label cmd; do
     slug="$(pool_slug "$label")"
-    in_ci && echo "::error title=$label failed::Re-run locally with: $cmd"
+    # The annotation carries the end of the log: unlike the log itself, it can
+    # be read without access to the repository's Actions.
+    in_ci && printf '::error title=%s failed::%s\n' "$label" "$(
+      { printf 'Re-run locally with: %s\n\n' "$cmd"; tail -n 40 "$POOL_DIR/$slug.log" 2>/dev/null; } |
+        sed 's/%/%25/g; s/\r/%0D/g' | awk '{ printf "%s%%0A", $0 }'
+    )"
     # Inline tasks already streamed their output.
     [ -f "$POOL_DIR/$slug.inline" ] && continue
     in_ci && echo "::group::Log: $label"
