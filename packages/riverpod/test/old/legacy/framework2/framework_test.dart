@@ -336,6 +336,7 @@ void main() {
   test(
     'ProviderContainer.read(MyProvider.autoDispose) disposes the provider if not listened to',
     () async {
+      final container = ProviderContainer.test();
       final provider = StateProvider.autoDispose((ref) => 0);
 
       final state = container.read(provider.notifier);
