@@ -627,8 +627,8 @@ void main() {
 
   test('Simple Provider flow', () async {
     final container = ProviderContainer.test();
-    final notifier = Notifier(0);
-    final provider = StateNotifierProvider<Notifier<int>, int>((_) {
+    final notifier = SetStateNotifier(0);
+    final provider = StateNotifierProvider<SetStateNotifier<int>, int>((_) {
       return notifier;
     });
     final listener = Listener<bool>();
@@ -660,6 +660,13 @@ void main() {
 
 class Notifier<StateT> extends StateNotifier<StateT> {
   Notifier(super._state);
+
+  // ignore: use_setters_to_change_properties
+  void setState(StateT value) => state = value;
+}
+
+class SetStateNotifier<StateT> extends StateNotifier<StateT> {
+  SetStateNotifier(super._state);
 
   // ignore: use_setters_to_change_properties
   void setState(StateT value) => state = value;
