@@ -3,7 +3,7 @@ import 'package:riverpod_sqflite/src/riverpod_sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:test/test.dart';
 
-import 'third_party/fake_async.dart';
+import '../third_party/fake_async.dart';
 
 /// Initialize sqflite for test.
 void sqfliteTestInit() {

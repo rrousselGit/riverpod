@@ -1,9 +1,6 @@
 # lib/ files that had no test when scripts/tested.sh started requiring one.
 # Do not add to this list: give new files a test instead. Remove an entry once
 # its file has a test (scripts/tested.sh fails until you do).
-packages/flutter_riverpod/lib/src/core/provider_scope.dart
-packages/flutter_riverpod/lib/src/providers/legacy/change_notifier_provider.dart
-packages/hooks_riverpod/lib/src/consumer.dart
 packages/internal_lint/lib/main.dart
 packages/internal_lint/lib/src/lints/avoid_sub_read.dart
 packages/internal_lint/lib/src/lints/generic_name.dart
@@ -119,4 +116,3 @@ packages/riverpod_lint/lib/src/node.dart
 packages/riverpod_lint/lib/src/object_utils.dart
 packages/riverpod_lint/lib/src/offsets.dart
 packages/riverpod_lint/lib/src/riverpod_custom_lint.dart
-packages/riverpod_sqflite/lib/src/riverpod_sqflite.dart
