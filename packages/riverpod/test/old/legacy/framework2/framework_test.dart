@@ -352,6 +352,8 @@ void main() {
   group('Element.listen', () {
     group('didChange', () {
       test('is called synchronously on direct provider change', () {
+        final container = ProviderContainer.test();
+        final didChange = Listener<int>();
         final counter = Counter();
         final provider = StateNotifierProvider<Counter, int>((ref) => counter);
 
