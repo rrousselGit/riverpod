@@ -309,6 +309,7 @@ void main() {
   });
 
   test('remove dependencies on dispose', () async {
+    final container = ProviderContainer.test();
     final first = StateProvider((ref) => 0);
     final computed = Provider.autoDispose((ref) {
       return ref.watch(first);
