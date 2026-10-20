@@ -1,6 +1,5 @@
+import 'package:riverpod/src/common/string.dart';
 import 'package:test/test.dart';
-
-import 'string.dart';
 
 void main() {
   group('StringX', () {
