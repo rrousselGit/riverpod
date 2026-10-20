@@ -1,7 +1,8 @@
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
-import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:test/test.dart';
+
+import '../../riverpod.dart';
+import '../internals.dart' show InternalProviderContainer;
+import '../internals.dart' show ProviderElement;
 
 void main() {
   test('specifies `from` & `argument` for related providers', () {
