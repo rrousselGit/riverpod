@@ -37,7 +37,7 @@ packages:
   code_changes:
     path: tools/code_changes
     codegen: false
-    test: none
+    test: dart
     dependencies: []
     dev_dependencies: []
     dependency_overrides: []
