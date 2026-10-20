@@ -1,5 +1,1 @@
 pubspec_overrides.yaml
-
-# Tests next to the code in lib/ import dev dependencies; keep them out of
-# the published package.
-/lib/**/*_test.dart

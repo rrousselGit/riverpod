@@ -20,20 +20,11 @@ analyzer:
     deprecated_member_use: ignore
     # Analyzer API is experimental, but kind of necessary for analyzer plugins
     experimental_member_use: ignore
-    # Tests may live next to the code they test, as lib/**/*_test.dart, and
-    # the analyzer only lets test/ use @visibleForTesting members.
-    invalid_use_of_visible_for_testing_member: ignore
 
 linter:
   rules:
     # No good way to "fix" the diagnostic. Cf https://github.com/dart-lang/sdk/issues/61976
     unsafe_variance: false
-
-    # Tests next to the code they test (lib/**/*_test.dart) import dev
-    # dependencies such as `test`, which this rule only allows outside lib/.
-    # Publishing still checks lib/ imports against `dependencies`, and every
-    # published package excludes those tests in its .pubignore.
-    depend_on_referenced_packages: false
 
     # Conflicts with having to specify types on public properties
     omit_obvious_property_types: false

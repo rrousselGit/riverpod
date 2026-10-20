@@ -99,9 +99,3 @@ validate_packages() {
 $(sed "s/^/  /" <<<"$known")"
   done
 }
-
-# The `paths: [...]` of a package's dart_test.yaml, space-separated: where
-# package:test looks for tests. Only the one-line list form is read.
-test_paths() {
-  sed -n 's/^paths: *\[\(.*\)\]$/\1/p' "$ROOT/$1/dart_test.yaml" 2>/dev/null | tr -d ' ' | tr ',' ' '
-}
