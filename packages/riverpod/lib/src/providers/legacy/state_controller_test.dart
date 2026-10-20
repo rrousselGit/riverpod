@@ -1,5 +1,6 @@
-import 'package:riverpod/legacy.dart';
 import 'package:test/test.dart';
+
+import '../../../legacy.dart';
 
 void main() {
   group('StateController', () {
