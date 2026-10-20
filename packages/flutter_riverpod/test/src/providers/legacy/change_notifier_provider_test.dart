@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
-import '../../provider_test.dart';
-import '../../utils.dart';
+import '../../../provider_test.dart';
+import '../../../utils.dart';
 
 void main() {
   group('disposeNotifier', () {
