@@ -15,12 +15,6 @@ packages/riverpod/lib/src/common/tenable.dart
 packages/riverpod/lib/src/core/base_ref.dart
 packages/riverpod/lib/src/core/provider/functional_provider.dart
 packages/riverpod/lib/src/core/scheduler.dart
-packages/riverpod/lib/src/providers/async_notifier/family.dart
-packages/riverpod/lib/src/providers/async_notifier/orphan.dart
-packages/riverpod/lib/src/providers/notifier/family.dart
-packages/riverpod/lib/src/providers/notifier/orphan.dart
-packages/riverpod/lib/src/providers/stream_notifier/family.dart
-packages/riverpod/lib/src/providers/stream_notifier/orphan.dart
 packages/riverpod_analyzer_utils/lib/src/analyzer_utils.dart
 packages/riverpod_analyzer_utils/lib/src/argument_list_utils.dart
 packages/riverpod_analyzer_utils/lib/src/build_yaml.dart
