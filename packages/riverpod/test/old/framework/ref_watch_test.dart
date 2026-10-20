@@ -549,8 +549,8 @@ void main() {
 
   test('can call ref.watch asynchronously', () async {
     final container = ProviderContainer.test();
-    final notifier = Notifier(0);
-    final provider = StateNotifierProvider<Notifier<int>, int>(
+    final notifier = SetStateNotifier(0);
+    final provider = StateNotifierProvider<SetStateNotifier<int>, int>(
       name: 'provider',
       (_) => notifier,
     );
