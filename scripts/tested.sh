@@ -10,7 +10,8 @@
 #   PACKAGE     Package paths (default: every workspace package).
 #
 # Exempt from the rule:
-# - Changes that only touch comments or whitespace (docs, formatting).
+# - Changes that only touch comments or whitespace (docs, formatting), as
+#   told by tools/code_changes, which compares unresolved ASTs.
 # - Deleted files, tests themselves (*_test.dart), and generated files
 #   (*.g.dart, *.freezed.dart, or a "GENERATED" header).
 # Only files in a package's lib/ folder are considered.
@@ -36,7 +37,6 @@ done
 # shellcheck disable=SC2086 # word splitting of the package list is intended
 set -- $paths
 validate_packages "$@"
-command -v python3 >/dev/null || die "python3 is not on PATH"
 cd "$ROOT" || exit 1
 
 if ! git rev-parse --verify --quiet "$base" >/dev/null; then
@@ -81,21 +81,15 @@ is_generated() {
   head -n 5 "$1" 2>/dev/null | grep -q 'GENERATED'
 }
 
-# A modified file whose code is unchanged, ignoring comments and whitespace.
-docs_only() {
-  local old status
-  old="$(mktemp)" || return 1
-  git show "$from:$1" >"$old" 2>/dev/null || { rm -f "$old"; return 1; }
-  python3 -I "$SCRIPTS/lib/dart_tokens.py" "$old" "$1"
-  status=$?
-  rm -f "$old"
-  [ "$status" = 1 ]
-}
-
 lib_changes="$(printf '%s\n' "$changes" | in_selected_lib "$@")"
 changed_paths="$(printf '%s\n' "$lib_changes" | cut -f 2)"
+old_dir="$(mktemp -d)" || die "could not create a temporary folder"
+trap 'rm -rf "$old_dir"' EXIT
 
+# Files changed without their test. New files need one; modified files are
+# compared with their previous version below, in one go.
 missing=""
+pairs=()
 while IFS=$'\t' read -r status path; do
   [ -n "$path" ] || continue
   case "$status" in A|M|T) ;; *) continue ;; esac
@@ -104,10 +98,29 @@ while IFS=$'\t' read -r status path; do
   is_generated "$path" && continue
   test_file="${path%.dart}_test.dart"
   grep -Fqx "$test_file" <<<"$changed_paths" && continue
-  [ "$status" != A ] && docs_only "$path" && continue
-  missing="$missing  $path -> $test_file
+  if [ "$status" = A ]; then
+    missing="$missing  $path -> $test_file
 "
+    continue
+  fi
+  old="$old_dir/${#pairs[@]}.dart"
+  git show "$from:$path" >"$old" || die "could not read $path at $from"
+  pairs+=("$old" "$path")
 done <<<"$lib_changes"
+
+# Changes that only touch comments or whitespace are exempt. code_changes
+# compares the unresolved ASTs of both versions and prints the files whose
+# code changed.
+if [ ${#pairs[@]} -gt 0 ]; then
+  ensure_deps
+  code_changed="$(dart run tools/code_changes/bin/code_changes.dart "${pairs[@]}")" ||
+    die "tools/code_changes failed"
+  while read -r path; do
+    [ -n "$path" ] || continue
+    missing="$missing  $path -> ${path%.dart}_test.dart
+"
+  done <<<"$code_changed"
+fi
 
 # Tests in lib/ only run if dart_test.yaml says to look there: without it,
 # `dart test` would silently skip them.

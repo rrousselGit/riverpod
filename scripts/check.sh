@@ -74,12 +74,7 @@ if [ -n "$shard" ]; then
 fi
 # shellcheck disable=SC2086 # word splitting of the package list is intended
 validate_packages $selected
-# tested only needs git and python3, so it alone runs without Flutter.
-for s in graph generate format analyze test changelog; do
-  has_step "$s" || continue
-  command -v flutter >/dev/null || die "flutter is not on PATH (this repo pins its SDK in .fvmrc)"
-  break
-done
+command -v flutter >/dev/null || die "flutter is not on PATH (this repo pins its SDK in .fvmrc)"
 
 # Keeps the lines of stdin that match -p (all of them without -p).
 only_selected() {
@@ -100,7 +95,8 @@ pool_init
 
 # One `pub get` up front (and global tools activated once), so the parallel
 # scripts below never race on them.
-if has_step graph || has_step generate || has_step format || has_step analyze || has_step test; then
+if has_step graph || has_step generate || has_step format || has_step analyze || has_step test ||
+   has_step tested; then
   ensure_deps
 fi
 if has_step test && [ -n "$coverage" ]; then ensure_pub_global coverage coverage; fi

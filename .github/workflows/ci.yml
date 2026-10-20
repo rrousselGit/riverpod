@@ -51,8 +51,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
       # On pull requests, HEAD is the merge commit and HEAD^1 the target
-      # branch, so this checks the changes of the PR. Needs no Flutter.
+      # branch, so this checks the changes of the PR.
       - run: scripts/check.sh tested --base HEAD^1
 
   test:
