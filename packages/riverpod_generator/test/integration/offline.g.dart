@@ -522,6 +522,7 @@ abstract class _$Json extends _$JsonBase {
     String Function(Map<String, List<int>> state)? encode,
     Map<String, List<int>> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
+    bool emitAsLoadingState = true,
   }) {
     return NotifierPersistX(this).persist<String, String>(
       storage,
@@ -539,6 +540,7 @@ abstract class _$Json extends _$JsonBase {
             );
           },
       options: options,
+      emitAsLoadingState: emitAsLoadingState,
     );
   }
 }
@@ -559,6 +561,7 @@ abstract class _$Json2 extends _$Json2Base {
     String Function(Map<String, List<int>> state)? encode,
     Map<String, List<int>> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
+    bool emitAsLoadingState = true,
   }) {
     return NotifierPersistX(this).persist<String, String>(
       storage,
@@ -576,6 +579,7 @@ abstract class _$Json2 extends _$Json2Base {
             );
           },
       options: options,
+      emitAsLoadingState: emitAsLoadingState,
     );
   }
 }
@@ -596,6 +600,7 @@ abstract class _$CustomJson extends _$CustomJsonBase {
     String Function(Map<String, Bar> state)? encode,
     Map<String, Bar> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
+    bool emitAsLoadingState = true,
   }) {
     return NotifierPersistX(this).persist<String, String>(
       storage,
@@ -613,6 +618,7 @@ abstract class _$CustomJson extends _$CustomJsonBase {
             );
           },
       options: options,
+      emitAsLoadingState: emitAsLoadingState,
     );
   }
 }
@@ -633,6 +639,7 @@ abstract class _$CustomKey extends _$CustomKeyBase {
     String Function(Map<String, Bar> state)? encode,
     Map<String, Bar> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
+    bool emitAsLoadingState = true,
   }) {
     return NotifierPersistX(this).persist<String, String>(
       storage,
@@ -650,6 +657,7 @@ abstract class _$CustomKey extends _$CustomKeyBase {
             );
           },
       options: options,
+      emitAsLoadingState: emitAsLoadingState,
     );
   }
 }
@@ -672,6 +680,7 @@ abstract class _$CustomJsonWithArgs extends _$CustomJsonWithArgsBase {
     String Function(Map<String, Bar> state)? encode,
     Map<String, Bar> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
+    bool emitAsLoadingState = true,
   }) {
     return NotifierPersistX(this).persist<String, String>(
       storage,
@@ -689,6 +698,7 @@ abstract class _$CustomJsonWithArgs extends _$CustomJsonWithArgsBase {
             );
           },
       options: options,
+      emitAsLoadingState: emitAsLoadingState,
     );
   }
 }
@@ -709,6 +719,7 @@ abstract class _$PassEncodeDecodeByHand extends _$PassEncodeDecodeByHandBase {
     String Function(Map<String, String> state)? encode,
     Map<String, String> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
+    bool emitAsLoadingState = true,
   }) {
     return NotifierPersistX(this).persist<String, String>(
       storage,
@@ -721,6 +732,7 @@ abstract class _$PassEncodeDecodeByHand extends _$PassEncodeDecodeByHandBase {
             return (e as Map).map((k, v) => MapEntry(k as String, v as String));
           },
       options: options,
+      emitAsLoadingState: emitAsLoadingState,
     );
   }
 }

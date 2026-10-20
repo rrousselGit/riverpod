@@ -116,6 +116,7 @@ abstract class $notifierClass$genericsDefinition extends $baseClass {
     String Function(${provider.providerElement.valueTypeNode.toCode()} state)? encode,
     ${provider.providerElement.valueTypeNode.toCode()} Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
+    bool emitAsLoadingState = true,
   }) {
     return NotifierPersistX(this).persist<String, String>(
       storage,
@@ -126,6 +127,7 @@ abstract class $notifierClass$genericsDefinition extends $baseClass {
         return $decoded;
       },
       options: options,
+      emitAsLoadingState: emitAsLoadingState,
     );
   }
 }
