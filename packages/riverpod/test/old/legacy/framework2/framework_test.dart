@@ -403,6 +403,7 @@ void main() {
       });
 
       test('is guarded', () {
+        final didChange = Listener<int>();
         final errors = <Object>[];
         final container = runZonedGuarded(
           ProviderContainer.test,
