@@ -1,0 +1,3 @@
+# Tests are the *_test.dart files next to the code they test in lib/.
+# Used by `dart test`; `flutter test` ignores `paths`.
+paths: [lib]

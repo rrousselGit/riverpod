@@ -82,6 +82,40 @@ yarn dev -l ja # When you are checking the Japanese docs locally
 
 ### Working on packages
 
+`scripts/check.sh` runs every check CI runs (`scripts/check.sh --help` lists
+them), so a local pass means a CI pass.
+
+#### Tests live next to the code
+
+Tests can be placed next to the file they test, in `lib/`:
+
+```
+lib/src/core/provider_container.dart
+lib/src/core/provider_container_test.dart
+```
+
+A package's `dart_test.yaml` lists `lib` in its
+[`paths`](https://github.com/dart-lang/test/blob/master/pkgs/test/doc/configuration.md#paths),
+so a plain `dart test` runs them along with `test/`. package:test only reads
+that file from the package itself, so a package without one needs it for its
+first lib test: `paths: [test, lib]`, or `paths: [lib]` without a `test/`
+folder. `flutter test` ignores
+that setting and only scans `test/` when given no path, so pass the folders:
+`flutter test test lib`. A single file runs as usual with
+`dart test lib/src/foo_test.dart` or `flutter test lib/src/foo_test.dart`.
+
+Lib tests are excluded from published packages (`.pubignore`) and from
+coverage reports.
+
+VS Code only discovers tests outside of `test/` with the
+`"dart.allowTestsOutsideTestFolder": true` setting.
+
+`scripts/check.sh tested` (part of CI) fails when a `lib/**/x.dart` file
+changes without a change to its `lib/**/x_test.dart`. Changes that only touch
+comments or whitespace are exempt, as are generated files and deleted files.
+It also fails when a package has lib tests that its `dart_test.yaml` doesn't
+point `dart test` to.
+
 ### Updating English docs
 
 English docs are the source of truth for Riverpod docs. As such, translations

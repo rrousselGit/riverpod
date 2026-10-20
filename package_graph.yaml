@@ -10,7 +10,7 @@
 # (code generators, test utilities...) must be ready before the package is.
 #
 # `test` says how CI runs the tests of each package, from its dependencies:
-#   none      No test/ folder.
+#   none      No tests: no test/ folder nor lib/**/*_test.dart file.
 #   chrome    `flutter test --platform chrome`, for DevTools extensions,
 #             which only run on the web.
 #   flutter   `flutter test`, when it depends on Flutter.
@@ -32,6 +32,14 @@ packages:
     test: dart
     dependencies: [riverpod, riverpod_annotation]
     dev_dependencies: [riverpod_generator]
+    dependency_overrides: []
+    dependents: []
+  code_changes:
+    path: tools/code_changes
+    codegen: false
+    test: dart
+    dependencies: []
+    dev_dependencies: []
     dependency_overrides: []
     dependents: []
   counter:
@@ -298,6 +306,7 @@ tree:
           riverpod_devtool_generator (dev):
             riverpod_analyzer_utils:
               lint_visitor_generator (dev): {}
+  code_changes: {}
   counter:
     flutter_riverpod:
       riverpod:
@@ -650,7 +659,7 @@ tree:
 # depends on earlier groups. Run the groups in order; everything
 # within a group can run at the same time.
 layers:
-  - [generate_providers, lint_visitor_generator, package_graph]
+  - [code_changes, generate_providers, lint_visitor_generator, package_graph]
   - [riverpod_analyzer_utils]
   - [internal_lint, riverpod_devtool_generator]
   - [riverpod]

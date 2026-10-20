@@ -20,6 +20,8 @@ ignore:
   - "examples"
   - "**/*.g.dart"
   - "**/*.freezed.dart"
+  # Tests placed next to the code they test
+  - "**/*_test.dart"
   - "packages/riverpod_cli"
   - "packages/riverpod_generator"
   - "packages/riverpod_lint"

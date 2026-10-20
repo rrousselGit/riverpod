@@ -5,7 +5,7 @@
 # Usage: scripts/test.sh [--coverage] [-j N] [PACKAGE...]
 #   --coverage  Collect coverage into each package's coverage/ folder.
 #   -j N        Max packages tested at once (default: CPU count).
-#   PACKAGE     Package paths (default: every CI package with a test/ folder).
+#   PACKAGE     Package paths (default: every CI package with tests).
 
 set -uo pipefail
 # shellcheck source=lib/common.sh
@@ -31,11 +31,16 @@ validate_packages "$@"
 ensure_deps
 
 if [ $# -eq 1 ]; then
+  runner="$(test_runner "$1")"
+  [ "$runner" != none ] || { echo "$1 has no tests."; exit 0; }
   cd "$ROOT/$1" || exit 1
-  [ -d test ] || { echo "$1 has no tests."; exit 0; }
-  case "$(test_runner "$1"):$coverage" in
-    chrome:*)           exec flutter test --no-pub --platform chrome ;;
-    flutter:*)          exec flutter test --no-pub $coverage ;;
+  # Where tests live is set by `paths` in dart_test.yaml, which `dart test`
+  # reads. `flutter test` only looks in test/, so it is given those paths.
+  # shellcheck disable=SC2046 # word splitting of the paths is intended
+  set -- $(test_paths "$1")
+  case "$runner:$coverage" in
+    chrome:*)           exec flutter test --no-pub --platform chrome "$@" ;;
+    flutter:*)          exec flutter test --no-pub $coverage "$@" ;;
     dart:--coverage)    exec "$SCRIPTS/coverage.sh" ;;
     *)                  exec dart test ;;
   esac
