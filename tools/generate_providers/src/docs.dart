@@ -11,10 +11,8 @@ $doc
 /// {@endtemplate}''';
 }
 
-String get autoDisposeDoc => _docs(
-      _autoDisposeDoc,
-      key: 'riverpod.autoDispose',
-    );
+String get autoDisposeDoc =>
+    _docs(_autoDisposeDoc, key: 'riverpod.autoDispose');
 
 const _autoDisposeDoc = '''
 /// Marks the provider as automatically disposed when no longer listened to.
@@ -65,10 +63,7 @@ const _autoDisposeDoc = '''
 /// });
 /// ```''';
 
-String get familyDoc => _docs(
-      _familyDoc,
-      key: 'riverpod.family',
-    );
+String get familyDoc => _docs(_familyDoc, key: 'riverpod.family');
 
 const _familyDoc = r'''
 /// A group of providers that builds their value from an external parameter.

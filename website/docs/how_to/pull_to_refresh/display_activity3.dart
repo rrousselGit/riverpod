@@ -1,3 +1,4 @@
+// dart format off
 // ignore_for_file: use_key_in_widget_constructors
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';

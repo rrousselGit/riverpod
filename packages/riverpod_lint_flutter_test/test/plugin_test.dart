@@ -39,6 +39,7 @@ Future<void> main() async {
 
   final collection = AnalysisContextCollection(
     includedPaths: filesToAnalyze.map((e) => e.absolute.path).toList(),
+    sdkPath: dartSdkPath,
   );
 
   for (final file in filesToAnalyze) {

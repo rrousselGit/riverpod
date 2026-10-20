@@ -162,15 +162,13 @@ Future<void> main(List<String> args) async {
         ],
         kinds: _ProviderKind.values,
       );
-      buffer.writeln(
-        """
+      buffer.writeln("""
 import 'dart:async';
 
 import 'package:meta/meta.dart';
 
 import 'internals.dart';
-""",
-      );
+""");
 
     case 'flutter_riverpod':
       matrix = (
@@ -185,14 +183,12 @@ import 'internals.dart';
         ],
         kinds: _ProviderKind.values,
       );
-      buffer.writeln(
-        """
+      buffer.writeln("""
 import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 
 import 'internals.dart';
-""",
-      );
+""");
     default:
       throw UnsupportedError('Unknown package ${args.first}');
   }
@@ -200,8 +196,9 @@ import 'internals.dart';
   _generateAll(buffer, matrix);
 
   await file.writeAsString(
-    DartFormatter(languageVersion: DartFormatter.latestLanguageVersion)
-        .format(buffer.toString()),
+    DartFormatter(
+      languageVersion: DartFormatter.latestLanguageVersion,
+    ).format(buffer.toString()),
   );
 }
 
@@ -276,10 +273,7 @@ void _generateFunctionalOrphan(
   _DisposeType disposeType,
   _FunctionalBuilder provider,
 ) {
-  final builderName = _builderName(
-    provider.providerName,
-    disposeType,
-  );
+  final builderName = _builderName(provider.providerName, disposeType);
 
   buffer.writeln('''
 @internal
