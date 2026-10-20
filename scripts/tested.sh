@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Checks that every changed lib/**/x.dart comes with a change to its test,
-# the lib/**/x_test.dart next to it.
+# Checks that every changed lib/**/x.dart comes with a change to its test:
+# test/**/x_test.dart, at the same path relative to test/ as the file is
+# relative to lib/ (lib/src/foo.dart -> test/src/foo_test.dart).
 #
 # Usage: scripts/tested.sh [--base REF] [PACKAGE...]
 #   --base REF  Ref to compare against (default: origin/master; fetched if
@@ -71,7 +72,8 @@ in_selected_lib() {
         p = known[k]
         if (index($2, p "/lib/") == 1 && length(p) > length(owner)) owner = p
       }
-      if (owner != "" && (owner in want)) print
+      # Appends the package path, which locates the test of the file.
+      if (owner != "" && (owner in want)) print $0 "\t" owner
     }
   '
 }
@@ -82,7 +84,7 @@ is_generated() {
 }
 
 lib_changes="$(printf '%s\n' "$changes" | in_selected_lib "$@")"
-changed_paths="$(printf '%s\n' "$lib_changes" | cut -f 2)"
+changed_paths="$(printf '%s\n' "$changes" | cut -f 2)"
 old_dir="$(mktemp -d)" || die "could not create a temporary folder"
 trap 'rm -rf "$old_dir"' EXIT
 
@@ -90,13 +92,16 @@ trap 'rm -rf "$old_dir"' EXIT
 # compared with their previous version below, in one go.
 missing=""
 pairs=()
-while IFS=$'\t' read -r status path; do
+tests=""
+while IFS=$'\t' read -r status path package; do
   [ -n "$path" ] || continue
   case "$status" in A|M|T) ;; *) continue ;; esac
   case "$path" in *_test.dart) continue ;; *.dart) ;; *) continue ;; esac
   [ -f "$path" ] || continue
   is_generated "$path" && continue
-  test_file="${path%.dart}_test.dart"
+  # <package>/lib/<rel>.dart -> <package>/test/<rel>_test.dart
+  rel="${path#"$package/lib/"}"
+  test_file="$package/test/${rel%.dart}_test.dart"
   grep -Fqx "$test_file" <<<"$changed_paths" && continue
   if [ "$status" = A ]; then
     missing="$missing  $path -> $test_file
@@ -106,6 +111,8 @@ while IFS=$'\t' read -r status path; do
   old="$old_dir/${#pairs[@]}.dart"
   git show "$from:$path" >"$old" || die "could not read $path at $from"
   pairs+=("$old" "$path")
+  tests="$tests$path	$test_file
+"
 done <<<"$lib_changes"
 
 # Changes that only touch comments or whitespace are exempt. code_changes
@@ -117,7 +124,8 @@ if [ ${#pairs[@]} -gt 0 ]; then
     die "tools/code_changes failed"
   while read -r path; do
     [ -n "$path" ] || continue
-    missing="$missing  $path -> ${path%.dart}_test.dart
+    test_file="$(awk -F '\t' -v p="$path" '$1 == p { print $2 }' <<<"$tests")"
+    missing="$missing  $path -> $test_file
 "
   done <<<"$code_changed"
 fi
@@ -135,7 +143,7 @@ done
 status=0
 if [ -n "$missing" ]; then
   printf 'These lib/ files changed without a change to their test (since %s):\n%s' "$base" "$missing" >&2
-  printf 'Add or update the test next to each file. Comment-only changes are exempt.\n\n' >&2
+  printf 'Add or update the test of each file, at the same path in test/ as in lib/. Comment-only changes are exempt.\n\n' >&2
   status=1
 fi
 if [ -n "$unconfigured" ]; then

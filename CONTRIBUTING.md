@@ -85,7 +85,21 @@ yarn dev -l ja # When you are checking the Japanese docs locally
 `scripts/check.sh` runs every check CI runs (`scripts/check.sh --help` lists
 them), so a local pass means a CI pass.
 
-#### Tests live next to the code
+#### Every lib file has a test
+
+Each `lib/` file is tested by the file at the same path in `test/`, suffixed
+with `_test`:
+
+```
+lib/src/core/provider_container.dart
+test/src/core/provider_container_test.dart
+```
+
+`scripts/check.sh tested` (part of CI) fails when a `lib/**/x.dart` file
+changes without a change to its `test/**/x_test.dart`. Changes that only touch
+comments or whitespace are exempt, as are generated files and deleted files.
+
+#### Tests in lib/
 
 Tests can be placed next to the file they test, in `lib/`:
 
@@ -110,11 +124,9 @@ coverage reports.
 VS Code only discovers tests outside of `test/` with the
 `"dart.allowTestsOutsideTestFolder": true` setting.
 
-`scripts/check.sh tested` (part of CI) fails when a `lib/**/x.dart` file
-changes without a change to its `lib/**/x_test.dart`. Changes that only touch
-comments or whitespace are exempt, as are generated files and deleted files.
-It also fails when a package has lib tests that its `dart_test.yaml` doesn't
-point `dart test` to.
+Lib tests don't count as the test of a lib file for `scripts/check.sh tested`,
+which also fails when a package has lib tests that its `dart_test.yaml`
+doesn't point `dart test` to.
 
 ### Updating English docs
 
