@@ -325,6 +325,7 @@ void main() {
     test(
       'throws StateError if the provider is disposed before a value was emitted',
       () async {
+        final provider = StreamProvider<int>((ref) async* {});
         final container = ProviderContainer.test(
           overrides: [provider.overrideWithValue(const AsyncLoading())],
         );
