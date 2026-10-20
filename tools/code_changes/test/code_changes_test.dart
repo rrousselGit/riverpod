@@ -1,8 +1,7 @@
 import 'dart:io';
 
+import 'package:code_changes/code_changes.dart';
 import 'package:test/test.dart';
-
-import 'code_changes.dart';
 
 void main() {
   group('sameCode', () {

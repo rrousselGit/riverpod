@@ -26,7 +26,7 @@ const _header = '''
 # (code generators, test utilities...) must be ready before the package is.
 #
 # `test` says how CI runs the tests of each package, from its dependencies:
-#   none      No tests: no test/ folder nor lib/**/*_test.dart file.
+#   none      No test/ folder.
 #   chrome    `flutter test --platform chrome`, for DevTools extensions,
 #             which only run on the web.
 #   flutter   `flutter test`, when it depends on Flutter.
@@ -126,23 +126,13 @@ List<String> _keys(YamlMap pubspec, String section) {
   return [for (final key in value.keys) key as String];
 }
 
-/// Whether a package has tests: a test/ folder, or *_test.dart files placed
-/// next to the code they test in lib/.
-bool _hasTests(Directory package) {
-  if (Directory('${package.path}/test').existsSync()) return true;
-  final lib = Directory('${package.path}/lib');
-  if (!lib.existsSync()) return false;
-  final files = lib.listSync(recursive: true);
-  return files.any((e) => e is File && e.path.endsWith('_test.dart'));
-}
-
 /// How CI runs the tests of a package. See the header of the generated file.
 String _testRunner(Directory root, String path, YamlMap pubspec) {
   final dependencies = [
     ..._keys(pubspec, 'dependencies'),
     ..._keys(pubspec, 'dev_dependencies'),
   ];
-  if (!_hasTests(Directory('${root.path}/$path'))) return 'none';
+  if (!Directory('${root.path}/$path/test').existsSync()) return 'none';
   if (dependencies.contains('devtools_extensions')) return 'chrome';
   if (dependencies.contains('flutter') ||
       dependencies.contains('flutter_test')) {

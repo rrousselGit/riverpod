@@ -16,9 +16,6 @@
 # - Deleted files, tests themselves (*_test.dart), and generated files
 #   (*.g.dart, *.freezed.dart, or a "GENERATED" header).
 # Only files in a package's lib/ folder are considered.
-#
-# Also checks that every package with tests in lib/ lists lib in the `paths`
-# of its dart_test.yaml, without which `dart test` would not run them.
 
 set -uo pipefail
 # shellcheck source=lib/common.sh
@@ -130,26 +127,11 @@ if [ ${#pairs[@]} -gt 0 ]; then
   done <<<"$code_changed"
 fi
 
-# Tests in lib/ only run if dart_test.yaml says to look there: without it,
-# `dart test` would silently skip them.
-unconfigured=""
-for p in "$@"; do
-  [ -n "$(find "$p/lib" -name '*_test.dart' -print -quit 2>/dev/null)" ] || continue
-  [[ " $(test_paths "$p") " == *" lib "* ]] && continue
-  unconfigured="$unconfigured  $p/dart_test.yaml
-"
-done
-
 status=0
 if [ -n "$missing" ]; then
   printf 'These lib/ files changed without a change to their test (since %s):\n%s' "$base" "$missing" >&2
   printf 'Add or update the test of each file, at the same path in test/ as in lib/. Comment-only changes are exempt.\n\n' >&2
   status=1
 fi
-if [ -n "$unconfigured" ]; then
-  printf 'These packages have tests in lib/, but their dart_test.yaml does not list lib in `paths`:\n%s' "$unconfigured" >&2
-  printf 'Add `paths: [test, lib]` to it (or `paths: [lib]` without a test/ folder).\n' >&2
-  status=1
-fi
-[ "$status" = 0 ] && echo "Every changed lib/ file has its test updated, and lib/ tests are configured."
+[ "$status" = 0 ] && echo "Every changed lib/ file has its test updated."
 exit "$status"
