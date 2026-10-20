@@ -37,7 +37,7 @@ if [ $# -eq 1 ]; then
   # Where tests live is set by `paths` in dart_test.yaml, which `dart test`
   # reads. `flutter test` only looks in test/, so it is given those paths.
   # shellcheck disable=SC2046 # word splitting of the paths is intended
-  set -- $(sed -n 's/^paths: *\[\(.*\)\]$/\1/p' dart_test.yaml 2>/dev/null | tr ',' ' ')
+  set -- $(test_paths "$1")
   case "$runner:$coverage" in
     chrome:*)           exec flutter test --no-pub --platform chrome "$@" ;;
     flutter:*)          exec flutter test --no-pub $coverage "$@" ;;

@@ -94,9 +94,12 @@ lib/src/core/provider_container.dart
 lib/src/core/provider_container_test.dart
 ```
 
-Each package's `dart_test.yaml` lists `lib` in its
+A package's `dart_test.yaml` lists `lib` in its
 [`paths`](https://github.com/dart-lang/test/blob/master/pkgs/test/doc/configuration.md#paths),
-so a plain `dart test` runs them along with `test/`. `flutter test` ignores
+so a plain `dart test` runs them along with `test/`. package:test only reads
+that file from the package itself, so a package without one needs it for its
+first lib test: `paths: [test, lib]`, or `paths: [lib]` without a `test/`
+folder. `flutter test` ignores
 that setting and only scans `test/` when given no path, so pass the folders:
 `flutter test test lib`. A single file runs as usual with
 `dart test lib/src/foo_test.dart` or `flutter test lib/src/foo_test.dart`.
@@ -110,6 +113,8 @@ VS Code only discovers tests outside of `test/` with the
 `scripts/check.sh tested` (part of CI) fails when a `lib/**/x.dart` file
 changes without a change to its `lib/**/x_test.dart`. Changes that only touch
 comments or whitespace are exempt, as are generated files and deleted files.
+It also fails when a package has lib tests that its `dart_test.yaml` doesn't
+point `dart test` to.
 
 ### Updating English docs
 

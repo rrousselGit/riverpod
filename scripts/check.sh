@@ -12,7 +12,8 @@
 #   test        scripts/test.sh, per package
 #   changelog   scripts/changelog.sh
 #   tested      scripts/tested.sh              changed lib/ files have their
-#                                              lib/**/x_test.dart changed too
+#                                              lib/**/x_test.dart changed too,
+#                                              and lib/ tests are configured
 # graph and generate run first, one after the other, since the rest reads
 # their output. format, analyze, test, changelog and tested then share one
 # parallel pool. Each failure is listed with the exact command that re-runs it.
