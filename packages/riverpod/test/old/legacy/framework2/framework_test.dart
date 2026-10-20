@@ -250,6 +250,7 @@ void main() {
   );
 
   test('re-evaluating a provider can stop listening to a dependency', () {
+    final container = ProviderContainer.test();
     final first = StateProvider((ref) => 0);
     final second = StateProvider((ref) => 0);
     final computed = Provider<String>((ref) {
