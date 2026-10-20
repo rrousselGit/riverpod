@@ -1,6 +1,7 @@
-import 'package:riverpod/misc.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
+
+import '../../misc.dart';
+import '../../riverpod.dart';
 
 TypeMatcher<ProviderReference> providerReferences(
   ProviderBase<Object?> provider,
