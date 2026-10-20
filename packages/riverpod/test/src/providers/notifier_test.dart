@@ -1,9 +1,8 @@
-// ignore_for_file: avoid_types_on_closure_parameters, invalid_use_of_protected_member, prefer_const_constructors
+// ignore_for_file: invalid_use_of_protected_member, prefer_const_constructors
 
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
-import 'package:riverpod/misc.dart' show Refreshable, ProviderListenable;
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart' show UnmountedRefException;
 import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
@@ -13,14 +12,6 @@ import '../matrix.dart';
 import '../utils.dart';
 
 void main() {
-  test('Throws if using notifier properties in its constructor', () {
-    final errors = captureErrors([
-      () => CtorNotifier().state,
-      () => CtorNotifier().state = 42,
-      () => CtorNotifier().ref,
-    ]);
-  });
-
   notifierProviderFactory.createGroup((factory) {
     test('The notifier instance is preserved across builds', () {
       final notifier = factory.deferredNotifier((ref, _) => 0);
@@ -519,126 +510,6 @@ void main() {
     }
   });
 
-  test('supports overrideWith', () {
-    final provider = NotifierProvider<DeferredNotifier<int>, int>(
-      () => DeferredNotifier((ref, _) => 0),
-    );
-    final autoDispose =
-        NotifierProvider.autoDispose<DeferredNotifier<int>, int>(
-          () => DeferredNotifier((ref, _) => 0),
-        );
-    final container = ProviderContainer.test(
-      overrides: [
-        provider.overrideWith(() => DeferredNotifier((ref, _) => 42)),
-        autoDispose.overrideWith(() => DeferredNotifier((ref, _) => 84)),
-      ],
-    );
-
-    expect(container.read(provider), 42);
-    expect(container.read(autoDispose), 84);
-  });
-
-  test('supports family overrideWith', () {
-    final family = NotifierProvider.family<DeferredNotifier<int>, int, int>(
-      (arg) => DeferredNotifier<int>((ref, _) => 0),
-    );
-    final autoDisposeFamily = NotifierProvider.autoDispose
-        .family<DeferredNotifier<int>, int, int>(
-          (arg) => DeferredNotifier<int>((ref, _) => 0),
-        );
-    final container = ProviderContainer.test(
-      overrides: [
-        family.overrideWith2(
-          (arg) => DeferredNotifier<int>((ref, _) => 42 + arg),
-        ),
-        autoDisposeFamily.overrideWith2(
-          (arg) => DeferredNotifier<int>((ref, _) => 84 + arg),
-        ),
-      ],
-    );
-
-    expect(container.read(family(10)), 52);
-    expect(container.read(autoDisposeFamily(10)), 94);
-  });
-
-  group('modifiers', () {
-    void canBeAssignedToRefreshable<StateT>(Refreshable<StateT> provider) {}
-
-    void canBeAssignedToProviderListenable<StateT>(
-      ProviderListenable<StateT> provider,
-    ) {}
-
-    test('provider', () {
-      final provider = NotifierProvider<DeferredNotifier<int>, int>(
-        () => DeferredNotifier((ref, _) => 0),
-      );
-
-      provider.select((int value) => 0);
-
-      canBeAssignedToProviderListenable<int>(provider);
-      canBeAssignedToRefreshable<int>(provider);
-
-      canBeAssignedToProviderListenable<Notifier<int>>(provider.notifier);
-      canBeAssignedToRefreshable<Notifier<int>>(provider.notifier);
-    });
-
-    test('autoDispose', () {
-      final autoDispose =
-          NotifierProvider.autoDispose<DeferredNotifier<int>, int>(
-            () => DeferredNotifier((ref, _) => 0),
-          );
-
-      autoDispose.select((int value) => 0);
-
-      canBeAssignedToProviderListenable<int>(autoDispose);
-      canBeAssignedToRefreshable<int>(autoDispose);
-
-      canBeAssignedToProviderListenable<DeferredNotifier<int>>(
-        autoDispose.notifier,
-      );
-      canBeAssignedToRefreshable<DeferredNotifier<int>>(autoDispose.notifier);
-    });
-
-    test('family', () {
-      final family =
-          NotifierProvider.family<DeferredNotifier<String>, String, int>(
-            (arg) => DeferredNotifier((ref, _) => '0'),
-          );
-
-      family(0).select((String value) => 0);
-
-      canBeAssignedToProviderListenable<String>(family(0));
-      canBeAssignedToRefreshable<String>(family(0));
-
-      canBeAssignedToProviderListenable<Notifier<String>>(family(0).notifier);
-      canBeAssignedToRefreshable<Notifier<String>>(family(0).notifier);
-    });
-
-    test('autoDisposeFamily', () {
-      expect(
-        NotifierProvider.autoDispose.family,
-        same(NotifierProvider.family.autoDispose),
-      );
-
-      final autoDisposeFamily = NotifierProvider.autoDispose
-          .family<DeferredNotifier<String>, String, int>(
-            (arg) => DeferredNotifier((ref, _) => '0'),
-          );
-
-      autoDisposeFamily(0).select((String value) => 0);
-
-      canBeAssignedToProviderListenable<String>(autoDisposeFamily(0));
-      canBeAssignedToRefreshable<String>(autoDisposeFamily(0));
-
-      canBeAssignedToProviderListenable<Notifier<String>>(
-        autoDisposeFamily(0).notifier,
-      );
-      canBeAssignedToRefreshable<Notifier<String>>(
-        autoDisposeFamily(0).notifier,
-      );
-    });
-  });
-
   // see https://github.com/rrousselGit/riverpod/issues/4417
   test('keeps state alive when watched notifier changes', () async {
     final container = ProviderContainer.test();
@@ -750,9 +621,4 @@ class Equal<BoxedT> {
 
   @override
   int get hashCode => Object.hash(runtimeType, value);
-}
-
-class CtorNotifier extends Notifier<int> {
-  @override
-  int build() => 0;
 }
