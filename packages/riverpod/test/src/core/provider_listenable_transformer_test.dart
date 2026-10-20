@@ -8,8 +8,8 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
 
-import '../../old/utils.dart';
 import '../matrix.dart' as utils;
+import '../utils.dart';
 import '../utils.dart' as utils;
 
 void main() {

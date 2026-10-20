@@ -2,6 +2,32 @@ import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
+void main() {
+  group('ProviderOrFamily', () {
+    group('isAutoDispose', () {
+      test('Defaults isAutoDispose to false', () {
+        for (final builder in matrix) {
+          expect(
+            builder().isAutoDispose,
+            isFalse,
+            reason: '${builder().runtimeType}',
+          );
+        }
+      });
+
+      test('Can set isAutoDispose', () {
+        for (final builder in matrix) {
+          expect(
+            builder(isAutoDispose: true).isAutoDispose,
+            isTrue,
+            reason: '${builder().runtimeType}',
+          );
+        }
+      });
+    });
+  });
+}
+
 class Builder<FunctionT extends Function, ArgT> {
   Builder(this.ctor);
 
@@ -76,25 +102,3 @@ final matrix = [
     StateNotifierProvider.family.call<StateNotifier<Object?>, Object?, Object?>,
   ).build((ref, arg) => throw UnimplementedError()),
 ];
-
-void main() {
-  test('Defaults isAutoDispose to false', () {
-    for (final builder in matrix) {
-      expect(
-        builder().isAutoDispose,
-        isFalse,
-        reason: '${builder().runtimeType}',
-      );
-    }
-  });
-
-  test('Can set isAutoDispose', () {
-    for (final builder in matrix) {
-      expect(
-        builder(isAutoDispose: true).isAutoDispose,
-        isTrue,
-        reason: '${builder().runtimeType}',
-      );
-    }
-  });
-}
