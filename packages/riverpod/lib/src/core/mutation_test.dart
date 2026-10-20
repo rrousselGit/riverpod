@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/src/internals.dart';
-import 'package:riverpod/src/testing/utils.dart';
 import 'package:test/test.dart';
+
+import '../internals.dart';
+import '../testing/utils.dart';
 
 void main() {
   test('Supports void mutations', () async {
