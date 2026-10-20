@@ -2,6 +2,8 @@
 # Checks that every changed lib/**/x.dart comes with a change to its test:
 # test/**/x_test.dart, at the same path relative to test/ as the file is
 # relative to lib/ (lib/src/foo.dart -> test/src/foo_test.dart).
+# Also checks, on the whole tree rather than the changes, that the reverse
+# holds for test/src: every test/src/**/x_test.dart has a lib/src/**/x.dart.
 #
 # Usage: scripts/tested.sh [--base REF] [PACKAGE...]
 #   --base REF  Ref to compare against (default: origin/master; fetched if
@@ -127,11 +129,29 @@ if [ ${#pairs[@]} -gt 0 ]; then
   done <<<"$code_changed"
 fi
 
+# Tests in test/src without a file to test: <package>/test/src/<rel>_test.dart
+# -> <package>/lib/src/<rel>.dart.
+orphans=""
+for package in "$@"; do
+  [ -d "$package/test/src" ] || continue
+  while IFS= read -r test_file; do
+    rel="${test_file#"$package/test/"}"
+    lib_file="$package/lib/${rel%_test.dart}.dart"
+    [ -f "$lib_file" ] || orphans="$orphans  $test_file -> $lib_file
+"
+  done < <(find "$package/test/src" -name '*_test.dart' | sort)
+done
+
 status=0
 if [ -n "$missing" ]; then
   printf 'These lib/ files changed without a change to their test (since %s):\n%s' "$base" "$missing" >&2
   printf 'Add or update the test of each file, at the same path in test/ as in lib/. Comment-only changes are exempt.\n\n' >&2
   status=1
 fi
-[ "$status" = 0 ] && echo "Every changed lib/ file has its test updated."
+if [ -n "$orphans" ]; then
+  printf 'These test/src/ files have no matching lib/src/ file:\n%s' "$orphans" >&2
+  printf 'Move each test next to the path of the file it tests, or out of test/src/.\n\n' >&2
+  status=1
+fi
+[ "$status" = 0 ] && echo "Every changed lib/ file has its test updated, and every test/src/ file has its lib/src/ file."
 exit "$status"

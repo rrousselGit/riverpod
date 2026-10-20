@@ -45,7 +45,7 @@ jobs:
       - run: scripts/check.sh format analyze
 
   tested:
-    name: Changed lib/ files have their tests updated
+    name: Changed lib/ files have their tests updated, and test/src/ matches lib/src/
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
