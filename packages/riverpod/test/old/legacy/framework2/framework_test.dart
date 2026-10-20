@@ -221,6 +221,7 @@ void main() {
   test(
     'Providers still rethrow error if dependency rebuilt but did not change',
     () {
+      final container = ProviderContainer.test();
       var callCount = 0;
       final atom = StateProvider((ref) => 0);
       final dependency = Provider((ref) => ref.watch(atom));
