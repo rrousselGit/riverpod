@@ -1,3 +1,5 @@
+// ignore_for_file: internal_lint/avoid_sub_read
+
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';

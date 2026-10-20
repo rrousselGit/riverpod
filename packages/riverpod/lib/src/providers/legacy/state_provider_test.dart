@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_types_on_closure_parameters
+// ignore_for_file: avoid_types_on_closure_parameters, internal_lint/avoid_sub_read
 
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';

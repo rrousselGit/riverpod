@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 // This is a file testing that mixins can be applied on notifiers.
 // No need to run anything, just checking that it compiles.
 

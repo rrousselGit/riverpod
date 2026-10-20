@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_types_on_closure_parameters
+// ignore_for_file: avoid_types_on_closure_parameters, public_member_api_docs, internal_lint/avoid_sub_read
 
 import 'dart:async';
 

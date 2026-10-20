@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use_from_same_package
+// ignore_for_file: deprecated_member_use_from_same_package, public_member_api_docs, internal_lint/avoid_sub_read
 
 import 'dart:async';
 

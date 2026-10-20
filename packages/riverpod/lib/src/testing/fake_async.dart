@@ -1,6 +1,6 @@
 // fork of fake_async to disable microtask mock
 
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, public_member_api_docs
 
 // Copyright 2014 Google Inc. All Rights Reserved.
 //

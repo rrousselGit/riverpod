@@ -1,4 +1,4 @@
-// ignore_for_file: omit_obvious_local_variable_types, prefer_final_locals
+// ignore_for_file: omit_obvious_local_variable_types, prefer_final_locals, public_member_api_docs, internal_lint/avoid_sub_read
 
 import 'dart:async';
 
