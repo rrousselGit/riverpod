@@ -95,9 +95,15 @@ lib/src/core/provider_container.dart
 test/src/core/provider_container_test.dart
 ```
 
-`scripts/check.sh tested` (part of CI) fails when a `lib/**/x.dart` file
-changes without a change to its `test/**/x_test.dart`. Changes that only touch
-comments or whitespace are exempt, as are generated files and deleted files.
+`scripts/check.sh tested` (part of CI) fails when a `lib/**/x.dart` file has
+no `test/**/x_test.dart`. Example packages, generated files and files with only
+directives (such as barrel files re-exporting `lib/src`) are exempt, as are the
+files listed in `scripts/untested.txt`, which had no test when this check was
+added. Do not add to that list; remove an entry once its file has a test.
+
+It also fails when a `lib/**/x.dart` file changes without a change to its
+`test/**/x_test.dart`. Changes that only touch comments or whitespace are
+exempt, as are generated files and deleted files.
 
 ### Updating English docs
 

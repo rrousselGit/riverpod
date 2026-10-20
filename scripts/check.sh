@@ -11,9 +11,9 @@
 #   analyze     scripts/analyze.sh, per package
 #   test        scripts/test.sh, per package
 #   changelog   scripts/changelog.sh
-#   tested      scripts/tested.sh              changed lib/**/x.dart files have
-#                                              their test/**/x_test.dart
-#                                              changed too, and every
+#   tested      scripts/tested.sh              every lib/**/x.dart has a
+#                                              test/**/x_test.dart, changed
+#                                              along with it, and every
 #                                              test/src/**/x_test.dart has
 #                                              its lib/src/**/x.dart
 # graph and generate run first, one after the other, since the rest reads

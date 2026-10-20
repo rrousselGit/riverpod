@@ -2,8 +2,15 @@
 # Checks that every changed lib/**/x.dart comes with a change to its test:
 # test/**/x_test.dart, at the same path relative to test/ as the file is
 # relative to lib/ (lib/src/foo.dart -> test/src/foo_test.dart).
-# Also checks, on the whole tree rather than the changes, that the reverse
-# holds for test/src: every test/src/**/x_test.dart has a lib/src/**/x.dart.
+# Also checks, on the whole tree rather than the changes, that:
+# - Every lib/**/x.dart has a test/**/x_test.dart. Exempt are example
+#   packages (see is_example), generated files, files with only directives
+#   (export/import/library/part, such as barrel files), and the files listed
+#   in scripts/untested.txt: the files that had no test when this check was
+#   added. That list may only shrink: an entry whose file now has a test, or
+#   no longer exists, fails the check too.
+# - The reverse holds for test/src: every test/src/**/x_test.dart has a
+#   lib/src/**/x.dart.
 #
 # Usage: scripts/tested.sh [--base REF] [PACKAGE...]
 #   --base REF  Ref to compare against (default: origin/master; fetched if
@@ -82,6 +89,35 @@ is_generated() {
   head -n 5 "$1" 2>/dev/null | grep -q 'GENERATED'
 }
 
+# Example packages: examples/*, any package named example, and the other
+# non-library projects (benchmarks, website, other_projects/*).
+is_example() {
+  case "$1" in
+    examples/*|*/example|example|benchmarks|website|other_projects/*) return 0 ;;
+  esac
+  return 1
+}
+
+# Whether the file only holds directives (export, import, library, part),
+# optionally annotated, like the barrel files that re-export lib/src.
+is_directives_only() {
+  awk '
+    { sub(/\/\/.*/, ""); code = code " " $0 }
+    END {
+      n = split(code, statements, ";")
+      for (k = 1; k <= n; k++) {
+        st = statements[k]
+        gsub(/^[ \t]+|[ \t]+$/, "", st)
+        # Strips leading annotations, such as @Deprecated(...).
+        while (match(st, /^@[A-Za-z_.]+(\([^)]*\))?[ \t]*/)) st = substr(st, RLENGTH + 1)
+        if (st == "") continue
+        if (st ~ /^part[ \t]+of[ \t]/) exit 1
+        if (st !~ /^(export|import|library|part)([^A-Za-z0-9_$]|$)/) exit 1
+      }
+    }
+  ' "$1"
+}
+
 lib_changes="$(printf '%s\n' "$changes" | in_selected_lib "$@")"
 changed_paths="$(printf '%s\n' "$changes" | cut -f 2)"
 old_dir="$(mktemp -d)" || die "could not create a temporary folder"
@@ -142,6 +178,35 @@ for package in "$@"; do
   done < <(find "$package/test/src" -name '*_test.dart' | sort)
 done
 
+# lib/ files without a test at all, except those of scripts/untested.txt.
+# Entries of that list that are now tested, or gone, are stale.
+untested_list="scripts/untested.txt"
+[ -f "$untested_list" ] || die "$untested_list is missing"
+known_untested="$(grep -v '^#' "$untested_list" | grep .)"
+untested=""
+stale=""
+for package in "$@"; do
+  is_example "$package" && continue
+  [ -d "$package/lib" ] || continue
+  while IFS= read -r path; do
+    is_generated "$path" && continue
+    rel="${path#"$package/lib/"}"
+    test_file="$package/test/${rel%.dart}_test.dart"
+    if [ -f "$test_file" ] || is_directives_only "$path"; then
+      grep -Fqx "$path" <<<"$known_untested" && stale="$stale  $path
+"
+    else
+      grep -Fqx "$path" <<<"$known_untested" || untested="$untested  $path -> $test_file
+"
+    fi
+  done < <(find "$package/lib" -name '*.dart' ! -name '*_test.dart' -exec printf 'M\t%s\n' {} + |
+    in_selected_lib "$package" | cut -f 2 | sort)
+  while IFS= read -r path; do
+    [ -n "$path" ] && [ ! -f "$path" ] && stale="$stale  $path
+"
+  done < <(awk -v p="$package/lib/" 'index($0, p) == 1' <<<"$known_untested")
+done
+
 status=0
 if [ -n "$missing" ]; then
   printf 'These lib/ files changed without a change to their test (since %s):\n%s' "$base" "$missing" >&2
@@ -153,5 +218,15 @@ if [ -n "$orphans" ]; then
   printf 'Move each test next to the path of the file it tests, or out of test/src/.\n\n' >&2
   status=1
 fi
-[ "$status" = 0 ] && echo "Every changed lib/ file has its test updated, and every test/src/ file has its lib/src/ file."
+if [ -n "$untested" ]; then
+  printf 'These lib/ files have no test:\n%s' "$untested" >&2
+  printf 'Add a test for each file, at the same path in test/ as in lib/.\n\n' >&2
+  status=1
+fi
+if [ -n "$stale" ]; then
+  printf 'These entries of %s are now tested, or no longer exist:\n%s' "$untested_list" "$stale" >&2
+  printf 'Remove them from %s.\n\n' "$untested_list" >&2
+  status=1
+fi
+[ "$status" = 0 ] && echo "Every lib/ file has a test, updated with it, and every test/src/ file has its lib/src/ file."
 exit "$status"
