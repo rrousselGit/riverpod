@@ -367,6 +367,8 @@ void main() {
       });
 
       test('is called at most once per read for computed providers', () {
+        final container = ProviderContainer.test();
+        final didChange = Listener<int>();
         final counter = Counter();
         final provider = StateNotifierProvider<Counter, int>((ref) => counter);
         final computed = Provider((ref) => ref.watch(provider));
