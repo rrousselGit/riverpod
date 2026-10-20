@@ -1,11 +1,11 @@
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
-import 'package:riverpod/misc.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart'
-    show ProviderElement, ContainerReadElement;
-import 'package:riverpod/src/testing/utils.dart';
 import 'package:test/test.dart';
+
+import '../../legacy.dart';
+import '../../misc.dart';
+import '../../riverpod.dart';
+import '../internals.dart' show ProviderElement, ContainerReadElement;
+import '../testing/utils.dart';
 
 class Counter extends StateNotifier<int> {
   Counter([super._state = 0]);
