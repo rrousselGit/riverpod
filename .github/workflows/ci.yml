@@ -44,6 +44,17 @@ jobs:
           cache: true
       - run: scripts/check.sh format analyze
 
+  tested:
+    name: Changed lib/ files have their tests updated
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      # On pull requests, HEAD is the merge commit and HEAD^1 the target
+      # branch, so this checks the changes of the PR. Needs no Flutter.
+      - run: scripts/check.sh tested --base HEAD^1
+
   test:
     name: Test (shard ${{ matrix.shard }}/3)
     runs-on: ubuntu-latest

@@ -11,19 +11,22 @@
 #   analyze     scripts/analyze.sh, per package
 #   test        scripts/test.sh, per package
 #   changelog   scripts/changelog.sh
+#   tested      scripts/tested.sh              changed lib/ files have their
+#                                              lib/**/x_test.dart changed too
 # graph and generate run first, one after the other, since the rest reads
-# their output. format, analyze, test and changelog then share one parallel
-# pool. Each failure is listed with the exact command that re-runs it.
+# their output. format, analyze, test, changelog and tested then share one
+# parallel pool. Each failure is listed with the exact command that re-runs it.
 #
 # Options:
 #   -p, --package PATH  Only this package (repeatable). Applies to generate,
-#                       format, analyze and test.
+#                       format, analyze, test and tested.
 #   -j, --jobs N        Max parallel tasks (default: CPU count; or CHECK_JOBS).
 #   --fix               graph, generate, format: fix instead of failing.
 #   --coverage          Collect test coverage (CI uses this).
 #   --shard I/N         Only the I-th of N slices of the analyze/test tasks
 #                       (used to split CI across machines).
-#   --base REF          Changelog base ref (default: origin/master).
+#   --base REF          Base ref of changelog and tested (default:
+#                       origin/master).
 #   -h, --help          Show this help.
 #
 # Examples:
@@ -53,12 +56,12 @@ while [ $# -gt 0 ]; do
     --shard)      [ $# -ge 2 ] || die "$1 needs I/N"; shard="$2"; shift 2 ;;
     --base)       [ $# -ge 2 ] || die "$1 needs a ref"; base="$2"; shift 2 ;;
     -h|--help)    usage; exit 0 ;;
-    all)          steps="$steps graph generate format analyze test changelog"; shift ;;
-    graph|generate|format|analyze|test|changelog) steps="$steps $1"; shift ;;
+    all)          steps="$steps graph generate format analyze test changelog tested"; shift ;;
+    graph|generate|format|analyze|test|changelog|tested) steps="$steps $1"; shift ;;
     *)            die "unknown argument '$1' (see --help)" ;;
   esac
 done
-[ -z "$steps" ] && steps="graph generate format analyze test changelog"
+[ -z "$steps" ] && steps="graph generate format analyze test changelog tested"
 has_step() { [[ " $steps " == *" $1 "* ]]; }
 
 [[ "$POOL_JOBS" =~ ^[1-9][0-9]*$ ]] || die "--jobs must be a positive number"
@@ -70,7 +73,12 @@ if [ -n "$shard" ]; then
 fi
 # shellcheck disable=SC2086 # word splitting of the package list is intended
 validate_packages $selected
-command -v flutter >/dev/null || die "flutter is not on PATH (this repo pins its SDK in .fvmrc)"
+# tested only needs git and python3, so it alone runs without Flutter.
+for s in graph generate format analyze test changelog; do
+  has_step "$s" || continue
+  command -v flutter >/dev/null || die "flutter is not on PATH (this repo pins its SDK in .fvmrc)"
+  break
+done
 
 # Keeps the lines of stdin that match -p (all of them without -p).
 only_selected() {
@@ -106,7 +114,7 @@ if has_step generate; then
 fi
 
 pool_steps=""
-for s in format analyze test changelog; do has_step "$s" && pool_steps="$pool_steps $s"; done
+for s in format analyze test changelog tested; do has_step "$s" && pool_steps="$pool_steps $s"; done
 if [ -n "$pool_steps" ]; then
   echo "==>$pool_steps"
   # Queued slowest-first: tests, then analysis, then the quick checks.
@@ -122,6 +130,7 @@ if [ -n "$pool_steps" ]; then
   fi
   has_step format && pool_add "format" "scripts/format.sh$(flag " --fix" "")$selected"
   has_step changelog && pool_add "changelog" "scripts/changelog.sh $base"
+  has_step tested && pool_add "tested" "scripts/tested.sh --base $base$selected"
   pool_run
 fi
 

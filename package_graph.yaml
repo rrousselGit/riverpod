@@ -10,7 +10,7 @@
 # (code generators, test utilities...) must be ready before the package is.
 #
 # `test` says how CI runs the tests of each package, from its dependencies:
-#   none      No test/ folder.
+#   none      No tests: no test/ folder nor lib/**/*_test.dart file.
 #   chrome    `flutter test --platform chrome`, for DevTools extensions,
 #             which only run on the web.
 #   flutter   `flutter test`, when it depends on Flutter.

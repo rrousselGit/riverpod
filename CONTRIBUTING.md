@@ -82,6 +82,30 @@ yarn dev -l ja # When you are checking the Japanese docs locally
 
 ### Working on packages
 
+`scripts/check.sh` runs every check CI runs (`scripts/check.sh --help` lists
+them), so a local pass means a CI pass.
+
+#### Tests live next to the code
+
+Tests can be placed next to the file they test, in `lib/`:
+
+```
+lib/src/core/provider_container.dart
+lib/src/core/provider_container_test.dart
+```
+
+They are regular tests, run by `scripts/test.sh` along with `test/`.
+To run them by hand, list `lib` as a test folder: `dart test test lib`
+or `flutter test test lib`. They are excluded from published packages
+(`.pubignore`) and from coverage reports.
+
+VS Code only discovers tests outside of `test/` with the
+`"dart.allowTestsOutsideTestFolder": true` setting.
+
+`scripts/check.sh tested` (part of CI) fails when a `lib/**/x.dart` file
+changes without a change to its `lib/**/x_test.dart`. Changes that only touch
+comments or whitespace are exempt, as are generated files and deleted files.
+
 ### Updating English docs
 
 English docs are the source of truth for Riverpod docs. As such, translations

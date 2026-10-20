@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 # Runs package tests, in parallel. Flutter packages use `flutter test`, others
 # `dart test` (or scripts/coverage.sh with --coverage).
+# Tests are the *_test.dart files of test/, and those next to the code they
+# test in lib/.
 #
 # Usage: scripts/test.sh [--coverage] [-j N] [PACKAGE...]
 #   --coverage  Collect coverage into each package's coverage/ folder.
 #   -j N        Max packages tested at once (default: CPU count).
-#   PACKAGE     Package paths (default: every CI package with a test/ folder).
+#   PACKAGE     Package paths (default: every CI package with tests).
 
 set -uo pipefail
 # shellcheck source=lib/common.sh
@@ -32,12 +34,16 @@ ensure_deps
 
 if [ $# -eq 1 ]; then
   cd "$ROOT/$1" || exit 1
-  [ -d test ] || { echo "$1 has no tests."; exit 0; }
+  # Test runners only look in test/ by default, so the folders are explicit.
+  dirs=()
+  [ -d test ] && dirs+=(test)
+  [ -n "$(find lib -name '*_test.dart' -print -quit 2>/dev/null)" ] && dirs+=(lib)
+  [ ${#dirs[@]} -gt 0 ] || { echo "$1 has no tests."; exit 0; }
   case "$(test_runner "$1"):$coverage" in
-    chrome:*)           exec flutter test --no-pub --platform chrome ;;
-    flutter:*)          exec flutter test --no-pub $coverage ;;
-    dart:--coverage)    exec "$SCRIPTS/coverage.sh" ;;
-    *)                  exec dart test ;;
+    chrome:*)           exec flutter test --no-pub --platform chrome "${dirs[@]}" ;;
+    flutter:*)          exec flutter test --no-pub $coverage "${dirs[@]}" ;;
+    dart:--coverage)    exec "$SCRIPTS/coverage.sh" "${dirs[@]}" ;;
+    *)                  exec dart test "${dirs[@]}" ;;
   esac
 fi
 # Activate once here, rather than racing from parallel coverage.sh runs.
