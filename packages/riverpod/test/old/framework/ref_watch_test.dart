@@ -590,8 +590,8 @@ void main() {
 
   test('the value is cached between multiple listeners', () {
     final container = ProviderContainer.test();
-    final notifier = Notifier(0);
-    final provider = StateNotifierProvider<Notifier<int>, int>((_) {
+    final notifier = Counter();
+    final provider = StateNotifierProvider<Counter, int>((_) {
       return notifier;
     });
     var callCount = 0;
