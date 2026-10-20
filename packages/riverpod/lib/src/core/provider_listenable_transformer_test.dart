@@ -3,14 +3,14 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/misc.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
 
-import '../../old/utils.dart';
-import '../matrix.dart' as utils;
-import '../utils.dart' as utils;
+import '../../misc.dart';
+import '../../riverpod.dart';
+import '../framework.dart';
+import '../testing/matrix.dart' as utils;
+import '../testing/old_utils.dart';
+import '../testing/utils.dart' as utils;
 
 void main() {
   test('Simple sync example', () {

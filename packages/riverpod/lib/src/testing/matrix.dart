@@ -1,12 +1,13 @@
 import 'dart:async';
 
-import 'package:riverpod/src/internals.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart' hide Retry;
 
+import '../internals.dart';
+
 part 'matrix/async_notifier_provider.dart';
-part 'matrix/stream_notifier_provider.dart';
 part 'matrix/notifier_provider.dart';
+part 'matrix/stream_notifier_provider.dart';
 
 class TestMatrix<FactoryT extends TestFactory<Object?>> {
   TestMatrix(this.values);

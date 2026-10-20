@@ -1,9 +1,8 @@
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/core/provider_container_test.dart';
 import 'package:riverpod/src/framework.dart';
+import 'package:riverpod/src/testing/old_utils.dart';
 import 'package:test/test.dart';
-
-import '../../../src/core/provider_container_test.dart';
-import '../../utils.dart';
 
 void main() {
   test('specifies `from` & `argument` for related providers', () {

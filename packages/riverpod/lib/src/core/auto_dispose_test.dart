@@ -1,8 +1,8 @@
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
-import '../utils.dart';
+import '../internals.dart';
+import '../testing/utils.dart';
 import 'provider_container_test.dart';
 
 void main() {

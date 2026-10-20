@@ -1,10 +1,9 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
+import 'package:riverpod/src/testing/matrix.dart';
+import 'package:riverpod/src/testing/old_utils.dart';
+import 'package:riverpod/src/testing/utils.dart' show throwsProviderException;
 import 'package:test/test.dart';
-
-import '../../src/matrix.dart';
-import '../../src/utils.dart' show throwsProviderException;
-import '../utils.dart';
 
 void main() {
   group('ProviderContainer', () {

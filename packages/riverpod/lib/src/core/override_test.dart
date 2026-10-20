@@ -1,8 +1,8 @@
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
 
-import '../../old/utils.dart';
+import '../../riverpod.dart';
+import '../framework.dart';
+import '../testing/old_utils.dart';
 
 void main() {
   group('ProviderOverride', () {

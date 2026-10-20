@@ -3,12 +3,12 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
 
-import '../utils.dart';
+import '../../legacy.dart';
+import '../../riverpod.dart';
+import '../framework.dart';
+import '../testing/utils.dart';
 
 const _sentinel = Object();
 

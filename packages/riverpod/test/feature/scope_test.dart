@@ -1,6 +1,7 @@
 // Tests related to scoping providers
 
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/core/provider_container_test.dart';
 import 'package:riverpod/src/framework.dart' show ProviderContainerTest;
 import 'package:riverpod/src/internals.dart'
     show
@@ -9,8 +10,6 @@ import 'package:riverpod/src/internals.dart'
         ProviderFamily,
         InternalProviderContainer;
 import 'package:test/test.dart';
-
-import '../src/core/provider_container_test.dart';
 
 Future<void> main() async {
   test('Supports reading a provider out of scope, '

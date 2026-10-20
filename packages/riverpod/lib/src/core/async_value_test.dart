@@ -2,11 +2,11 @@
 
 import 'dart:async';
 
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show DataKind;
 import 'package:test/test.dart';
 
-import '../utils.dart';
+import '../../riverpod.dart';
+import '../internals.dart' show DataKind;
+import '../testing/utils.dart';
 
 void main() {
   group('AsyncResult', () {

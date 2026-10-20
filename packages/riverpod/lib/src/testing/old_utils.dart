@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
-import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
+
+import '../../legacy.dart';
+import '../framework.dart';
 
 final isAssertionError = isA<AssertionError>();
 

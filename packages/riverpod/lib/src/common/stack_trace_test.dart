@@ -1,5 +1,6 @@
-import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
+
+import '../internals.dart';
 
 Object? errorOf(void Function() cb) {
   try {

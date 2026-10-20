@@ -3,11 +3,13 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/experimental/mutation.dart';
-import 'package:riverpod/legacy.dart';
-import 'package:riverpod/misc.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart'
+import 'package:test/test.dart';
+
+import '../../experimental/mutation.dart';
+import '../../legacy.dart';
+import '../../misc.dart';
+import '../../riverpod.dart';
+import '../internals.dart'
     show
         $FunctionalProvider,
         $Provider,
@@ -22,10 +24,8 @@ import 'package:riverpod/src/internals.dart'
         ProviderContainerTest,
         ProviderElement,
         UnmountedRefException;
-import 'package:test/test.dart';
-
-import '../matrix.dart';
-import '../utils.dart';
+import '../testing/matrix.dart';
+import '../testing/utils.dart';
 
 final refMethodsThatDependOnProviders =
     <String, void Function(Ref ref, ProviderBase<Object?>)>{

@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-import '../../matrix.dart';
-import '../../utils.dart';
+import '../../../legacy.dart';
+import '../../../riverpod.dart';
+import '../../testing/matrix.dart';
+import '../../testing/utils.dart';
 
 void main() {
   group('If disposed before a value could be emitted', () {

@@ -1,8 +1,9 @@
 import 'package:fake_async/fake_async.dart';
-import 'package:riverpod/misc.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/framework.dart' hide debugTrackProviderHistory;
 import 'package:test/test.dart';
+
+import '../../misc.dart';
+import '../../riverpod.dart';
+import '../framework.dart' hide debugTrackProviderHistory;
 
 final class _TestNotifier extends Notifier<int> {
   @override

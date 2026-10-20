@@ -1,9 +1,9 @@
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show ProviderException;
 import 'package:test/test.dart';
 
-import '../../utils.dart';
+import '../../../riverpod.dart';
+import '../../internals.dart' show ProviderException;
+import '../../testing/utils.dart';
 
 class Counter extends Notifier<int> {
   @override

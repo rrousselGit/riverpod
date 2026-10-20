@@ -3,7 +3,7 @@
 
 import 'dart:async';
 
-import 'package:riverpod/riverpod.dart';
+import '../../../riverpod.dart';
 
 mixin MyMixin<StateT, ValueT, RandomT> on AnyNotifier<StateT, ValueT> {}
 

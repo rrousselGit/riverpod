@@ -1,6 +1,7 @@
-import 'package:riverpod/experimental/mutation.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
+
+import '../../experimental/mutation.dart';
+import '../../riverpod.dart';
 
 void main() {
   test('Type checkers', () async {

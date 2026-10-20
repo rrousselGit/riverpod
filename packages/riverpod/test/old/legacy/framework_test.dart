@@ -3,10 +3,9 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart'
     show CircularDependencyError, ProviderElement;
 import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
+import 'package:riverpod/src/testing/old_utils.dart';
+import 'package:riverpod/src/testing/utils.dart' show throwsProviderException;
 import 'package:test/test.dart';
-
-import '../../src/utils.dart' show throwsProviderException;
-import '../utils.dart';
 
 void main() {
   test('test two families one overridden the other not', () {

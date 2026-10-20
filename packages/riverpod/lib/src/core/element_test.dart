@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
-import '../../third_party/fake_async.dart';
-import '../matrix.dart';
-import '../utils.dart';
+import '../internals.dart';
+import '../testing/fake_async.dart';
+import '../testing/matrix.dart';
+import '../testing/utils.dart';
 
 void main() {
   group('ProviderElement', () {

@@ -1,9 +1,8 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
+import 'package:riverpod/src/testing/matrix.dart';
+import 'package:riverpod/src/testing/utils.dart';
 import 'package:test/test.dart';
-
-import '../src/matrix.dart';
-import '../src/utils.dart';
 
 void main() {
   test(

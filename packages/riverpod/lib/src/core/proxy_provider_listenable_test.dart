@@ -1,6 +1,7 @@
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show ContainerReadElement;
 import 'package:test/test.dart';
+
+import '../../riverpod.dart';
+import '../internals.dart' show ContainerReadElement;
 
 void main() {
   group('_ProviderSelector', () {

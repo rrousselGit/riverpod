@@ -1,10 +1,10 @@
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/misc.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-import '../matrix.dart';
-import '../utils.dart';
+import '../../misc.dart';
+import '../../riverpod.dart';
+import '../testing/matrix.dart';
+import '../testing/utils.dart';
 
 void main() {
   group('ClassProvider', () {

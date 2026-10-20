@@ -5,15 +5,15 @@ import 'dart:async';
 import 'package:async/async.dart' hide DelegatingStream;
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
-import 'package:riverpod/misc.dart' show Refreshable, ProviderListenable;
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/framework.dart' show UnmountedRefException;
 import 'package:test/test.dart';
 
-import '../../third_party/fake_async.dart';
-import '../matrix.dart';
-import '../utils.dart';
+import '../../legacy.dart';
+import '../../misc.dart' show Refreshable, ProviderListenable;
+import '../../riverpod.dart';
+import '../framework.dart' show UnmountedRefException;
+import '../testing/fake_async.dart';
+import '../testing/matrix.dart';
+import '../testing/utils.dart';
 
 void main() {
   test('Throws if using notifier properties in its constructor', () {

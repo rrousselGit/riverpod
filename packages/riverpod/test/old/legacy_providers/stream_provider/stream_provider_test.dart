@@ -7,9 +7,8 @@ import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
+import 'package:riverpod/src/testing/old_utils.dart';
 import 'package:test/test.dart';
-
-import '../../utils.dart';
 
 void main() {
   test('supports overrideWith', () {

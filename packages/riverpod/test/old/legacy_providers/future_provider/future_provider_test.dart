@@ -8,9 +8,8 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart'
     show ProviderElement, ContainerReadElement;
 import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
+import 'package:riverpod/src/testing/old_utils.dart';
 import 'package:test/test.dart';
-
-import '../../utils.dart';
 
 void main() {
   test('Supports void type', () async {

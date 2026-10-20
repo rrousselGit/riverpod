@@ -1,10 +1,10 @@
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show ContainerReadElement;
 import 'package:test/test.dart';
 
-import '../../utils.dart';
+import '../../../legacy.dart';
+import '../../../riverpod.dart';
+import '../../internals.dart' show ContainerReadElement;
+import '../../testing/utils.dart';
 
 void main() {
   group('provider.select', () {

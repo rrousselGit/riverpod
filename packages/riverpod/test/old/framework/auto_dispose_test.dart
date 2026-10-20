@@ -1,8 +1,7 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
+import 'package:riverpod/src/testing/old_utils.dart';
 import 'package:test/test.dart';
-
-import '../utils.dart';
 
 Future<void> main() async {
   test(
