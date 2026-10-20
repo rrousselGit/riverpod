@@ -1,12 +1,12 @@
 // ignore_for_file: avoid_types_on_closure_parameters
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart'
-    show InternalProviderContainer, ProviderElement;
-import 'package:riverpod/src/testing/utils.dart';
 import 'package:test/test.dart';
+
+import '../../legacy.dart';
+import '../../riverpod.dart';
+import '../internals.dart' show InternalProviderContainer, ProviderElement;
+import '../testing/utils.dart';
 
 void main() {
   group('Provider', () {
