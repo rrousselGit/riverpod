@@ -1,7 +1,8 @@
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show ProviderElement;
-import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
 import 'package:test/test.dart';
+
+import '../../riverpod.dart';
+import '../internals.dart' show ProviderElement;
+import '../internals.dart' show InternalProviderContainer;
 
 void main() {
   group('StreamProvider.family', () {
