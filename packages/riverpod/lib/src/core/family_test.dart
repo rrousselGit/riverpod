@@ -8,7 +8,6 @@ import '../../misc.dart';
 import '../../riverpod.dart';
 import '../internals.dart' show InternalProviderContainer;
 import '../testing/matrix.dart';
-import '../testing/old_utils.dart';
 import '../testing/utils.dart';
 
 void main() {

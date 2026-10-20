@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
-import 'package:riverpod/src/testing/old_utils.dart'
-    show equalsIgnoringHashCodes;
 import 'package:riverpod/src/testing/utils.dart';
 import 'package:test/test.dart';
 

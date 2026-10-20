@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 import '../legacy.dart';
 import '../riverpod.dart';
 import 'builder.dart';
-import 'testing/old_utils.dart';
+import 'testing/utils.dart';
 
 void main() {
   group('_ProxySubscription', () {

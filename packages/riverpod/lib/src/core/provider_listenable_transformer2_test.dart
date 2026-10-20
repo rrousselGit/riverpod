@@ -7,7 +7,7 @@ import '../../misc.dart';
 import '../../riverpod.dart';
 import '../framework.dart';
 import '../testing/matrix.dart' as utils;
-import '../testing/old_utils.dart';
+import '../testing/utils.dart';
 import '../testing/utils.dart' as utils;
 
 void main() {

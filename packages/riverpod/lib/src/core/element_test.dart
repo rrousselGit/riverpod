@@ -6,7 +6,6 @@ import 'package:test/test.dart';
 import '../internals.dart';
 import '../testing/fake_async.dart';
 import '../testing/matrix.dart';
-import '../testing/old_utils.dart';
 import '../testing/utils.dart';
 import 'provider_container_test.dart';
 

@@ -4,9 +4,7 @@ import 'package:riverpod/misc.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart'
     show ProviderElement, ContainerReadElement;
-import 'package:riverpod/src/testing/old_utils.dart';
-import 'package:riverpod/src/testing/utils.dart'
-    show isProviderException, throwsProviderException;
+import 'package:riverpod/src/testing/utils.dart';
 import 'package:test/test.dart';
 
 class Counter extends StateNotifier<int> {

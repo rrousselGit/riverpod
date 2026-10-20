@@ -2,7 +2,7 @@ import 'package:test/test.dart';
 
 import '../../riverpod.dart';
 import '../framework.dart';
-import '../testing/old_utils.dart';
+import '../testing/utils.dart';
 
 void main() {
   group('ProviderOverride', () {
