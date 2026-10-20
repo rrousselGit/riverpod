@@ -435,6 +435,31 @@ void main() {
               expect(container.read(provider).valueOf, 42);
             },
           );
+
+          test(
+            'Disposing a provider before the DB read completes does not report an error',
+            () async {
+              // Regression test for https://github.com/rrousselGit/riverpod/issues/4895
+              final read = Completer<PersistedData<Object?>?>();
+              final provider = factory.simpleProvider(
+                (ref, self) => 0,
+                storage: DelegatingStorage(read: (_) => read.future),
+              );
+              final errors = <Object>[];
+              final container = runZonedGuarded(
+                ProviderContainer.test,
+                (err, stack) => errors.add(err),
+              )!;
+
+              container.read(provider);
+              await container.pump();
+
+              read.complete(const PersistedData(42));
+              await container.pump();
+
+              expect(errors, isEmpty);
+            },
+          );
         }
 
         test(
