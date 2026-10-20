@@ -387,6 +387,8 @@ void main() {
       });
 
       test('are all executed after one read call', () {
+        final container = ProviderContainer.test();
+        final didChange = Listener<int>();
         final counter = Counter();
         final provider = StateNotifierProvider<Counter, int>((ref) => counter);
         final didChange2 = Listener<int>();
