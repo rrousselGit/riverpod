@@ -1,5 +1,6 @@
-import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
+
+import '../../riverpod.dart';
 
 void main() {
   group('ProviderElementProxy', () {
