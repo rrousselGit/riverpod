@@ -3,12 +3,13 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/src/common/tenable.dart';
-import 'package:riverpod/src/internals.dart';
-import 'package:riverpod/src/testing/fake_async.dart';
-import 'package:riverpod/src/testing/matrix.dart';
-import 'package:riverpod/src/testing/utils.dart';
 import 'package:test/test.dart';
+
+import '../common/tenable.dart';
+import '../internals.dart';
+import '../testing/fake_async.dart';
+import '../testing/matrix.dart';
+import '../testing/utils.dart';
 
 // ignore: unreachable_from_main, inference test
 class EncodedT {}
