@@ -22,6 +22,7 @@ ignore:
   - "**/*.freezed.dart"
   # Tests placed next to the code they test
   - "**/*_test.dart"
+  - "**/lib/src/testing/"
   - "packages/riverpod_cli"
   - "packages/riverpod_generator"
   - "packages/riverpod_lint"

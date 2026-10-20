@@ -104,15 +104,20 @@ that setting and only scans `test/` when given no path, so pass the folders:
 `flutter test test lib`. A single file runs as usual with
 `dart test lib/src/foo_test.dart` or `flutter test lib/src/foo_test.dart`.
 
-Lib tests are excluded from published packages (`.pubignore`) and from
-coverage reports.
+Helpers shared by several lib tests go in `lib/src/testing/`. Lib tests
+can't import files from `test/`: the analyzer resolves files of `lib/` as
+`package:` URIs, which can't reach outside of `lib/`.
+
+Lib tests and their helpers are excluded from published packages
+(`.pubignore`) and from coverage reports.
 
 VS Code only discovers tests outside of `test/` with the
 `"dart.allowTestsOutsideTestFolder": true` setting.
 
 `scripts/check.sh tested` (part of CI) fails when a `lib/**/x.dart` file
 changes without a change to its `lib/**/x_test.dart`. Changes that only touch
-comments or whitespace are exempt, as are generated files and deleted files.
+comments or whitespace are exempt, as are generated files, deleted files and
+test helpers in `lib/src/testing/`.
 It also fails when a package has lib tests that its `dart_test.yaml` doesn't
 point `dart test` to.
 

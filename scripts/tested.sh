@@ -12,7 +12,8 @@
 # Exempt from the rule:
 # - Changes that only touch comments or whitespace (docs, formatting), as
 #   told by tools/code_changes, which compares unresolved ASTs.
-# - Deleted files, tests themselves (*_test.dart), and generated files
+# - Deleted files, tests themselves (*_test.dart), test helpers shared by
+#   lib tests (lib/src/testing/), and generated files
 #   (*.g.dart, *.freezed.dart, or a "GENERATED" header).
 # Only files in a package's lib/ folder are considered.
 #
@@ -93,7 +94,7 @@ pairs=()
 while IFS=$'\t' read -r status path; do
   [ -n "$path" ] || continue
   case "$status" in A|M|T) ;; *) continue ;; esac
-  case "$path" in *_test.dart) continue ;; *.dart) ;; *) continue ;; esac
+  case "$path" in *_test.dart|*/lib/src/testing/*) continue ;; *.dart) ;; *) continue ;; esac
   [ -f "$path" ] || continue
   is_generated "$path" && continue
   test_file="${path%.dart}_test.dart"
