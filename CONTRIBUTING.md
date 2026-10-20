@@ -94,10 +94,15 @@ lib/src/core/provider_container.dart
 lib/src/core/provider_container_test.dart
 ```
 
-They are regular tests, run by `scripts/test.sh` along with `test/`.
-To run them by hand, list `lib` as a test folder: `dart test test lib`
-or `flutter test test lib`. They are excluded from published packages
-(`.pubignore`) and from coverage reports.
+Each package's `dart_test.yaml` lists `lib` in its
+[`paths`](https://github.com/dart-lang/test/blob/master/pkgs/test/doc/configuration.md#paths),
+so a plain `dart test` runs them along with `test/`. `flutter test` ignores
+that setting and only scans `test/` when given no path, so pass the folders:
+`flutter test test lib`. A single file runs as usual with
+`dart test lib/src/foo_test.dart` or `flutter test lib/src/foo_test.dart`.
+
+Lib tests are excluded from published packages (`.pubignore`) and from
+coverage reports.
 
 VS Code only discovers tests outside of `test/` with the
 `"dart.allowTestsOutsideTestFolder": true` setting.

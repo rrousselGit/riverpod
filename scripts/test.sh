@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 # Runs package tests, in parallel. Flutter packages use `flutter test`, others
 # `dart test` (or scripts/coverage.sh with --coverage).
-# Tests are the *_test.dart files of test/, and those next to the code they
-# test in lib/.
 #
 # Usage: scripts/test.sh [--coverage] [-j N] [PACKAGE...]
 #   --coverage  Collect coverage into each package's coverage/ folder.
@@ -33,17 +31,18 @@ validate_packages "$@"
 ensure_deps
 
 if [ $# -eq 1 ]; then
+  runner="$(test_runner "$1")"
+  [ "$runner" != none ] || { echo "$1 has no tests."; exit 0; }
   cd "$ROOT/$1" || exit 1
-  # Test runners only look in test/ by default, so the folders are explicit.
-  dirs=()
-  [ -d test ] && dirs+=(test)
-  [ -n "$(find lib -name '*_test.dart' -print -quit 2>/dev/null)" ] && dirs+=(lib)
-  [ ${#dirs[@]} -gt 0 ] || { echo "$1 has no tests."; exit 0; }
-  case "$(test_runner "$1"):$coverage" in
-    chrome:*)           exec flutter test --no-pub --platform chrome "${dirs[@]}" ;;
-    flutter:*)          exec flutter test --no-pub $coverage "${dirs[@]}" ;;
-    dart:--coverage)    exec "$SCRIPTS/coverage.sh" "${dirs[@]}" ;;
-    *)                  exec dart test "${dirs[@]}" ;;
+  # Where tests live is set by `paths` in dart_test.yaml, which `dart test`
+  # reads. `flutter test` only looks in test/, so it is given those paths.
+  # shellcheck disable=SC2046 # word splitting of the paths is intended
+  set -- $(sed -n 's/^paths: *\[\(.*\)\]$/\1/p' dart_test.yaml 2>/dev/null | tr ',' ' ')
+  case "$runner:$coverage" in
+    chrome:*)           exec flutter test --no-pub --platform chrome "$@" ;;
+    flutter:*)          exec flutter test --no-pub $coverage "$@" ;;
+    dart:--coverage)    exec "$SCRIPTS/coverage.sh" ;;
+    *)                  exec dart test ;;
   esac
 fi
 # Activate once here, rather than racing from parallel coverage.sh runs.
