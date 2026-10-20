@@ -3,12 +3,12 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart'
-    show ProviderElement, InternalProviderContainer;
-import 'package:riverpod/src/testing/utils.dart';
 import 'package:test/test.dart';
+
+import '../../../legacy.dart';
+import '../../../riverpod.dart';
+import '../../internals.dart' show ProviderElement, InternalProviderContainer;
+import '../../testing/utils.dart';
 
 void main() {
   test('Guards StateNotifier.dispose', () {
