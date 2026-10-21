@@ -33,10 +33,13 @@ ensure_deps
 if [ $# -eq 1 ]; then
   cd "$ROOT/$1" || exit 1
   [ -d test ] || { echo "$1 has no tests."; exit 0; }
+  # A package that holds the tests of another reports that other's coverage.
+  of="$(tests_of "$1")"
   case "$(test_runner "$1"):$coverage" in
     chrome:*)           exec flutter test --no-pub --platform chrome ;;
-    flutter:*)          exec flutter test --no-pub $coverage ;;
-    dart:--coverage)    exec "$SCRIPTS/coverage.sh" ;;
+    flutter:--coverage) exec flutter test --no-pub --coverage ${of:+"--coverage-package=^$of\$"} ;;
+    flutter:*)          exec flutter test --no-pub ;;
+    dart:--coverage)    exec "$SCRIPTS/coverage.sh" ${of:+"--scope-output=$of"} ;;
     *)                  exec dart test ;;
   esac
 fi
