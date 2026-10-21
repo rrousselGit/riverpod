@@ -12,19 +12,18 @@ import 'package:source_gen/builder.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final files = Directory('test/integration')
-      .listSync(recursive: true)
-      .whereType<File>()
-      .where((file) => file.path.endsWith('.dart'))
-      .toList();
-  AssetId id(File file) => AssetId('riverpod_generator', file.path);
+  test('generates the checked-in test/integration/**.g.dart files', () async {
+    final files = Directory('test/integration')
+        .listSync(recursive: true)
+        .whereType<File>()
+        .where((file) => file.path.endsWith('.dart'))
+        .toList();
+    AssetId id(File file) => AssetId('riverpod_generator', file.path);
 
-  final readerWriter = TestReaderWriter(
-    rootPackage: 'riverpod_generator',
-    flattenOutput: true,
-  );
-
-  setUpAll(() async {
+    final readerWriter = TestReaderWriter(
+      rootPackage: 'riverpod_generator',
+      flattenOutput: true,
+    );
     await readerWriter.testing.loadIsolateSources();
     final result = await testBuilders(
       [riverpodBuilder(BuilderOptions.empty), combiningBuilder()],
@@ -38,16 +37,15 @@ void main() {
       flattenOutput: true,
     );
     expect(result.succeeded, isTrue, reason: result.errors.join('\n'));
-  });
 
-  for (final file in files.where((file) => file.path.endsWith('.g.dart'))) {
-    test(file.path, () {
+    for (final file in files.where((file) => file.path.endsWith('.g.dart'))) {
       expect(
         readerWriter.testing.readString(id(file)),
         file.readAsStringSync(),
         reason:
-            'Regenerate it with: scripts/generate.sh packages/riverpod_generator',
+            '${file.path} is outdated. Regenerate it with: '
+            'scripts/generate.sh packages/riverpod_generator',
       );
-    });
-  }
+    }
+  });
 }
