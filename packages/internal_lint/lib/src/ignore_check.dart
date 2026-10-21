@@ -10,8 +10,10 @@ import 'package:yaml/yaml.dart';
 const ignorePolicyPath = 'scripts/ignores.yaml';
 
 final _ignoreComment = RegExp(r'//\s*ignore(_for_file)?\s*:');
+// At most 9 digits, as GraphQL's `Int` has 32 bits. Longer numbers are not
+// issues, so the comment counts as unlinked.
 final _issueLink = RegExp(
-  r'https://github\.com/([\w.-]+)/([\w.-]+)/issues/(\d+)',
+  r'https://github\.com/([\w.-]+)/([\w.-]+)/issues/([1-9]\d{0,8})\b',
 );
 
 /// Which `// ignore` comments of the repository may lack a link to the GitHub

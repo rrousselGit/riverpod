@@ -36,6 +36,10 @@ jobs:
   analyze:
     name: Format & analyze
     runs-on: ubuntu-latest
+    # scripts/ignores.sh only reads the state of issues.
+    permissions:
+      contents: read
+      issues: read
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2

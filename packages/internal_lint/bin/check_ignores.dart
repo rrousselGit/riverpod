@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -110,7 +111,7 @@ String? _token() {
 }
 
 Future<Object?> _graphql(String token, String query) async {
-  final client = HttpClient();
+  final client = HttpClient()..connectionTimeout = const Duration(seconds: 30);
   try {
     final request = await client.postUrl(
       Uri.parse('https://api.github.com/graphql'),
@@ -120,15 +121,30 @@ Future<Object?> _graphql(String token, String query) async {
       ..set(HttpHeaders.userAgentHeader, 'riverpod-check-ignores')
       ..contentType = ContentType.json;
     request.write(jsonEncode({'query': query}));
-    final response = await request.close();
-    final body = await response.transform(utf8.decoder).join();
-    if (response.statusCode != 200) {
-      stderr.writeln('The GitHub API failed (${response.statusCode}):\n$body');
+    final (statusCode, body) = await () async {
+      final response = await request.close();
+      return (
+        response.statusCode,
+        await response.transform(utf8.decoder).join(),
+      );
+    }().timeout(const Duration(minutes: 1));
+    Object? json;
+    try {
+      json = jsonDecode(body);
+    } on FormatException {
+      // Reported below, along with the body.
+    }
+    // Without data, every issue would be reported as missing.
+    if (statusCode != 200 || json is! Map || json['data'] is! Map) {
+      stderr.writeln('The GitHub API failed ($statusCode):\n$body');
       exit(2);
     }
-    return jsonDecode(body);
+    return json;
   } on IOException catch (e) {
     stderr.writeln('Could not reach the GitHub API: $e');
+    exit(2);
+  } on TimeoutException {
+    stderr.writeln('The GitHub API did not answer in time.');
     exit(2);
   } finally {
     client.close();
