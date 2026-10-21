@@ -97,6 +97,15 @@ is_directives_only() {
   ' "$1"
 }
 
+# Prints the name of the package that the package at PATH holds the tests of,
+# if it is a package that only holds the tests of another.
+tests_of() {
+  case "$1" in
+    packages/riverpod_analyzer_utils_tests) echo riverpod_analyzer_utils ;;
+    packages/riverpod_lint_flutter_test)    echo riverpod_lint ;;
+  esac
+}
+
 # ---------------------------------------------------------------------------
 # package_graph.yaml readers. The file is generated with a fixed layout (and
 # scripts/graph.sh --check guarantees it is current), so line matching is safe.
