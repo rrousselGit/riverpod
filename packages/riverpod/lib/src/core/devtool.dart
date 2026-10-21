@@ -19,6 +19,7 @@ part of '../framework.dart';
 ///
 /// Make sure to hot-restart your application after changing this flag.
 /// The devtool should then automatically pick up the stack trace of providers.
+@publicInMisc
 bool debugTrackProviderCreation = false;
 
 /// Whether Riverpod retains previous frames for time-travel debugging.
@@ -28,8 +29,10 @@ bool debugTrackProviderCreation = false;
 /// or enable it later to record from the current snapshot onwards.
 /// Recording history retains provider states in memory. Set this back to `false`
 /// to release that history. This flag has no effect in release mode.
+@publicInMisc
 bool get debugTrackProviderHistory => _debugTrackProviderHistory;
 bool _debugTrackProviderHistory = false;
+@publicInMisc
 set debugTrackProviderHistory(bool value) {
   if (_debugTrackProviderHistory == value) return;
   _debugTrackProviderHistory = value;
@@ -645,6 +648,7 @@ final class ConsumerMeta {
 }
 
 /// An observer who's responsible for communicating with the Riverpod devtool
+@internal
 @visibleForTesting
 final class DevtoolObserver extends ProviderObserver {
   /// An observer who's responsible for communicating with the Riverpod devtool
