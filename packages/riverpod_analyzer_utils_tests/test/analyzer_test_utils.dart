@@ -1,17 +1,20 @@
-import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:analyzer/dart/analysis/analysis_context.dart';
+import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/diagnostic/diagnostic.dart';
-import 'package:build/build.dart';
-import 'package:build_test/build_test.dart';
+import 'package:analyzer/file_system/overlay_file_system.dart';
+import 'package:analyzer/file_system/physical_file_system.dart';
 import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 import 'package:package_config/package_config.dart';
+import 'package:path/path.dart' as p;
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:riverpod_analyzer_utils/src/nodes.dart';
 import 'package:riverpod_generator/src/riverpod_generator.dart';
@@ -48,14 +51,95 @@ List<RiverpodAnalysisError> collectErrors(void Function() cb) {
 
 int _testNumber = 0;
 
-/// Due to [resolveSource] throwing if trying to interact with the resolver
-/// after the future completed, we change the syntax to make sure our test
-/// executes within the resolver scope.
+Future<_TestAnalysisContext>? _analysisContext;
+
+/// Shares dependency analysis while keeping each test's files at unique paths.
+class _TestAnalysisContext {
+  _TestAnalysisContext(this.directory, this.resources, this.collection);
+
+  final Directory directory;
+  final OverlayResourceProvider resources;
+  final AnalysisContextCollection collection;
+  int _stamp = 0;
+
+  static Future<_TestAnalysisContext> create() async {
+    final configUri = (await Isolate.packageConfig)!;
+    final config = PackageConfig.parseString(
+      File.fromUri(configUri).readAsStringSync(),
+      configUri,
+    );
+    final directory = Directory.systemTemp.createTempSync('riverpod_analysis_');
+    final resources = OverlayResourceProvider(
+      PhysicalResourceProvider.INSTANCE,
+    );
+    final configJson = PackageConfig.toJson(config);
+    (configJson['packages']! as List).add({
+      'name': 'test_lib',
+      'rootUri': directory.uri.toString(),
+      'packageUri': 'lib/',
+      'languageVersion': Platform.version.split('.').take(2).join('.'),
+    });
+    resources.setOverlay(
+      p.join(directory.path, '.dart_tool', 'package_config.json'),
+      content: jsonEncode(configJson),
+      modificationStamp: 0,
+    );
+    resources.setOverlay(
+      p.join(directory.path, 'analysis_options.yaml'),
+      content: '{}',
+      modificationStamp: 0,
+    );
+    final collection = AnalysisContextCollection(
+      includedPaths: [directory.path],
+      resourceProvider: resources,
+    );
+    return _TestAnalysisContext(directory, resources, collection);
+  }
+
+  void write(String path, String content) {
+    resources.setOverlay(path, content: content, modificationStamp: ++_stamp);
+    collection.contextFor(path).changeFile(path);
+  }
+
+  Future<void> dispose() async {
+    await collection.dispose();
+    directory.deleteSync(recursive: true);
+  }
+}
+
+/// Resolves a test library within the shared analyzer context.
+class TestSourceResolver {
+  TestSourceResolver(this.context, this.path);
+
+  final AnalysisContext context;
+  final String path;
+
+  Future<LibraryElement?> findLibraryByName(String name) async {
+    final library = await context.currentSession.getResolvedLibrary(path);
+    library as ResolvedLibraryResult;
+    final pending = [library.element];
+    final visited = <LibraryElement>{};
+    while (pending.isNotEmpty) {
+      final element = pending.removeLast();
+      if (!visited.add(element)) continue;
+      if (element.name == name) return element;
+      pending.addAll(
+        element.fragments
+            .expand((fragment) => fragment.libraryImports)
+            .map((import) => import.importedLibrary)
+            .nonNulls,
+      );
+      pending.addAll(element.exportedLibraries);
+    }
+    return null;
+  }
+}
+
 @isTest
 void testSource(
   String description,
   Future<void> Function(
-    Resolver resolver,
+    TestSourceResolver resolver,
     CompilationUnit unit,
     List<ResolvedUnitResult> units,
   )
@@ -66,115 +150,71 @@ void testSource(
   Timeout? timeout,
   Object? skip,
 }) {
+  if (_testNumber == 0) {
+    tearDownAll(() async {
+      if (_analysisContext case final context?) {
+        await (await context).dispose();
+      }
+    });
+  }
   final testId = _testNumber++;
   test(description, skip: skip, timeout: timeout, () async {
-    // Giving a unique name to the package to avoid the analyzer cache
-    // messing up tests.
-    final packageName = 'test_lib$testId';
-    final sourceWithLibrary = 'library foo;$source';
-
-    final enclosingZone = Zone.current;
-
-    final otherSources = {
-      for (final entry in files.entries)
-        '$packageName|lib/${entry.key}':
-            'library "${entry.key}"; ${entry.value}',
-    };
-
-    Future<(List<ResolvedUnitResult>, CompilationUnit)> getUnits(
-      Resolver resolver,
-    ) async {
-      final lib = await resolver.findLibraryByName('foo');
-
-      final ast = await lib!.session.getResolvedLibraryByElement(lib);
-      ast as ResolvedLibraryResult;
-
-      return (
-        ast.units,
-        ast.units.firstWhere((e) => e.path.endsWith('foo.dart')).unit,
+    final analysis = await (_analysisContext ??= _TestAnalysisContext.create());
+    final testDirectory = p.join(analysis.directory.path, 'lib', 'test$testId');
+    final path = p.join(testDirectory, 'foo.dart');
+    analysis.write(path, 'library foo;$source');
+    for (final entry in files.entries) {
+      analysis.write(
+        p.join(testDirectory, entry.key),
+        'library "${entry.key}"; ${entry.value}',
       );
     }
+    final context = analysis.collection.contextFor(path);
+    await context.applyPendingFileChanges();
 
-    final packageConfigUri = await Isolate.packageConfig;
-    final packageConfig = PackageConfig.parseString(
-      File.fromUri(packageConfigUri!).readAsStringSync(),
-      packageConfigUri,
-    );
+    Future<ResolvedLibraryResult> getLibrary() async {
+      return await context.currentSession.getResolvedLibrary(path)
+          as ResolvedLibraryResult;
+    }
 
-    String? generated;
     if (runGenerator) {
-      generated = await resolveSources(
-        packageConfig: packageConfig,
-        readAllSourcesFromFilesystem: true,
-        {'$packageName|lib/foo.dart': sourceWithLibrary, ...otherSources},
-        (resolver) async {
-          final (units, _) = await getUnits(resolver);
-
-          return RiverpodGenerator(
-            const {},
-          ).generateForUnit(units.map((e) => e.unit).toList());
-        },
+      final library = await getLibrary();
+      final generated = RiverpodGenerator(
+        const {},
+      ).generateForUnit(library.units.map((e) => e.unit).toList());
+      analysis.write(
+        p.join(testDirectory, 'foo.g.dart'),
+        'part of "foo.dart";$generated',
       );
+      await context.applyPendingFileChanges();
     }
 
-    await resolveSources(
-      packageConfig: packageConfig,
-      readAllSourcesFromFilesystem: true,
-      {
-        '$packageName|lib/foo.dart': sourceWithLibrary,
-        if (generated != null)
-          '$packageName|lib/foo.g.dart': 'part of "foo.dart";$generated',
-        ...otherSources,
-      },
-      (resolver) {
-        try {
-          final originalZone = Zone.current;
-          return runZoned(
-            () async {
-              final (units, unit) = await getUnits(resolver);
-
-              try {
-                return await run(resolver, unit, units);
-              } finally {
-                collectErrors(() {
-                  for (final unit in units) {
-                    expectRiverpodAstOnlyHasASingleOptionPerNode(unit.unit);
-                  }
-                });
-              }
-            },
-            zoneSpecification: ZoneSpecification(
-              // Somehow prints are captured inside the callback. Let's restore them
-              print: (self, parent, zone, line) => enclosingZone.print(line),
-              handleUncaughtError: (self, parent, zone, error, stackTrace) {
-                originalZone.handleUncaughtError(error, stackTrace);
-                enclosingZone.handleUncaughtError(error, stackTrace);
-              },
-            ),
-          );
-        } catch (err, stack) {
-          enclosingZone.handleUncaughtError(err, stack);
+    final library = await getLibrary();
+    final unit = library.units.firstWhere((unit) => unit.path == path).unit;
+    try {
+      await run(TestSourceResolver(context, path), unit, library.units);
+    } finally {
+      collectErrors(() {
+        for (final unit in library.units) {
+          expectRiverpodAstOnlyHasASingleOptionPerNode(unit.unit);
         }
-      },
-    );
+      });
+    }
   });
 }
 
-/// Asserts that no [AstNode] has to Riverpod ast.
+/// Asserts that no [AstNode] has more than one Riverpod AST representation.
 void expectRiverpodAstOnlyHasASingleOptionPerNode(AstNode node) {
   final result = CollectionRiverpodAst();
   node.accept(result);
-
   for (final entry in result.riverpodAst.entries) {
     expect(entry.value, anyOf(hasLength(0), hasLength(1)), reason: entry.key);
   }
-
   node.visitChildren(_VisitNode(expectRiverpodAstOnlyHasASingleOptionPerNode));
 }
 
 class _VisitNode extends GeneralizingAstVisitor<void> {
   _VisitNode(this.cb);
-
   final void Function(AstNode node) cb;
   @override
   void visitNode(AstNode node) => cb(node);
@@ -246,16 +286,13 @@ extension FindAst<NodeT extends AstNode> on List<NodeT> {
   }
 }
 
-extension ResolverX on Resolver {
+extension ResolverX on TestSourceResolver {
   // ignore: invalid_use_of_internal_member
   Future<RiverpodAnalysisResult> resolveRiverpodAnalysisResult({
     String libraryName = 'foo',
     bool ignoreErrors = false,
   }) async {
-    final library = await requireFindLibraryByName(
-      libraryName,
-      ignoreErrors: ignoreErrors,
-    );
+    final library = await requireFindLibraryByName(libraryName);
 
     final libraryAst = await library.session.getResolvedLibraryByElement(
       library,
@@ -266,7 +303,7 @@ extension ResolverX on Resolver {
         .expand((e) => e.errors)
         .where((e) => e.severity == Severity.error)
         .toList();
-    if (compilerErrors.isNotEmpty) {
+    if (compilerErrors.isNotEmpty && !ignoreErrors) {
       throw StateError('''
 The parsed library has compiler errors:
 ${compilerErrors.map((e) => '- $e\n').join()}
@@ -304,32 +341,10 @@ ${compilerErrors.map((e) => '- $e\n').join()}
     return result;
   }
 
-  Future<LibraryElement> requireFindLibraryByName(
-    String libraryName, {
-    required bool ignoreErrors,
-  }) async {
+  Future<LibraryElement> requireFindLibraryByName(String libraryName) async {
     final library = await findLibraryByName(libraryName);
     if (library == null) {
       throw StateError('No library found for name "$libraryName"');
-    }
-
-    if (!ignoreErrors) {
-      final errorResult = await library.session.getErrors(
-        '/test_lib/lib/foo.dart',
-      );
-      errorResult as ErrorsResult;
-
-      final errors = errorResult.errors
-          // Infos are only recommendations. There's no reason to fail just for this
-          .where((e) => e.severity != Severity.info)
-          .toList();
-
-      if (errors.isNotEmpty) {
-        throw StateError('''
-The parsed library has errors:
-${errors.map((e) => '- $e\n').join()}
-''');
-      }
     }
 
     return library;

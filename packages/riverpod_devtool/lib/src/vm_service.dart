@@ -19,6 +19,7 @@ import 'package_name_provider.dart';
 part 'vm_service.g.dart';
 part 'vm_service/byte.dart';
 part 'vm_service/eval.dart';
+part 'vm_service/session.dart';
 part 'vm_service/hot_restart.dart';
 part 'vm_service/vm_instance.dart';
 part 'vm_service/instance.dart';

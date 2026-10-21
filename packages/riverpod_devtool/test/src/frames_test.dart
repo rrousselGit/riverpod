@@ -1,8 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/src/internals.dart' as internals;
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_devtool/src/elements.dart';
 import 'package:riverpod_devtool/src/frames.dart';
 import 'package:riverpod_devtool/src/vm_service.dart';
+
+import '../widget_test_helpers.dart';
 
 ProviderElementAddEvent addEvent(
   String elementId, {
@@ -38,7 +42,43 @@ ProviderElementDisposeEvent disposeEvent(String elementId) {
   );
 }
 
+class _Tracking extends TimeTravelNotifier {
+  final changes = <bool>[];
+
+  @override
+  Future<bool> build() async => false;
+
+  @override
+  Future<void> setEnabled(bool enabled) async {
+    changes.add(enabled);
+    state = AsyncData(enabled);
+  }
+}
+
 void main() {
+  test('snapshots replace history and recording appends to the baseline', () {
+    final initial = foldFrames(const [], [
+      Frame.test(index: 0, events: [addEvent('old')]),
+    ]);
+    final snapshot = foldFrames(initial, [
+      Frame.test(index: 0, events: [addEvent('current')]),
+    ]);
+    expect(snapshot, hasLength(1));
+    expect(snapshot.single.previous, isNull);
+    expect(snapshot.single.elements.keys, ['current']);
+
+    final history = foldFrames(snapshot, [
+      Frame.test(index: 1, events: [updateEvent('current')]),
+    ]);
+    expect(history, hasLength(2));
+    expect(history.last.previous, same(snapshot.single));
+
+    final stopped = foldFrames(history, [Frame.test(index: 0, events: [])]);
+    expect(stopped, hasLength(1));
+    expect(stopped.single.elements, isEmpty);
+    expect(stopped.single.previous, isNull);
+  });
+
   group('FoldedFrame', () {
     test('requires the first frame to start at index zero', () {
       expect(
@@ -293,6 +333,103 @@ void main() {
 
       expect(meta, isNotNull);
       expect(meta!.state.state.id.value, 'state-1');
+    });
+  });
+
+  group('FrameStepper', () {
+    testWidgets(
+      'start/stop toggles frame navigation without disabling live inspection',
+      (tester) async {
+        final tracking = _Tracking();
+        final frames = foldFrames(const [], [
+          Frame.test(index: 0, events: []),
+          Frame.test(index: 1, events: []),
+        ]);
+        final selections = <FrameId>[];
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              timeTravelProvider.overrideWith(() => tracking),
+              filteredFramesProvider.overrideWith((ref) => AsyncData(frames)),
+            ],
+            child: testApp(
+              FrameStepper(
+                onSelect: selections.add,
+                selectedFrame: frames.last,
+                selectedElement: null,
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        IconButton previous() => tester.widget<IconButton>(
+          find.byWidgetPredicate(
+            (widget) =>
+                widget is IconButton && widget.tooltip == 'Previous frame',
+          ),
+        );
+        expect(previous().onPressed, isNull);
+        expect(tester.widget<Opacity>(find.byType(Opacity).first).opacity, 0.4);
+        await tester.tap(find.byTooltip('Previous frame'), warnIfMissed: false);
+        expect(selections, isEmpty);
+
+        await tester.tap(
+          find.byTooltip('Start time travel and record future frames'),
+        );
+        await tester.pumpAndSettle();
+        expect(tracking.changes, [true]);
+        expect(
+          find.byTooltip('Stop time travel and discard previous frames'),
+          findsOneWidget,
+        );
+        expect(previous().onPressed, isNotNull);
+        await tester.tap(find.byTooltip('Previous frame'));
+        await tester.pumpAndSettle();
+        expect(selections, [frames.first.id]);
+
+        await tester.tap(
+          find.byTooltip('Stop time travel and discard previous frames'),
+        );
+        await tester.pumpAndSettle();
+        expect(tracking.changes, [true, false]);
+        expect(previous().onPressed, isNull);
+        expect(
+          find.byTooltip('Start time travel and record future frames'),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets('can start recording before any provider frames exist', (
+      tester,
+    ) async {
+      final tracking = _Tracking();
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            timeTravelProvider.overrideWith(() => tracking),
+            filteredFramesProvider.overrideWith((ref) => const AsyncData([])),
+          ],
+          child: testApp(
+            FrameStepper(
+              onSelect: (_) {},
+              selectedFrame: null,
+              selectedElement: null,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.byTooltip('Start time travel and record future frames'),
+      );
+      await tester.pumpAndSettle();
+      expect(tracking.changes, [true]);
+      expect(
+        find.byTooltip('Stop time travel and discard previous frames'),
+        findsOneWidget,
+      );
     });
   });
 }

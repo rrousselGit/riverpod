@@ -225,10 +225,9 @@ void main() {
       group('on AsyncData', () {
         test('with AsyncLoading', () {
           expect(
-            const AsyncData<int>(42).copyWithPrevious(
-              const AsyncLoading<int>(progress: .1),
-              isRefresh: true,
-            ),
+            const AsyncData<int>(
+              42,
+            ).copyWithPrevious(const AsyncLoading<int>(progress: .1)),
             const AsyncData<int>(42),
           );
         });
@@ -1366,7 +1365,7 @@ void main() {
     );
     expect(
       const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(42), isRefresh: true)
+          .copyWithPrevious(const AsyncData(42))
           .requireValue,
       42,
     );
@@ -1377,14 +1376,13 @@ void main() {
               'err',
               StackTrace.empty,
             ).copyWithPrevious(const AsyncData(42)),
-            isRefresh: true,
           )
           .requireValue,
       42,
     );
     expect(
       const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(42), isRefresh: true)
+          .copyWithPrevious(const AsyncData(42))
           .requireValue,
       42,
     );

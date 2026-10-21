@@ -1,3 +1,4 @@
+// dart format off
 
 import 'package:flutter_riverpod/experimental/persist.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';

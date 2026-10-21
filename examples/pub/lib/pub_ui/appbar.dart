@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:material_ui/material_ui.dart';
 
 class PubAppbar extends StatelessWidget implements PreferredSizeWidget {
   const PubAppbar({super.key});

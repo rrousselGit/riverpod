@@ -115,7 +115,7 @@ class _StateProviderElement<ValueT>
     final controller = StateController(initialState);
     _controllerNotifier.result = $Result.data(controller);
 
-    _removeListener = controller.addListener(fireImmediately: true, (state) {
+    _removeListener = controller.addListener((state) {
       _stateNotifier.result = _controllerNotifier.result;
       setValue(AsyncData(state));
     });

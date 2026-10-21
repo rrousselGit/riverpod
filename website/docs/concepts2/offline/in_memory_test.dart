@@ -1,9 +1,9 @@
 // ignore_for_file: invalid_use_of_visible_for_testing_member, unused_local_variable
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/experimental/persist.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'storage/codegen.dart';
 

@@ -3,14 +3,14 @@
 /* SNIPPET START */
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:http/http.dart' as http;
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'codegen.g.dart';
 part 'codegen.freezed.dart';
+part 'codegen.g.dart';
 
 void main() => runApp(ProviderScope(child: MyApp()));
 

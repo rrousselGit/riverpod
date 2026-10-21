@@ -2,7 +2,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 // ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
 
-import '../collection.dart';
 import '../elements.dart';
 import '../frames.dart';
 import '../riverpod.dart';
@@ -63,38 +62,24 @@ final selectedProviderIdProvider = NotifierProvider.autoDispose
       }),
     );
 
-final allDiscoveredOriginsProvider =
-    NotifierProvider<AllDiscoveredOriginsNotifier, Set<internals.OriginId>>(
-      AllDiscoveredOriginsNotifier.new,
-    );
+final allDiscoveredOriginsProvider = Provider<Set<internals.OriginId>>((ref) {
+  // Derive origins from the same snapshot used by the picker. Updating a
+  // separate notifier from a listener lets consumers observe new frames with
+  // the previous snapshot's origins.
+  final frames = ref.watch(framesProvider).value ?? const <FoldedFrame>[];
+  return _discoveredOrigins(frames);
+});
 
-class AllDiscoveredOriginsNotifier extends Notifier<Set<internals.OriginId>> {
-  @override
-  Set<internals.OriginId> build() {
-    ref.watch(hotRestartEventProvider);
-
-    state = {};
-
-    ref.listen(framesProvider, fireImmediately: true, (previous, next) {
-      if (next.isLoading) return;
-
-      final setBuilder = SetBuilder<internals.OriginId>(state);
-
-      final frames = next.value ?? const [];
-
-      for (final frame in frames) {
-        for (final event in frame.frame.events) {
-          if (event case ProviderElementAddEvent(:final provider)) {
-            setBuilder.add(provider.origin.id);
-          }
-        }
-      }
-
-      state = setBuilder.build();
-    });
-
-    return state;
-  }
+Set<internals.OriginId> _discoveredOrigins(List<FoldedFrame> frames) {
+  return {
+    for (final frame in frames)
+      for (final event in frame.frame.events)
+        // Compacted snapshots can contain updates without creation events.
+        if (event
+            case ProviderElementAddEvent(:final provider) ||
+                ProviderElementUpdateEvent(:final provider))
+          provider.origin.id,
+  };
 }
 
 extension ProviderMetaX on ProviderMeta {}
@@ -143,16 +128,15 @@ final filteredProvidersForCurrentFrameProvider = Provider.autoDispose
 final filteredProvidersProvider = Provider.autoDispose
     .family<OriginStates, ({String search, FrameId? frame})>((ref, args) {
       final (:search, :frame) = args;
-      final selectedFrame = ref.watch(
-        framesProvider.select(
-          (frames) => frames.value?.where((f) => f.id == frame).firstOrNull,
-        ),
-      );
+      // Use one snapshot for both elements and origins, including when a
+      // consumer reads synchronously during a frames notification.
+      final frames = ref.watch(framesProvider).value ?? const <FoldedFrame>[];
+      final selectedFrame = frames.where((f) => f.id == frame).firstOrNull;
 
       if (selectedFrame == null) return {};
 
       final result = {
-        for (final origin in ref.watch(allDiscoveredOriginsProvider))
+        for (final origin in _discoveredOrigins(frames))
           origin: AccumulatedFilter._(),
       };
 

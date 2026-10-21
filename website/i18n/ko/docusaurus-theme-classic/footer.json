@@ -11,10 +11,6 @@
     "message": "스폰서",
     "description": "The title of the footer links column with title=Sponsors in the footer"
   },
-  "link.item.label.Why Riverpod?": {
-    "message": "왜 Riverpod인가?",
-    "description": "The label of footer link with label=Why Riverpod? linking to docs/introduction/why_riverpod"
-  },
   "link.item.label.Getting started": {
     "message": "시작하기",
     "description": "The label of footer link with label=Getting started linking to docs/introduction/getting_started"
@@ -29,7 +25,7 @@
   },
   "link.item.label.Stack Overflow": {
     "message": "Stack Overflow",
-    "description": "The label of footer link with label=Stack Overflow linking to https://stackoverflow.com/questions/tagged/flutter"
+    "description": "The label of footer link with label=Stack Overflow linking to https://stackoverflow.com/questions/tagged/riverpod"
   },
   "link.item.label.Twitter": {
     "message": "Twitter",
@@ -41,14 +37,26 @@
   },
   "link.item.label.Contributing guide": {
     "message": "기여 가이드",
-    "description": "The label of footer link with label=Contributing guide linking to https://github.com/rrousselGit/riverpod/blob/rework-flow/CONTRIBUTING.md"
+    "description": "The label of footer link with label=Contributing guide linking to https://github.com/rrousselGit/riverpod/blob/master/CONTRIBUTING.md"
   },
   "copyright": {
-    "message": "Copyright © 2024 Remi Rousselet.<br /> Built with Docusaurus.",
+    "message": "Copyright © 2024 Remi Rousselet.<br /> Docusaurus로 제작되었습니다.",
     "description": "The footer copyright"
   },
   "logo.alt": {
     "message": "Riverpod",
     "description": "The alt text of footer logo"
+  },
+  "link.item.label.What's new in Riverpod 3.0": {
+    "message": "Riverpod 3.0의 새로운 기능",
+    "description": "The label of footer link with label=What's new in Riverpod 3.0 linking to docs/whats_new"
+  },
+  "link.item.label.FAQ": {
+    "message": "FAQ",
+    "description": "The label of footer link with label=FAQ linking to docs/root/FAQ"
+  },
+  "link.item.label.DO/DON'T": {
+    "message": "해야 할 것/하지 말아야 할 것",
+    "description": "The label of footer link with label=DO/DON'T linking to docs/root/do_dont"
   }
 }

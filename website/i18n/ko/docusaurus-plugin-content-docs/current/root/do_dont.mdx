@@ -1,0 +1,171 @@
+---
+title: 해야 할 것/하지 말아야 할 것
+version: 2
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
+
+코드를 유지보수하기 좋게 만들기 위해, Riverpod을 사용할 때 따라야 할
+모범 사례를 정리했습니다.
+
+이 목록이 전부는 아니며, 앞으로 바뀔 수 있습니다.  
+제안할 내용이 있다면 언제든 [이슈를 열어 주세요](https://github.com/rrousselGit/riverpod/issues/new?assignees=rrousselGit&labels=documentation%2C+needs+triage&projects=&template=example_request.md&title=).
+
+항목의 순서에는 특별한 의미가 없습니다.
+
+이 권장 사항 중 상당수는 [riverpod_lint](https://pub.dev/packages/riverpod_lint)로 강제할 수 있습니다.
+설치 방법은 <Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint"/>를
+참고하세요.
+
+## 위젯에서 provider를 초기화하는 것을 피하세요 {#avoid-initializing-providers-in-a-widget}
+
+provider는 스스로 초기화해야 합니다.  
+위젯 같은 외부 요소가 provider를 초기화해서는 안 됩니다.
+
+그렇지 않으면 경쟁 상태(race condition)나 예기치 않은 동작이 생길 수 있습니다.
+
+**하지 말아야 할 것**
+
+```dart
+class WidgetState extends State<MyWidget> {
+  @override
+  void initState() {
+    super.initState();
+    // 나쁜 예: provider는 스스로 초기화해야 합니다
+    ref.read(provider).init();
+  }
+}
+```
+
+**고려할 것**
+
+이 문제에 "만능" 해결책은 없습니다.  
+초기화 로직이 provider 외부 요인에 의존한다면, 대개 화면 이동을 일으키는
+버튼의 `onPressed` 메서드가 그 로직을 두기에 알맞은 곳입니다.
+
+```dart
+ElevatedButton(
+  onPressed: () {
+    ref.read(provider).init();
+    Navigator.of(context).push(...);
+  },
+  child: Text('Navigate'),
+)
+```
+
+## 임시 상태(ephemeral state)에 provider를 사용하는 것을 피하세요 {#avoid-using-providers-for-ephemeral-state}
+
+provider는 공유되는 비즈니스 상태를 위해 설계되었습니다.
+다음과 같은 [임시 상태](https://docs.flutter.dev/data-and-backend/state-mgmt/ephemeral-vs-app#ephemeral-state)에 사용하도록 만든 것이 아닙니다.
+
+- 현재 선택된 항목
+- 폼 상태.
+  폼을 나갔다가 다시 들어오면 보통 폼 상태가 초기화되어야 하기 때문입니다.
+  여러 페이지로 된 폼에서 뒤로 가기 버튼을 누르는 경우도 여기에 포함됩니다.
+- 애니메이션
+- 일반적으로 Flutter가 "controller"로 다루는 모든 것(예: `TextEditingController`)
+
+위젯의 로컬 상태를 다루는 방법을 찾고 있다면
+[flutter_hooks](https://pub.dev/packages/flutter_hooks)를 고려해 보세요.
+
+이를 권장하지 않는 이유 중 하나는 이런 상태가 대개 특정 라우트에 한정되기 때문입니다.  
+그렇지 않으면 새 페이지가 이전 페이지의 상태를 덮어써서
+앱의 뒤로 가기 버튼이 제대로 동작하지 않을 수 있습니다.
+
+예를 들어 현재 선택된 `book`을 provider에 저장한다고 해 봅시다.
+
+```dart
+final selectedBookProvider = StateProvider<String?>((ref) => null);
+```
+이때 내비게이션 기록이 다음과 같다면 문제가 생길 수 있습니다.
+```
+/books
+/books/42
+/books/21
+```
+
+이 상황에서 뒤로 가기 버튼을 누르면 `/books/42`로 돌아가기를 기대합니다.
+하지만 선택된 책을 `selectedBookProvider`에 저장했다면
+선택된 ID가 이전 값으로 되돌아가지 않아 계속 `/books/21`이 표시됩니다.
+
+## provider를 초기화하는 동안 부수 효과를 일으키지 마세요 {#dont-perform-side-effects-during-the-initialization-of-a-provider}
+
+provider는 일반적으로 "읽기" 작업을 표현하는 데 사용해야 합니다.
+폼 제출 같은 "쓰기" 작업에 사용해서는 안 됩니다.
+
+이런 작업에 provider를 사용하면, 이전에 부수 효과가 실행되었다는 이유로
+새 부수 효과를 건너뛰는 등 예기치 않은 동작이 발생할 수 있습니다.
+
+부수 효과의 로딩/오류 상태를 다루는 방법을 찾고 있다면 <Link documentID="concepts2/mutations"/>를
+참고하세요.
+
+**하지 말아야 할 것**:
+
+```dart
+final submitProvider = FutureProvider((ref) async {
+  final formState = ref.watch(formState);
+
+  // 나쁜 예: provider를 "쓰기" 작업에 사용해서는 안 됩니다.
+  return http.post('https://my-api.com', body: formState.toJson());
+});
+```
+
+## ref.watch/read/listen(및 비슷한 API)에는 정적으로 알 수 있는 provider를 사용하는 것이 좋습니다 {#prefer-refwatchreadlisten-and-similar-apis-with-statically-known-providers}
+
+Riverpod은 (`riverpod_lint`를 통해) 린트 규칙을 활성화할 것을 강력히 권장합니다.  
+하지만 린트가 제대로 동작하려면 코드를 정적으로 분석할 수 있는
+형태로 작성해야 합니다.
+
+그렇지 않으면 버그를 찾기 어려워지거나
+린트가 잘못된 경고(false positive)를 낼 수 있습니다.
+
+**해야 할 것**:
+
+```dart
+final provider = Provider((ref) => 42);
+
+...
+
+// provider를 정적으로 알 수 있으므로 괜찮습니다
+ref.watch(provider);
+```
+
+**하지 말아야 할 것**:
+
+```dart
+class Example extends ConsumerWidget {
+  Example({required this.provider});
+  final Provider<int> provider;
+
+  @override
+  Widget build(context, ref) {
+    // 나쁜 예: 정적 분석으로는 `provider`가 무엇인지 알 수 없습니다
+    ref.watch(provider);
+  }
+}
+```
+
+## provider를 동적으로 생성하는 것을 피하세요 {#avoid-dynamically-creating-providers}
+
+provider는 반드시 최상위(top-level) final 변수여야 합니다.
+
+**해야 할 것**:
+
+```dart
+final provider = Provider<String>((ref) => 'Hello world');
+```
+
+**하지 말아야 할 것**:
+
+```dart
+class Example {
+  // 지원하지 않는 사용법입니다. 메모리 누수와 예기치 않은 동작이 생길 수 있습니다.
+  final provider = Provider<String>((ref) => 'Hello world');
+}
+```
+
+:::info
+provider를 static final 변수로 만드는 것은 허용되지만,
+코드 생성기에서는 지원하지 않습니다.
+:::

@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import 'package:devtools_app_shared/ui.dart';
 import 'package:devtools_app_shared/ui.dart' as devtools_shared_ui;
+import 'package:devtools_app_shared/ui.dart';
 import 'package:devtools_app_shared/utils.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 // ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
+import 'package:material_ui/material_ui.dart';
 
 import 'elements.dart';
 import 'frames.dart';
@@ -267,7 +267,12 @@ class ProviderViewer extends StatelessWidget {
                 const InspectorSettingsButton(),
               ],
             ),
-            Expanded(child: Inspector(object: element.state.state)),
+            Expanded(
+              child: Inspector(
+                key: ValueKey(element.provider.elementId),
+                object: element.state.state,
+              ),
+            ),
           ],
         ),
       ),
@@ -287,7 +292,10 @@ class ProviderViewer extends StatelessWidget {
         content: Material(
           child: Padding(
             padding: const .symmetric(vertical: 8),
-            child: Inspector(object: notifier.state),
+            child: Inspector(
+              key: ValueKey(element.provider.elementId),
+              object: notifier.state,
+            ),
           ),
         ),
       );
@@ -366,6 +374,7 @@ class _ProviderPickerPanel extends HookConsumerWidget {
             Expanded(
               child: ProviderList(
                 originStates: originStates,
+                showChanges: ref.watch(timeTravelProvider).value ?? false,
                 onSelected: onSelected,
                 selectedId: selectedId,
               ),

@@ -711,7 +711,7 @@ RootCachedObject(
     required String path,
   }) =>
       """
-$mapSymbol['$path'] = RiverpodDevtool.instance.cache($valueSymbol);
+$mapSymbol['$path'] = RiverpodDevtool.instance.cacheFrame($valueSymbol);
 """;
 }
 

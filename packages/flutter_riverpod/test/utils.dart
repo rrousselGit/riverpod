@@ -105,3 +105,17 @@ VerifyOnly get verifyOnly {
     return result;
   };
 }
+
+class DeferredNotifier<StateT> extends Notifier<StateT> {
+  DeferredNotifier(this._build);
+
+  final StateT Function(Ref ref, DeferredNotifier<StateT> self) _build;
+
+  @override
+  Ref get ref;
+
+  @override
+  StateT build() {
+    return _build(ref, this);
+  }
+}
