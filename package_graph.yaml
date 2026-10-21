@@ -53,7 +53,7 @@ packages:
   devtool_debug_app:
     path: other_projects/devtool_debug_app
     codegen: true
-    test: none
+    test: flutter
     dependencies: [flutter_riverpod, hooks_riverpod, riverpod, riverpod_annotation]
     dev_dependencies: [riverpod_generator]
     dependency_overrides: []
@@ -173,7 +173,7 @@ packages:
   riverpod_analyzer_utils:
     path: packages/riverpod_analyzer_utils
     codegen: true
-    test: none
+    test: dart
     dependencies: []
     dev_dependencies: [lint_visitor_generator]
     dependency_overrides: []

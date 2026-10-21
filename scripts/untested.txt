@@ -17,7 +17,6 @@ packages/riverpod_analyzer_utils/lib/src/analyzer_utils.dart
 packages/riverpod_analyzer_utils/lib/src/argument_list_utils.dart
 packages/riverpod_analyzer_utils/lib/src/build_yaml.dart
 packages/riverpod_analyzer_utils/lib/src/errors.dart
-packages/riverpod_analyzer_utils/lib/src/nodes.dart
 packages/riverpod_analyzer_utils/lib/src/nodes/annotation.dart
 packages/riverpod_analyzer_utils/lib/src/nodes/dependencies.dart
 packages/riverpod_analyzer_utils/lib/src/nodes/generated_providers/function.dart
