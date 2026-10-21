@@ -42,7 +42,10 @@ jobs:
         with:
           channel: master
           cache: true
-      - run: scripts/check.sh format analyze legacy
+      # The token lets scripts/ignores.sh read the state of the linked issues.
+      - run: scripts/check.sh format analyze legacy ignores
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   tested:
     name: Every lib/ file has a test, updated with it, and test/src/ matches lib/src/
