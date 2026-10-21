@@ -1,6 +1,8 @@
 // Runs the generator in-process on test/integration, so that its coverage is
 // collected, and checks it produces the checked-in .g.dart files.
 @Tags(['golden'])
+// Resolving every fixture takes over 30s on CI, with coverage.
+@Timeout.factor(4)
 library;
 
 import 'dart:io';
