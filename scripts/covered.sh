@@ -89,8 +89,10 @@ for package in "$@"; do
   # lcov paths are either absolute or relative to the package; both become
   # relative to the repo root. A file may be listed more than once (one per
   # isolate), so a line is covered if any listing hit it.
+  # The report is told apart by name, as NR == FNR would also match the
+  # changed lines if it were empty.
   report="$(awk -F '\t' -v root="$ROOT/" -v package="$package/" '
-    NR == FNR {
+    FILENAME == ARGV[1] {
       if ($0 ~ /^SF:/) {
         file = substr($0, 4)
         if (index(file, root) == 1) file = substr(file, length(root) + 1)
