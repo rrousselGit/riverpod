@@ -23,6 +23,7 @@ ignore:
   - "packages/riverpod_cli"
   - "packages/riverpod_generator"
   - "packages/riverpod_lint"
+  - "packages/internal_lint"
 
 comment:
   layout: "reach,diff,flags,tree"

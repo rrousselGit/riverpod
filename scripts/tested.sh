@@ -46,16 +46,7 @@ set -- $paths
 validate_packages "$@"
 cd "$ROOT" || exit 1
 
-if ! git rev-parse --verify --quiet "$base" >/dev/null; then
-  case "$base" in
-    origin/*) git fetch --no-tags origin "${base#origin/}:refs/remotes/$base" || exit 1 ;;
-    *) die "ref '$base' does not exist" ;;
-  esac
-fi
-# Compare against the fork point, so commits that landed on the base since
-# are not mistaken for changes of this branch. Shallow CI clones may not have
-# it, in which case the base itself is the best guess.
-from="$(git merge-base "$base" HEAD 2>/dev/null)" || from="$base"
+from="$(fork_point "$base")" || exit
 
 # "<status>\t<path>" of every changed file, untracked ones as added.
 changes="$(
@@ -82,40 +73,6 @@ in_selected_lib() {
       if (owner != "" && (owner in want)) print $0 "\t" owner
     }
   '
-}
-
-is_generated() {
-  case "$1" in *.g.dart|*.freezed.dart) return 0 ;; esac
-  head -n 5 "$1" 2>/dev/null | grep -q 'GENERATED'
-}
-
-# Example packages: examples/*, any package named example, and the other
-# non-library projects (benchmarks, website, other_projects/*).
-is_example() {
-  case "$1" in
-    examples/*|*/example|example|benchmarks|website|other_projects/*) return 0 ;;
-  esac
-  return 1
-}
-
-# Whether the file only holds directives (export, import, library, part),
-# optionally annotated, like the barrel files that re-export lib/src.
-is_directives_only() {
-  awk '
-    { sub(/\/\/.*/, ""); code = code " " $0 }
-    END {
-      n = split(code, statements, ";")
-      for (k = 1; k <= n; k++) {
-        st = statements[k]
-        gsub(/^[ \t]+|[ \t]+$/, "", st)
-        # Strips leading annotations, such as @Deprecated(...).
-        while (match(st, /^@[A-Za-z_.]+(\([^)]*\))?[ \t]*/)) st = substr(st, RLENGTH + 1)
-        if (st == "") continue
-        if (st ~ /^part[ \t]+of[ \t]/) exit 1
-        if (st !~ /^(export|import|library|part)([^A-Za-z0-9_$]|$)/) exit 1
-      }
-    }
-  ' "$1"
 }
 
 lib_changes="$(printf '%s\n' "$changes" | in_selected_lib "$@")"

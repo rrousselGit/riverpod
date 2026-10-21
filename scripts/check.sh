@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Runs every check CI runs, by calling the smaller scripts in this folder.
-# CI only calls this, so a local pass means a CI pass.
+# CI only calls this, so a local pass means a CI pass. Locally, it also checks
+# that the tests cover every changed lib/ line, which CI leaves to Codecov.
 #
 # Usage: scripts/check.sh [options] [step...]
 #
@@ -9,7 +10,8 @@
 #   generate    scripts/generate.sh --check    generated code is current
 #   format      scripts/format.sh
 #   analyze     scripts/analyze.sh, per package
-#   test        scripts/test.sh, per package
+#   test        scripts/test.sh --coverage, per package, followed by
+#               scripts/covered.sh: every changed lib/ line is covered
 #   changelog   scripts/changelog.sh
 #   tested      scripts/tested.sh              every lib/**/x.dart has a
 #                                              test/**/x_test.dart, changed
@@ -28,15 +30,18 @@
 #                       format, analyze, test and tested.
 #   -j, --jobs N        Max parallel tasks (default: CPU count; or CHECK_JOBS).
 #   --fix               graph, generate, format: fix instead of failing.
-#   --coverage          Collect test coverage (CI uses this).
+#   --no-coverage       Skip collecting test coverage, and so the check
+#                       that the tests cover every changed lib/ line.
+#   --no-coverage-check Collect test coverage, but skip that check (CI uses
+#                       this, as Codecov checks coverage there).
 #   --shard I/N         Only the I-th of N slices of the analyze/test tasks
 #                       (used to split CI across machines).
-#   --base REF          Base ref of changelog and tested (default:
-#                       origin/master).
+#   --base REF          Base ref of changelog, tested and coverage
+#                       (default: origin/master).
 #   -h, --help          Show this help.
 #
 # Examples:
-#   scripts/check.sh                                 # everything, like CI
+#   scripts/check.sh                                 # everything CI runs, and more
 #   scripts/check.sh analyze test -p packages/riverpod
 #   scripts/check.sh graph generate format --fix     # fix what can be fixed
 
@@ -49,7 +54,7 @@ set -uo pipefail
 steps=""
 selected=""
 fix=0
-coverage=""
+coverage=1
 shard=""
 base="origin/master"
 while [ $# -gt 0 ]; do
@@ -58,7 +63,8 @@ while [ $# -gt 0 ]; do
                   selected="$selected $(normalize "$2")"; shift 2 ;;
     -j|--jobs)    [ $# -ge 2 ] || die "$1 needs a number"; POOL_JOBS="$2"; shift 2 ;;
     --fix)        fix=1; shift ;;
-    --coverage)   coverage="--coverage"; shift ;;
+    --no-coverage) coverage=0; shift ;;
+    --no-coverage-check) [ "$coverage" = 0 ] || coverage=collect; shift ;;
     --shard)      [ $# -ge 2 ] || die "$1 needs I/N"; shard="$2"; shift 2 ;;
     --base)       [ $# -ge 2 ] || die "$1 needs a ref"; base="$2"; shift 2 ;;
     -h|--help)    usage; exit 0 ;;
@@ -104,7 +110,11 @@ if has_step graph || has_step generate || has_step format || has_step analyze ||
    has_step tested || has_step legacy; then
   ensure_deps
 fi
-if has_step test && [ -n "$coverage" ]; then ensure_pub_global coverage coverage; fi
+if has_step test && [ "$coverage" != 0 ]; then ensure_pub_global coverage coverage; fi
+if has_step test && [ "$coverage" = 1 ]; then
+  # Fetches the base once here, rather than racing from parallel covered.sh.
+  fork_point "$base" >/dev/null || exit
+fi
 
 if has_step graph; then
   echo "==> graph"
@@ -122,7 +132,11 @@ if [ -n "$pool_steps" ]; then
   # Queued slowest-first: tests, then analysis, then the quick checks.
   if has_step test; then
     for p in $(ci_tested_packages | only_selected | only_shard); do
-      pool_add "test $p" "scripts/test.sh ${coverage:+$coverage }$p"
+      case "$coverage" in
+        1)       pool_add "test $p" "scripts/test.sh --coverage $p && scripts/covered.sh --base $base $p" ;;
+        collect) pool_add "test $p" "scripts/test.sh --coverage $p" ;;
+        *)       pool_add "test $p" "scripts/test.sh $p" ;;
+      esac
     done
   fi
   if has_step analyze; then

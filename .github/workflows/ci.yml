@@ -34,7 +34,7 @@ jobs:
       - run: scripts/check.sh graph generate
 
   analyze:
-    name: Format, analyze & legacy APIs
+    name: Format & analyze
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -72,7 +72,8 @@ jobs:
         with:
           channel: master
           cache: true
-      - run: scripts/check.sh test --coverage --shard ${{ matrix.shard }}/3
+      # Codecov checks the coverage collected here.
+      - run: scripts/check.sh test --no-coverage-check --shard ${{ matrix.shard }}/3
       - uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

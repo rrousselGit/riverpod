@@ -47,6 +47,56 @@ ensure_pub_global() {
   dart pub global activate "$@" >/dev/null || die "could not activate $name"
 }
 
+# Prints the commit the current branch forked from REF, fetching REF first if
+# it is a missing origin/* ref. Comparing against the fork point means commits
+# that landed on REF since are not mistaken for changes of this branch.
+# Shallow CI clones may not have it, in which case REF itself is the best
+# guess.
+fork_point() {
+  if ! git -C "$ROOT" rev-parse --verify --quiet "$1" >/dev/null; then
+    case "$1" in
+      origin/*) git -C "$ROOT" fetch --no-tags origin "${1#origin/}:refs/remotes/$1" >&2 || exit 1 ;;
+      *) die "ref '$1' does not exist" ;;
+    esac
+  fi
+  git -C "$ROOT" merge-base "$1" HEAD 2>/dev/null || echo "$1"
+}
+
+# Generated Dart files: *.g.dart, *.freezed.dart, or a "GENERATED" header.
+is_generated() {
+  case "$1" in *.g.dart|*.freezed.dart) return 0 ;; esac
+  head -n 5 "$1" 2>/dev/null | grep -q 'GENERATED'
+}
+
+# Example packages: examples/*, any package named example, and the other
+# non-library projects (benchmarks, website, other_projects/*).
+is_example() {
+  case "$1" in
+    examples/*|*/example|example|benchmarks|website|other_projects/*) return 0 ;;
+  esac
+  return 1
+}
+
+# Whether the file only holds directives (export, import, library, part),
+# optionally annotated, like the barrel files that re-export lib/src.
+is_directives_only() {
+  awk '
+    { sub(/\/\/.*/, ""); code = code " " $0 }
+    END {
+      n = split(code, statements, ";")
+      for (k = 1; k <= n; k++) {
+        st = statements[k]
+        gsub(/^[ \t]+|[ \t]+$/, "", st)
+        # Strips leading annotations, such as @Deprecated(...).
+        while (match(st, /^@[A-Za-z_.]+(\([^)]*\))?[ \t]*/)) st = substr(st, RLENGTH + 1)
+        if (st == "") continue
+        if (st ~ /^part[ \t]+of[ \t]/) exit 1
+        if (st !~ /^(export|import|library|part)([^A-Za-z0-9_$]|$)/) exit 1
+      }
+    }
+  ' "$1"
+}
+
 # ---------------------------------------------------------------------------
 # package_graph.yaml readers. The file is generated with a fixed layout (and
 # scripts/graph.sh --check guarantees it is current), so line matching is safe.
