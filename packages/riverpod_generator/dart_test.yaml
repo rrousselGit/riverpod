@@ -1,0 +1,11 @@
+tags:
+  # test/golden_test.dart. A plain `dart test` skips it.
+  golden:
+    skip: Run it with `dart test -P check` or scripts/test.sh.
+
+presets:
+  # Passed by scripts/test.sh, so CI and scripts/check.sh run every test.
+  check:
+    tags:
+      golden:
+        skip: false
