@@ -68,11 +68,14 @@ jobs:
         shard: [1, 2, 3]
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - uses: subosito/flutter-action@v2
         with:
           channel: master
           cache: true
-      - run: scripts/check.sh test --coverage --shard ${{ matrix.shard }}/3
+      # --base HEAD^1: see the tested job.
+      - run: scripts/check.sh test --base HEAD^1 --shard ${{ matrix.shard }}/3
       - uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
