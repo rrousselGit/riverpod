@@ -27,6 +27,21 @@ allowed:
   - packages/riverpod/test/src/providers/legacy/**
   - packages/flutter_riverpod/test/src/providers/legacy/**
   - "{packages/riverpod,packages/flutter_riverpod,packages/hooks_riverpod}/pubspec.yaml"
+  # The libraries that wire the legacy providers into the rest of the API:
+  # their `.family`/`.autoDispose` builders and the internal exports.
+  - packages/riverpod/lib/src/_internals.dart
+  - packages/riverpod/lib/src/builder.dart
+  - packages/riverpod/lib/src/internals.dart
+  - packages/flutter_riverpod/lib/misc.dart
+  - packages/flutter_riverpod/lib/src/builders.dart
+  - packages/flutter_riverpod/lib/src/internals.dart
+  - packages/hooks_riverpod/lib/misc.dart
+  - packages/hooks_riverpod/lib/src/internals.dart
+  - packages/riverpod_annotation/lib/src/internal.dart
+  # The unsupported_provider_value lint rejects legacy notifiers.
+  - packages/riverpod_lint/README.md
+  - packages/riverpod_lint_flutter_test/test/lints/unsupported_provider_value.dart
+  - packages/riverpod_lint_flutter_test/test/lints/unsupported_provider_value.g.dart
   - "**/CHANGELOG.md"
   - website/docs/migration/**
   - website/docs/3.0_migration.mdx
@@ -36,56 +51,6 @@ allowed:
 # this list: use Notifier/NotifierProvider instead. Remove an entry once its
 # file no longer uses legacy APIs (the checks fail until you do).
 baseline:
-  - examples/todos/lib/main.dart
-  - packages/flutter_riverpod/example/lib/main.dart
-  - packages/flutter_riverpod/lib/misc.dart
-  - packages/flutter_riverpod/lib/src/builders.dart
-  - packages/flutter_riverpod/lib/src/internals.dart
-  - packages/flutter_riverpod/test/auto_dispose_change_notifier_provider_test.dart
-  - packages/flutter_riverpod/test/consumer_listen_test.dart
-  - packages/flutter_riverpod/test/framework_test.dart
-  - packages/flutter_riverpod/test/listen_test.dart
-  - packages/flutter_riverpod/test/provider_test.dart
-  - packages/flutter_riverpod/test/providers/change_notifier/auto_dispose_change_notifier_provider_test.dart
-  - packages/flutter_riverpod/test/providers/change_notifier/family_auto_dispose_change_notifier_provider_test.dart
-  - packages/flutter_riverpod/test/providers/change_notifier/family_change_notifier_provider_test.dart
-  - packages/flutter_riverpod/test/src/core/consumer_test.dart
-  - packages/flutter_riverpod/test/utils.dart
-  - packages/hooks_riverpod/example/lib/main.dart
-  - packages/hooks_riverpod/lib/misc.dart
-  - packages/hooks_riverpod/lib/src/internals.dart
-  - packages/hooks_riverpod/test/internal_test.dart
-  - packages/riverpod/lib/src/_internals.dart
-  - packages/riverpod/lib/src/builder.dart
-  - packages/riverpod/lib/src/core/provider/notifier_provider.dart
-  - packages/riverpod/lib/src/framework.dart
-  - packages/riverpod/lib/src/internals.dart
-  - packages/riverpod/lib/src/providers/provider.dart
-  - packages/riverpod/test/src/builder_test.dart
-  - packages/riverpod/test/src/core/element_test.dart
-  - packages/riverpod/test/src/core/family_test.dart
-  - packages/riverpod/test/src/core/foundation_test.dart
-  - packages/riverpod/test/src/core/modifiers/select_async_test.dart
-  - packages/riverpod/test/src/core/modifiers/select_test.dart
-  - packages/riverpod/test/src/core/provider_container_test.dart
-  - packages/riverpod/test/src/core/provider_subscription_test.dart
-  - packages/riverpod/test/src/core/ref_test.dart
-  - packages/riverpod/test/src/matrix.dart
-  - packages/riverpod/test/src/matrix/async_notifier_provider.dart
-  - packages/riverpod/test/src/matrix/notifier_provider.dart
-  - packages/riverpod/test/src/matrix/stream_notifier_provider.dart
-  - packages/riverpod/test/src/providers/async_notifier_test.dart
-  - packages/riverpod/test/src/providers/future_provider_test.dart
-  - packages/riverpod/test/src/providers/notifier_test.dart
-  - packages/riverpod/test/src/providers/provider_test.dart
-  - packages/riverpod/test/src/providers/stream_notifier_test.dart
-  - packages/riverpod/test/src/providers/stream_provider_test.dart
-  - packages/riverpod/test/src/utils.dart
-  - packages/riverpod_annotation/lib/src/internal.dart
-  - packages/riverpod_lint/README.md
-  - packages/riverpod_lint_flutter_test/test/lints/unsupported_provider_value.dart
-  - packages/riverpod_lint_flutter_test/test/lints/unsupported_provider_value.g.dart
-  - website/docs/concepts2/provider_observer_logger.dart
   - website/docs/from_provider/provider_vs_riverpod.mdx
   - website/docs/from_provider/quickstart.mdx
   - website/docs/root/do_dont.mdx

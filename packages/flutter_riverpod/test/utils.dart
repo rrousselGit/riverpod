@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/experimental/mutation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 
 class _Sentinel {
@@ -59,10 +58,15 @@ class ErrorListener extends Mock {
   void call(Object? error, StackTrace? stackTrace);
 }
 
-class Counter extends StateNotifier<int> {
-  Counter() : super(0);
+/// A [Notifier] whose state can be freely updated from outside, using
+/// `container.read(provider.notifier).state = value`.
+class MutableNotifier<StateT> extends Notifier<StateT> {
+  MutableNotifier(this._initialState);
 
-  void increment() => state++;
+  final StateT _initialState;
+
+  @override
+  StateT build() => _initialState;
 }
 
 class Listener<StateT> extends Mock {

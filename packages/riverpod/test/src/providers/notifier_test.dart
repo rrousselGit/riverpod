@@ -2,7 +2,6 @@
 
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart' show UnmountedRefException;
 import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
@@ -212,7 +211,7 @@ void main() {
     );
 
     test('calls notifier.build on every watch update', () async {
-      final dep = StateProvider((ref) => 0);
+      final dep = NotifierProvider<CounterNotifier, int>(CounterNotifier.new);
       final provider = factory.simpleTestProvider((ref, _) {
         return ref.watch(dep);
       });
@@ -223,7 +222,7 @@ void main() {
 
       verifyOnly(listener, listener(null, 0));
 
-      container.read(dep.notifier).update((state) => state + 1);
+      container.read(dep.notifier).increment();
 
       verifyNoMoreInteractions(listener);
 
@@ -404,7 +403,7 @@ void main() {
       test('can remove the data listener', () async {
         final container = ProviderContainer.test();
         final listener = Listener<int>();
-        late final RemoveListener remove;
+        late final void Function() remove;
         final provider = factory.simpleTestProvider<int>((ref, self) {
           remove = self.listenSelf(listener.call);
           return 0;

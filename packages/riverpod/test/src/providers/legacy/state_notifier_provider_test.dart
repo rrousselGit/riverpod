@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/builder.dart';
 import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
 import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:test/test.dart';
@@ -13,6 +14,31 @@ import '../../utils.dart';
 
 void main() {
   group('StateNotifierProvider', () {
+    test('auto dispose can dirty providers', () async {
+      final container = ProviderContainer.test();
+      final counter = Counter();
+      final provider = StateNotifierProvider<Counter, int>((_) => counter);
+      var didDispose = false;
+      final provider2 = Provider.autoDispose((ref) {
+        ref.onDispose(() {
+          didDispose = true;
+          counter.increment();
+        });
+      });
+
+      container.read(provider);
+
+      final sub = container.listen<void>(provider2, (_, _) {});
+      sub.close();
+
+      expect(counter.state, 0);
+
+      await container.pump();
+
+      expect(didDispose, true);
+      expect(counter.state, 1);
+    });
+
     test('Guards StateNotifier.dispose', () {
       final notifier = DelegateNotifier(
         onDispose: () => throw StateError('called'),
@@ -920,6 +946,68 @@ void main() {
       expect(family(1), family(1));
     });
   });
+
+  test('builders', () {
+    // ignore: prefer_const_constructors
+    StateNotifierProviderFamilyBuilder();
+    // ignore: prefer_const_constructors
+    AutoDisposeStateNotifierProviderBuilder();
+    // ignore: prefer_const_constructors
+    AutoDisposeStateNotifierProviderFamilyBuilder();
+
+    expect(
+      StateNotifierProvider.family,
+      const StateNotifierProviderFamilyBuilder(),
+    );
+    expect(
+      StateNotifierProvider.autoDispose,
+      const AutoDisposeStateNotifierProviderBuilder(),
+    );
+    expect(
+      StateNotifierProvider.autoDispose.family,
+      StateNotifierProvider.family.autoDispose,
+    );
+    expect(
+      StateNotifierProvider<StateController<int>, int>(
+        (ref) => StateController(42),
+        name: 'foo',
+      ),
+      isA<StateNotifierProvider<StateController<int>, int>>().having(
+        (s) => s.name,
+        'name',
+        'foo',
+      ),
+    );
+  });
+
+  test('isAutoDispose', () {
+    expect(
+      StateNotifierProvider<StateController<int>, int>(
+        (ref) => StateController(0),
+      ).isAutoDispose,
+      isFalse,
+    );
+    expect(
+      StateNotifierProvider<StateController<int>, int>(
+        (ref) => StateController(0),
+        isAutoDispose: true,
+      ).isAutoDispose,
+      isTrue,
+    );
+    expect(
+      StateNotifierProvider.family<StateController<int>, int, Object?>(
+        (ref, arg) => StateController(0),
+      ).isAutoDispose,
+      isFalse,
+    );
+    expect(
+      StateNotifierProvider.family<StateController<int>, int, Object?>(
+        (ref, arg) => StateController(0),
+        isAutoDispose: true,
+      ).isAutoDispose,
+      isTrue,
+    );
+  });
 }
 
 class TestNotifier extends StateNotifier<int> {
@@ -943,4 +1031,15 @@ class DelegateNotifier extends StateNotifier<int> {
     onDispose?.call();
     super.dispose();
   }
+}
+
+class Counter extends StateNotifier<int> {
+  Counter([super._state = 0]);
+
+  void increment() => state++;
+
+  @override
+  int get state => super.state;
+  @override
+  set state(int value) => super.state = value;
 }

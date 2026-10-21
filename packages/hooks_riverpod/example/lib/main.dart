@@ -1,5 +1,4 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:hooks_riverpod/legacy.dart';
 import 'package:material_ui/material_ui.dart';
 
 void main() {
@@ -11,21 +10,22 @@ void main() {
   );
 }
 
-/// A provider that creates and listen to a [StateNotifier].
+/// A provider that creates and listen to a [Notifier].
 ///
 /// Providers are declared as global variables.
 /// This does not hinder testability, as the state of a provider is instead
 /// stored inside a [ProviderScope].
-final counterProvider = StateNotifierProvider<Counter, int>((_) => Counter());
+final counterProvider = NotifierProvider<Counter, int>(Counter.new);
 
-/// A simple [StateNotifier] that implements a counter.
+/// A simple [Notifier] that implements a counter.
 ///
-/// It doesn't have to be a [StateNotifier], and could be anything else such as:
-/// - [ChangeNotifier], with [ChangeNotifierProvider]
+/// It doesn't have to be a [Notifier], and could be anything else such as:
+/// - [Future], with [FutureProvider]
 /// - [Stream], with [StreamProvider]
 /// ...
-class Counter extends StateNotifier<int> {
-  Counter() : super(0);
+class Counter extends Notifier<int> {
+  @override
+  int build() => 0;
 
   void increment() => state++;
 }

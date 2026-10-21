@@ -150,7 +150,7 @@ class DeferredAsyncNotifier<ValueT> extends AsyncNotifier<ValueT>
   FutureOr<ValueT> build() => _create(ref, this);
 
   @override
-  RemoveListener listenSelf(
+  void Function() listenSelf(
     void Function(AsyncValue<ValueT>? previous, AsyncValue<ValueT> next)
     listener, {
     void Function(Object error, StackTrace stackTrace)? onError,

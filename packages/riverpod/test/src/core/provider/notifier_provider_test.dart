@@ -587,6 +587,28 @@ void main() {
       });
     });
   });
+
+  group('AnyNotifier.listenSelf', () {
+    test('returns a function that removes the listener', () {
+      final container = ProviderContainer.test();
+      final provider = NotifierProvider<DeferredNotifier<int>, int>(
+        () => DeferredNotifier((ref, self) => 0),
+      );
+      container.listen(provider, (previous, next) {});
+      final notifier = container.read(provider.notifier);
+      final values = <int>[];
+
+      final remove = notifier.listenSelf((previous, next) => values.add(next));
+      notifier.state = 1;
+
+      expect(values, [1]);
+
+      remove();
+      notifier.state = 2;
+
+      expect(values, [1]);
+    });
+  });
 }
 
 // ignore: unreachable_from_main, inference test

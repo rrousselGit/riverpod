@@ -113,7 +113,7 @@ abstract class AnyNotifier<StateT, ValueT> {
   ///
   /// Returns a function which can be called to remove the listener.
   @protected
-  RemoveListener listenSelf(
+  void Function() listenSelf(
     void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {

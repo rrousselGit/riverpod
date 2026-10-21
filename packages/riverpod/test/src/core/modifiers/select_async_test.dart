@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
@@ -166,7 +165,7 @@ void main() {
 
   test('implements ProviderSubscription.read on AsyncData', () async {
     final container = ProviderContainer.test();
-    final dep = StateProvider((ref) => 0);
+    final dep = NotifierProvider<CounterNotifier, int>(CounterNotifier.new);
     final provider = FutureProvider((ref) async => ref.watch(dep));
 
     final sub = container.listen(
@@ -189,7 +188,7 @@ void main() {
 
   test('implements ProviderSubscription.read on AsyncError', () async {
     final container = ProviderContainer.test();
-    final dep = StateProvider((ref) => 0);
+    final dep = NotifierProvider<CounterNotifier, int>(CounterNotifier.new);
     final provider = FutureProvider<int>(
       (ref) => Future.error(ref.watch(dep)),
       retry: (_, _) => null,
@@ -215,7 +214,7 @@ void main() {
 
   test('when selector throws, returns a failing future', () async {
     final container = ProviderContainer.test();
-    final dep = StateProvider((ref) => 0);
+    final dep = NotifierProvider<CounterNotifier, int>(CounterNotifier.new);
     final provider = FutureProvider((ref) async => ref.watch(dep));
 
     final sub = container.listen<Future<Object?>>(
@@ -354,7 +353,7 @@ void main() {
   test('can watch async selectors', () async {
     final container = ProviderContainer.test();
     var buildCount = 0;
-    final dep = StateProvider((ref) => 0);
+    final dep = NotifierProvider<CounterNotifier, int>(CounterNotifier.new);
     final a = FutureProvider((ref) async => ref.watch(dep));
     final b = FutureProvider((ref) {
       buildCount++;
@@ -418,7 +417,7 @@ void main() {
   test('can watch async selectors (autoDispose)', () async {
     final container = ProviderContainer.test();
     var buildCount = 0;
-    final dep = StateProvider((ref) => 0);
+    final dep = NotifierProvider<CounterNotifier, int>(CounterNotifier.new);
     final a = FutureProvider.autoDispose((ref) async => ref.watch(dep));
     final b = FutureProvider.autoDispose((ref) {
       buildCount++;

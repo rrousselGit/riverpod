@@ -400,15 +400,15 @@ class Selector<InT, OutT> extends Mock {
   }
 }
 
-class Counter extends StateNotifier<int> {
-  Counter([super._state = 0]);
+class CounterNotifier extends Notifier<int> {
+  CounterNotifier([this._initialState = 0]);
+
+  final int _initialState;
+
+  @override
+  int build() => _initialState;
 
   void increment() => state++;
-
-  @override
-  int get state => super.state;
-  @override
-  set state(int value) => super.state = value;
 }
 
 List<Object> errorsOf(void Function() cb) {

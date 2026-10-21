@@ -389,7 +389,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// - [refresh], to forcefully re-evaluate a provider
   /// {@endtemplate}
   @experimental
-  RemoveListener onManualInvalidation(void Function() cb) {
+  void Function() onManualInvalidation(void Function() cb) {
     _throwIfInvalidUsage();
 
     final list = _onManualInvalidationListeners ??= [];
@@ -436,7 +436,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// See also:
   /// - [onRemoveListener], for when a listener is removed
   @override
-  RemoveListener onAddListener(void Function() cb) {
+  void Function() onAddListener(void Function() cb) {
     _throwIfInvalidUsage();
 
     final list = _onAddListeners ??= [];
@@ -452,7 +452,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// See also:
   /// - [onAddListener], for when a listener is added
   @override
-  RemoveListener onRemoveListener(void Function() cb) {
+  void Function() onRemoveListener(void Function() cb) {
     _throwIfInvalidUsage();
 
     final list = _onRemoveListeners ??= [];
@@ -481,7 +481,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// - [onDispose], a life-cycle for when a provider is disposed.
   /// - [onResume], a life-cycle for when the provider is listened to again.
   @override
-  RemoveListener onCancel(void Function() cb) {
+  void Function() onCancel(void Function() cb) {
     _throwIfInvalidUsage();
 
     final list = _onCancelListeners ??= [];
@@ -503,7 +503,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// - [onDispose], a life-cycle for when a provider is disposed.
   /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
   @override
-  RemoveListener onResume(void Function() cb) {
+  void Function() onResume(void Function() cb) {
     _throwIfInvalidUsage();
 
     final list = _onResumeListeners ??= [];
@@ -561,7 +561,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///   a [ProviderContainer] at once.
   /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
   @override
-  RemoveListener onDispose(void Function() listener) {
+  void Function() onDispose(void Function() listener) {
     _throwIfInvalidUsage();
 
     final list = _onDisposeListeners ??= [];
@@ -845,7 +845,7 @@ class $Ref<StateT, ValueT> extends Ref {
   /// As opposed to [listen], the listener will be called even if
   /// [ProviderElement.updateShouldNotify] returns false, meaning that the previous
   /// and new value can potentially be identical.
-  RemoveListener listenSelf(
+  void Function() listenSelf(
     void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {

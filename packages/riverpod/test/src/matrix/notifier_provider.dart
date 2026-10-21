@@ -110,7 +110,7 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>({
 
 abstract class TestNotifier<ValueT> implements $Notifier<ValueT> {
   @override
-  RemoveListener listenSelf(
+  void Function() listenSelf(
     void Function(ValueT? previous, ValueT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   });
@@ -130,7 +130,7 @@ class DeferredNotifier<ValueT> extends Notifier<ValueT>
   Ref get ref;
 
   @override
-  RemoveListener listenSelf(
+  void Function() listenSelf(
     void Function(ValueT? previous, ValueT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   });

@@ -1,5 +1,4 @@
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart' show ContainerReadElement;
 import 'package:test/test.dart';
@@ -182,8 +181,7 @@ void main() {
     });
 
     test('no longer call listeners anymore after close', () {
-      final counter = Counter();
-      final first = StateNotifierProvider<Counter, int>((ref) => counter);
+      final first = NotifierProvider<CounterNotifier, int>(CounterNotifier.new);
       final provider = Provider((ref) => ref.watch(first));
       final element = container.readProviderElement(provider);
 
@@ -194,7 +192,7 @@ void main() {
       expect(element.hasNonWeakListeners, true);
 
       sub.close();
-      counter.increment();
+      container.read(first.notifier).increment();
 
       expect(element.hasNonWeakListeners, false);
       verifyZeroInteractions(didChange);
@@ -226,22 +224,24 @@ void main() {
       );
 
       test('flushes the provider', () {
-        final counter = Counter();
-        final first = StateNotifierProvider<Counter, int>((ref) => counter);
+        final first = NotifierProvider<CounterNotifier, int>(
+          CounterNotifier.new,
+        );
         final provider = Provider((ref) => ref.watch(first));
 
         final sub = container.listen(provider, (_, _) {});
 
         expect(sub.read(), 0);
 
-        counter.increment();
+        container.read(first.notifier).increment();
 
         expect(sub.read(), 1);
       });
 
       test('flushes the selected provider', () {
-        final counter = Counter();
-        final first = StateNotifierProvider<Counter, int>((ref) => counter);
+        final first = NotifierProvider<CounterNotifier, int>(
+          CounterNotifier.new,
+        );
         final provider = Provider((ref) => ref.watch(first));
 
         final sub = container.listen(
@@ -251,7 +251,7 @@ void main() {
 
         expect(sub.read(), 0);
 
-        counter.increment();
+        container.read(first.notifier).increment();
 
         expect(sub.read(), 1);
       });

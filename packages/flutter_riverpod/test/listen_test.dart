@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart' hide Listener;
 import 'package:mockito/mockito.dart';
@@ -21,7 +20,9 @@ void main() {
     );
 
     testWidgets('listens to changes', (tester) async {
-      final provider = StateProvider((ref) => 0);
+      final provider = NotifierProvider<MutableNotifier<int>, int>(
+        () => MutableNotifier(0),
+      );
       final listener = Listener<int>();
 
       late WidgetRef ref;
@@ -49,7 +50,9 @@ void main() {
     });
 
     testWidgets('removes listeners on dispose', (tester) async {
-      final provider = StateProvider((ref) => 0);
+      final provider = NotifierProvider<MutableNotifier<int>, int>(
+        () => MutableNotifier(0),
+      );
       final listener = Listener<int>();
       final listener2 = Listener<int>();
 
@@ -78,7 +81,9 @@ void main() {
     });
 
     testWidgets('supports fireImmediately', (tester) async {
-      final provider = StateProvider((ref) => 0);
+      final provider = NotifierProvider<MutableNotifier<int>, int>(
+        () => MutableNotifier(0),
+      );
       final listener = Listener<int>();
 
       late WidgetRef ref;
@@ -101,7 +106,9 @@ void main() {
     testWidgets('can use ProviderSubscription.read to get the current value', (
       tester,
     ) async {
-      final provider = StateProvider((ref) => 0);
+      final provider = NotifierProvider<MutableNotifier<int>, int>(
+        () => MutableNotifier(0),
+      );
 
       late WidgetRef ref;
       await tester.pumpWidget(
@@ -125,7 +132,9 @@ void main() {
     });
 
     testWidgets('can cancel the listener early', (tester) async {
-      final provider = StateProvider((ref) => 0);
+      final provider = NotifierProvider<MutableNotifier<int>, int>(
+        () => MutableNotifier(0),
+      );
       final listener = Listener<int>();
 
       late WidgetRef ref;
@@ -154,7 +163,9 @@ void main() {
     testWidgets('removes listeners on dispose even if State.dispose throws', (
       tester,
     ) async {
-      final provider = StateProvider((ref) => 0);
+      final provider = NotifierProvider<MutableNotifier<int>, int>(
+        () => MutableNotifier(0),
+      );
       final listener = Listener<int>();
 
       await tester.pumpWidget(
@@ -197,8 +208,8 @@ void main() {
   group('WidgetRef.listen', () {
     testWidgets('expose previous and new value on change', (tester) async {
       final container = ProviderContainer.test();
-      final dep = StateNotifierProvider<StateController<int>, int>(
-        (ref) => StateController(0),
+      final dep = NotifierProvider<MutableNotifier<int>, int>(
+        () => MutableNotifier(0),
       );
       final listener = Listener<int>();
 
@@ -223,8 +234,8 @@ void main() {
       'when using selectors, `previous` is the latest notification instead of latest event',
       (tester) async {
         final container = ProviderContainer.test();
-        final dep = StateNotifierProvider<StateController<int>, int>(
-          (ref) => StateController(0),
+        final dep = NotifierProvider<MutableNotifier<int>, int>(
+          () => MutableNotifier(0),
         );
         final listener = Listener<bool>();
 
@@ -256,7 +267,9 @@ void main() {
     testWidgetsWithStubbedFlutterErrors(
       'when no onError is specified, fallbacks to handleUncaughtError',
       (tester, errors) async {
-        final isErrored = StateProvider((ref) => false);
+        final isErrored = NotifierProvider<MutableNotifier<bool>, bool>(
+          () => MutableNotifier(false),
+        );
         final dep = Provider<int>((ref) {
           if (ref.watch(isErrored)) throw UnimplementedError();
           return 0;
@@ -292,7 +305,9 @@ void main() {
     testWidgetsWithStubbedFlutterErrors(
       'when no onError is specified, selectors fallbacks to handleUncaughtError',
       (tester, errors) async {
-        final isErrored = StateProvider((ref) => false);
+        final isErrored = NotifierProvider<MutableNotifier<bool>, bool>(
+          () => MutableNotifier(false),
+        );
         final dep = Provider<int>((ref) {
           if (ref.watch(isErrored)) throw UnimplementedError();
           return 0;
@@ -326,7 +341,9 @@ void main() {
     );
 
     testWidgets('when rebuild throws, calls onError', (tester) async {
-      final dep = StateProvider((ref) => 0);
+      final dep = NotifierProvider<MutableNotifier<int>, int>(
+        () => MutableNotifier(0),
+      );
       final provider = Provider((ref) {
         if (ref.watch(dep) != 0) {
           throw UnimplementedError();
@@ -363,7 +380,9 @@ void main() {
     testWidgets('when rebuild throws on selector, calls onError', (
       tester,
     ) async {
-      final dep = StateProvider((ref) => 0);
+      final dep = NotifierProvider<MutableNotifier<int>, int>(
+        () => MutableNotifier(0),
+      );
       var buildCount = 0;
       final provider = Provider((ref) {
         buildCount++;

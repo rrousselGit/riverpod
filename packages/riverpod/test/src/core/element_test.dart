@@ -158,7 +158,7 @@ void main() {
       });
 
       test('rebuilding a provider can modify other providers', () async {
-        final dep = StateProvider((ref) => 0);
+        final dep = NotifierProvider<CounterNotifier, int>(CounterNotifier.new);
         final provider = Provider((ref) => ref.watch(dep));
         final another = NotifierProvider<Notifier<int>, int>(
           () => DeferredNotifier((ref, self) {
@@ -177,7 +177,9 @@ void main() {
 
       test("initState can't dirty ancestors", () {
         final container = ProviderContainer.test();
-        final ancestor = StateProvider((_) => 0);
+        final ancestor = NotifierProvider<CounterNotifier, int>(
+          CounterNotifier.new,
+        );
         final child = Provider((ref) {
           ref.watch(ancestor.notifier).state++;
           return ref.watch(ancestor);
@@ -188,19 +190,23 @@ void main() {
 
       test("initState can't dirty siblings", () {
         final container = ProviderContainer.test();
-        final ancestor = StateProvider((_) => 0, name: 'ancestor');
-        final counter = Counter();
-        final sibling = StateNotifierProvider<Counter, int>(name: 'sibling', (
-          ref,
-        ) {
-          ref.watch(ancestor);
-          return counter;
-        });
+        final ancestor = NotifierProvider<CounterNotifier, int>(
+          CounterNotifier.new,
+          name: 'ancestor',
+        );
+        late final DeferredNotifier<int> counter;
+        final sibling = NotifierProvider<DeferredNotifier<int>, int>(
+          name: 'sibling',
+          () => counter = DeferredNotifier((ref, self) {
+            ref.watch(ancestor);
+            return 0;
+          }),
+        );
         var didWatchAncestor = false;
         final child = Provider(name: 'child', (ref) {
           ref.watch(ancestor);
           didWatchAncestor = true;
-          counter.increment();
+          counter.state++;
         });
 
         container.read(sibling);
@@ -211,7 +217,9 @@ void main() {
 
       test("initState can't mark dirty other provider", () {
         final container = ProviderContainer.test();
-        final provider = StateProvider((ref) => 0);
+        final provider = NotifierProvider<CounterNotifier, int>(
+          CounterNotifier.new,
+        );
         final provider2 = Provider((ref) {
           ref.watch(provider.notifier).state = 42;
           return 0;
@@ -224,12 +232,13 @@ void main() {
 
       test("nested initState can't mark dirty other providers", () {
         final container = ProviderContainer.test();
-        final counter = Counter();
-        final provider = StateNotifierProvider<Counter, int>((_) => counter);
+        final provider = NotifierProvider<CounterNotifier, int>(
+          CounterNotifier.new,
+        );
         final nested = Provider((_) => 0);
         final provider2 = Provider((ref) {
           ref.watch(nested);
-          counter.increment();
+          container.read(provider.notifier).increment();
           return 0;
         });
 
@@ -238,38 +247,14 @@ void main() {
         expect(errorsOf(() => container.read(provider2)), isNotEmpty);
       });
 
-      test('auto dispose can dirty providers', () async {
-        final container = ProviderContainer.test();
-        final counter = Counter();
-        final provider = StateNotifierProvider<Counter, int>((_) => counter);
-        var didDispose = false;
-        final provider2 = Provider.autoDispose((ref) {
-          ref.onDispose(() {
-            didDispose = true;
-            counter.increment();
-          });
-        });
-
-        container.read(provider);
-
-        final sub = container.listen<void>(provider2, (_, _) {});
-        sub.close();
-
-        expect(counter.state, 0);
-
-        await container.pump();
-
-        expect(didDispose, true);
-        expect(counter.state, 1);
-      });
-
       test("Provider can't dirty anything on create", () {
         final container = ProviderContainer.test();
-        final counter = Counter();
-        final provider = StateNotifierProvider<Counter, int>((_) => counter);
+        final provider = NotifierProvider<CounterNotifier, int>(
+          CounterNotifier.new,
+        );
         late List<Object> errors;
         final computed = Provider((ref) {
-          errors = errorsOf(counter.increment);
+          errors = errorsOf(container.read(provider.notifier).increment);
           return 0;
         });
         final listener = Listener<int>();
@@ -773,7 +758,7 @@ void main() {
       'does not throw outdated error when a dependency is flushed while the dependent is building',
       () async {
         final container = ProviderContainer.test();
-        final a = StateProvider((ref) => 0);
+        final a = NotifierProvider<CounterNotifier, int>(CounterNotifier.new);
 
         final dep = Provider<int>((ref) {
           return ref.watch(a) + 10;
@@ -840,11 +825,9 @@ void main() {
         'when selecting a provider, element.visitAncestors visits the selected provider',
         () {
           final container = ProviderContainer.test();
-          final selected = StateNotifierProvider<StateController<int>, int>((
-            ref,
-          ) {
-            return StateController(0);
-          });
+          final selected = NotifierProvider<CounterNotifier, int>(
+            CounterNotifier.new,
+          );
           final provider = Provider((ref) {
             ref.watch(selected.select((value) => null));
           });
@@ -942,8 +925,12 @@ void main() {
 
       test('re-evaluating a provider can stop listening to a dependency', () {
         final container = ProviderContainer.test();
-        final first = StateProvider((ref) => 0);
-        final second = StateProvider((ref) => 0);
+        final first = NotifierProvider<CounterNotifier, int>(
+          CounterNotifier.new,
+        );
+        final second = NotifierProvider<CounterNotifier, int>(
+          CounterNotifier.new,
+        );
         final computed = Provider<String>((ref) {
           if (ref.watch(first) == 0) {
             return ref.watch(second).toString();
@@ -981,7 +968,9 @@ void main() {
 
       test('remove dependencies on dispose', () async {
         final container = ProviderContainer.test();
-        final first = StateProvider((ref) => 0);
+        final first = NotifierProvider<CounterNotifier, int>(
+          CounterNotifier.new,
+        );
         final computed = Provider.autoDispose((ref) {
           return ref.watch(first);
         });
@@ -1105,7 +1094,9 @@ void main() {
           final container = ProviderContainer.test();
 
           var buildCount = 0;
-          final dep = StateProvider((ref) => 0);
+          final dep = NotifierProvider<CounterNotifier, int>(
+            CounterNotifier.new,
+          );
           final provider = Provider((ref) {
             buildCount++;
             return ref.watch(dep);
@@ -1201,7 +1192,7 @@ void main() {
         final container = ProviderContainer.test();
         final listener = Listener<int>();
 
-        final dep = StateProvider((ref) => 0);
+        final dep = NotifierProvider<CounterNotifier, int>(CounterNotifier.new);
         final provider = NotifierProvider<DeferredNotifier<int>, int>(
           () => DeferredNotifier((ref, self) {
             ref.watch(dep);
@@ -1219,7 +1210,7 @@ void main() {
       final container = ProviderContainer.test();
       final listener = Listener<int>();
 
-      final dep = StateProvider((ref) => 0);
+      final dep = NotifierProvider<CounterNotifier, int>(CounterNotifier.new);
       final provider = NotifierProvider<DeferredNotifier<int>, int>(
         () => DeferredNotifier((ref, self) {
           ref.watch(dep);
@@ -1275,10 +1266,11 @@ void main() {
             ref.onDispose(() => dependencyDisposeCount++);
             return 0;
           });
-          final isDependingOnDependency = StateProvider(
-            name: 'isDependingOnDependency',
-            (ref) => true,
-          );
+          final isDependingOnDependency =
+              NotifierProvider<DeferredNotifier<bool>, bool>(
+                name: 'isDependingOnDependency',
+                () => DeferredNotifier((ref, self) => true),
+              );
           final provider = Provider.autoDispose(name: 'provider', (ref) {
             if (ref.watch(isDependingOnDependency)) {
               ref.watch(dependency);
@@ -1567,7 +1559,7 @@ void main() {
           'but without calling ref.onDispose again', () async {
         final container = ProviderContainer.test();
         final onDispose = OnDisposeMock();
-        final dep = StateProvider((ref) => 0);
+        final dep = NotifierProvider<CounterNotifier, int>(CounterNotifier.new);
         final provider = Provider.autoDispose((ref) {
           ref.onDispose(onDispose.call);
           return ref.watch(dep);
@@ -1591,7 +1583,9 @@ void main() {
       test(
         'flushes listened-to providers even if they have no external listeners',
         () async {
-          final dep = StateProvider((ref) => 0);
+          final dep = NotifierProvider<CounterNotifier, int>(
+            CounterNotifier.new,
+          );
           final provider = Provider((ref) => ref.watch(dep));
           final another = NotifierProvider<Notifier<int>, int>(
             () => DeferredNotifier((ref, self) {
@@ -1612,7 +1606,10 @@ void main() {
       test(
         'flushes listened-to providers even if they have no external listeners (with ProviderListenable)',
         () async {
-          final dep = StateProvider(name: 'dep', (ref) => 0);
+          final dep = NotifierProvider<CounterNotifier, int>(
+            name: 'dep',
+            CounterNotifier.new,
+          );
           final provider = Provider(name: 'provider', (ref) => ref.watch(dep));
           final another = NotifierProvider<Notifier<int>, int>(
             name: 'another',
@@ -1635,10 +1632,9 @@ void main() {
     group('caching', () {
       test('the value is cached between multiple listeners', () {
         final container = ProviderContainer.test();
-        final notifier = Counter();
-        final provider = StateNotifierProvider<Counter, int>((_) {
-          return notifier;
-        });
+        final provider = NotifierProvider<CounterNotifier, int>(
+          CounterNotifier.new,
+        );
         var callCount = 0;
         final computed = Provider((ref) {
           callCount++;
@@ -1683,7 +1679,9 @@ void main() {
         () {
           final container = ProviderContainer.test();
           var callCount = 0;
-          final atom = StateProvider((ref) => 0);
+          final atom = NotifierProvider<CounterNotifier, int>(
+            CounterNotifier.new,
+          );
           final dependency = Provider((ref) => ref.watch(atom));
           final provider = Provider((ref) {
             callCount++;

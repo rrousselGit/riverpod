@@ -3,6 +3,7 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/builder.dart';
 import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
 import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:test/test.dart';
@@ -684,5 +685,39 @@ void main() {
       expect(second.state, 0);
       expect(second.mounted, true);
     });
+  });
+
+  test('builders', () {
+    // ignore: prefer_const_constructors
+    StateProviderFamilyBuilder();
+
+    expect(StateProvider.family, const StateProviderFamilyBuilder());
+    expect(
+      StateProvider((ref) => StateController(42), name: 'foo'),
+      isA<StateProvider<StateController<int>>>().having(
+        (s) => s.name,
+        'name',
+        'foo',
+      ),
+    );
+  });
+
+  test('isAutoDispose', () {
+    expect(StateProvider<Object?>((ref) => null).isAutoDispose, isFalse);
+    expect(
+      StateProvider<Object?>((ref) => null, isAutoDispose: true).isAutoDispose,
+      isTrue,
+    );
+    expect(
+      StateProvider.family<Object?, Object?>((ref, arg) => null).isAutoDispose,
+      isFalse,
+    );
+    expect(
+      StateProvider.family<Object?, Object?>(
+        (ref, arg) => null,
+        isAutoDispose: true,
+      ).isAutoDispose,
+      isTrue,
+    );
   });
 }
