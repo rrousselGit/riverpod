@@ -117,7 +117,7 @@ packages:
   internal_lint:
     path: packages/internal_lint
     codegen: false
-    test: none
+    test: dart
     dependencies: [riverpod_analyzer_utils]
     dev_dependencies: []
     dependency_overrides: []

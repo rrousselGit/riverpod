@@ -34,7 +34,7 @@ jobs:
       - run: scripts/check.sh graph generate
 
   analyze:
-    name: Format & analyze
+    name: Format, analyze & legacy APIs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -42,7 +42,7 @@ jobs:
         with:
           channel: master
           cache: true
-      - run: scripts/check.sh format analyze
+      - run: scripts/check.sh format analyze legacy
 
   tested:
     name: Every lib/ file has a test, updated with it, and test/src/ matches lib/src/
