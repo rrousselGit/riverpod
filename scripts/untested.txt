@@ -1,9 +1,7 @@
 # lib/ files that had no test when scripts/tested.sh started requiring one.
 # Do not add to this list: give new files a test instead. Remove an entry once
 # its file has a test (scripts/tested.sh fails until you do).
-packages/internal_lint/lib/main.dart
 packages/internal_lint/lib/src/lints/avoid_sub_read.dart
-packages/internal_lint/lib/src/lints/generic_name.dart
 packages/internal_lint/lib/src/lints/show_all.dart
 packages/internal_lint/lib/src/lints/visitors.dart
 packages/lint_visitor_generator/lib/builder.dart
@@ -19,7 +17,6 @@ packages/riverpod_analyzer_utils/lib/src/analyzer_utils.dart
 packages/riverpod_analyzer_utils/lib/src/argument_list_utils.dart
 packages/riverpod_analyzer_utils/lib/src/build_yaml.dart
 packages/riverpod_analyzer_utils/lib/src/errors.dart
-packages/riverpod_analyzer_utils/lib/src/nodes.dart
 packages/riverpod_analyzer_utils/lib/src/nodes/annotation.dart
 packages/riverpod_analyzer_utils/lib/src/nodes/dependencies.dart
 packages/riverpod_analyzer_utils/lib/src/nodes/generated_providers/function.dart
