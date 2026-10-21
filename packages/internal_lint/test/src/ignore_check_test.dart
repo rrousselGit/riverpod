@@ -85,12 +85,20 @@ baseline:
     });
 
     test('only accepts issue numbers that GraphQL can query', () {
-      const tooLong = 'https://github.com/owner/repo/issues/1234567890';
-      final result = check({...baseline, 'lib/a.dart': '$_ignore, $tooLong'});
+      const max = 'https://github.com/owner/repo/issues/2147483647';
+      const tooLarge = 'https://github.com/owner/repo/issues/2147483648';
+      const tooLong = 'https://github.com/owner/repo/issues/12345678901';
+      final result = check({
+        ...baseline,
+        'lib/a.dart': '$_ignore, $max\n$_ignore, $tooLarge\n$_ignore, $tooLong',
+      });
       expect(result.problems, [
-        'lib/a.dart:1: `// ignore` without a GitHub issue link.',
+        'lib/a.dart:2: `// ignore` without a GitHub issue link.',
+        'lib/a.dart:3: `// ignore` without a GitHub issue link.',
       ]);
-      expect(result.links, isEmpty);
+      expect(result.links, {
+        const IssueLink('owner', 'repo', 2147483647): ['lib/a.dart:1'],
+      });
     });
 
     test('skips ignored, generated and non-Dart files', () {

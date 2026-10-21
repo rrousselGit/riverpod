@@ -10,11 +10,13 @@ import 'package:yaml/yaml.dart';
 const ignorePolicyPath = 'scripts/ignores.yaml';
 
 final _ignoreComment = RegExp(r'//\s*ignore(_for_file)?\s*:');
-// At most 9 digits, as GraphQL's `Int` has 32 bits. Longer numbers are not
-// issues, so the comment counts as unlinked.
 final _issueLink = RegExp(
-  r'https://github\.com/([\w.-]+)/([\w.-]+)/issues/([1-9]\d{0,8})\b',
+  r'https://github\.com/([\w.-]+)/([\w.-]+)/issues/([1-9]\d{0,9})\b',
 );
+
+// GraphQL's `Int` has 32 bits. Larger numbers are not issues, so their
+// comment counts as unlinked.
+const _maxIssueNumber = 2147483647;
 
 /// Which `// ignore` comments of the repository may lack a link to the GitHub
 /// issue that justifies them.
@@ -157,7 +159,9 @@ IgnoreCheck checkIgnores({
 
       final found = [
         for (final match in _issueLink.allMatches(lines[i]))
-          IssueLink(match[1]!, match[2]!, int.parse(match[3]!)),
+          if (int.parse(match[3]!) case final number
+              when number <= _maxIssueNumber)
+            IssueLink(match[1]!, match[2]!, number),
       ];
       if (found.isEmpty) unlinked.add(i + 1);
       for (final link in found) {
