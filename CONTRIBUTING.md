@@ -107,11 +107,12 @@ exempt, as are generated files and deleted files.
 
 #### Every changed line is covered
 
-`scripts/check.sh test` (part of CI) fails when a changed line of a package's
+`scripts/check.sh test` fails when a changed line of a package's
 `lib/` folder is not run by that package's tests, listing the lines. Lines that
 run no code, such as comments and declarations, are exempt, as are example
 packages, generated files and packages tested in a browser. Pass
-`--no-coverage` to skip collecting coverage, and with it this check.
+`--no-coverage` to skip collecting coverage, and with it this check. CI does
+not run this check (`--no-coverage-check`), as Codecov checks coverage there.
 
 ### Updating English docs
 
