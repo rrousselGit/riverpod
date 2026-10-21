@@ -40,7 +40,15 @@ void main() {
     );
     expect(result.succeeded, isTrue, reason: result.errors.join('\n'));
 
-    for (final file in files.where((file) => file.path.endsWith('.g.dart'))) {
+    final goldens = files.where((file) => file.path.endsWith('.g.dart'));
+    expect(
+      result.outputs.where((output) => output.path.endsWith('.g.dart')).toSet(),
+      goldens.map(id).toSet(),
+      reason:
+          'Every generated file should be checked in. Regenerate them with: '
+          'scripts/generate.sh packages/riverpod_generator',
+    );
+    for (final file in goldens) {
       expect(
         readerWriter.testing.readString(id(file)),
         file.readAsStringSync(),
