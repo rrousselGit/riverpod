@@ -34,7 +34,7 @@ jobs:
       - run: scripts/check.sh graph generate
 
   analyze:
-    name: Format, analyze & legacy APIs
+    name: Format & analyze
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
