@@ -21,7 +21,6 @@ ignore:
   - "**/*.g.dart"
   - "**/*.freezed.dart"
   - "packages/riverpod_cli"
-  - "packages/riverpod_generator"
   - "packages/internal_lint"
 
 comment:
