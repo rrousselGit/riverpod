@@ -34,6 +34,14 @@ packages:
     dev_dependencies: [riverpod_generator]
     dependency_overrides: []
     dependents: []
+  code_changes:
+    path: tools/code_changes
+    codegen: false
+    test: dart
+    dependencies: []
+    dev_dependencies: []
+    dependency_overrides: []
+    dependents: []
   counter:
     path: examples/counter
     codegen: true
@@ -45,7 +53,7 @@ packages:
   devtool_debug_app:
     path: other_projects/devtool_debug_app
     codegen: true
-    test: none
+    test: flutter
     dependencies: [flutter_riverpod, hooks_riverpod, riverpod, riverpod_annotation]
     dev_dependencies: [riverpod_generator]
     dependency_overrides: []
@@ -109,7 +117,7 @@ packages:
   internal_lint:
     path: packages/internal_lint
     codegen: false
-    test: none
+    test: dart
     dependencies: [riverpod_analyzer_utils]
     dev_dependencies: []
     dependency_overrides: []
@@ -165,7 +173,7 @@ packages:
   riverpod_analyzer_utils:
     path: packages/riverpod_analyzer_utils
     codegen: true
-    test: none
+    test: dart
     dependencies: []
     dev_dependencies: [lint_visitor_generator]
     dependency_overrides: []
@@ -298,6 +306,7 @@ tree:
           riverpod_devtool_generator (dev):
             riverpod_analyzer_utils:
               lint_visitor_generator (dev): {}
+  code_changes: {}
   counter:
     flutter_riverpod:
       riverpod:
@@ -650,7 +659,7 @@ tree:
 # depends on earlier groups. Run the groups in order; everything
 # within a group can run at the same time.
 layers:
-  - [generate_providers, lint_visitor_generator, package_graph]
+  - [code_changes, generate_providers, lint_visitor_generator, package_graph]
   - [riverpod_analyzer_utils]
   - [internal_lint, riverpod_devtool_generator]
   - [riverpod]

@@ -21,8 +21,8 @@ ignore:
   - "**/*.g.dart"
   - "**/*.freezed.dart"
   - "packages/riverpod_cli"
-  - "packages/riverpod_generator"
-  - "packages/riverpod_lint"
+  - "packages/riverpod_generator/integration"
+  - "packages/internal_lint"
 
 comment:
   layout: "reach,diff,flags,tree"

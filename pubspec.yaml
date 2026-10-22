@@ -34,6 +34,7 @@ workspace:
   # - packages/riverpod_lint_flutter_test
   - packages/riverpod_sqflite/example
   - packages/riverpod_sqflite
+  - tools/code_changes
   - tools/generate_providers
   - tools/package_graph
   - other_projects/devtool_debug_app

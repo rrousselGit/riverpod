@@ -1,5 +1,6 @@
 ## Unreleased fix
 
+- Mark the `ClassMembers` extension as `@internal`.
 - Fix bug with latest analyzer
 
 ## 1.0.0-dev.12 - 2026-09-04

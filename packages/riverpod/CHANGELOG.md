@@ -1,6 +1,7 @@
 ## Unreleased minor
 
 - Confirmed `Ref.watch` catches errors emitted after build by a watched provider (such as from retries) by rebuilding the dependent provider. (#4432) (thanks to @naghinezhad)
+- `debugTrackProviderCreation` is now exported by `package:riverpod/misc.dart`.
 - Devtools now retain only the current provider snapshot by default. Set
   `debugTrackProviderHistory = true` (imported from `package:riverpod/misc.dart`)
   to opt into time-travel history; setting it back to `false` releases previous

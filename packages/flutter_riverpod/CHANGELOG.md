@@ -1,5 +1,10 @@
 ## Unreleased minor
 
+- `debugTrackProviderCreation` is now exported by `package:flutter_riverpod/misc.dart`.
+- `provider.listenable` is now available from `package:flutter_riverpod/flutter_riverpod.dart`, and
+  `CustomProviderListenable`, `ProviderTransformer2`,
+  `SyncProviderTransformer2` and `WhenComplete` from
+  `package:flutter_riverpod/misc.dart`, as they already were in `riverpod`.
 - Devtools now retain only the current provider snapshot by default. Set
   `debugTrackProviderHistory = true` (imported from `package:riverpod/misc.dart`)
   to opt into time-travel history; setting it back to `false` releases previous
