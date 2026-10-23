@@ -31,14 +31,19 @@ Future<void> main(List<String> args) async {
   }
 
   // Tracked files and untracked ones that are not ignored.
-  final git = Process.runSync('git', [
-    'ls-files',
-    '--cached',
-    '--others',
-    '--exclude-standard',
-    // Unquoted paths, separated by NUL.
-    '-z',
-  ], workingDirectory: root);
+  final git = Process.runSync(
+    'git',
+    [
+      'ls-files',
+      '--cached',
+      '--others',
+      '--exclude-standard',
+      // Unquoted paths, separated by NUL.
+      '-z',
+    ],
+    workingDirectory: root,
+    stdoutEncoding: utf8,
+  );
   if (git.exitCode != 0) {
     stderr.writeln('git ls-files failed:\n${git.stderr}');
     exit(2);
