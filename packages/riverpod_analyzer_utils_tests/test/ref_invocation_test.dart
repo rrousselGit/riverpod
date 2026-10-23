@@ -3,7 +3,6 @@ import 'package:test/test.dart';
 
 import 'analyzer_test_utils.dart';
 
-// ignore: invalid_use_of_internal_member
 extension on RiverpodAnalysisResult {
   List<RefWatchInvocation> get refWatchInvocations {
     return refInvocations.whereType<RefWatchInvocation>().toList();

@@ -82,33 +82,18 @@ baseline:
     packages/riverpod/test/src/providers/stream_provider_test.dart: 2
     packages/riverpod/test/third_party/fake_async.dart: 3
     packages/riverpod_analyzer_utils/lib/src/nodes.dart: 1
-    packages/riverpod_analyzer_utils_tests/test/analyzer_test_utils.dart: 1
-    packages/riverpod_analyzer_utils_tests/test/ref_invocation_test.dart: 1
-    packages/riverpod_analyzer_utils_tests/test/type_utils_test.dart: 1
-    packages/riverpod_analyzer_utils_tests/test/widget_ref_invocation_test.dart: 1
     packages/riverpod_annotation/lib/riverpod_annotation.dart: 32
-    packages/riverpod_devtool/lib/main.dart: 1
-    packages/riverpod_devtool/lib/src/elements.dart: 1
-    packages/riverpod_devtool/lib/src/frame_view.dart: 1
-    packages/riverpod_devtool/lib/src/frames.dart: 2
-    packages/riverpod_devtool/lib/src/observer.dart: 1
-    packages/riverpod_devtool/lib/src/provider_list.dart: 1
-    packages/riverpod_devtool/lib/src/providers/providers.dart: 1
-    packages/riverpod_devtool/lib/src/vm_service.dart: 2
     packages/riverpod_devtool/lib/src/vm_service/byte.dart: 2
     packages/riverpod_devtool/lib/src/vm_service/instance.dart: 2
     packages/riverpod_devtool/test/src/collection_test.dart: 1
     packages/riverpod_devtool/test/src/vm_service/eval_test.dart: 1
     packages/riverpod_generator/lib/src/riverpod_generator.dart: 1
-    packages/riverpod_generator/test/async_notifier_test.dart: 3
-    packages/riverpod_generator/test/async_test.dart: 1
+    packages/riverpod_generator/test/async_notifier_test.dart: 2
     packages/riverpod_generator/test/integration/auto_dispose.dart: 1
     packages/riverpod_generator/test/integration/generated.dart: 1
     packages/riverpod_generator/test/integration/sync.dart: 1
-    packages/riverpod_generator/test/notifier_test.dart: 3
-    packages/riverpod_generator/test/stream_notifier_test.dart: 3
-    packages/riverpod_generator/test/stream_test.dart: 1
-    packages/riverpod_generator/test/sync_test.dart: 1
+    packages/riverpod_generator/test/notifier_test.dart: 2
+    packages/riverpod_generator/test/stream_notifier_test.dart: 2
     packages/riverpod_lint/lib/src/assists/consumers/convert_to_stateless_base_widget.dart: 1
     packages/riverpod_lint/lib/src/debug.dart: 1
     packages/riverpod_sqflite/example/lib/generated.dart: 1
