@@ -36,13 +36,15 @@ Future<void> main(List<String> args) async {
     '--cached',
     '--others',
     '--exclude-standard',
+    // Unquoted paths, separated by NUL.
+    '-z',
   ], workingDirectory: root);
   if (git.exitCode != 0) {
     stderr.writeln('git ls-files failed:\n${git.stderr}');
     exit(2);
   }
   final files = (git.stdout as String)
-      .split('\n')
+      .split('\x00')
       .where((path) => path.isNotEmpty)
       // Deleted files are still listed until the deletion is staged.
       .where((path) => File(p.join(root, path)).existsSync())
@@ -132,8 +134,15 @@ Future<Object?> _graphql(String token, String query) async {
     } on FormatException {
       // Reported below, along with the body.
     }
-    // Without data, every issue would be reported as missing.
-    if (statusCode != 200 || json is! Map || json['data'] is! Map) {
+    // Without data, every issue would be reported as missing. Missing issues
+    // are NOT_FOUND errors; other errors, such as a rate limit, may leave
+    // existing issues out of the data.
+    final errors = json is Map ? json['errors'] : null;
+    if (statusCode != 200 ||
+        json is! Map ||
+        json['data'] is! Map ||
+        (errors is List &&
+            errors.any((e) => e is! Map || e['type'] != 'NOT_FOUND'))) {
       stderr.writeln('The GitHub API failed ($statusCode):\n$body');
       exit(2);
     }
