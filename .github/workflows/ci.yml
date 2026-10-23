@@ -36,7 +36,7 @@ jobs:
   analyze:
     name: Format & analyze
     runs-on: ubuntu-latest
-    # scripts/ignores.sh only reads the state of issues.
+    # scripts/issues.sh only reads the state of issues.
     permissions:
       contents: read
       issues: read
@@ -46,8 +46,8 @@ jobs:
         with:
           channel: master
           cache: true
-      # The token lets scripts/ignores.sh read the state of the linked issues.
-      - run: scripts/check.sh format analyze legacy ignores
+      # The token lets scripts/issues.sh read the state of the linked issues.
+      - run: scripts/check.sh format analyze legacy issues
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
