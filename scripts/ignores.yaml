@@ -1,0 +1,112 @@
+# Every `// ignore` and `// ignore_for_file` comment must link the GitHub issue
+# that requires it, on the same line:
+#
+#   // ignore: unused_element, https://github.com/dart-lang/sdk/issues/123
+#
+# and that issue must be open: once it is closed, remove the ignore.
+#
+# Enforced by scripts/ignores.sh. Generated files are skipped.
+# Paths are relative to the repository root.
+
+# Globs of the files that are not checked at all: the fixtures of the lint
+# tests, which ignore lints on purpose, and the snippets of the docs.
+ignored:
+  - packages/riverpod_lint_flutter_test/**
+  - website/**
+
+# How many `// ignore` comments without an issue link each file had when this
+# check was added. Do not add to this list: link an issue instead. Lower an
+# entry once its file has fewer of them (the check fails until you do).
+baseline:
+  examples/marvel/lib/main.dart: 1
+  examples/marvel/lib/src/configuration.dart: 1
+  examples/marvel/lib/src/fake_marvel.dart: 2
+  examples/marvel/lib/src/result.dart: 1
+  examples/marvel/lib/src/screens/character_detail.dart: 1
+  examples/marvel/lib/src/screens/home.dart: 1
+  examples/marvel/lib/src/widgets/search_bar.dart: 1
+  examples/stackoverflow/lib/home.dart: 1
+  packages/flutter_riverpod/lib/src/core/consumer.dart: 1
+  packages/flutter_riverpod/lib/src/core/provider_scope.dart: 1
+  packages/flutter_riverpod/lib/src/core/widget_ref.dart: 1
+  packages/flutter_riverpod/lib/src/providers/legacy/change_notifier_provider.dart: 4
+  packages/flutter_riverpod/test/auto_dispose_change_notifier_provider_test.dart: 1
+  packages/flutter_riverpod/test/consumer_listen_test.dart: 1
+  packages/flutter_riverpod/test/devtool_test.dart: 1
+  packages/flutter_riverpod/test/framework_test.dart: 1
+  packages/flutter_riverpod/test/provider_test.dart: 1
+  packages/flutter_riverpod/test/providers/change_notifier/auto_dispose_change_notifier_provider_test.dart: 1
+  packages/flutter_riverpod/test/providers/change_notifier/family_auto_dispose_change_notifier_provider_test.dart: 1
+  packages/flutter_riverpod/test/providers/change_notifier/family_change_notifier_provider_test.dart: 1
+  packages/flutter_riverpod/test/src/core/consumer_test.dart: 2
+  packages/flutter_riverpod/test/src/providers/legacy/change_notifier_provider_test.dart: 2
+  packages/hooks_riverpod/lib/src/consumer.dart: 5
+  packages/riverpod/lib/misc.dart: 1
+  packages/riverpod/lib/src/common/env.dart: 1
+  packages/riverpod/lib/src/core/devtool.dart: 1
+  packages/riverpod/lib/src/core/element.dart: 3
+  packages/riverpod/lib/src/core/mutations.dart: 4
+  packages/riverpod/lib/src/core/override_with_value.dart: 2
+  packages/riverpod/lib/src/core/persist.dart: 1
+  packages/riverpod/lib/src/core/provider/notifier_provider.dart: 1
+  packages/riverpod/lib/src/core/provider_container.dart: 4
+  packages/riverpod/lib/src/core/provider_listenable_transformer.dart: 1
+  packages/riverpod/lib/src/core/provider_subscription.dart: 1
+  packages/riverpod/lib/src/core/proxy_provider_listenable.dart: 2
+  packages/riverpod/lib/src/providers/legacy/state_notifier_provider.dart: 2
+  packages/riverpod/lib/src/providers/legacy/state_provider.dart: 1
+  packages/riverpod/test/src/builder_test.dart: 1
+  packages/riverpod/test/src/core/async_value_test.dart: 1
+  packages/riverpod/test/src/core/family_test.dart: 2
+  packages/riverpod/test/src/core/modifiers/select_async_test.dart: 1
+  packages/riverpod/test/src/core/provider/notifier_provider_test.dart: 8
+  packages/riverpod/test/src/core/provider_container_test.dart: 1
+  packages/riverpod/test/src/core/provider_listenable_transformer_test.dart: 1
+  packages/riverpod/test/src/core/ref_test.dart: 3
+  packages/riverpod/test/src/providers/async_notifier/family_test.dart: 1
+  packages/riverpod/test/src/providers/async_notifier/orphan_test.dart: 1
+  packages/riverpod/test/src/providers/async_notifier_test.dart: 1
+  packages/riverpod/test/src/providers/future_provider_test.dart: 5
+  packages/riverpod/test/src/providers/legacy/state_notifier_provider_test.dart: 1
+  packages/riverpod/test/src/providers/legacy/state_provider_test.dart: 1
+  packages/riverpod/test/src/providers/notifier/family_test.dart: 1
+  packages/riverpod/test/src/providers/notifier/orphan_test.dart: 1
+  packages/riverpod/test/src/providers/notifier_test.dart: 1
+  packages/riverpod/test/src/providers/provider_test.dart: 1
+  packages/riverpod/test/src/providers/stream_notifier/family_test.dart: 1
+  packages/riverpod/test/src/providers/stream_notifier/orphan_test.dart: 1
+  packages/riverpod/test/src/providers/stream_notifier_test.dart: 5
+  packages/riverpod/test/src/providers/stream_provider_test.dart: 2
+  packages/riverpod/test/third_party/fake_async.dart: 3
+  packages/riverpod_analyzer_utils/lib/src/nodes.dart: 1
+  packages/riverpod_analyzer_utils_tests/test/analyzer_test_utils.dart: 1
+  packages/riverpod_analyzer_utils_tests/test/ref_invocation_test.dart: 1
+  packages/riverpod_analyzer_utils_tests/test/type_utils_test.dart: 1
+  packages/riverpod_analyzer_utils_tests/test/widget_ref_invocation_test.dart: 1
+  packages/riverpod_annotation/lib/riverpod_annotation.dart: 32
+  packages/riverpod_devtool/lib/main.dart: 1
+  packages/riverpod_devtool/lib/src/elements.dart: 1
+  packages/riverpod_devtool/lib/src/frame_view.dart: 1
+  packages/riverpod_devtool/lib/src/frames.dart: 2
+  packages/riverpod_devtool/lib/src/observer.dart: 1
+  packages/riverpod_devtool/lib/src/provider_list.dart: 1
+  packages/riverpod_devtool/lib/src/providers/providers.dart: 1
+  packages/riverpod_devtool/lib/src/vm_service.dart: 2
+  packages/riverpod_devtool/lib/src/vm_service/byte.dart: 2
+  packages/riverpod_devtool/lib/src/vm_service/instance.dart: 2
+  packages/riverpod_devtool/test/src/collection_test.dart: 1
+  packages/riverpod_devtool/test/src/vm_service/eval_test.dart: 1
+  packages/riverpod_generator/lib/src/riverpod_generator.dart: 1
+  packages/riverpod_generator/test/async_notifier_test.dart: 3
+  packages/riverpod_generator/test/async_test.dart: 1
+  packages/riverpod_generator/test/integration/auto_dispose.dart: 1
+  packages/riverpod_generator/test/integration/generated.dart: 1
+  packages/riverpod_generator/test/integration/sync.dart: 1
+  packages/riverpod_generator/test/notifier_test.dart: 3
+  packages/riverpod_generator/test/stream_notifier_test.dart: 3
+  packages/riverpod_generator/test/stream_test.dart: 1
+  packages/riverpod_generator/test/sync_test.dart: 1
+  packages/riverpod_lint/lib/src/assists/consumers/convert_to_stateless_base_widget.dart: 1
+  packages/riverpod_lint/lib/src/debug.dart: 1
+  packages/riverpod_sqflite/example/lib/generated.dart: 1
+  packages/riverpod_sqflite/test/third_party/fake_async.dart: 3
