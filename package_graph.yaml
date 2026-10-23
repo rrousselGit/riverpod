@@ -133,7 +133,7 @@ packages:
   marvel:
     path: examples/marvel
     codegen: true
-    test: none
+    test: flutter
     dependencies: [hooks_riverpod]
     dev_dependencies: []
     dependency_overrides: []

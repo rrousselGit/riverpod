@@ -27,14 +27,8 @@ ignored:
 # do).
 baseline:
   ignores:
-    examples/marvel/lib/main.dart: 1
     examples/marvel/lib/src/configuration.dart: 1
-    examples/marvel/lib/src/fake_marvel.dart: 2
     examples/marvel/lib/src/result.dart: 1
-    examples/marvel/lib/src/screens/character_detail.dart: 1
-    examples/marvel/lib/src/screens/home.dart: 1
-    examples/marvel/lib/src/widgets/search_bar.dart: 1
-    examples/stackoverflow/lib/home.dart: 1
     packages/flutter_riverpod/lib/src/core/consumer.dart: 1
     packages/flutter_riverpod/lib/src/core/provider_scope.dart: 1
     packages/flutter_riverpod/lib/src/core/widget_ref.dart: 1
