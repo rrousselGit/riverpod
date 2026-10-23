@@ -142,7 +142,7 @@ baseline:
         [
           'lib/baseline.dart: 3 FLAG without a GitHub issue link '
               '(lines 1, 2, 3), but the `flags` baseline of '
-              'scripts/issues.yaml allows 2. Link an issue in the new ones.',
+              'baselines/issues.yaml allows 2. Link an issue in the new ones.',
         ],
       );
     });
@@ -150,12 +150,12 @@ baseline:
     test('reports baselined files with fewer unlinked comments', () {
       expect(check({'lib/baseline.dart': '// FLAG'}).problems, [
         'lib/baseline.dart: 1 FLAG without a GitHub issue link. '
-            'Lower its count in the `flags` baseline of scripts/issues.yaml '
+            'Lower its count in the `flags` baseline of baselines/issues.yaml '
             'to 1.',
       ]);
       expect(check({'lib/baseline.dart': ''}).problems, [
         'lib/baseline.dart: every FLAG links an issue. '
-            'Remove it from the `flags` baseline of scripts/issues.yaml.',
+            'Remove it from the `flags` baseline of baselines/issues.yaml.',
       ]);
     });
 

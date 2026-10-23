@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Checks that the legacy APIs (StateProvider, StateNotifierProvider,
 # ChangeNotifierProvider, package:state_notifier and the legacy.dart
-# libraries) are only used where scripts/legacy_api.yaml allows them.
+# libraries) are only used where baselines/legacy_api.yaml allows them.
 #
 # This covers what the avoid_legacy_api lint (run by scripts/analyze.sh)
 # cannot see: pubspec.yaml, ```dart blocks of Markdown files, and the Dart

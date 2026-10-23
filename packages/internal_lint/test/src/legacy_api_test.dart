@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:internal_lint/src/legacy_api.dart';
+import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
 void main() {
@@ -42,6 +45,12 @@ baseline:
       );
       expect(() => LegacyApiPolicy.parse('other: []'), throwsFormatException);
     });
+  });
+
+  test('legacyApiPolicyPath exists, relative to the repository root', () {
+    // Tests run from packages/internal_lint.
+    final root = p.normalize(p.join(Directory.current.path, '..', '..'));
+    expect(File(p.join(root, legacyApiPolicyPath)).existsSync(), isTrue);
   });
 
   test('relativePolicyPath', () {

@@ -98,7 +98,7 @@ test/src/core/provider_container_test.dart
 `scripts/check.sh tested` (part of CI) fails when a `lib/**/x.dart` file has
 no `test/**/x_test.dart`. Example packages, generated files and files with only
 directives (such as barrel files re-exporting `lib/src`) are exempt, as are the
-files listed in `scripts/untested.txt`, which had no test when this check was
+files listed in `baselines/untested.txt`, which had no test when this check was
 added. Do not add to that list; remove an entry once its file has a test.
 
 It also fails when a `lib/**/x.dart` file changes without a change to its
@@ -129,7 +129,7 @@ may continue on the next lines when they are indented by one more space:
 It also fails once that issue is closed: remove the ignore or do the TODO
 then. Generated files, the fixtures of the lint tests and the docs' snippets
 are exempt, as are the comments counted in the baselines of
-`scripts/issues.yaml`, which predate this check. Do not add to those baselines;
+`baselines/issues.yaml`, which predate this check. Do not add to those baselines;
 lower an entry once its file has fewer unlinked comments. Locally, checking
 that the issues are open needs `GITHUB_TOKEN` or `gh auth login`, and is
 skipped otherwise.

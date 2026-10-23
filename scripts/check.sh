@@ -19,10 +19,10 @@
 #                                              test/src/**/x_test.dart has
 #                                              its lib/src/**/x.dart
 #   legacy      scripts/legacy.sh              legacy APIs are only used where
-#                                              scripts/legacy_api.yaml allows
+#                                              baselines/legacy_api.yaml allows
 #   issues      scripts/issues.sh              every `// ignore` and TODO
 #                                              links an open GitHub issue,
-#                                              but those scripts/issues.yaml
+#                                              but those baselines/issues.yaml
 #                                              exempts
 # graph and generate run first, one after the other, since the rest reads
 # their output. format, analyze, test, changelog, tested, legacy and issues
