@@ -206,7 +206,7 @@ import '../../internals.dart';
 import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 
-import '../../internals.dart';
+import 'internals.dart';
 """);
     default:
       throw UnsupportedError('Unknown package ${args.first}');

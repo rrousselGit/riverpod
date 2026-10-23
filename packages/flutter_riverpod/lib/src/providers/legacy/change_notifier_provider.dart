@@ -6,7 +6,7 @@ import 'package:meta/meta.dart';
 // ignore: implementation_imports
 import 'package:riverpod/src/internals.dart';
 
-import 'builders.dart';
+import '../../builders.dart';
 
 /// {@template riverpod.change_notifier_provider}
 /// Creates a [ChangeNotifier] and exposes its current state.
@@ -260,7 +260,6 @@ class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 
 /// The [Family] of [ChangeNotifierProvider].
 @publicInLegacy
-@publicInMisc
 final class ChangeNotifierProviderFamily<
   NotifierT extends ChangeNotifier?,
   ArgT

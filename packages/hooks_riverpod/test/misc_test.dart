@@ -1,7 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hooks_riverpod/legacy.dart' as legacy;
 import 'package:hooks_riverpod/misc.dart';
-import 'package:hooks_riverpod/misc.dart' as misc;
 
 void main() {
   test('exports the devtool flags', () {
@@ -16,12 +14,5 @@ void main() {
       SyncProviderTransformer2,
       WhenComplete,
     ], hasLength(4));
-  });
-
-  test('exports the ChangeNotifierProviderFamily of legacy.dart', () {
-    expect(
-      misc.ChangeNotifierProviderFamily,
-      legacy.ChangeNotifierProviderFamily,
-    );
   });
 }

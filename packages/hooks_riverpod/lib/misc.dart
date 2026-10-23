@@ -24,5 +24,7 @@ export 'src/internals.dart'
         CustomProviderListenable,
         ProviderTransformer2,
         SyncProviderTransformer2,
-        WhenComplete,
-        ChangeNotifierProviderFamily;
+        WhenComplete;
+
+@Deprecated('Import misc.dart instead')
+export 'src/internals.dart' show ChangeNotifierProviderFamily;

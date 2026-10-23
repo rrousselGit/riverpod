@@ -23,8 +23,6 @@
 - Migrated Material imports to `package:material_ui/material_ui.dart` and added
   `material_ui` as a dependency.
 - Updated the DevTools extension to use Material UI themes and localizations.
-- `ChangeNotifierProviderFamily` is no longer deprecated when imported from
-  `package:hooks_riverpod/misc.dart`.
 
 ## 3.4.3 - 2026-09-04
 

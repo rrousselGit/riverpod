@@ -14,7 +14,7 @@ import 'package:flutter/foundation.dart';
 // ignore: unnecessary_import, foundation exports @internal on master only
 import 'package:meta/meta.dart';
 
-import '../../internals.dart';
+import 'internals.dart';
 
 @internal
 final class ChangeNotifierProviderFamilyBuilder {
