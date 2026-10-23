@@ -13,6 +13,63 @@ import '../../utils.dart';
 
 void main() {
   group('StateNotifierProvider', () {
+    test('isAutoDispose defaults to false, and can be set', () {
+      expect(
+        StateNotifierProvider((ref) => StateController(0)).isAutoDispose,
+        isFalse,
+      );
+      expect(
+        StateNotifierProvider(
+          (ref) => StateController(0),
+          isAutoDispose: true,
+        ).isAutoDispose,
+        isTrue,
+      );
+      expect(
+        StateNotifierProvider.family<StateController<int>, int, int>(
+          (ref, arg) => StateController(0),
+        ).isAutoDispose,
+        isFalse,
+      );
+      expect(
+        StateNotifierProvider.family<StateController<int>, int, int>(
+          (ref, arg) => StateController(0),
+          isAutoDispose: true,
+        ).isAutoDispose,
+        isTrue,
+      );
+    });
+
+    test(
+      'can be modified from the ref.onDispose of an auto dispose provider',
+      () async {
+        final container = ProviderContainer.test();
+        final counter = StateController(0);
+        final provider = StateNotifierProvider<StateController<int>, int>(
+          (_) => counter,
+        );
+        var didDispose = false;
+        final provider2 = Provider.autoDispose((ref) {
+          ref.onDispose(() {
+            didDispose = true;
+            counter.state++;
+          });
+        });
+
+        container.read(provider);
+
+        final sub = container.listen<void>(provider2, (_, _) {});
+        sub.close();
+
+        expect(counter.state, 0);
+
+        await container.pump();
+
+        expect(didDispose, true);
+        expect(counter.state, 1);
+      },
+    );
+
     test('Guards StateNotifier.dispose', () {
       final notifier = DelegateNotifier(
         onDispose: () => throw StateError('called'),
@@ -90,8 +147,8 @@ void main() {
 
     test('can refresh .notifier', () async {
       var initialValue = 1;
-      final provider = StateNotifierProvider<Counter, int>(
-        (ref) => Counter(initialValue),
+      final provider = StateNotifierProvider<StateCounter, int>(
+        (ref) => StateCounter(initialValue),
       );
       final container = ProviderContainer.test();
 
@@ -382,8 +439,8 @@ void main() {
 
   group('StateNotifierProvider.family', () {
     test('specifies `from` & `argument` for related providers', () {
-      final provider = StateNotifierProvider.family<Counter, int, int>(
-        (ref, _) => Counter(),
+      final provider = StateNotifierProvider.family<StateCounter, int, int>(
+        (ref, _) => StateCounter(),
       );
 
       expect(provider(0).from, provider);
@@ -471,8 +528,8 @@ void main() {
     });
 
     test('StateNotifierProviderFamily.toString includes argument & name', () {
-      final family = StateNotifierProvider.family<Counter, int, String>(
-        (ref, id) => Counter(),
+      final family = StateNotifierProvider.family<StateCounter, int, String>(
+        (ref, id) => StateCounter(),
         name: 'Example',
       );
 
@@ -480,8 +537,8 @@ void main() {
     });
 
     test('properly overrides ==', () {
-      final family = StateNotifierProvider.family<Counter, int, int>(
-        (ref, _) => Counter(),
+      final family = StateNotifierProvider.family<StateCounter, int, int>(
+        (ref, _) => StateCounter(),
       );
 
       expect(family(0), family(0));
@@ -490,8 +547,8 @@ void main() {
     });
 
     test('scoping a provider overrides all the associated subproviders', () {
-      final family = StateNotifierProvider.family<Counter, int, String>(
-        (ref, id) => Counter(),
+      final family = StateNotifierProvider.family<StateCounter, int, String>(
+        (ref, id) => StateCounter(),
         dependencies: const [],
       );
       final root = ProviderContainer.test();
@@ -501,7 +558,7 @@ void main() {
       );
 
       expect(container.read(family('0')), 0);
-      expect(container.read(family('0').notifier), isA<Counter>());
+      expect(container.read(family('0').notifier), isA<StateCounter>());
 
       expect(container.getAllProviderElementsInOrder(), [
         isA<ProviderElement>().having(
@@ -600,8 +657,8 @@ void main() {
 
     test('can refresh .notifier', () async {
       var initialValue = 1;
-      final provider = StateNotifierProvider.autoDispose<Counter, int>(
-        (ref) => Counter(initialValue),
+      final provider = StateNotifierProvider.autoDispose<StateCounter, int>(
+        (ref) => StateCounter(initialValue),
       );
       final container = ProviderContainer.test();
 
@@ -825,7 +882,7 @@ void main() {
   group('StateNotifierProvider.autoDispose.family', () {
     test('specifies `from` & `argument` for related providers', () {
       final provider = StateNotifierProvider.autoDispose
-          .family<Counter, int, int>((ref, _) => Counter());
+          .family<StateCounter, int, int>((ref, _) => StateCounter());
 
       expect(provider(0).from, provider);
       expect(provider(0).argument, 0);
@@ -913,7 +970,7 @@ void main() {
 
     test('properly overrides ==', () {
       final family = StateNotifierProvider.autoDispose
-          .family<Counter, int, int>((ref, _) => Counter());
+          .family<StateCounter, int, int>((ref, _) => StateCounter());
 
       expect(family(0), family(0));
       expect(family(1), isNot(family(0)));
@@ -943,4 +1000,13 @@ class DelegateNotifier extends StateNotifier<int> {
     onDispose?.call();
     super.dispose();
   }
+}
+
+class StateCounter extends StateNotifier<int> {
+  StateCounter([super._state = 0]);
+
+  @override
+  int get state => super.state;
+  @override
+  set state(int value) => super.state = value;
 }

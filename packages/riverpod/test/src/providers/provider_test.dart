@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_types_on_closure_parameters
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart'
     show InternalProviderContainer, ProviderElement;
@@ -128,8 +127,7 @@ void main() {
     group('updateShouldNotify', () {
       test("rebuild don't notify clients if == doesn't change", () {
         final container = ProviderContainer.test();
-        final counter = Counter();
-        final other = StateNotifierProvider<Counter, int>((ref) => counter);
+        final other = NotifierProvider<Counter, int>(Counter.new);
         var buildCount = 0;
         final provider = Provider((ref) {
           buildCount++;
@@ -147,8 +145,8 @@ void main() {
         expect(sub.read(), true);
         expect(buildCount, 1);
 
-        counter.increment();
-        counter.increment();
+        container.read(other.notifier).increment();
+        container.read(other.notifier).increment();
 
         expect(sub.read(), true);
         expect(buildCount, 2);
@@ -157,8 +155,7 @@ void main() {
 
       test('rebuild notify clients if == did change', () {
         final container = ProviderContainer.test();
-        final counter = Counter();
-        final other = StateNotifierProvider<Counter, int>((ref) => counter);
+        final other = NotifierProvider<Counter, int>(Counter.new);
         final provider = Provider((ref) {
           return ref.watch(other).isEven;
         });
@@ -173,7 +170,7 @@ void main() {
         verifyOnly(listener, listener(null, true));
         expect(sub.read(), true);
 
-        counter.increment();
+        container.read(other.notifier).increment();
 
         expect(sub.read(), false);
         verifyOnly(listener, listener(true, false));

@@ -149,6 +149,8 @@ class _LegacyUseCollector extends RecursiveAstVisitor<void> {
     final export = node.libraryExport;
     final library = export?.exportedLibrary;
     if (export == null || library == null) return;
+    // Deprecated exports are on their way out, and warn their users already.
+    if (export.metadata.hasDeprecated) return;
 
     if (isLegacyLibrary(library.uri)) {
       _add(node, '`${library.uri}`');

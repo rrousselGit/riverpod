@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/src/internals.dart' show ProviderScopeState;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:riverpod/legacy.dart';
 import 'package:riverpod/src/internals.dart'
     show ContainerReadElement, InternalProviderContainer;
 
@@ -454,16 +453,16 @@ void main() {
   testWidgets(
     'Consumer removing one of multiple listeners on a provider still listen to the provider',
     (tester) async {
-      final stateProvider = StateProvider((ref) => 0, name: 'state');
+      final stateProvider = settableProvider((ref) => 0, name: 'state');
       final notifier0 = TestNotifier();
       final notifier1 = TestNotifier(42);
-      final provider0 = StateNotifierProvider<TestNotifier, int>(
+      final provider0 = NotifierProvider<TestNotifier, int>(
         name: '0',
-        (_) => notifier0,
+        () => notifier0,
       );
-      final provider1 = StateNotifierProvider<TestNotifier, int>(
+      final provider1 = NotifierProvider<TestNotifier, int>(
         name: '1',
-        (_) => notifier1,
+        () => notifier1,
       );
       var buildCount = 0;
 
@@ -541,16 +540,16 @@ void main() {
   testWidgets(
     'Stops listening to a provider when recomputed but no longer using it',
     (tester) async {
-      final stateProvider = StateProvider((ref) => 0, name: 'state');
+      final stateProvider = settableProvider((ref) => 0, name: 'state');
       final notifier0 = TestNotifier();
       final notifier1 = TestNotifier(42);
-      final provider0 = StateNotifierProvider<TestNotifier, int>(
+      final provider0 = NotifierProvider<TestNotifier, int>(
         name: '0',
-        (_) => notifier0,
+        () => notifier0,
       );
-      final provider1 = StateNotifierProvider<TestNotifier, int>(
+      final provider1 = NotifierProvider<TestNotifier, int>(
         name: '1',
-        (_) => notifier1,
+        () => notifier1,
       );
       var buildCount = 0;
 
@@ -624,16 +623,16 @@ void main() {
 
   testWidgets('Consumer supports changing the provider', (tester) async {
     final notifier1 = TestNotifier();
-    final provider1 = StateNotifierProvider<TestNotifier, int>((_) {
+    final provider1 = NotifierProvider<TestNotifier, int>(() {
       return notifier1;
     });
     final notifier2 = TestNotifier(42);
-    final provider2 = StateNotifierProvider<TestNotifier, int>((_) {
+    final provider2 = NotifierProvider<TestNotifier, int>(() {
       return notifier2;
     });
     var buildCount = 0;
 
-    Widget build(StateNotifierProvider<TestNotifier, int> provider) {
+    Widget build(NotifierProvider<TestNotifier, int> provider) {
       return ProviderScope(
         child: Consumer(
           builder: (c, ref, _) {
@@ -672,7 +671,7 @@ void main() {
     'multiple watch, when one of them forces rebuild, all dependencies are still flushed',
     (tester) async {
       final notifier = TestNotifier();
-      final provider = StateNotifierProvider<TestNotifier, int>((_) {
+      final provider = NotifierProvider<TestNotifier, int>(() {
         return notifier;
       });
       var callCount = 0;
@@ -708,7 +707,7 @@ void main() {
     tester,
   ) async {
     final notifier = TestNotifier();
-    final provider = StateNotifierProvider<TestNotifier, int>((_) => notifier);
+    final provider = NotifierProvider<TestNotifier, int>(() => notifier);
     final computed = Provider((ref) => !ref.watch(provider).isNegative);
     var buildCount = 0;
     final container = ProviderContainer.test();
@@ -752,7 +751,7 @@ void main() {
 
   testWidgets('remove listener when destroying the consumer', (tester) async {
     final notifier = TestNotifier();
-    final provider = StateNotifierProvider<TestNotifier, int>((_) => notifier);
+    final provider = NotifierProvider<TestNotifier, int>(() => notifier);
 
     await tester.pumpWidget(
       ProviderScope(
@@ -784,11 +783,11 @@ void main() {
 
   testWidgets('Multiple providers', (tester) async {
     final notifier = TestNotifier();
-    final firstProvider = StateNotifierProvider<TestNotifier, int>((_) {
+    final firstProvider = NotifierProvider<TestNotifier, int>(() {
       return notifier;
     });
     final notifier2 = TestNotifier();
-    final secondProvider = StateNotifierProvider<TestNotifier, int>((_) {
+    final secondProvider = NotifierProvider<TestNotifier, int>(() {
       return notifier2;
     });
 
@@ -823,7 +822,7 @@ void main() {
 
   testWidgets('Consumer', (tester) async {
     final notifier = TestNotifier();
-    final provider = StateNotifierProvider<TestNotifier, int>((_) => notifier);
+    final provider = NotifierProvider<TestNotifier, int>(() => notifier);
 
     await tester.pumpWidget(
       ProviderScope(
@@ -1053,13 +1052,15 @@ void main() {
   });
 }
 
-class TestNotifier extends StateNotifier<int> {
-  TestNotifier([super._state = 0]);
+class TestNotifier extends Notifier<int> {
+  TestNotifier([this._initialState = 0]);
 
-  void increment() => state++;
+  final int _initialState;
 
   @override
-  int get state;
+  int build() => _initialState;
+
+  void increment() => state++;
 }
 
 final _provider = Provider((ref) => 'hello world');

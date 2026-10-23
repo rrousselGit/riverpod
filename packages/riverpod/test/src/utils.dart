@@ -400,15 +400,63 @@ class Selector<InT, OutT> extends Mock {
   }
 }
 
-class Counter extends StateNotifier<int> {
-  Counter([super._state = 0]);
+class Counter extends Notifier<int> {
+  Counter([this._initialState = 0]);
+
+  final int _initialState;
+
+  @override
+  int build() => _initialState;
 
   void increment() => state++;
+}
+
+/// A [Notifier] whose state tests set from outside, with
+/// `container.read(provider.notifier).state = value`.
+///
+/// It replaces the legacy `StateProvider` in tests that only need a provider
+/// whose state changes.
+class SettableNotifier<StateT> extends Notifier<StateT> {
+  SettableNotifier(this._build);
+
+  final StateT Function(Ref ref) _build;
 
   @override
-  int get state => super.state;
-  @override
-  set state(int value) => super.state = value;
+  StateT build() => _build(ref);
+
+  /// Sets the state to the result of [cb] on the current state.
+  StateT update(StateT Function(StateT state) cb) => state = cb(state);
+}
+
+/// A provider of a [SettableNotifier].
+NotifierProvider<SettableNotifier<StateT>, StateT> settableProvider<StateT>(
+  StateT Function(Ref ref) build, {
+  String? name,
+  Iterable<ProviderOrFamily>? dependencies,
+  bool isAutoDispose = false,
+}) {
+  return NotifierProvider<SettableNotifier<StateT>, StateT>(
+    () => SettableNotifier(build),
+    name: name,
+    dependencies: dependencies,
+    isAutoDispose: isAutoDispose,
+  );
+}
+
+/// A family of [SettableNotifier]s.
+NotifierProviderFamily<SettableNotifier<StateT>, StateT, ArgT>
+settableProviderFamily<StateT, ArgT>(
+  StateT Function(Ref ref, ArgT arg) build, {
+  String? name,
+  Iterable<ProviderOrFamily>? dependencies,
+  bool isAutoDispose = false,
+}) {
+  return NotifierProvider.family<SettableNotifier<StateT>, StateT, ArgT>(
+    (arg) => SettableNotifier((ref) => build(ref, arg)),
+    name: name,
+    dependencies: dependencies,
+    isAutoDispose: isAutoDispose,
+  );
 }
 
 List<Object> errorsOf(void Function() cb) {

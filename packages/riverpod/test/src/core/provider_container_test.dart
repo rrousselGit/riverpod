@@ -3,7 +3,6 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
 import 'package:riverpod/misc.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart';
@@ -1489,7 +1488,7 @@ void main() {
 
           test('can listen to other normal providers', () async {
             final listener = Listener<int>();
-            final provider = StateProvider((ref) => 1);
+            final provider = settableProvider((ref) => 1);
             final provider2 = Provider(
               (ref) => ref.watch(provider) * 2,
               dependencies: const [],
@@ -1840,7 +1839,7 @@ void main() {
         'ref.watch keeps working on providers associated with the ancestor container',
         () async {
           final container = ProviderContainer.test();
-          final dep = StateProvider((ref) => 0);
+          final dep = settableProvider((ref) => 0);
           final provider = Provider((ref) => ref.watch(dep));
           final listener = Listener<int>();
           final child = ProviderContainer.test(parent: container);
@@ -2542,7 +2541,7 @@ void main() {
       test(
         'Waits for providers associated with this container and its parents to rebuild',
         () async {
-          final dep = StateProvider((ref) => 0);
+          final dep = settableProvider((ref) => 0);
           final a = Provider((ref) => ref.watch(dep));
           final b = Provider((ref) => ref.watch(dep), dependencies: const []);
           final aListener = Listener<int>();
@@ -2955,7 +2954,7 @@ void main() {
             ProviderContainer.test,
             (err, stack) => errors.add(err),
           )!;
-          final isErrored = StateProvider((ref) => false);
+          final isErrored = settableProvider((ref) => false);
           final dep = Provider<int>((ref) {
             if (ref.watch(isErrored)) throw UnimplementedError();
             return 0;
@@ -2984,7 +2983,7 @@ void main() {
             ProviderContainer.test,
             (err, stack) => errors.add(err),
           )!;
-          final isErrored = StateProvider((ref) => false);
+          final isErrored = settableProvider((ref) => false);
           final dep = Provider<int>((ref) {
             if (ref.watch(isErrored)) throw UnimplementedError();
             return 0;
@@ -3007,7 +3006,7 @@ void main() {
 
       test('when rebuild throws, calls onError', () async {
         final container = ProviderContainer.test();
-        final dep = StateProvider((ref) => 0);
+        final dep = settableProvider((ref) => 0);
         final provider = Provider((ref) {
           if (ref.watch(dep) != 0) {
             throw UnimplementedError();
@@ -3031,7 +3030,7 @@ void main() {
 
       test('when rebuild throws on selector, calls onError', () async {
         final container = ProviderContainer.test();
-        final dep = StateProvider((ref) => 0);
+        final dep = settableProvider((ref) => 0);
         final provider = Provider((ref) {
           if (ref.watch(dep) != 0) {
             throw UnimplementedError();
@@ -3061,9 +3060,7 @@ void main() {
         'when using selectors, `previous` is the latest notification instead of latest event',
         () {
           final container = ProviderContainer.test();
-          final provider = StateNotifierProvider<StateController<int>, int>(
-            (ref) => StateController(0),
-          );
+          final provider = settableProvider((ref) => 0);
           final listener = Listener<bool>();
 
           container.listen<bool>(
@@ -3086,9 +3083,7 @@ void main() {
 
       test('expose previous and new value on change', () {
         final container = ProviderContainer.test();
-        final provider = StateNotifierProvider<StateController<int>, int>(
-          (ref) => StateController(0),
-        );
+        final provider = settableProvider((ref) => 0);
         final listener = Listener<int>();
 
         container.listen<int>(provider, listener.call, fireImmediately: true);
@@ -3102,7 +3097,7 @@ void main() {
 
       test('can downcast the value', () async {
         final listener = Listener<num>();
-        final dep = StateProvider((ref) => 0);
+        final dep = settableProvider((ref) => 0);
 
         final container = ProviderContainer.test();
 
@@ -3119,7 +3114,7 @@ void main() {
       test(
         'if a listener adds a container.listen, the new listener is not called immediately',
         () {
-          final provider = StateProvider((ref) => 0);
+          final provider = settableProvider((ref) => 0);
           final container = ProviderContainer.test();
 
           final listener = Listener<int>();
@@ -3144,7 +3139,7 @@ void main() {
       test(
         'if a listener removes another provider.listen, the removed listener is not called',
         () {
-          final dep = StateProvider((ref) => 0);
+          final dep = settableProvider((ref) => 0);
           final container = ProviderContainer.test();
 
           final listener = Listener<int>();
@@ -3180,7 +3175,7 @@ void main() {
       test(
         'if a listener adds a provider.listen, the new listener is not called immediately',
         () {
-          final dep = StateProvider((ref) => 0);
+          final dep = settableProvider((ref) => 0);
           final container = ProviderContainer.test();
 
           final listener = Listener<int>();
@@ -3268,7 +3263,7 @@ void main() {
 
         test('supports selectors', () {
           final container = ProviderContainer.test();
-          final provider = StateProvider<int>((ref) => 0);
+          final provider = settableProvider<int>((ref) => 0);
           final listener = Listener<bool>();
           final listener2 = Listener<bool>();
 
@@ -3289,7 +3284,7 @@ void main() {
         });
 
         test('passing fireImmediately: false skips the initial value', () {
-          final provider = StateProvider((ref) => 0);
+          final provider = settableProvider((ref) => 0);
           final listener = Listener<int>();
 
           final container = ProviderContainer.test();
@@ -3302,7 +3297,7 @@ void main() {
         test(
           'correctly listens to the provider if selector onError listener throws',
           () async {
-            final dep = StateProvider<int>((ref) => 0);
+            final dep = settableProvider<int>((ref) => 0);
             final provider = Provider<int>((ref) {
               if (ref.watch(dep) == 0) {
                 throw UnimplementedError();
@@ -3357,7 +3352,7 @@ void main() {
         test(
           'correctly listens to the provider if normal onError listener throws',
           () async {
-            final dep = StateProvider<int>((ref) => 0);
+            final dep = settableProvider<int>((ref) => 0);
             final provider = Provider<int>((ref) {
               if (ref.watch(dep) == 0) {
                 throw UnimplementedError();
@@ -3408,7 +3403,7 @@ void main() {
         test(
           'correctly listens to the provider if selector listener throws',
           () {
-            final provider = StateProvider((ref) => 0);
+            final provider = settableProvider((ref) => 0);
             final listener = Listener<int>();
             var isFirstCall = true;
 
@@ -3441,7 +3436,7 @@ void main() {
         );
 
         test('correctly listens to the provider if normal listener throws', () {
-          final provider = StateProvider((ref) => 0);
+          final provider = settableProvider((ref) => 0);
           final listener = Listener<int>();
           var isFirstCall = true;
 
@@ -3470,7 +3465,7 @@ void main() {
       });
 
       test('.read on closed subscription throws', () {
-        final provider = StateProvider<int>((_) => 0);
+        final provider = settableProvider<int>((_) => 0);
         final container = ProviderContainer.test();
         final listener = Listener<int>();
 
@@ -3492,7 +3487,7 @@ void main() {
       });
 
       test('.read on closed selector subscription throws', () {
-        final provider = StateProvider<int>((_) => 0);
+        final provider = settableProvider<int>((_) => 0);
         final container = ProviderContainer.test();
         final listener = Listener<int>();
 
@@ -3525,7 +3520,7 @@ void main() {
 
       test('selectors can close listeners', () {
         final container = ProviderContainer.test();
-        final provider = StateProvider<int>((ref) => 0);
+        final provider = settableProvider<int>((ref) => 0);
 
         expect(
           container.readProviderElement(provider).hasNonWeakListeners,
@@ -3552,7 +3547,7 @@ void main() {
 
       test('can watch selectors', () async {
         final container = ProviderContainer.test();
-        final provider = StateProvider<int>((ref) => 0);
+        final provider = settableProvider<int>((ref) => 0);
         final isAdultSelector = Selector<int, bool>(false, (c) => c >= 18);
         final isAdultListener = Listener<bool>();
 
@@ -3598,7 +3593,7 @@ void main() {
         addTearDown(controller.close);
         final container = ProviderContainer.test();
 
-        final count = StateProvider((ref) => 0);
+        final count = settableProvider((ref) => 0);
         final provider = Provider((ref) => ref.watch(count));
 
         container.listen<int>(
@@ -3615,7 +3610,7 @@ void main() {
       test('call listener when provider emits an update', () async {
         final container = ProviderContainer.test();
 
-        final count = StateProvider((ref) => 0);
+        final count = settableProvider((ref) => 0);
         final listener = Listener<int>();
 
         container.listen<int>(count, listener.call);
@@ -3632,7 +3627,7 @@ void main() {
       test('supports selectors', () {
         final container = ProviderContainer.test();
 
-        final count = StateProvider((ref) => 0);
+        final count = settableProvider((ref) => 0);
         final listener = Listener<bool>();
 
         container.listen<bool>(
@@ -3654,7 +3649,7 @@ void main() {
 
       test('can downcast the listener value', () {
         final container = ProviderContainer.test();
-        final provider = StateProvider<int>((ref) => 0);
+        final provider = settableProvider<int>((ref) => 0);
         final listener = Listener<void>();
 
         container.listen<void>(provider, listener.call);
@@ -3670,11 +3665,7 @@ void main() {
         'can close a ProviderSubscription<Object?> multiple times with no effect',
         () {
           final container = ProviderContainer.test();
-          final provider = StateNotifierProvider<StateController<int>, int>((
-            ref,
-          ) {
-            return StateController(0);
-          });
+          final provider = settableProvider((ref) => 0);
           final listener = Listener<int>();
 
           final controller = container.read(provider.notifier);
@@ -3694,11 +3685,7 @@ void main() {
         'closing an already closed ProviderSubscription<Object?> does not remove subscriptions with the same listener',
         () {
           final container = ProviderContainer.test();
-          final provider = StateNotifierProvider<StateController<int>, int>((
-            ref,
-          ) {
-            return StateController(0);
-          });
+          final provider = settableProvider((ref) => 0);
           final listener = Listener<int>();
 
           final controller = container.read(provider.notifier);
@@ -3724,12 +3711,10 @@ void main() {
         test('is called synchronously on direct provider change', () {
           final container = ProviderContainer.test();
           final didChange = Listener<int>();
-          final counter = Counter();
-          final provider = StateNotifierProvider<Counter, int>(
-            (ref) => counter,
-          );
+          final provider = NotifierProvider<Counter, int>(Counter.new);
 
           container.listen(provider, didChange.call);
+          final counter = container.read(provider.notifier);
 
           verifyZeroInteractions(didChange);
 
@@ -3741,13 +3726,11 @@ void main() {
         test('is called at most once per read for computed providers', () {
           final container = ProviderContainer.test();
           final didChange = Listener<int>();
-          final counter = Counter();
-          final provider = StateNotifierProvider<Counter, int>(
-            (ref) => counter,
-          );
+          final provider = NotifierProvider<Counter, int>(Counter.new);
           final computed = Provider((ref) => ref.watch(provider));
 
           container.listen(computed, didChange.call);
+          final counter = container.read(provider.notifier);
 
           verifyZeroInteractions(didChange);
 
@@ -3763,14 +3746,12 @@ void main() {
         test('are all executed after one read call', () {
           final container = ProviderContainer.test();
           final didChange = Listener<int>();
-          final counter = Counter();
-          final provider = StateNotifierProvider<Counter, int>(
-            (ref) => counter,
-          );
+          final provider = NotifierProvider<Counter, int>(Counter.new);
           final didChange2 = Listener<int>();
 
           container.listen(provider, didChange.call);
           container.listen(provider, didChange2.call);
+          final counter = container.read(provider.notifier);
 
           counter.increment();
 
@@ -3785,16 +3766,14 @@ void main() {
             ProviderContainer.test,
             (err, stack) => errors.add(err),
           )!;
-          final counter = Counter();
-          final provider = StateNotifierProvider<Counter, int>(
-            (ref) => counter,
-          );
+          final provider = NotifierProvider<Counter, int>(Counter.new);
           final didChange2 = Listener<int>();
           when(didChange(any, any)).thenThrow(42);
           when(didChange2(any, any)).thenThrow(21);
 
           container.listen(provider, didChange.call);
           container.listen(provider, didChange2.call);
+          final counter = container.read(provider.notifier);
 
           counter.increment();
 
@@ -5374,15 +5353,19 @@ void main() {
         'ProviderContainer.read(MyProvider.autoDispose) disposes the provider if not listened to',
         () async {
           final container = ProviderContainer.test();
-          final provider = StateProvider.autoDispose((ref) => 0);
+          var disposed = false;
+          final provider = settableProvider((ref) {
+            ref.onDispose(() => disposed = true);
+            return 0;
+          }, isAutoDispose: true);
 
-          final state = container.read(provider.notifier);
+          container.read(provider.notifier);
 
-          expect(state.mounted, true);
+          expect(disposed, false);
 
           await container.pump();
 
-          expect(state.mounted, false);
+          expect(disposed, true);
         },
       );
 
@@ -5745,7 +5728,7 @@ void main() {
         () async {
           var future = Future.value(42);
           var callCount = 0;
-          final dep = StateProvider((_) => 0);
+          final dep = settableProvider((_) => 0);
           final provider = FutureProvider((ref) {
             callCount++;
             ref.watch(dep);
@@ -5787,7 +5770,7 @@ void main() {
           final container = ProviderContainer.test(
             observers: [observer, observer2],
           );
-          final dep = StateProvider((ref) => 0);
+          final dep = settableProvider((ref) => 0);
           final provider = Provider((ref) {
             if (ref.watch(dep) == 0) {
               throw UnimplementedError();
@@ -5832,10 +5815,7 @@ void main() {
       test(
         'on scoped ProviderContainer, applies both child and ancestors observers',
         () {
-          final provider = StateNotifierProvider<StateController<int>, int>(
-            (ref) => StateController(0),
-            dependencies: const [],
-          );
+          final provider = settableProvider((ref) => 0, dependencies: const []);
           final observer = ObserverMock('a');
           final observer2 = ObserverMock('b');
           final observer3 = ObserverMock('c');
@@ -5847,7 +5827,9 @@ void main() {
           );
           final child = ProviderContainer.test(
             parent: mid,
-            overrides: [provider.overrideWith((ref) => StateController(42))],
+            overrides: [
+              provider.overrideWith(() => SettableNotifier((ref) => 42)),
+            ],
             observers: [observer3],
           );
 
@@ -5909,12 +5891,11 @@ void main() {
       test('handles computed provider update', () async {
         final observer = ObserverMock();
         final container = ProviderContainer.test(observers: [observer]);
-        final notifier = Counter();
-        final provider = StateNotifierProvider<Counter, int>((_) => notifier);
+        final provider = NotifierProvider<Counter, int>(Counter.new);
         final computed = Provider((ref) => ref.watch(provider));
 
         container.listen(computed, (_, _) {});
-        notifier.increment();
+        container.read(provider.notifier).increment();
 
         clearInteractions(observer);
 
@@ -5938,10 +5919,9 @@ void main() {
       test('handles direct provider update', () {
         final observer = ObserverMock();
         final container = ProviderContainer.test(observers: [observer]);
-        final notifier = Counter();
-        final provider = StateNotifierProvider<Counter, int>((_) => notifier);
+        final provider = NotifierProvider<Counter, int>(Counter.new);
 
-        container.read(provider);
+        final notifier = container.read(provider.notifier);
         clearInteractions(observer);
 
         notifier.increment();
@@ -5964,15 +5944,15 @@ void main() {
       test('didUpdateProviders', () {
         final observer = ObserverMock('a');
         final observer2 = ObserverMock('b');
-        final provider = StateNotifierProvider<Counter, int>((_) => Counter());
-        final counter = Counter();
+        final provider = NotifierProvider<Counter, int>(Counter.new);
         final container = ProviderContainer.test(
-          overrides: [provider.overrideWith((ref) => counter)],
+          overrides: [provider.overrideWith(Counter.new)],
           observers: [observer, observer2],
         );
         final listener = Listener<int>();
 
         container.listen(provider, listener.call, fireImmediately: true);
+        final counter = container.read(provider.notifier);
 
         verify(listener(null, 0)).called(1);
         verifyNoMoreInteractions(listener);
@@ -6035,18 +6015,17 @@ void main() {
         final observer2 = ObserverMock();
         when(observer2.didUpdateProvider(any, any, any)).thenThrow('error2');
         final observer3 = ObserverMock();
-        final provider = StateNotifierProvider<Counter, int>((_) => Counter());
-        final counter = Counter();
+        final provider = NotifierProvider<Counter, int>(Counter.new);
         final errors = <Object>[];
         final container = runZonedGuarded(
           () => ProviderContainer.test(
-            overrides: [provider.overrideWith((ref) => counter)],
+            overrides: [provider.overrideWith(Counter.new)],
             observers: [observer, observer2, observer3],
           ),
           (err, stack) => errors.add(err),
         )!;
 
-        container.read(provider);
+        final counter = container.read(provider.notifier);
 
         clearInteractions(observer);
         clearInteractions(observer2);
@@ -6096,8 +6075,7 @@ void main() {
         "Computed don't call didUpdateProviders when value doesn't change",
         () async {
           final observer = ObserverMock();
-          final counter = Counter();
-          final provider = StateNotifierProvider<Counter, int>((_) => counter);
+          final provider = NotifierProvider<Counter, int>(Counter.new);
           final isNegative = Provider((ref) {
             return ref.watch(provider).isNegative;
           });
@@ -6110,6 +6088,7 @@ void main() {
             fireImmediately: true,
           );
 
+          final counter = container.read(provider.notifier);
           clearInteractions(observer);
           verifyOnly(isNegativeListener, isNegativeListener(null, false));
 
@@ -6182,11 +6161,8 @@ void main() {
       test(
         'on scoped ProviderContainer, applies both child and ancestors observers',
         () async {
-          final dep = StateProvider((ref) => 0);
-          final provider = StateNotifierProvider<StateController<int>, int>(
-            (ref) => StateController(0),
-            dependencies: const [],
-          );
+          final dep = settableProvider((ref) => 0);
+          final provider = settableProvider((ref) => 0, dependencies: const []);
           final observer = ObserverMock('a');
           final observer2 = ObserverMock('b');
           final observer3 = ObserverMock('c');
@@ -6199,12 +6175,14 @@ void main() {
           final child = ProviderContainer.test(
             parent: mid,
             overrides: [
-              provider.overrideWith((ref) {
-                if (ref.watch(dep) != 0) {
-                  Error.throwWithStackTrace('error', StackTrace.empty);
-                }
-                return StateController(42);
-              }),
+              provider.overrideWith(
+                () => SettableNotifier((ref) {
+                  if (ref.watch(dep) != 0) {
+                    Error.throwWithStackTrace('error', StackTrace.empty);
+                  }
+                  return 42;
+                }),
+              ),
             ],
             observers: [observer3],
           );
@@ -6448,7 +6426,7 @@ void main() {
         final container = ProviderContainer.test(
           observers: [observer, observer2],
         );
-        final dep = StateProvider((ref) => 0);
+        final dep = settableProvider((ref) => 0);
         final provider = Provider((ref) {
           if (ref.watch(dep) != 0) {
             throw UnimplementedError();
@@ -6702,9 +6680,7 @@ void main() {
       test('supports container dispose', () {
         final observer = ObserverMock();
         final container = ProviderContainer.test(observers: [observer]);
-        final provider = StateNotifierProvider<Counter, int>(
-          (ref) => Counter(),
-        );
+        final provider = NotifierProvider<Counter, int>(Counter.new);
 
         container.read(provider);
 
@@ -6728,9 +6704,9 @@ void main() {
       test('supports auto-dispose', () async {
         final observer = ObserverMock();
         final container = ProviderContainer.test(observers: [observer]);
-        final provider = StateNotifierProvider.autoDispose<Counter, int>((ref) {
-          return Counter();
-        });
+        final provider = NotifierProvider.autoDispose<Counter, int>(
+          Counter.new,
+        );
 
         final sub = container.listen(provider, (_, _) {});
 

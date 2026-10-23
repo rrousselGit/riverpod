@@ -1,6 +1,8 @@
 import 'package:meta/meta.dart';
 
 import '../../internals.dart';
+import 'builder.dart';
+import 'state_controller.dart';
 
 /// {@template riverpod.state_provider}
 /// A provider that exposes a value that can be modified from outside.

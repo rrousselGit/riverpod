@@ -13,7 +13,7 @@ const _header = '''
 // dart pub global activate -s path <repository_path>/tools/generate_providers
 //
 // You can then use it in your terminal by executing:
-// generate_providers <riverpod/flutter_riverpod/hooks_riverpod> <path to builder file to update>
+// generate_providers <riverpod/riverpod_legacy/flutter_riverpod> <path to builder file to update>
 
 ''';
 
@@ -64,11 +64,15 @@ typedef Matrix = ({
 Future<void> main(List<String> args) async {
   if (args.length != 2) {
     stdout.writeln(
-      'usage: generate_providers <riverpod/flutter_riverpod> file',
+      'usage: generate_providers <riverpod/riverpod_legacy/flutter_riverpod> file',
     );
     return;
   }
-  if (args.first != 'riverpod' && args.first != 'flutter_riverpod') {
+  if (!const {
+    'riverpod',
+    'riverpod_legacy',
+    'flutter_riverpod',
+  }.contains(args.first)) {
     stderr.writeln('Unknown argument ${args.first}');
     return;
   }
@@ -87,19 +91,6 @@ Future<void> main(List<String> args) async {
       matrix = (
         disposeTypes: _DisposeType.values,
         providers: [
-          _FunctionalBuilder(
-            'StateProvider',
-            genericsUsage: 'StateT',
-            genericsDefinition: 'StateT',
-            createdT: 'StateT',
-          ),
-          _FunctionalBuilder(
-            'StateNotifierProvider',
-            genericsUsage: 'NotifierT, StateT',
-            genericsDefinition:
-                'NotifierT extends StateNotifier<StateT>, StateT',
-            createdT: 'NotifierT',
-          ),
           _FunctionalBuilder(
             'Provider',
             genericsUsage: 'StateT',
@@ -170,6 +161,36 @@ import 'package:meta/meta.dart';
 import 'internals.dart';
 """);
 
+    case 'riverpod_legacy':
+      // builder.dart defines the doc templates.
+      useDocMacrosOnly();
+      matrix = (
+        disposeTypes: _DisposeType.values,
+        providers: [
+          _FunctionalBuilder(
+            'StateProvider',
+            genericsUsage: 'StateT',
+            genericsDefinition: 'StateT',
+            createdT: 'StateT',
+          ),
+          _FunctionalBuilder(
+            'StateNotifierProvider',
+            genericsUsage: 'NotifierT, StateT',
+            genericsDefinition:
+                'NotifierT extends StateNotifier<StateT>, StateT',
+            createdT: 'NotifierT',
+          ),
+        ],
+        kinds: _ProviderKind.values,
+      );
+      buffer.writeln("""
+import 'package:meta/meta.dart';
+
+import '../../internals.dart';
+import 'state_notifier_provider.dart';
+import 'state_provider.dart';
+""");
+
     case 'flutter_riverpod':
       matrix = (
         disposeTypes: _DisposeType.values,
@@ -187,7 +208,8 @@ import 'internals.dart';
 import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 
-import 'internals.dart';
+import '../../internals.dart';
+import 'change_notifier_provider.dart';
 """);
     default:
       throw UnsupportedError('Unknown package ${args.first}');

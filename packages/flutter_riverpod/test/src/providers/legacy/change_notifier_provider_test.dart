@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart' hide Listener;
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -305,6 +306,22 @@ void main() {
     );
   });
 
+  testWidgets('WidgetRef.read returns the ChangeNotifier', (tester) async {
+    final changeNotifierProvider = ChangeNotifierProvider((_) {
+      return ValueNotifier(0);
+    });
+
+    Consumer(
+      builder: (context, ref, _) {
+        final ValueNotifier<int> changeNotifierProviderValue = ref.read(
+          changeNotifierProvider,
+        );
+
+        return Container();
+      },
+    );
+  });
+
   test('can specify name', () {
     final provider = ChangeNotifierProvider(
       (_) => ValueNotifier(0),
@@ -437,6 +454,455 @@ void main() {
 
     expect(callCount, 2);
     expect(notifier.mounted, false);
+  });
+
+  group('ChangeNotifierProvider.autoDispose', () {
+    test('auto-dispose notifier when stop listening', () async {
+      final container = ProviderContainer.test();
+      final onDispose = OnDisposeMock();
+      final provider = ChangeNotifierProvider.autoDispose((ref) {
+        ref.onDispose(onDispose.call);
+        return ValueNotifier(0);
+      });
+
+      final sub = container.listen<ValueNotifier<int>>(
+        provider,
+        (prev, value) {},
+      );
+
+      sub.close();
+
+      verifyNoMoreInteractions(onDispose);
+
+      await container.pump();
+
+      verify(onDispose()).called(1);
+      verifyNoMoreInteractions(onDispose);
+    });
+
+    test('family', () {
+      final container = ProviderContainer.test();
+      final provider = ChangeNotifierProvider.autoDispose
+          .family<ValueNotifier<int>, int>((ref, value) {
+            return ValueNotifier(value);
+          });
+      final listener1 = Listener<ValueNotifier<int>>();
+      final listener2 = Listener<ValueNotifier<int>>();
+
+      container.listen(provider(0), listener1.call, fireImmediately: true);
+      container.listen(provider(42), listener2.call, fireImmediately: true);
+
+      verifyOnly(
+        listener1,
+        listener1(
+          argThat(isNull),
+          argThat(isA<ValueNotifier<int>>().having((s) => s.value, 'value', 0)),
+        ),
+      );
+
+      verifyOnly(
+        listener2,
+        listener2(
+          argThat(isNull),
+          argThat(
+            isA<ValueNotifier<int>>().having((s) => s.value, 'value', 42),
+          ),
+        ),
+      );
+    });
+
+    test('.notifier obtains the controller without listening to it', () async {
+      final dep = settableProvider((ref) => 0);
+      final notifier = TestNotifier();
+      final notifier2 = TestNotifier();
+      final provider = ChangeNotifierProvider.autoDispose((ref) {
+        return ref.watch(dep) == 0 ? notifier : notifier2;
+      });
+      final container = ProviderContainer.test();
+      addTearDown(container.dispose);
+
+      var callCount = 0;
+      final sub = container.listen(provider.notifier, (_, _) => callCount++);
+
+      expect(sub.read(), notifier);
+      expect(callCount, 0);
+
+      notifier.count++;
+
+      await container.pump();
+      expect(callCount, 0);
+
+      container.read(dep.notifier).state++;
+
+      expect(sub.read(), notifier2);
+
+      await container.pump();
+      expect(sub.read(), notifier2);
+      expect(callCount, 1);
+    });
+
+    test('can specify name', () {
+      final provider = ChangeNotifierProvider.autoDispose(
+        (_) => ValueNotifier(0),
+        name: 'example',
+      );
+
+      expect(provider.name, 'example');
+
+      final provider2 = ChangeNotifierProvider.autoDispose(
+        (_) => ValueNotifier(0),
+      );
+
+      expect(provider2.name, isNull);
+    });
+
+    testWidgets('listen to the notifier', (tester) async {
+      final notifier = TestNotifier();
+      final provider = ChangeNotifierProvider.autoDispose((_) => notifier);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(
+            builder: (c, ref, _) {
+              return Text(
+                ref.watch(provider).count.toString(),
+                textDirection: TextDirection.ltr,
+              );
+            },
+          ),
+        ),
+      );
+
+      expect(find.text('0'), findsOneWidget);
+
+      notifier.count++;
+      await tester.pump();
+
+      expect(find.text('1'), findsOneWidget);
+
+      await tester.pumpWidget(Container());
+
+      expect(notifier.mounted, isFalse);
+    });
+
+    test('support null ChangeNotifier', () {
+      final container = ProviderContainer.test();
+      final provider = ChangeNotifierProvider.autoDispose<ValueNotifier<int>?>(
+        (ref) => null,
+      );
+
+      expect(container.read(provider), null);
+      expect(container.read(provider.notifier), null);
+
+      container.dispose();
+    });
+
+    test('can refresh .notifier', () async {
+      var initialValue = 1;
+      final provider = ChangeNotifierProvider.autoDispose<ValueNotifier<int>>(
+        (ref) => ValueNotifier<int>(initialValue),
+      );
+      final container = ProviderContainer.test();
+
+      container.listen(provider.notifier, (prev, value) {});
+
+      expect(container.read(provider).value, 1);
+      expect(container.read(provider.notifier).value, 1);
+
+      initialValue = 42;
+
+      expect(container.refresh(provider.notifier).value, 42);
+      expect(container.read(provider).value, 42);
+    });
+
+    test('can be refreshed', () async {
+      var result = ValueNotifier(0);
+      final container = ProviderContainer.test();
+      final provider = ChangeNotifierProvider.autoDispose((ref) => result);
+
+      expect(container.read(provider), result);
+      expect(container.read(provider.notifier), result);
+
+      result = ValueNotifier(42);
+      expect(container.refresh(provider), result);
+
+      expect(container.read(provider), result);
+      expect(container.read(provider.notifier), result);
+    });
+
+    group('scoping an override overrides all the associated subproviders', () {
+      test('when passing the provider itself', () {
+        final provider = ChangeNotifierProvider.autoDispose(
+          (ref) => ValueNotifier(0),
+          dependencies: const [],
+        );
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [provider],
+        );
+
+        expect(container.read(provider.notifier).value, 0);
+        expect(container.read(provider).value, 0);
+        expect(
+          container.getAllProviderElements(),
+          unorderedEquals(<Object>[
+            isA<ProviderElement>().having((e) => e.origin, 'origin', provider),
+          ]),
+        );
+        expect(root.getAllProviderElements(), isEmpty);
+      });
+
+      test('when using provider.overrideWith', () {
+        final provider = ChangeNotifierProvider.autoDispose(
+          (ref) => ValueNotifier(0),
+          dependencies: const [],
+        );
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [provider.overrideWith((ref) => ValueNotifier(42))],
+        );
+
+        expect(container.read(provider.notifier).value, 42);
+        expect(container.read(provider).value, 42);
+        expect(
+          container.getAllProviderElements(),
+          unorderedEquals(<Object>[
+            isA<ProviderElement>().having((e) => e.origin, 'origin', provider),
+          ]),
+        );
+        expect(root.getAllProviderElements(), isEmpty);
+      });
+    });
+
+    test('can be auto-scoped', () async {
+      final dep = Provider((ref) => 0, dependencies: const []);
+      final provider = ChangeNotifierProvider.autoDispose(
+        (ref) => ValueNotifier(ref.watch(dep)),
+        dependencies: [dep],
+      );
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
+        parent: root,
+        overrides: [dep.overrideWithValue(42)],
+      );
+
+      expect(container.read(provider).value, 42);
+      expect(container.read(provider.notifier).value, 42);
+
+      expect(root.getAllProviderElements(), isEmpty);
+    });
+  });
+
+  group('ChangeNotifierProvider.family', () {
+    test('specifies `from` and `argument` for related providers', () {
+      final provider = ChangeNotifierProvider.family<ValueNotifier<int>, int>(
+        (ref, _) => ValueNotifier(42),
+      );
+
+      expect(provider(0).from, provider);
+      expect(provider(0).argument, 0);
+    });
+
+    test('support null ChangeNotifier', () {
+      final container = ProviderContainer.test();
+      final provider = ChangeNotifierProvider.family<ValueNotifier<int>?, int>(
+        (ref, _) => null,
+      );
+
+      expect(container.read(provider(0)), null);
+      expect(container.read(provider(0).notifier), null);
+
+      container.dispose();
+    });
+
+    group('scoping an override overrides all the associated subproviders', () {
+      test('when passing the provider itself', () async {
+        final provider = ChangeNotifierProvider.family<ValueNotifier<int>, int>(
+          (ref, _) => ValueNotifier(0),
+          dependencies: const [],
+        );
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [provider],
+        );
+
+        expect(container.read(provider(0).notifier).value, 0);
+        expect(container.read(provider(0)).value, 0);
+        expect(
+          container.getAllProviderElementsInOrder(),
+          unorderedEquals(<Object?>[
+            isA<ProviderElement>().having(
+              (e) => e.origin,
+              'origin',
+              provider(0),
+            ),
+          ]),
+        );
+        expect(root.getAllProviderElementsInOrder(), isEmpty);
+      });
+    });
+
+    test('ChangeNotifier can be auto-scoped', () async {
+      final dep = Provider((ref) => 0, dependencies: const []);
+      final provider = ChangeNotifierProvider.family<ValueNotifier<int>, int>(
+        (ref, i) => ValueNotifier(ref.watch(dep) + i),
+        dependencies: [dep],
+      );
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
+        parent: root,
+        overrides: [dep.overrideWithValue(42)],
+      );
+
+      expect(container.read(provider(10)).value, 52);
+      expect(container.read(provider(10).notifier).value, 52);
+
+      expect(root.getAllProviderElements(), isEmpty);
+    });
+
+    test('when using provider.overrideWith', () async {
+      final provider = ChangeNotifierProvider.family<ValueNotifier<int>, int>(
+        (ref, _) => ValueNotifier(0),
+        dependencies: const [],
+      );
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
+        parent: root,
+        overrides: [provider.overrideWith((ref, value) => ValueNotifier(42))],
+      );
+
+      expect(container.read(provider(0).notifier).value, 42);
+      expect(container.read(provider(0)).value, 42);
+      expect(root.getAllProviderElementsInOrder(), isEmpty);
+      expect(
+        container.getAllProviderElementsInOrder(),
+        unorderedEquals(<Object?>[
+          isA<ProviderElement>().having((e) => e.origin, 'origin', provider(0)),
+        ]),
+      );
+    });
+
+    test('family override', () {
+      final provider = ChangeNotifierProvider.family<ValueNotifier<int>, int>((
+        ref,
+        value,
+      ) {
+        return ValueNotifier(value);
+      });
+      final container = ProviderContainer.test(
+        overrides: [
+          provider.overrideWith((ref, value) => ValueNotifier(value * 2)),
+        ],
+      );
+
+      expect(
+        container.read(provider(0)),
+        isA<ValueNotifier<int>>().having((source) => source.value, 'value', 0),
+      );
+      expect(
+        container.read(provider(42)),
+        isA<ValueNotifier<int>>().having((source) => source.value, 'value', 84),
+      );
+    });
+  });
+
+  group('ChangeNotifierProvider.autoDispose.family', () {
+    test('specifies `from` and `argument` for related providers', () {
+      final provider = ChangeNotifierProvider.autoDispose
+          .family<ValueNotifier<int>, int>((ref, _) => ValueNotifier(42));
+
+      expect(provider(0).from, provider);
+      expect(provider(0).argument, 0);
+    });
+
+    test('support null ChangeNotifier', () {
+      final container = ProviderContainer.test();
+      final provider = ChangeNotifierProvider.family
+          .autoDispose<ValueNotifier<int>?, int>((ref, _) => null);
+
+      expect(container.read(provider(0)), null);
+      expect(container.read(provider(0).notifier), null);
+
+      container.dispose();
+    });
+
+    group('scoping an override overrides all the associated subproviders', () {
+      test('when passing the provider itself', () async {
+        final provider = ChangeNotifierProvider.autoDispose
+            .family<ValueNotifier<int>, int>(
+              (ref, _) => ValueNotifier(0),
+              dependencies: const [],
+            );
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [provider],
+        );
+
+        expect(container.read(provider(0).notifier).value, 0);
+        expect(container.read(provider(0)).value, 0);
+        expect(
+          container.getAllProviderElementsInOrder(),
+          unorderedEquals(<Object?>[
+            isA<ProviderElement>().having(
+              (e) => e.origin,
+              'origin',
+              provider(0),
+            ),
+          ]),
+        );
+        expect(root.getAllProviderElementsInOrder(), isEmpty);
+      });
+
+      test('ChangeNotifier can be auto-scoped', () async {
+        final dep = Provider((ref) => 0, dependencies: const []);
+        final provider = ChangeNotifierProvider.autoDispose
+            .family<ValueNotifier<int>, int>(
+              (ref, i) => ValueNotifier(ref.watch(dep) + i),
+              dependencies: [dep],
+            );
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [dep.overrideWithValue(42)],
+        );
+
+        expect(container.read(provider(10)).value, 52);
+        expect(container.read(provider(10).notifier).value, 52);
+
+        expect(root.getAllProviderElements(), isEmpty);
+      });
+
+      test('when using provider.overrideWith', () async {
+        final provider = ChangeNotifierProvider.autoDispose
+            .family<ValueNotifier<int>, int>(
+              (ref, _) => ValueNotifier(0),
+              dependencies: const [],
+            );
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [provider.overrideWith((ref, value) => ValueNotifier(42))],
+        );
+
+        expect(container.read(provider(0).notifier).value, 42);
+        expect(container.read(provider(0)).value, 42);
+        expect(root.getAllProviderElementsInOrder(), isEmpty);
+        expect(
+          container.getAllProviderElementsInOrder(),
+          unorderedEquals(<Object?>[
+            isA<ProviderElement>().having(
+              (e) => e.origin,
+              'origin',
+              provider(0),
+            ),
+          ]),
+        );
+      });
+    });
   });
 }
 

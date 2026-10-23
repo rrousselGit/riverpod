@@ -33,14 +33,10 @@ baseline:
     packages/flutter_riverpod/lib/src/core/provider_scope.dart: 1
     packages/flutter_riverpod/lib/src/core/widget_ref.dart: 1
     packages/flutter_riverpod/lib/src/providers/legacy/change_notifier_provider.dart: 4
-    packages/flutter_riverpod/test/auto_dispose_change_notifier_provider_test.dart: 1
     packages/flutter_riverpod/test/consumer_listen_test.dart: 1
     packages/flutter_riverpod/test/devtool_test.dart: 1
     packages/flutter_riverpod/test/framework_test.dart: 1
     packages/flutter_riverpod/test/provider_test.dart: 1
-    packages/flutter_riverpod/test/providers/change_notifier/auto_dispose_change_notifier_provider_test.dart: 1
-    packages/flutter_riverpod/test/providers/change_notifier/family_auto_dispose_change_notifier_provider_test.dart: 1
-    packages/flutter_riverpod/test/providers/change_notifier/family_change_notifier_provider_test.dart: 1
     packages/flutter_riverpod/test/src/core/consumer_test.dart: 2
     packages/flutter_riverpod/test/src/providers/legacy/change_notifier_provider_test.dart: 2
     packages/hooks_riverpod/lib/src/consumer.dart: 5
@@ -65,7 +61,7 @@ baseline:
     packages/riverpod/test/src/core/provider/notifier_provider_test.dart: 8
     packages/riverpod/test/src/core/provider_container_test.dart: 1
     packages/riverpod/test/src/core/provider_listenable_transformer_test.dart: 1
-    packages/riverpod/test/src/core/ref_test.dart: 3
+    packages/riverpod/test/src/core/ref_test.dart: 2
     packages/riverpod/test/src/providers/async_notifier/family_test.dart: 1
     packages/riverpod/test/src/providers/async_notifier/orphan_test.dart: 1
     packages/riverpod/test/src/providers/async_notifier_test.dart: 1
