@@ -41,12 +41,10 @@ baseline:
   packages/flutter_riverpod/test/src/core/consumer_test.dart: 2
   packages/flutter_riverpod/test/src/providers/legacy/change_notifier_provider_test.dart: 2
   packages/hooks_riverpod/lib/src/consumer.dart: 5
-  packages/lint_visitor_generator/lib/builder.dart: 1
   packages/riverpod/lib/misc.dart: 1
   packages/riverpod/lib/src/common/env.dart: 1
   packages/riverpod/lib/src/core/devtool.dart: 1
   packages/riverpod/lib/src/core/element.dart: 3
-  packages/riverpod/lib/src/core/modifiers/select_async.dart: 1
   packages/riverpod/lib/src/core/mutations.dart: 4
   packages/riverpod/lib/src/core/override_with_value.dart: 2
   packages/riverpod/lib/src/core/persist.dart: 1
@@ -98,7 +96,7 @@ baseline:
   packages/riverpod_devtool/lib/src/vm_service/instance.dart: 2
   packages/riverpod_devtool/test/src/collection_test.dart: 1
   packages/riverpod_devtool/test/src/vm_service/eval_test.dart: 1
-  packages/riverpod_generator/lib/src/riverpod_generator.dart: 2
+  packages/riverpod_generator/lib/src/riverpod_generator.dart: 1
   packages/riverpod_generator/test/async_notifier_test.dart: 3
   packages/riverpod_generator/test/async_test.dart: 1
   packages/riverpod_generator/test/integration/auto_dispose.dart: 1

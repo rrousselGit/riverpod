@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:analyzer/dart/analysis/utilities.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:glob/glob.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
@@ -9,7 +11,7 @@ import 'package:yaml/yaml.dart';
 @internal
 const ignorePolicyPath = 'scripts/ignores.yaml';
 
-final _ignoreComment = RegExp(r'//\s*ignore(_for_file)?\s*:');
+final _ignoreComment = RegExp(r'^//\s*ignore(_for_file)?\s*:');
 final _issueLink = RegExp(
   r'https://github\.com/([\w.-]+)/([\w.-]+)/issues/([1-9]\d{0,9})\b',
 );
@@ -149,23 +151,25 @@ IgnoreCheck checkIgnores({
     if (p.posix.extension(path) != '.dart' || policy.isIgnored(path)) {
       continue;
     }
-    final lines = read(path).split('\n');
-    if (_isGenerated(path, lines)) continue;
+    final content = read(path);
+    if (_isGenerated(path, content)) continue;
 
     // The lines of the comments that link no issue.
     final unlinked = <int>[];
-    for (var i = 0; i < lines.length; i++) {
-      if (!_ignoreComment.hasMatch(lines[i])) continue;
-
+    // Most files have no ignore, and need not be parsed.
+    final comments = content.contains('ignore')
+        ? _ignoreComments(content)
+        : const <({int line, String text})>[];
+    for (final (:line, :text) in comments) {
       final found = [
-        for (final match in _issueLink.allMatches(lines[i]))
+        for (final match in _issueLink.allMatches(text))
           if (int.parse(match[3]!) case final number
               when number <= _maxIssueNumber)
             IssueLink(match[1]!, match[2]!, number),
       ];
-      if (found.isEmpty) unlinked.add(i + 1);
+      if (found.isEmpty) unlinked.add(line);
       for (final link in found) {
-        (links[link] ??= []).add('$path:${i + 1}');
+        (links[link] ??= []).add('$path:$line');
       }
     }
 
@@ -197,9 +201,34 @@ IgnoreCheck checkIgnores({
 
 /// Generated Dart files: `*.g.dart`, `*.freezed.dart`, or a "GENERATED"
 /// header. Matches `is_generated` of scripts/lib/common.sh.
-bool _isGenerated(String path, List<String> lines) {
+bool _isGenerated(String path, String content) {
   if (path.endsWith('.g.dart') || path.endsWith('.freezed.dart')) return true;
-  return lines.take(5).any((line) => line.contains('GENERATED'));
+  return content.split('\n').take(5).any((line) => line.contains('GENERATED'));
+}
+
+/// The `// ignore` and `// ignore_for_file` comments of the Dart [content],
+/// with their line.
+///
+/// They are found among the comments of the parsed code, so that the same
+/// text in a string or a doc comment is not mistaken for one.
+Iterable<({int line, String text})> _ignoreComments(String content) sync* {
+  final unit = parseString(content: content, throwIfDiagnostics: false).unit;
+  for (Token? token = unit.beginToken; token != null; token = token.next) {
+    for (
+      Token? comment = token.precedingComments;
+      comment != null;
+      comment = comment.next
+    ) {
+      if (_ignoreComment.hasMatch(comment.lexeme)) {
+        yield (
+          line: unit.lineInfo.getLocation(comment.offset).lineNumber,
+          text: comment.lexeme,
+        );
+      }
+    }
+    // The end of file is its own next token.
+    if (token.isEof) break;
+  }
 }
 
 /// A GraphQL query of the GitHub API that fetches the state of every issue

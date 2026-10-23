@@ -88,9 +88,7 @@ Future<void> main(List<String> args) async {
     ..writeln(
       'Fix the code instead, or link the GitHub issue that requires the '
       'ignore on its line, such as: '
-      // Split, so that this file does not trip the check it runs.
-      '`//'
-      ' ignore: rule, https://github.com/owner/repo/issues/123`.',
+      '`// ignore: rule, https://github.com/owner/repo/issues/123`.',
     );
   exit(1);
 }

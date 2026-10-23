@@ -1,13 +1,8 @@
 import 'package:internal_lint/src/ignore_check.dart';
 import 'package:test/test.dart';
 
-// Split, so that this file does not trip the check it tests.
-const _ignore =
-    '//'
-    ' ignore: rule';
-const _ignoreForFile =
-    '//'
-    ' ignore_for_file: rule';
+const _ignore = '// ignore: rule';
+const _ignoreForFile = '// ignore_for_file: rule';
 const _open = 'https://github.com/owner/repo/issues/1';
 const _closed = 'https://github.com/owner/repo/issues/2';
 const _other = 'https://github.com/owner/other/issues/1';
@@ -80,6 +75,46 @@ baseline:
         [
           'lib/a.dart:2: `// ignore` without a GitHub issue link.',
           'lib/a.dart:3: `// ignore` without a GitHub issue link.',
+        ],
+      );
+    });
+
+    test('only reads comments', () {
+      expect(
+        check({
+          ...baseline,
+          'lib/a.dart':
+              '''
+final a = '$_ignore';
+final b = \'\'\'
+$_ignore
+\'\'\';
+/$_ignore
+/* $_ignore */
+// See $_ignore
+''',
+        }).problems,
+        isEmpty,
+      );
+    });
+
+    test('reads comments anywhere, even in invalid code', () {
+      expect(
+        check({
+          ...baseline,
+          'lib/a.dart':
+              '''
+void main() {
+  print('\${a // ignore: rule
+  }');
+  final x = ; $_ignore
+}
+$_ignoreForFile''',
+        }).problems,
+        [
+          'lib/a.dart:2: `// ignore` without a GitHub issue link.',
+          'lib/a.dart:4: `// ignore` without a GitHub issue link.',
+          'lib/a.dart:6: `// ignore` without a GitHub issue link.',
         ],
       );
     });
