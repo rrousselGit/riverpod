@@ -114,22 +114,25 @@ packages, generated files and packages tested in a browser. Pass
 `--no-coverage` to skip collecting coverage, and with it this check. CI does
 not run this check (`--no-coverage-check`), as Codecov checks coverage there.
 
-#### Every ignore links an open issue
+#### Every ignore and TODO links an open issue
 
-`scripts/check.sh ignores` (part of CI) fails when an `// ignore` or
-`// ignore_for_file` comment does not link, on the same line, the GitHub issue
-that requires it:
+`scripts/check.sh issues` (part of CI) fails when an `// ignore` or
+`// ignore_for_file` comment does not link, on its line, the GitHub issue that
+requires it. It does the same for TODOs, as the analyzer reports them, which
+may continue on the next lines when they are indented by one more space:
 
 ```dart
 // ignore: unused_element, https://github.com/dart-lang/sdk/issues/123
+// TODO(https://github.com/rrousselGit/riverpod/issues/123): Support families
 ```
 
-It also fails once that issue is closed: remove the ignore then. Generated
-files, the fixtures of the lint tests and the docs' snippets are exempt, as
-are the ignores counted in the baseline of `scripts/ignores.yaml`, which
-predate this check. Do not add to that baseline; lower an entry once its file
-has fewer unlinked ignores. Locally, checking that the issues are open needs
-`GITHUB_TOKEN` or `gh auth login`, and is skipped otherwise.
+It also fails once that issue is closed: remove the ignore or do the TODO
+then. Generated files, the fixtures of the lint tests and the docs' snippets
+are exempt, as are the comments counted in the baselines of
+`scripts/issues.yaml`, which predate this check. Do not add to those baselines;
+lower an entry once its file has fewer unlinked comments. Locally, checking
+that the issues are open needs `GITHUB_TOKEN` or `gh auth login`, and is
+skipped otherwise.
 
 ### Updating English docs
 
