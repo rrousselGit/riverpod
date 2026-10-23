@@ -10,7 +10,7 @@ import 'package:yaml/yaml.dart';
 
 /// The path of the policy file, relative to the repository root.
 @internal
-const issuePolicyPath = 'scripts/issues.yaml';
+const issuePolicyPath = 'baselines/issues.yaml';
 
 final _issueLink = RegExp(
   r'https://github\.com/([\w.-]+)/([\w.-]+)/issues/([1-9]\d{0,9})\b',

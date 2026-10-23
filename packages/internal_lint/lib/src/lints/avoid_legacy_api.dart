@@ -11,7 +11,7 @@ import 'package:meta/meta.dart';
 import '../legacy_api.dart';
 
 /// Forbids the legacy APIs outside of the files that
-/// `scripts/legacy_api.yaml` allows.
+/// `baselines/legacy_api.yaml` allows.
 @internal
 class AvoidLegacyApi extends AnalysisRule {
   AvoidLegacyApi()
