@@ -287,7 +287,6 @@ extension FindAst<NodeT extends AstNode> on List<NodeT> {
 }
 
 extension ResolverX on TestSourceResolver {
-  // ignore: invalid_use_of_internal_member
   Future<RiverpodAnalysisResult> resolveRiverpodAnalysisResult({
     String libraryName = 'foo',
     bool ignoreErrors = false,

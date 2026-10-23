@@ -3,3 +3,10 @@ analyzer:
   errors:
     # We have a tight constraint on Riverpod to use its internal APIs
     invalid_use_of_internal_member: ignore
+    # Some tests create an unused variable with an explicit type, to check that
+    # two types are assignable.
+    unused_local_variable: ignore
+
+linter:
+  rules:
+    omit_local_variable_types: false
