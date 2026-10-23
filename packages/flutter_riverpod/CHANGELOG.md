@@ -23,10 +23,8 @@
 - Migrated Material imports to `package:material_ui/material_ui.dart` and added
   `material_ui` as a dependency.
 - Updated the DevTools extension to use Material UI themes and localizations.
-- The deprecated export of `ChangeNotifierProviderFamily` from
-  `package:flutter_riverpod/misc.dart` now says to import it from
-  `package:flutter_riverpod/legacy.dart`. It will be removed in the next major
-  version.
+- `ChangeNotifierProviderFamily` is no longer deprecated when imported from
+  `package:flutter_riverpod/misc.dart`.
 
 ## 3.4.3 - 2026-09-04
 

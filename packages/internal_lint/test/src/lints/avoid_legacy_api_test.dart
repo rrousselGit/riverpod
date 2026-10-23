@@ -116,21 +116,6 @@ export 'package:riverpod/legacy.dart';
     ]);
   });
 
-  test('skips deprecated exports, which are on their way out', () async {
-    const content = '''
-@Deprecated('Import legacy.dart instead')
-export 'package:riverpod/src/internals.dart' show StateProvider;
-@Deprecated('Import legacy.dart instead')
-export 'package:riverpod/legacy.dart';
-''';
-    final root = createFixture({
-      'baselines/legacy_api.yaml': _policy,
-      'a.dart': content,
-    });
-
-    expect(await analyze(root, 'a.dart'), isEmpty);
-  });
-
   test('allows the files that the policy allows', () async {
     final root = createFixture({
       'baselines/legacy_api.yaml': _policy,

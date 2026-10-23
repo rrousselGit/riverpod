@@ -9,8 +9,6 @@
 #   Markdown files, and the Dart files the lint does not analyze, read as
 #   text. It also forbids silencing the lint, with an `ignore` comment or in
 #   an analysis_options.yaml.
-# Deprecated exports are not checked: they warn their users already, and are
-# on their way out.
 # Paths are relative to the repository root.
 
 # Globs of the files that are not checked at all. Translations of the docs
@@ -25,6 +23,9 @@ allowed:
   - packages/riverpod/lib/legacy.dart
   - packages/flutter_riverpod/lib/legacy.dart
   - packages/hooks_riverpod/lib/legacy.dart
+  # misc.dart also exports ChangeNotifierProviderFamily.
+  - packages/flutter_riverpod/lib/misc.dart
+  - packages/hooks_riverpod/lib/misc.dart
   # The internal libraries, which the legacy.dart libraries export from.
   - packages/riverpod/lib/src/internals.dart
   - packages/riverpod/lib/src/_internals.dart
@@ -35,7 +36,7 @@ allowed:
   - packages/flutter_riverpod/lib/src/providers/legacy/**
   - packages/riverpod/test/src/providers/legacy/**
   - packages/flutter_riverpod/test/src/providers/legacy/**
-  # They test the deprecated export of a legacy API.
+  # They test misc.dart's export of a legacy API.
   - "{packages/flutter_riverpod,packages/hooks_riverpod}/test/misc_test.dart"
   - "{packages/riverpod,packages/flutter_riverpod,packages/hooks_riverpod}/pubspec.yaml"
   - "**/CHANGELOG.md"

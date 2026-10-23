@@ -18,9 +18,8 @@ void main() {
     ], hasLength(4));
   });
 
-  test('still exports the ChangeNotifierProviderFamily of legacy.dart', () {
+  test('exports the ChangeNotifierProviderFamily of legacy.dart', () {
     expect(
-      // ignore: deprecated_export_use, https://github.com/rrousselGit/riverpod/issues/4942
       misc.ChangeNotifierProviderFamily,
       legacy.ChangeNotifierProviderFamily,
     );
