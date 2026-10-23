@@ -23,12 +23,6 @@ import 'package:riverpod/legacy.dart';
 final counter = StateProvider((ref) => 0);
 ''';
 
-/// A library that is not legacy, but lets legacy APIs through.
-const _reexport = '''
-export 'package:riverpod/legacy.dart';
-export 'package:riverpod/riverpod.dart' show Provider;
-''';
-
 void main() {
   Future<List<Diagnostic>> analyze(Directory root, String path) {
     return runRule(AvoidLegacyApi(), p.join(root.path, path));
@@ -104,21 +98,20 @@ void fn(Ref ref) {
   test('reports exports that let legacy APIs through', () async {
     const content = '''
 export 'package:riverpod/riverpod.dart';
-export 'other.dart' show StateProvider;
-export 'other.dart' show Provider;
-export 'other.dart' hide StateProvider, StateNotifier, StateController, StateNotifierProvider, StateNotifierProviderFamily, StateProviderFamily;
+export 'package:riverpod/src/internals.dart' show StateProvider;
+export 'package:riverpod/src/internals.dart' show Provider;
+export 'package:riverpod/src/internals.dart' hide StateProvider, StateNotifier, StateController, StateNotifierProvider, StateNotifierProviderFamily, StateProviderFamily;
 export 'package:riverpod/legacy.dart';
 ''';
     final root = createFixture({
       'baselines/legacy_api.yaml': _policy,
-      'other.dart': _reexport,
       'a.dart': content,
     });
 
     final diagnostics = await analyze(root, 'a.dart');
 
     expect(diagnostics.map((e) => reported(content, e)), [
-      "export 'other.dart' show StateProvider;",
+      "export 'package:riverpod/src/internals.dart' show StateProvider;",
       "export 'package:riverpod/legacy.dart';",
     ]);
   });
@@ -126,13 +119,12 @@ export 'package:riverpod/legacy.dart';
   test('skips deprecated exports, which are on their way out', () async {
     const content = '''
 @Deprecated('Import legacy.dart instead')
-export 'other.dart' show StateProvider;
+export 'package:riverpod/src/internals.dart' show StateProvider;
 @Deprecated('Import legacy.dart instead')
 export 'package:riverpod/legacy.dart';
 ''';
     final root = createFixture({
       'baselines/legacy_api.yaml': _policy,
-      'other.dart': _reexport,
       'a.dart': content,
     });
 

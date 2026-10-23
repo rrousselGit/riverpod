@@ -11,8 +11,6 @@
 import 'package:meta/meta.dart';
 
 import '../../internals.dart';
-import 'state_notifier_provider.dart';
-import 'state_provider.dart';
 
 @internal
 final class StateProviderFamilyBuilder {

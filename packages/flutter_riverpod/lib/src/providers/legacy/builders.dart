@@ -15,7 +15,6 @@ import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 
 import '../../internals.dart';
-import 'change_notifier_provider.dart';
 
 @internal
 final class ChangeNotifierProviderFamilyBuilder {

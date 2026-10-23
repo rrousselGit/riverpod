@@ -25,11 +25,16 @@ allowed:
   - packages/riverpod/lib/legacy.dart
   - packages/flutter_riverpod/lib/legacy.dart
   - packages/hooks_riverpod/lib/legacy.dart
+  # The internal libraries, which the legacy.dart libraries export from.
+  - packages/riverpod/lib/src/internals.dart
+  - packages/riverpod/lib/src/_internals.dart
+  - packages/flutter_riverpod/lib/src/internals.dart
+  - packages/hooks_riverpod/lib/src/internals.dart
+  - packages/riverpod_annotation/lib/src/internal.dart
   - packages/riverpod/lib/src/providers/legacy/**
   - packages/flutter_riverpod/lib/src/providers/legacy/**
   - packages/riverpod/test/src/providers/legacy/**
   - packages/flutter_riverpod/test/src/providers/legacy/**
-  - "{packages/riverpod,packages/flutter_riverpod,packages/hooks_riverpod}/test/legacy_test.dart"
   # They test the deprecated export of a legacy API.
   - "{packages/flutter_riverpod,packages/hooks_riverpod}/test/misc_test.dart"
   - "{packages/riverpod,packages/flutter_riverpod,packages/hooks_riverpod}/pubspec.yaml"

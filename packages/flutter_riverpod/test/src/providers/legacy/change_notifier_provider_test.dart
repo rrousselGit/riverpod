@@ -3,7 +3,6 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart' hide Listener;
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';

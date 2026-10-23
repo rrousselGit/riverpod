@@ -1,8 +1,3 @@
-// TODO(https://github.com/rrousselGit/riverpod/issues/4942): Remove in the
-// next major version.
-@Deprecated('Import legacy.dart instead')
-export 'package:flutter_riverpod/legacy.dart' show ChangeNotifierProviderFamily;
-
 export 'src/internals.dart'
     show
         debugTrackProviderCreation,
@@ -30,3 +25,8 @@ export 'src/internals.dart'
         ProviderTransformer2,
         SyncProviderTransformer2,
         WhenComplete;
+
+// TODO(https://github.com/rrousselGit/riverpod/issues/4942): Remove in the
+// next major version.
+@Deprecated('Import legacy.dart instead')
+export 'src/internals.dart' show ChangeNotifierProviderFamily;

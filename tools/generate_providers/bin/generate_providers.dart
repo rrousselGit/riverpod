@@ -187,8 +187,6 @@ import 'internals.dart';
 import 'package:meta/meta.dart';
 
 import '../../internals.dart';
-import 'state_notifier_provider.dart';
-import 'state_provider.dart';
 """);
 
     case 'flutter_riverpod':
@@ -209,7 +207,6 @@ import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 
 import '../../internals.dart';
-import 'change_notifier_provider.dart';
 """);
     default:
       throw UnsupportedError('Unknown package ${args.first}');

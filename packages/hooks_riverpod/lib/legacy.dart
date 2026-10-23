@@ -1,10 +1,10 @@
-export 'package:flutter_riverpod/legacy.dart'
+export 'src/internals.dart'
     show
         StateNotifier,
         StateController,
         StateNotifierProvider,
-        StateNotifierProviderFamily,
         StateProvider,
-        StateProviderFamily,
         ChangeNotifierProvider,
-        ChangeNotifierProviderFamily;
+        ChangeNotifierProviderFamily,
+        StateNotifierProviderFamily,
+        StateProviderFamily;
