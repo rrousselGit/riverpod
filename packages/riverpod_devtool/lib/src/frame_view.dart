@@ -321,7 +321,7 @@ class ProviderViewer extends StatelessWidget {
 
     return Panel(
       child: SplitPane(
-        // TODO remove key once devtools_app_shared 0.5.2 is released, with the fix of https://github.com/flutter/devtools/pull/9822
+        // TODO remove key, Blocked by: https://github.com/flutter/devtools/issues/9648
         key: ValueKey(notifier != null),
         axis: .vertical,
         initialFractions: [

@@ -20,12 +20,11 @@
 #                                              its lib/src/**/x.dart
 #   legacy      scripts/legacy.sh              legacy APIs are only used where
 #                                              scripts/legacy_api.yaml allows
-#   issues      scripts/issues.sh              every `// ignore` and TODO
-#                                              links an open GitHub issue,
-#                                              but those scripts/issues.yaml
-#                                              exempts
+#   ignores     scripts/ignores.sh             every `// ignore` links an open
+#                                              GitHub issue, but those
+#                                              scripts/ignores.yaml exempts
 # graph and generate run first, one after the other, since the rest reads
-# their output. format, analyze, test, changelog, tested, legacy and issues
+# their output. format, analyze, test, changelog, tested, legacy and ignores
 # then share one parallel pool. Each failure is listed with the exact command
 # that re-runs it.
 #
@@ -72,12 +71,12 @@ while [ $# -gt 0 ]; do
     --shard)      [ $# -ge 2 ] || die "$1 needs I/N"; shard="$2"; shift 2 ;;
     --base)       [ $# -ge 2 ] || die "$1 needs a ref"; base="$2"; shift 2 ;;
     -h|--help)    usage; exit 0 ;;
-    all)          steps="$steps graph generate format analyze test changelog tested legacy issues"; shift ;;
-    graph|generate|format|analyze|test|changelog|tested|legacy|issues) steps="$steps $1"; shift ;;
+    all)          steps="$steps graph generate format analyze test changelog tested legacy ignores"; shift ;;
+    graph|generate|format|analyze|test|changelog|tested|legacy|ignores) steps="$steps $1"; shift ;;
     *)            die "unknown argument '$1' (see --help)" ;;
   esac
 done
-[ -z "$steps" ] && steps="graph generate format analyze test changelog tested legacy issues"
+[ -z "$steps" ] && steps="graph generate format analyze test changelog tested legacy ignores"
 has_step() { [[ " $steps " == *" $1 "* ]]; }
 
 [[ "$POOL_JOBS" =~ ^[1-9][0-9]*$ ]] || die "--jobs must be a positive number"
@@ -111,7 +110,7 @@ pool_init
 # One `pub get` up front (and global tools activated once), so the parallel
 # scripts below never race on them.
 if has_step graph || has_step generate || has_step format || has_step analyze || has_step test ||
-   has_step tested || has_step legacy || has_step issues; then
+   has_step tested || has_step legacy || has_step ignores; then
   ensure_deps
 fi
 if has_step test && [ "$coverage" != 0 ]; then ensure_pub_global coverage coverage; fi
@@ -130,7 +129,7 @@ if has_step generate; then
 fi
 
 pool_steps=""
-for s in format analyze test changelog tested legacy issues; do has_step "$s" && pool_steps="$pool_steps $s"; done
+for s in format analyze test changelog tested legacy ignores; do has_step "$s" && pool_steps="$pool_steps $s"; done
 if [ -n "$pool_steps" ]; then
   echo "==>$pool_steps"
   # Queued slowest-first: tests, then analysis, then the quick checks.
@@ -152,7 +151,7 @@ if [ -n "$pool_steps" ]; then
   has_step changelog && pool_add "changelog" "scripts/changelog.sh $base"
   has_step tested && pool_add "tested" "scripts/tested.sh --base $base$selected"
   has_step legacy && pool_add "legacy" "scripts/legacy.sh"
-  has_step issues && pool_add "issues" "scripts/issues.sh"
+  has_step ignores && pool_add "ignores" "scripts/ignores.sh"
   pool_run
 fi
 

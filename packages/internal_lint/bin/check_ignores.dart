@@ -3,34 +3,30 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:internal_lint/src/ignore_check.dart';
-import 'package:internal_lint/src/issue_links.dart';
-import 'package:internal_lint/src/todo_check.dart';
 import 'package:path/path.dart' as p;
 
-/// Checks that every `// ignore` comment ([ignoreCheck]) and `TODO`
-/// ([todoCheck]) links the GitHub issue that requires it (see
-/// [checkIssueLinks]), and that those issues are still open.
+/// Checks that every `// ignore` comment links the GitHub issue that justifies
+/// it (see [checkIgnores]), and that those issues are still open.
 ///
 /// The states of the issues are fetched in a single request to the GitHub
 /// API, authenticated by `GITHUB_TOKEN`, `GH_TOKEN` or `gh auth token`.
 /// Without a token, that part is skipped, except on CI where it fails.
 ///
-/// Usage: `dart run internal_lint:check_issues [root]`, where `root` is the
+/// Usage: `dart run internal_lint:check_ignores [root]`, where `root` is the
 /// repository root (default: the current directory).
 Future<void> main(List<String> args) async {
-  const checks = [ignoreCheck, todoCheck];
   final root = p.absolute(args.firstOrNull ?? '.');
 
-  final policyFile = File(p.join(root, issuePolicyPath));
+  final policyFile = File(p.join(root, ignorePolicyPath));
   if (!policyFile.existsSync()) {
-    stderr.writeln('$issuePolicyPath is missing.');
+    stderr.writeln('$ignorePolicyPath is missing.');
     exit(2);
   }
-  final IssuePolicy policy;
+  final IgnorePolicy policy;
   try {
-    policy = IssuePolicy.parse(policyFile.readAsStringSync(), checks: checks);
+    policy = IgnorePolicy.parse(policyFile.readAsStringSync());
   } on FormatException catch (e) {
-    stderr.writeln('$issuePolicyPath is malformed: ${e.message}');
+    stderr.writeln('$ignorePolicyPath is malformed: ${e.message}');
     exit(2);
   }
 
@@ -59,9 +55,8 @@ Future<void> main(List<String> args) async {
       .where((path) => File(p.join(root, path)).existsSync())
       .toList();
 
-  final check = checkIssueLinks(
+  final check = checkIgnores(
     policy: policy,
-    checks: checks,
     files: files,
     read: (path) => File(p.join(root, path)).readAsStringSync(),
   );
@@ -90,20 +85,17 @@ Future<void> main(List<String> args) async {
   }
 
   if (problems.isEmpty) {
-    stdout.writeln('Every `// ignore` and TODO links an open GitHub issue.');
+    stdout.writeln('Every `// ignore` links an open GitHub issue.');
     return;
   }
 
   stderr
-    ..writeln(
-      'Some `// ignore` and TODO comments do not link an open GitHub issue:',
-    )
+    ..writeln('Some `// ignore` comments are not justified by an open issue:')
     ..writeAll(problems.map((problem) => '  $problem\n'))
     ..writeln(
       'Fix the code instead, or link the GitHub issue that requires the '
-      'comment in it, such as: '
-      '`// ignore: rule, https://github.com/owner/repo/issues/123` or '
-      '`// TODO(https://github.com/owner/repo/issues/123): ...`.',
+      'ignore on its line, such as: '
+      '`// ignore: rule, https://github.com/owner/repo/issues/123`.',
     );
   exit(1);
 }
@@ -131,7 +123,7 @@ Future<Object?> _graphql(String token, String query) async {
     );
     request.headers
       ..set(HttpHeaders.authorizationHeader, 'bearer $token')
-      ..set(HttpHeaders.userAgentHeader, 'riverpod-check-issues')
+      ..set(HttpHeaders.userAgentHeader, 'riverpod-check-ignores')
       ..contentType = ContentType.json;
     request.write(jsonEncode({'query': query}));
     final (statusCode, body) = await () async {
