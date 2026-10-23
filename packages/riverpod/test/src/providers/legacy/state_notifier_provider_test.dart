@@ -13,6 +13,35 @@ import '../../utils.dart';
 
 void main() {
   group('StateNotifierProvider', () {
+    test(
+      'notifies provider.notifier listeners of errors thrown when recreating '
+      'the notifier',
+      () {
+        final container = ProviderContainer.test();
+        final dep = StateProvider((ref) => 0);
+        final provider = StateNotifierProvider<StateController<int>, int>((
+          ref,
+        ) {
+          if (ref.watch(dep) != 0) throw StateError('rebuild');
+          return StateController(0);
+        });
+        final errors = <Object>[];
+        container.listen(
+          provider.notifier,
+          (_, _) {},
+          onError: (err, _) => errors.add(err),
+        );
+
+        container.read(dep.notifier).state = 1;
+
+        expect(
+          () => container.read(provider),
+          throwsProviderException(isStateError),
+        );
+        expect(errors, [isStateError]);
+      },
+    );
+
     test('isAutoDispose defaults to false, and can be set', () {
       expect(
         StateNotifierProvider((ref) => StateController(0)).isAutoDispose,
