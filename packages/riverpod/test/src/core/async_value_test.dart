@@ -1356,6 +1356,19 @@ void main() {
     }
   });
 
+  test('AsyncValueIsLoadingException can be constructed', () {
+    const loading = AsyncLoading<int>();
+    final exception = AsyncValueIsLoadingException(loading);
+
+    expect(exception.value, same(loading));
+    expect(
+      exception.toString(),
+      'AsyncValueIsLoadingException: '
+      '`requireValue` was called on the async value `$loading`, '
+      'yet it neither has an error nor a value.',
+    );
+  });
+
   test('requireValue', () {
     expect(const AsyncData(42).requireValue, 42);
 
