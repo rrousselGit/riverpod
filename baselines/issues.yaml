@@ -87,14 +87,6 @@ baseline:
     packages/riverpod_analyzer_utils_tests/test/type_utils_test.dart: 1
     packages/riverpod_analyzer_utils_tests/test/widget_ref_invocation_test.dart: 1
     packages/riverpod_annotation/lib/riverpod_annotation.dart: 32
-    packages/riverpod_devtool/lib/main.dart: 1
-    packages/riverpod_devtool/lib/src/elements.dart: 1
-    packages/riverpod_devtool/lib/src/frame_view.dart: 1
-    packages/riverpod_devtool/lib/src/frames.dart: 2
-    packages/riverpod_devtool/lib/src/observer.dart: 1
-    packages/riverpod_devtool/lib/src/provider_list.dart: 1
-    packages/riverpod_devtool/lib/src/providers/providers.dart: 1
-    packages/riverpod_devtool/lib/src/vm_service.dart: 2
     packages/riverpod_devtool/lib/src/vm_service/byte.dart: 2
     packages/riverpod_devtool/lib/src/vm_service/instance.dart: 2
     packages/riverpod_devtool/test/src/collection_test.dart: 1

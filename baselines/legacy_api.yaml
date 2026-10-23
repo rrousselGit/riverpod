@@ -85,7 +85,5 @@ baseline:
   - packages/riverpod_lint/README.md
   - packages/riverpod_lint_flutter_test/test/lints/unsupported_provider_value.dart
   - packages/riverpod_lint_flutter_test/test/lints/unsupported_provider_value.g.dart
-  - website/docs/concepts2/provider_observer_logger.dart
   - website/docs/from_provider/provider_vs_riverpod.mdx
   - website/docs/from_provider/quickstart.mdx
-  - website/docs/root/do_dont.mdx
