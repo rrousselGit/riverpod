@@ -19,9 +19,6 @@
 - Migrated Material imports to `package:material_ui/material_ui.dart` and added
   `material_ui` as a dependency.
 - Updated the DevTools extension to use Material UI themes and localizations.
-- Riverpod now uses `package:state_notifier` only for its legacy providers.
-  `RemoveListener`, the type of the functions that remove a listener, is
-  Riverpod's own.
 
 ## 3.4.3 - 2026-09-04
 
