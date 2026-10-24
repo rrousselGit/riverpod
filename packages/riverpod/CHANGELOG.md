@@ -1,5 +1,6 @@
 ## Unreleased minor
 
+- `AsyncValueIsLoadingException` now has a public constructor. (thanks to @uveshm003)
 - `debugTrackProviderCreation` is now exported by `package:riverpod/misc.dart`.
 - Devtools now retain only the current provider snapshot by default. Set
   `debugTrackProviderHistory = true` (imported from `package:riverpod/misc.dart`)
