@@ -7,6 +7,8 @@
   frames.
 - Devtools inspection caches are released when their client closes or stops
   renewing its session for 30 seconds, including after an abrupt disconnect.
+- Added a regression test for reading a weak `select` subscription on a
+  provider that was already mounted by another listener.
 - Deprecated `Ref.exist`.
 - Added `provider.exist`, which is listenable.
   This enables writing `ref.listen(provider.exist, ...)`.
