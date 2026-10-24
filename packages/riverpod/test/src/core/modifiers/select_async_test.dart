@@ -218,7 +218,6 @@ void main() {
     final provider = FutureProvider((ref) async => ref.watch(dep));
 
     final sub = container.listen<Future<Object?>>(
-      // ignore: only_throw_errors
       provider.selectAsync((data) => throw data),
       (prev, next) {
         // workaround to the fact that throwA(2) later in the test

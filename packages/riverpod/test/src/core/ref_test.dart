@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use_from_same_package
-
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
@@ -340,7 +338,6 @@ void main() {
               >(() => peerNotifier, name: 'peerNotifierProvider');
 
           container.read(peerNotifierProvider);
-          // ignore: invalid_use_of_protected_member
           peerNotifier.ref.invalidate(myNotifierProvider(0));
 
           expect(buildCount, 0);

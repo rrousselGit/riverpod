@@ -1,5 +1,3 @@
-// ignore_for_file: invalid_use_of_protected_member
-
 import 'dart:async';
 
 import 'package:async/async.dart' hide DelegatingStream;
@@ -654,11 +652,8 @@ void main() {
           final sub = container.listen(provider.notifier, (previous, next) {});
           await container.read(provider.future);
 
-          // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
           final newState = AsyncData(84);
-          // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
           final newLoading = AsyncLoading<int>();
-          // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
           final newError = AsyncError<int>(84, StackTrace.empty);
 
           sub.read().state = newState;

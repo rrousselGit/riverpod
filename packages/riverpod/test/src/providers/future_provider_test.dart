@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_types_on_closure_parameters
-
 import 'dart:async';
 
 import 'package:async/async.dart';
@@ -492,7 +490,6 @@ void main() {
 
     test('throwing inside "create" result in an AsyncValue.error', () {
       final provider = FutureProvider<int>(
-        // ignore: only_throw_errors
         (ref) => throw 42,
         retry: (_, _) => null,
       );
@@ -515,7 +512,6 @@ void main() {
     });
 
     test('handle errors', () async {
-      // ignore: only_throw_errors
       final provider = FutureProvider<int>((_) async => throw 42);
       final container = ProviderContainer.test();
 
@@ -530,7 +526,6 @@ void main() {
     });
 
     test('noop if fails after provider dispose', () async {
-      // ignore: only_throw_errors
       final provider = FutureProvider<int>((_) async => throw 42);
       final container = ProviderContainer.test();
 

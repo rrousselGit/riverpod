@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use_from_same_package, invalid_use_of_internal_member
-
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
