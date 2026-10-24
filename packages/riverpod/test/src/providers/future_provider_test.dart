@@ -4,7 +4,6 @@ import 'dart:async';
 
 import 'package:async/async.dart';
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
@@ -103,7 +102,7 @@ void main() {
         '.future does not update dependents if the created future did not change',
         () async {
           final container = ProviderContainer.test();
-          final dep = StateProvider((ref) => 0);
+          final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
           final completer = Completer<int>();
           final provider = FutureProvider((ref) {
             ref.watch(dep);
@@ -223,7 +222,9 @@ void main() {
         });
 
         test('update dependents when the future changes', () async {
-          final futureProvider = StateProvider((ref) => Future.value(42));
+          final futureProvider = NotifierProvider(
+            () => SettableNotifier((ref) => Future.value(42)),
+          );
           // a FutureProvider that can rebuild with a new future
           final provider = FutureProvider<int>(
             (ref) => ref.watch(futureProvider),
@@ -248,8 +249,8 @@ void main() {
 
       group('FutureProvider.autoDispose().future', () {
         test('update dependents when the future changes', () async {
-          final futureProvider = StateProvider(
-            (ref) => Future.value(42),
+          final futureProvider = NotifierProvider(
+            () => SettableNotifier((ref) => Future.value(42)),
             name: 'futureProvider',
           );
           // a FutureProvider that can rebuild with a new future
@@ -470,7 +471,7 @@ void main() {
       'does not update dependents if the created stream did not change',
       () async {
         final container = ProviderContainer.test();
-        final dep = StateProvider((ref) => 0);
+        final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
         final completer = Completer<int>();
         final provider = FutureProvider((ref) {
           ref.watch(dep);
@@ -701,7 +702,7 @@ void main() {
         'does not set isRefreshing if triggered by a dependency change',
         () async {
           final container = ProviderContainer.test();
-          final dep = StateProvider((ref) => 0);
+          final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
           final provider = FutureProvider(
             (ref) => Future.value(ref.watch(dep)),
           );
@@ -727,7 +728,7 @@ void main() {
         'does not set isRefreshing if both triggered by a dependency change and ref.refresh',
         () async {
           final container = ProviderContainer.test();
-          final dep = StateProvider((ref) => 0);
+          final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
           final provider = FutureProvider(
             (ref) => Future.value(ref.watch(dep)),
           );
@@ -1046,7 +1047,9 @@ void main() {
     test(
       'when going from AsyncLoading to AsyncLoading, does not notify listeners',
       () async {
-        final dep = StateProvider((ref) => Future.value(42));
+        final dep = NotifierProvider(
+          () => SettableNotifier((ref) => Future.value(42)),
+        );
         final provider = FutureProvider.autoDispose((ref) => ref.watch(dep));
         final container = ProviderContainer.test();
         final listener = Listener<AsyncValue<int>>();
@@ -1124,7 +1127,7 @@ void main() {
       'does not update dependents if the created stream did not change',
       () async {
         final container = ProviderContainer.test();
-        final dep = StateProvider((ref) => 0);
+        final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
         final completer = Completer<int>();
         final provider = FutureProvider.autoDispose((ref) {
           ref.watch(dep);
@@ -1147,7 +1150,7 @@ void main() {
       '.stream does not update dependents if the created stream did not change',
       () async {
         final container = ProviderContainer.test();
-        final dep = StateProvider((ref) => 0);
+        final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
         final completer = Completer<int>();
         final provider = FutureProvider.autoDispose((ref) {
           ref.watch(dep);

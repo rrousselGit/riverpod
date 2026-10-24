@@ -3,7 +3,6 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart'
     show InternalProviderContainer, ProviderElement;
@@ -16,7 +15,9 @@ void main() {
     test(
       'when going from AsyncLoading to AsyncLoading, does not notify listeners',
       () async {
-        final dep = StateProvider((ref) => Stream.value(42));
+        final dep = NotifierProvider(
+          () => SettableNotifier((ref) => Stream.value(42)),
+        );
         final provider = StreamProvider((ref) => ref.watch(dep));
         final container = ProviderContainer.test();
         final listener = Listener<AsyncValue<int>>();
@@ -143,7 +144,7 @@ void main() {
       () async {
         final container = ProviderContainer.test();
 
-        final dep = StateProvider((ref) => 0);
+        final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
         final provider = StreamProvider((ref) {
           ref.watch(dep);
           return const Stream<int>.empty();
@@ -358,7 +359,7 @@ void main() {
         'does not set isRefreshing if triggered by a dependency change',
         () async {
           final container = ProviderContainer.test();
-          final dep = StateProvider((ref) => 0);
+          final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
           final provider = StreamProvider(
             (ref) => Stream.value(ref.watch(dep)),
           );
@@ -386,7 +387,7 @@ void main() {
         'does not set isRefreshing if both triggered by a dependency change and ref.refresh',
         () async {
           final container = ProviderContainer.test();
-          final dep = StateProvider((ref) => 0);
+          final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
           final provider = StreamProvider(
             (ref) => Stream.value(ref.watch(dep)),
           );
@@ -526,7 +527,7 @@ void main() {
         () async {
           final container = ProviderContainer.test();
 
-          final dep = StateProvider((ref) => 0);
+          final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
 
           final provider = StreamProvider((ref) {
             ref.watch(dep);
@@ -843,7 +844,9 @@ void main() {
     test(
       'when going from AsyncLoading to AsyncLoading, does not notify listeners',
       () async {
-        final dep = StateProvider((ref) => Stream.value(42));
+        final dep = NotifierProvider(
+          () => SettableNotifier((ref) => Stream.value(42)),
+        );
         final provider = StreamProvider.autoDispose((ref) => ref.watch(dep));
         final container = ProviderContainer.test();
         final listener = Listener<AsyncValue<int>>();
@@ -906,7 +909,7 @@ void main() {
       'does not update dependents if the created stream did not change',
       () async {
         final container = ProviderContainer.test();
-        final dep = StateProvider((ref) => 0);
+        final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
         final provider = StreamProvider.autoDispose((ref) {
           ref.watch(dep);
           return const Stream<int>.empty();
@@ -928,7 +931,7 @@ void main() {
       '.future does not update dependents if the created future did not change',
       () async {
         final container = ProviderContainer.test();
-        final dep = StateProvider((ref) => 0);
+        final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
         final provider = StreamProvider.autoDispose((ref) {
           ref.watch(dep);
           return const Stream<int>.empty();

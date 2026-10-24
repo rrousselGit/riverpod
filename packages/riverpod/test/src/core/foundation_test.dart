@@ -1,4 +1,3 @@
-import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
@@ -88,17 +87,4 @@ final matrix = [
         .family
         .call<StreamNotifier<Object?>, Object?, Object?>,
   ).build((arg) => throw UnimplementedError()),
-  // Legacy
-  Builder(
-    StateProvider<Object?>.new,
-  ).build((ref) => throw UnimplementedError()),
-  Builder(
-    StateProvider.family.call<Object?, Object?>,
-  ).build((ref, arg) => throw UnimplementedError()),
-  Builder(
-    StateNotifierProvider<StateNotifier<Object?>, Object?>.new,
-  ).build((ref) => throw UnimplementedError()),
-  Builder(
-    StateNotifierProvider.family.call<StateNotifier<Object?>, Object?, Object?>,
-  ).build((ref, arg) => throw UnimplementedError()),
 ];

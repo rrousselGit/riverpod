@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
 import 'package:riverpod/misc.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
@@ -122,18 +121,18 @@ void main() {
     });
 
     test('Pass family and argument properties', () {
-      final family = StateNotifierProvider.family<Counter, int, int>((_, a) {
-        return Counter();
-      });
+      final family = NotifierProvider.family<Counter, int, int>(
+        (a) => Counter(),
+      );
       expect(
         family(0),
-        isA<StateNotifierProvider<Counter, int>>()
+        isA<NotifierProvider<Counter, int>>()
             .having((p) => p.argument, 'argument', 0)
             .having((p) => p.from, 'from', family),
       );
       expect(
         family(1),
-        isA<StateNotifierProvider<Counter, int>>()
+        isA<NotifierProvider<Counter, int>>()
             .having((p) => p.from, 'from', family)
             .having((p) => p.argument, 'argument', 1),
       );

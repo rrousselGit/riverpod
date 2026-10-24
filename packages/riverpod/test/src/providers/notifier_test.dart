@@ -2,7 +2,6 @@
 
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart' show UnmountedRefException;
 import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
@@ -212,7 +211,7 @@ void main() {
     );
 
     test('calls notifier.build on every watch update', () async {
-      final dep = StateProvider((ref) => 0);
+      final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
       final provider = factory.simpleTestProvider((ref, _) {
         return ref.watch(dep);
       });

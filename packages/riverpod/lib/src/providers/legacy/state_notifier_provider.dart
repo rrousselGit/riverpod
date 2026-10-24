@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../../internals.dart';
+import 'builder.dart';
 
 /// {@template riverpod.state_notifier_provider}
 /// Creates a [StateNotifier] and exposes its current state.

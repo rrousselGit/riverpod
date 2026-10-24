@@ -1,6 +1,5 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:hooks_riverpod/legacy.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'todo.dart';
@@ -25,12 +24,23 @@ enum TodoListFilter { all, active, completed }
 
 /// The currently active filter.
 ///
-/// We use [StateProvider] here as there is no fancy logic behind manipulating
-/// the value since it's just enum.
-final todoListFilter = StateProvider(
-  (_) => TodoListFilter.all,
+/// Its [Notifier] only lets the UI pick a filter, as there is no fancy logic
+/// behind manipulating an enum.
+final todoListFilter = NotifierProvider<TodoListFilterNotifier, TodoListFilter>(
+  TodoListFilterNotifier.new,
   name: 'todoListFilter',
 );
+
+class TodoListFilterNotifier extends Notifier<TodoListFilter> {
+  @override
+  TodoListFilter build() => TodoListFilter.all;
+
+  void showAll() => state = TodoListFilter.all;
+
+  void showActive() => state = TodoListFilter.active;
+
+  void showCompleted() => state = TodoListFilter.completed;
+}
 
 /// The number of uncompleted todos
 ///
@@ -149,8 +159,7 @@ class Toolbar extends HookConsumerWidget {
             key: allFilterKey,
             message: 'All todos',
             child: TextButton(
-              onPressed: () =>
-                  ref.read(todoListFilter.notifier).state = TodoListFilter.all,
+              onPressed: () => ref.read(todoListFilter.notifier).showAll(),
               style: ButtonStyle(
                 visualDensity: VisualDensity.compact,
                 foregroundColor: WidgetStatePropertyAll(
@@ -164,8 +173,7 @@ class Toolbar extends HookConsumerWidget {
             key: activeFilterKey,
             message: 'Only uncompleted todos',
             child: TextButton(
-              onPressed: () => ref.read(todoListFilter.notifier).state =
-                  TodoListFilter.active,
+              onPressed: () => ref.read(todoListFilter.notifier).showActive(),
               style: ButtonStyle(
                 visualDensity: VisualDensity.compact,
                 foregroundColor: WidgetStatePropertyAll(
@@ -179,8 +187,8 @@ class Toolbar extends HookConsumerWidget {
             key: completedFilterKey,
             message: 'Only completed todos',
             child: TextButton(
-              onPressed: () => ref.read(todoListFilter.notifier).state =
-                  TodoListFilter.completed,
+              onPressed: () =>
+                  ref.read(todoListFilter.notifier).showCompleted(),
               style: ButtonStyle(
                 visualDensity: VisualDensity.compact,
                 foregroundColor: WidgetStatePropertyAll(
