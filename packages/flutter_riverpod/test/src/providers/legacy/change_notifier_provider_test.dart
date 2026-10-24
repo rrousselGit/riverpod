@@ -1,5 +1,3 @@
-// ignore_for_file: invalid_use_of_internal_member, avoid_types_on_closure_parameters
-
 import 'dart:async';
 
 import 'package:flutter/widgets.dart' hide Listener;

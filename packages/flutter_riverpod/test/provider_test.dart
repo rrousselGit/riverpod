@@ -1,5 +1,3 @@
-// ignore_for_file: omit_obvious_local_variable_types
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';

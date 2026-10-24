@@ -30,7 +30,6 @@ void main() {
           overrideWithBuild.call(captureAny, captureAny),
         ).captured;
 
-        // ignore: invalid_use_of_protected_member
         expect(ref, same(notifier.ref));
 
         expect(notifier.state, 42);
@@ -63,7 +62,6 @@ void main() {
           overrideWithBuild.call(captureAny, captureAny),
         ).captured;
 
-        // ignore: invalid_use_of_protected_member
         expect(ref, same(notifier.ref));
 
         expect(notifier.state, 42);

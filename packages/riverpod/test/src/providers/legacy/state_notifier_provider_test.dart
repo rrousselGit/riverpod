@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_types_on_closure_parameters
-
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';

@@ -1,5 +1,3 @@
-// ignore_for_file: invalid_use_of_protected_member, prefer_const_constructors
-
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';

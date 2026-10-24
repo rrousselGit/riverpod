@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_types_on_closure_parameters
-
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
@@ -128,7 +126,6 @@ void main() {
       final container = ProviderContainer.test();
 
       final provider = StreamProvider<int>(
-        // ignore: only_throw_errors
         (ref) => throw 42,
         retry: (_, _) => null,
       );
