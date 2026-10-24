@@ -1,6 +1,6 @@
 ---
 title: Implementing pull-to-refresh
-version: 1
+version: 2
 ---
 
 import { Link } from "/src/components/Link";
@@ -25,7 +25,7 @@ problems to solve:
 - We need to show the refresh indicator for as long as the refresh is happening.
 
 Let's see how to solve this using Riverpod.  
-For this, we will make a simple example which recommends a random activity to users.  
+For this, we will make a simple example which recommends a random brewery to users.  
 And doing a pull-to-refresh will trigger a new suggestion:
 
 <img
@@ -36,25 +36,25 @@ And doing a pull-to-refresh will trigger a new suggestion:
 ## Making a bare-bones application.
 
 Before implement a pull-to-refresh, we first need something to refresh.  
-We can make a simple application which uses [Bored API](https://www.boredapi.com/)
-to suggests a random activity to users.
+We can make a simple application which uses [Open Brewery DB](https://www.openbrewerydb.org/)
+to suggest a random brewery to users.
 
-First, let's define an `Activity` class:
+First, let's define a `Brewery` class:
 
 <AutoSnippet {...activity} />
 
-That class will be responsible for representing a suggested activity
+That class will be responsible for representing a suggested brewery
 in a type-safe manner, and handle JSON encoding/decoding.  
 Using Freezed/json_serializable is not required, but it is recommended.
 
 Now, we'll want to define a provider making a HTTP GET request to fetch
-a single activity:
+a single brewery:
 
 <AutoSnippet {...fetchActivity} />
 
-We can now use this provider to display a random activity.  
+We can now use this provider to display a random brewery.  
 For now, we will not handle the loading/error state, and simply
-display the activity when available:
+display the brewery when available:
 
 <AutoSnippet raw={displayActivity} />
 
@@ -117,8 +117,8 @@ But for now, let's stick to `valueOrNull`.
 
 :::tip
 Notice the usage of the `:final valueOrNull?` syntax in our pattern matching.
-This syntax can be used only because `activityProvider` returns a non-nullable
-`Activity`.
+This syntax can be used only because `breweryProvider` returns a non-nullable
+`Brewery`.
 
 If your data can be `null`, you can instead use `AsyncValue(hasData: true, :final valueOrNull)`.
 This will correctly handle cases where the data is `null`, at the cost of

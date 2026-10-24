@@ -1,24 +1,24 @@
 /* SNIPPET START */
-class Activity {
-  Activity({
-    required this.activity,
-    required this.type,
-    required this.participants,
-    required this.price,
+class Brewery {
+  Brewery({
+    required this.name,
+    required this.breweryType,
+    required this.city,
+    required this.country,
   });
 
-  factory Activity.fromJson(Map<Object?, Object?> json) {
-    return Activity(
-      activity: json['activity']! as String,
-      type: json['type']! as String,
-      participants: json['participants']! as int,
-      price: (json['price']! as num).toDouble(),
+  factory Brewery.fromJson(Map<Object?, Object?> json) {
+    return Brewery(
+      name: json['name']! as String,
+      breweryType: json['brewery_type']! as String,
+      city: json['city']! as String,
+      country: json['country']! as String,
     );
   }
 
-  final String activity;
-  final String type;
-  final int participants;
-  final double price;
+  final String name;
+  final String breweryType;
+  final String city;
+  final String country;
 }
 /* SNIPPET END */
