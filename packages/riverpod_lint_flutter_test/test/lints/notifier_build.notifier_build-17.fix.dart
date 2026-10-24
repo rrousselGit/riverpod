@@ -1,5 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, type=warning
+// ignore_for_file: type=lint, type=warning, todo
 // Offsets for "notifier_build":
 // 16: // ignore: riverpod_lint/notifier_build
 // 17: class <>ExampleProvider1 extends _$ExampleProvider1 {}
