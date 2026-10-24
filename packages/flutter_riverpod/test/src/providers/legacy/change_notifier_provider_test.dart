@@ -286,7 +286,7 @@ void main() {
     expect(container.read(provider.notifier).value, 0);
   });
 
-  test('family', () {
+  test('family creates one ChangeNotifier per argument', () {
     final container = ProviderContainer.test();
     final provider = ChangeNotifierProvider.family<ValueNotifier<int>, int>((
       ref,
@@ -482,7 +482,7 @@ void main() {
       verifyNoMoreInteractions(onDispose);
     });
 
-    test('family', () {
+    test('family creates one ChangeNotifier per argument', () {
       final container = ProviderContainer.test();
       final provider = ChangeNotifierProvider.autoDispose
           .family<ValueNotifier<int>, int>((ref, value) {
