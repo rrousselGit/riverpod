@@ -211,7 +211,7 @@ void main() {
     );
 
     test('calls notifier.build on every watch update', () async {
-      final dep = settableProvider((ref) => 0);
+      final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
       final provider = factory.simpleTestProvider((ref, _) {
         return ref.watch(dep);
       });

@@ -94,7 +94,9 @@ void main() {
       );
 
       test('common use-case ', () {
-        final provider = settableProvider((ref) => 'Hello');
+        final provider = NotifierProvider(
+          () => SettableNotifier((ref) => 'Hello'),
+        );
         final container = ProviderContainer.test();
         final listener = Listener<String>();
 
@@ -120,7 +122,9 @@ void main() {
       });
 
       test('calling `sub.read` on a weak listener will select the value', () {
-        final provider = settableProvider((ref) => 'Hello');
+        final provider = NotifierProvider(
+          () => SettableNotifier((ref) => 'Hello'),
+        );
         final container = ProviderContainer.test();
         final listener = Listener<String>();
 
@@ -141,7 +145,9 @@ void main() {
         'after calling `sub.read`, notifications correctly compare the previous and new value '
         'instead of considering that "previous" is missing.',
         () {
-          final provider = settableProvider((ref) => 'Hello');
+          final provider = NotifierProvider(
+            () => SettableNotifier((ref) => 'Hello'),
+          );
           final container = ProviderContainer.test();
           final listener = Listener<String>();
 
@@ -166,7 +172,7 @@ void main() {
       final container = ProviderContainer.test();
 
       var buildCount = 0;
-      final dep = settableProvider((ref) => 0);
+      final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
       final provider = Provider((ref) {
         buildCount++;
         return ref.watch(
@@ -218,7 +224,7 @@ void main() {
       'when rebuilding a provider after an uncaught selected exception, correctly updates dependents',
       () {
         final container = ProviderContainer.test();
-        final throws = settableProvider((ref) => true);
+        final throws = NotifierProvider(() => SettableNotifier((ref) => true));
         final provider = Provider((ref) {
           if (ref.watch(throws)) {
             throw UnimplementedError();
@@ -243,7 +249,10 @@ void main() {
 
     test('can watch selectors', () {
       final container = ProviderContainer.test();
-      final provider = settableProvider(name: 'provider', (ref) => 0);
+      final provider = NotifierProvider(
+        () => SettableNotifier((ref) => 0),
+        name: 'provider',
+      );
       final isEvenSelector = Selector<int, bool>(false, (c) => c.isEven);
       final isEvenListener = Listener<bool>();
       var buildCount = 0;

@@ -428,37 +428,6 @@ class SettableNotifier<StateT> extends Notifier<StateT> {
   StateT update(StateT Function(StateT state) cb) => state = cb(state);
 }
 
-/// A provider of a [SettableNotifier].
-NotifierProvider<SettableNotifier<StateT>, StateT> settableProvider<StateT>(
-  StateT Function(Ref ref) build, {
-  String? name,
-  Iterable<ProviderOrFamily>? dependencies,
-  bool isAutoDispose = false,
-}) {
-  return NotifierProvider<SettableNotifier<StateT>, StateT>(
-    () => SettableNotifier(build),
-    name: name,
-    dependencies: dependencies,
-    isAutoDispose: isAutoDispose,
-  );
-}
-
-/// A family of [SettableNotifier]s.
-NotifierProviderFamily<SettableNotifier<StateT>, StateT, ArgT>
-settableProviderFamily<StateT, ArgT>(
-  StateT Function(Ref ref, ArgT arg) build, {
-  String? name,
-  Iterable<ProviderOrFamily>? dependencies,
-  bool isAutoDispose = false,
-}) {
-  return NotifierProvider.family<SettableNotifier<StateT>, StateT, ArgT>(
-    (arg) => SettableNotifier((ref) => build(ref, arg)),
-    name: name,
-    dependencies: dependencies,
-    isAutoDispose: isAutoDispose,
-  );
-}
-
 List<Object> errorsOf(void Function() cb) {
   final errors = <Object>[];
   runZonedGuarded(cb, (err, _) => errors.add(err));

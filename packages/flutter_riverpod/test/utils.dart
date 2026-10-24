@@ -5,8 +5,6 @@ import 'package:flutter_riverpod/experimental/mutation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/misc.dart'
-    show NotifierProviderFamily, ProviderOrFamily;
 import 'package:riverpod/riverpod.dart';
 
 class _Sentinel {
@@ -82,38 +80,6 @@ class SettableNotifier<StateT> extends Notifier<StateT> {
 
   /// Sets the state to the result of [cb] on the current state.
   StateT update(StateT Function(StateT state) cb) => state = cb(state);
-}
-
-/// A provider of a [SettableNotifier].
-NotifierProvider<SettableNotifier<StateT>, StateT> settableProvider<StateT>(
-  StateT Function(Ref ref) build, {
-  String? name,
-  Iterable<ProviderOrFamily>? dependencies,
-  bool isAutoDispose = false,
-}) {
-  return NotifierProvider<SettableNotifier<StateT>, StateT>(
-    () => SettableNotifier(build),
-    name: name,
-    dependencies: dependencies,
-    isAutoDispose: isAutoDispose,
-  );
-}
-
-/// A family of [SettableNotifier]s.
-/// A family of [SettableNotifier]s.
-NotifierProviderFamily<SettableNotifier<StateT>, StateT, ArgT>
-settableProviderFamily<StateT, ArgT>(
-  StateT Function(Ref ref, ArgT arg) build, {
-  String? name,
-  Iterable<ProviderOrFamily>? dependencies,
-  bool isAutoDispose = false,
-}) {
-  return NotifierProvider.family<SettableNotifier<StateT>, StateT, ArgT>(
-    (arg) => SettableNotifier((ref) => build(ref, arg)),
-    name: name,
-    dependencies: dependencies,
-    isAutoDispose: isAutoDispose,
-  );
 }
 
 class Listener<StateT> extends Mock {

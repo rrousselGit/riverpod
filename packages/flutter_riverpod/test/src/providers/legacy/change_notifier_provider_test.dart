@@ -306,19 +306,22 @@ void main() {
   });
 
   testWidgets('WidgetRef.read returns the ChangeNotifier', (tester) async {
-    final changeNotifierProvider = ChangeNotifierProvider((_) {
-      return ValueNotifier(0);
-    });
+    final notifier = ValueNotifier(0);
+    final provider = ChangeNotifierProvider((_) => notifier);
+    ValueNotifier<int>? result;
 
-    Consumer(
-      builder: (context, ref, _) {
-        final ValueNotifier<int> changeNotifierProviderValue = ref.read(
-          changeNotifierProvider,
-        );
-
-        return Container();
-      },
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(
+          builder: (context, ref, _) {
+            result = ref.read(provider);
+            return Container();
+          },
+        ),
+      ),
     );
+
+    expect(result, same(notifier));
   });
 
   test('can specify name', () {
@@ -511,7 +514,7 @@ void main() {
     });
 
     test('.notifier obtains the controller without listening to it', () async {
-      final dep = settableProvider((ref) => 0);
+      final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
       final notifier = TestNotifier();
       final notifier2 = TestNotifier();
       final provider = ChangeNotifierProvider.autoDispose((ref) {

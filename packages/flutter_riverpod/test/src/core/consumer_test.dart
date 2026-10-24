@@ -453,7 +453,10 @@ void main() {
   testWidgets(
     'Consumer removing one of multiple listeners on a provider still listen to the provider',
     (tester) async {
-      final stateProvider = settableProvider((ref) => 0, name: 'state');
+      final stateProvider = NotifierProvider(
+        () => SettableNotifier((ref) => 0),
+        name: 'state',
+      );
       final notifier0 = TestNotifier();
       final notifier1 = TestNotifier(42);
       final provider0 = NotifierProvider<TestNotifier, int>(
@@ -540,7 +543,10 @@ void main() {
   testWidgets(
     'Stops listening to a provider when recomputed but no longer using it',
     (tester) async {
-      final stateProvider = settableProvider((ref) => 0, name: 'state');
+      final stateProvider = NotifierProvider(
+        () => SettableNotifier((ref) => 0),
+        name: 'state',
+      );
       final notifier0 = TestNotifier();
       final notifier1 = TestNotifier(42);
       final provider0 = NotifierProvider<TestNotifier, int>(

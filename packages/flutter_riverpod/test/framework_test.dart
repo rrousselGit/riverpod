@@ -50,7 +50,7 @@ void main() {
   testWidgets('Supports multiple ProviderScope roots in the same tree', (
     tester,
   ) async {
-    final a = settableProvider((_) => 0);
+    final a = NotifierProvider(() => SettableNotifier((_) => 0));
     final b = Provider((ref) => ref.watch(a));
 
     await tester.pumpWidget(
@@ -224,7 +224,7 @@ void main() {
       error = details.exception;
     };
 
-    final provider = settableProvider((ref) => 0);
+    final provider = NotifierProvider(() => SettableNotifier((ref) => 0));
     final container = ProviderContainer.test();
 
     // using runZonedGuarded as the notifier will emit an handleUncaughtError
@@ -252,7 +252,7 @@ void main() {
     tester,
   ) async {
     final container = ProviderContainer.test();
-    final dep = settableProvider((ref) => 0);
+    final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
     final provider = Provider((ref) => ref.watch(dep));
 
     // reading `provider` but not listening to it, so that it is active
@@ -328,7 +328,7 @@ void main() {
     tester,
   ) async {
     var buildCount = 0;
-    final dep = settableProvider((ref) => 0);
+    final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
     final provider = Provider((ref) {
       buildCount++;
       return ref.watch(dep);
@@ -721,10 +721,13 @@ void main() {
     tester,
   ) async {
     var disposeCount = 0;
-    final counterProvider = settableProvider((ref) {
-      ref.onDispose(() => disposeCount++);
-      return 0;
-    }, isAutoDispose: true);
+    final counterProvider = NotifierProvider(
+      () => SettableNotifier((ref) {
+        ref.onDispose(() => disposeCount++);
+        return 0;
+      }),
+      isAutoDispose: true,
+    );
 
     final container = ProviderContainer.test();
     final key = GlobalKey<NavigatorState>();
