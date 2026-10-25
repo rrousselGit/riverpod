@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
+import 'package:analyzer/source/line_info.dart';
 import 'package:glob/glob.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
@@ -30,6 +31,7 @@ final class LinkedCommentCheck {
     required this.whenClosed,
     required this.keyword,
     required this.find,
+    this.findInYaml,
   });
 
   /// The key of this check in the `baseline` of [issuePolicyPath].
@@ -49,6 +51,11 @@ final class LinkedCommentCheck {
   /// offset in the file. Their text is where the issue link must be.
   final Iterable<({int offset, String text})> Function(CompilationUnit unit)
   find;
+
+  /// Like [find], for the content of a YAML file, or null if YAML files have
+  /// none of these comments.
+  final Iterable<({int offset, String text})> Function(String content)?
+  findInYaml;
 }
 
 /// Which files [LinkedCommentCheck]s skip, or allow comments without a link
@@ -172,7 +179,7 @@ final class IssueCheck {
 }
 
 /// Checks that every comment that one of [checks] applies to, in the Dart
-/// files, links the GitHub issue that requires it, in its text. A link
+/// and YAML files, links the GitHub issue that requires it, in its text. A link
 /// elsewhere may be about something else, such as the bug a test covers.
 ///
 /// Generated files and the [IssuePolicy.ignored] ones are skipped. The files
@@ -206,21 +213,36 @@ IssueCheck checkIssueLinks({
   }
 
   for (final path in files) {
-    if (p.posix.extension(path) != '.dart' || policy.isIgnored(path)) {
+    final extension = p.posix.extension(path);
+    final isDart = extension == '.dart';
+    if (!(isDart || extension == '.yaml' || extension == '.yml') ||
+        policy.isIgnored(path)) {
       continue;
     }
     final content = read(path);
     if (_isGenerated(path, content)) continue;
 
     CompilationUnit? unit;
+    LineInfo? lineInfo;
     for (final check in checks) {
       // The lines of the comments that link no issue.
       final unlinked = <int>[];
       // Most files have none of these comments, and need not be parsed.
       if (content.contains(check.keyword)) {
-        unit ??= parseString(content: content, throwIfDiagnostics: false).unit;
-        for (final (:offset, :text) in check.find(unit)) {
-          final line = unit.lineInfo.getLocation(offset).lineNumber;
+        final Iterable<({int offset, String text})> comments;
+        if (isDart) {
+          unit ??= parseString(
+            content: content,
+            throwIfDiagnostics: false,
+          ).unit;
+          lineInfo = unit.lineInfo;
+          comments = check.find(unit);
+        } else {
+          lineInfo ??= LineInfo.fromContent(content);
+          comments = check.findInYaml?.call(content) ?? const [];
+        }
+        for (final (:offset, :text) in comments) {
+          final line = lineInfo.getLocation(offset).lineNumber;
           final found = _linksIn(text);
           if (found.isEmpty) unlinked.add(line);
           for (final link in found) {
@@ -268,8 +290,7 @@ List<IssueLink> _linksIn(String text) => [
       IssueLink(match[1]!, match[2]!, number),
 ];
 
-/// Generated Dart files: `*.g.dart`, `*.freezed.dart`, or a "GENERATED"
-/// header. Matches `is_generated` of scripts/lib/common.sh.
+/// Generated files: `*.g.dart`, `*.freezed.dart`, or a "GENERATED" header. Matches `is_generated` of scripts/lib/common.sh.
 bool _isGenerated(String path, String content) {
   if (path.endsWith('.g.dart') || path.endsWith('.freezed.dart')) return true;
   return content.split('\n').take(5).any((line) => line.contains('GENERATED'));
