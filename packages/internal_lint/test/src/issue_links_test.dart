@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:internal_lint/src/issue_links.dart';
+import 'package:internal_lint/src/yaml_comments.dart';
 import 'package:test/test.dart';
 
 const _open = 'https://github.com/owner/repo/issues/1';
@@ -13,6 +14,16 @@ const _check = LinkedCommentCheck(
   whenClosed: 'Remove the flag',
   keyword: 'FLAG',
   find: _flags,
+  findInYaml: _yamlFlags,
+);
+
+/// Like [_check], without YAML support.
+const _dartCheck = LinkedCommentCheck(
+  name: 'dart_flags',
+  label: 'Dart FLAG',
+  whenClosed: 'Remove the flag',
+  keyword: 'FLAG',
+  find: _flags,
 );
 
 Iterable<({int offset, String text})> _flags(CompilationUnit unit) sync* {
@@ -22,6 +33,9 @@ Iterable<({int offset, String text})> _flags(CompilationUnit unit) sync* {
     }
   }
 }
+
+Iterable<({int offset, String text})> _yamlFlags(String content) =>
+    yamlCommentsOf(content).where((comment) => comment.text.contains('FLAG'));
 
 void main() {
   final policy = IssuePolicy.parse(
@@ -131,7 +145,42 @@ baseline:
           'lib/a.freezed.dart': '// FLAG',
           'lib/b.dart': '// GENERATED CODE\n// FLAG',
           'a.md': '// FLAG',
+          'a.yaml': '# GENERATED\n# FLAG',
         }).problems,
+        isEmpty,
+      );
+    });
+
+    test('checks the comments of YAML files', () {
+      final result = check({
+        ...baseline,
+        'a.yaml': 'key: FLAG\n# FLAG, $_open\nb: c # FLAG\n',
+        'a.yml': '# FLAG',
+      });
+      expect(result.problems, [
+        'a.yaml:3: FLAG without a GitHub issue link.',
+        'a.yml:1: FLAG without a GitHub issue link.',
+      ]);
+      expect(
+        result.links.map(
+          (link, locations) => MapEntry(link, [
+            for (final (:location, check: _) in locations) location,
+          ]),
+        ),
+        {
+          const IssueLink('owner', 'repo', 1): ['a.yaml:2'],
+        },
+      );
+    });
+
+    test('skips YAML files for checks without YAML support', () {
+      expect(
+        checkIssueLinks(
+          policy: IssuePolicy.parse('{}', checks: [_dartCheck]),
+          checks: [_dartCheck],
+          files: ['a.yaml'],
+          read: (_) => '# FLAG',
+        ).problems,
         isEmpty,
       );
     });

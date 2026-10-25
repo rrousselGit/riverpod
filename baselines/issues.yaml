@@ -7,17 +7,22 @@
 #   GitHub issue that requires it, in its text, which may continue on the next
 #   lines when they are indented by one more space:
 #     // TODO(https://github.com/rrousselGit/riverpod/issues/123): ...
+#   So must the TODOs of the `#` comments of YAML files, such as
+#   pubspec.yaml and analysis_options.yaml:
+#     # TODO(https://github.com/rrousselGit/riverpod/issues/123): ...
 #
 # That issue must be open: once it is closed, remove the ignore or do the
 # TODO.
 #
-# Enforced by scripts/issues.sh. Generated files are skipped.
+# Enforced by scripts/issues.sh, in the Dart and YAML files. Generated files
+# are skipped.
 # Paths are relative to the repository root.
 
 # Globs of the files that are not checked at all: the fixtures of the lint
-# tests, which ignore lints on purpose, and the snippets of the docs, whose
-# TODOs are for readers.
+# tests, which ignore lints on purpose, the snippets of the docs, whose
+# TODOs are for readers, and this file, whose TODOs are examples.
 ignored:
+  - baselines/issues.yaml
   - packages/riverpod_lint_flutter_test/**
   - website/**
 
@@ -69,6 +74,7 @@ baseline:
     packages/riverpod_lint/lib/src/debug.dart: 1
     packages/riverpod_sqflite/example/lib/generated.dart: 1
   todos:
+    packages/riverpod_analyzer_utils/analysis_options.yaml: 1
     packages/riverpod_devtool/lib/src/frame_view.dart: 1
     packages/riverpod_devtool/lib/src/frames.dart: 1
     packages/riverpod_devtool/lib/src/terminal.dart: 1
