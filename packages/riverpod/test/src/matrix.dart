@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:riverpod/src/internals.dart';
-import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart' hide Retry;
 
 part 'matrix/async_notifier_provider.dart';

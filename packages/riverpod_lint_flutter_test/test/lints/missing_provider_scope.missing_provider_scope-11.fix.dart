@@ -1,5 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, type=warning
+// ignore_for_file: type=lint, type=warning, todo
 // Offsets for "missing_provider_scope":
 // 10:   // ignore: riverpod_lint/missing_provider_scope
 // 11:   <>runApp<>(

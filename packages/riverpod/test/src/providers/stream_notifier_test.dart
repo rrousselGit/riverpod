@@ -1,11 +1,8 @@
-// ignore_for_file: invalid_use_of_protected_member
-
 import 'dart:async';
 
 import 'package:async/async.dart' hide DelegatingStream;
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart' show UnmountedRefException;
 import 'package:test/test.dart';
@@ -333,7 +330,7 @@ void main() {
         'performs seamless:false copyWithPrevious if triggered by a dependency change',
         () async {
           final container = ProviderContainer.test();
-          final dep = StateProvider((ref) => 0);
+          final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
           final provider = factory.simpleTestProvider(
             (ref, self) => Stream.value(ref.watch(dep)),
           );
@@ -361,7 +358,7 @@ void main() {
         'performs seamless:false copyWithPrevious if both triggered by a dependency change and ref.refresh',
         () async {
           final container = ProviderContainer.test();
-          final dep = StateProvider((ref) => 0);
+          final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
           final provider = factory.simpleTestProvider(
             (ref, self) => Stream.value(ref.watch(dep)),
           );
@@ -568,7 +565,7 @@ void main() {
       'stops listening to the previous future data when the provider rebuilds',
       () async {
         final container = ProviderContainer.test();
-        final dep = StateProvider((ref) => 0);
+        final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
         final completers = {0: Completer<int>.sync(), 1: Completer<int>.sync()};
         final provider = factory.simpleTestProvider<int>(
           (ref, _) => Stream.fromFuture(completers[ref.watch(dep)]!.future),
@@ -606,7 +603,7 @@ void main() {
       'stops listening to the previous future error when the provider rebuilds',
       () async {
         final container = ProviderContainer.test(retry: (_, _) => null);
-        final dep = StateProvider((ref) => 0);
+        final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
         final completers = {0: Completer<int>.sync(), 1: Completer<int>.sync()};
         final provider = factory.simpleTestProvider<int>(
           (ref, _) => Stream.fromFuture(completers[ref.watch(dep)]!.future),
@@ -655,11 +652,8 @@ void main() {
           final sub = container.listen(provider.notifier, (previous, next) {});
           await container.read(provider.future);
 
-          // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
           final newState = AsyncData(84);
-          // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
           final newLoading = AsyncLoading<int>();
-          // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
           final newError = AsyncError<int>(84, StackTrace.empty);
 
           sub.read().state = newState;
@@ -691,7 +685,7 @@ void main() {
       );
 
       test('can be read inside build', () {
-        final dep = StateProvider((ref) => 0);
+        final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
         late AsyncValue<int> state;
         final provider = factory.provider<int>(() {
           late TestStreamNotifier<int> notifier;
@@ -857,7 +851,7 @@ void main() {
 
       test('returns a Future identical to that of .future', () {
         final listener = OnBuildMock();
-        final dep = StateProvider((ref) => 0);
+        final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
         final provider = factory.simpleTestProvider<int>((ref, _) {
           listener();
           return Stream.value(ref.watch(dep));
