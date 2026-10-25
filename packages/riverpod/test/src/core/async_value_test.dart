@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_types_on_closure_parameters, prefer_const_constructors, prefer_const_declarations
+// ignore_for_file: prefer_const_declarations
 
 import 'dart:async';
 

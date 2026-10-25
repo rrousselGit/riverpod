@@ -1,7 +1,5 @@
 // fork of fake_async to disable microtask mock
 
-// ignore_for_file: type=lint
-
 // Copyright 2014 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -338,11 +336,9 @@ class FakeTimer implements Timer {
     _tick++;
     if (isPeriodic) {
       _nextCall += duration;
-      // ignore: avoid_dynamic_calls
       _callback(this);
     } else {
       cancel();
-      // ignore: avoid_dynamic_calls
       _callback();
     }
   }
