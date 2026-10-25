@@ -1,8 +1,10 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
+import 'package:analyzer/source/line_info.dart';
 import 'package:meta/meta.dart';
 
 import 'issue_links.dart';
+import 'yaml_comments.dart';
 
 // The analyzer's TodoFinder, which is not public, finds the `TODO`s that IDEs
 // show. Its rules follow.
@@ -15,8 +17,13 @@ final _lineBreak = RegExp('[\r\n]');
 final _blockContinuation = RegExp(r'[ \t\r\n]*\*  ');
 final _nonMarker = RegExp('[^/ ]');
 
+// The same rules, for the `#` comments of YAML files.
+final _yamlTodo = RegExp(r'(?<=[ \t#])TODO(?![A-Za-z0-9_])');
+final _yamlNonMarker = RegExp('[^# ]');
+
 /// Every `TODO` comment that the analyzer reports, and IDEs show, must link
-/// the GitHub issue that requires it, in its text.
+/// the GitHub issue that requires it, in its text. So must the `TODO`s of the
+/// `#` comments of YAML files.
 @internal
 const todoCheck = LinkedCommentCheck(
   name: 'todos',
@@ -24,6 +31,7 @@ const todoCheck = LinkedCommentCheck(
   whenClosed: 'Do the TODO',
   keyword: 'TODO',
   find: _todos,
+  findInYaml: _yamlTodos,
 );
 
 /// The `TODO`s of [unit], as the analyzer finds them: their text runs to the
@@ -71,6 +79,36 @@ Iterable<({int offset, String text})> _todos(CompilationUnit unit) sync* {
 
       yield (offset: comment.offset + match.start, text: text.toString());
     }
+  }
+}
+
+/// The `TODO`s of the YAML [content], with the same rules as [_todos] for
+/// `//` comments: their text runs to the end of the line, and includes the
+/// `#` comments on the next lines that are indented to continue it.
+Iterable<({int offset, String text})> _yamlTodos(String content) sync* {
+  final lineInfo = LineInfo.fromContent(content);
+  final comments = yamlCommentsOf(content).toList();
+  for (var i = 0; i < comments.length; i++) {
+    final comment = comments[i];
+    // The rest of the line is the text of the first `TODO`.
+    final match = _yamlTodo.firstMatch(comment.text);
+    if (match == null) continue;
+    final text = StringBuffer(comment.text.substring(match.start));
+
+    final location = lineInfo.getLocation(comment.offset);
+    var line = location.lineNumber;
+    for (final next in comments.skip(i + 1)) {
+      final nextLocation = lineInfo.getLocation(next.offset);
+      final isContinuation =
+          nextLocation.lineNumber == ++line &&
+          nextLocation.columnNumber == location.columnNumber &&
+          next.text.indexOf(_yamlNonMarker) == match.start + 1 &&
+          !_yamlTodo.hasMatch(next.text);
+      if (!isContinuation) break;
+      text.write(' ${next.text}');
+    }
+
+    yield (offset: comment.offset + match.start, text: text.toString());
   }
 }
 

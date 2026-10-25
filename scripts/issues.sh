@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Checks that every `// ignore` and TODO comment of the Dart files links the
-# GitHub issue that requires it, and that this issue is still open. Generated
-# files, and the files that baselines/issues.yaml ignores or baselines, are
-# exempt.
+# Checks that every `// ignore` and TODO comment of the Dart files, and every
+# TODO comment of the YAML files, links the GitHub issue that requires it, and
+# that this issue is still open. Generated files, and the files that
+# baselines/issues.yaml ignores or baselines, are exempt.
 #
 # The states of the issues are fetched in one request to the GitHub API,
 # authenticated by GITHUB_TOKEN, GH_TOKEN or `gh auth token`. Locally, that

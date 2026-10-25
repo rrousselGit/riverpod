@@ -37,7 +37,6 @@ void main() {
     final notifier = container.read(publicClassProvider.notifier);
     expect(notifier.param, 'Hello world');
 
-    // ignore: invalid_use_of_protected_member //
     expect(notifier.ref, isNotNull);
     expect(notifier.state, isNotNull);
   });
@@ -62,7 +61,6 @@ void main() {
     expect(notifier.fourth, true);
     expect(notifier.fifth, null);
 
-    // ignore: invalid_use_of_protected_member //
     expect(notifier.ref, isNotNull);
     expect(notifier.state, isNotNull);
   });

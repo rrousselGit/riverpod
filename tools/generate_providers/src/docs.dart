@@ -1,7 +1,12 @@
 final _writtenDocs = <String>{};
+var _macrosOnly = false;
+
+/// Refers to the doc templates with macros only, for files whose templates
+/// another file of the same package defines.
+void useDocMacrosOnly() => _macrosOnly = true;
 
 String _docs(String doc, {required String key}) {
-  if (!_writtenDocs.add(key)) {
+  if (_macrosOnly || !_writtenDocs.add(key)) {
     return '/// {@macro $key}';
   }
 

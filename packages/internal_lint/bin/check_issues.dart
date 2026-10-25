@@ -103,7 +103,8 @@ Future<void> main(List<String> args) async {
       'Fix the code instead, or link the GitHub issue that requires the '
       'comment in it, such as: '
       '`// ignore: rule, https://github.com/owner/repo/issues/123` or '
-      '`// TODO(https://github.com/owner/repo/issues/123): ...`.',
+      '`// TODO(https://github.com/owner/repo/issues/123): ...`, and '
+      '`# TODO(https://github.com/owner/repo/issues/123): ...` in YAML.',
     );
   exit(1);
 }

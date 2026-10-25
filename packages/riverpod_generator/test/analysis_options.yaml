@@ -6,6 +6,8 @@ analyzer:
     # Some tests create an unused variable with an explicit type, to check that
     # two types are assignable.
     unused_local_variable: ignore
+    # Tests read the state of notifiers, which is protected.
+    invalid_use_of_protected_member: ignore
 
 linter:
   rules:
