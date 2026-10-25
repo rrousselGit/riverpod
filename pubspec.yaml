@@ -41,6 +41,13 @@ workspace:
   - website
 
 dependency_overrides:
+  # mockito 5.8.1 caps build at <5. Its fix is unreleased, so use git until
+  # a mockito release allows build 5.
+  mockito:
+    git:
+      url: https://github.com/dart-lang/build
+      path: builder_pkgs/mockito
+      ref: 3088ac884999c97f9ac6d2155e90e81af553b93c
   # source_helper 1.4.0 adds extensions that clash with json_serializable
   # 6.15.0's, which then fails to compile. Remove once either is fixed.
   source_helper: ">=1.3.10 <1.4.0"
