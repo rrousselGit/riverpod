@@ -5,6 +5,9 @@
 - Added `prefer_keep_alive_annotation`, which warns when the body of a generated
   provider starts with `ref.keepAlive()`, and suggests `@Riverpod(keepAlive: true)`
   instead (#3855).
+- Fixed the `only_use_keep_alive_inside_keep_alive` message, which mentioned
+  `KeepAliveLink`, and its correction, which suggested removing `keepAlive` from
+  the used provider instead of adding it. (thanks to @cdeil)
 
 ## 3.1.9 - 2026-09-04
 
