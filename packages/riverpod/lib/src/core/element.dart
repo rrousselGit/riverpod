@@ -271,17 +271,31 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
     })
     listen,
   ) {
-    void callOnError(Object error, StackTrace stackTrace) {
-      onValue(triggerRetry(error, stackTrace), seamless: !ref.isReload);
+    void Function()? onInitialized;
+    var isInitialized = false;
+
+    void completeInitialization() {
+      if (isInitialized) return;
+      isInitialized = true;
+
+      // Publishing a value can synchronously invalidate/rebuild this provider.
+      // An obsolete generation must not close the next build's dependencies.
+      if (ref.mounted && !_mustRecomputeState) onInitialized?.call();
     }
 
-    void Function()? onDone;
-    var isDone = false;
+    void callOnError(Object error, StackTrace stackTrace) {
+      final value = triggerRetry(error, stackTrace);
+      onValue(value, seamless: !ref.isReload);
+      if (!value.isLoading) completeInitialization();
+    }
 
     try {
       _cancelSubscription = listen(
         data: (value) {
           onData(AsyncData(value), seamless: !ref.isReload);
+          // A stream may never close. Its first value completes initialization,
+          // allowing dependencies from previous builds to be released.
+          completeInitialization();
         },
         error: callOnError,
         last: (last) {
@@ -290,8 +304,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
         },
         done: () {
           _lastFuture = null;
-          isDone = true;
-          onDone?.call();
+          completeInitialization();
         },
       );
     } on AsyncValueIsLoadingException {
@@ -303,10 +316,12 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
       callOnError(error, stackTrace);
     }
 
-    return (onDoneCb) {
-      onDone = onDoneCb;
+    return (onInitializedCb) {
+      onInitialized = onInitializedCb;
       // Handle synchronous completion
-      if (isDone) onDoneCb();
+      if (isInitialized && ref.mounted && !_mustRecomputeState) {
+        onInitializedCb();
+      }
     };
   }
 
