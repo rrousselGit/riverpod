@@ -22,7 +22,6 @@ void main() {
       );
     },
     (err, stack) {
-      // ignore: avoid_print
       print('Uncaught error: $err\n$stack');
     },
   );

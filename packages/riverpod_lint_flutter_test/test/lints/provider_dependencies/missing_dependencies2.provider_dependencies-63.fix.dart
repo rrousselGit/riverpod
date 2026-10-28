@@ -1,5 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, type=warning
+// ignore_for_file: type=lint, type=warning, todo
 // Offsets for "provider_dependencies":
 // 62: // ignore: riverpod_lint/provider_dependencies
 // 63: @Riverpod(dependencies: <>[<>]<>)

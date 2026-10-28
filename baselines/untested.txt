@@ -36,14 +36,12 @@ packages/riverpod_analyzer_utils/lib/src/nodes/widgets/state.dart
 packages/riverpod_analyzer_utils/lib/src/nodes/widgets/stateful_widget.dart
 packages/riverpod_analyzer_utils/lib/src/nodes/widgets/stateless_widget.dart
 packages/riverpod_analyzer_utils/lib/src/nodes/widgets/widget.dart
-packages/riverpod_analyzer_utils/lib/src/object_extensions.dart
 packages/riverpod_analyzer_utils/lib/src/riverpod_types.dart
 packages/riverpod_analyzer_utils/lib/src/riverpod_types/core.dart
 packages/riverpod_analyzer_utils/lib/src/riverpod_types/generator.dart
 packages/riverpod_analyzer_utils/lib/src/riverpod_types/legacy_providers.dart
 packages/riverpod_analyzer_utils/lib/src/riverpod_types/providers.dart
 packages/riverpod_analyzer_utils/lib/src/riverpod_types/widgets.dart
-packages/riverpod_analyzer_utils/lib/src/string_utils.dart
 packages/riverpod_analyzer_utils/lib/src/type_checker.dart
 packages/riverpod_annotation/lib/experimental/json_persist.dart
 packages/riverpod_annotation/lib/experimental/persist.dart

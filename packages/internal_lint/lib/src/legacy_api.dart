@@ -6,7 +6,7 @@ import 'package:yaml/yaml.dart';
 
 /// The path of the policy file, relative to the repository root.
 @internal
-const legacyApiPolicyPath = 'scripts/legacy_api.yaml';
+const legacyApiPolicyPath = 'baselines/legacy_api.yaml';
 
 /// Which files of the repository may use the legacy APIs (`StateProvider`,
 /// `StateNotifierProvider`, `ChangeNotifierProvider`, `package:state_notifier`

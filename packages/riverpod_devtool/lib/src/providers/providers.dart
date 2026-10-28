@@ -1,5 +1,4 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-// ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
 
 import '../elements.dart';

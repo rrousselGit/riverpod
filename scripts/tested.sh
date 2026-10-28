@@ -6,7 +6,7 @@
 # - Every lib/**/x.dart has a test/**/x_test.dart. Exempt are example
 #   packages (see is_example), generated files, files with only directives
 #   (export/import/library/part, such as barrel files), and the files listed
-#   in scripts/untested.txt: the files that had no test when this check was
+#   in baselines/untested.txt: the files that had no test when this check was
 #   added. That list may only shrink: an entry whose file now has a test, or
 #   no longer exists, fails the check too.
 # - The reverse holds for test/src: every test/src/**/x_test.dart has a
@@ -135,9 +135,9 @@ for package in "$@"; do
   done < <(find "$package/test/src" -name '*_test.dart' | sort)
 done
 
-# lib/ files without a test at all, except those of scripts/untested.txt.
+# lib/ files without a test at all, except those of baselines/untested.txt.
 # Entries of that list that are now tested, or gone, are stale.
-untested_list="scripts/untested.txt"
+untested_list="baselines/untested.txt"
 [ -f "$untested_list" ] || die "$untested_list is missing"
 known_untested="$(grep -v '^#' "$untested_list" | grep .)"
 untested=""

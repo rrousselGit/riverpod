@@ -1,0 +1,5 @@
+include: ../../../analysis_options.yaml
+analyzer:
+  exclude:
+    # A fork of package:fake_async, kept close to the original.
+    - third_party/**

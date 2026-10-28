@@ -36,13 +36,20 @@ jobs:
   analyze:
     name: Format & analyze
     runs-on: ubuntu-latest
+    # scripts/issues.sh only reads the state of issues.
+    permissions:
+      contents: read
+      issues: read
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           channel: master
           cache: true
-      - run: scripts/check.sh format analyze legacy
+      # The token lets scripts/issues.sh read the state of the linked issues.
+      - run: scripts/check.sh format analyze legacy issues
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   tested:
     name: Every lib/ file has a test, updated with it, and test/src/ matches lib/src/

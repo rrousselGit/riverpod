@@ -1,5 +1,6 @@
 ## Unreleased minor
 
+- `AsyncValueIsLoadingException` now has a public constructor. (thanks to @uveshm003)
 - `debugTrackProviderCreation` is now exported by `package:hooks_riverpod/misc.dart`.
 - `provider.listenable` is now available from `package:hooks_riverpod/hooks_riverpod.dart`, and
   `CustomProviderListenable`, `ProviderTransformer2`,
