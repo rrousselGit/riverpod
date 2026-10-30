@@ -110,7 +110,8 @@ fi
 
 # Resolved, as `flutter test` reports test paths with symlinks resolved
 # (/var is /private/var on macOS).
-tmp="$(cd "$(mktemp -d)" && pwd -P)" || die "could not create a temporary folder"
+tmp="$(mktemp -d)" && [ -d "$tmp" ] || die "could not create a temporary folder"
+tmp="$(cd "$tmp" && pwd -P)" || die "could not resolve $tmp"
 wt="$tmp/worktree"
 cleanup() {
   git worktree remove --force "$wt" >/dev/null 2>&1
