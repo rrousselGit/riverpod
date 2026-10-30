@@ -9,16 +9,14 @@
 # integration packages) counts as tests. Generated code is regenerated there,
 # so tests of a code generator see the output of the base generator.
 #
-# Each test is then reported as:
-# - Caught: a new test that fails, or does not compile, on the base. Changed
-#   tests (same name as before) that fail on the base are caught too.
-# - Not caught: a new test that passes on the base.
-# Tests that passed before the branch changed their file, under the same
-# name, are left out: they are the unchanged tests of a changed file. So is
-# a changed test that still passes, as it cannot be told apart from those.
+# Only the new tests that pass there are reported. Tests that passed before
+# the branch changed their file, under the same name, are not new: they are
+# the unchanged tests of a changed file. So a changed test that still passes
+# is not reported either, as it cannot be told apart from those.
 #
-# Nothing is reported, and no test runs, when the branch changes no lib/ file
-# or no test. The report never fails the script: it is meant for a comment.
+# Nothing is reported when every new test fails (or does not compile) on the
+# base, nor when the branch changes no lib/ file or no test, in which case no
+# test runs. The report never fails the script: it is meant for a comment.
 #
 # Usage: scripts/tests_on_base.sh [--base REF] [--output FILE]
 #   --base REF     Ref to compare against (default: origin/master). Changes
@@ -203,58 +201,31 @@ for package in $test_packages; do
   cat "$tmp/out.tsv" "$tmp/crashed.tsv" | awk -v p="$package/" '{ print p $0 }' >>"$tmp/after.tsv"
 done
 
-# "<verdict>\t<file>\t<name>" of every reported test, where verdict is
-# missed (passes on the base), caught or broken (the file does not load).
+# "<file>\t<name>" of the new tests that pass on the base. A file that does
+# not load has no test names, and so fails: it likely uses a new API.
 awk -F '\t' -v OFS='\t' '
   FILENAME == ARGV[1] { if ($3 == "pass") existed[$1 FS $2] = 1; next }
-  $2 == "" { print "broken", $1, ""; next }
-  $3 == "skip" { next }
-  ($1 FS $2) in existed { if ($3 == "fail") print "caught", $1, $2; next }
-  { print ($3 == "pass" ? "missed" : "caught"), $1, $2 }
-' "$tmp/before.tsv" "$tmp/after.tsv" | sort -u >"$tmp/verdicts.tsv"
+  $2 != "" && $3 == "pass" && !(($1 FS $2) in existed) { print $1, $2 }
+' "$tmp/before.tsv" "$tmp/after.tsv" | sort -u >"$tmp/missed.tsv"
 
-# Markdown list items of the tests with VERDICT.
-items() {
-  awk -F '\t' -v v="$1" '$1 == v {
-    gsub(/`/, "\x27", $3)
-    print "- `" $2 "`" ($3 == "" ? "" : ": `" $3 "`")
-  }' "$tmp/verdicts.tsv"
-}
-count() { awk -F '\t' -v v="$1" '$1 == v { n++ } END { print n + 0 }' "$tmp/verdicts.tsv"; }
-missed="$(count missed)"
-caught="$(count caught)"
-broken="$(count broken)"
-
+# Only these tests are reported: the comment stays away from pull requests
+# whose tests all fail on the base.
+missed="$(grep -c . "$tmp/missed.tsv")"
+if [ "$missed" = 0 ]; then
+  echo "Every new or changed test fails on the base." >&2
+  exit 0
+fi
 report() {
   echo "<!-- tests-on-base -->"
-  echo "### Tests without the \`lib/\` changes"
-  echo
-  echo "The tests this PR adds or changes ran against the \`lib/\` code of $(git rev-parse --short "$from"), with the rest of this PR. A test written for a fix should fail there."
-  echo
-  if [ "$missed" -gt 0 ]; then
-    echo "**:warning: $missed new test(s) pass without the \`lib/\` changes,** so they may not test them:"
-    echo
-    items missed
+  if [ "$missed" = 1 ]; then
+    echo "**:warning: 1 new test passes without the \`lib/\` changes of this PR, so it may not test them.**"
   else
-    echo ":white_check_mark: No new test passes without the \`lib/\` changes."
+    echo "**:warning: $missed new tests pass without the \`lib/\` changes of this PR, so they may not test them.**"
   fi
-  if [ "$caught" -gt 0 ]; then
-    echo
-    echo "<details><summary>$caught test(s) fail without the <code>lib/</code> changes</summary>"
-    echo
-    items caught
-    echo
-    echo "</details>"
-  fi
-  if [ "$broken" -gt 0 ]; then
-    echo
-    echo "<details><summary>$broken test file(s) do not compile, or crash, without the <code>lib/</code> changes</summary>"
-    echo
-    items broken
-    echo
-    echo "</details>"
-  fi
-  echo
-  echo "<sub>Reproduce with \`scripts/tests_on_base.sh\`. Changed tests that still pass are not listed, as they look the same as unchanged ones.</sub>"
+  # The tests, grouped by file.
+  awk -F '\t' '
+    $1 != file { file = $1; print ""; print "`" file "`" }
+    { gsub(/`/, "\x27", $2); print "- `" $2 "`" }
+  ' "$tmp/missed.tsv"
 }
 if [ -n "$output" ]; then report >"$output"; else report; fi

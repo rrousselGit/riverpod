@@ -51,8 +51,8 @@ jobs:
               c => c.user.login === 'github-actions[bot]' && c.body.startsWith(marker),
             );
 
-            // An empty report means the pull request no longer adds tests
-            // along with lib/ changes, so an earlier report is outdated.
+            // An empty report means no new test passes without the lib/
+            // changes anymore, so an earlier warning is outdated.
             if (!body) {
               if (existing) {
                 await github.rest.issues.deleteComment({ ...context.repo, comment_id: existing.id });
