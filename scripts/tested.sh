@@ -12,7 +12,8 @@
 # - The reverse holds for test/src: every test/src/**/x_test.dart has a
 #   lib/src/**/x.dart.
 # And, on the changes, that packages with a test/src folder get no new test
-# outside of it, except test/meta_test.dart and test/misc_test.dart.
+# outside of it, except the tests of lib/ files outside lib/src (public
+# entry points), test/meta_test.dart and test/misc_test.dart.
 #
 # Usage: scripts/tested.sh [--base REF] [PACKAGE...]
 #   --base REF  Ref to compare against (default: origin/master; fetched if
@@ -142,6 +143,7 @@ for package in "$@"; do
 done
 
 # New tests outside test/src, in packages that mirror lib/src in test/src.
+# Tests of lib/ files outside lib/src mirror those files instead, and
 # meta_test.dart and misc_test.dart, which test no file in particular, may
 # stay at the root of test/.
 misplaced=""
@@ -150,10 +152,11 @@ while IFS=$'\t' read -r status path package; do
   case "$path" in *_test.dart) ;; *) continue ;; esac
   [ -d "$package/test/src" ] || continue
   case "$path" in
-    "$package/test/src/"*|"$package/test/meta_test.dart"|"$package/test/misc_test.dart") ;;
-    *) misplaced="$misplaced  $path
-" ;;
+    "$package/test/src/"*|"$package/test/meta_test.dart"|"$package/test/misc_test.dart") continue ;;
   esac
+  rel="${path#"$package/test/"}"
+  [ -f "$package/lib/${rel%_test.dart}.dart" ] || misplaced="$misplaced  $path
+"
 done < <(printf '%s\n' "$changes" | in_selected test "$@")
 
 # lib/ files without a test at all, except those of baselines/untested.txt.
@@ -198,7 +201,7 @@ if [ -n "$orphans" ]; then
 fi
 if [ -n "$misplaced" ]; then
   printf 'These new tests are outside test/src/ (since %s):\n%s' "$base" "$misplaced" >&2
-  printf 'Move each test to test/src/, at the path of the lib/src/ file it tests.\n\n' >&2
+  printf 'Move each test to the path in test/ of the lib/ file it tests (lib/src/x.dart -> test/src/x_test.dart).\n\n' >&2
   status=1
 fi
 if [ -n "$untested" ]; then
