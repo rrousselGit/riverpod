@@ -11,6 +11,8 @@
 #   no longer exists, fails the check too.
 # - The reverse holds for test/src: every test/src/**/x_test.dart has a
 #   lib/src/**/x.dart.
+# And, on the changes, that packages with a test/src folder get no new test
+# outside of it, except test/meta_test.dart and test/misc_test.dart.
 #
 # Usage: scripts/tested.sh [--base REF] [PACKAGE...]
 #   --base REF  Ref to compare against (default: origin/master; fetched if
@@ -54,11 +56,15 @@ changes="$(
     git ls-files --others --exclude-standard | awk '{ print "A\t" $0 }'
 )" || die "could not list the changes since $base"
 
-# Keeps the lines of stdin whose path is in the lib/ folder of a package
-# given on the command line. Nested packages (such as packages/x/example)
-# are their own packages, so the longest matching package path wins.
-in_selected_lib() {
-  awk -F '\t' -v selected="$*" -v all="$(ci_packages | tr '\n' ' ')" '
+# Keeps the lines of stdin whose path is in the FOLDER folder (lib, test) of
+# a PACKAGE given on the command line. Nested packages (such as
+# packages/x/example) are their own packages, so the longest matching package
+# path wins.
+# Usage: in_selected FOLDER PACKAGE...
+in_selected() {
+  local folder="$1"
+  shift
+  awk -F '\t' -v folder="$folder" -v selected="$*" -v all="$(ci_packages | tr '\n' ' ')" '
     BEGIN {
       n = split(all, known, " ")
       split(selected, s, " "); for (k in s) want[s[k]] = 1
@@ -67,7 +73,7 @@ in_selected_lib() {
       owner = ""
       for (k = 1; k <= n; k++) {
         p = known[k]
-        if (index($2, p "/lib/") == 1 && length(p) > length(owner)) owner = p
+        if (index($2, p "/" folder "/") == 1 && length(p) > length(owner)) owner = p
       }
       # Appends the package path, which locates the test of the file.
       if (owner != "" && (owner in want)) print $0 "\t" owner
@@ -75,7 +81,7 @@ in_selected_lib() {
   '
 }
 
-lib_changes="$(printf '%s\n' "$changes" | in_selected_lib "$@")"
+lib_changes="$(printf '%s\n' "$changes" | in_selected lib "$@")"
 changed_paths="$(printf '%s\n' "$changes" | cut -f 2)"
 old_dir="$(mktemp -d)" || die "could not create a temporary folder"
 trap 'rm -rf "$old_dir"' EXIT
@@ -135,6 +141,21 @@ for package in "$@"; do
   done < <(find "$package/test/src" -name '*_test.dart' | sort)
 done
 
+# New tests outside test/src, in packages that mirror lib/src in test/src.
+# meta_test.dart and misc_test.dart, which test no file in particular, may
+# stay at the root of test/.
+misplaced=""
+while IFS=$'\t' read -r status path package; do
+  [ "$status" = A ] || continue
+  case "$path" in *_test.dart) ;; *) continue ;; esac
+  [ -d "$package/test/src" ] || continue
+  case "$path" in
+    "$package/test/src/"*|"$package/test/meta_test.dart"|"$package/test/misc_test.dart") ;;
+    *) misplaced="$misplaced  $path
+" ;;
+  esac
+done < <(printf '%s\n' "$changes" | in_selected test "$@")
+
 # lib/ files without a test at all, except those of baselines/untested.txt.
 # Entries of that list that are now tested, or gone, are stale.
 untested_list="baselines/untested.txt"
@@ -157,7 +178,7 @@ for package in "$@"; do
 "
     fi
   done < <(find "$package/lib" -name '*.dart' ! -name '*_test.dart' -exec printf 'M\t%s\n' {} + |
-    in_selected_lib "$package" | cut -f 2 | sort)
+    in_selected lib "$package" | cut -f 2 | sort)
   while IFS= read -r path; do
     [ -n "$path" ] && [ ! -f "$path" ] && stale="$stale  $path
 "
@@ -175,6 +196,11 @@ if [ -n "$orphans" ]; then
   printf 'Move each test next to the path of the file it tests, or out of test/src/.\n\n' >&2
   status=1
 fi
+if [ -n "$misplaced" ]; then
+  printf 'These new tests are outside test/src/ (since %s):\n%s' "$base" "$misplaced" >&2
+  printf 'Move each test to test/src/, at the path of the lib/src/ file it tests.\n\n' >&2
+  status=1
+fi
 if [ -n "$untested" ]; then
   printf 'These lib/ files have no test:\n%s' "$untested" >&2
   printf 'Add a test for each file, at the same path in test/ as in lib/.\n\n' >&2
@@ -185,5 +211,5 @@ if [ -n "$stale" ]; then
   printf 'Remove them from %s.\n\n' "$untested_list" >&2
   status=1
 fi
-[ "$status" = 0 ] && echo "Every lib/ file has a test, updated with it, and every test/src/ file has its lib/src/ file."
+[ "$status" = 0 ] && echo "Every lib/ file has a test, updated with it, every test/src/ file has its lib/src/ file, and no new test is outside test/src/."
 exit "$status"
