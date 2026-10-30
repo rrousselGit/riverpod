@@ -46,28 +46,24 @@ jobs:
     needs: tests_on_base
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       pull-requests: write
     steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github
       - uses: actions/download-artifact@v4
         with:
           name: tests-on-base
+          path: report
       - uses: actions/github-script@v9
         with:
           script: |
-            const fs = require('fs');
-            const marker = '<!-- tests-on-base -->';
-            const target = { ...context.repo, issue_number: context.payload.pull_request.number };
-            const body = fs.readFileSync('tests_on_base.md', 'utf8').trim();
-            const comments = await github.paginate(github.rest.issues.listComments, target);
-            const existing = comments.find(
-              c => c.user.login === 'github-actions[bot]' && c.body.startsWith(marker),
-            );
-            if (!body) {
-              if (existing) await github.rest.issues.deleteComment({ ...context.repo, comment_id: existing.id });
-              return;
-            }
-            if (existing) {
-              await github.rest.issues.updateComment({ ...context.repo, comment_id: existing.id, body });
-            } else {
-              await github.rest.issues.createComment({ ...target, body });
-            }
+            const pr = context.payload.pull_request;
+            await require('./.github/scripts/tests_on_base_comment.js')({
+              github,
+              context,
+              core,
+              pull: { number: pr.number, head_sha: pr.head.sha },
+              dir: 'report',
+            });
