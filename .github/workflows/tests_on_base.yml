@@ -37,3 +37,35 @@ jobs:
           name: tests-on-base
           path: tests_on_base.md
           retention-days: 1
+
+  # TEMPORARY, to see the comment before merging: workflow_run only runs from
+  # the default branch, so tests_on_base_comment.yml cannot run on this PR.
+  comment_preview:
+    needs: tests_on_base
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: tests-on-base
+      - uses: actions/github-script@v9
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- tests-on-base -->';
+            const target = { ...context.repo, issue_number: context.payload.pull_request.number };
+            const body = fs.readFileSync('tests_on_base.md', 'utf8').trim();
+            const comments = await github.paginate(github.rest.issues.listComments, target);
+            const existing = comments.find(
+              c => c.user.login === 'github-actions[bot]' && c.body.startsWith(marker),
+            );
+            if (!body) {
+              if (existing) await github.rest.issues.deleteComment({ ...context.repo, comment_id: existing.id });
+              return;
+            }
+            if (existing) {
+              await github.rest.issues.updateComment({ ...context.repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ ...target, body });
+            }
