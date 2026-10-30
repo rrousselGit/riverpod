@@ -1161,7 +1161,11 @@ final class ProviderContainer implements MutationTarget {
         // mounted in an ancestor (or elsewhere) may be missing locally even
         // though `read` would return it without creating anything.
         // See https://github.com/rrousselGit/riverpod/issues/4785
-        return _pointerManager.readElement(provider) != null;
+        //
+        // An element created by a weak listener exists but was never
+        // initialized; per the doc comment, `exists` only reports initialized
+        // providers, so such an element must not count as existing.
+        return _pointerManager.readElement(provider)?._didMount ?? false;
     }
   }
 
