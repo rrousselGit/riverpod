@@ -1156,11 +1156,12 @@ final class ProviderContainer implements MutationTarget {
   bool exists(ProviderBase<Object?> provider) {
     switch (provider) {
       case $ProviderBaseImpl():
-        return _pointerManager
-                .readDirectory(provider)
-                ?.pointers[provider]
-                ?.element !=
-            null;
+        // Must not limit the lookup to the local pointer directory:
+        // with overrides, pointer maps are inherited lazily, so a provider
+        // mounted in an ancestor (or elsewhere) may be missing locally even
+        // though `read` would return it without creating anything.
+        // See https://github.com/rrousselGit/riverpod/issues/4785
+        return _pointerManager.readElement(provider) != null;
     }
   }
 

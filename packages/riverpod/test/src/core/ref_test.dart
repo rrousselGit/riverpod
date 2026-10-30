@@ -717,6 +717,23 @@ void main() {
 
         expect(ref.exists(provider), true);
       });
+
+      test('returns true from a scoped container with overrides '
+          'when the provider was never read through that scope', () {
+        // https://github.com/rrousselGit/riverpod/issues/4785
+        final root = ProviderContainer.test();
+        final provider = Provider((ref) => 0);
+        final scoped = Provider((ref) => 0, dependencies: const []);
+        final leaf = ProviderContainer.test(
+          parent: root,
+          overrides: [scoped.overrideWithValue(42)],
+        );
+
+        root.read(provider);
+
+        expect(root.exists(provider), true);
+        expect(leaf.exists(provider), true);
+      });
     });
 
     group('listenSelf', () {
