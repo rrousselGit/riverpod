@@ -42,7 +42,11 @@ while [ $# -gt 0 ]; do
   esac
 done
 command -v jq >/dev/null || die "jq is not on PATH"
-[ -z "$output" ] || : >"$output" || die "could not write $output"
+if [ -n "$output" ]; then
+  : >"$output" || die "could not write $output"
+  # Made absolute, as the report is written after changing directories.
+  output="$(cd "$(dirname "$output")" && pwd -P)/$(basename "$output")"
+fi
 cd "$ROOT" || exit 1
 
 from="$(fork_point "$base")" || exit
