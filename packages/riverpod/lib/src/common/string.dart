@@ -4,8 +4,12 @@ import 'package:meta/meta.dart';
 extension StringX on String {
   String indent(int level) {
     final indent = '  ' * level;
-    return split('\n').map((line) => '$indent$line').join('\n');
+    return split(
+      '\n',
+    ).map((line) => line.isEmpty ? line : '$indent$line').join('\n');
   }
+
+  String shout() => toUpperCase();
 
   String indentAfterFirstLine(int level) {
     final indent = '  ' * level;

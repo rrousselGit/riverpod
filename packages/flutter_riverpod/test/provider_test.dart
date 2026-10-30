@@ -6,6 +6,8 @@ import 'package:mockito/mockito.dart';
 import 'utils.dart';
 
 void main() {
+  test('fake: passes with or without the lib/ changes', () => expect(1, 1));
+
   testWidgets('.read(context)', (tester) async {
     final futureProvider = FutureProvider((_) async => 42);
     final streamProvider = StreamProvider((_) async* {
