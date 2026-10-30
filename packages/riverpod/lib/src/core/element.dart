@@ -273,29 +273,22 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   ) {
     void Function()? onInitialized;
     var isInitialized = false;
-
-    void completeInitialization() {
-      if (isInitialized) return;
+    // Streams may never close, so their first event completes initialization.
+    void markInitialized() {
       isInitialized = true;
-
-      // Publishing a value can synchronously invalidate/rebuild this provider.
-      // An obsolete generation must not close the next build's dependencies.
-      if (ref.mounted && !_mustRecomputeState) onInitialized?.call();
+      onInitialized?.call();
     }
 
     void callOnError(Object error, StackTrace stackTrace) {
-      final value = triggerRetry(error, stackTrace);
-      onValue(value, seamless: !ref.isReload);
-      if (!value.isLoading) completeInitialization();
+      onValue(triggerRetry(error, stackTrace), seamless: !ref.isReload);
+      markInitialized();
     }
 
     try {
       _cancelSubscription = listen(
         data: (value) {
           onData(AsyncData(value), seamless: !ref.isReload);
-          // A stream may never close. Its first value completes initialization,
-          // allowing dependencies from previous builds to be released.
-          completeInitialization();
+          markInitialized();
         },
         error: callOnError,
         last: (last) {
@@ -304,7 +297,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
         },
         done: () {
           _lastFuture = null;
-          completeInitialization();
+          markInitialized();
         },
       );
     } on AsyncValueIsLoadingException {
@@ -319,9 +312,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
     return (onInitializedCb) {
       onInitialized = onInitializedCb;
       // Handle synchronous completion
-      if (isInitialized && ref.mounted && !_mustRecomputeState) {
-        onInitializedCb();
-      }
+      if (isInitialized) onInitializedCb();
     };
   }
 

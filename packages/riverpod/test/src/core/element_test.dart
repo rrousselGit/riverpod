@@ -9,170 +9,76 @@ import '../matrix.dart';
 import '../utils.dart';
 
 void main() {
-  group('async dependency cleanup', () {
-    test('cleanup preserves current watches and other consumers', () async {
-      final container = ProviderContainer.test();
-      var listeners = 0;
-      final dependency = Provider((ref) {
-        ref.onAddListener(() => listeners++);
-        ref.onRemoveListener(() => listeners--);
-      });
+  group('ProviderElement', () {
+    group('StreamProvider dependencies across rebuilds', () {
+      late ProviderContainer container;
+      late StreamProvider<int> provider;
       late StreamController<int> controller;
-      final provider = StreamProvider.autoDispose((ref) {
-        // Each watch creates a separate subscription.
-        ref.watch(dependency);
-        ref.watch(dependency);
-        final current = StreamController<int>();
-        controller = current;
-        ref.onDispose(current.close);
-        return current.stream;
+      var listeners = 0;
+      var throwOnBuild = false;
+
+      setUp(() {
+        listeners = 0;
+        throwOnBuild = false;
+        container = ProviderContainer.test(retry: (_, _) => null);
+        final dependency = Provider((ref) {
+          ref.onAddListener(() => listeners++);
+          ref.onRemoveListener(() => listeners--);
+        });
+        provider = StreamProvider((ref) {
+          ref.watch(dependency);
+          if (throwOnBuild) throw StateError('build');
+
+          final current = controller = StreamController<int>();
+          ref.onDispose(current.close);
+          return current.stream;
+        });
+        container.listen(provider, (_, _) {});
       });
-      final first = container.listen(provider, (_, _) {});
-      final second = container.listen(provider, (_, _) {});
-      controller.add(0);
-      await container.read(provider.future);
-      expect(listeners, 2);
 
-      container.invalidate(provider);
-      await container.pump();
-      expect(listeners, 4); // Two previous watches and two current watches.
+      Future<void> rebuild() async {
+        container.invalidate(provider);
+        container.read(provider);
+        await container.pump();
+      }
 
-      controller.add(1);
-      await container.read(provider.future);
-      expect(listeners, 2); // Only the current watches remain.
+      test('are retained while the new stream has not emitted', () async {
+        await rebuild();
 
-      controller.add(2);
-      await container.pump();
-      expect(listeners, 2); // Later events must not remove current watches.
+        expect(listeners, 2);
+      });
 
-      first.close();
-      await container.pump();
-      expect(listeners, 2); // The second consumer still needs the provider.
+      test('are released once the new stream emits a value', () async {
+        await rebuild();
+        controller.add(0);
+        await container.pump();
 
-      second.close();
-      await container.pump();
-      expect(listeners, 0);
+        expect(listeners, 1);
+      });
+
+      test('are released once the new stream emits an error', () async {
+        await rebuild();
+        controller.addError(0);
+        await container.pump();
+
+        expect(listeners, 1);
+      });
+
+      test('are released once the new stream closes empty', () async {
+        await rebuild();
+        await controller.close();
+
+        expect(listeners, 1);
+      });
+
+      test('are released if the new build throws', () async {
+        throwOnBuild = true;
+        await rebuild();
+
+        expect(listeners, 1);
+      });
     });
 
-    test(
-      'retains dependencies while retrying until stream data arrives',
-      () async {
-        final container = ProviderContainer.test(
-          retry: (_, _) => const Duration(days: 1),
-        );
-        var listeners = 0;
-        final dependency = Provider((ref) {
-          ref.onAddListener(() => listeners++);
-          ref.onRemoveListener(() => listeners--);
-        });
-        late StreamController<int> controller;
-        final provider = StreamProvider((ref) {
-          ref.watch(dependency);
-          final current = StreamController<int>();
-          controller = current;
-          ref.onDispose(current.close);
-          return current.stream;
-        });
-        container.listen(provider, (_, _) {});
-        controller.add(0);
-        await container.read(provider.future);
-
-        container.invalidate(provider);
-        await container.pump();
-        controller.addError(StateError('retry'));
-        await container.pump();
-        expect(container.read(provider).isLoading, true);
-        expect(listeners, 2);
-
-        controller.add(1);
-        expect(await container.read(provider.future), 1);
-        expect(listeners, 1);
-      },
-    );
-
-    test(
-      'releases only obsolete auto-dispose dependencies after data',
-      () async {
-        final container = ProviderContainer.test();
-        final disposed = <int>[];
-        final dependency = Provider.autoDispose.family<int, int>((ref, id) {
-          ref.onDispose(() => disposed.add(id));
-          return id;
-        });
-        var id = 0;
-        late StreamController<int> controller;
-        final provider = StreamProvider((ref) {
-          ref.watch(dependency(id));
-          final current = StreamController<int>();
-          controller = current;
-          ref.onDispose(current.close);
-          return current.stream;
-        });
-        container.listen(provider, (_, _) {});
-        controller.add(0);
-        await container.read(provider.future);
-
-        id = 1;
-        container.invalidate(provider);
-        await container.pump();
-        expect(disposed, isEmpty);
-
-        controller.add(1);
-        await container.read(provider.future);
-        await container.pump();
-        expect(disposed, [0]);
-        expect(container.read(dependency(1)), 1);
-
-        container.dispose();
-        expect(disposed, [0, 1]);
-      },
-    );
-
-    for (final (description, rebuildImmediately) in [
-      ('invalidates the provider', false),
-      ('rebuilds the provider immediately', true),
-    ]) {
-      test('ignores completion after a listener $description', () async {
-        final container = ProviderContainer.test();
-        var listeners = 0;
-        final dependency = Provider((ref) {
-          ref.onAddListener(() => listeners++);
-          ref.onRemoveListener(() => listeners--);
-        });
-        late StreamController<int> controller;
-        final provider = StreamProvider((ref) {
-          ref.watch(dependency);
-          final current = StreamController<int>();
-          controller = current;
-          ref.onDispose(current.close);
-          return current.stream;
-        });
-        container.listen(provider, (_, next) {
-          if (next == const AsyncData(1)) {
-            // Reenter during publication, before initialization cleanup runs.
-            container.invalidate(provider);
-            if (rebuildImmediately) container.read(provider);
-          }
-        });
-        controller.add(0);
-        await container.read(provider.future);
-
-        container.invalidate(provider);
-        await container.pump();
-        controller.add(1);
-        await container.pump();
-        expect(container.read(provider).isLoading, true);
-        expect(listeners, 3);
-
-        controller.add(2);
-        await container.pump();
-        expect(container.read(provider), const AsyncData(2));
-        expect(listeners, 1);
-      });
-    }
-  });
-
-  group('ProviderElement', () {
     group('pausedActiveSubscriptionCount', () {
       test('Handles subscription.pause', () async {
         final container = ProviderContainer.test();

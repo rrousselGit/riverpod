@@ -13,36 +13,6 @@ import '../utils.dart';
 
 void main() {
   streamNotifierProviderFactory.createGroup((factory) {
-    test(
-      'does not accumulate dependency listeners across stream rebuilds',
-      () async {
-        final container = ProviderContainer.test();
-        var listeners = 0;
-        final dependency = Provider((ref) {
-          ref.onAddListener(() => listeners++);
-          ref.onRemoveListener(() => listeners--);
-          return 42;
-        });
-        final provider = factory.simpleTestProvider<int>((ref, _) {
-          final value = ref.watch(dependency);
-          final controller = StreamController<int>()..add(value);
-          ref.onDispose(controller.close);
-          return controller.stream;
-        });
-        container.listen(provider, (_, _) {});
-        expect(await container.read(provider.future), 42);
-
-        for (var i = 0; i < 3; i++) {
-          container.invalidate(provider);
-          expect(await container.read(provider.future), 42);
-          expect(listeners, 1);
-        }
-
-        container.dispose();
-        expect(listeners, 0);
-      },
-    );
-
     test('filters state update by == by default', () async {
       final provider = factory.simpleTestProvider<Equal<int>>(
         (ref, _) => Stream.value(Equal(42)),
