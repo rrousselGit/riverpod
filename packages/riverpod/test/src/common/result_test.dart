@@ -1,5 +1,4 @@
 import 'package:riverpod/src/common/result.dart';
-import 'package:riverpod/src/common/string.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -34,5 +33,4 @@ void main() {
       );
     });
   });
-  test('shout', () => expect('a'.shout(), 'A'));
 }

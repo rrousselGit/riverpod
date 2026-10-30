@@ -39,31 +39,3 @@ jobs:
             tests_on_base.md
             tests_on_base.json
           retention-days: 1
-
-  # TEMPORARY, to see the comment before merging: workflow_run only runs from
-  # the default branch, so tests_on_base_comment.yml cannot run on this PR.
-  comment_preview:
-    needs: tests_on_base
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: .github
-      - uses: actions/download-artifact@v4
-        with:
-          name: tests-on-base
-          path: report
-      - uses: actions/github-script@v9
-        with:
-          script: |
-            const pr = context.payload.pull_request;
-            await require('./.github/scripts/tests_on_base_comment.js')({
-              github,
-              context,
-              core,
-              pull: { number: pr.number, head_sha: pr.head.sha },
-              dir: 'report',
-            });
