@@ -203,6 +203,12 @@ void testSource(
   });
 }
 
+/// Matches the `toSource()` of the node that begins a cascade section.
+///
+/// Since analyzer 14.7.0, it starts with the cascade operator (`..watch(dep)`
+/// rather than `watch(dep)`).
+Matcher cascadeSectionSource(String source) => anyOf(source, '..$source');
+
 /// Asserts that no [AstNode] has more than one Riverpod AST representation.
 void expectRiverpodAstOnlyHasASingleOptionPerNode(AstNode node) {
   final result = CollectionRiverpodAst();
