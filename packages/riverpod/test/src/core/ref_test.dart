@@ -717,6 +717,46 @@ void main() {
 
         expect(ref.exists(provider), true);
       });
+
+      test('returns true from a scoped container with overrides '
+          'when the provider was never read through that scope', () {
+        // https://github.com/rrousselGit/riverpod/issues/4785
+        final root = ProviderContainer.test();
+        final provider = Provider((ref) => 0);
+        final scoped = Provider((ref) => 0, dependencies: const []);
+        final leaf = ProviderContainer.test(
+          parent: root,
+          overrides: [scoped.overrideWithValue(42)],
+        );
+
+        root.read(provider);
+
+        expect(root.exists(provider), true);
+        expect(leaf.exists(provider), true);
+      });
+
+      test(
+        'does not consider an element created by a weak listener as existing, '
+        'until the provider is initialized',
+        () {
+          // An element created by a weak listener exists but was never
+          // initialized. `exists` documents that it reports initialized
+          // providers, so such an element must not count as existing.
+          final root = ProviderContainer.test();
+          final provider = Provider((ref) => 0);
+          final leaf = ProviderContainer.test(parent: root);
+
+          root.listen(provider, (_, _) {}, weak: true);
+
+          expect(root.exists(provider), false);
+          expect(leaf.exists(provider), false);
+
+          root.read(provider);
+
+          expect(root.exists(provider), true);
+          expect(leaf.exists(provider), true);
+        },
+      );
     });
 
     group('listenSelf', () {
