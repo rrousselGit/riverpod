@@ -214,5 +214,5 @@ if [ -n "$stale" ]; then
   printf 'Remove them from %s.\n\n' "$untested_list" >&2
   status=1
 fi
-[ "$status" = 0 ] && echo "Every lib/ file has a test, updated with it, every test/src/ file has its lib/src/ file, and no new test is outside test/src/."
+[ "$status" = 0 ] && echo "Every lib/ file has a test, updated with it, every test/src/ file has its lib/src/ file, and every new test outside test/src/ tests a lib/ file outside lib/src/, or is meta_test.dart or misc_test.dart."
 exit "$status"
