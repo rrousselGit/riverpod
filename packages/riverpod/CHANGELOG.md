@@ -1,6 +1,7 @@
 ## Unreleased minor
 
 - TEMPORARY fake entry, to test tests_on_base.sh. Will be reverted.
+- Fix `StreamProvider`/`StreamNotifier` retaining obsolete dependency subscriptions across rebuilds until the stream closes, even after emitting data.
 - `AsyncValueIsLoadingException` now has a public constructor. (thanks to @uveshm003)
 - `debugTrackProviderCreation` is now exported by `package:riverpod/misc.dart`.
 - Devtools now retain only the current provider snapshot by default. Set
