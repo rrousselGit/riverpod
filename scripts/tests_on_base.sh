@@ -212,7 +212,7 @@ awk -F '\t' -v OFS='\t' '
 # whose tests all fail on the base.
 missed="$(grep -c . "$tmp/missed.tsv")"
 if [ "$missed" = 0 ]; then
-  echo "Every new or changed test fails on the base." >&2
+  echo "No new test passes on the base." >&2
   exit 0
 fi
 report() {
