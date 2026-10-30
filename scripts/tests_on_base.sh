@@ -18,12 +18,15 @@
 # base, nor when the branch changes no lib/ file or no test, in which case no
 # test runs. The report never fails the script: it is meant for a comment.
 #
-# Usage: scripts/tests_on_base.sh [--base REF] [--output FILE]
+# Usage: scripts/tests_on_base.sh [--base REF] [--output FILE] [--json FILE]
 #   --base REF     Ref to compare against (default: origin/master). Changes
 #                  are taken from where the current branch forked from REF
 #                  up to the working tree, untracked files included.
 #   --output FILE  Write the Markdown report to FILE (default: stdout). FILE
 #                  is left empty when there is nothing to report.
+#   --json FILE    Also write the reported tests to FILE, as a JSON list of
+#                  {"path", "line", "name"}, to comment on each of them.
+#                  "line" is null when the test is declared in another file.
 
 set -uo pipefail
 # shellcheck source=lib/common.sh
@@ -31,19 +34,27 @@ set -uo pipefail
 
 base="origin/master"
 output=""
+json=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --base)   [ $# -ge 2 ] || die "$1 needs a ref"; base="$2"; shift 2 ;;
     --output) [ $# -ge 2 ] || die "$1 needs a file"; output="$2"; shift 2 ;;
+    --json)   [ $# -ge 2 ] || die "$1 needs a file"; json="$2"; shift 2 ;;
     -h|--help) usage; exit 0 ;;
     *) die "unknown argument '$1' (see --help)" ;;
   esac
 done
 command -v jq >/dev/null || die "jq is not on PATH"
+# absolute FILE: FILE made absolute, as the reports are written after
+# changing directories.
+absolute() { printf '%s/%s' "$(cd "$(dirname "$1")" && pwd -P)" "$(basename "$1")"; }
 if [ -n "$output" ]; then
   : >"$output" || die "could not write $output"
-  # Made absolute, as the report is written after changing directories.
-  output="$(cd "$(dirname "$output")" && pwd -P)/$(basename "$output")"
+  output="$(absolute "$output")"
+fi
+if [ -n "$json" ]; then
+  echo '[]' >"$json" || die "could not write $json"
+  json="$(absolute "$json")"
 fi
 cd "$ROOT" || exit 1
 
@@ -124,9 +135,10 @@ pub_get() {
 }
 
 # run_tests PACKAGE OUT FILE...: runs FILEs (relative to PACKAGE) in the
-# worktree, and writes "<file>\t<test name>\t<pass|fail|skip>" lines to OUT.
-# A file that fails to load (it does not compile, say) gets one line with an
-# empty test name and "fail".
+# worktree, and writes "<file>\t<test name>\t<pass|fail|skip>\t<line>" lines
+# to OUT. The line is that of the test in its file, and empty when the test
+# is declared in another file. A file that fails to load (it does not
+# compile, say) gets one line with an empty test name and "fail".
 run_tests() {
   local package="$1" out="$2" preset="" events="$tmp/events.json"
   shift 2
@@ -150,9 +162,15 @@ run_tests() {
     | .[]
     | select(.type == "testDone" and (.hidden | not))
     | $tests[.testID | tostring] as $t
-    | [ $suites[$t.suiteID | tostring],
+    | $suites[$t.suiteID | tostring] as $file
+    | [ $file,
         (if ($t.groupIDs | length) == 0 and ($t.name | startswith("loading ")) then "" else $t.name end),
-        (if .skipped then "skip" elif .result == "success" then "pass" else "fail" end) ]
+        (if .skipped then "skip" elif .result == "success" then "pass" else "fail" end),
+        # root_* point at the test file when a helper of another file
+        # declares the test.
+        (if ($t.root_url // "") | endswith("/" + $file) then $t.root_line
+         elif ($t.url // "") | endswith("/" + $file) then $t.line
+         else "" end) ]
     | @tsv
   ' "$events" >"$out" || die "could not read the test results of $package"
 }
@@ -201,11 +219,12 @@ for package in $test_packages; do
   cat "$tmp/out.tsv" "$tmp/crashed.tsv" | awk -v p="$package/" '{ print p $0 }' >>"$tmp/after.tsv"
 done
 
-# "<file>\t<name>" of the new tests that pass on the base. A file that does
-# not load has no test names, and so fails: it likely uses a new API.
+# "<file>\t<name>\t<line>" of the new tests that pass on the base. A file
+# that does not load has no test names, and so fails: it likely uses a new
+# API.
 awk -F '\t' -v OFS='\t' '
   FILENAME == ARGV[1] { if ($3 == "pass") existed[$1 FS $2] = 1; next }
-  $2 != "" && $3 == "pass" && !(($1 FS $2) in existed) { print $1, $2 }
+  $2 != "" && $3 == "pass" && !(($1 FS $2) in existed) { print $1, $2, $4 }
 ' "$tmp/before.tsv" "$tmp/after.tsv" | sort -u >"$tmp/missed.tsv"
 
 # Only these tests are reported: the comment stays away from pull requests
@@ -229,3 +248,7 @@ report() {
   ' "$tmp/missed.tsv"
 }
 if [ -n "$output" ]; then report >"$output"; else report; fi
+if [ -n "$json" ]; then
+  jq -Rn '[inputs | split("\t") | { path: .[0], name: .[1], line: (.[2] | tonumber? // null) }]' \
+    "$tmp/missed.tsv" >"$json" || die "could not write $json"
+fi

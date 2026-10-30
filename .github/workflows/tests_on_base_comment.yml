@@ -1,8 +1,9 @@
 name: Comment tests on base
 
-# Posts the report of tests_on_base.yml on its pull request, as one comment
-# updated on every run. This runs with write access, so it never checks out
-# or runs the code of the pull request: it only reads the report.
+# Posts the reports of tests_on_base.yml on its pull request (see
+# .github/scripts/tests_on_base_comment.js). This runs with write access, so
+# it never checks out or runs the code of the pull request: it checks out the
+# default branch, and only reads the reports.
 
 on:
   workflow_run:
@@ -11,6 +12,7 @@ on:
 
 permissions:
   actions: read
+  contents: read
   pull-requests: write
 
 jobs:
@@ -18,18 +20,19 @@ jobs:
     if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github
       - uses: actions/download-artifact@v4
         with:
           name: tests-on-base
+          path: report
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ github.token }}
       - uses: actions/github-script@v9
         with:
           script: |
-            const fs = require('fs');
             const run = context.payload.workflow_run;
-            const marker = '<!-- tests-on-base -->';
-
             // The pull request is found from the tested commit, rather than
             // read from the artifact, which the pull request controls.
             const { data: pulls } = await github.rest.pulls.list({
@@ -39,28 +42,10 @@ jobs:
             });
             const pull = pulls.find(p => p.head.sha === run.head_sha);
             if (!pull) return;
-            const target = { ...context.repo, issue_number: pull.number };
-
-            let body = fs.readFileSync('tests_on_base.md', 'utf8').trim();
-            // GitHub rejects comments over 65536 characters.
-            if (body.length > 60000) body = `${body.slice(0, 60000)}\n\n…(truncated)`;
-            if (body && !body.startsWith(marker)) body = `${marker}\n${body}`;
-
-            const comments = await github.paginate(github.rest.issues.listComments, target);
-            const existing = comments.find(
-              c => c.user.login === 'github-actions[bot]' && c.body.startsWith(marker),
-            );
-
-            // An empty report means no new test passes without the lib/
-            // changes anymore, so an earlier warning is outdated.
-            if (!body) {
-              if (existing) {
-                await github.rest.issues.deleteComment({ ...context.repo, comment_id: existing.id });
-              }
-              return;
-            }
-            if (existing) {
-              await github.rest.issues.updateComment({ ...context.repo, comment_id: existing.id, body });
-            } else {
-              await github.rest.issues.createComment({ ...target, body });
-            }
+            await require('./.github/scripts/tests_on_base_comment.js')({
+              github,
+              context,
+              core,
+              pull: { number: pull.number, head_sha: run.head_sha },
+              dir: 'report',
+            });
