@@ -65,7 +65,6 @@ packages/riverpod_devtool_generator/lib/builder.dart
 packages/riverpod_generator/integration/build_yaml/lib/dependencies.dart
 packages/riverpod_generator/integration/build_yaml/lib/main.dart
 packages/riverpod_generator/lib/builder.dart
-packages/riverpod_generator/lib/src/json_generator.dart
 packages/riverpod_generator/lib/src/parse_generator.dart
 packages/riverpod_generator/lib/src/riverpod_generator.dart
 packages/riverpod_generator/lib/src/templates/family.dart

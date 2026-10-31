@@ -1,5 +1,8 @@
 ## Unreleased minor
 
+- Added `persist(..., emitAsLoadingState: false)`, to emit the decoded state
+  as `AsyncData` instead of `AsyncLoading`. This makes `provider.future`
+  complete with the decoded state. (thanks to @assassinaj602)
 - `AsyncValueIsLoadingException` now has a public constructor. (thanks to @uveshm003)
 - `debugTrackProviderCreation` is now exported by `package:hooks_riverpod/misc.dart`.
 - `provider.listenable` is now available from `package:hooks_riverpod/hooks_riverpod.dart`, and

@@ -499,6 +499,101 @@ abstract class _$PassEncodeDecodeByHandBase
   }
 }
 
+@ProviderFor(EmitAsData)
+@JsonPersist()
+final emitAsDataProvider = EmitAsDataFamily._();
+
+@JsonPersist()
+final class EmitAsDataProvider
+    extends $AsyncNotifierProvider<EmitAsData, Map<String, String>> {
+  EmitAsDataProvider._({
+    required EmitAsDataFamily super.from,
+    required Completer<Map<String, String>> super.argument,
+  }) : super(
+         retry: null,
+         name: r'emitAsDataProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$emitAsDataHash();
+
+  @override
+  String toString() {
+    return r'emitAsDataProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  EmitAsData create() => EmitAsData();
+
+  @override
+  bool operator ==(Object other) {
+    return other is EmitAsDataProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$emitAsDataHash() => r'b0b619655252f2bea0c7a088aba8bc70f3faddbe';
+
+@JsonPersist()
+final class EmitAsDataFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          EmitAsData,
+          AsyncValue<Map<String, String>>,
+          Map<String, String>,
+          FutureOr<Map<String, String>>,
+          Completer<Map<String, String>>
+        > {
+  EmitAsDataFamily._()
+    : super(
+        retry: null,
+        name: r'emitAsDataProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  @JsonPersist()
+  EmitAsDataProvider call(Completer<Map<String, String>> completer) =>
+      EmitAsDataProvider._(argument: completer, from: this);
+
+  @override
+  String toString() => r'emitAsDataProvider';
+}
+
+@JsonPersist()
+abstract class _$EmitAsDataBase extends $AsyncNotifier<Map<String, String>> {
+  late final _$args = ref.$arg as Completer<Map<String, String>>;
+  Completer<Map<String, String>> get completer => _$args;
+
+  FutureOr<Map<String, String>> build(Completer<Map<String, String>> completer);
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref =
+        this.ref as $Ref<AsyncValue<Map<String, String>>, Map<String, String>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<Map<String, String>>, Map<String, String>>,
+              AsyncValue<Map<String, String>>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, () => build(_$args));
+  }
+}
+
 // **************************************************************************
 // JsonGenerator
 // **************************************************************************
@@ -707,6 +802,42 @@ abstract class _$PassEncodeDecodeByHand extends _$PassEncodeDecodeByHandBase {
   /// The default key used by [persist].
   String get key {
     const resolvedKey = "PassEncodeDecodeByHand";
+    return resolvedKey;
+  }
+
+  /// A variant of [persist], for JSON-specific encoding.
+  ///
+  /// You can override [key] to customize the key used for storage.
+  PersistResult persist(
+    FutureOr<Storage<String, String>> storage, {
+    String? key,
+    String Function(Map<String, String> state)? encode,
+    Map<String, String> Function(String encoded)? decode,
+    StorageOptions options = const StorageOptions(),
+    bool emitAsLoadingState = true,
+  }) {
+    return NotifierPersistX(this).persist<String, String>(
+      storage,
+      key: key ?? this.key,
+      encode: encode ?? $jsonCodex.encode,
+      decode:
+          decode ??
+          (encoded) {
+            final e = $jsonCodex.decode(encoded);
+            return (e as Map).map((k, v) => MapEntry(k as String, v as String));
+          },
+      options: options,
+      emitAsLoadingState: emitAsLoadingState,
+    );
+  }
+}
+
+abstract class _$EmitAsData extends _$EmitAsDataBase {
+  /// The default key used by [persist].
+  String get key {
+    late final args = completer;
+    late final resolvedKey = 'EmitAsData($args)';
+
     return resolvedKey;
   }
 

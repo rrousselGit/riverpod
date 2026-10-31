@@ -233,6 +233,20 @@ extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
   /// In general, you should not await this future, as awaiting it would
   /// only delay the core logic, such as fetching data from an API.
   ///
+  /// For asynchronous notifiers, the decoded state is by default emitted as
+  /// [AsyncLoading] with a value, since [Notifier.build] is still
+  /// fetching up-to-date data. As such, `provider.future` does not complete
+  /// with the decoded state; it waits for [Notifier.build] instead.
+  /// To read the decoded state, use [AsyncValue.value] instead of awaiting
+  /// `provider.future`.
+  ///
+  /// Alternatively, set [emitAsLoadingState] to `false` to emit the decoded
+  /// state as [AsyncData] instead. This makes `provider.future` complete with
+  /// the decoded state, and [AsyncValueExtensions.isLoading] returns `false`
+  /// until [Notifier.build] completes. [AsyncValueExtensions.isFromCache] can
+  /// be used to know whether the state comes from the cache.
+  /// This option has no effect on synchronous notifiers.
+  ///
   /// **Note**:
   /// The decoding of the state is only performed once, the first time
   /// the provider is built. Calling [persist] multiple times will not

@@ -64,7 +64,9 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
 
   /// Whether the value was obtained using Riverpod's offline-persistence feature.
   ///
-  /// When [isFromCache] is true, [isLoading] should also be true.
+  /// When [isFromCache] is true, [isLoading] is generally also true. The
+  /// exception is `persist(..., emitAsLoadingState: false)`, which emits the
+  /// value as [AsyncData].
   bool get isFromCache => valueFilled?.kind == DataKind.cache;
 
   /// Whether some new value is currently asynchronously loading.

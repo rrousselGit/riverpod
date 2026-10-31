@@ -1,5 +1,8 @@
 ## Unreleased minor
 
+- Added `persist(..., emitAsLoadingState: false)`, to emit the decoded state
+  as `AsyncData` instead of `AsyncLoading`. This makes `provider.future`
+  complete with the decoded state. (thanks to @assassinaj602)
 - Fix `StreamProvider`/`StreamNotifier` retaining obsolete dependency subscriptions across rebuilds until the stream closes, even after emitting data.
 - `AsyncValueIsLoadingException` now has a public constructor. (thanks to @uveshm003)
 - `debugTrackProviderCreation` is now exported by `package:riverpod/misc.dart`.
@@ -41,11 +44,6 @@ Fix a different source of `markNeedsBuild` error. Those are tricky!
 
 ## 3.4.0 - 2026-07-26
 
-- Added `emitAsLoadingState` parameter to `persist()` to control whether restored cache is emitted as `AsyncLoading` (default) or `AsyncData`.
-- Fix `invalidate`/`refresh` not finding providers and families when called
-  from a scoped `ProviderScope` with overrides, if the provider was never
-  read through that scope. (thanks to @itsUndefined)
-- Upgraded `analyzer` to `<15.0.0`
 - Deprecated `SyncProviderTransformerMixin`. It is replaced by the newly added APIs
 - Devtool-only: Better support for scoped providers with multiple overrides.
 - Upgraded `analyzer` to `<15.0.0`
