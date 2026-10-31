@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
-import 'dart:typed_data';
 
 import 'package:analyzer/dart/analysis/analysis_context.dart';
 import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
@@ -13,7 +12,7 @@ import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:analyzer/file_system/overlay_file_system.dart';
 import 'package:analyzer/file_system/physical_file_system.dart';
 import 'package:analyzer/src/dart/analysis/analysis_context_collection.dart';
-import 'package:analyzer/src/dart/analysis/byte_store.dart';
+import 'package:analyzer/src/dart/analysis/file_byte_store.dart';
 import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 import 'package:package_config/package_config.dart';
@@ -58,14 +57,20 @@ Future<_TestAnalysisContext>? _analysisContext;
 
 /// Shares dependency analysis while keeping each test's files at unique paths.
 ///
-/// Analysis results are also cached on disk, in a [_DiskByteStore], so that
-/// test files (each in its own isolate) and later runs skip analyzing the
+/// Analysis results are also cached on disk, in [byteStore], so that test
+/// files (each in its own isolate) and later runs skip analyzing the
 /// dependencies again, such as Flutter.
 class _TestAnalysisContext {
-  _TestAnalysisContext(this.directory, this.resources, this.collection);
+  _TestAnalysisContext(
+    this.directory,
+    this.resources,
+    this.byteStore,
+    this.collection,
+  );
 
   final Directory directory;
   final OverlayResourceProvider resources;
+  final FileByteStore byteStore;
   final AnalysisContextCollection collection;
   int _stamp = 0;
 
@@ -96,6 +101,7 @@ class _TestAnalysisContext {
       content: '{}',
       modificationStamp: 0,
     );
+    // FileByteStore silently fails its writes if this folder doesn't exist.
     final cache = Directory(
       p.join(
         p.dirname(configUri.toFilePath()),
@@ -103,13 +109,17 @@ class _TestAnalysisContext {
         'analysis_cache',
       ),
     )..createSync(recursive: true);
+    final byteStore = FileByteStore(
+      cache.path,
+      // Test files run in isolates of the same process.
+      tempNameSuffix: p.basename(directory.path),
+    );
     final collection = AnalysisContextCollectionImpl(
       includedPaths: [directory.path],
       resourceProvider: resources,
-      // The temporary directory is unique to this isolate.
-      byteStore: _DiskByteStore(cache, tempSuffix: p.basename(directory.path)),
+      byteStore: byteStore,
     );
-    return _TestAnalysisContext(directory, resources, collection);
+    return _TestAnalysisContext(directory, resources, byteStore, collection);
   }
 
   void write(String path, String content) {
@@ -121,43 +131,6 @@ class _TestAnalysisContext {
     await collection.dispose();
     directory.deleteSync(recursive: true);
   }
-}
-
-/// [ByteStore] that keeps its entries as files in [directory].
-///
-/// Unlike analyzer's `FileByteStore`, it writes synchronously, so entries
-/// aren't lost when a test isolate exits, on any supported analyzer version.
-class _DiskByteStore implements ByteStore {
-  _DiskByteStore(this.directory, {required this.tempSuffix});
-
-  final Directory directory;
-  final String tempSuffix;
-
-  @override
-  Uint8List? get(String key) {
-    try {
-      return File(p.join(directory.path, key)).readAsBytesSync();
-    } on FileSystemException {
-      return null;
-    }
-  }
-
-  @override
-  Uint8List putGet(String key, Uint8List bytes) {
-    final path = p.join(directory.path, key);
-    try {
-      // Renamed once complete, so other test files never read partial entries.
-      File('$path.$tempSuffix')
-        ..writeAsBytesSync(bytes)
-        ..renameSync(path);
-    } on FileSystemException {
-      // The cache is best effort.
-    }
-    return bytes;
-  }
-
-  @override
-  void release(Iterable<String> keys) {}
 }
 
 /// Resolves a test library within the shared analyzer context.
@@ -243,6 +216,8 @@ void testSource(
     }
 
     final library = await getLibrary();
+    // Writes are asynchronous, and lost if the isolate exits before they end.
+    await analysis.byteStore.flush();
     final unit = library.units.firstWhere((unit) => unit.path == path).unit;
     try {
       await run(TestSourceResolver(context, path), unit, library.units);
