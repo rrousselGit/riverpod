@@ -16,13 +16,13 @@ class MyApp extends StatelessWidget {
       routes: {
         '/detail-page': (_) => const DetailPageView(),
       },
-      home: const ActivityView(),
+      home: const HomeView(),
     );
   }
 }
 
-class ActivityView extends ConsumerWidget {
-  const ActivityView({super.key});
+class HomeView extends ConsumerWidget {
+  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
