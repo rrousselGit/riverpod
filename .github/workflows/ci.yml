@@ -1,0 +1,87 @@
+name: CI
+
+# Every check lives in scripts/check.sh; these jobs only pick which steps to run
+# and spread them across machines. To reproduce a failure locally, run the same
+# command shown in the step.
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - dev
+    paths-ignore:
+      - "**.md"
+      - "**.mdx"
+  schedule:
+    # runs the CI everyday at 10AM
+    - cron: "0 10 * * *"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  generate:
+    name: Package graph & generated code are up to date
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+      - run: scripts/check.sh graph generate
+
+  analyze:
+    name: Format & analyze
+    runs-on: ubuntu-latest
+    # scripts/issues.sh only reads the state of issues.
+    permissions:
+      contents: read
+      issues: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+      # The token lets scripts/issues.sh read the state of the linked issues.
+      - run: scripts/check.sh format analyze legacy issues
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  tested:
+    name: Every lib/ file has a test, updated with it, and test/src/ matches lib/src/
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+      # On pull requests, HEAD is the merge commit and HEAD^1 the target
+      # branch, so this checks the changes of the PR.
+      - run: scripts/check.sh tested --base HEAD^1
+
+  test:
+    name: Test (shard ${{ matrix.shard }}/3)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+      # Codecov checks the coverage collected here.
+      - run: scripts/check.sh test --no-coverage-check --shard ${{ matrix.shard }}/3
+      - uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false

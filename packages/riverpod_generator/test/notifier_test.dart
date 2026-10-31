@@ -1,5 +1,3 @@
-// ignore_for_file: omit_local_variable_types, unused_local_variable //
-
 import 'package:riverpod/misc.dart' show ProviderBase;
 import 'package:riverpod/riverpod.dart' show ProviderContainer;
 import 'package:test/test.dart';
@@ -37,7 +35,6 @@ void main() {
     final notifier = container.read(publicClassProvider.notifier);
     expect(notifier.param, 'Hello world');
 
-    // ignore: invalid_use_of_protected_member //
     expect(notifier.ref, isNotNull);
     expect(notifier.state, isNotNull);
   });
@@ -62,7 +59,6 @@ void main() {
     expect(notifier.fourth, true);
     expect(notifier.fifth, null);
 
-    // ignore: invalid_use_of_protected_member //
     expect(notifier.ref, isNotNull);
     expect(notifier.state, isNotNull);
   });

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:devtools_app_shared/service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:riverpod_devtool/main.dart';
+import 'package:riverpod_devtool/src/observer.dart';
 import 'package:riverpod_devtool/src/vm_service.dart';
 
 void main() {

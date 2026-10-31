@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/experimental/mutation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 
 class _Sentinel {
@@ -59,10 +58,28 @@ class ErrorListener extends Mock {
   void call(Object? error, StackTrace? stackTrace);
 }
 
-class Counter extends StateNotifier<int> {
-  Counter() : super(0);
+class Counter extends Notifier<int> {
+  @override
+  int build() => 0;
 
   void increment() => state++;
+}
+
+/// A [Notifier] whose state tests set from outside, with
+/// `container.read(provider.notifier).state = value`.
+///
+/// It replaces the legacy `StateProvider` in tests that only need a provider
+/// whose state changes.
+class SettableNotifier<StateT> extends Notifier<StateT> {
+  SettableNotifier(this._build);
+
+  final StateT Function(Ref ref) _build;
+
+  @override
+  StateT build() => _build(ref);
+
+  /// Sets the state to the result of [cb] on the current state.
+  StateT update(StateT Function(StateT state) cb) => state = cb(state);
 }
 
 class Listener<StateT> extends Mock {
@@ -104,4 +121,18 @@ VerifyOnly get verifyOnly {
     verifyNoMoreInteractions(mock);
     return result;
   };
+}
+
+class DeferredNotifier<StateT> extends Notifier<StateT> {
+  DeferredNotifier(this._build);
+
+  final StateT Function(Ref ref, DeferredNotifier<StateT> self) _build;
+
+  @override
+  Ref get ref;
+
+  @override
+  StateT build() {
+    return _build(ref, this);
+  }
 }

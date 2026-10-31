@@ -1,4 +1,3 @@
-// ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
 import 'package:material_ui/material_ui.dart';
 

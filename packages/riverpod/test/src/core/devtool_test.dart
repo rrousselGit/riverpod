@@ -30,6 +30,11 @@ final class _ManualVsync implements Vsync {
 Future<void> _waitForDevtoolEvent() => Future<void>.delayed(Duration.zero);
 
 void main() {
+  test('debug flags are disabled by default', () {
+    expect(debugTrackProviderCreation, isFalse);
+    expect(debugTrackProviderHistory, isFalse);
+  });
+
   group('devtool sessions', () {
     final devtool = RiverpodDevtool.instance;
 
