@@ -11,6 +11,8 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:analyzer/file_system/overlay_file_system.dart';
 import 'package:analyzer/file_system/physical_file_system.dart';
+import 'package:analyzer/src/dart/analysis/analysis_context_collection.dart';
+import 'package:analyzer/src/dart/analysis/file_byte_store.dart';
 import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 import 'package:package_config/package_config.dart';
@@ -54,11 +56,21 @@ int _testNumber = 0;
 Future<_TestAnalysisContext>? _analysisContext;
 
 /// Shares dependency analysis while keeping each test's files at unique paths.
+///
+/// Analysis results are also cached on disk, in [byteStore], so that test
+/// files (each in its own isolate) and later runs skip analyzing the
+/// dependencies again, such as Flutter.
 class _TestAnalysisContext {
-  _TestAnalysisContext(this.directory, this.resources, this.collection);
+  _TestAnalysisContext(
+    this.directory,
+    this.resources,
+    this.byteStore,
+    this.collection,
+  );
 
   final Directory directory;
   final OverlayResourceProvider resources;
+  final FileByteStore byteStore;
   final AnalysisContextCollection collection;
   int _stamp = 0;
 
@@ -89,11 +101,25 @@ class _TestAnalysisContext {
       content: '{}',
       modificationStamp: 0,
     );
-    final collection = AnalysisContextCollection(
+    // FileByteStore silently fails its writes if this folder doesn't exist.
+    final cache = Directory(
+      p.join(
+        p.dirname(configUri.toFilePath()),
+        'riverpod_analyzer_utils_tests',
+        'analysis_cache',
+      ),
+    )..createSync(recursive: true);
+    final byteStore = FileByteStore(
+      cache.path,
+      // Test files run in isolates of the same process.
+      tempNameSuffix: p.basename(directory.path),
+    );
+    final collection = AnalysisContextCollectionImpl(
       includedPaths: [directory.path],
       resourceProvider: resources,
+      byteStore: byteStore,
     );
-    return _TestAnalysisContext(directory, resources, collection);
+    return _TestAnalysisContext(directory, resources, byteStore, collection);
   }
 
   void write(String path, String content) {
@@ -190,6 +216,8 @@ void testSource(
     }
 
     final library = await getLibrary();
+    // Writes are asynchronous, and lost if the isolate exits before they end.
+    await analysis.byteStore.flush();
     final unit = library.units.firstWhere((unit) => unit.path == path).unit;
     try {
       await run(TestSourceResolver(context, path), unit, library.units);
