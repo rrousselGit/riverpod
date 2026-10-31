@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../activity/codegen.dart';
+import '../brewery/codegen.dart';
 
 part 'codegen.g.dart';
 

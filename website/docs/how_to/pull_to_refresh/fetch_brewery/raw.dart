@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:riverpod/riverpod.dart';
 
-import '../activity/raw.dart';
+import '../brewery/raw.dart';
 
 /* SNIPPET START */
 final breweryProvider = FutureProvider.autoDispose<Brewery>((ref) async {

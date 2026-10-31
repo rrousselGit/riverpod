@@ -3,7 +3,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
-import 'fetch_activity/codegen.dart';
+import 'fetch_brewery/codegen.dart';
 
 /* SNIPPET START */
 class BreweryView extends ConsumerWidget {
