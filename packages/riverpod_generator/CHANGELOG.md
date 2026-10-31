@@ -1,5 +1,7 @@
-## Unreleased fix
+## Unreleased minor
 
+- `@JsonPersist`'s `persist` now accepts `emitAsLoadingState` on asynchronous
+  notifiers. (thanks to @assassinaj602)
 - Allow `build` 5, as required by `build_runner` 2.17.1. (thanks to @uveshm003)
 - `mockito` is now a dev dependency, as only the tests of `riverpod_generator` use it. (thanks to @uveshm003)
 

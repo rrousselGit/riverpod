@@ -220,6 +220,7 @@ final class PersistResult {
 /// This is separate from [AnyNotifier] because it is experimental.
 @publicInPersist
 extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
+  /// {@template riverpod.persist}
   /// Persist the state of a provider to a database.
   ///
   /// When calling this method, Riverpod will automatically listen to state
@@ -237,12 +238,31 @@ extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
   /// The decoding of the state is only performed once, the first time
   /// the provider is built. Calling [persist] multiple times will not
   /// re-trigger the decoding.
+  /// {@endtemplate}
   PersistResult persist<KeyT, EncodedT>(
     FutureOr<Storage<KeyT, EncodedT>> storage, {
     required KeyT key,
     required EncodedT Function(ValueT state) encode,
     required ValueT Function(EncodedT encoded) decode,
     StorageOptions options = const StorageOptions(),
+  }) {
+    return _persist(
+      storage,
+      key: key,
+      encode: encode,
+      decode: decode,
+      options: options,
+      setDecoded: _setStateFromValue,
+    );
+  }
+
+  PersistResult _persist<KeyT, EncodedT>(
+    FutureOr<Storage<KeyT, EncodedT>> storage, {
+    required KeyT key,
+    required EncodedT Function(ValueT state) encode,
+    required ValueT Function(EncodedT encoded) decode,
+    required StorageOptions options,
+    required void Function(ValueT decoded) setDecoded,
   }) {
     _debugAssertNoDuplicateKey(key, this);
 
@@ -283,7 +303,7 @@ extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
             }
 
             final decoded = decode(value.data);
-            _setStateFromValue(decoded);
+            setDecoded(decoded);
           }),
         );
 
@@ -299,6 +319,46 @@ extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
     }
 
     return PersistResult._(future: null);
+  }
+}
+
+/// Adds [persist] method to asynchronous notifiers.
+///
+/// This is separate from [NotifierPersistX] to offer options specific to
+/// [AsyncValue].
+@publicInPersist
+extension AsyncNotifierPersistX<ValueT> on $AsyncNotifierBase<ValueT> {
+  /// {@macro riverpod.persist}
+  ///
+  /// By default, the decoded state is emitted as [AsyncLoading] with a value,
+  /// since [AsyncNotifier.build] is still fetching up-to-date data.
+  /// As such, `provider.future` does not complete with the decoded state; it
+  /// waits for [AsyncNotifier.build] instead. To read the decoded state, use
+  /// [AsyncValue.value] instead of awaiting `provider.future`.
+  ///
+  /// Alternatively, set [emitAsLoadingState] to `false` to emit the decoded
+  /// state as [AsyncData] instead. This makes `provider.future` complete with
+  /// the decoded state, and [AsyncValueExtensions.isLoading] returns `false`
+  /// until [AsyncNotifier.build] completes. [AsyncValueExtensions.isFromCache]
+  /// can be used to know whether the state comes from the cache.
+  PersistResult persist<KeyT, EncodedT>(
+    FutureOr<Storage<KeyT, EncodedT>> storage, {
+    required KeyT key,
+    required EncodedT Function(ValueT state) encode,
+    required ValueT Function(EncodedT encoded) decode,
+    StorageOptions options = const StorageOptions(),
+    bool emitAsLoadingState = true,
+  }) {
+    return _persist(
+      storage,
+      key: key,
+      encode: encode,
+      decode: decode,
+      options: options,
+      setDecoded: emitAsLoadingState
+          ? _setStateFromValue
+          : (value) => state = AsyncData(value, kind: DataKind.cache),
+    );
   }
 }
 

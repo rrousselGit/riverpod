@@ -134,8 +134,9 @@ abstract class _$TodosNotifier extends _$TodosNotifierBase {
     String Function(List<Todo> state)? encode,
     List<Todo> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
+    bool emitAsLoadingState = true,
   }) {
-    return NotifierPersistX(this).persist<String, String>(
+    return AsyncNotifierPersistX(this).persist<String, String>(
       storage,
       key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
@@ -148,6 +149,7 @@ abstract class _$TodosNotifier extends _$TodosNotifierBase {
                 .toList();
           },
       options: options,
+      emitAsLoadingState: emitAsLoadingState,
     );
   }
 }

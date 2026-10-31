@@ -1,3 +1,8 @@
+## Unreleased minor
+
+- `package:riverpod_annotation/experimental/persist.dart` now exports
+  `AsyncNotifierPersistX`.
+
 ## 4.0.7 - 2026-09-04
 ### Dependency changes
 

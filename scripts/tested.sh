@@ -23,8 +23,9 @@
 #   PACKAGE     Package paths (default: every workspace package).
 #
 # Exempt from the rule:
-# - Changes that only touch comments or whitespace (docs, formatting), as
-#   told by tools/code_changes, which compares unresolved ASTs.
+# - Changes that only touch directives (such as exports), comments or
+#   whitespace (docs, formatting), as told by tools/code_changes, which
+#   compares the declarations of unresolved ASTs.
 # - Deleted files, tests themselves (*_test.dart), and generated files
 #   (*.g.dart, *.freezed.dart, or a "GENERATED" header).
 # Only files in a package's lib/ folder are considered.
@@ -114,9 +115,9 @@ while IFS=$'\t' read -r status path package; do
 "
 done <<<"$lib_changes"
 
-# Changes that only touch comments or whitespace are exempt. code_changes
-# compares the unresolved ASTs of both versions and prints the files whose
-# code changed.
+# Changes that only touch directives, comments or whitespace are exempt.
+# code_changes compares the declarations of the unresolved ASTs of both
+# versions and prints the files whose declarations changed.
 if [ ${#pairs[@]} -gt 0 ]; then
   ensure_deps
   code_changed="$(dart run tools/code_changes/bin/code_changes.dart "${pairs[@]}")" ||
@@ -191,7 +192,7 @@ done
 status=0
 if [ -n "$missing" ]; then
   printf 'These lib/ files changed without a change to their test (since %s):\n%s' "$base" "$missing" >&2
-  printf 'Add or update the test of each file, at the same path in test/ as in lib/. Comment-only changes are exempt.\n\n' >&2
+  printf 'Add or update the test of each file, at the same path in test/ as in lib/. Changes to only directives or comments are exempt.\n\n' >&2
   status=1
 fi
 if [ -n "$orphans" ]; then
