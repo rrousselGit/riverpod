@@ -102,8 +102,8 @@ files listed in `baselines/untested.txt`, which had no test when this check was
 added. Do not add to that list; remove an entry once its file has a test.
 
 It also fails when a `lib/**/x.dart` file changes without a change to its
-`test/**/x_test.dart`. Changes that only touch comments or whitespace are
-exempt, as are generated files and deleted files.
+`test/**/x_test.dart`. Changes that only touch directives (such as exports),
+comments or whitespace are exempt, as are generated files and deleted files.
 
 #### Every changed line is covered
 

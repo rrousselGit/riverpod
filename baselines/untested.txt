@@ -44,6 +44,7 @@ packages/riverpod_analyzer_utils/lib/src/riverpod_types/providers.dart
 packages/riverpod_analyzer_utils/lib/src/riverpod_types/widgets.dart
 packages/riverpod_analyzer_utils/lib/src/type_checker.dart
 packages/riverpod_annotation/lib/experimental/json_persist.dart
+packages/riverpod_annotation/lib/experimental/persist.dart
 packages/riverpod_annotation/lib/experimental/scope.dart
 packages/riverpod_annotation/lib/riverpod_annotation.dart
 packages/riverpod_annotation/lib/src/riverpod_annotation.dart

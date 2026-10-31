@@ -189,7 +189,7 @@ packages:
   riverpod_annotation:
     path: packages/riverpod_annotation
     codegen: false
-    test: dart
+    test: none
     dependencies: [riverpod]
     dev_dependencies: []
     dependency_overrides: []
