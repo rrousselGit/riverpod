@@ -137,3 +137,13 @@ class EmitAsData extends _$EmitAsData {
     return completer.future;
   }
 }
+
+@riverpod
+@JsonPersist()
+class SyncJson extends _$SyncJson {
+  @override
+  Map<String, String> build() {
+    persist(ref.watch(storageProvider).requireValue);
+    return stateOrNull ?? {};
+  }
+}

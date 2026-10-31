@@ -594,6 +594,61 @@ abstract class _$EmitAsDataBase extends $AsyncNotifier<Map<String, String>> {
   }
 }
 
+@ProviderFor(SyncJson)
+@JsonPersist()
+final syncJsonProvider = SyncJsonProvider._();
+
+@JsonPersist()
+final class SyncJsonProvider
+    extends $NotifierProvider<SyncJson, Map<String, String>> {
+  SyncJsonProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'syncJsonProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$syncJsonHash();
+
+  @$internal
+  @override
+  SyncJson create() => SyncJson();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Map<String, String> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Map<String, String>>(value),
+    );
+  }
+}
+
+String _$syncJsonHash() => r'c13f77e77a821a5c281f20a5b6091a7a010a0efc';
+
+@JsonPersist()
+abstract class _$SyncJsonBase extends $Notifier<Map<String, String>> {
+  Map<String, String> build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<Map<String, String>, Map<String, String>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<Map<String, String>, Map<String, String>>,
+              Map<String, String>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
 // **************************************************************************
 // JsonGenerator
 // **************************************************************************
@@ -619,7 +674,7 @@ abstract class _$Json extends _$JsonBase {
     StorageOptions options = const StorageOptions(),
     bool emitAsLoadingState = true,
   }) {
-    return NotifierPersistX(this).persist<String, String>(
+    return AsyncNotifierPersistX(this).persist<String, String>(
       storage,
       key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
@@ -658,7 +713,7 @@ abstract class _$Json2 extends _$Json2Base {
     StorageOptions options = const StorageOptions(),
     bool emitAsLoadingState = true,
   }) {
-    return NotifierPersistX(this).persist<String, String>(
+    return AsyncNotifierPersistX(this).persist<String, String>(
       storage,
       key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
@@ -697,7 +752,7 @@ abstract class _$CustomJson extends _$CustomJsonBase {
     StorageOptions options = const StorageOptions(),
     bool emitAsLoadingState = true,
   }) {
-    return NotifierPersistX(this).persist<String, String>(
+    return AsyncNotifierPersistX(this).persist<String, String>(
       storage,
       key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
@@ -736,7 +791,7 @@ abstract class _$CustomKey extends _$CustomKeyBase {
     StorageOptions options = const StorageOptions(),
     bool emitAsLoadingState = true,
   }) {
-    return NotifierPersistX(this).persist<String, String>(
+    return AsyncNotifierPersistX(this).persist<String, String>(
       storage,
       key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
@@ -777,7 +832,7 @@ abstract class _$CustomJsonWithArgs extends _$CustomJsonWithArgsBase {
     StorageOptions options = const StorageOptions(),
     bool emitAsLoadingState = true,
   }) {
-    return NotifierPersistX(this).persist<String, String>(
+    return AsyncNotifierPersistX(this).persist<String, String>(
       storage,
       key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
@@ -816,7 +871,7 @@ abstract class _$PassEncodeDecodeByHand extends _$PassEncodeDecodeByHandBase {
     StorageOptions options = const StorageOptions(),
     bool emitAsLoadingState = true,
   }) {
-    return NotifierPersistX(this).persist<String, String>(
+    return AsyncNotifierPersistX(this).persist<String, String>(
       storage,
       key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
@@ -852,7 +907,7 @@ abstract class _$EmitAsData extends _$EmitAsDataBase {
     StorageOptions options = const StorageOptions(),
     bool emitAsLoadingState = true,
   }) {
-    return NotifierPersistX(this).persist<String, String>(
+    return AsyncNotifierPersistX(this).persist<String, String>(
       storage,
       key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
@@ -864,6 +919,38 @@ abstract class _$EmitAsData extends _$EmitAsDataBase {
           },
       options: options,
       emitAsLoadingState: emitAsLoadingState,
+    );
+  }
+}
+
+abstract class _$SyncJson extends _$SyncJsonBase {
+  /// The default key used by [persist].
+  String get key {
+    const resolvedKey = "SyncJson";
+    return resolvedKey;
+  }
+
+  /// A variant of [persist], for JSON-specific encoding.
+  ///
+  /// You can override [key] to customize the key used for storage.
+  PersistResult persist(
+    FutureOr<Storage<String, String>> storage, {
+    String? key,
+    String Function(Map<String, String> state)? encode,
+    Map<String, String> Function(String encoded)? decode,
+    StorageOptions options = const StorageOptions(),
+  }) {
+    return NotifierPersistX(this).persist<String, String>(
+      storage,
+      key: key ?? this.key,
+      encode: encode ?? $jsonCodex.encode,
+      decode:
+          decode ??
+          (encoded) {
+            final e = $jsonCodex.decode(encoded);
+            return (e as Map).map((k, v) => MapEntry(k as String, v as String));
+          },
+      options: options,
     );
   }
 }

@@ -94,7 +94,7 @@ abstract class AnyNotifier<StateT, ValueT> {
     ref._element.setValueFromState(newState);
   }
 
-  void _setStateFromValue(ValueT value, {bool emitAsLoadingState = true});
+  void _setStateFromValue(ValueT value);
 
   FutureOr<void> _callEncode<KeyT, EncodedT>(
     FutureOr<Storage<KeyT, EncodedT>> storage,
@@ -220,6 +220,7 @@ final class PersistResult {
 /// This is separate from [AnyNotifier] because it is experimental.
 @publicInPersist
 extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
+  /// {@template riverpod.persist}
   /// Persist the state of a provider to a database.
   ///
   /// When calling this method, Riverpod will automatically listen to state
@@ -233,31 +234,35 @@ extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
   /// In general, you should not await this future, as awaiting it would
   /// only delay the core logic, such as fetching data from an API.
   ///
-  /// For asynchronous notifiers, the decoded state is by default emitted as
-  /// [AsyncLoading] with a value, since [Notifier.build] is still
-  /// fetching up-to-date data. As such, `provider.future` does not complete
-  /// with the decoded state; it waits for [Notifier.build] instead.
-  /// To read the decoded state, use [AsyncValue.value] instead of awaiting
-  /// `provider.future`.
-  ///
-  /// Alternatively, set [emitAsLoadingState] to `false` to emit the decoded
-  /// state as [AsyncData] instead. This makes `provider.future` complete with
-  /// the decoded state, and [AsyncValueExtensions.isLoading] returns `false`
-  /// until [Notifier.build] completes. [AsyncValueExtensions.isFromCache] can
-  /// be used to know whether the state comes from the cache.
-  /// This option has no effect on synchronous notifiers.
-  ///
   /// **Note**:
   /// The decoding of the state is only performed once, the first time
   /// the provider is built. Calling [persist] multiple times will not
   /// re-trigger the decoding.
+  /// {@endtemplate}
   PersistResult persist<KeyT, EncodedT>(
     FutureOr<Storage<KeyT, EncodedT>> storage, {
     required KeyT key,
     required EncodedT Function(ValueT state) encode,
     required ValueT Function(EncodedT encoded) decode,
     StorageOptions options = const StorageOptions(),
-    bool emitAsLoadingState = true,
+  }) {
+    return _persist(
+      storage,
+      key: key,
+      encode: encode,
+      decode: decode,
+      options: options,
+      setDecoded: _setStateFromValue,
+    );
+  }
+
+  PersistResult _persist<KeyT, EncodedT>(
+    FutureOr<Storage<KeyT, EncodedT>> storage, {
+    required KeyT key,
+    required EncodedT Function(ValueT state) encode,
+    required ValueT Function(EncodedT encoded) decode,
+    required StorageOptions options,
+    required void Function(ValueT decoded) setDecoded,
   }) {
     _debugAssertNoDuplicateKey(key, this);
 
@@ -298,7 +303,7 @@ extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
             }
 
             final decoded = decode(value.data);
-            _setStateFromValue(decoded, emitAsLoadingState: emitAsLoadingState);
+            setDecoded(decoded);
           }),
         );
 
@@ -317,20 +322,56 @@ extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
   }
 }
 
+/// Adds [persist] method to asynchronous notifiers.
+///
+/// This is separate from [NotifierPersistX] to offer options specific to
+/// [AsyncValue].
+@publicInPersist
+extension AsyncNotifierPersistX<ValueT> on $AsyncNotifierBase<ValueT> {
+  /// {@macro riverpod.persist}
+  ///
+  /// By default, the decoded state is emitted as [AsyncLoading] with a value,
+  /// since [AsyncNotifier.build] is still fetching up-to-date data.
+  /// As such, `provider.future` does not complete with the decoded state; it
+  /// waits for [AsyncNotifier.build] instead. To read the decoded state, use
+  /// [AsyncValue.value] instead of awaiting `provider.future`.
+  ///
+  /// Alternatively, set [emitAsLoadingState] to `false` to emit the decoded
+  /// state as [AsyncData] instead. This makes `provider.future` complete with
+  /// the decoded state, and [AsyncValueExtensions.isLoading] returns `false`
+  /// until [AsyncNotifier.build] completes. [AsyncValueExtensions.isFromCache]
+  /// can be used to know whether the state comes from the cache.
+  PersistResult persist<KeyT, EncodedT>(
+    FutureOr<Storage<KeyT, EncodedT>> storage, {
+    required KeyT key,
+    required EncodedT Function(ValueT state) encode,
+    required ValueT Function(EncodedT encoded) decode,
+    StorageOptions options = const StorageOptions(),
+    bool emitAsLoadingState = true,
+  }) {
+    return _persist(
+      storage,
+      key: key,
+      encode: encode,
+      decode: decode,
+      options: options,
+      setDecoded: emitAsLoadingState
+          ? _setStateFromValue
+          : (value) => state = AsyncData(value, kind: DataKind.cache),
+    );
+  }
+}
+
 @internal
 abstract class $AsyncNotifierBase<ValueT>
     extends AnyNotifier<AsyncValue<ValueT>, ValueT> {
   @override
-  void _setStateFromValue(ValueT value, {bool emitAsLoadingState = true}) {
-    if (emitAsLoadingState) {
-      state = AsyncLoading._(
-        (progress: state.progress),
-        value: (value, kind: DataKind.cache, source: DataSource.liveOrRefresh),
-        error: state._error,
-      );
-    } else {
-      state = AsyncData(value, kind: DataKind.cache);
-    }
+  void _setStateFromValue(ValueT value) {
+    state = AsyncLoading._(
+      (progress: state.progress),
+      value: (value, kind: DataKind.cache, source: DataSource.liveOrRefresh),
+      error: state._error,
+    );
   }
 
   @override
@@ -356,8 +397,7 @@ abstract class $AsyncNotifierBase<ValueT>
 @internal
 abstract class $SyncNotifierBase<ValueT> extends AnyNotifier<ValueT, ValueT> {
   @override
-  void _setStateFromValue(ValueT value, {bool emitAsLoadingState = true}) =>
-      state = value;
+  void _setStateFromValue(ValueT value) => state = value;
 
   @override
   FutureOr<void> _callEncode<KeyT, EncodedT>(

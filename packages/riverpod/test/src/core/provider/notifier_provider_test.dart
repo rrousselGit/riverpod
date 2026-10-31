@@ -52,6 +52,27 @@ void main() {
         },
       );
 
+      test('sync notifiers of AsyncValue restore the decoded state as-is', () {
+        final container = ProviderContainer.test();
+        final provider =
+            NotifierProvider<
+              DeferredNotifier<AsyncValue<int>>,
+              AsyncValue<int>
+            >(
+              () => DeferredNotifier((ref, self) {
+                self.persist(
+                  DelegatingStorage(read: (_) => const PersistedData(42)),
+                  key: 'key',
+                  encode: (value) => value.requireValue,
+                  decode: AsyncData.new,
+                );
+                return self.stateOrNull ?? const AsyncLoading();
+              }),
+            );
+
+        expect(container.read(provider), const AsyncData(42));
+      });
+
       group('emitAsLoadingState: false', () {
         AsyncNotifierProvider<DeferredAsyncNotifier<int>, int> persisted(
           Future<int> Function() create,

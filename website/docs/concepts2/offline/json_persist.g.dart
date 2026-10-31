@@ -92,7 +92,7 @@ abstract class _$TodoList extends _$TodoListBase {
     StorageOptions options = const StorageOptions(),
     bool emitAsLoadingState = true,
   }) {
-    return NotifierPersistX(this).persist<String, String>(
+    return AsyncNotifierPersistX(this).persist<String, String>(
       storage,
       key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,

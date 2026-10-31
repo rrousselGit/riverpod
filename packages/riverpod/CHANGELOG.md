@@ -1,8 +1,8 @@
 ## Unreleased minor
 
-- Added `persist(..., emitAsLoadingState: false)`, to emit the decoded state
-  as `AsyncData` instead of `AsyncLoading`. This makes `provider.future`
-  complete with the decoded state. (thanks to @assassinaj602)
+- Added `persist(..., emitAsLoadingState: false)` to `AsyncNotifier`/`StreamNotifier`,
+  to emit the decoded state as `AsyncData` instead of `AsyncLoading`. This
+  makes `provider.future` complete with the decoded state. (thanks to @assassinaj602)
 - Fix `StreamProvider`/`StreamNotifier` retaining obsolete dependency subscriptions across rebuilds until the stream closes, even after emitting data.
 - `AsyncValueIsLoadingException` now has a public constructor. (thanks to @uveshm003)
 - `debugTrackProviderCreation` is now exported by `package:riverpod/misc.dart`.

@@ -21,4 +21,14 @@ void main() {
 
     expect(await sub.read(), {'foo': 'bar'});
   });
+
+  test('persist supports sync notifiers', () async {
+    final container = ProviderContainer.test();
+    final storage = await container
+        .listen(storageProvider.future, (_, _) {})
+        .read();
+    await storage.write('SyncJson', '{"foo": "bar"}', const StorageOptions());
+
+    expect(container.read(syncJsonProvider), {'foo': 'bar'});
+  });
 }

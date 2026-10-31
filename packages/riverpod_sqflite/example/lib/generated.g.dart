@@ -136,7 +136,7 @@ abstract class _$TodosNotifier extends _$TodosNotifierBase {
     StorageOptions options = const StorageOptions(),
     bool emitAsLoadingState = true,
   }) {
-    return NotifierPersistX(this).persist<String, String>(
+    return AsyncNotifierPersistX(this).persist<String, String>(
       storage,
       key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
