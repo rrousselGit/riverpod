@@ -15,6 +15,7 @@ part 'stream_notifier/orphan.dart';
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
 @publicInCodegen
+@internal
 abstract class $StreamNotifier<ValueT> extends $AsyncNotifierBase<ValueT>
     with $AsyncClassModifier<ValueT, Stream<ValueT>> {}
 

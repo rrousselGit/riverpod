@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/experimental/scope.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'common.dart';
 
-part 'tag.g.dart';
 part 'tag.freezed.dart';
+part 'tag.g.dart';
 
 @freezed
 sealed class TagTheme with _$TagTheme {

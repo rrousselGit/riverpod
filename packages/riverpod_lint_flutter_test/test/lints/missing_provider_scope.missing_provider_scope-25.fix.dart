@@ -1,5 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, type=warning
+// ignore_for_file: type=lint, type=warning, todo
 // Offsets for "missing_provider_scope":
 // 24:   // ignore: riverpod_lint/missing_provider_scope
 // 25:   <>runApp<>(
@@ -15,8 +15,8 @@
 @TestFor.missing_provider_scope
 library;
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../test_annotation.dart';
 

@@ -21,7 +21,7 @@ mixin _$FreezedExample {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FreezedExample);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is FreezedExample);
 }
 
 
@@ -30,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'FreezedExample()';
+    return 'FreezedExample()';
 }
 
 
@@ -180,7 +180,7 @@ class _FreezedExample implements FreezedExample {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FreezedExample);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FreezedExample);
 }
 
 
@@ -189,7 +189,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'FreezedExample()';
+    return 'FreezedExample()';
 }
 
 
@@ -201,7 +201,7 @@ String toString() {
 /// @nodoc
 mixin _$ClassicFreezed {
 
- int get value;
+
 /// Create a copy of ClassicFreezed
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -212,16 +212,21 @@ $ClassicFreezedCopyWith<ClassicFreezed> get copyWith => _$ClassicFreezedCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClassicFreezed&&(identical(other.value, value) || other.value == value));
+  final _this = this as ClassicFreezed;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClassicFreezed&&(identical(other.value, _this.value) || other.value == _this.value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,value);
+int get hashCode {
+  final _this = this as ClassicFreezed;
+  return Object.hash(runtimeType,_this.value);
+}
 
 @override
 String toString() {
-  return 'ClassicFreezed(value: $value)';
+  final _this = this as ClassicFreezed;
+  return 'ClassicFreezed(value: ${_this.value})';
 }
 
 

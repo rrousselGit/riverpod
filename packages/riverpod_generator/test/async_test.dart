@@ -1,5 +1,3 @@
-// ignore_for_file: omit_local_variable_types, unused_local_variable // Just checking
-
 import 'dart:async';
 
 import 'package:riverpod/misc.dart' show ProviderBase;

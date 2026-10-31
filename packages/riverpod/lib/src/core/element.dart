@@ -271,17 +271,24 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
     })
     listen,
   ) {
-    void callOnError(Object error, StackTrace stackTrace) {
-      onValue(triggerRetry(error, stackTrace), seamless: !ref.isReload);
+    void Function()? onInitialized;
+    var isInitialized = false;
+    // Streams may never close, so their first event completes initialization.
+    void markInitialized() {
+      isInitialized = true;
+      onInitialized?.call();
     }
 
-    void Function()? onDone;
-    var isDone = false;
+    void callOnError(Object error, StackTrace stackTrace) {
+      onValue(triggerRetry(error, stackTrace), seamless: !ref.isReload);
+      markInitialized();
+    }
 
     try {
       _cancelSubscription = listen(
         data: (value) {
           onData(AsyncData(value), seamless: !ref.isReload);
+          markInitialized();
         },
         error: callOnError,
         last: (last) {
@@ -290,8 +297,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
         },
         done: () {
           _lastFuture = null;
-          isDone = true;
-          onDone?.call();
+          markInitialized();
         },
       );
     } on AsyncValueIsLoadingException {
@@ -303,10 +309,10 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
       callOnError(error, stackTrace);
     }
 
-    return (onDoneCb) {
-      onDone = onDoneCb;
+    return (onInitializedCb) {
+      onInitialized = onInitializedCb;
       // Handle synchronous completion
-      if (isDone) onDoneCb();
+      if (isInitialized) onInitializedCb();
     };
   }
 
@@ -831,7 +837,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     // It is redundant to request for a refresh during flushing as the rebuild
     // will happen immediately
     !_isFlushing
-        // Don't schedule refresh for paused providers. Those are paused afterall!
+        // Don't schedule refresh for paused providers. Those are paused after-all!
         &&
         isActive) {
       container.scheduler.scheduleProviderRefresh(this);
@@ -907,22 +913,26 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
           final listener = listeners[i];
           if (listener.closed) continue;
 
-          container.runBinaryGuarded(
-            listener.providerSub._notifyData,
-            previousState,
-            newState.value,
-          );
+          if (listener.providerSub case final sub?) {
+            container.runBinaryGuarded(
+              sub._notifyData,
+              previousState,
+              newState.value,
+            );
+          }
         }
       case final $ResultError<StateT> newState:
         for (var i = 0; i < listeners.length; i++) {
           final listener = listeners[i];
           if (listener.closed) continue;
 
-          container.runBinaryGuarded(
-            listener.providerSub._notifyError,
-            newState.error,
-            newState.stackTrace,
-          );
+          if (listener.providerSub case final sub?) {
+            container.runBinaryGuarded(
+              sub._notifyError,
+              newState.error,
+              newState.stackTrace,
+            );
+          }
         }
     }
 
@@ -998,9 +1008,17 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     _handleFireImmediately(container, sub, fireImmediately: fireImmediately);
 
-    sub.impl._listenedElement.addDependentSubscription(sub.impl);
+    sub.impl._listenedElement?.addDependentSubscription(sub.impl);
+    sub.impl._attachToProviderElement(this);
 
-    if (kDebugMode) ref._debugAssertCanDependOn(listenable);
+    if (kDebugMode) {
+      try {
+        ref._debugAssertCanDependOn(listenable);
+      } catch (_) {
+        sub.close();
+        rethrow;
+      }
+    }
 
     return sub;
   }
@@ -1408,14 +1426,14 @@ $this''',
       for (var i = 0; i < subscriptions.length; i++) {
         final sub = subscriptions[i];
 
-        visitor(sub.impl._listenedElement);
+        if (sub.impl._listenedElement case final element?) visitor(element);
       }
     }
     if (_inactiveSubscriptions case final inactiveSubscriptions?) {
       for (var i = 0; i < inactiveSubscriptions.length; i++) {
         final sub = inactiveSubscriptions[i];
 
-        visitor(sub.impl._listenedElement);
+        if (sub.impl._listenedElement case final element?) visitor(element);
       }
     }
   }

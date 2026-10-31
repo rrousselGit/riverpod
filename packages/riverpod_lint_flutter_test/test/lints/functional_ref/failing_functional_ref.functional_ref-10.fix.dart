@@ -1,5 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, type=warning
+// ignore_for_file: type=lint, type=warning, todo
 // Offsets for "functional_ref":
 // 9: // ignore: riverpod_lint/functional_ref
 // 10: int <>refless<>() {

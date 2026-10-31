@@ -5,7 +5,7 @@
 // found in the LICENSE file or at https://developers.google.com/open-source/licenses/bsd.
 
 import 'package:devtools_app_shared/ui.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A DevTools-styled text field with a suffix action to clear the search field.
 final class BorderlessTextField extends StatefulWidget {
@@ -74,6 +74,12 @@ class _BorderlessTextFieldState extends State<BorderlessTextField> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final regularTextStyle = fixBlurryText(
+      TextStyle(color: theme.colorScheme.onSurface, fontSize: defaultFontSize),
+    );
+    final subtleTextStyle = regularTextStyle.copyWith(
+      color: const Color(0xFF919094),
+    );
     return SizedBox(
       height: defaultTextFieldHeight + densePadding,
       child: TextField(
@@ -87,7 +93,7 @@ class _BorderlessTextFieldState extends State<BorderlessTextField> {
         enabled: widget.enabled,
         onChanged: widget.onChanged,
         onSubmitted: widget.onSubmitted,
-        style: theme.regularTextStyle,
+        style: regularTextStyle,
         decoration: InputDecoration(
           isDense: true,
           contentPadding: const EdgeInsets.only(
@@ -101,9 +107,9 @@ class _BorderlessTextFieldState extends State<BorderlessTextField> {
           ),
           border: .none,
           labelText: widget.labelText,
-          labelStyle: theme.subtleTextStyle,
+          labelStyle: subtleTextStyle,
           hintText: widget.hintText,
-          hintStyle: theme.subtleTextStyle,
+          hintStyle: subtleTextStyle,
           prefixIcon: widget.prefixIcon,
           suffixIcon: SizedBox(
             height: inputDecorationElementHeight,

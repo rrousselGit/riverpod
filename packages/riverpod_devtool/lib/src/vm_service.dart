@@ -1,5 +1,3 @@
-// ignore_for_file: invalid_use_of_internal_member
-
 import 'dart:async';
 
 import 'package:collection/collection.dart';
@@ -8,7 +6,6 @@ import 'package:devtools_app_shared/utils.dart';
 import 'package:devtools_extensions/devtools_extensions.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/misc.dart';
-// ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
 import 'package:meta/meta.dart';
 import 'package:vm_service/vm_service.dart';
@@ -19,6 +16,7 @@ import 'package_name_provider.dart';
 part 'vm_service.g.dart';
 part 'vm_service/byte.dart';
 part 'vm_service/eval.dart';
+part 'vm_service/session.dart';
 part 'vm_service/hot_restart.dart';
 part 'vm_service/vm_instance.dart';
 part 'vm_service/instance.dart';

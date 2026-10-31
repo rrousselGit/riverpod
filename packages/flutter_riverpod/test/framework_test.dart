@@ -1,10 +1,8 @@
-// ignore_for_file: invalid_use_of_internal_member
-
 import 'dart:async';
 
-import 'package:flutter/material.dart' hide Listener;
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart' hide Listener;
 import 'package:mockito/mockito.dart';
 
 import 'utils.dart';
@@ -50,7 +48,7 @@ void main() {
   testWidgets('Supports multiple ProviderScope roots in the same tree', (
     tester,
   ) async {
-    final a = StateProvider((_) => 0);
+    final a = NotifierProvider(() => SettableNotifier((_) => 0));
     final b = Provider((ref) => ref.watch(a));
 
     await tester.pumpWidget(
@@ -224,10 +222,10 @@ void main() {
       error = details.exception;
     };
 
-    final provider = StateProvider((ref) => 0);
+    final provider = NotifierProvider(() => SettableNotifier((ref) => 0));
     final container = ProviderContainer.test();
 
-    // using runZonedGuarded as StateNotifier will emit an handleUncaughtError
+    // using runZonedGuarded as the notifier will emit an handleUncaughtError
     // if a listener threw
     await runZonedGuarded(
       () => tester.pumpWidget(
@@ -252,7 +250,7 @@ void main() {
     tester,
   ) async {
     final container = ProviderContainer.test();
-    final dep = StateProvider((ref) => 0);
+    final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
     final provider = Provider((ref) => ref.watch(dep));
 
     // reading `provider` but not listening to it, so that it is active
@@ -328,7 +326,7 @@ void main() {
     tester,
   ) async {
     var buildCount = 0;
-    final dep = StateProvider((ref) => 0);
+    final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
     final provider = Provider((ref) {
       buildCount++;
       return ref.watch(dep);
@@ -721,10 +719,13 @@ void main() {
     tester,
   ) async {
     var disposeCount = 0;
-    final counterProvider = StateProvider.autoDispose((ref) {
-      ref.onDispose(() => disposeCount++);
-      return 0;
-    });
+    final counterProvider = NotifierProvider(
+      () => SettableNotifier((ref) {
+        ref.onDispose(() => disposeCount++);
+        return 0;
+      }),
+      isAutoDispose: true,
+    );
 
     final container = ProviderContainer.test();
     final key = GlobalKey<NavigatorState>();

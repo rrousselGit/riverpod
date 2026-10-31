@@ -1,17 +1,16 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:hooks_riverpod/legacy.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   testWidgets('ref.watch supports changing the provider', (tester) async {
     final notifier1 = Counter();
-    final provider1 = StateNotifierProvider<Counter, int>((_) => notifier1);
+    final provider1 = NotifierProvider<Counter, int>(() => notifier1);
     final notifier2 = Counter(42);
-    final provider2 = StateNotifierProvider<Counter, int>((_) => notifier2);
+    final provider2 = NotifierProvider<Counter, int>(() => notifier2);
     var buildCount = 0;
 
-    Widget build(StateNotifierProvider<Counter, int> provider) {
+    Widget build(NotifierProvider<Counter, int> provider) {
       return ProviderScope(
         child: HookConsumer(
           builder: (c, ref, child) {
@@ -47,13 +46,13 @@ void main() {
   });
 }
 
-class Counter extends StateNotifier<int> {
-  Counter([super.initialValue = 0]);
+class Counter extends Notifier<int> {
+  Counter([this._initialValue = 0]);
 
-  void increment() => state++;
+  final int _initialValue;
 
   @override
-  set state(int value) {
-    super.state = value;
-  }
+  int build() => _initialValue;
+
+  void increment() => state++;
 }

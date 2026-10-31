@@ -29,16 +29,21 @@ $UserCopyWith<User> get copyWith => _$UserCopyWithImpl<User>(this as User, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.reputation, reputation) || other.reputation == reputation)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.badgeCounts, badgeCounts) || other.badgeCounts == badgeCounts)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.profileImage, profileImage) || other.profileImage == profileImage)&&(identical(other.link, link) || other.link == link));
+  final _this = this as User;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.reputation, _this.reputation) || other.reputation == _this.reputation)&&(identical(other.userId, _this.userId) || other.userId == _this.userId)&&(identical(other.badgeCounts, _this.badgeCounts) || other.badgeCounts == _this.badgeCounts)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.profileImage, _this.profileImage) || other.profileImage == _this.profileImage)&&(identical(other.link, _this.link) || other.link == _this.link));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,reputation,userId,badgeCounts,displayName,profileImage,link);
+int get hashCode {
+  final _this = this as User;
+  return Object.hash(runtimeType,_this.reputation,_this.userId,_this.badgeCounts,_this.displayName,_this.profileImage,_this.link);
+}
 
 @override
 String toString() {
-  return 'User(reputation: $reputation, userId: $userId, badgeCounts: $badgeCounts, displayName: $displayName, profileImage: $profileImage, link: $link)';
+  final _this = this as User;
+  return 'User(reputation: ${_this.reputation}, userId: ${_this.userId}, badgeCounts: ${_this.badgeCounts}, displayName: ${_this.displayName}, profileImage: ${_this.profileImage}, link: ${_this.link})';
 }
 
 
@@ -244,16 +249,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _User&&(identical(other.reputation, reputation) || other.reputation == reputation)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.badgeCounts, badgeCounts) || other.badgeCounts == badgeCounts)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.profileImage, profileImage) || other.profileImage == profileImage)&&(identical(other.link, link) || other.link == link));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _User&&(identical(other.reputation, reputation) || other.reputation == reputation)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.badgeCounts, badgeCounts) || other.badgeCounts == badgeCounts)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.profileImage, profileImage) || other.profileImage == profileImage)&&(identical(other.link, link) || other.link == link));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,reputation,userId,badgeCounts,displayName,profileImage,link);
+int get hashCode {
+    return Object.hash(runtimeType,reputation,userId,badgeCounts,displayName,profileImage,link);
+}
 
 @override
 String toString() {
-  return 'User(reputation: $reputation, userId: $userId, badgeCounts: $badgeCounts, displayName: $displayName, profileImage: $profileImage, link: $link)';
+    return 'User(reputation: $reputation, userId: $userId, badgeCounts: $badgeCounts, displayName: $displayName, profileImage: $profileImage, link: $link)';
 }
 
 
@@ -325,16 +332,21 @@ $BadgeCountCopyWith<BadgeCount> get copyWith => _$BadgeCountCopyWithImpl<BadgeCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BadgeCount&&(identical(other.bronze, bronze) || other.bronze == bronze)&&(identical(other.silver, silver) || other.silver == silver)&&(identical(other.gold, gold) || other.gold == gold));
+  final _this = this as BadgeCount;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BadgeCount&&(identical(other.bronze, _this.bronze) || other.bronze == _this.bronze)&&(identical(other.silver, _this.silver) || other.silver == _this.silver)&&(identical(other.gold, _this.gold) || other.gold == _this.gold));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,bronze,silver,gold);
+int get hashCode {
+  final _this = this as BadgeCount;
+  return Object.hash(runtimeType,_this.bronze,_this.silver,_this.gold);
+}
 
 @override
 String toString() {
-  return 'BadgeCount(bronze: $bronze, silver: $silver, gold: $gold)';
+  final _this = this as BadgeCount;
+  return 'BadgeCount(bronze: ${_this.bronze}, silver: ${_this.silver}, gold: ${_this.gold})';
 }
 
 
@@ -522,16 +534,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BadgeCount&&(identical(other.bronze, bronze) || other.bronze == bronze)&&(identical(other.silver, silver) || other.silver == silver)&&(identical(other.gold, gold) || other.gold == gold));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BadgeCount&&(identical(other.bronze, bronze) || other.bronze == bronze)&&(identical(other.silver, silver) || other.silver == silver)&&(identical(other.gold, gold) || other.gold == gold));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,bronze,silver,gold);
+int get hashCode {
+    return Object.hash(runtimeType,bronze,silver,gold);
+}
 
 @override
 String toString() {
-  return 'BadgeCount(bronze: $bronze, silver: $silver, gold: $gold)';
+    return 'BadgeCount(bronze: $bronze, silver: $silver, gold: $gold)';
 }
 
 

@@ -1,7 +1,7 @@
 // ignore_for_file: unnecessary_async, use_key_in_widget_constructors
 
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 
 /* SNIPPET START */
 // {@template provider}

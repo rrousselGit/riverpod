@@ -39,6 +39,7 @@ Future<void> main() async {
 
   final collection = AnalysisContextCollection(
     includedPaths: filesToAnalyze.map((e) => e.absolute.path).toList(),
+    sdkPath: dartSdkPath,
   );
 
   for (final file in filesToAnalyze) {
@@ -131,6 +132,9 @@ void _testFixes(
   required Function(CorrectionProducer<ParsedUnitResult> producer) id,
 }) {
   for (final fix in pluginRegistry.fixes) {
+    final producerId = id(
+      fix.generator(context: StubCorrectionProducerContext.instance),
+    );
     _testProducers(
       [fix.generator],
       () {
@@ -140,6 +144,17 @@ void _testFixes(
           :uniqueOffsets,
           :testIds,
         ) = result();
+
+        // Fixtures only request a subset of fixes. Avoid traversing the AST
+        // for rules whose fixes will be skipped by _testProducers.
+        if (!testIds.contains(producerId)) {
+          return (
+            unit: unit,
+            library: library,
+            uniqueOffsets: uniqueOffsets,
+            testIds: testIds,
+          );
+        }
 
         final rules = pluginRegistry.rules
             .where(
@@ -503,7 +518,7 @@ String _encodeProducerOutput({
 
   final buffer = StringBuffer();
   buffer.writeln('// GENERATED CODE - DO NOT MODIFY BY HAND');
-  buffer.writeln('// ignore_for_file: type=lint, type=warning');
+  buffer.writeln('// ignore_for_file: type=lint, type=warning, todo');
   buffer.write(
     _renderOffsetsWithContext(
       offsetsForKind: offsetsForKind,

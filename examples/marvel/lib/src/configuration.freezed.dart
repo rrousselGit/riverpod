@@ -29,16 +29,21 @@ $ConfigurationCopyWith<Configuration> get copyWith => _$ConfigurationCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Configuration&&(identical(other.publicKey, publicKey) || other.publicKey == publicKey)&&(identical(other.privateKey, privateKey) || other.privateKey == privateKey));
+  final _this = this as Configuration;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Configuration&&(identical(other.publicKey, _this.publicKey) || other.publicKey == _this.publicKey)&&(identical(other.privateKey, _this.privateKey) || other.privateKey == _this.privateKey));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,publicKey,privateKey);
+int get hashCode {
+  final _this = this as Configuration;
+  return Object.hash(runtimeType,_this.publicKey,_this.privateKey);
+}
 
 @override
 String toString() {
-  return 'Configuration(publicKey: $publicKey, privateKey: $privateKey)';
+  final _this = this as Configuration;
+  return 'Configuration(publicKey: ${_this.publicKey}, privateKey: ${_this.privateKey})';
 }
 
 
@@ -224,16 +229,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Configuration&&(identical(other.publicKey, publicKey) || other.publicKey == publicKey)&&(identical(other.privateKey, privateKey) || other.privateKey == privateKey));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Configuration&&(identical(other.publicKey, publicKey) || other.publicKey == publicKey)&&(identical(other.privateKey, privateKey) || other.privateKey == privateKey));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,publicKey,privateKey);
+int get hashCode {
+    return Object.hash(runtimeType,publicKey,privateKey);
+}
 
 @override
 String toString() {
-  return 'Configuration(publicKey: $publicKey, privateKey: $privateKey)';
+    return 'Configuration(publicKey: $publicKey, privateKey: $privateKey)';
 }
 
 

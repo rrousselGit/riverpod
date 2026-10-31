@@ -1,5 +1,4 @@
 import 'package:devtools_app_shared/utils.dart';
-// ignore: implementation_imports
 import 'package:hooks_riverpod/src/internals.dart' as internals;
 
 import 'collection.dart';

@@ -26,16 +26,21 @@ $MarvelListCharactersResponseCopyWith<MarvelListCharactersResponse> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MarvelListCharactersResponse&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&const DeepCollectionEquality().equals(other.characters, characters));
+  final _this = this as MarvelListCharactersResponse;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MarvelListCharactersResponse&&(identical(other.totalCount, _this.totalCount) || other.totalCount == _this.totalCount)&&const DeepCollectionEquality().equals(other.characters, _this.characters));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,totalCount,const DeepCollectionEquality().hash(characters));
+int get hashCode {
+  final _this = this as MarvelListCharactersResponse;
+  return Object.hash(runtimeType,_this.totalCount,const DeepCollectionEquality().hash(_this.characters));
+}
 
 @override
 String toString() {
-  return 'MarvelListCharactersResponse(totalCount: $totalCount, characters: $characters)';
+  final _this = this as MarvelListCharactersResponse;
+  return 'MarvelListCharactersResponse(totalCount: ${_this.totalCount}, characters: ${_this.characters})';
 }
 
 
@@ -224,16 +229,18 @@ _$MarvelListCharactersResponseCopyWith<_MarvelListCharactersResponse> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MarvelListCharactersResponse&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&const DeepCollectionEquality().equals(other._characters, _characters));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MarvelListCharactersResponse&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&const DeepCollectionEquality().equals(other.characters, _characters));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,totalCount,const DeepCollectionEquality().hash(_characters));
+int get hashCode {
+    return Object.hash(runtimeType,totalCount,const DeepCollectionEquality().hash(_characters));
+}
 
 @override
 String toString() {
-  return 'MarvelListCharactersResponse(totalCount: $totalCount, characters: $characters)';
+    return 'MarvelListCharactersResponse(totalCount: $totalCount, characters: $characters)';
 }
 
 
@@ -289,16 +296,21 @@ $CharacterCopyWith<Character> get copyWith => _$CharacterCopyWithImpl<Character>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Character&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail));
+  final _this = this as Character;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Character&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.thumbnail, _this.thumbnail) || other.thumbnail == _this.thumbnail));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,thumbnail);
+int get hashCode {
+  final _this = this as Character;
+  return Object.hash(runtimeType,_this.id,_this.name,_this.thumbnail);
+}
 
 @override
 String toString() {
-  return 'Character(id: $id, name: $name, thumbnail: $thumbnail)';
+  final _this = this as Character;
+  return 'Character(id: ${_this.id}, name: ${_this.name}, thumbnail: ${_this.thumbnail})';
 }
 
 
@@ -495,16 +507,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Character&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Character&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,thumbnail);
+int get hashCode {
+    return Object.hash(runtimeType,id,name,thumbnail);
+}
 
 @override
 String toString() {
-  return 'Character(id: $id, name: $name, thumbnail: $thumbnail)';
+    return 'Character(id: $id, name: $name, thumbnail: $thumbnail)';
 }
 
 
@@ -557,7 +571,7 @@ $ThumbnailCopyWith<$Res> get thumbnail {
 /// @nodoc
 mixin _$Thumbnail {
 
- String get url; String get path; String get extension;
+ String get path; String get extension;
 /// Create a copy of Thumbnail
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -570,16 +584,21 @@ $ThumbnailCopyWith<Thumbnail> get copyWith => _$ThumbnailCopyWithImpl<Thumbnail>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Thumbnail&&(identical(other.url, url) || other.url == url)&&(identical(other.path, path) || other.path == path)&&(identical(other.extension, extension) || other.extension == extension));
+  final _this = this as Thumbnail;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Thumbnail&&(identical(other.url, _this.url) || other.url == _this.url)&&(identical(other.path, _this.path) || other.path == _this.path)&&(identical(other.extension, _this.extension) || other.extension == _this.extension));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,url,path,extension);
+int get hashCode {
+  final _this = this as Thumbnail;
+  return Object.hash(runtimeType,_this.url,_this.path,_this.extension);
+}
 
 @override
 String toString() {
-  return 'Thumbnail(url: $url, path: $path, extension: $extension)';
+  final _this = this as Thumbnail;
+  return 'Thumbnail(url: ${_this.url}, path: ${_this.path}, extension: ${_this.extension})';
 }
 
 
@@ -765,16 +784,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Thumbnail&&(identical(other.path, path) || other.path == path)&&(identical(other.extension, extension) || other.extension == extension));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Thumbnail&&(identical(other.path, path) || other.path == path)&&(identical(other.extension, extension) || other.extension == extension));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,path,extension);
+int get hashCode {
+    return Object.hash(runtimeType,path,extension);
+}
 
 @override
 String toString() {
-  return 'Thumbnail(path: $path, extension: $extension)';
+    return 'Thumbnail(path: $path, extension: $extension)';
 }
 
 
@@ -830,16 +851,21 @@ $MarvelResponseCopyWith<MarvelResponse> get copyWith => _$MarvelResponseCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MarvelResponse&&(identical(other.data, data) || other.data == data));
+  final _this = this as MarvelResponse;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MarvelResponse&&(identical(other.data, _this.data) || other.data == _this.data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,data);
+int get hashCode {
+  final _this = this as MarvelResponse;
+  return Object.hash(runtimeType,_this.data);
+}
 
 @override
 String toString() {
-  return 'MarvelResponse(data: $data)';
+  final _this = this as MarvelResponse;
+  return 'MarvelResponse(data: ${_this.data})';
 }
 
 
@@ -1032,16 +1058,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MarvelResponse&&(identical(other.data, data) || other.data == data));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MarvelResponse&&(identical(other.data, data) || other.data == data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,data);
+int get hashCode {
+    return Object.hash(runtimeType,data);
+}
 
 @override
 String toString() {
-  return 'MarvelResponse(data: $data)';
+    return 'MarvelResponse(data: $data)';
 }
 
 
@@ -1105,16 +1133,21 @@ $MarvelDataCopyWith<MarvelData> get copyWith => _$MarvelDataCopyWithImpl<MarvelD
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MarvelData&&const DeepCollectionEquality().equals(other.results, results)&&(identical(other.total, total) || other.total == total));
+  final _this = this as MarvelData;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MarvelData&&const DeepCollectionEquality().equals(other.results, _this.results)&&(identical(other.total, _this.total) || other.total == _this.total));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(results),total);
+int get hashCode {
+  final _this = this as MarvelData;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.results),_this.total);
+}
 
 @override
 String toString() {
-  return 'MarvelData(results: $results, total: $total)';
+  final _this = this as MarvelData;
+  return 'MarvelData(results: ${_this.results}, total: ${_this.total})';
 }
 
 
@@ -1306,16 +1339,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MarvelData&&const DeepCollectionEquality().equals(other._results, _results)&&(identical(other.total, total) || other.total == total));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MarvelData&&const DeepCollectionEquality().equals(other.results, _results)&&(identical(other.total, total) || other.total == total));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_results),total);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_results),total);
+}
 
 @override
 String toString() {
-  return 'MarvelData(results: $results, total: $total)';
+    return 'MarvelData(results: $results, total: $total)';
 }
 
 

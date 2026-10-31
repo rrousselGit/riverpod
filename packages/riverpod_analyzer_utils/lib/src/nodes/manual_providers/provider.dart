@@ -95,10 +95,18 @@ extension LegacyProviderDeclarationX on VariableDeclaration {
         }
 
         final modifier = initializer.function;
-        if (modifier is! PropertyAccess) return null;
-
-        decodeIdentifier(modifier.propertyName);
-        decodeTarget(modifier.target);
+        if (modifier case PropertyAccess(:final propertyName, :final target)) {
+          decodeIdentifier(propertyName);
+          decodeTarget(target);
+        } else if (modifier case PrefixedIdentifier(
+          :final identifier,
+          :final prefix,
+        )) {
+          decodeIdentifier(identifier);
+          decodeIdentifier(prefix);
+        } else {
+          return null;
+        }
         arguments = initializer.argumentList;
         typeArguments = initializer.typeArguments;
       } else {

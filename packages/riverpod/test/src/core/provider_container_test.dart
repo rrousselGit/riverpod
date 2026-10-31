@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
+import 'package:riverpod/misc.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart';
+import 'package:riverpod/src/internals.dart' show $ProviderElement, $ResultData;
 import 'package:test/test.dart';
+import 'package:trotter/trotter.dart';
 
 import '../utils.dart';
 
@@ -643,13 +645,13 @@ void main() {
           isPointer(
             targetContainer: container,
             override: null,
-            element: isNotNull,
+            element: isNull,
           ),
         );
       });
     });
 
-    group('remove', () {
+    group('tryRemove', () {
       test('if called on a provider that is not mounted, is no-op', () {});
 
       test('removes non-family providers from orphan list', () {
@@ -662,7 +664,7 @@ void main() {
           provider: isPointer(),
         });
 
-        final removed = container.pointerManager.remove(provider);
+        final removed = container.pointerManager.tryRemove(provider);
 
         expect(removed, pointer);
         expect(container.pointerManager.orphanPointers.pointers, isEmpty);
@@ -681,7 +683,7 @@ void main() {
           family(21): isPointer(),
         });
 
-        final removed = container.pointerManager.remove(family(42));
+        final removed = container.pointerManager.tryRemove(family(42));
 
         expect(removed, pointer);
         expect(container.pointerManager.familyPointers[family]!.pointers, {
@@ -701,7 +703,7 @@ void main() {
             family: isProviderDirectory(),
           });
 
-          final removed = container.pointerManager.remove(family(42));
+          final removed = container.pointerManager.tryRemove(family(42));
 
           expect(removed, pointer);
           expect(container.pointerManager.familyPointers, isEmpty);
@@ -721,7 +723,7 @@ void main() {
           ),
         });
 
-        final removed = container.pointerManager.remove(family(42));
+        final removed = container.pointerManager.tryRemove(family(42));
 
         expect(removed, pointer);
         expect(container.pointerManager.familyPointers, {
@@ -740,7 +742,7 @@ void main() {
           provider: isPointer(override: override),
         });
 
-        final removed = container.pointerManager.remove(provider);
+        final removed = container.pointerManager.tryRemove(provider);
 
         expect(removed, pointer);
         expect(container.pointerManager.orphanPointers.pointers, {
@@ -761,7 +763,7 @@ void main() {
             family(21): isPointer(override: override),
           });
 
-          final removed = container.pointerManager.remove(family(21));
+          final removed = container.pointerManager.tryRemove(family(21));
 
           expect(removed, pointer);
           expect(container.pointerManager.familyPointers, {
@@ -789,7 +791,7 @@ void main() {
             ),
           });
 
-          final removed = container.pointerManager.remove(family(21));
+          final removed = container.pointerManager.tryRemove(family(21));
 
           expect(removed, pointer);
           expect(container.pointerManager.familyPointers, {
@@ -815,7 +817,7 @@ void main() {
           provider: isPointer(override: isTransitiveProviderOverride(provider)),
         });
 
-        final removed = container.pointerManager.remove(provider);
+        final removed = container.pointerManager.tryRemove(provider);
 
         expect(removed, pointer);
         expect(container.pointerManager.orphanPointers.pointers, {
@@ -845,10 +847,36 @@ void main() {
           ),
         });
 
-        final removed = container.pointerManager.remove(family(42));
+        final removed = container.pointerManager.tryRemove(family(42));
 
         expect(removed, pointer);
         expect(container.pointerManager.familyPointers, isEmpty);
+      });
+    });
+
+    group('scoping an override overrides all the associated sub-providers', () {
+      test('when passing the provider itself', () async {
+        final provider = FutureProvider.autoDispose.family<int, int>(
+          (ref, _) async => 0,
+          dependencies: const [],
+        );
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [provider],
+        );
+
+        container.listen(provider(0), (_, _) {});
+
+        expect(
+          container.pointerManager.familyPointers[provider],
+          isProviderDirectory(
+            pointers: {provider(0): isPointer(element: isNotNull)},
+          ),
+        );
+
+        expect(root.pointerManager.orphanPointers.pointers, isEmpty);
+        expect(root.pointerManager.familyPointers, isEmpty);
       });
     });
   });
@@ -977,6 +1005,22 @@ void main() {
             addTearDown(root.dispose);
           },
         );
+
+        test('Can override both the family as a provider of that family', () {
+          final family = Provider.family<String, int>((ref, a) => 'Hello $a');
+          final container = ProviderContainer.test(
+            overrides: [
+              // Provider overrides always takes over family overrides
+              family(84).overrideWithValue('Bonjour 84'),
+              family,
+              family(21).overrideWithValue('Hi 21'),
+            ],
+          );
+
+          expect(container.read(family(21)), 'Hi 21');
+          expect(container.read(family(84)), 'Bonjour 84');
+          expect(container.read(family(42)), 'Hello 42');
+        });
       });
     });
 
@@ -1324,6 +1368,148 @@ void main() {
             ),
           });
         });
+
+        test('child container uses root overrides', () {
+          final provider = Provider((ref) => 0);
+          final container = ProviderContainer.test(
+            overrides: [provider.overrideWithValue(42)],
+          );
+          final child = ProviderContainer.test(parent: container);
+
+          expect(child.read(provider), 42);
+        });
+
+        test('test two families one overridden the other not', () {
+          final family = Provider.family<String, int>((ref, value) {
+            return '$value';
+          });
+          final family2 = Provider.family<String, int>((ref, value) {
+            return '$value 2';
+          }, dependencies: const []);
+          final root = ProviderContainer.test();
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [family2],
+          );
+
+          expect(container.read(family(0)), '0');
+          expect(container.read(family2(0)), '0 2');
+
+          expect(container.getAllProviderElements(), [
+            isA<ProviderElement>().having(
+              (e) => e.origin,
+              'origin',
+              family2(0),
+            ),
+          ]);
+          expect(root.getAllProviderElements(), [
+            isA<ProviderElement>().having((e) => e.origin, 'origin', family(0)),
+          ]);
+        });
+
+        group('scoping mechanism', () {
+          test('use the deepest override', () {
+            final provider = Provider((ref) => 0, dependencies: const []);
+            final root = ProviderContainer.test(
+              overrides: [provider.overrideWithValue(1)],
+            );
+            final mid = ProviderContainer.test(
+              parent: root,
+              overrides: [provider.overrideWithValue(42)],
+            );
+            final container = ProviderContainer.test(parent: mid);
+
+            expect(container.read(provider), 42);
+
+            expect(container.getAllProviderElements(), isEmpty);
+            expect(mid.getAllProviderElements(), [
+              isA<ProviderElement>()
+                  .having((e) => e.origin, 'origin', provider)
+                  .having((e) => e.readSelf(), 'readSelf()', $ResultData(42)),
+            ]);
+            expect(root.getAllProviderElements(), isEmpty);
+          });
+
+          test('can read both parent and child simultaneously', () async {
+            final provider = Provider((ref) => 0, dependencies: const []);
+            final root = ProviderContainer.test(
+              overrides: [provider.overrideWithValue(21)],
+            );
+            final container = ProviderContainer.test(
+              parent: root,
+              overrides: [provider.overrideWithValue(42)],
+            );
+
+            expect(container.read(provider), 42);
+            expect(root.read(provider), 21);
+            expect(container.read(provider), 42);
+            expect(root.read(provider), 21);
+          });
+
+          test('can be overridden on non-root container', () {
+            final provider = Provider((ref) => 0, dependencies: const []);
+            final root = ProviderContainer.test();
+            final container = ProviderContainer.test(
+              parent: root,
+              overrides: [provider.overrideWithValue(42)],
+            );
+
+            expect(container.read(provider), 42);
+          });
+
+          test('can listen to other scoped providers', () async {
+            final listener = Listener<int>();
+            final provider = Provider((ref) => 0, dependencies: const []);
+            final provider2 = Provider(
+              (ref) => ref.watch(provider) * 2,
+              dependencies: [provider],
+            );
+            final root = ProviderContainer.test();
+            final container = ProviderContainer.test(
+              parent: root,
+              overrides: [provider.overrideWithValue(1), provider2],
+            );
+
+            container.listen(provider2, listener.call, fireImmediately: true);
+
+            verifyOnly(listener, listener(null, 2));
+
+            container.updateOverrides([
+              provider.overrideWithValue(2),
+              provider2,
+            ]);
+
+            await container.pump();
+
+            verifyOnly(listener, listener(2, 4));
+          });
+
+          test('can listen to other normal providers', () async {
+            final listener = Listener<int>();
+            final provider = NotifierProvider(
+              () => SettableNotifier((ref) => 1),
+            );
+            final provider2 = Provider(
+              (ref) => ref.watch(provider) * 2,
+              dependencies: const [],
+            );
+            final root = ProviderContainer.test();
+            final container = ProviderContainer.test(
+              parent: root,
+              overrides: [provider2],
+            );
+
+            container.listen(provider2, listener.call, fireImmediately: true);
+
+            verifyOnly(listener, listener(null, 2));
+
+            root.read(provider.notifier).state++;
+
+            await container.pump();
+
+            verifyOnly(listener, listener(2, 4));
+          });
+        });
       });
 
       test('adds non-family provider overrides to orphanPointers', () {
@@ -1481,6 +1667,115 @@ void main() {
           });
         },
       );
+
+      test('supports disposing of overridden families', () async {
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/2480
+        final provider = Provider.autoDispose.family<int, int>(
+          (ref, _) => -1,
+          dependencies: const [],
+        );
+
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [provider.overrideWith((ref, arg) => 0)],
+        );
+
+        container.read(provider(0));
+
+        expect(container.pointerManager.readPointer(provider(0)), isNotNull);
+        expect(container.pointerManager.familyPointers[provider], isNotNull);
+
+        await container.pump();
+
+        // The family pointer should still be there, as it comes from an override
+        expect(container.pointerManager.familyPointers[provider], isNotNull);
+        // The provider should've been disposed.
+        expect(container.pointerManager.readPointer(provider(0)), isNull);
+      });
+
+      test('When a non-overridden autoDispose provider is disposed '
+          'and the associated ProviderContainer has a child ProviderContainer which overrides said provider, '
+          'the child container keeps its override', () async {
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/1519
+
+        final provider = Provider.autoDispose(
+          (ref) => 0,
+          dependencies: const [],
+        );
+        final root = ProviderContainer.test();
+        final child = ProviderContainer.test(
+          parent: root,
+          overrides: [
+            provider.overrideWith((ref) {
+              ref.keepAlive();
+              return 42;
+            }),
+          ],
+        );
+
+        root.read(provider);
+        child.read(provider);
+
+        await root.pump();
+
+        expect(root.pointerManager.readPointer(provider), isNull);
+
+        expect(
+          child.pointerManager.readPointer(provider),
+          isPointer(override: isNotNull, element: isNotNull),
+        );
+      });
+
+      test(
+        'cleans up the pointers of a provider in the entire ProviderContainer tree',
+        () async {
+          final unrelated = Provider((_) => 42, dependencies: const []);
+          // Regression test for https://github.com/rrousselGit/riverpod/issues/1943
+          final a = ProviderContainer.test();
+          // b/c voluntarily do not use the Provider, but a/d do. This is to test
+          // that the disposal logic correctly cleans up the StateReaders
+          // in all ProviderContainers associated with the provider, even if
+          // some links between two ProviderContainers are not using the provider.
+          final b = ProviderContainer.test(parent: a, overrides: [unrelated]);
+          final c = ProviderContainer.test(parent: b, overrides: [unrelated]);
+          final d = ProviderContainer.test(parent: c, overrides: [unrelated]);
+
+          final provider = Provider.autoDispose((ref) => 3);
+
+          final subscription = d.listen(
+            provider,
+            (previous, next) {},
+            fireImmediately: true,
+          );
+
+          expect(a.pointerManager.readPointer(provider), isNotNull);
+          expect(b.pointerManager.readPointer(provider), isNull);
+          expect(c.pointerManager.readPointer(provider), isNull);
+          expect(d.pointerManager.readPointer(provider), isNotNull);
+
+          subscription.close();
+
+          expect(a.pointerManager.readPointer(provider), isNotNull);
+          expect(b.pointerManager.readPointer(provider), isNull);
+          expect(c.pointerManager.readPointer(provider), isNull);
+          expect(d.pointerManager.readPointer(provider), isNotNull);
+
+          await a.pump();
+
+          expect(a.pointerManager.readPointer(provider), isNull);
+          expect(b.pointerManager.readPointer(provider), isNull);
+          expect(c.pointerManager.readPointer(provider), isNull);
+          expect(d.pointerManager.readPointer(provider), isNull);
+
+          d.listen(provider, (previous, next) {}, fireImmediately: true);
+
+          expect(a.pointerManager.readPointer(provider), isNotNull);
+          expect(b.pointerManager.readPointer(provider), isNull);
+          expect(c.pointerManager.readPointer(provider), isNull);
+          expect(d.pointerManager.readPointer(provider), isNotNull);
+        },
+      );
     });
 
     group('.test', () {
@@ -1544,7 +1839,7 @@ void main() {
         'ref.watch keeps working on providers associated with the ancestor container',
         () async {
           final container = ProviderContainer.test();
-          final dep = StateProvider((ref) => 0);
+          final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
           final provider = Provider((ref) => ref.watch(dep));
           final listener = Listener<int>();
           final child = ProviderContainer.test(parent: container);
@@ -1647,9 +1942,524 @@ void main() {
 
         expect(root.children, isEmpty);
       });
+
+      test(
+        'ProviderContainer was disposed before Scheduler handled the dispose',
+        () async {
+          final container = ProviderContainer.test();
+          final onDispose = OnDisposeMock();
+          final provider = Provider.autoDispose((ref) {
+            ref.onDispose(onDispose.call);
+            return 42;
+          });
+
+          final sub = container.listen(provider, (prev, value) {});
+
+          verifyNoMoreInteractions(onDispose);
+
+          sub.close();
+          verifyNoMoreInteractions(onDispose);
+
+          container.dispose();
+
+          verify(onDispose()).called(1);
+          verifyNoMoreInteractions(onDispose);
+
+          await container.pump();
+
+          verifyNoMoreInteractions(onDispose);
+        },
+      );
+
+      test(
+        'Do not dispose twice when ProviderContainer is disposed first',
+        () async {
+          final onDispose = OnDisposeMock();
+          final provider = Provider.autoDispose((ref) {
+            ref.onDispose(onDispose.call);
+            return 42;
+          });
+          final container = ProviderContainer.test();
+
+          final sub = container.listen(provider, (_, _) {});
+          sub.close();
+
+          container.dispose();
+
+          verify(onDispose()).called(1);
+          verifyNoMoreInteractions(onDispose);
+
+          await container.pump();
+
+          verifyNoMoreInteractions(onDispose);
+        },
+      );
+
+      test('disposing child container does not dispose the providers', () {
+        final container = ProviderContainer.test();
+        final child = ProviderContainer.test(parent: container);
+        var disposed = false;
+        final provider = Provider((ref) {
+          ref.onDispose(() => disposed = true);
+          return 0;
+        });
+
+        expect(child.read(provider), 0);
+
+        child.dispose();
+
+        expect(disposed, false);
+
+        container.dispose();
+
+        expect(disposed, true);
+      });
+
+      test('disposing an already disposed container is no-op', () {
+        final container = ProviderContainer.test();
+
+        container.dispose();
+        container.dispose();
+      });
+
+      test('dispose providers in dependency order (simple)', () {
+        final container = ProviderContainer.test();
+        final onDispose1 = OnDisposeMock();
+        final onDispose2 = OnDisposeMock();
+        final onDispose3 = OnDisposeMock();
+
+        final provider1 = Provider((ref) {
+          ref.onDispose(onDispose1.call);
+          return 1;
+        });
+
+        final provider2 = Provider((ref) {
+          final value = ref.watch(provider1);
+          ref.onDispose(onDispose2.call);
+          return value + 1;
+        });
+
+        final provider3 = Provider((ref) {
+          final value = ref.watch(provider2);
+          ref.onDispose(onDispose3.call);
+          return value + 1;
+        });
+
+        expect(container.read(provider3), 3);
+
+        container.dispose();
+
+        verifyInOrder([onDispose3(), onDispose2(), onDispose1()]);
+        verifyNoMoreInteractions(onDispose1);
+        verifyNoMoreInteractions(onDispose2);
+        verifyNoMoreInteractions(onDispose3);
+      });
+
+      test('dispose', () {
+        final container = ProviderContainer.test();
+        final onDispose = OnDisposeMock();
+        final provider = Provider((ref) {
+          ref.onDispose(onDispose.call);
+          return 42;
+        });
+
+        expect(container.read(provider), 42);
+
+        verifyZeroInteractions(onDispose);
+
+        container.dispose();
+
+        verify(onDispose()).called(1);
+      });
     });
 
     group('exists', () {
+      test('exist listenables compare equal for the same provider', () {
+        final provider = Provider((ref) => 0);
+
+        expect(provider.exists, provider.exists);
+        expect({provider.exists}, contains(provider.exists));
+      });
+
+      test('is reactive without initializing the provider', () async {
+        final provider = Provider((ref) => 0);
+        final container = ProviderContainer.test();
+        final listener = Listener<bool>();
+
+        expect(container.read(provider.exists), false);
+        expect(
+          container.getAllProviderElements().map((e) => e.origin),
+          isNot(contains(provider)),
+        );
+
+        container.listen(provider.exists, listener.call);
+
+        container.read(provider);
+
+        verifyZeroInteractions(listener);
+        await container.pump();
+        verifyOnly(listener, listener(false, true));
+        expect(container.exists(provider), true);
+      });
+
+      test(
+        'reading existence preserves weak listeners before initialization',
+        () {
+          final provider = Provider((ref) => 42);
+          final container = ProviderContainer.test();
+          final listener = Listener<int>();
+
+          container.listen(provider, listener.call, weak: true);
+
+          container.read(provider.exists);
+          verifyZeroInteractions(listener);
+
+          expect(container.read(provider), 42);
+
+          verifyOnly(listener, listener(null, 42));
+        },
+      );
+
+      test('follows provider overrides in child containers', () async {
+        final provider = Provider((ref) => 0);
+        final root = ProviderContainer.test();
+        final child = ProviderContainer.test(
+          parent: root,
+          overrides: [provider.overrideWith((ref) => 1)],
+        );
+        final listener = Listener<bool>();
+
+        child.listen(provider.exists, listener.call);
+
+        root.read(provider);
+        await root.pump();
+        verifyZeroInteractions(listener);
+
+        child.read(provider);
+        await child.pump();
+        verifyOnly(listener, listener(false, true));
+      });
+
+      test('reading inherited existence does not initialize the provider', () {
+        final provider = Provider((ref) => 0);
+        final unrelated = Provider((ref) => 0);
+        final root = ProviderContainer.test();
+        final child = ProviderContainer.test(
+          parent: root,
+          overrides: [unrelated.overrideWithValue(1)],
+        );
+
+        expect(child.read(provider.exists), isFalse);
+        expect(root.getAllProviderElements(), isEmpty);
+        expect(child.getAllProviderElements(), isEmpty);
+
+        root.read(provider);
+
+        expect(child.read(provider.exists), isTrue);
+      });
+
+      test('ref.listen existence does not keep its owner alive', () async {
+        final other = Provider((ref) => 0);
+        var disposed = false;
+        late ProviderSubscription<bool> existenceSubscription;
+        final provider = Provider.autoDispose((ref) {
+          existenceSubscription = ref.listen(other.exists, (_, _) {});
+          ref.onDispose(() => disposed = true);
+          return 0;
+        });
+        final container = ProviderContainer.test();
+        final subscription = container.listen(provider, (_, _) {});
+
+        expect(disposed, isFalse);
+        expect(existenceSubscription.closed, isFalse);
+
+        subscription.close();
+        await container.pump();
+
+        expect(disposed, isTrue);
+        expect(existenceSubscription.closed, isTrue);
+        expect(container.read(provider.exists), isFalse);
+      });
+
+      test('notifies after an autoDispose provider is removed', () async {
+        final provider = Provider.autoDispose((ref) => 0);
+        final container = ProviderContainer.test();
+        final listener = Listener<bool>();
+
+        container.listen(provider.exists, listener.call);
+
+        expect(container.read(provider.exists), false);
+        final providerSub = container.listen(provider, (_, _) {});
+        await container.pump();
+
+        verifyOnly(listener, listener(false, true));
+
+        providerSub.close();
+        await Future<void>.delayed(.zero);
+
+        verifyOnly(listener, listener(true, false));
+
+        container.listen(provider, (_, _) {});
+        await Future<void>.delayed(.zero);
+
+        verifyOnly(listener, listener(false, true));
+      });
+
+      test(
+        'closes ref.listen existence subscriptions when the provider is invalidated',
+        () async {
+          final other = Provider((ref) => 0);
+          final subscriptions = <ProviderSubscription<bool>>[];
+          final provider = Provider((ref) {
+            subscriptions.add(ref.listen(other.exists, (_, _) {}));
+            return 0;
+          });
+          final container = ProviderContainer.test();
+          final providerSubscription = container.listen(provider, (_, _) {});
+
+          expect(subscriptions.single.closed, isFalse);
+          expect(
+            container.pointerManager.readPointer(other)!.subscriptions,
+            contains(subscriptions.single),
+          );
+
+          container.invalidate(provider);
+          await container.pump();
+
+          expect(subscriptions.first.closed, isTrue);
+          expect(
+            container.pointerManager.readPointer(other)!.subscriptions,
+            contains(subscriptions.last),
+          );
+          expect(
+            container.pointerManager.readPointer(other)!.subscriptions,
+            isNot(contains(subscriptions.first)),
+          );
+
+          providerSubscription.close();
+        },
+      );
+
+      test(
+        'supports manually pausing and resuming ref.listen existence subscriptions',
+        () {
+          final other = Provider((ref) => 0);
+          late ProviderSubscription<bool> subscription;
+          final provider = Provider((ref) {
+            subscription = ref.listen(other.exists, (_, _) {});
+            return 0;
+          });
+          final container = ProviderContainer.test();
+          final providerSubscription = container.listen(provider, (_, _) {});
+
+          expect(subscription.isPaused, isFalse);
+
+          subscription.pause();
+          expect(subscription.isPaused, isTrue);
+
+          subscription.resume();
+          expect(subscription.isPaused, isFalse);
+
+          providerSubscription.close();
+        },
+      );
+
+      test(
+        'removes an unmounted autoDispose pointer when its subscription closes',
+        () {
+          final provider = Provider.autoDispose((ref) => 0);
+          final container = ProviderContainer.test();
+          final sub = container.listen(provider.exists, (_, _) {});
+
+          expect(container.pointerManager.readPointer(provider), isNotNull);
+          expect(container.pointerManager.readElement(provider), isNull);
+
+          sub.close();
+
+          expect(container.pointerManager.readPointer(provider), isNull);
+        },
+      );
+
+      test(
+        'keeps an active pointer when its existence subscription closes',
+        () {
+          final provider = Provider.autoDispose((ref) => 0);
+          final container = ProviderContainer.test();
+          final sub = container.listen(provider.exists, (_, _) {});
+
+          container.read(provider);
+          sub.close();
+
+          expect(container.pointerManager.readPointer(provider), isNotNull);
+          expect(container.pointerManager.readElement(provider), isNotNull);
+        },
+      );
+
+      test(
+        'removes inherited pointers when an existence subscription closes',
+        () {
+          final provider = Provider.autoDispose((ref) => 0);
+          final unrelated = Provider((ref) => 0);
+          final root = ProviderContainer.test();
+          final child = ProviderContainer.test(
+            parent: root,
+            overrides: [unrelated],
+          );
+          final sub = child.listen(provider.exists, (_, _) {});
+
+          expect(root.pointerManager.readPointer(provider), isNotNull);
+          expect(child.pointerManager.readPointer(provider), isNotNull);
+
+          sub.close();
+
+          expect(root.pointerManager.readPointer(provider), isNull);
+          expect(child.pointerManager.readPointer(provider), isNull);
+        },
+      );
+
+      test('supports fireImmediately', () {
+        final provider = Provider((ref) => 0);
+        final container = ProviderContainer.test();
+        final listener = Listener<bool>();
+
+        container.listen(provider.exists, listener.call, fireImmediately: true);
+
+        verifyOnly(listener, listener(null, false));
+      });
+
+      test('closes existence subscriptions when the container is disposed', () {
+        final provider = Provider((ref) => 0);
+        final overriddenProvider = Provider((ref) => 0);
+        final family = Provider.family<int, int>((ref, value) => value);
+        final container = ProviderContainer.test(
+          overrides: [
+            overriddenProvider.overrideWithValue(0),
+            family.overrideWith((ref, value) => value),
+          ],
+        );
+        final sub = container.listen(provider.exists, (_, _) {});
+        final overriddenSub = container.listen(
+          overriddenProvider.exists,
+          (_, _) {},
+        );
+        final familySub = container.listen(family(0).exists, (_, _) {});
+
+        container.dispose();
+
+        expect(sub.closed, isTrue);
+        expect(overriddenSub.closed, isTrue);
+        expect(familySub.closed, isTrue);
+      });
+
+      test('supports select', () async {
+        final provider = Provider((ref) => 0);
+        final container = ProviderContainer.test();
+        final listener = Listener<bool>();
+
+        container.listen(
+          provider.exists.select((exists) => exists),
+          listener.call,
+          fireImmediately: true,
+        );
+
+        verifyOnly(listener, listener(null, false));
+
+        container.read(provider);
+        await container.pump();
+
+        verifyOnly(listener, listener(false, true));
+      });
+
+      test('weak selected existence can be read before any notification', () {
+        var builds = 0;
+        final provider = Provider((ref) => ++builds);
+        final container = ProviderContainer.test();
+        final sub = container.listen(
+          provider.exists.select((exists) => exists),
+          (_, _) {},
+          weak: true,
+        );
+
+        expect(sub.read(), isFalse);
+        expect(builds, 0);
+      });
+
+      test('closes selected existence subscriptions on container disposal', () {
+        final provider = Provider((ref) => 0);
+        final container = ProviderContainer.test();
+        final sub = container.listen(
+          provider.exists.select((exists) => exists),
+          (_, _) {},
+        );
+
+        container.dispose();
+
+        expect(sub.closed, isTrue);
+      });
+
+      test(
+        'closes selected ref.listen existence subscriptions on rebuild',
+        () async {
+          final other = Provider((ref) => 0);
+          final subscriptions = <ProviderSubscription<bool>>[];
+          final notifications = <int>[];
+          final provider = Provider((ref) {
+            final build = subscriptions.length;
+            subscriptions.add(
+              ref.listen(
+                other.exists.select((exists) => exists),
+                (_, _) => notifications.add(build),
+              ),
+            );
+            return 0;
+          });
+          final container = ProviderContainer.test();
+          container.listen(provider, (_, _) {});
+
+          container.invalidate(provider);
+          await container.pump();
+          expect(subscriptions, hasLength(2));
+
+          container.read(other);
+          await container.pump();
+
+          expect(notifications, [1]);
+          expect(subscriptions.first.closed, isTrue);
+          expect(subscriptions.last.closed, isFalse);
+        },
+      );
+
+      test('allows callbacks to initialize other observed providers', () async {
+        final provider = Provider((ref) => 0);
+        final dependency = Provider((ref) => 0);
+        final container = ProviderContainer.test();
+        final dependencyListener = Listener<bool>();
+        final providerListener = Listener<bool>();
+
+        final dependencySub = container.listen(
+          dependency.exists,
+          dependencyListener.call,
+          fireImmediately: true,
+        );
+        final providerSub = container.listen(
+          provider.exists,
+          fireImmediately: true,
+          (prev, next) {
+            providerListener(prev, next);
+            if (next) container.read(dependency);
+          },
+        );
+
+        verifyOnly(providerListener, providerListener(null, false));
+        verifyOnly(dependencyListener, dependencyListener(null, false));
+
+        container.read(provider);
+        await Future<void>.delayed(.zero);
+
+        verifyOnly(dependencyListener, dependencyListener(false, true));
+        verifyOnly(providerListener, providerListener(false, true));
+      });
+
       test('simple use-case', () {
         final container = ProviderContainer.test();
         final provider = Provider((ref) => 0);
@@ -1731,7 +2541,7 @@ void main() {
       test(
         'Waits for providers associated with this container and its parents to rebuild',
         () async {
-          final dep = StateProvider((ref) => 0);
+          final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
           final a = Provider((ref) => ref.watch(dep));
           final b = Provider((ref) => ref.watch(dep), dependencies: const []);
           final aListener = Listener<int>();
@@ -2113,6 +2923,26 @@ void main() {
           isA<AsyncLoading<int>>().having((e) => e.value, 'value', 0),
         );
       });
+
+      test('invalidate triggers a rebuild on next frame', () async {
+        final container = ProviderContainer.test();
+        final listener = Listener<int>();
+        var result = 0;
+        final provider = Provider((r) => result);
+
+        container.listen(provider, listener.call);
+        verifyZeroInteractions(listener);
+
+        container.invalidate(provider);
+        container.invalidate(provider);
+        result = 1;
+
+        verifyZeroInteractions(listener);
+
+        await container.pump();
+
+        verifyOnly(listener, listener(0, 1));
+      });
     });
 
     group('listen', () {
@@ -2124,7 +2954,9 @@ void main() {
             ProviderContainer.test,
             (err, stack) => errors.add(err),
           )!;
-          final isErrored = StateProvider((ref) => false);
+          final isErrored = NotifierProvider(
+            () => SettableNotifier((ref) => false),
+          );
           final dep = Provider<int>((ref) {
             if (ref.watch(isErrored)) throw UnimplementedError();
             return 0;
@@ -2153,7 +2985,9 @@ void main() {
             ProviderContainer.test,
             (err, stack) => errors.add(err),
           )!;
-          final isErrored = StateProvider((ref) => false);
+          final isErrored = NotifierProvider(
+            () => SettableNotifier((ref) => false),
+          );
           final dep = Provider<int>((ref) {
             if (ref.watch(isErrored)) throw UnimplementedError();
             return 0;
@@ -2176,7 +3010,7 @@ void main() {
 
       test('when rebuild throws, calls onError', () async {
         final container = ProviderContainer.test();
-        final dep = StateProvider((ref) => 0);
+        final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
         final provider = Provider((ref) {
           if (ref.watch(dep) != 0) {
             throw UnimplementedError();
@@ -2200,7 +3034,7 @@ void main() {
 
       test('when rebuild throws on selector, calls onError', () async {
         final container = ProviderContainer.test();
-        final dep = StateProvider((ref) => 0);
+        final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
         final provider = Provider((ref) {
           if (ref.watch(dep) != 0) {
             throw UnimplementedError();
@@ -2230,9 +3064,7 @@ void main() {
         'when using selectors, `previous` is the latest notification instead of latest event',
         () {
           final container = ProviderContainer.test();
-          final provider = StateNotifierProvider<StateController<int>, int>(
-            (ref) => StateController(0),
-          );
+          final provider = NotifierProvider(() => SettableNotifier((ref) => 0));
           final listener = Listener<bool>();
 
           container.listen<bool>(
@@ -2255,9 +3087,7 @@ void main() {
 
       test('expose previous and new value on change', () {
         final container = ProviderContainer.test();
-        final provider = StateNotifierProvider<StateController<int>, int>(
-          (ref) => StateController(0),
-        );
+        final provider = NotifierProvider(() => SettableNotifier((ref) => 0));
         final listener = Listener<int>();
 
         container.listen<int>(provider, listener.call, fireImmediately: true);
@@ -2271,7 +3101,7 @@ void main() {
 
       test('can downcast the value', () async {
         final listener = Listener<num>();
-        final dep = StateProvider((ref) => 0);
+        final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
 
         final container = ProviderContainer.test();
 
@@ -2288,7 +3118,7 @@ void main() {
       test(
         'if a listener adds a container.listen, the new listener is not called immediately',
         () {
-          final provider = StateProvider((ref) => 0);
+          final provider = NotifierProvider(() => SettableNotifier((ref) => 0));
           final container = ProviderContainer.test();
 
           final listener = Listener<int>();
@@ -2313,7 +3143,7 @@ void main() {
       test(
         'if a listener removes another provider.listen, the removed listener is not called',
         () {
-          final dep = StateProvider((ref) => 0);
+          final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
           final container = ProviderContainer.test();
 
           final listener = Listener<int>();
@@ -2349,7 +3179,7 @@ void main() {
       test(
         'if a listener adds a provider.listen, the new listener is not called immediately',
         () {
-          final dep = StateProvider((ref) => 0);
+          final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
           final container = ProviderContainer.test();
 
           final listener = Listener<int>();
@@ -2437,7 +3267,9 @@ void main() {
 
         test('supports selectors', () {
           final container = ProviderContainer.test();
-          final provider = StateProvider<int>((ref) => 0);
+          final provider = NotifierProvider<SettableNotifier<int>, int>(
+            () => SettableNotifier((ref) => 0),
+          );
           final listener = Listener<bool>();
           final listener2 = Listener<bool>();
 
@@ -2458,7 +3290,7 @@ void main() {
         });
 
         test('passing fireImmediately: false skips the initial value', () {
-          final provider = StateProvider((ref) => 0);
+          final provider = NotifierProvider(() => SettableNotifier((ref) => 0));
           final listener = Listener<int>();
 
           final container = ProviderContainer.test();
@@ -2471,7 +3303,9 @@ void main() {
         test(
           'correctly listens to the provider if selector onError listener throws',
           () async {
-            final dep = StateProvider<int>((ref) => 0);
+            final dep = NotifierProvider<SettableNotifier<int>, int>(
+              () => SettableNotifier((ref) => 0),
+            );
             final provider = Provider<int>((ref) {
               if (ref.watch(dep) == 0) {
                 throw UnimplementedError();
@@ -2526,7 +3360,9 @@ void main() {
         test(
           'correctly listens to the provider if normal onError listener throws',
           () async {
-            final dep = StateProvider<int>((ref) => 0);
+            final dep = NotifierProvider<SettableNotifier<int>, int>(
+              () => SettableNotifier((ref) => 0),
+            );
             final provider = Provider<int>((ref) {
               if (ref.watch(dep) == 0) {
                 throw UnimplementedError();
@@ -2577,7 +3413,9 @@ void main() {
         test(
           'correctly listens to the provider if selector listener throws',
           () {
-            final provider = StateProvider((ref) => 0);
+            final provider = NotifierProvider(
+              () => SettableNotifier((ref) => 0),
+            );
             final listener = Listener<int>();
             var isFirstCall = true;
 
@@ -2610,7 +3448,7 @@ void main() {
         );
 
         test('correctly listens to the provider if normal listener throws', () {
-          final provider = StateProvider((ref) => 0);
+          final provider = NotifierProvider(() => SettableNotifier((ref) => 0));
           final listener = Listener<int>();
           var isFirstCall = true;
 
@@ -2639,7 +3477,9 @@ void main() {
       });
 
       test('.read on closed subscription throws', () {
-        final provider = StateProvider<int>((_) => 0);
+        final provider = NotifierProvider<SettableNotifier<int>, int>(
+          () => SettableNotifier((_) => 0),
+        );
         final container = ProviderContainer.test();
         final listener = Listener<int>();
 
@@ -2661,7 +3501,9 @@ void main() {
       });
 
       test('.read on closed selector subscription throws', () {
-        final provider = StateProvider<int>((_) => 0);
+        final provider = NotifierProvider<SettableNotifier<int>, int>(
+          () => SettableNotifier((_) => 0),
+        );
         final container = ProviderContainer.test();
         final listener = Listener<int>();
 
@@ -2694,7 +3536,9 @@ void main() {
 
       test('selectors can close listeners', () {
         final container = ProviderContainer.test();
-        final provider = StateProvider<int>((ref) => 0);
+        final provider = NotifierProvider<SettableNotifier<int>, int>(
+          () => SettableNotifier((ref) => 0),
+        );
 
         expect(
           container.readProviderElement(provider).hasNonWeakListeners,
@@ -2721,7 +3565,9 @@ void main() {
 
       test('can watch selectors', () async {
         final container = ProviderContainer.test();
-        final provider = StateProvider<int>((ref) => 0);
+        final provider = NotifierProvider<SettableNotifier<int>, int>(
+          () => SettableNotifier((ref) => 0),
+        );
         final isAdultSelector = Selector<int, bool>(false, (c) => c >= 18);
         final isAdultListener = Listener<bool>();
 
@@ -2767,7 +3613,7 @@ void main() {
         addTearDown(controller.close);
         final container = ProviderContainer.test();
 
-        final count = StateProvider((ref) => 0);
+        final count = NotifierProvider(() => SettableNotifier((ref) => 0));
         final provider = Provider((ref) => ref.watch(count));
 
         container.listen<int>(
@@ -2784,7 +3630,7 @@ void main() {
       test('call listener when provider emits an update', () async {
         final container = ProviderContainer.test();
 
-        final count = StateProvider((ref) => 0);
+        final count = NotifierProvider(() => SettableNotifier((ref) => 0));
         final listener = Listener<int>();
 
         container.listen<int>(count, listener.call);
@@ -2801,7 +3647,7 @@ void main() {
       test('supports selectors', () {
         final container = ProviderContainer.test();
 
-        final count = StateProvider((ref) => 0);
+        final count = NotifierProvider(() => SettableNotifier((ref) => 0));
         final listener = Listener<bool>();
 
         container.listen<bool>(
@@ -2823,7 +3669,9 @@ void main() {
 
       test('can downcast the listener value', () {
         final container = ProviderContainer.test();
-        final provider = StateProvider<int>((ref) => 0);
+        final provider = NotifierProvider<SettableNotifier<int>, int>(
+          () => SettableNotifier((ref) => 0),
+        );
         final listener = Listener<void>();
 
         container.listen<void>(provider, listener.call);
@@ -2839,11 +3687,7 @@ void main() {
         'can close a ProviderSubscription<Object?> multiple times with no effect',
         () {
           final container = ProviderContainer.test();
-          final provider = StateNotifierProvider<StateController<int>, int>((
-            ref,
-          ) {
-            return StateController(0);
-          });
+          final provider = NotifierProvider(() => SettableNotifier((ref) => 0));
           final listener = Listener<int>();
 
           final controller = container.read(provider.notifier);
@@ -2863,11 +3707,7 @@ void main() {
         'closing an already closed ProviderSubscription<Object?> does not remove subscriptions with the same listener',
         () {
           final container = ProviderContainer.test();
-          final provider = StateNotifierProvider<StateController<int>, int>((
-            ref,
-          ) {
-            return StateController(0);
-          });
+          final provider = NotifierProvider(() => SettableNotifier((ref) => 0));
           final listener = Listener<int>();
 
           final controller = container.read(provider.notifier);
@@ -2888,8 +3728,3159 @@ void main() {
           verifyOnly(listener, listener(1, 2));
         },
       );
+
+      group('didChange', () {
+        test('is called synchronously on direct provider change', () {
+          final container = ProviderContainer.test();
+          final didChange = Listener<int>();
+          final provider = NotifierProvider<Counter, int>(Counter.new);
+
+          container.listen(provider, didChange.call);
+          final counter = container.read(provider.notifier);
+
+          verifyZeroInteractions(didChange);
+
+          counter.increment();
+
+          verifyOnly(didChange, didChange(0, 1));
+        });
+
+        test('is called at most once per read for computed providers', () {
+          final container = ProviderContainer.test();
+          final didChange = Listener<int>();
+          final provider = NotifierProvider<Counter, int>(Counter.new);
+          final computed = Provider((ref) => ref.watch(provider));
+
+          container.listen(computed, didChange.call);
+          final counter = container.read(provider.notifier);
+
+          verifyZeroInteractions(didChange);
+
+          counter.increment();
+          counter.increment();
+          counter.increment();
+
+          container.read(computed);
+
+          verifyOnly(didChange, didChange(0, 3));
+        });
+
+        test('are all executed after one read call', () {
+          final container = ProviderContainer.test();
+          final didChange = Listener<int>();
+          final provider = NotifierProvider<Counter, int>(Counter.new);
+          final didChange2 = Listener<int>();
+
+          container.listen(provider, didChange.call);
+          container.listen(provider, didChange2.call);
+          final counter = container.read(provider.notifier);
+
+          counter.increment();
+
+          verifyOnly(didChange, didChange(0, 1));
+          verifyOnly(didChange2, didChange2(0, 1));
+        });
+
+        test('is guarded', () {
+          final didChange = Listener<int>();
+          final errors = <Object>[];
+          final container = runZonedGuarded(
+            ProviderContainer.test,
+            (err, stack) => errors.add(err),
+          )!;
+          final provider = NotifierProvider<Counter, int>(Counter.new);
+          final didChange2 = Listener<int>();
+          when(didChange(any, any)).thenThrow(42);
+          when(didChange2(any, any)).thenThrow(21);
+
+          container.listen(provider, didChange.call);
+          container.listen(provider, didChange2.call);
+          final counter = container.read(provider.notifier);
+
+          counter.increment();
+
+          expect(errors, unorderedEquals(<Object>[42, 21]));
+          verifyOnly(didChange, didChange(0, 1));
+          verifyOnly(didChange2, didChange2(0, 1));
+        });
+      });
+
+      test('throws if specifying both weak and fireImmediately', () {
+        final container = ProviderContainer.test();
+        final provider = Provider((ref) => 0);
+
+        expect(
+          () => container.listen(
+            provider,
+            (previous, value) {},
+            weak: true,
+            fireImmediately: true,
+          ),
+          throwsA(isA<AssertionError>()),
+        );
+      });
+    });
+
+    group('allProviders', () {
+      test('.allOf returns active providers of a family', () async {
+        final family = Provider.autoDispose.family<int, int>((ref, arg) => arg);
+        final otherFamily = Provider.autoDispose.family<int, int>(
+          (ref, arg) => arg,
+        );
+        final container = ProviderContainer.test();
+
+        final sub0 = container.listen(family(0), (_, _) {});
+        final sub1 = container.listen(family(1), (_, _) {});
+        final otherSub = container.listen(otherFamily(2), (_, _) {});
+
+        expect(
+          container.allProviders(family: family),
+          unorderedEquals([
+            providerReferences(family(0), container),
+            providerReferences(family(1), container),
+          ]),
+        );
+
+        sub0.close();
+        await container.pump();
+
+        expect(
+          container.allProviders(family: family),
+          unorderedEquals([providerReferences(family(1), container)]),
+        );
+
+        sub1.close();
+        otherSub.close();
+        await container.pump();
+
+        expect(container.allProviders(family: family), isEmpty);
+      });
+
+      test(
+        '.allOf includes active providers from parent containers too',
+        () async {
+          final family = Provider.autoDispose.family<int, int>(
+            (ref, arg) => arg,
+            dependencies: [],
+          );
+          final unrelated = Provider((ref) => 0);
+          final root = ProviderContainer.test();
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [unrelated, family(2).overrideWithValue(42)],
+          );
+
+          container.listen(family(1), (_, _) {});
+          root.listen(family(0), (_, _) {});
+
+          root.listen(family(2), (_, _) {});
+          container.listen(family(2), (_, _) {});
+
+          expect(
+            container.allProviders(family: family),
+            unorderedEquals([
+              providerReferences(family(0), root),
+              providerReferences(family(1), root),
+              providerReferences(family(2), root),
+              providerReferences(family(2), container),
+            ]),
+          );
+        },
+      );
+
+      test('returns all active providers', () async {
+        final provider = Provider.autoDispose((ref) => 0);
+        final family = Provider.autoDispose.family<int, int>((ref, arg) => arg);
+        final otherFamily = Provider.autoDispose.family<int, int>(
+          (ref, arg) => arg,
+        );
+        final container = ProviderContainer.test();
+
+        final providerSub = container.listen(provider, (_, _) {});
+        final familySub0 = container.listen(family(0), (_, _) {});
+        final familySub1 = container.listen(family(1), (_, _) {});
+        final otherFamilySub = container.listen(otherFamily(2), (_, _) {});
+
+        expect(
+          container.allProviders(),
+          unorderedEquals([
+            providerReferences(provider, container),
+            providerReferences(family(0), container),
+            providerReferences(family(1), container),
+            providerReferences(otherFamily(2), container),
+          ]),
+        );
+
+        providerSub.close();
+        familySub0.close();
+        familySub1.close();
+        otherFamilySub.close();
+        await container.pump();
+
+        expect(container.allProviders(), isEmpty);
+      });
+
+      test('throws if new providers are registered while iterating', () {
+        final provider = Provider((ref) => 0);
+        final newProvider = Provider((ref) => 1);
+        final container = ProviderContainer.test();
+
+        container.listen(provider, (_, _) {});
+
+        expect(() {
+          for (final _ in container.allProviders()) {
+            container.listen(newProvider, (_, _) {});
+          }
+        }, throwsA(isA<ConcurrentModificationError>()));
+      });
+
+      test(
+        'with family specified, only new providers from that family throw',
+        () {
+          final family = Provider.family<int, int>((ref, arg) => arg);
+          final otherFamily = Provider.family<int, int>((ref, arg) => arg);
+          final container = ProviderContainer.test();
+
+          container.listen(family(0), (_, _) {});
+
+          expect(() {
+            for (final _ in container.allProviders(family: family)) {
+              container.listen(otherFamily(0), (_, _) {});
+            }
+          }, returnsNormally);
+
+          expect(() {
+            for (final _ in container.allProviders(family: family)) {
+              container.listen(family(1), (_, _) {});
+            }
+          }, throwsA(isA<ConcurrentModificationError>()));
+        },
+      );
+
+      test('includes active providers from parent containers too', () {
+        final provider = Provider((ref) => 0);
+        final family = Provider.autoDispose.family<int, int>(
+          (ref, arg) => arg,
+          dependencies: [],
+        );
+        final unrelated = Provider((ref) => 42);
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [unrelated, family(2).overrideWithValue(42)],
+        );
+
+        root.listen(provider, (_, _) {});
+        container.listen(family(1), (_, _) {});
+        root.listen(family(2), (_, _) {});
+        container.listen(family(2), (_, _) {});
+
+        expect(
+          container.allProviders(),
+          unorderedEquals([
+            providerReferences(provider, root),
+            providerReferences(family(1), root),
+            providerReferences(family(2), root),
+            providerReferences(family(2), container),
+          ]),
+        );
+      });
+    });
+
+    group('scoping', () {
+      test('Supports reading a provider out of scope, '
+          'then adding a scope override', () {
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/4324
+        final root = ProviderContainer.test();
+        final provider = Provider((ref) => 0, dependencies: []);
+        final transitive = Provider(
+          (ref) => ref.watch(provider),
+          dependencies: [provider],
+        );
+
+        root.read(transitive);
+
+        final leaf = ProviderContainer.test(
+          parent: root,
+          overrides: [provider.overrideWithValue(42)],
+        );
+
+        expect(leaf.read(transitive), 42);
+      });
+
+      test('does not throw when scoping a provider with no dependencies', () {
+        final a = Provider((ref) => 0);
+        final b = Provider.family((ref, _) => 0);
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [a, b],
+        );
+
+        expect(container.read(a), 0);
+        expect(container.read(b(0)), 0);
+      });
+
+      test('reading a provider from a scoped container, '
+          'then adding a new container with an override, '
+          'then reading from the new container correctly auto-scope again', () {
+        final a = Provider((ref) => 0, dependencies: const []);
+        final b = Provider((ref) => ref.watch(a) + 10, dependencies: [a]);
+
+        final root = ProviderContainer.test();
+        final mid = ProviderContainer.test(
+          parent: root,
+          overrides: [a.overrideWithValue(42)],
+        );
+
+        expect(mid.read(b), 52);
+
+        final child = ProviderContainer.test(
+          parent: mid,
+          overrides: [a.overrideWithValue(84)],
+        );
+
+        expect(child.read(b), 94);
+      });
+
+      test(
+        'reading a provider from a scoped container, '
+        'then reading from container further down the tree correctly auto-scope again',
+        () {
+          final a = Provider((ref) => 0, dependencies: const []);
+          final b = Provider((ref) => ref.watch(a) + 10, dependencies: [a]);
+
+          final root = ProviderContainer.test();
+          final mid = ProviderContainer.test(
+            parent: root,
+            overrides: [a.overrideWithValue(42)],
+          );
+          final child = ProviderContainer.test(
+            parent: mid,
+            overrides: [a.overrideWithValue(84)],
+          );
+
+          expect(mid.read(b), 52);
+          expect(child.read(b), 94);
+        },
+      );
+
+      test(
+        'reading a family override from a scoped container, '
+        'then adding a new container with the same family overridden again, '
+        'then reading from the new container correctly obtains the new override',
+        () {
+          final a = Provider.family<int, int>(
+            (ref, id) => id,
+            dependencies: const [],
+          );
+
+          final root = ProviderContainer.test();
+          final mid = ProviderContainer.test(
+            parent: root,
+            overrides: [a.overrideWith((ref, argument) => argument + 10)],
+          );
+
+          expect(mid.read(a(10)), 20);
+
+          final override2 = a.overrideWith((ref, argument) => argument + 20);
+          final child = ProviderContainer.test(
+            parent: mid,
+            overrides: [override2],
+          );
+
+          expect(
+            child.pointerManager.familyPointers[a],
+            isProviderDirectory(
+              override: override2,
+              targetContainer: child,
+              pointers: {},
+            ),
+          );
+
+          expect(child.read(a(10)), 30);
+        },
+      );
+
+      test(
+        'reading a family override from a scoped container, '
+        'then reading from container further down the tree correctly uses the deepest override',
+        () {
+          final a = Provider.family<int, int>(
+            (ref, id) => id,
+            dependencies: const [],
+          );
+
+          final root = ProviderContainer.test();
+          final mid = ProviderContainer.test(
+            parent: root,
+            overrides: [a.overrideWith((ref, argument) => argument + 10)],
+          );
+
+          final child = ProviderContainer.test(
+            parent: mid,
+            overrides: [a.overrideWith((ref, argument) => argument + 20)],
+          );
+
+          expect(mid.read(a(10)), 20);
+          expect(child.read(a(10)), 30);
+        },
+      );
+
+      test(
+        'reading a family override from a scoped container, '
+        'then reading from container further down the tree reuse the provider state when possible',
+        () {
+          final a = Provider.family<int, int>(
+            (ref, id) => id,
+            dependencies: const [],
+          );
+          var overrideBuildCount = 0;
+          final root = ProviderContainer.test();
+          final mid = ProviderContainer.test(
+            parent: root,
+            overrides: [
+              a.overrideWith((ref, argument) {
+                overrideBuildCount++;
+                return argument + 10;
+              }),
+            ],
+          );
+
+          expect(overrideBuildCount, 0);
+          expect(mid.read(a(10)), 20);
+          expect(overrideBuildCount, 1);
+
+          final child = ProviderContainer.test(parent: mid);
+
+          expect(child.read(a(10)), 20);
+          expect(overrideBuildCount, 1);
+        },
+      );
+
+      test('does not auto-scope provider overrides', () {
+        final a = Provider((ref) => 0, dependencies: const []);
+        final another = Provider((ref) => 42, dependencies: const []);
+        final b = Provider((ref) => ref.watch(a), dependencies: [a]);
+        final c = Provider((ref) => ref.watch(a), dependencies: [a]);
+
+        final root = ProviderContainer.test(
+          overrides: [
+            b.overrideWithValue(21),
+            c.overrideWith((ref) => ref.watch(another) + 10),
+          ],
+        );
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [a.overrideWithValue(42), another.overrideWithValue(84)],
+        );
+
+        expect(container.read(a), 42);
+        expect(container.read(b), 21);
+        expect(container.read(c), 52);
+      });
+
+      test('does not auto-scope family overrides', () {
+        final a = Provider((ref) => 0, dependencies: const []);
+        final another = Provider((ref) => 42, dependencies: const []);
+        final b = Provider.family<int, int>(
+          (ref, _) => ref.watch(a),
+          dependencies: [a, another],
+        );
+
+        final root = ProviderContainer.test(
+          overrides: [
+            b.overrideWith((ref, value) => ref.watch(another) + value),
+          ],
+        );
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [a.overrideWithValue(42), another.overrideWithValue(84)],
+        );
+
+        expect(container.read(a), 42);
+        expect(container.read(b(10)), 52);
+      });
+
+      test(
+        'scoped autoDispose override preserve the override after one disposal',
+        () async {
+          final provider = Provider.autoDispose(
+            (ref) => 0,
+            dependencies: const [],
+          );
+
+          final root = ProviderContainer.test();
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [provider],
+          );
+
+          container.read(provider);
+          expect(root.getAllProviderElements(), isEmpty);
+          expect(container.getAllProviderElements(), isNotEmpty);
+
+          await container.pump();
+
+          expect(root.getAllProviderElements(), isEmpty);
+          expect(container.getAllProviderElements(), isEmpty);
+
+          container.read(provider);
+
+          expect(root.getAllProviderElements(), isEmpty);
+          expect(container.getAllProviderElements(), isNotEmpty);
+        },
+      );
+
+      test(
+        'scoped autoDispose override  through intermediary unused container preserve the override after one disposal',
+        () async {
+          final provider = Provider.autoDispose(
+            (ref) => 0,
+            dependencies: const [],
+          );
+
+          final root = ProviderContainer.test();
+          final mid = ProviderContainer.test(
+            parent: root,
+            overrides: [provider],
+          );
+          final container = ProviderContainer.test(parent: mid);
+
+          container.read(provider);
+          expect(root.getAllProviderElements(), isEmpty);
+          expect(mid.getAllProviderElements(), isNotEmpty);
+          expect(container.getAllProviderElements(), isEmpty);
+
+          await container.pump();
+
+          expect(root.getAllProviderElements(), isEmpty);
+          expect(mid.getAllProviderElements(), isEmpty);
+          expect(container.getAllProviderElements(), isEmpty);
+
+          container.read(provider);
+
+          expect(root.getAllProviderElements(), isEmpty);
+          expect(mid.getAllProviderElements(), isNotEmpty);
+          expect(container.getAllProviderElements(), isEmpty);
+        },
+      );
+
+      test(
+        'scoped autoDispose override preserve family override after one disposal',
+        () async {
+          final provider = Provider.autoDispose.family<int, int>(
+            (ref, _) => 0,
+            dependencies: const [],
+          );
+
+          final root = ProviderContainer.test();
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [provider],
+          );
+
+          container.read(provider(0));
+          expect(root.getAllProviderElements(), isEmpty);
+          expect(container.getAllProviderElements(), isNotEmpty);
+
+          await container.pump();
+
+          expect(root.getAllProviderElements(), isEmpty);
+          expect(container.getAllProviderElements(), isEmpty);
+
+          container.read(provider(0));
+
+          expect(root.getAllProviderElements(), isEmpty);
+          expect(container.getAllProviderElements(), isNotEmpty);
+        },
+      );
+
+      test(
+        'scoped autoDispose override through intermediary unused container preserve family  override after one disposal',
+        () async {
+          final provider = Provider.autoDispose.family<int, int>(
+            (ref, _) => 0,
+            dependencies: const [],
+          );
+
+          final root = ProviderContainer.test();
+          final mid = ProviderContainer.test(
+            parent: root,
+            overrides: [provider],
+          );
+          final container = ProviderContainer.test(parent: mid);
+
+          container.read(provider(0));
+          expect(root.getAllProviderElements(), isEmpty);
+          expect(mid.getAllProviderElements(), isNotEmpty);
+          expect(container.getAllProviderElements(), isEmpty);
+
+          await container.pump();
+
+          expect(root.getAllProviderElements(), isEmpty);
+          expect(mid.getAllProviderElements(), isEmpty);
+          expect(container.getAllProviderElements(), isEmpty);
+
+          container.read(provider(0));
+
+          expect(root.getAllProviderElements(), isEmpty);
+          expect(mid.getAllProviderElements(), isNotEmpty);
+          expect(container.getAllProviderElements(), isEmpty);
+        },
+      );
+
+      group('non-family providers', () {
+        test(
+          'can override a provider with a reference to the provider directly',
+          () {
+            final provider = Provider((ref) => 0);
+            final container = ProviderContainer.test();
+            final child = ProviderContainer.test(overrides: [provider]);
+
+            expect(child.read(provider), 0);
+
+            expect(child.getAllProviderElements(), [
+              isA<$ProviderElement<Object?>>().having(
+                (e) => e.provider,
+                'provider',
+                provider,
+              ),
+            ]);
+            expect(container.getAllProviderElements(), isEmpty);
+          },
+        );
+
+        test('use latest override on mount', () {
+          final provider = Provider((ref) => 0, dependencies: const []);
+          final root = ProviderContainer.test();
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [provider.overrideWithValue(42)],
+          );
+
+          container.updateOverrides([provider.overrideWithValue(21)]);
+
+          expect(container.read(provider), 21);
+        });
+
+        test('updating scoped override does not mount the provider', () {
+          final provider = Provider((ref) => 0, dependencies: const []);
+          final root = ProviderContainer.test();
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [provider.overrideWithValue(42)],
+          );
+
+          container.updateOverrides([provider.overrideWithValue(21)]);
+
+          expect(container.getAllProviderElements(), isEmpty);
+          expect(root.getAllProviderElements(), isEmpty);
+        });
+
+        test(
+          'does not re-initialize a provider if read by an intermediary container',
+          () {
+            var callCount = 0;
+            final provider = Provider((ref) {
+              callCount++;
+              return 42;
+            }, dependencies: const []);
+            final root = ProviderContainer.test();
+            final mid = ProviderContainer.test(
+              parent: root,
+              overrides: [provider],
+            );
+            final container = ProviderContainer.test(parent: mid);
+
+            expect(mid.read(provider), 42);
+            expect(callCount, 1);
+
+            expect(container.read(provider), 42);
+            expect(callCount, 1);
+
+            expect(root.getAllProviderElements(), isEmpty);
+          },
+        );
+      });
+
+      group('families', () {
+        test('use latest override on mount', () {
+          final dep = Provider((ref) => 0, dependencies: const []);
+          final provider = Provider.family<String, int>(
+            (ref, value) => '$value ${ref.watch(dep)}',
+            dependencies: [dep],
+          );
+          final root = ProviderContainer.test();
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [dep.overrideWithValue(1), provider],
+          );
+
+          container.updateOverrides([dep.overrideWithValue(2), provider]);
+
+          expect(container.read(provider(0)), '0 2');
+        });
+
+        test('updating scoped override does not mount the provider', () {
+          final dep = Provider((ref) => 0, dependencies: const []);
+          final provider = Provider.family<String, int>(
+            (ref, value) => '$value ${ref.watch(dep)}',
+            dependencies: const [],
+          );
+          final root = ProviderContainer.test();
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [dep.overrideWithValue(1), provider],
+          );
+
+          container.updateOverrides([dep.overrideWithValue(2), provider]);
+
+          expect(container.getAllProviderElements(), isEmpty);
+          expect(root.getAllProviderElements(), isEmpty);
+        });
+
+        test(
+          'can override a family with a reference to the provider directly',
+          () {
+            final provider = Provider.family<int, int>((ref, param) => 0);
+            final container = ProviderContainer.test();
+            final child = ProviderContainer.test(overrides: [provider]);
+
+            expect(child.read(provider(0)), 0);
+
+            expect(child.getAllProviderElements(), [
+              isA<$ProviderElement<Object?>>().having(
+                (e) => e.provider,
+                'provider',
+                provider(0),
+              ),
+            ]);
+            expect(container.getAllProviderElements(), isEmpty);
+          },
+        );
+
+        test(
+          'does not re-initialize a provider if read by an intermediary container',
+          () {
+            final dep = Provider((ref) => 0, dependencies: const []);
+            var callCount = 0;
+            final provider = Provider.family<String, int>((ref, value) {
+              callCount++;
+              return '$value ${ref.watch(dep)}';
+            }, dependencies: [dep]);
+            final root = ProviderContainer.test();
+            final mid = ProviderContainer.test(
+              parent: root,
+              overrides: [dep.overrideWithValue(1), provider],
+            );
+            final container = ProviderContainer.test(parent: mid);
+
+            expect(mid.read(provider(0)), '0 1');
+            expect(callCount, 1);
+
+            expect(container.read(provider(0)), '0 1');
+            expect(callCount, 1);
+          },
+        );
+      });
+
+      group('auto-scoping via dependencies', () {
+        test(
+          'a family can read itself, even if not present in the dependencies list',
+          () {
+            final dep = Provider((ref) => 'foo');
+            late final ProviderFamily<String, int> provider;
+            provider = Provider.family<String, int>((ref, id) {
+              if (id == 0) return ref.watch(dep);
+              return ref.watch(provider(0));
+            }, dependencies: [dep]);
+            final container = ProviderContainer.test();
+
+            expect(container.read(provider(42)), 'foo');
+          },
+        );
+
+        test('auto scope direct provider dependencies', () {
+          final dep = Provider((ref) => 0, name: 'dep', dependencies: const []);
+          var buildCount = 0;
+          final provider = Provider(name: 'provider', dependencies: [dep], (
+            ref,
+          ) {
+            buildCount++;
+            return ref.watch(dep);
+          });
+          final root = ProviderContainer.test();
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [dep.overrideWithValue(42)],
+          );
+          final child = ProviderContainer.test(parent: container);
+          final subChild = ProviderContainer.test(parent: child);
+
+          expect(buildCount, 0);
+          expect(container.read(provider), 42);
+          expect(buildCount, 1);
+          expect(root.read(provider), 0);
+          expect(buildCount, 2);
+          expect(child.read(provider), 42);
+          expect(buildCount, 2);
+          expect(subChild.read(provider), 42);
+          expect(buildCount, 2);
+
+          final lateChild = ProviderContainer.test(parent: container);
+
+          expect(lateChild.read(provider), 42);
+          expect(buildCount, 2);
+        });
+
+        test(
+          'auto scope still works if the first read of the auto-override is through a child container',
+          () {
+            final dep = Provider(
+              (ref) => 0,
+              name: 'dep',
+              dependencies: const [],
+            );
+            var buildCount = 0;
+            final provider = Provider(dependencies: [dep], name: 'provider', (
+              ref,
+            ) {
+              buildCount++;
+              return ref.watch(dep);
+            });
+            final root = ProviderContainer.test();
+            final container = ProviderContainer.test(
+              parent: root,
+              overrides: [dep.overrideWithValue(42)],
+            );
+            final child = ProviderContainer.test(parent: container);
+            final subChild = ProviderContainer.test(parent: child);
+
+            expect(subChild.read(provider), 42);
+            expect(buildCount, 1);
+            expect(child.read(provider), 42);
+            expect(buildCount, 1);
+            expect(container.read(provider), 42);
+            expect(buildCount, 1);
+            expect(root.read(provider), 0);
+            expect(buildCount, 2);
+          },
+        );
+
+        test('auto scope transitive provider dependency', () {
+          var depBuildCount = 0;
+          final dep = Provider(name: 'dep', (ref) {
+            depBuildCount++;
+            return 0;
+          }, dependencies: const []);
+          var dep2BuildCount = 0;
+          final dep2 = Provider.family<int, int>(
+            (ref, multiplier) {
+              dep2BuildCount++;
+              return ref.watch(dep) * multiplier;
+            },
+            name: 'dep2',
+            dependencies: [dep],
+          );
+          var dep3BuildCount = 0;
+          final dep3 = Provider(
+            (ref) {
+              dep3BuildCount++;
+              return ref.watch(dep2(2));
+            },
+            name: 'dep3',
+            dependencies: [dep2],
+          );
+          var buildCount = 0;
+          final provider = Provider(dependencies: [dep3], name: 'provider', (
+            ref,
+          ) {
+            buildCount++;
+            return ref.watch(dep3).toString();
+          });
+
+          final root = ProviderContainer.test();
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [dep.overrideWithValue(42)],
+          );
+          final child = ProviderContainer.test(parent: container);
+          final subChild = ProviderContainer.test(parent: child);
+
+          expect(buildCount, 0);
+
+          expect(container.read(provider), '84');
+          expect(container.read(dep3), 84);
+          expect(container.read(dep2(2)), 84);
+          expect(container.read(dep), 42);
+          expect(buildCount, 1);
+          expect(dep3BuildCount, 1);
+          expect(dep2BuildCount, 1);
+          expect(depBuildCount, 0);
+
+          expect(root.read(provider), '0');
+          expect(root.read(dep3), 0);
+          expect(root.read(dep2(2)), 0);
+          expect(root.read(dep), 0);
+          expect(buildCount, 2);
+          expect(dep3BuildCount, 2);
+          expect(dep2BuildCount, 2);
+          expect(depBuildCount, 1);
+
+          expect(child.read(provider), '84');
+          expect(child.read(dep3), 84);
+          expect(child.read(dep2(2)), 84);
+          expect(child.read(dep), 42);
+          expect(buildCount, 2);
+          expect(dep3BuildCount, 2);
+          expect(dep2BuildCount, 2);
+          expect(depBuildCount, 1);
+
+          expect(subChild.read(provider), '84');
+          expect(subChild.read(dep3), 84);
+          expect(subChild.read(dep2(2)), 84);
+          expect(subChild.read(dep), 42);
+          expect(buildCount, 2);
+          expect(dep3BuildCount, 2);
+          expect(dep2BuildCount, 2);
+          expect(depBuildCount, 1);
+
+          final lateChild = ProviderContainer.test(parent: container);
+
+          expect(lateChild.read(provider), '84');
+          expect(container.read(dep3), 84);
+          expect(buildCount, 2);
+          expect(dep3BuildCount, 2);
+        });
+
+        test(
+          'when provider depends on multiple overrides, is placed on the deepest container',
+          () {
+            final dep = Provider(
+              (ref) => 0,
+              name: 'dep',
+              dependencies: const [],
+            );
+            final dep2 = Provider(
+              (ref) => 0,
+              name: 'dep2',
+              dependencies: const [],
+            );
+            final a = Provider(
+              (ref) => ref.watch(dep) + ref.watch(dep2),
+              dependencies: [dep, dep2],
+              name: 'a',
+            );
+            final b = Provider(
+              (ref) => ref.watch(dep) - ref.watch(dep2),
+              dependencies: [
+                dep2,
+                dep,
+              ], // checking that the 'dependencies' order doesn't matter
+              name: 'b',
+            );
+            final root = ProviderContainer.test();
+            final mid = ProviderContainer.test(
+              parent: root,
+              overrides: [dep.overrideWithValue(42)],
+            );
+            final mid2 = ProviderContainer.test(
+              parent: mid,
+              overrides: [dep2.overrideWithValue(21)],
+            );
+            final container = ProviderContainer.test(parent: mid2);
+
+            expect(container.read(a), 63);
+            expect(container.read(b), 21);
+
+            expect(container.getAllProviderElements(), isEmpty);
+            expect(
+              mid2.getAllProviderElements(),
+              unorderedEquals(<Object?>[
+                isA<ProviderElement>().having((e) => e.origin, 'origin', dep2),
+                isA<ProviderElement>().having((e) => e.origin, 'origin', a),
+                isA<ProviderElement>().having((e) => e.origin, 'origin', b),
+              ]),
+            );
+            expect(mid.getAllProviderElements(), [
+              isA<ProviderElement>().having((e) => e.origin, 'origin', dep),
+            ]);
+            expect(root.getAllProviderElements(), isEmpty);
+          },
+        );
+
+        test(
+          'skips containers with overrides that do not match the "dependencies"',
+          () {
+            final dep = Provider(
+              (ref) => 0,
+              name: 'dep',
+              dependencies: const [],
+            );
+            final dep2 = Provider(
+              (ref) => 0,
+              name: 'dep2',
+              dependencies: const [],
+            );
+            final a = Provider(
+              (ref) => ref.watch(dep),
+              dependencies: [dep],
+              name: 'a',
+            );
+            final root = ProviderContainer.test();
+            final mid = ProviderContainer.test(
+              parent: root,
+              overrides: [dep.overrideWithValue(42)],
+            );
+            final mid2 = ProviderContainer.test(
+              parent: mid,
+              overrides: [dep2.overrideWithValue(21)],
+            );
+            final container = ProviderContainer.test(parent: mid2);
+
+            expect(container.read(a), 42);
+
+            expect(container.getAllProviderElements(), isEmpty);
+            expect(mid2.getAllProviderElements(), isEmpty);
+            expect(
+              mid.getAllProviderElements(),
+              unorderedEquals(<Object?>[
+                isA<ProviderElement>().having((e) => e.origin, 'origin', dep),
+                isA<ProviderElement>().having((e) => e.origin, 'origin', a),
+              ]),
+            );
+            expect(root.getAllProviderElements(), isEmpty);
+          },
+        );
+
+        test(
+          'when a provider with dependencies is overridden with a value, '
+          'it is no longer automatically overridden if a lower container overrides a dependency',
+          () {
+            final dep = Provider((ref) => 0, dependencies: const []);
+            final provider = Provider(
+              (ref) => ref.watch(dep),
+              dependencies: [dep],
+            );
+            final root = ProviderContainer.test();
+            final mid = ProviderContainer.test(
+              parent: root,
+              overrides: [provider.overrideWithValue(42)],
+            );
+            final container = ProviderContainer.test(
+              parent: mid,
+              overrides: [dep.overrideWithValue(84)],
+            );
+
+            expect(container.read(provider), 42);
+            expect(mid.read(provider), 42);
+
+            expect(container.getAllProviderElements(), isEmpty);
+            expect(mid.getAllProviderElements(), [
+              isA<ProviderElement>().having(
+                (e) => e.origin,
+                'origin',
+                provider,
+              ),
+            ]);
+          },
+        );
+
+        test('auto scope direct family dependencies', () {
+          final family = Provider.family<int, int>(
+            (ref, id) => id * 2,
+            dependencies: const [],
+          );
+          final provider = Provider(
+            (ref) => ref.watch(family(21)),
+            dependencies: [family],
+          );
+          final root = ProviderContainer.test();
+          final mid = ProviderContainer.test(parent: root, overrides: [family]);
+          final container = ProviderContainer.test(parent: mid);
+
+          expect(container.read(provider), 42);
+          expect(mid.read(provider), 42);
+
+          expect(container.getAllProviderElements(), isEmpty);
+          expect(
+            mid.getAllProviderElements(),
+            unorderedEquals(<Object>[
+              isA<ProviderElement>().having(
+                (e) => e.origin,
+                'origin',
+                provider,
+              ),
+              isA<ProviderElement>().having(
+                (e) => e.origin,
+                'origin',
+                family(21),
+              ),
+            ]),
+          );
+        });
+
+        test('auto scope transitive family dependencies', () {
+          final family = Provider.family<int, int>(
+            (ref, id) => id * 2,
+            dependencies: [],
+          );
+          final dep = Provider(
+            (ref) => ref.watch(family(21)),
+            dependencies: [family],
+          );
+          final provider = Provider(
+            (ref) => ref.watch(dep),
+            dependencies: [dep],
+          );
+          final root = ProviderContainer.test();
+          final mid = ProviderContainer.test(parent: root, overrides: [family]);
+          final container = ProviderContainer.test(parent: mid);
+
+          expect(container.read(provider), 42);
+          expect(mid.read(provider), 42);
+
+          expect(container.getAllProviderElements(), isEmpty);
+          expect(
+            mid.getAllProviderElements(),
+            unorderedEquals(<Object>[
+              isA<ProviderElement>().having(
+                (e) => e.origin,
+                'origin',
+                provider,
+              ),
+              isA<ProviderElement>().having((e) => e.origin, 'origin', dep),
+              isA<ProviderElement>().having(
+                (e) => e.origin,
+                'origin',
+                family(21),
+              ),
+            ]),
+          );
+        });
+
+        test('can auto-scope autoDispose providers', () async {
+          final dep = Provider((ref) => 0, dependencies: const []);
+          final provider = Provider.autoDispose(
+            (ref) => ref.watch(dep),
+            dependencies: [dep],
+          );
+          final root = ProviderContainer.test();
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [dep.overrideWithValue(42)],
+          );
+
+          expect(container.read(provider), 42);
+          expect(
+            container.getAllProviderElements(),
+            unorderedEquals(<Object>[
+              isA<ProviderElement>().having(
+                (e) => e.origin,
+                'origin',
+                provider,
+              ),
+              isA<ProviderElement>().having((e) => e.origin, 'origin', dep),
+            ]),
+          );
+          expect(root.getAllProviderElements(), isEmpty);
+
+          await container.pump();
+
+          expect(container.getAllProviderElements(), [
+            isA<ProviderElement>().having((e) => e.origin, 'origin', dep),
+          ]);
+          expect(root.getAllProviderElements(), isEmpty);
+        });
+      });
+    });
+
+    group('getAllProviderElementsInOrder', () {
+      //  A
+      //  |
+      //  B
+      //  |
+      //  C
+      test('linear graph', () {
+        final a = Provider<A>((ref) => A());
+
+        final b = Provider<B>((ref) {
+          ref.watch(a);
+          return B();
+        });
+        final c = Provider<C>((ref) {
+          ref.watch(b);
+          return C();
+        });
+
+        final perm = Permutations(3, [a, b, c]);
+        for (final permutation in perm()) {
+          final container = ProviderContainer.test();
+          permutation.forEach(container.read);
+          expect(compute(container), [a, b, c]);
+        }
+      });
+
+      //     A
+      //   /   \
+      //  B     C
+      //    \  /
+      //      D
+      test('diamond graph', () {
+        final a = Provider<A>((ref) => A());
+
+        final b = Provider<B>((ref) {
+          ref.watch(a);
+          return B();
+        });
+        final c = Provider<C>((ref) {
+          ref.watch(a);
+          return C();
+        });
+
+        final d = Provider<D>((ref) {
+          ref.watch(b);
+          ref.watch(c);
+          return D();
+        });
+
+        final perm = Permutations(4, [a, b, c, d]);
+        for (final permutation in perm()) {
+          final container = ProviderContainer.test();
+          permutation.forEach(container.read);
+          expect(
+            compute(container),
+            anyOf([
+              [a, b, c, d],
+              [a, c, b, d],
+            ]),
+          );
+        }
+      });
+
+      //  A#1
+      //  |
+      //  B#2
+      test('linear across two containers', () {
+        final a = Provider<A>((ref) => A());
+
+        final b = Provider<B>((ref) {
+          ref.watch(a);
+          return B();
+        }, dependencies: const []);
+
+        final parent = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          parent: parent,
+          overrides: [b],
+        );
+        container.read(b);
+
+        expect(compute(container), [b]);
+        expect(compute(parent), [a]);
+      });
+
+      //  A#1  B#2
+      //    \  /
+      //     C#2
+      test('branching across two containers', () {
+        final a = Provider<A>((ref) => A());
+
+        final b = Provider<B>((ref) => B(), dependencies: const []);
+
+        final c = Provider<C>((ref) {
+          ref.watch(a);
+          ref.watch(b);
+          return C();
+        }, dependencies: [b]);
+
+        final parent = ProviderContainer.test();
+
+        final perm = Permutations(2, [b, c]);
+        for (final permutation in perm()) {
+          final container = ProviderContainer.test(
+            parent: parent,
+            overrides: permutation,
+          );
+          permutation.forEach(container.read);
+
+          expect(compute(container), [b, c]);
+        }
+      });
+
+      //       A
+      //     /   \
+      //    B  <  C
+      //   / \    / \
+      //  D > E <F < G
+      test('5', () {
+        final a = Provider<A>((ref) => A());
+
+        final b = Provider<B>((ref) {
+          ref.watch(a);
+          return B();
+        });
+
+        final e = Provider<E>((ref) {
+          ref.watch(b);
+          return E();
+        });
+        final d = Provider<D>((ref) {
+          ref.watch(b);
+          ref.watch(e);
+          return D();
+        });
+
+        final c = Provider<C>((ref) {
+          ref.watch(a);
+          ref.watch(b);
+          return C();
+        });
+
+        final f = Provider<F>((ref) {
+          ref.watch(c);
+          ref.watch(e);
+          return F();
+        });
+        final g = Provider<G>((ref) {
+          ref.watch(c);
+          ref.watch(f);
+          return G();
+        });
+
+        final perm = Permutations(7, [a, b, c, d, e, f, g]);
+        for (final permutation in perm()) {
+          final container = ProviderContainer.test();
+          permutation.forEach(container.read);
+          expect(
+            compute(container),
+            anyOf([
+              [a, b, c, e, d, f, g],
+              [a, b, c, e, f, g, d],
+              [a, b, c, e, f, d, g],
+              [a, b, e, c, d, f, g],
+              [a, b, e, c, f, g, d],
+              [a, b, e, c, f, d, g],
+              [a, b, e, d, c, f, g],
+            ]),
+          );
+        }
+      });
+
+      //     A
+      //   /  |
+      //  B   |
+      //  | \ |
+      //  |   C
+      //   \ /
+      //    D
+      test('linked diamond graph', () {
+        final a = Provider<A>((ref) => A());
+
+        final b = Provider<B>((ref) {
+          ref.watch(a);
+          return B();
+        });
+        final c = Provider<C>((ref) {
+          ref.watch(a);
+          ref.watch(b);
+          return C();
+        });
+
+        final d = Provider<D>((ref) {
+          ref.watch(b);
+          ref.watch(c);
+          return D();
+        });
+
+        final perm = Permutations(4, [a, b, c, d]);
+        for (final permutation in perm()) {
+          final container = ProviderContainer.test();
+          permutation.forEach(container.read);
+          expect(compute(container), [a, b, c, d]);
+        }
+      });
+
+      //  A
+      //  |
+      //  B
+      //  | \
+      //  |  C
+      //  | /
+      //   D
+      test('graph4', () {
+        final a = Provider<A>((ref) => A());
+
+        final b = Provider<B>((ref) {
+          ref.watch(a);
+          return B();
+        });
+        final c = Provider<C>((ref) {
+          ref.watch(b);
+          return C();
+        });
+
+        final d = Provider<D>((ref) {
+          ref.watch(b);
+          ref.watch(c);
+          return D();
+        });
+
+        final perm = Permutations(4, [a, b, c, d]);
+        for (final permutation in perm()) {
+          final container = ProviderContainer.test();
+          permutation.forEach(container.read);
+          expect(compute(container), [a, b, c, d]);
+        }
+      });
+
+      //     A
+      //   /   \
+      //  B     C
+      //  |     |
+      //  D     |
+      //   \   /
+      //     E
+      test('graph6', () {
+        final a = Provider<A>((ref) => A());
+
+        final b = Provider<B>((ref) {
+          ref.watch(a);
+          return B();
+        });
+        final c = Provider<C>((ref) {
+          ref.watch(a);
+          return C();
+        });
+
+        final d = Provider<D>((ref) {
+          ref.watch(b);
+          return D();
+        });
+
+        final e = Provider<E>((ref) {
+          ref.watch(d);
+          ref.watch(c);
+          return E();
+        });
+
+        final perm = Permutations(5, [a, b, c, d, e]);
+        for (final permutation in perm()) {
+          final container = ProviderContainer.test();
+          permutation.forEach(container.read);
+          expect(
+            compute(container),
+            anyOf([
+              [a, b, d, c, e],
+              [a, b, c, d, e],
+              [a, c, b, d, e],
+            ]),
+          );
+        }
+      });
+
+      test('list scoped providers that depends on nothing', () {
+        final scopedProvider = Provider<int>(
+          (ref) => 0,
+          dependencies: const [],
+        );
+        final parent = ProviderContainer.test();
+        final child = ProviderContainer.test(
+          parent: parent,
+          overrides: [scopedProvider],
+        );
+
+        child.read(scopedProvider);
+
+        expect(
+          child.getAllProviderElementsInOrder().single,
+          isA<$ProviderElement<Object?>>().having(
+            (e) => e.origin,
+            'origin',
+            scopedProvider,
+          ),
+        );
+      });
+
+      test(
+        'list scoped providers that depends on providers from another container',
+        () {
+          final dependency = Provider((ref) => 0);
+          final scopedProvider = Provider<int>(
+            (ref) => ref.watch(dependency),
+            dependencies: const [],
+          );
+          final parent = ProviderContainer.test();
+          final child = ProviderContainer.test(
+            parent: parent,
+            overrides: [scopedProvider],
+          );
+
+          child.read(scopedProvider);
+
+          expect(
+            child.getAllProviderElementsInOrder().single,
+            isA<$ProviderElement<Object?>>().having(
+              (e) => e.origin,
+              'origin',
+              scopedProvider,
+            ),
+          );
+        },
+      );
+    });
+
+    group('read', () {
+      test(
+        'does not re-initialize a family if read by a child container after the provider was initialized',
+        () {
+          final root = ProviderContainer.test();
+          // the child must be created before the provider is initialized
+          final child = ProviderContainer.test(parent: root);
+
+          var buildCount = 0;
+          final provider = Provider.family<int, int>((ref, param) {
+            buildCount++;
+            return 0;
+          });
+
+          expect(root.read(provider(0)), 0);
+
+          expect(buildCount, 1);
+
+          expect(child.read(provider(0)), 0);
+
+          expect(buildCount, 1);
+        },
+      );
+
+      test(
+        'does not re-initialize a scoped family if read by a child container after the provider was initialized',
+        () {
+          var buildCount = 0;
+          final provider = Provider.family<int, int>((ref, param) {
+            buildCount++;
+            return 42;
+          }, dependencies: const []);
+
+          final root = ProviderContainer.test();
+          final scope = ProviderContainer.test(
+            parent: root,
+            overrides: [provider],
+          );
+          // the child must be created before the provider is initialized
+          final child = ProviderContainer.test(parent: scope);
+
+          expect(scope.read(provider(0)), 42);
+
+          expect(root.getAllProviderElements(), isEmpty);
+          expect(buildCount, 1);
+
+          expect(child.read(provider(0)), 42);
+
+          expect(root.getAllProviderElements(), isEmpty);
+          expect(buildCount, 1);
+        },
+      );
+
+      group('validate that properties respect `dependencies`', () {
+        test(
+          'on reading an element, asserts that dependencies are respected',
+          () {
+            final dep = Provider((ref) => 0, dependencies: const []);
+            final provider = Provider((ref) => ref.watch(dep));
+
+            final root = ProviderContainer.test();
+            final container = ProviderContainer.test(
+              parent: root,
+              overrides: [dep.overrideWithValue(42)],
+            );
+
+            expect(
+              () => container.read(provider),
+              throwsProviderException(isStateError),
+            );
+          },
+        );
+
+        test(
+          'on reading an element, asserts that transitive dependencies are also respected',
+          () {
+            final transitiveDep = Provider((ref) => 0, dependencies: const []);
+            final dep = Provider((ref) => ref.watch(transitiveDep));
+            final provider = Provider((ref) => ref.watch(dep));
+
+            final root = ProviderContainer.test();
+            final container = ProviderContainer.test(
+              parent: root,
+              overrides: [transitiveDep.overrideWithValue(42)],
+            );
+
+            expect(() => container.read(provider), throwsA(anything));
+          },
+        );
+      });
+
+      test(
+        'does not re-initialize a provider if read by a child container after the provider was initialized',
+        () {
+          final root = ProviderContainer.test();
+          // the child must be created before the provider is initialized
+          final child = ProviderContainer.test(parent: root);
+
+          var buildCount = 0;
+          final provider = Provider((ref) {
+            buildCount++;
+            return 0;
+          });
+
+          expect(root.read(provider), 0);
+
+          expect(buildCount, 1);
+
+          expect(child.read(provider), 0);
+
+          expect(buildCount, 1);
+        },
+      );
+
+      test('builds providers at most once per container', () {
+        var result = 42;
+        final container = ProviderContainer.test();
+        var callCount = 0;
+        final provider = Provider((_) {
+          callCount++;
+          return result;
+        });
+
+        expect(callCount, 0);
+        expect(container.read(provider), 42);
+        expect(callCount, 1);
+        expect(container.read(provider), 42);
+        expect(callCount, 1);
+
+        final container2 = ProviderContainer.test();
+
+        result = 21;
+        expect(container2.read(provider), 21);
+        expect(callCount, 2);
+        expect(container2.read(provider), 21);
+        expect(callCount, 2);
+        expect(container.read(provider), 42);
+        expect(callCount, 2);
+      });
+
+      test(
+        'ProviderContainer.read(MyProvider.autoDispose) disposes the provider if not listened to',
+        () async {
+          final container = ProviderContainer.test();
+          var disposed = false;
+          final provider = NotifierProvider(
+            () => SettableNotifier((ref) {
+              ref.onDispose(() => disposed = true);
+              return 0;
+            }),
+            isAutoDispose: true,
+          );
+
+          container.read(provider.notifier);
+
+          expect(disposed, false);
+
+          await container.pump();
+
+          expect(disposed, true);
+        },
+      );
+
+      test('Owner.read', () {
+        final provider = Provider((ref) => 0);
+        final provider2 = Provider((ref) => 1);
+        final container = ProviderContainer.test();
+
+        final value1 = container.read(provider);
+        final value2 = container.read(provider);
+        final value21 = container.read(provider2);
+        final value22 = container.read(provider2);
+
+        expect(value1, value2);
+        expect(value1, 0);
+        expect(value21, value22);
+        expect(value21, isNot(value1));
+        expect(value21, 1);
+      });
+
+      test('Read creates the value only once', () {
+        final container = ProviderContainer.test();
+        var callCount = 0;
+        final provider = Provider((ref) {
+          callCount++;
+          return 42;
+        });
+
+        expect(callCount, 0);
+        expect(container.read(provider), 42);
+        expect(callCount, 1);
+
+        expect(container.read(provider), 42);
+        expect(callCount, 1);
+      });
+    });
+
+    group('debugReassemble', () {
+      test(
+        'reload providers if the debugGetCreateSourceHash of a provider returns a different value',
+        skip: 'Needs overloading the method',
+        () {
+          final noDebugGetCreateSourceHashBuild = OnBuildMock();
+          final noDebugGetCreateSourceHash = Provider((ref) {
+            noDebugGetCreateSourceHashBuild();
+            return 0;
+          });
+          final constantHashBuild = OnBuildMock();
+          final constantHash = Provider.internal(
+            isAutoDispose: false,
+            from: null,
+            argument: null,
+            name: null,
+            dependencies: null,
+            $allTransitiveDependencies: null,
+            retry: null,
+            (ref) {
+              constantHashBuild();
+              return 0;
+            },
+          );
+          var hashResult = '42';
+          final changingHashBuild = OnBuildMock();
+          final changingHash = Provider.internal(
+            isAutoDispose: false,
+            from: null,
+            argument: null,
+            name: null,
+            dependencies: null,
+            retry: null,
+            $allTransitiveDependencies: null,
+            (ref) {
+              changingHashBuild();
+              return 0;
+            },
+          );
+          final container = ProviderContainer.test();
+
+          container.read(noDebugGetCreateSourceHash);
+          container.read(constantHash);
+          container.read(changingHash);
+
+          clearInteractions(noDebugGetCreateSourceHashBuild);
+          clearInteractions(constantHashBuild);
+          clearInteractions(changingHashBuild);
+
+          hashResult = 'new hash';
+          container.debugReassemble();
+          container.read(noDebugGetCreateSourceHash);
+          container.read(constantHash);
+          container.read(changingHash);
+
+          verifyOnly(changingHashBuild, changingHashBuild());
+          verifyNoMoreInteractions(constantHashBuild);
+          verifyNoMoreInteractions(noDebugGetCreateSourceHashBuild);
+
+          container.debugReassemble();
+          container.read(noDebugGetCreateSourceHash);
+          container.read(constantHash);
+          container.read(changingHash);
+
+          verifyNoMoreInteractions(changingHashBuild);
+          verifyNoMoreInteractions(constantHashBuild);
+          verifyNoMoreInteractions(noDebugGetCreateSourceHashBuild);
+        },
+      );
+    });
+
+    group('getAllProviderElements', () {
+      test('list scoped providers that depends on nothing', () {
+        final scopedProvider = Provider<int>(
+          (ref) => 0,
+          dependencies: const [],
+        );
+        final parent = ProviderContainer.test();
+        final child = ProviderContainer.test(
+          parent: parent,
+          overrides: [scopedProvider],
+        );
+
+        child.read(scopedProvider);
+
+        expect(
+          child.getAllProviderElements().single,
+          isA<$ProviderElement<Object?>>().having(
+            (e) => e.origin,
+            'origin',
+            scopedProvider,
+          ),
+        );
+      });
+
+      test(
+        'list scoped providers that depends on providers from another container',
+        () {
+          final dependency = Provider((ref) => 0);
+          final scopedProvider = Provider<int>(
+            (ref) => ref.watch(dependency),
+            dependencies: const [],
+          );
+          final parent = ProviderContainer.test();
+          final child = ProviderContainer.test(
+            parent: parent,
+            overrides: [scopedProvider],
+          );
+
+          child.read(scopedProvider);
+
+          expect(
+            child.getAllProviderElements().single,
+            isA<$ProviderElement<Object?>>().having(
+              (e) => e.origin,
+              'origin',
+              scopedProvider,
+            ),
+          );
+        },
+      );
+
+      test(
+        'list only elements associated with the container (ignoring inherited and descendant elements)',
+        () {
+          final provider = Provider((ref) => 0);
+          final provider2 = Provider((ref) => 0, dependencies: const []);
+          final provider3 = Provider((ref) => 0, dependencies: const []);
+          final root = ProviderContainer.test();
+          final mid = ProviderContainer.test(
+            parent: root,
+            overrides: [provider2],
+          );
+          final leaf = ProviderContainer.test(
+            parent: mid,
+            overrides: [provider3],
+          );
+
+          leaf.read(provider);
+          leaf.read(provider2);
+          leaf.read(provider3);
+
+          expect(
+            root.getAllProviderElements().single,
+            isA<$ProviderElement<Object?>>().having(
+              (e) => e.provider,
+              'provider',
+              provider,
+            ),
+          );
+          expect(
+            mid.getAllProviderElements().single,
+            isA<$ProviderElement<Object?>>().having(
+              (e) => e.provider,
+              'provider',
+              provider2,
+            ),
+          );
+          expect(
+            leaf.getAllProviderElements().single,
+            isA<$ProviderElement<Object?>>().having(
+              (e) => e.provider,
+              'provider',
+              provider3,
+            ),
+          );
+        },
+      );
+
+      test('list the currently mounted providers', () async {
+        final container = ProviderContainer.test();
+        final unrelated = Provider((_) => 42);
+        final provider = Provider.autoDispose((ref) => 0);
+
+        expect(container.read(unrelated), 42);
+        var sub = container.listen(provider, (_, _) {});
+
+        expect(
+          container.getAllProviderElements().map((e) => e.origin),
+          unorderedEquals([provider, unrelated]),
+        );
+
+        sub.close();
+        await container.pump();
+
+        expect(container.getAllProviderElements(), [isA<ProviderElement>()]);
+
+        sub = container.listen(provider, (_, _) {});
+
+        expect(
+          container.getAllProviderElements().map((e) => e.origin),
+          unorderedEquals([provider, unrelated]),
+        );
+      });
+    });
+
+    group('debugChildren', () {
+      test('ProviderContainer.children', () {
+        final root = ProviderContainer.test();
+
+        expect(root.debugChildren, isEmpty);
+
+        final mid = ProviderContainer.test(parent: root);
+
+        expect(root.debugChildren, containsAll(<ProviderContainer>[mid]));
+        expect(mid.debugChildren, isEmpty);
+
+        final mid2 = ProviderContainer.test(parent: root);
+
+        expect(root.debugChildren, containsAll(<ProviderContainer>[mid, mid2]));
+        expect(mid.debugChildren, isEmpty);
+        expect(mid2.debugChildren, isEmpty);
+
+        final leaf = ProviderContainer.test(parent: mid);
+
+        expect(root.debugChildren, containsAll(<ProviderContainer>[mid, mid2]));
+        expect(mid.debugChildren, containsAll(<ProviderContainer>[leaf]));
+        expect(mid2.debugChildren, isEmpty);
+        expect(leaf.debugChildren, isEmpty);
+
+        leaf.dispose();
+
+        expect(root.debugChildren, containsAll(<ProviderContainer>[mid, mid2]));
+        expect(mid.debugChildren, isEmpty);
+        expect(mid2.debugChildren, isEmpty);
+
+        mid.dispose();
+
+        expect(root.debugChildren, containsAll(<ProviderContainer>[mid2]));
+        expect(mid2.debugChildren, isEmpty);
+
+        mid2.dispose();
+
+        expect(root.debugChildren, isEmpty);
+
+        root.dispose();
+      });
+    });
+
+    group('refresh', () {
+      test('still refresh providers on non-root containers', () {
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(parent: root);
+        var callCount = 0;
+        late Ref providerReference;
+        var result = 0;
+        final provider = Provider((ref) {
+          callCount++;
+          providerReference = ref;
+          return result;
+        });
+
+        expect(root.read(provider), 0);
+        expect(callCount, 1);
+        expect(providerReference.container, root);
+
+        result = 1;
+
+        expect(container.refresh(provider), 1);
+        expect(container.read(provider), 1);
+        expect(callCount, 2);
+        expect(providerReference.container, root);
+      });
+
+      test(
+        'immediately creates a new value, even if no changes are pending',
+        () async {
+          var future = Future.value(42);
+          var callCount = 0;
+          final provider = FutureProvider((ref) {
+            callCount++;
+            return future;
+          });
+          final container = ProviderContainer.test();
+
+          await expectLater(container.read(provider.future), completion(42));
+
+          expect(callCount, 1);
+          await expectLater(
+            container.read(provider),
+            const AsyncValue<int>.data(42),
+          );
+
+          future = Future.value(21);
+
+          expect(
+            container.refresh(provider),
+            const AsyncLoading<int>().copyWithPrevious(
+              const AsyncValue<int>.data(42),
+            ),
+          );
+          expect(
+            container.read(provider),
+            const AsyncLoading<int>().copyWithPrevious(
+              const AsyncValue<int>.data(42),
+            ),
+          );
+          expect(callCount, 2);
+
+          await expectLater(container.read(provider.future), completion(21));
+          expect(callCount, 2);
+        },
+      );
+
+      test('retrying an unmounted provider just mounts it', () async {
+        var callCount = 0;
+        final provider = FutureProvider((ref) {
+          callCount++;
+          return Future.value(42);
+        });
+        final container = ProviderContainer.test();
+
+        expect(callCount, 0);
+        expect(container.refresh(provider), const AsyncValue<int>.loading());
+        expect(container.read(provider), const AsyncValue<int>.loading());
+        expect(callCount, 1);
+        await expectLater(container.read(provider.future), completion(42));
+        expect(callCount, 1);
+      });
+
+      test(
+        'refreshing a provider already marked as needing to update do not create the value twice',
+        () async {
+          var future = Future.value(42);
+          var callCount = 0;
+          final dep = NotifierProvider(() => SettableNotifier((_) => 0));
+          final provider = FutureProvider((ref) {
+            callCount++;
+            ref.watch(dep);
+            return future;
+          });
+          final container = ProviderContainer.test();
+
+          container.refresh(provider);
+
+          expect(callCount, 1);
+
+          container.read(dep.notifier).state++;
+          future = Future.value(21);
+
+          expect(callCount, 1);
+          container.refresh(provider);
+
+          expect(callCount, 2);
+          await expectLater(container.read(provider.future), completion(21));
+          expect(callCount, 2);
+        },
+      );
+    });
+  });
+
+  group('ProviderObserver', () {
+    test('can have const constructors', () {
+      final root = ProviderContainer.test(observers: [const ConstObserver()]);
+
+      root.dispose();
+    });
+
+    group('didUpdateProvider', () {
+      test(
+        'after an error didUpdateProvider receives null as previous value ',
+        () async {
+          final observer = ObserverMock();
+          final observer2 = ObserverMock();
+          final container = ProviderContainer.test(
+            observers: [observer, observer2],
+          );
+          final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
+          final provider = Provider((ref) {
+            if (ref.watch(dep) == 0) {
+              throw UnimplementedError();
+            }
+            return 0;
+          });
+
+          container.listen(provider, (_, _) {}, onError: (err, stack) {});
+
+          clearInteractions(observer);
+          clearInteractions(observer2);
+
+          container.read(dep.notifier).state++;
+          await container.pump();
+
+          verifyInOrder([
+            observer.didUpdateProvider(
+              argThat(
+                isProviderObserverContext(
+                  provider: provider,
+                  container: container,
+                ),
+              ),
+              null,
+              0,
+            ),
+            observer2.didUpdateProvider(
+              argThat(
+                isProviderObserverContext(
+                  provider: provider,
+                  container: container,
+                ),
+              ),
+              null,
+              0,
+            ),
+          ]);
+          verifyNever(observer.providerDidFail(any, any, any));
+        },
+      );
+
+      test(
+        'on scoped ProviderContainer, applies both child and ancestors observers',
+        () {
+          final provider = NotifierProvider(
+            () => SettableNotifier((ref) => 0),
+            dependencies: const [],
+          );
+          final observer = ObserverMock('a');
+          final observer2 = ObserverMock('b');
+          final observer3 = ObserverMock('c');
+
+          final root = ProviderContainer.test(observers: [observer]);
+          final mid = ProviderContainer.test(
+            parent: root,
+            observers: [observer2],
+          );
+          final child = ProviderContainer.test(
+            parent: mid,
+            overrides: [
+              provider.overrideWith(() => SettableNotifier((ref) => 42)),
+            ],
+            observers: [observer3],
+          );
+
+          expect(child.read(provider), 42);
+          expect(mid.read(provider), 0);
+
+          clearInteractions(observer3);
+          clearInteractions(observer2);
+          clearInteractions(observer);
+
+          expect(child.read(provider.notifier).state++, 42);
+
+          verify(
+            observer.didUpdateProvider(
+              argThat(
+                isProviderObserverContext(provider: provider, container: child),
+              ),
+              42,
+              43,
+            ),
+          ).called(1);
+          verify(
+            observer2.didUpdateProvider(
+              argThat(
+                isProviderObserverContext(provider: provider, container: child),
+              ),
+              42,
+              43,
+            ),
+          ).called(1);
+          verify(
+            observer3.didUpdateProvider(
+              argThat(
+                isProviderObserverContext(provider: provider, container: child),
+              ),
+              42,
+              43,
+            ),
+          ).called(1);
+
+          mid.read(provider.notifier).state++;
+
+          verify(
+            observer.didUpdateProvider(
+              argThat(
+                isProviderObserverContext(provider: provider, container: root),
+              ),
+              0,
+              1,
+            ),
+          ).called(1);
+
+          verifyNoMoreInteractions(observer3);
+          verifyNoMoreInteractions(observer2);
+          verifyNoMoreInteractions(observer);
+        },
+      );
+
+      test('handles computed provider update', () async {
+        final observer = ObserverMock();
+        final container = ProviderContainer.test(observers: [observer]);
+        final provider = NotifierProvider<Counter, int>(Counter.new);
+        final computed = Provider((ref) => ref.watch(provider));
+
+        container.listen(computed, (_, _) {});
+        container.read(provider.notifier).increment();
+
+        clearInteractions(observer);
+
+        await container.pump();
+
+        verify(
+          observer.didUpdateProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: computed,
+                container: container,
+              ),
+            ),
+            0,
+            1,
+          ),
+        ).called(1);
+        verifyNever(observer.didUpdateProvider(any, any, any));
+      });
+
+      test('handles direct provider update', () {
+        final observer = ObserverMock();
+        final container = ProviderContainer.test(observers: [observer]);
+        final provider = NotifierProvider<Counter, int>(Counter.new);
+
+        final notifier = container.read(provider.notifier);
+        clearInteractions(observer);
+
+        notifier.increment();
+
+        verifyOnly(
+          observer,
+          observer.didUpdateProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            0,
+            1,
+          ),
+        ).called(1);
+      });
+
+      test('didUpdateProviders', () {
+        final observer = ObserverMock('a');
+        final observer2 = ObserverMock('b');
+        final provider = NotifierProvider<Counter, int>(Counter.new);
+        final container = ProviderContainer.test(
+          overrides: [provider.overrideWith(Counter.new)],
+          observers: [observer, observer2],
+        );
+        final listener = Listener<int>();
+
+        container.listen(provider, listener.call, fireImmediately: true);
+        final counter = container.read(provider.notifier);
+
+        verify(listener(null, 0)).called(1);
+        verifyNoMoreInteractions(listener);
+        verifyInOrder([
+          observer.didAddProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            0,
+          ),
+          observer2.didAddProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            0,
+          ),
+        ]);
+        verifyNoMoreInteractions(observer);
+        verifyNoMoreInteractions(observer2);
+
+        counter.increment();
+
+        verifyInOrder([
+          listener(0, 1),
+          observer.didUpdateProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            0,
+            1,
+          ),
+          observer2.didUpdateProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            0,
+            1,
+          ),
+        ]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(observer);
+        verifyNoMoreInteractions(observer2);
+      });
+
+      test('guards didUpdateProviders', () {
+        final observer = ObserverMock();
+        when(observer.didUpdateProvider(any, any, any)).thenThrow('error1');
+        final observer2 = ObserverMock();
+        when(observer2.didUpdateProvider(any, any, any)).thenThrow('error2');
+        final observer3 = ObserverMock();
+        final provider = NotifierProvider<Counter, int>(Counter.new);
+        final errors = <Object>[];
+        final container = runZonedGuarded(
+          () => ProviderContainer.test(
+            overrides: [provider.overrideWith(Counter.new)],
+            observers: [observer, observer2, observer3],
+          ),
+          (err, stack) => errors.add(err),
+        )!;
+
+        final counter = container.read(provider.notifier);
+
+        clearInteractions(observer);
+        clearInteractions(observer2);
+        clearInteractions(observer3);
+
+        counter.increment();
+
+        expect(errors, ['error1', 'error2']);
+        verifyInOrder([
+          observer.didUpdateProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            0,
+            1,
+          ),
+          observer2.didUpdateProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            0,
+            1,
+          ),
+          observer3.didUpdateProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            0,
+            1,
+          ),
+        ]);
+        verifyNoMoreInteractions(observer);
+        verifyNoMoreInteractions(observer2);
+        verifyNoMoreInteractions(observer3);
+      });
+
+      test(
+        "Computed don't call didUpdateProviders when value doesn't change",
+        () async {
+          final observer = ObserverMock();
+          final provider = NotifierProvider<Counter, int>(Counter.new);
+          final isNegative = Provider((ref) {
+            return ref.watch(provider).isNegative;
+          });
+          final container = ProviderContainer.test(observers: [observer]);
+          final isNegativeListener = Listener<bool>();
+
+          container.listen(
+            isNegative,
+            isNegativeListener.call,
+            fireImmediately: true,
+          );
+
+          final counter = container.read(provider.notifier);
+          clearInteractions(observer);
+          verifyOnly(isNegativeListener, isNegativeListener(null, false));
+
+          counter.increment();
+          await container.pump();
+
+          verifyInOrder([
+            observer.didDisposeProvider(
+              argThat(
+                isProviderObserverContext(
+                  provider: isNegative,
+                  container: container,
+                ),
+              ),
+            ),
+            observer.didUpdateProvider(
+              argThat(
+                isProviderObserverContext(
+                  provider: provider,
+                  container: container,
+                ),
+              ),
+              0,
+              1,
+            ),
+          ]);
+          verifyNever(observer.didUpdateProvider(any, any, any));
+
+          counter.state = -10;
+          await container.pump();
+
+          verifyInOrder([
+            observer.didDisposeProvider(
+              argThat(
+                isProviderObserverContext(
+                  provider: isNegative,
+                  container: container,
+                ),
+              ),
+            ),
+            observer.didUpdateProvider(
+              argThat(
+                isProviderObserverContext(
+                  provider: provider,
+                  container: container,
+                ),
+              ),
+              1,
+              -10,
+            ),
+            isNegativeListener(false, true),
+            observer.didUpdateProvider(
+              argThat(
+                isProviderObserverContext(
+                  provider: isNegative,
+                  container: container,
+                ),
+              ),
+              false,
+              true,
+            ),
+          ]);
+          verifyNever(observer.didUpdateProvider(any, any, any));
+          verifyNoMoreInteractions(isNegativeListener);
+        },
+      );
+    });
+
+    group('providerDidFail', () {
+      test(
+        'on scoped ProviderContainer, applies both child and ancestors observers',
+        () async {
+          final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
+          final provider = NotifierProvider(
+            () => SettableNotifier((ref) => 0),
+            dependencies: const [],
+          );
+          final observer = ObserverMock('a');
+          final observer2 = ObserverMock('b');
+          final observer3 = ObserverMock('c');
+
+          final root = ProviderContainer.test(observers: [observer]);
+          final mid = ProviderContainer.test(
+            parent: root,
+            observers: [observer2],
+          );
+          final child = ProviderContainer.test(
+            parent: mid,
+            overrides: [
+              provider.overrideWith(
+                () => SettableNotifier((ref) {
+                  if (ref.watch(dep) != 0) {
+                    Error.throwWithStackTrace('error', StackTrace.empty);
+                  }
+                  return 42;
+                }),
+              ),
+            ],
+            observers: [observer3],
+          );
+
+          child.listen(provider, (_, _) {}, onError: (_, _) {});
+
+          expect(child.read(provider), 42);
+          expect(mid.read(provider), 0);
+
+          clearInteractions(observer3);
+          clearInteractions(observer2);
+          clearInteractions(observer);
+
+          child.read(dep.notifier).state++;
+          await child.pump();
+
+          verifyInOrder([
+            observer.didDisposeProvider(
+              argThat(
+                isProviderObserverContext(provider: provider, container: child),
+              ),
+            ),
+            observer.didUpdateProvider(
+              argThat(
+                isProviderObserverContext(provider: dep, container: root),
+              ),
+              0,
+              1,
+            ),
+            observer.didUpdateProvider(
+              argThat(
+                isProviderObserverContext(provider: provider, container: child),
+              ),
+              42,
+              null,
+            ),
+            observer.providerDidFail(
+              argThat(
+                isProviderObserverContext(provider: provider, container: child),
+              ),
+              'error',
+              StackTrace.empty,
+            ),
+          ]);
+          verifyInOrder([
+            observer2.didDisposeProvider(
+              argThat(
+                isProviderObserverContext(provider: provider, container: child),
+              ),
+            ),
+            observer2.didUpdateProvider(
+              argThat(
+                isProviderObserverContext(provider: provider, container: child),
+              ),
+              42,
+              null,
+            ),
+            observer2.providerDidFail(
+              argThat(
+                isProviderObserverContext(provider: provider, container: child),
+              ),
+              'error',
+              StackTrace.empty,
+            ),
+          ]);
+          verifyInOrder([
+            observer3.didDisposeProvider(
+              argThat(
+                isProviderObserverContext(provider: provider, container: child),
+              ),
+            ),
+            observer3.didUpdateProvider(
+              argThat(
+                isProviderObserverContext(provider: provider, container: child),
+              ),
+              42,
+              null,
+            ),
+            observer3.providerDidFail(
+              argThat(
+                isProviderObserverContext(provider: provider, container: child),
+              ),
+              'error',
+              StackTrace.empty,
+            ),
+          ]);
+          verifyNever(observer3.didUpdateProvider(any, any, any));
+          verifyNever(observer2.didUpdateProvider(any, any, any));
+          verifyNever(observer.didUpdateProvider(any, any, any));
+        },
+      );
+
+      test('is called when FutureProvider emits an error', () async {
+        final observer = ObserverMock();
+        final container = ProviderContainer.test(
+          observers: [observer],
+          retry: (_, _) => null,
+        );
+        final provider = FutureProvider(
+          (ref) => Future<void>.error('error', StackTrace.empty),
+        );
+
+        container.listen(provider, (_, _) {});
+        await container.read(provider.future).catchError((_) {});
+
+        verifyInOrder([
+          observer.didAddProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            const AsyncLoading<void>(),
+          ),
+          observer.didUpdateProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            const AsyncLoading<void>(),
+            const AsyncError<void>('error', StackTrace.empty),
+          ),
+          observer.providerDidFail(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            'error',
+            StackTrace.empty,
+          ),
+        ]);
+      });
+
+      test('is called when StreamProvider emits an error', () async {
+        final observer = ObserverMock();
+        final container = ProviderContainer.test(
+          observers: [observer],
+          retry: (_, _) => null,
+        );
+        final provider = StreamProvider(
+          (ref) => Stream<void>.error('error', StackTrace.empty),
+        );
+
+        container.listen(provider, (_, _) {});
+        await container.read(provider.future).catchError((_) {});
+
+        verifyInOrder([
+          observer.didAddProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            const AsyncLoading<void>(),
+          ),
+          observer.didUpdateProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            const AsyncLoading<void>(),
+            const AsyncError<void>('error', StackTrace.empty),
+          ),
+          observer.providerDidFail(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            'error',
+            StackTrace.empty,
+          ),
+        ]);
+      });
+
+      test('is called on uncaught error during first initialization', () {
+        final observer = ObserverMock();
+        final observer2 = ObserverMock();
+        final container = ProviderContainer.test(
+          observers: [observer, observer2],
+        );
+        final provider = Provider((ref) => throw UnimplementedError());
+
+        expect(() => container.read(provider), throwsA(anything));
+
+        verifyInOrder([
+          observer.didAddProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            null,
+          ),
+          observer2.didAddProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            null,
+          ),
+          observer.providerDidFail(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            argThat(isUnimplementedError),
+            argThat(isNotNull),
+          ),
+          observer2.providerDidFail(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            argThat(isUnimplementedError),
+            argThat(isNotNull),
+          ),
+        ]);
+        verifyNoMoreInteractions(observer);
+      });
+
+      test('is called on uncaught error after update ', () async {
+        final observer = ObserverMock();
+        final observer2 = ObserverMock();
+        final container = ProviderContainer.test(
+          observers: [observer, observer2],
+        );
+        final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
+        final provider = Provider((ref) {
+          if (ref.watch(dep) != 0) {
+            throw UnimplementedError();
+          }
+          return 0;
+        });
+
+        container.listen(provider, (_, _) {}, onError: (err, stack) {});
+
+        clearInteractions(observer);
+        clearInteractions(observer2);
+
+        container.read(dep.notifier).state++;
+        await container.pump();
+
+        verifyInOrder([
+          observer.didUpdateProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            0,
+            null,
+          ),
+          observer2.didUpdateProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            0,
+            null,
+          ),
+          observer.providerDidFail(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            argThat(isUnimplementedError),
+            argThat(isNotNull),
+          ),
+          observer2.providerDidFail(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            argThat(isUnimplementedError),
+            argThat(isNotNull),
+          ),
+        ]);
+      });
+    });
+
+    group('didAddProvider', () {
+      test('when throwing during creation, receives `null` as value', () {
+        final observer = ObserverMock();
+        final container = ProviderContainer.test(observers: [observer]);
+        final provider = Provider((ref) => throw UnimplementedError());
+
+        expect(() => container.read(provider), throwsA(anything));
+
+        verify(
+          observer.didAddProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            null,
+          ),
+        );
+      });
+
+      test(
+        'on scoped ProviderContainer, applies both child and ancestors observers',
+        () {
+          final provider = Provider((ref) => 0, dependencies: const []);
+          final observer = ObserverMock();
+          final observer2 = ObserverMock();
+          final observer3 = ObserverMock();
+          final root = ProviderContainer.test(observers: [observer]);
+          final mid = ProviderContainer.test(
+            parent: root,
+            observers: [observer2],
+          );
+          final child = ProviderContainer.test(
+            parent: mid,
+            overrides: [provider.overrideWithValue(42)],
+            observers: [observer3],
+          );
+
+          expect(child.read(provider), 42);
+
+          verifyInOrder([
+            observer3.didAddProvider(
+              argThat(
+                isProviderObserverContext(provider: provider, container: child),
+              ),
+              42,
+            ),
+            observer2.didAddProvider(
+              argThat(
+                isProviderObserverContext(provider: provider, container: child),
+              ),
+              42,
+            ),
+            observer.didAddProvider(
+              argThat(
+                isProviderObserverContext(provider: provider, container: child),
+              ),
+              42,
+            ),
+          ]);
+
+          expect(mid.read(provider), 0);
+
+          verify(
+            observer.didAddProvider(
+              argThat(
+                isProviderObserverContext(provider: provider, container: root),
+              ),
+              0,
+            ),
+          ).called(1);
+
+          verifyNoMoreInteractions(observer3);
+          verifyNoMoreInteractions(observer2);
+          verifyNoMoreInteractions(observer);
+        },
+      );
+
+      test('works', () {
+        final observer = ObserverMock();
+        final observer2 = ObserverMock();
+        final provider = Provider((_) => 42);
+        final container = ProviderContainer.test(
+          observers: [observer, observer2],
+        );
+
+        expect(container.read(provider), 42);
+        verifyInOrder([
+          observer.didAddProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            42,
+          ),
+          observer2.didAddProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            42,
+          ),
+        ]);
+        verifyNoMoreInteractions(observer);
+        verifyNoMoreInteractions(observer2);
+      });
+
+      test('guards against exceptions', () {
+        final observer = ObserverMock();
+        when(observer.didAddProvider(any, any)).thenThrow('error1');
+        final observer2 = ObserverMock();
+        when(observer2.didAddProvider(any, any)).thenThrow('error2');
+        final observer3 = ObserverMock();
+        final provider = Provider((_) => 42);
+        final errors = <Object>[];
+        final container = runZonedGuarded(
+          () => ProviderContainer.test(
+            observers: [observer, observer2, observer3],
+          ),
+          (err, stack) => errors.add(err),
+        )!;
+
+        final result = container.read(provider);
+
+        expect(result, 42);
+        expect(errors, ['error1', 'error2']);
+        verifyInOrder([
+          observer.didAddProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            42,
+          ),
+          observer2.didAddProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            42,
+          ),
+          observer3.didAddProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+            42,
+          ),
+        ]);
+        verifyNoMoreInteractions(observer);
+      });
+    });
+
+    group('didDisposeProvider', () {
+      test('supports invalidate', () {
+        final observer = ObserverMock();
+        final container = ProviderContainer.test(observers: [observer]);
+        final provider = Provider<int>((ref) => 0);
+
+        container.read(provider);
+        clearInteractions(observer);
+
+        container.invalidate(provider);
+        verifyOnly(
+          observer,
+          observer.didDisposeProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+          ),
+        );
+
+        container.invalidate(provider);
+        verifyNoMoreInteractions(observer);
+      });
+
+      test('supports container dispose', () {
+        final observer = ObserverMock();
+        final container = ProviderContainer.test(observers: [observer]);
+        final provider = NotifierProvider<Counter, int>(Counter.new);
+
+        container.read(provider);
+
+        clearInteractions(observer);
+
+        container.dispose();
+
+        verifyInOrder([
+          observer.didDisposeProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+          ),
+        ]);
+        verifyNoMoreInteractions(observer);
+      });
+
+      test('supports auto-dispose', () async {
+        final observer = ObserverMock();
+        final container = ProviderContainer.test(observers: [observer]);
+        final provider = NotifierProvider.autoDispose<Counter, int>(
+          Counter.new,
+        );
+
+        final sub = container.listen(provider, (_, _) {});
+
+        clearInteractions(observer);
+
+        sub.close();
+        await container.pump();
+
+        verifyInOrder([
+          observer.didDisposeProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+          ),
+        ]);
+        verifyNoMoreInteractions(observer);
+      });
+
+      test('is guarded', () {
+        final observer = ObserverMock();
+        when(observer.didDisposeProvider(any)).thenThrow('error1');
+        final observer2 = ObserverMock();
+        when(observer2.didDisposeProvider(any)).thenThrow('error2');
+        final observer3 = ObserverMock();
+        final onDispose = OnDisposeMock();
+        final provider = Provider((ref) {
+          ref.onDispose(onDispose.call);
+          return 0;
+        });
+        final provider2 = Provider((ref) => ref.watch(provider));
+        final errors = <Object>[];
+        final container = runZonedGuarded(
+          () => ProviderContainer.test(
+            observers: [observer, observer2, observer3],
+          ),
+          (err, stack) => errors.add(err),
+        )!;
+
+        expect(container.read(provider), 0);
+        expect(container.read(provider2), 0);
+        clearInteractions(observer);
+        clearInteractions(observer2);
+        clearInteractions(observer3);
+        verifyNoMoreInteractions(onDispose);
+
+        container.dispose();
+
+        expect(errors, ['error1', 'error2', 'error1', 'error2']);
+        verifyInOrder([
+          observer.didDisposeProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider2,
+                container: container,
+              ),
+            ),
+          ),
+          observer2.didDisposeProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider2,
+                container: container,
+              ),
+            ),
+          ),
+          observer3.didDisposeProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider2,
+                container: container,
+              ),
+            ),
+          ),
+          onDispose(),
+          observer.didDisposeProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+          ),
+          observer2.didDisposeProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+          ),
+          observer3.didDisposeProvider(
+            argThat(
+              isProviderObserverContext(
+                provider: provider,
+                container: container,
+              ),
+            ),
+          ),
+        ]);
+        verifyNoMoreInteractions(onDispose);
+        verifyNoMoreInteractions(observer);
+        verifyNoMoreInteractions(observer2);
+        verifyNoMoreInteractions(observer3);
+      });
     });
   });
 }
 
 final class _EmptyObserver extends ProviderObserver {}
+
+TypeMatcher<ProviderReference> providerReferences(
+  ProviderBase<Object?> provider,
+  ProviderContainer container,
+) {
+  return isA<ProviderReference>()
+      .having((reference) => reference.provider, 'provider', provider)
+      .having((reference) => reference.container, 'container', container);
+}
+
+List<ProviderBase<Object?>> compute(ProviderContainer container) {
+  return container
+      .getAllProviderElementsInOrder()
+      .map((e) => e.provider)
+      .toList();
+}
+
+class A {}
+
+class B {}
+
+class C {}
+
+class D {}
+
+class E {}
+
+class F {}
+
+class G {}
+
+final class ConstObserver extends ProviderObserver {
+  const ConstObserver();
+}

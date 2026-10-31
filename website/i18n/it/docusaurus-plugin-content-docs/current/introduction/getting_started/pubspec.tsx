@@ -9,12 +9,13 @@ import {
 function plain(riverpod: string) {
   return `name: my_app_name
 environment:
-  sdk: ^3.7.0
-  flutter: ">=3.0.0"
+  sdk: ^3.12.0
+  flutter: ">=3.44.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  material_ui: ^1.0.0
   ${riverpod}
 
 dev_dependencies:
@@ -26,12 +27,13 @@ dev_dependencies:
 function codegen(riverpod: string) {
   return `name: my_app_name
 environment:
-  sdk: ^3.7.0
-  flutter: ">=3.0.0"
+  sdk: ^3.12.0
+  flutter: ">=3.44.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  material_ui: ^1.0.0
   ${riverpod}
   riverpod_annotation: ^${riverpodAnnotationVersion}
 

@@ -2,7 +2,7 @@ name: flutter_riverpod
 description: >
   A reactive caching and data-binding framework.
   Riverpod makes working with asynchronous code a breeze.
-version: 3.4.2
+version: 3.4.3
 homepage: https://riverpod.dev
 repository: https://github.com/rrousselGit/riverpod
 issue_tracker: https://github.com/rrousselGit/riverpod/issues
@@ -26,11 +26,13 @@ dependencies:
     sdk: flutter
   flutter_test:
     sdk: flutter
+  material_ui: ^1.0.0
   meta: ^1.15.0
-  riverpod: 3.4.2
+  riverpod: 3.4.3
   state_notifier: ">=0.7.2 <2.0.0"
 
 dev_dependencies:
+  cupertino_ui: ^1.0.0
   mockito: ^5.0.0
   stack_trace: ^1.0.0
 

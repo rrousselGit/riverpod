@@ -62,7 +62,6 @@ class ProviderScheduler {
 
   final _stateToDispose = <ProviderElement>[];
   final stateToRefresh = <ProviderElement>[];
-
   Completer<void>? _pendingTaskCompleter;
   Task? _pendingTask;
 
