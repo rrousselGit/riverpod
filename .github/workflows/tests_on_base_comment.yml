@@ -1,0 +1,51 @@
+name: Comment tests on base
+
+# Posts the reports of tests_on_base.yml on its pull request (see
+# .github/scripts/tests_on_base_comment.js). This runs with write access, so
+# it never checks out or runs the code of the pull request: it checks out the
+# default branch, and only reads the reports.
+
+on:
+  workflow_run:
+    workflows: [Tests on base]
+    types: [completed]
+
+permissions:
+  actions: read
+  contents: read
+  pull-requests: write
+
+jobs:
+  comment:
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github
+      - uses: actions/download-artifact@v4
+        with:
+          name: tests-on-base
+          path: report
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+      - uses: actions/github-script@v9
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            // The pull request is found from the tested commit, rather than
+            // read from the artifact, which the pull request controls.
+            const { data: pulls } = await github.rest.pulls.list({
+              ...context.repo,
+              state: 'open',
+              head: `${run.head_repository.owner.login}:${run.head_branch}`,
+            });
+            const pull = pulls.find(p => p.head.sha === run.head_sha);
+            if (!pull) return;
+            await require('./.github/scripts/tests_on_base_comment.js')({
+              github,
+              context,
+              core,
+              pull: { number: pull.number, head_sha: run.head_sha },
+              dir: 'report',
+            });
