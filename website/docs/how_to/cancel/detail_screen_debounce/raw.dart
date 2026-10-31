@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import '../detail_screen/codegen.dart';
 
 /* SNIPPET START */
-final activityProvider = FutureProvider.autoDispose<Activity>((ref) async {
+final breweryProvider = FutureProvider.autoDispose<Brewery>((ref) async {
   // {@template didDispose}
   // We capture whether the provider is currently disposed or not.
   // {@endtemplate}
@@ -34,10 +34,10 @@ final activityProvider = FutureProvider.autoDispose<Activity>((ref) async {
   ref.onDispose(client.close);
 
   final response = await client.get(
-    Uri.https('www.boredapi.com', '/api/activity'),
+    Uri.https('api.openbrewerydb.org', '/v1/breweries/random'),
   );
 
-  final json = jsonDecode(response.body) as Map;
-  return Activity.fromJson(Map.from(json));
+  final json = (jsonDecode(response.body) as List).first as Map;
+  return Brewery.fromJson(Map.from(json));
 });
 /* SNIPPET END */

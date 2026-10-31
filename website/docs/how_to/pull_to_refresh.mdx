@@ -1,16 +1,16 @@
 ---
 title: Implementing pull-to-refresh
-version: 1
+version: 2
 ---
 
 import { Link } from "/src/components/Link";
 import { AutoSnippet, When } from "/src/components/CodeSnippet";
-import activity from "./pull_to_refresh/activity";
-import fetchActivity from "./pull_to_refresh/fetch_activity";
-import displayActivity from "!!raw-loader!./pull_to_refresh/display_activity.dart";
-import displayActivity2 from "!!raw-loader!./pull_to_refresh/display_activity2.dart";
-import displayActivity3 from "!!raw-loader!./pull_to_refresh/display_activity3.dart";
-import displayActivity4 from "!!raw-loader!./pull_to_refresh/display_activity4.dart";
+import brewery from "./pull_to_refresh/brewery";
+import fetchBrewery from "./pull_to_refresh/fetch_brewery";
+import displayBrewery from "!!raw-loader!./pull_to_refresh/display_brewery.dart";
+import displayBrewery2 from "!!raw-loader!./pull_to_refresh/display_brewery2.dart";
+import displayBrewery3 from "!!raw-loader!./pull_to_refresh/display_brewery3.dart";
+import displayBrewery4 from "!!raw-loader!./pull_to_refresh/display_brewery4.dart";
 import fullApp from "./pull_to_refresh/full_app";
 
 Riverpod natively supports pull-to-refresh thanks to its declarative nature.
@@ -25,8 +25,8 @@ problems to solve:
 - We need to show the refresh indicator for as long as the refresh is happening.
 
 Let's see how to solve this using Riverpod.  
-For this, we will make a simple example which recommends a random activity to users.  
-And doing a pull-to-refresh will trigger a new suggestion:
+For this, we will make a simple example which displays a random brewery.  
+And doing a pull-to-refresh will fetch a new one:
 
 <img
   alt="A gif of the previously described application working"
@@ -36,27 +36,27 @@ And doing a pull-to-refresh will trigger a new suggestion:
 ## Making a bare-bones application.
 
 Before implement a pull-to-refresh, we first need something to refresh.  
-We can make a simple application which uses [Bored API](https://www.boredapi.com/)
-to suggests a random activity to users.
+We can make a simple application which uses [Open Brewery DB](https://www.openbrewerydb.org/)
+to display a random brewery.
 
-First, let's define an `Activity` class:
+First, let's define a `Brewery` class:
 
-<AutoSnippet {...activity} />
+<AutoSnippet {...brewery} />
 
-That class will be responsible for representing a suggested activity
+That class will be responsible for representing a brewery
 in a type-safe manner, and handle JSON encoding/decoding.  
 Using Freezed/json_serializable is not required, but it is recommended.
 
 Now, we'll want to define a provider making a HTTP GET request to fetch
-a single activity:
+a single brewery:
 
-<AutoSnippet {...fetchActivity} />
+<AutoSnippet {...fetchBrewery} />
 
-We can now use this provider to display a random activity.  
+We can now use this provider to display a random brewery.  
 For now, we will not handle the loading/error state, and simply
-display the activity when available:
+display the brewery when available:
 
-<AutoSnippet raw={displayActivity} />
+<AutoSnippet raw={displayBrewery} />
 
 ## Adding `RefreshIndicator`
 
@@ -67,7 +67,7 @@ when the user pulls down the screen.
 Using `RefreshIndicator` requires a scrollable surface. But so far, we don't have
 any. We can fix that by using a `ListView`/`GridView`/`SingleChildScrollView`/etc:
 
-<AutoSnippet raw={displayActivity2} />
+<AutoSnippet raw={displayBrewery2} />
 
 Users can now pull down the screen. But our data isn't refreshed yet.
 
@@ -85,7 +85,7 @@ This will return a future which completes when our provider has resolved.
 
 We can therefore update our `RefreshIndicator` to look like this:
 
-<AutoSnippet raw={displayActivity3} />
+<AutoSnippet raw={displayBrewery3} />
 
 ## Showing a spinner only during initial load and handling errors.
 
@@ -105,7 +105,7 @@ Riverpod gives us an `AsyncValue`, which offers everything we need.
 That `AsyncValue` can then be combined with Dart 3.0's pattern matching
 as follows:
 
-<AutoSnippet raw={displayActivity4} />
+<AutoSnippet raw={displayBrewery4} />
 
 :::caution
 We use `valueOrNull` here, as currently, using `value` throws
@@ -117,8 +117,8 @@ But for now, let's stick to `valueOrNull`.
 
 :::tip
 Notice the usage of the `:final valueOrNull?` syntax in our pattern matching.
-This syntax can be used only because `activityProvider` returns a non-nullable
-`Activity`.
+This syntax can be used only because `breweryProvider` returns a non-nullable
+`Brewery`.
 
 If your data can be `null`, you can instead use `AsyncValue(hasData: true, :final valueOrNull)`.
 This will correctly handle cases where the data is `null`, at the cost of
