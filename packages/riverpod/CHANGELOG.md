@@ -1,5 +1,6 @@
 ## Unreleased minor
 
+- Fix `StreamProvider`/`StreamNotifier` retaining obsolete dependency subscriptions across rebuilds until the stream closes, even after emitting data.
 - `AsyncValueIsLoadingException` now has a public constructor. (thanks to @uveshm003)
 - Confirmed `Ref.watch` catches errors emitted after build by a watched provider (such as from retries) by rebuilding the dependent provider. (#4432) (thanks to @naghinezhad)
 - `debugTrackProviderCreation` is now exported by `package:riverpod/misc.dart`.
