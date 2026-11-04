@@ -15,6 +15,14 @@
 # outside of it, except the tests of lib/ files outside lib/src (public
 # entry points), test/meta_test.dart and test/misc_test.dart.
 #
+# A package that holds the tests of another (see tests_of in lib/common.sh,
+# such as riverpod_lint_flutter_test for riverpod_lint) counts as a test/
+# folder of that other package: the test of riverpod_lint/lib/src/x.dart is
+# riverpod_lint/test/src/x_test.dart or
+# riverpod_lint_flutter_test/test/src/x_test.dart, and every
+# riverpod_lint_flutter_test/test/src/x_test.dart needs a
+# riverpod_lint/lib/src/x.dart.
+#
 # Usage: scripts/tested.sh [--base REF] [PACKAGE...]
 #   --base REF  Ref to compare against (default: origin/master; fetched if
 #               missing). Changes are taken from where the current branch
@@ -50,6 +58,30 @@ validate_packages "$@"
 cd "$ROOT" || exit 1
 
 from="$(fork_point "$base")" || exit
+
+# "<package>\t<package whose lib/ its tests test>" of every package: itself,
+# or the package it holds the tests of.
+tested_packages="$(
+  all="$(ci_packages)"
+  while IFS= read -r package; do
+    of="$(tests_of "$package")"
+    if [ -z "$of" ]; then
+      printf '%s\t%s\n' "$package" "$package"
+    else
+      printf '%s\t%s\n' "$package" "$(awk -v n="$of" '{ m = $0; sub(/.*\//, "", m) } m == n { print; exit }' <<<"$all")"
+    fi
+  done <<<"$all"
+)"
+
+# Prints the package whose lib/ the tests of PACKAGE test.
+tested_package() { awk -F '\t' -v p="$1" '$1 == p { print $2 }' <<<"$tested_packages"; }
+
+# Prints the tests that may test REL (a path relative to lib/) of PACKAGE:
+# <test package>/test/<rel>_test.dart, for PACKAGE and every package holding
+# its tests.
+test_files() {
+  awk -F '\t' -v p="$1" -v t="test/${2%.dart}_test.dart" '$2 == p { print $1 "/" t }' <<<"$tested_packages"
+}
 
 # "<status>\t<path>" of every changed file, untracked ones as added.
 changes="$(
@@ -98,10 +130,12 @@ while IFS=$'\t' read -r status path package; do
   case "$path" in *_test.dart) continue ;; *.dart) ;; *) continue ;; esac
   [ -f "$path" ] || continue
   is_generated "$path" && continue
-  # <package>/lib/<rel>.dart -> <package>/test/<rel>_test.dart
+  # <package>/lib/<rel>.dart -> <package>/test/<rel>_test.dart, or the same
+  # in a package holding the tests of <package>.
   rel="${path#"$package/lib/"}"
-  test_file="$package/test/${rel%.dart}_test.dart"
-  grep -Fqx "$test_file" <<<"$changed_paths" && continue
+  candidates="$(test_files "$package" "$rel")"
+  grep -Fqxf <(printf '%s\n' "$candidates") <<<"$changed_paths" && continue
+  test_file="$(awk 'NR > 1 { printf " or " } { printf "%s", $0 }' <<<"$candidates")"
   if [ "$status" = A ]; then
     missing="$missing  $path -> $test_file
 "
@@ -130,13 +164,14 @@ if [ ${#pairs[@]} -gt 0 ]; then
 fi
 
 # Tests in test/src without a file to test: <package>/test/src/<rel>_test.dart
-# -> <package>/lib/src/<rel>.dart.
+# -> <tested package>/lib/src/<rel>.dart.
 orphans=""
 for package in "$@"; do
   [ -d "$package/test/src" ] || continue
+  tested="$(tested_package "$package")"
   while IFS= read -r test_file; do
     rel="${test_file#"$package/test/"}"
-    lib_file="$package/lib/${rel%_test.dart}.dart"
+    lib_file="$tested/lib/${rel%_test.dart}.dart"
     [ -f "$lib_file" ] || orphans="$orphans  $test_file -> $lib_file
 "
   done < <(find "$package/test/src" -name '*_test.dart' | sort)
@@ -155,7 +190,7 @@ while IFS=$'\t' read -r status path package; do
     "$package/test/src/"*|"$package/test/meta_test.dart"|"$package/test/misc_test.dart") continue ;;
   esac
   rel="${path#"$package/test/"}"
-  [ -f "$package/lib/${rel%_test.dart}.dart" ] || misplaced="$misplaced  $path
+  [ -f "$(tested_package "$package")/lib/${rel%_test.dart}.dart" ] || misplaced="$misplaced  $path
 "
 done < <(printf '%s\n' "$changes" | in_selected test "$@")
 
@@ -172,8 +207,13 @@ for package in "$@"; do
   while IFS= read -r path; do
     is_generated "$path" && continue
     rel="${path#"$package/lib/"}"
-    test_file="$package/test/${rel%.dart}_test.dart"
-    if [ -f "$test_file" ] || is_directives_only "$path"; then
+    candidates="$(test_files "$package" "$rel")"
+    test_file="$(awk 'NR > 1 { printf " or " } { printf "%s", $0 }' <<<"$candidates")"
+    has_test=0
+    while IFS= read -r candidate; do
+      [ -f "$candidate" ] && has_test=1
+    done <<<"$candidates"
+    if [ "$has_test" = 1 ] || is_directives_only "$path"; then
       grep -Fqx "$path" <<<"$known_untested" && stale="$stale  $path
 "
     else
