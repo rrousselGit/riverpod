@@ -1,0 +1,80 @@
+name: Comment skipped packages
+
+# Comments on a pull request the packages that ci.yml skips, as listed by
+# skipped_packages.yml. A single comment per PR, updated on every push.
+#
+# workflow_run runs this file as it is on the default branch, with a token
+# that can comment even on pull requests from forks. So it never checks out
+# the PR, and treats the artifact the PR's run uploaded as untrusted.
+
+on:
+  workflow_run:
+    workflows: [Skipped packages]
+    types: [completed]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.workflow_run.head_repository.full_name }}-${{ github.event.workflow_run.head_branch }}
+
+permissions:
+  actions: read
+  pull-requests: write
+
+jobs:
+  comment:
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: skipped-packages
+          path: artifact
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          marker='<!-- skipped-packages -->'
+
+          # The open PR whose head is the commit that was checked. None when
+          # the PR was pushed to since, in which case a newer run comments.
+          pr="$(gh api --paginate "repos/$REPO/pulls?state=open&per_page=100" \
+            --jq ".[] | select(.head.sha == \"$HEAD_SHA\") | .number" | head -n 1)"
+          if [ -z "$pr" ]; then
+            echo "No open pull request has $HEAD_SHA as head."
+            exit 0
+          fi
+
+          comment="$(gh api --paginate "repos/$REPO/issues/$pr/comments" \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | startswith(\"$marker\"))) | .id" |
+            head -n 1)"
+
+          # Only lines shaped like package paths, as the PR controls the file.
+          packages="$(grep -E '^[A-Za-z0-9_./-]+$' artifact/skipped.txt || true)"
+          if [ -z "$packages" ]; then
+            if [ -z "$comment" ]; then exit 0; fi
+            body="$marker
+          ### Skipped packages
+
+          CI checks every package, as this pull request may affect them all."
+          else
+            body="$marker
+          ### Skipped packages
+
+          This pull request affects neither these packages nor their dependencies, so CI skips their code generation, formatting, analysis and tests:
+
+          <details>
+          <summary>$(wc -l <<<"$packages" | tr -d ' ') skipped packages</summary>
+
+          $(sed 's/.*/- `&`/' <<<"$packages")
+
+          </details>"
+          fi
+
+          if [ -n "$comment" ]; then
+            gh api --method PATCH "repos/$REPO/issues/comments/$comment" -f body="$body" >/dev/null
+          else
+            gh api --method POST "repos/$REPO/issues/$pr/comments" -f body="$body" >/dev/null
+          fi

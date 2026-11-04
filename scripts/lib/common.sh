@@ -148,6 +148,71 @@ ci_tested_packages() { graph_packages | awk '$4 != "none" { print $2 }'; }
 # none, chrome, flutter or dart.
 test_runner() { graph_packages | awk -v p="$1" '$2 == p { print $4 }'; }
 
+# Packages whose code runs when checking any package: the analyzer plugins of
+# /analysis_options.yaml (with the packages they override), and the tools that
+# scripts/ run on every package.
+global_packages() {
+  awk '/^[^ #]/ { in_plugins = ($0 == "plugins:") }
+       in_plugins && /^ +path: / { print $2 }' "$ROOT/analysis_options.yaml"
+  echo tools/code_changes
+}
+
+# Prints the paths of the packages that the changes since REF may affect, in
+# package_graph.yaml order. Changes are taken from where the current branch
+# forked from REF up to the working tree, untracked files included.
+# A package is affected when it holds a changed file (nested packages, such
+# as packages/x/example, are their own packages), or depends on an affected
+# package, in any way. Every package is affected when a global_packages one
+# is, or when a file outside every package changed (scripts/, the root
+# pubspec.yaml...), except Markdown files and GitHub templates, which no check
+# reads.
+affected_packages() {
+  local from changes
+  require_graph
+  from="$(fork_point "$1")" || exit
+  changes="$(cd "$ROOT" && git diff --name-only --no-renames "$from" -- &&
+    git ls-files --others --exclude-standard)" || die "could not list the changes since $1"
+  printf '%s\n' "$changes" | awk -v global="$(global_packages | tr '\n' ' ')" '
+    BEGIN { split(global, g, " "); for (k in g) is_global[g[k]] = 1 }
+    # package_graph.yaml
+    FNR == NR {
+      if (/^[^ #]/) { in_packages = ($0 == "packages:"); next }
+      if (!in_packages) next
+      if (/^  [^ ]/) { name = substr($0, 3, length($0) - 3); next }
+      if (/^    path: /) { path[name] = substr($0, 11); order[++n] = name; next }
+      if (/^    dependents: /) {
+        dependents[name] = substr($0, 17)
+        gsub(/\[|\]/, "", dependents[name])
+      }
+      next
+    }
+    # The changed files
+    $0 == "" { next }
+    {
+      owner = ""
+      for (k = 1; k <= n; k++) {
+        p = order[k]
+        if (index($0, path[p] "/") == 1 && (owner == "" || length(path[p]) > length(path[owner]))) owner = p
+      }
+      if (owner != "") {
+        if (!(owner in hit)) { hit[owner] = 1; queue[++queued] = owner }
+      } else if ($0 !~ /\.mdx?$/ && $0 !~ /^\.github\/(ISSUE_TEMPLATE\/|FUNDING\.yml$|dependabot\.yaml$)/) {
+        all = 1
+      }
+    }
+    END {
+      for (k = 1; k <= queued; k++) {
+        m = split(dependents[queue[k]], ds, /, */)
+        for (j = 1; j <= m; j++) {
+          if (ds[j] != "" && !(ds[j] in hit)) { hit[ds[j]] = 1; queue[++queued] = ds[j] }
+        }
+      }
+      for (k = 1; k <= n; k++) if ((order[k] in hit) && (path[order[k]] in is_global)) all = 1
+      for (k = 1; k <= n; k++) if (all || (order[k] in hit)) print path[order[k]]
+    }
+  ' "$GRAPH" -
+}
+
 # Dies unless every argument is a known package path.
 validate_packages() {
   local known p
