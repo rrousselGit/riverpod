@@ -21,7 +21,8 @@ for arg in "$@"; do
 done
 
 cd "$ROOT/website" || exit 1
-[ -d node_modules ] || npm ci --no-audit --no-fund || exit 1
+# website/ commits yarn.lock, not package-lock.json.
+[ -d node_modules ] || yarn install --frozen-lockfile --non-interactive || exit 1
 status=0
 node meta_generator.js $check || status=1
 node dartpad_generator.js $check || status=1
