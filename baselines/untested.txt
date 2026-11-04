@@ -65,9 +65,15 @@ packages/riverpod_devtool_generator/lib/builder.dart
 packages/riverpod_generator/integration/build_yaml/lib/dependencies.dart
 packages/riverpod_generator/integration/build_yaml/lib/main.dart
 packages/riverpod_generator/lib/builder.dart
+packages/riverpod_generator/lib/src/json_generator.dart
 packages/riverpod_generator/lib/src/parse_generator.dart
+packages/riverpod_generator/lib/src/riverpod_generator.dart
+packages/riverpod_generator/lib/src/templates/family.dart
 packages/riverpod_generator/lib/src/templates/hash.dart
+packages/riverpod_generator/lib/src/templates/notifier.dart
 packages/riverpod_generator/lib/src/templates/parameters.dart
+packages/riverpod_generator/lib/src/templates/provider.dart
+packages/riverpod_generator/lib/src/templates/provider_variable.dart
 packages/riverpod_generator/lib/src/templates/template.dart
 packages/riverpod_lint/lib/main.dart
 packages/riverpod_lint/lib/src/assists/consumers/convert_to_stateful_base_widget.dart
