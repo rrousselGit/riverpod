@@ -62,9 +62,15 @@ bool _isInGeneratorLib(String path) {
   return segments[libIndex - 1].endsWith('_generator');
 }
 
+/// Stands for an interpolated value in the checked strings.
+const _interpolation = '\u0000';
+
+/// Matches [names] as whole words. An interpolated value before a name is
+/// part of the word (`'${name}Ref'` builds an identifier), but not after it
+/// (`'\$Notifier$generics'` still writes `$Notifier`).
 RegExp _matcherFor(Set<String> names) {
   final alternatives = names.map(RegExp.escape).join('|');
-  return RegExp('(?<![\\w\$])($alternatives)(?![\\w\$])');
+  return RegExp('(?<![\\w\$$_interpolation])($alternatives)(?![\\w\$])');
 }
 
 /// The names exported by the public libraries of `riverpod_annotation`.
@@ -191,11 +197,10 @@ class _Visitor extends SimpleAstVisitor<void> {
   void visitStringInterpolation(StringInterpolation node) {
     if (node.thisOrAncestorOfType<Annotation>() != null) return;
 
-    // Interpolated values are replaced by a word character, so that a name
-    // next to one (`'${name}Ref'`) is part of a longer word, and placeholders
-    // with an interpolated value (`'#{{$package|Ref}}'`) are still ignored.
+    // Checked as a whole, so that placeholders with an interpolated value
+    // (`'#{{$package|Ref}}'`) are still ignored.
     final value = node.elements
-        .map((e) => e is InterpolationString ? e.value : '_')
+        .map((e) => e is InterpolationString ? e.value : _interpolation)
         .join();
     _check(node, value);
   }

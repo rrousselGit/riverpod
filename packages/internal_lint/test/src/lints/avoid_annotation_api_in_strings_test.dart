@@ -13,6 +13,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 void fn(String type) {
   'final class Foo extends \$FunctionalProvider<int> {}';
+  '\$Notifier$type';
+  '\$FutureProvider${'<int>'}';
   'class Foo with \$NotifierProvider<$type> {}';
   'Ref ref, Override override';
   'ProviderFor(foo)';
@@ -28,6 +30,8 @@ void fn(String type) {
 
     expect(diagnostics.map((e) => e.message), [
       contains(r'`$FunctionalProvider`'),
+      contains(r'`$Notifier`'),
+      contains(r'`$FutureProvider`'),
       contains(r'`$NotifierProvider`'),
       contains('`Ref`, `Override` are'),
       contains('`ProviderFor`'),
@@ -44,7 +48,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 void fn(String a) {
   '${a}Ref';
-  'Ref$a';
   '#{{$a|Ref}}';
   'Reference';
   'riverpod';
