@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/source/line_info.dart';
-import 'package:internal_lint/src/todo_check.dart';
+import 'package:repo_checks/src/todo_check.dart';
 import 'package:test/test.dart';
 
 /// The lines and texts of the TODOs of [content].

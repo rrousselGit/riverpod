@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:internal_lint/src/issue_links.dart';
-import 'package:internal_lint/src/yaml_comments.dart';
+import 'package:repo_checks/src/issue_links.dart';
+import 'package:repo_checks/src/yaml_comments.dart';
 import 'package:test/test.dart';
 
 const _open = 'https://github.com/owner/repo/issues/1';

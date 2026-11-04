@@ -1,4 +1,4 @@
-import 'package:internal_lint/src/yaml_comments.dart';
+import 'package:repo_checks/src/yaml_comments.dart';
 import 'package:test/test.dart';
 
 /// The texts of the comments of [content].
