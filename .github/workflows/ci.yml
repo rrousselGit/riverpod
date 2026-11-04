@@ -21,6 +21,13 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+env:
+  # What the changes are checked against. On pull requests, HEAD is the merge
+  # commit and HEAD^1 the target branch. On pushes, it is the commit the branch
+  # was at before, as a push may bring several commits; the jobs that use it
+  # then fetch the whole history, to have that commit.
+  BASE: ${{ github.event_name == 'push' && github.event.before || 'HEAD^1' }}
+
 jobs:
   generate:
     name: Package graph & generated code are up to date
@@ -57,14 +64,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: ${{ github.event_name == 'push' && 0 || 2 }}
       - uses: subosito/flutter-action@v2
         with:
           channel: master
           cache: true
-      # On pull requests, HEAD is the merge commit and HEAD^1 the target
-      # branch, so this checks the changes of the PR.
-      - run: scripts/check.sh tested --base HEAD^1
+      - run: scripts/check.sh tested --base $BASE
 
   mutation-shard:
     name: Mutation testing (part ${{ matrix.shard }}/${{ strategy.job-total }})
@@ -81,16 +86,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: ${{ github.event_name == 'push' && 0 || 2 }}
       - uses: subosito/flutter-action@v2
         with:
           channel: master
           cache: true
-      # On pull requests, HEAD is the merge commit and HEAD^1 the target
-      # branch, so this mutates the files the PR changed.
       - run: >-
           scripts/check.sh mutation --shard ${{ matrix.shard }}/${{ strategy.job-total }}
-          ${{ github.event_name == 'schedule' && '--mutate-all' || '--base HEAD^1' }}
+          ${{ github.event_name == 'schedule' && '--mutate-all' || '--base $BASE' }}
       # Nothing is written when the PR changes no file to mutate.
       - uses: actions/upload-artifact@v4
         with:
@@ -106,7 +109,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: ${{ github.event_name == 'push' && 0 || 2 }}
       - uses: subosito/flutter-action@v2
         with:
           channel: master
@@ -118,7 +121,7 @@ jobs:
           path: mutation-parts
       - run: >-
           scripts/check.sh mutation --mutation-parts mutation-parts
-          ${{ github.event_name == 'schedule' && '--mutate-all' || '--base HEAD^1' }}
+          ${{ github.event_name == 'schedule' && '--mutate-all' || '--base $BASE' }}
       - if: always()
         uses: actions/upload-artifact@v4
         with:

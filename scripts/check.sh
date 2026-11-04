@@ -177,7 +177,8 @@ if has_step mutation; then
   mutation="scripts/mutation.sh"
   if [ "$mutate_all" = 1 ]; then mutation="$mutation --all"; else mutation="$mutation --base $base"; fi
   [ -z "$shard" ] || mutation="$mutation --shard $shard"
-  [ -z "$mutation_parts" ] || mutation="$mutation --merge $mutation_parts"
+  # Quoted, as pool_inline runs the command through bash -c.
+  [ -z "$mutation_parts" ] || mutation="$mutation --merge $(printf '%q' "$mutation_parts")"
   pool_inline "mutation" "$mutation"
 fi
 
