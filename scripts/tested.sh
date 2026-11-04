@@ -15,6 +15,11 @@
 # outside of it, except the tests of lib/ files outside lib/src (public
 # entry points), test/meta_test.dart and test/misc_test.dart.
 #
+# Lints are tested through fixtures instead (see fixtures_of): the test of
+# riverpod_lint/lib/src/lints/x.dart may also be
+# riverpod_lint_flutter_test/test/lints/x.dart, its goldens (x.*), or the
+# files of a test/lints/x/ folder.
+#
 # Usage: scripts/tested.sh [--base REF] [PACKAGE...]
 #   --base REF  Ref to compare against (default: origin/master; fetched if
 #               missing). Changes are taken from where the current branch
@@ -50,6 +55,50 @@ validate_packages "$@"
 cd "$ROOT" || exit 1
 
 from="$(fork_point "$base")" || exit
+
+# Prints the fixtures that test REL, a path relative to lib/ of the package
+# at PATH, for lib/ files tested through fixtures rather than x_test.dart
+# files: a file (whose goldens, <name>.*, count too) and a folder, ending with
+# /, any file of which counts.
+fixtures_of() {
+  case "$1:$2" in
+    packages/riverpod_lint:src/lints/*.dart)
+      local name="${2#src/lints/}"
+      name="${name%.dart}"
+      echo "packages/riverpod_lint_flutter_test/test/lints/$name.dart"
+      echo "packages/riverpod_lint_flutter_test/test/lints/$name/"
+      ;;
+  esac
+}
+
+# Prints the tests that may test REL, a path relative to lib/ of the package
+# at PATH: <package>/test/<rel>_test.dart, then its fixtures.
+tests_for() {
+  echo "$1/test/${2%.dart}_test.dart"
+  fixtures_of "$1" "$2"
+}
+
+# Prints the paths of stdin that are, or belong to, one of the TESTS (as
+# printed by tests_for).
+in_tests() {
+  # Through the environment, as awk -v rejects newlines on macOS.
+  TESTS="$1" awk '
+    BEGIN { n = split(ENVIRON["TESTS"], t, "\n") }
+    {
+      for (k = 1; k <= n; k++) {
+        if ($0 == t[k]) { print; next }
+        # A fixture folder, or the goldens of a fixture file.
+        prefix = t[k]
+        if (prefix ~ /[.]dart$/ && prefix !~ /_test[.]dart$/) sub(/dart$/, "", prefix)
+        else if (prefix !~ /\/$/) continue
+        if (index($0, prefix) == 1) { print; next }
+      }
+    }
+  '
+}
+
+# Joins TESTS (as printed by tests_for) with " or ".
+or_list() { awk 'NR > 1 { printf " or " } { printf "%s", $0 }' <<<"$1"; }
 
 # "<status>\t<path>" of every changed file, untracked ones as added.
 changes="$(
@@ -98,10 +147,11 @@ while IFS=$'\t' read -r status path package; do
   case "$path" in *_test.dart) continue ;; *.dart) ;; *) continue ;; esac
   [ -f "$path" ] || continue
   is_generated "$path" && continue
-  # <package>/lib/<rel>.dart -> <package>/test/<rel>_test.dart
+  # <package>/lib/<rel>.dart -> <package>/test/<rel>_test.dart, or fixtures
   rel="${path#"$package/lib/"}"
-  test_file="$package/test/${rel%.dart}_test.dart"
-  grep -Fqx "$test_file" <<<"$changed_paths" && continue
+  candidates="$(tests_for "$package" "$rel")"
+  [ -n "$(in_tests "$candidates" <<<"$changed_paths")" ] && continue
+  test_file="$(or_list "$candidates")"
   if [ "$status" = A ]; then
     missing="$missing  $path -> $test_file
 "
@@ -172,8 +222,13 @@ for package in "$@"; do
   while IFS= read -r path; do
     is_generated "$path" && continue
     rel="${path#"$package/lib/"}"
-    test_file="$package/test/${rel%.dart}_test.dart"
-    if [ -f "$test_file" ] || is_directives_only "$path"; then
+    candidates="$(tests_for "$package" "$rel")"
+    test_file="$(or_list "$candidates")"
+    has_test=0
+    while IFS= read -r candidate; do
+      [ -e "$candidate" ] && has_test=1
+    done <<<"$candidates"
+    if [ "$has_test" = 1 ] || is_directives_only "$path"; then
       grep -Fqx "$path" <<<"$known_untested" && stale="$stale  $path
 "
     else
