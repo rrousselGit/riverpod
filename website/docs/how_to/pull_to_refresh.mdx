@@ -12,6 +12,7 @@ import displayBrewery2 from "!!raw-loader!./pull_to_refresh/display_brewery2.dar
 import displayBrewery3 from "!!raw-loader!./pull_to_refresh/display_brewery3.dart";
 import displayBrewery4 from "!!raw-loader!./pull_to_refresh/display_brewery4.dart";
 import fullApp from "./pull_to_refresh/full_app";
+import { PullToRefreshDemo } from "/src/components/FlutterEmbed/PullToRefreshDemo";
 
 Riverpod natively supports pull-to-refresh thanks to its declarative nature.
 
@@ -28,10 +29,7 @@ Let's see how to solve this using Riverpod.
 For this, we will make a simple example which displays a random brewery.  
 And doing a pull-to-refresh will fetch a new one:
 
-<img
-  alt="A gif of the previously described application working"
-  src="/img/how_to/pull_to_refresh/app.gif"
-/>
+<PullToRefreshDemo />
 
 ## Making a bare-bones application.
 
