@@ -33,6 +33,11 @@
 # - Deleted files, tests themselves (*_test.dart), and generated files
 #   (*.g.dart, *.freezed.dart, or a "GENERATED" header).
 # Only files in a package's lib/ folder are considered.
+#
+# The rule is a proxy for "the change is tested", so it can be wrong: when
+# other tests already cover a change, an admin can merge despite it. The
+# script says so, and asks not to write a test just to pass. The other checks
+# cannot be bypassed.
 
 set -uo pipefail
 # shellcheck source=lib/common.sh
@@ -246,28 +251,38 @@ done
 status=0
 if [ -n "$missing" ]; then
   printf 'These lib/ files changed without a change to their test (since %s):\n%s' "$base" "$missing" >&2
-  printf 'Add or update the test of each file, at the same path in test/ as in lib/. Comment-only changes are exempt.\n\n' >&2
+  printf 'Add or update the test of each file, at the same path in test/ as in lib/. Comment-only changes are exempt.\n' >&2
+  printf 'Only add a test that would catch a bug the existing tests miss. Do not write one just to pass this check: if other tests already cover the change (such as goldens), say so in the pull request, and an admin can merge it despite this failure.\n\n' >&2
   status=1
 fi
+# Unlike the rule above, the checks below cannot be bypassed.
+others=0
 if [ -n "$orphans" ]; then
   printf 'These test/src/ files have no matching lib/src/ file:\n%s' "$orphans" >&2
   printf 'Move each test next to the path of the file it tests, or out of test/src/.\n\n' >&2
   status=1
+  others=1
 fi
 if [ -n "$misplaced" ]; then
   printf 'These new tests are outside test/src/ (since %s):\n%s' "$base" "$misplaced" >&2
   printf 'Move each test to the path in test/ of the lib/ file it tests (lib/src/x.dart -> test/src/x_test.dart).\n\n' >&2
   status=1
+  others=1
 fi
 if [ -n "$untested" ]; then
   printf 'These lib/ files have no test:\n%s' "$untested" >&2
   printf 'Add a test for each file, at the same path in test/ as in lib/.\n\n' >&2
   status=1
+  others=1
 fi
 if [ -n "$stale" ]; then
   printf 'These entries of %s are now tested, or no longer exist:\n%s' "$untested_list" "$stale" >&2
   printf 'Remove them from %s.\n\n' "$untested_list" >&2
   status=1
+  others=1
+fi
+if [ -n "$missing" ] && [ "$others" = 1 ]; then
+  printf 'Only the first issue can be bypassed by an admin. Fix the others.\n\n' >&2
 fi
 [ "$status" = 0 ] && echo "Every lib/ file has a test, updated with it, every test/src/ file has its lib/src/ file, and every new test outside test/src/ tests a lib/ file outside lib/src/, or is meta_test.dart or misc_test.dart."
 exit "$status"
