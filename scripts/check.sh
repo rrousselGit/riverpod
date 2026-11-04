@@ -24,10 +24,17 @@
 #                                              links an open GitHub issue,
 #                                              but those baselines/issues.yaml
 #                                              exempts
+#   mutation    scripts/mutation.sh            the test of each changed
+#                                              lib/ file of packages/riverpod
+#                                              kills its mutants, but those
+#                                              baselines/mutation.yaml
+#                                              exempts. Slow, so not run by
+#                                              default nor by `all`
 # graph and generate run first, one after the other, since the rest reads
 # their output. format, analyze, test, changelog, tested, legacy and issues
-# then share one parallel pool. Each failure is listed with the exact command
-# that re-runs it.
+# then share one parallel pool. mutation runs last, alone, as it changes the
+# files in place. Each failure is listed with the exact command that re-runs
+# it.
 #
 # Options:
 #   -p, --package PATH  Only this package (repeatable). Applies to generate,
@@ -40,8 +47,9 @@
 #                       this, as Codecov checks coverage there).
 #   --shard I/N         Only the I-th of N slices of the analyze/test tasks
 #                       (used to split CI across machines).
-#   --base REF          Base ref of changelog, tested and coverage
-#                       (default: origin/master).
+#   --base REF          Base ref of changelog, tested, coverage and
+#                       mutation (default: origin/master).
+#   --mutate-all        mutation: every file, not only the changed ones.
 #   -h, --help          Show this help.
 #
 # Examples:
@@ -61,6 +69,7 @@ fix=0
 coverage=1
 shard=""
 base="origin/master"
+mutate_all=0
 while [ $# -gt 0 ]; do
   case "$1" in
     -p|--package) [ $# -ge 2 ] || die "$1 needs a path"
@@ -71,9 +80,10 @@ while [ $# -gt 0 ]; do
     --no-coverage-check) [ "$coverage" = 0 ] || coverage=collect; shift ;;
     --shard)      [ $# -ge 2 ] || die "$1 needs I/N"; shard="$2"; shift 2 ;;
     --base)       [ $# -ge 2 ] || die "$1 needs a ref"; base="$2"; shift 2 ;;
+    --mutate-all) mutate_all=1; shift ;;
     -h|--help)    usage; exit 0 ;;
     all)          steps="$steps graph generate format analyze test changelog tested legacy issues"; shift ;;
-    graph|generate|format|analyze|test|changelog|tested|legacy|issues) steps="$steps $1"; shift ;;
+    graph|generate|format|analyze|test|changelog|tested|legacy|issues|mutation) steps="$steps $1"; shift ;;
     *)            die "unknown argument '$1' (see --help)" ;;
   esac
 done
@@ -154,6 +164,15 @@ if [ -n "$pool_steps" ]; then
   has_step legacy && pool_add "legacy" "scripts/legacy.sh"
   has_step issues && pool_add "issues" "scripts/issues.sh"
   pool_run
+fi
+
+if has_step mutation; then
+  echo "==> mutation"
+  if [ "$mutate_all" = 1 ]; then
+    pool_inline "mutation" "scripts/mutation.sh --all"
+  else
+    pool_inline "mutation" "scripts/mutation.sh --base $base"
+  fi
 fi
 
 pool_report

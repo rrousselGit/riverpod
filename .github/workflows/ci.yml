@@ -66,6 +66,33 @@ jobs:
       # branch, so this checks the changes of the PR.
       - run: scripts/check.sh tested --base HEAD^1
 
+  mutation:
+    name: The test of each riverpod file kills its mutants
+    runs-on: ubuntu-latest
+    # The daily run mutates every file of packages/riverpod, one mutant at a
+    # time.
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+      - if: github.event_name == 'schedule'
+        run: scripts/check.sh mutation --mutate-all
+      # On pull requests, HEAD is the merge commit and HEAD^1 the target
+      # branch, so this mutates the files the PR changed.
+      - if: github.event_name != 'schedule'
+        run: scripts/check.sh mutation --base HEAD^1
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mutation-report
+          path: packages/riverpod/.dart_tool/mutation/mutation.*
+          if-no-files-found: ignore
+
   test:
     name: Test (shard ${{ matrix.shard }}/3)
     runs-on: ubuntu-latest
