@@ -110,19 +110,19 @@ abstract class $notifierClass$genericsDefinition extends $baseClass {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  PersistResult persist(
-    FutureOr<Storage<String, String>> storage, {
+  #{{riverpod|PersistResult}} persist(
+    #{{dart:async|FutureOr}}<#{{riverpod|Storage}}<String, String>> storage, {
     String? key,
     String Function(${provider.providerElement.valueTypeNode.toCode()} state)? encode,
     ${provider.providerElement.valueTypeNode.toCode()} Function(String encoded)? decode,
-    StorageOptions options = const StorageOptions(),
+    #{{riverpod|StorageOptions}} options = const #{{riverpod|StorageOptions}}(),
   }) {
-    return NotifierPersistX(this).persist<String, String>(
+    return #{{riverpod|NotifierPersistX}}(this).persist<String, String>(
       storage,
       key: key ?? this.key,
-      encode: encode ?? \$jsonCodex.encode,
+      encode: encode ?? #{{riverpod_annotation|\$jsonCodex}}.encode,
       decode: decode ?? (encoded) {
-        final e = \$jsonCodex.decode(encoded);
+        final e = #{{riverpod_annotation|\$jsonCodex}}.decode(encoded);
         return $decoded;
       },
       options: options,
