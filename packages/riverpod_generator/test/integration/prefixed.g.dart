@@ -34,7 +34,7 @@ final class ValueProvider extends r.$FunctionalProvider<int, int, int>
       r.$ProviderElement(pointer);
 
   @override
-  int create(Ref ref) {
+  int create(r.Ref ref) {
     return value(ref);
   }
 
@@ -47,7 +47,7 @@ final class ValueProvider extends r.$FunctionalProvider<int, int, int>
   }
 }
 
-String _$valueHash() => r'38353aa6f0efb45b6f6c28cfaa5f9b33be7ccf6d';
+String _$valueHash() => r'ff8faccaf392cdf9857b6caa7ed2370d8b996676';
 
 @r.ProviderFor(future)
 final futureProvider = FutureProvider._();
@@ -75,12 +75,12 @@ final class FutureProvider
       r.$FutureProviderElement(pointer);
 
   @override
-  r.FutureOr<int> create(Ref ref) {
+  r.FutureOr<int> create(r.Ref ref) {
     return future(ref);
   }
 }
 
-String _$futureHash() => r'2170d51ed20011c08ba96518fce7ce6f721dbca4';
+String _$futureHash() => r'e4a6d86946f91b02adefc608f407f8b261f85d39';
 
 @r.ProviderFor(stream)
 final streamProvider = StreamProvider._();
@@ -108,12 +108,12 @@ final class StreamProvider
       r.$StreamProviderElement(pointer);
 
   @override
-  Stream<int> create(Ref ref) {
+  Stream<int> create(r.Ref ref) {
     return stream(ref);
   }
 }
 
-String _$streamHash() => r'ada8c0f24a8c763636bd19353e777f875d9f0a80';
+String _$streamHash() => r'2c97be10288e07249ba6d667361d3cfd94093b21';
 
 @r.ProviderFor(family)
 final familyProvider = FamilyFamily._();
@@ -149,7 +149,7 @@ final class FamilyProvider extends r.$FunctionalProvider<int, int, int>
       r.$ProviderElement(pointer);
 
   @override
-  int create(Ref ref) {
+  int create(r.Ref ref) {
     final argument = this.argument as int;
     return family(ref, argument);
   }
@@ -173,7 +173,7 @@ final class FamilyProvider extends r.$FunctionalProvider<int, int, int>
   }
 }
 
-String _$familyHash() => r'5d3695dc2980a9658656781e69c75d5e5466973b';
+String _$familyHash() => r'cb78bdedb4a24f7c972988eab86c0aab037d01a4';
 
 final class FamilyFamily extends r.$Family
     with r.$FunctionalFamilyOverride<int, int> {
@@ -227,7 +227,7 @@ final class GenericFamilyProvider<ItemT>
       r.$ProviderElement(pointer);
 
   @override
-  List<ItemT> create(Ref ref) {
+  List<ItemT> create(r.Ref ref) {
     final argument = this.argument as ItemT;
     return genericFamily<ItemT>(ref, argument);
   }
@@ -257,7 +257,7 @@ final class GenericFamilyProvider<ItemT>
   }
 }
 
-String _$genericFamilyHash() => r'b779d47e662150bdea23697630e9866cfc0ae8b7';
+String _$genericFamilyHash() => r'c6a7243a62b96fc6feb95f2802709ce87d23194c';
 
 final class GenericFamilyFamily extends r.$Family {
   GenericFamilyFamily._()
@@ -277,7 +277,7 @@ final class GenericFamilyFamily extends r.$Family {
 
   /// {@macro riverpod.override_with}
   r.Override overrideWith(
-    List<ItemT> Function<ItemT>(Ref ref, ItemT args) create,
+    List<ItemT> Function<ItemT>(r.Ref ref, ItemT args) create,
   ) => r.$FamilyOverride(
     from: this,
     createElement: (pointer) {
@@ -611,7 +611,7 @@ final class GenericClassFamily extends r.$Family {
 
   /// {@macro riverpod.override_with_build}
   r.Override overrideWithBuild(
-    List<ItemT> Function<ItemT>(Ref ref, GenericClass<ItemT> notifier) build,
+    List<ItemT> Function<ItemT>(r.Ref ref, GenericClass<ItemT> notifier) build,
   ) => r.$FamilyOverride(
     from: this,
     createElement: (pointer) {
@@ -732,12 +732,12 @@ final class StorageProvider
   ) => r.$FutureProviderElement(pointer);
 
   @override
-  r.FutureOr<r.Storage<String, String>> create(Ref ref) {
+  r.FutureOr<r.Storage<String, String>> create(r.Ref ref) {
     return storage(ref);
   }
 }
 
-String _$storageHash() => r'17c4e18f706d97ec339230f6315ae7917e621f69';
+String _$storageHash() => r'9b194265f2598b82dc9943a5951cb0336c8c0d34';
 
 @r.ProviderFor(Json)
 @r.JsonPersist()

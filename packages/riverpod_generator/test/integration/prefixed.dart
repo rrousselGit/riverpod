@@ -2,26 +2,24 @@
 // prefix of its import.
 import 'package:riverpod_annotation/experimental/json_persist.dart' as r;
 import 'package:riverpod_annotation/experimental/persist.dart' as r;
-import 'package:riverpod_annotation/riverpod_annotation.dart' as r hide Ref;
-// functional_ref of riverpod_lint does not accept a prefixed Ref.
-import 'package:riverpod_annotation/riverpod_annotation.dart' show Ref;
+import 'package:riverpod_annotation/riverpod_annotation.dart' as r;
 
 part 'prefixed.g.dart';
 
 @r.riverpod
-int value(Ref ref) => 0;
+int value(r.Ref ref) => 0;
 
 @r.riverpod
-Future<int> future(Ref ref) async => 0;
+Future<int> future(r.Ref ref) async => 0;
 
 @r.riverpod
-Stream<int> stream(Ref ref) => const Stream.empty();
+Stream<int> stream(r.Ref ref) => const Stream.empty();
 
 @r.Riverpod(dependencies: [value])
-int family(Ref ref, int arg) => ref.watch(valueProvider);
+int family(r.Ref ref, int arg) => ref.watch(valueProvider);
 
 @r.riverpod
-List<ItemT> genericFamily<ItemT>(Ref ref, ItemT item) => [item];
+List<ItemT> genericFamily<ItemT>(r.Ref ref, ItemT item) => [item];
 
 @r.riverpod
 class ValueClass extends _$ValueClass {
@@ -60,7 +58,7 @@ class Scoped extends _$Scoped {
 }
 
 @r.riverpod
-r.FutureOr<r.Storage<String, String>> storage(Ref ref) {
+r.FutureOr<r.Storage<String, String>> storage(r.Ref ref) {
   return r.Storage<String, String>.inMemory();
 }
 

@@ -19,6 +19,7 @@ void main() {
       r'$ProviderPointer',
       r'$internal',
       'Override',
+      'Ref',
       r'$ProviderOverride',
       r'$SyncValueProvider',
     ]);

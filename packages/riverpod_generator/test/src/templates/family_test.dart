@@ -10,6 +10,7 @@ void main() {
       r'$ClassFamilyOverride',
       r'$FamilyOverride',
       'Override',
+      'Ref',
     ]);
   });
 }
