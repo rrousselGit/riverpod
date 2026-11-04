@@ -9,27 +9,27 @@ import 'package:web/web.dart' as web;
 import '../docs/how_to/pull_to_refresh/full_app/raw.dart';
 import 'bridge.dart';
 
-const _activities = [
-  'Learn a new programming language',
-  'Go for a walk in the park',
-  'Bake some cookies',
-  'Write a letter to a friend',
-  'Start a journal',
-  'Try a new recipe',
-  'Do a puzzle',
-  'Plan a picnic',
+const _breweries = [
+  ('Hoppy Trails Brewing', 'micro', 'Portland', 'United States'),
+  ('Barrel & Bramble', 'brewpub', 'Bristol', 'England'),
+  ('Golden Hour Ales', 'micro', 'Austin', 'United States'),
+  ('Brasserie du Canal', 'regional', 'Lyon', 'France'),
+  ('Northern Lights Brewery', 'micro', 'Tromsø', 'Norway'),
+  ('Riverside Taproom', 'taproom', 'Melbourne', 'Australia'),
+  ('Old Mill Brewhouse', 'brewpub', 'Galway', 'Ireland'),
+  ('Cedar Ridge Craft', 'nano', 'Asheville', 'United States'),
 ];
 
-/// Runs the article's [ActivityView] with a fake network layer that the page
+/// Runs the article's [BreweryView] with a fake network layer that the page
 /// controls through [DemoBridge].
 ///
 /// Commands:
 /// - `setLatency` (int, milliseconds): how long fake requests take.
 /// - `setShouldFail` (bool): whether fake requests throw.
-/// - `refresh`: calls `ref.refresh(activityProvider)` from outside the UI.
+/// - `refresh`: calls `ref.refresh(breweryProvider)` from outside the UI.
 ///
 /// Reports:
-/// - `state`: the current `AsyncValue` of `activityProvider`.
+/// - `state`: the current `AsyncValue` of `breweryProvider`.
 /// - `request`: request lifecycle (`started`, `succeeded`, `failed`).
 class PullToRefreshDemo extends StatefulWidget {
   const PullToRefreshDemo({super.key, required this.bridge});
@@ -48,9 +48,9 @@ class _PullToRefreshDemoState extends State<PullToRefreshDemo> {
 
   late final container = ProviderContainer(
     overrides: [
-      // Replaces the HTTP call to the Bored API, so that the demo works
+      // Replaces the HTTP call to Open Brewery DB, so that the demo works
       // offline and the page can tweak latency and failures.
-      activityProvider.overrideWith((ref) async {
+      breweryProvider.overrideWith((ref) async {
         final id = ++_requestCount;
         widget.bridge.emit('request', {'id': id, 'status': 'started'});
 
@@ -62,11 +62,13 @@ class _PullToRefreshDemoState extends State<PullToRefreshDemo> {
         }
 
         widget.bridge.emit('request', {'id': id, 'status': 'succeeded'});
-        return Activity(
-          activity: _activities[_random.nextInt(_activities.length)],
-          type: 'recreational',
-          participants: 1,
-          price: 0,
+        final (name, breweryType, city, country) =
+            _breweries[_random.nextInt(_breweries.length)];
+        return Brewery(
+          name: name,
+          breweryType: breweryType,
+          city: city,
+          country: country,
         );
       }),
     ],
@@ -82,11 +84,11 @@ class _PullToRefreshDemoState extends State<PullToRefreshDemo> {
         case ('setShouldFail', final bool shouldFail):
           _shouldFail = shouldFail;
         case ('refresh', _):
-          container.refresh(activityProvider);
+          container.refresh(breweryProvider);
       }
     });
 
-    container.listen(activityProvider, (_, state) {
+    container.listen(breweryProvider, (_, state) {
       widget.bridge.emit('state', _describe(state));
     }, fireImmediately: true);
   }
@@ -97,7 +99,7 @@ class _PullToRefreshDemoState extends State<PullToRefreshDemo> {
     super.dispose();
   }
 
-  Map<String, Object?> _describe(AsyncValue<Activity> state) {
+  Map<String, Object?> _describe(AsyncValue<Brewery> state) {
     return {
       'kind': switch (state) {
         AsyncData() => 'AsyncData',
@@ -106,7 +108,7 @@ class _PullToRefreshDemoState extends State<PullToRefreshDemo> {
       },
       'isLoading': state.isLoading,
       'isRefreshing': state.isRefreshing,
-      'value': state.value?.activity,
+      'value': state.value?.name,
       'error': state.error?.toString(),
     };
   }
@@ -125,7 +127,7 @@ class _PullToRefreshDemoState extends State<PullToRefreshDemo> {
         scrollBehavior: const MaterialScrollBehavior().copyWith(
           dragDevices: PointerDeviceKind.values.toSet(),
         ),
-        home: ActivityView(),
+        home: BreweryView(),
       ),
     );
   }

@@ -3,7 +3,7 @@ import useBaseUrl from "@docusaurus/useBaseUrl";
 import { DemoReport, FlutterEmbed, FlutterEmbedHandle } from ".";
 
 // Must match the reports of website/demos/pull_to_refresh.dart.
-type ActivityState = {
+type BreweryState = {
   kind: "AsyncData" | "AsyncError" | "AsyncLoading";
   isLoading: boolean;
   isRefreshing: boolean;
@@ -13,7 +13,7 @@ type ActivityState = {
 
 type LogEntry = { id: number; time: string; message: string };
 
-function describeState(state: ActivityState) {
+function describeState(state: BreweryState) {
   const fields = [
     state.value !== null && `value: '${state.value}'`,
     state.error !== null && `error: ${state.error}`,
@@ -32,7 +32,7 @@ export function PullToRefreshDemo() {
   const [running, setRunning] = useState(false);
   const [latency, setLatency] = useState(1000);
   const [shouldFail, setShouldFail] = useState(false);
-  const [state, setState] = useState<ActivityState>();
+  const [state, setState] = useState<BreweryState>();
   const [log, setLog] = useState<LogEntry[]>([]);
   const nextLogId = useRef(0);
 
@@ -45,7 +45,7 @@ export function PullToRefreshDemo() {
   function onReport({ type, data }: DemoReport) {
     switch (type) {
       case "state": {
-        const state = data as ActivityState;
+        const state = data as BreweryState;
         setState(state);
         addLog(describeState(state));
         break;
@@ -111,7 +111,7 @@ export function PullToRefreshDemo() {
             className="button button--secondary button--sm"
             onClick={() => embed.current?.send("refresh")}
           >
-            Call <code>ref.refresh(activityProvider)</code>
+            Call <code>ref.refresh(breweryProvider)</code>
           </button>
         </div>
         {state && (
