@@ -94,7 +94,12 @@ if [ -n "$shard" ]; then
 fi
 # shellcheck disable=SC2086 # word splitting of the package list is intended
 validate_packages $selected
-command -v flutter >/dev/null || die "flutter is not on PATH (this repo pins its SDK in .fvmrc)"
+# Every step but website runs Flutter.
+for s in $steps; do
+  [ "$s" = website ] && continue
+  command -v flutter >/dev/null || die "flutter is not on PATH (this repo pins its SDK in .fvmrc)"
+  break
+done
 
 # Keeps the lines of stdin that match -p (all of them without -p).
 only_selected() {
