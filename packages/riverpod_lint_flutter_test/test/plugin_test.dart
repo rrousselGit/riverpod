@@ -826,9 +826,7 @@ Stream<File> _findFilesToAnalyze() {
       )
       .where(
         (e) {
-          // Tests, such as those of test/src, are not fixtures.
           return e.path.endsWith('.dart') &&
-              !e.path.endsWith('_test.dart') &&
               !e.path.endsWith('.g.dart') &&
               !e.path.endsWith('.freezed.dart') &&
               !e.path.contains('.assist') &&
