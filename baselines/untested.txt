@@ -89,7 +89,6 @@ packages/riverpod_lint/lib/src/lints/async_value_nullable_pattern.dart
 packages/riverpod_lint/lib/src/lints/avoid_build_context_in_providers.dart
 packages/riverpod_lint/lib/src/lints/avoid_public_notifier_properties.dart
 packages/riverpod_lint/lib/src/lints/avoid_ref_inside_state_dispose.dart
-packages/riverpod_lint/lib/src/lints/functional_ref.dart
 packages/riverpod_lint/lib/src/lints/missing_provider_scope.dart
 packages/riverpod_lint/lib/src/lints/notifier_build.dart
 packages/riverpod_lint/lib/src/lints/notifier_extends.dart

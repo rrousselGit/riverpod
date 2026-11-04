@@ -10,9 +10,9 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:riverpod_lint/src/lints/functional_ref.dart';
 import 'package:test/test.dart';
 
-import 'context.dart';
-import 'io_utils.dart';
-import 'registry.dart';
+import '../../context.dart';
+import '../../io_utils.dart';
+import '../../registry.dart';
 
 Future<void> main() async {
   group('with riverpod_annotation imported with a prefix', () {
