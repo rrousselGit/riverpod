@@ -66,12 +66,18 @@ jobs:
       # branch, so this checks the changes of the PR.
       - run: scripts/check.sh tested --base HEAD^1
 
-  mutation:
-    name: The test of each riverpod file kills its mutants
+  mutation-shard:
+    name: Mutation testing (part ${{ matrix.shard }}/${{ strategy.job-total }})
     runs-on: ubuntu-latest
-    # The daily run mutates every file of packages/riverpod, one mutant at a
-    # time.
-    timeout-minutes: 300
+    # Every mutant runs the test of its file, one at a time, so the mutants
+    # are spread over several machines: many for the daily run, which
+    # mutates every file of packages/riverpod, a few for the files a PR
+    # changed. The mutation job below checks the parts together.
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJSON(github.event_name == 'schedule' && '[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]' || '[1,2,3,4]') }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -80,12 +86,39 @@ jobs:
         with:
           channel: master
           cache: true
-      - if: github.event_name == 'schedule'
-        run: scripts/check.sh mutation --mutate-all
       # On pull requests, HEAD is the merge commit and HEAD^1 the target
       # branch, so this mutates the files the PR changed.
-      - if: github.event_name != 'schedule'
-        run: scripts/check.sh mutation --base HEAD^1
+      - run: >-
+          scripts/check.sh mutation --shard ${{ matrix.shard }}/${{ strategy.job-total }}
+          ${{ github.event_name == 'schedule' && '--mutate-all' || '--base HEAD^1' }}
+      # Nothing is written when the PR changes no file to mutate.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mutation-part-${{ matrix.shard }}
+          path: packages/riverpod/.dart_tool/mutation/part-*.json
+          if-no-files-found: ignore
+
+  mutation:
+    name: The test of each riverpod file kills its mutants
+    runs-on: ubuntu-latest
+    needs: mutation-shard
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: mutation-part-*
+          merge-multiple: true
+          path: mutation-parts
+      - run: >-
+          scripts/check.sh mutation --mutation-parts mutation-parts
+          ${{ github.event_name == 'schedule' && '--mutate-all' || '--base HEAD^1' }}
       - if: always()
         uses: actions/upload-artifact@v4
         with:

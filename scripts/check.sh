@@ -45,11 +45,15 @@
 #                       that the tests cover every changed lib/ line.
 #   --no-coverage-check Collect test coverage, but skip that check (CI uses
 #                       this, as Codecov checks coverage there).
-#   --shard I/N         Only the I-th of N slices of the analyze/test tasks
-#                       (used to split CI across machines).
+#   --shard I/N         Only the I-th of N slices of the analyze/test tasks,
+#                       and only part I of N of the mutants, written but not
+#                       checked (used to split CI across machines).
 #   --base REF          Base ref of changelog, tested, coverage and
 #                       mutation (default: origin/master).
 #   --mutate-all        mutation: every file, not only the changed ones.
+#   --mutation-parts DIR
+#                       mutation: mutate nothing, but check the parts that
+#                       --shard wrote, gathered in DIR.
 #   -h, --help          Show this help.
 #
 # Examples:
@@ -70,6 +74,7 @@ coverage=1
 shard=""
 base="origin/master"
 mutate_all=0
+mutation_parts=""
 while [ $# -gt 0 ]; do
   case "$1" in
     -p|--package) [ $# -ge 2 ] || die "$1 needs a path"
@@ -81,6 +86,7 @@ while [ $# -gt 0 ]; do
     --shard)      [ $# -ge 2 ] || die "$1 needs I/N"; shard="$2"; shift 2 ;;
     --base)       [ $# -ge 2 ] || die "$1 needs a ref"; base="$2"; shift 2 ;;
     --mutate-all) mutate_all=1; shift ;;
+    --mutation-parts) [ $# -ge 2 ] || die "$1 needs a folder"; mutation_parts="$2"; shift 2 ;;
     -h|--help)    usage; exit 0 ;;
     all)          steps="$steps graph generate format analyze test changelog tested legacy issues"; shift ;;
     graph|generate|format|analyze|test|changelog|tested|legacy|issues|mutation) steps="$steps $1"; shift ;;
@@ -168,11 +174,11 @@ fi
 
 if has_step mutation; then
   echo "==> mutation"
-  if [ "$mutate_all" = 1 ]; then
-    pool_inline "mutation" "scripts/mutation.sh --all"
-  else
-    pool_inline "mutation" "scripts/mutation.sh --base $base"
-  fi
+  mutation="scripts/mutation.sh"
+  if [ "$mutate_all" = 1 ]; then mutation="$mutation --all"; else mutation="$mutation --base $base"; fi
+  [ -z "$shard" ] || mutation="$mutation --shard $shard"
+  [ -z "$mutation_parts" ] || mutation="$mutation --merge $mutation_parts"
+  pool_inline "mutation" "$mutation"
 fi
 
 pool_report
