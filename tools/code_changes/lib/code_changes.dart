@@ -1,13 +1,14 @@
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/token.dart';
 
-/// Whether two versions of a Dart source only differ in comments (docs
-/// included) and whitespace.
+/// Whether two versions of a Dart source only differ in directives (imports,
+/// exports, parts), comments (docs included) and whitespace.
 ///
-/// Both versions are parsed into an unresolved AST, then compared token by
-/// token. Comments are not tokens of the AST (they are attached to the tokens
-/// that follow them), so they take no part in the comparison.
-bool sameCode(String before, String after) {
+/// Both versions are parsed into an unresolved AST, then their declarations
+/// are compared token by token. Directives precede every declaration, so they
+/// are skipped. Comments are not tokens of the AST (they are attached to the
+/// tokens that follow them), so they take no part in the comparison.
+bool sameDeclarations(String before, String after) {
   var left = _firstToken(before);
   var right = _firstToken(after);
   while (_sameToken(left, right)) {
@@ -30,11 +31,17 @@ bool _sameToken(Token left, Token right) {
       left.isSynthetic == right.isSynthetic;
 }
 
-/// The first token of the unresolved AST of [source].
+/// The first token of the first declaration of [source], or its end of file.
 ///
 /// Syntax errors are tolerated: the parser recovers in the same way for both
 /// versions of a file, so they compare equal unless the code changed.
 Token _firstToken(String source) {
   final result = parseString(content: source, throwIfDiagnostics: false);
-  return result.unit.beginToken;
+  final unit = result.unit;
+  final first = unit.declarations.firstOrNull;
+  if (first == null) return unit.endToken;
+  // The doc comment of a declaration is part of its tokens, but not of the
+  // code.
+  return first.metadata.firstOrNull?.beginToken ??
+      first.firstTokenAfterCommentAndMetadata;
 }

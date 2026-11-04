@@ -98,6 +98,8 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
     }
 
     final decoded = decode(provider.providerElement.valueTypeNode, 'e');
+    final isAsync =
+        provider.providerElement.createdType != SupportedCreatedType.value;
 
     buffer.write('''
 abstract class $notifierClass$genericsDefinition extends $baseClass {
@@ -115,9 +117,9 @@ abstract class $notifierClass$genericsDefinition extends $baseClass {
     String? key,
     String Function(${provider.providerElement.valueTypeNode.toCode()} state)? encode,
     ${provider.providerElement.valueTypeNode.toCode()} Function(String encoded)? decode,
-    StorageOptions options = const StorageOptions(),
+    StorageOptions options = const StorageOptions(),${isAsync ? '\n    bool emitAsLoadingState = true,' : ''}
   }) {
-    return NotifierPersistX(this).persist<String, String>(
+    return ${isAsync ? 'AsyncNotifierPersistX' : 'NotifierPersistX'}(this).persist<String, String>(
       storage,
       key: key ?? this.key,
       encode: encode ?? \$jsonCodex.encode,
@@ -125,7 +127,7 @@ abstract class $notifierClass$genericsDefinition extends $baseClass {
         final e = \$jsonCodex.decode(encoded);
         return $decoded;
       },
-      options: options,
+      options: options,${isAsync ? '\n      emitAsLoadingState: emitAsLoadingState,' : ''}
     );
   }
 }

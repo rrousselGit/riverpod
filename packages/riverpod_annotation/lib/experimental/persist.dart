@@ -5,6 +5,7 @@ export 'package:riverpod/src/internals.dart'
         Storage,
         StorageCacheTime,
         NotifierPersistX,
+        AsyncNotifierPersistX,
         PersistResult;
 
 /// {@template riverpod_persist_annotation}

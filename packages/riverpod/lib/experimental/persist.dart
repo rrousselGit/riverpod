@@ -5,4 +5,5 @@ export '../src/internals.dart'
         Storage,
         StorageCacheTime,
         NotifierPersistX,
+        AsyncNotifierPersistX,
         PersistResult;

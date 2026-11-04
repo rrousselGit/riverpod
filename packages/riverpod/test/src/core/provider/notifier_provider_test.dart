@@ -52,6 +52,86 @@ void main() {
         },
       );
 
+      test('sync notifiers of AsyncValue restore the decoded state as-is', () {
+        final container = ProviderContainer.test();
+        final provider =
+            NotifierProvider<
+              DeferredNotifier<AsyncValue<int>>,
+              AsyncValue<int>
+            >(
+              () => DeferredNotifier((ref, self) {
+                self.persist(
+                  DelegatingStorage(read: (_) => const PersistedData(42)),
+                  key: 'key',
+                  encode: (value) => value.requireValue,
+                  decode: AsyncData.new,
+                );
+                return self.stateOrNull ?? const AsyncLoading();
+              }),
+            );
+
+        expect(container.read(provider), const AsyncData(42));
+      });
+
+      group('emitAsLoadingState: false', () {
+        AsyncNotifierProvider<DeferredAsyncNotifier<int>, int> persisted(
+          Future<int> Function() create,
+        ) {
+          return AsyncNotifierProvider<DeferredAsyncNotifier<int>, int>(
+            () => DeferredAsyncNotifier((ref, self) {
+              self.persist(
+                DelegatingStorage(read: (_) => const PersistedData(42)),
+                key: 'key',
+                encode: (value) => value,
+                decode: (encoded) => encoded,
+                emitAsLoadingState: false,
+              );
+              return create();
+            }),
+          );
+        }
+
+        test('emits the decoded value as AsyncData', () async {
+          final completer = Completer<int>();
+          addTearDown(() => completer.complete(0));
+          final container = ProviderContainer.test();
+          final provider = persisted(() => completer.future);
+
+          final sub = container.listen(provider, (_, _) {});
+
+          expect(sub.read(), isA<AsyncData<int>>());
+          expect(sub.read().value, 42);
+          expect(sub.read().isFromCache, true);
+          await expectLater(container.read(provider.future), completion(42));
+        });
+
+        test('is overridden by the value returned by build', () async {
+          final completer = Completer<int>();
+          final container = ProviderContainer.test();
+          final provider = persisted(() => completer.future);
+
+          final sub = container.listen(provider, (_, _) {});
+          completer.complete(21);
+          await completer.future;
+
+          expect(sub.read(), const AsyncData<int>(21));
+          expect(sub.read().isFromCache, false);
+        });
+
+        test('keeps the decoded value if build fails', () async {
+          final completer = Completer<int>();
+          final container = ProviderContainer.test();
+          final provider = persisted(() => completer.future);
+
+          final sub = container.listen(provider, (_, _) {});
+          completer.completeError(StateError('err'));
+          await completer.future.catchError((_) => 0);
+
+          expect(sub.read().error, isStateError);
+          expect(sub.read().value, 42);
+        });
+      });
+
       matrix.createGroup((factory) {
         test('Persist if the notifier implements NotifierEncoder', () {
           final storage = StorageMock<String, Object?>();

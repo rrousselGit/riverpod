@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:riverpod_annotation/experimental/json_persist.dart';
 import 'package:riverpod_annotation/experimental/persist.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -120,5 +122,28 @@ class PassEncodeDecodeByHand extends _$PassEncodeDecodeByHand {
     ).future;
 
     return state.value ?? {};
+  }
+}
+
+@riverpod
+@JsonPersist()
+class EmitAsData extends _$EmitAsData {
+  @override
+  String get key => 'EmitAsData';
+
+  @override
+  Future<Map<String, String>> build(Completer<Map<String, String>> completer) {
+    persist(ref.watch(storageProvider.future), emitAsLoadingState: false);
+    return completer.future;
+  }
+}
+
+@riverpod
+@JsonPersist()
+class SyncJson extends _$SyncJson {
+  @override
+  Map<String, String> build() {
+    persist(ref.watch(storageProvider).requireValue);
+    return stateOrNull ?? {};
   }
 }

@@ -4,7 +4,7 @@ import 'package:code_changes/code_changes.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('sameCode', () {
+  group('sameDeclarations', () {
     test('is true for identical sources', () {
       _expectSame('int a = 1;', 'int a = 1;');
     });
@@ -43,6 +43,21 @@ void main() {
       _expectSame(
         'void fn() { print(1); }',
         'void fn() {\n  print(\n    1\n  );\n}\n',
+      );
+    });
+
+    test('ignores changes to directives', () {
+      _expectSame(
+        "import 'a.dart';\nexport 'b.dart' show A;\nint a = 1;",
+        "export 'b.dart' show A, B;\npart 'c.dart';\nint a = 1;",
+      );
+      _expectSame("export 'a.dart';", "export 'a.dart' show A;");
+    });
+
+    test('detects changes to the annotations of the first declaration', () {
+      _expectDifferent(
+        "import 'a.dart';\n@a\nint a = 1;",
+        "import 'a.dart';\n@b\nint a = 1;",
       );
     });
 
@@ -122,9 +137,12 @@ void main() {
       expect(result.stdout, '$codeAfter\n');
     });
 
-    test('prints nothing when only comments changed', () {
+    test('prints nothing when only comments or directives changed', () {
       final before = file('before.dart', 'int a = 1;');
-      final after = file('after.dart', '// Hello\nint a = 1;');
+      final after = file(
+        'after.dart',
+        "// Hello\nexport 'a.dart';\nint a = 1;",
+      );
 
       final result = run([before, after]);
 
@@ -141,9 +159,17 @@ void main() {
 }
 
 void _expectSame(String before, String after) {
-  expect(sameCode(before, after), isTrue, reason: '$before\n---\n$after');
+  expect(
+    sameDeclarations(before, after),
+    isTrue,
+    reason: '$before\n---\n$after',
+  );
 }
 
 void _expectDifferent(String before, String after) {
-  expect(sameCode(before, after), isFalse, reason: '$before\n---\n$after');
+  expect(
+    sameDeclarations(before, after),
+    isFalse,
+    reason: '$before\n---\n$after',
+  );
 }

@@ -1,10 +1,12 @@
-// Tells which Dart files changed in more than comments and whitespace.
+// Tells which Dart files changed in more than directives, comments and
+// whitespace.
 //
 // Usage: dart run code_changes OLD NEW [OLD NEW...]
 //
 // For each pair of files (two versions of one Dart file), prints NEW when
-// their code differs. Pairs that only differ in comments (docs included) or
-// whitespace print nothing. See `sameCode`.
+// their declarations differ. Pairs that only differ in directives (imports,
+// exports, parts), comments (docs included) or whitespace print nothing.
+// See `sameDeclarations`.
 
 import 'dart:io';
 
@@ -19,6 +21,6 @@ void main(List<String> args) {
   for (var i = 0; i < args.length; i += 2) {
     final before = File(args[i]).readAsStringSync();
     final after = File(args[i + 1]).readAsStringSync();
-    if (!sameCode(before, after)) stdout.writeln(args[i + 1]);
+    if (!sameDeclarations(before, after)) stdout.writeln(args[i + 1]);
   }
 }
