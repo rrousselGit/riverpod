@@ -42,7 +42,10 @@ void fn(String type) {
 @Deprecated('Ref')
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-void fn() {
+void fn(String a) {
+  '${a}Ref';
+  'Ref$a';
+  '#{{$a|Ref}}';
   'Reference';
   'riverpod';
   '#{{riverpod_annotation|\$Ref}} ref';

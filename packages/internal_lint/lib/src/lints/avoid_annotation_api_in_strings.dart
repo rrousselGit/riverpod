@@ -49,7 +49,7 @@ class AvoidAnnotationApiInStrings extends AnalysisRule {
 
     final visitor = _Visitor(this, _matcherFor(names));
     registry.addSimpleStringLiteral(this, visitor);
-    registry.addInterpolationString(this, visitor);
+    registry.addStringInterpolation(this, visitor);
   }
 }
 
@@ -188,10 +188,16 @@ class _Visitor extends SimpleAstVisitor<void> {
   }
 
   @override
-  void visitInterpolationString(InterpolationString node) {
+  void visitStringInterpolation(StringInterpolation node) {
     if (node.thisOrAncestorOfType<Annotation>() != null) return;
 
-    _check(node, node.value);
+    // Interpolated values are replaced by a word character, so that a name
+    // next to one (`'${name}Ref'`) is part of a longer word, and placeholders
+    // with an interpolated value (`'#{{$package|Ref}}'`) are still ignored.
+    final value = node.elements
+        .map((e) => e is InterpolationString ? e.value : '_')
+        .join();
+    _check(node, value);
   }
 
   void _check(AstNode node, String value) {
