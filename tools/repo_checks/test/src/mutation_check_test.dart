@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:internal_lint/src/mutation_check.dart';
+import 'package:repo_checks/src/mutation_check.dart';
 import 'package:test/test.dart';
 
 /// A report in the mutation-testing-elements schema, with a file of

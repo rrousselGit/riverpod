@@ -162,6 +162,14 @@ packages:
     dev_dependencies: []
     dependency_overrides: []
     dependents: []
+  repo_checks:
+    path: tools/repo_checks
+    codegen: false
+    test: dart
+    dependencies: []
+    dev_dependencies: []
+    dependency_overrides: []
+    dependents: []
   riverpod:
     path: packages/riverpod
     codegen: true
@@ -500,6 +508,7 @@ tree:
         riverpod_devtool_generator (dev):
           riverpod_analyzer_utils:
             lint_visitor_generator (dev): {}
+  repo_checks: {}
   riverpod_analyzer_utils_tests:
     riverpod_analyzer_utils (dev):
       lint_visitor_generator (dev): {}
@@ -659,7 +668,7 @@ tree:
 # depends on earlier groups. Run the groups in order; everything
 # within a group can run at the same time.
 layers:
-  - [code_changes, generate_providers, lint_visitor_generator, package_graph]
+  - [code_changes, generate_providers, lint_visitor_generator, package_graph, repo_checks]
   - [riverpod_analyzer_utils]
   - [internal_lint, riverpod_devtool_generator]
   - [riverpod]

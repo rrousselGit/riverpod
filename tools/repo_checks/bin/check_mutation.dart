@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:internal_lint/src/mutation_check.dart';
 import 'package:path/path.dart' as p;
+import 'package:repo_checks/src/mutation_check.dart';
 
 /// Checks a dart_mutant report: each mutated file must have as many
 /// surviving mutants as [mutationBaselinePath] lists for it (see
@@ -10,7 +10,7 @@ import 'package:path/path.dart' as p;
 /// Usage:
 ///
 /// ```sh
-/// dart run internal_lint:check_mutation \
+/// dart run repo_checks:check_mutation \
 ///   root package report coverage [--update-baseline] file...
 /// ```
 ///

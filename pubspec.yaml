@@ -37,6 +37,7 @@ workspace:
   - tools/code_changes
   - tools/generate_providers
   - tools/package_graph
+  - tools/repo_checks
   - other_projects/devtool_debug_app
   - website
 

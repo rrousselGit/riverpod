@@ -175,5 +175,5 @@ echo "Report: $package/$out/mutation.html"
 
 cd "$ROOT" || exit 1
 # shellcheck disable=SC2086 # $update is empty or a flag
-exec dart run internal_lint:check_mutation "$ROOT" "$package" \
+exec dart run repo_checks:check_mutation "$ROOT" "$package" \
   "$package/$out/mutation.json" "$package/$out/coverage" $update "${files[@]}"
