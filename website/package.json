@@ -4,19 +4,17 @@
   "private": true,
   "scripts": {
     "meta_generator": "node meta_generator.js",
-    "dartpad_generator": "node dartpad_generator.js",
-    "generate": "npm run meta_generator && npm run dartpad_generator",
     "build:demos": "flutter build web --wasm --no-web-resources-cdn -t demos/main.dart -o static/flutter",
     "docusaurus": "docusaurus",
-    "start": "npm run generate && docusaurus start",
-    "build": "npm run generate && docusaurus build",
+    "start": "npm run meta_generator && docusaurus start",
+    "build": "npm run meta_generator && docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "dev": "npm run generate && docusaurus start"
+    "dev": "npm run meta_generator && docusaurus start"
   },
   "dependencies": {
     "@babel/helper-get-function-arity": "^7.16.7",

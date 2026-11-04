@@ -1,5 +1,8 @@
-// IMPORTANT: Any change to this file must also be applied to the website
-// tutorial: https://riverpod.dev/docs/tutorials/first_app
+// IMPORTANT: Any change to this file must also be applied to:
+// - The DartPad embed gist
+//   https://gist.github.com/rrousselGit/6bf918e3fc97a40b53d1ea80fd937146
+// - The website tutorial
+//   https://riverpod.dev/docs/tutorials/first_app
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

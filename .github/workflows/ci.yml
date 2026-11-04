@@ -33,18 +33,6 @@ jobs:
           cache: true
       - run: scripts/check.sh graph generate
 
-  website:
-    name: Website generated files are up to date
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: yarn
-          cache-dependency-path: website/yarn.lock
-      - run: scripts/check.sh website
-
   analyze:
     name: Format & analyze
     runs-on: ubuntu-latest

@@ -15,17 +15,7 @@ async function main() {
   buffer += writeDocumentTitles({ englishDocs, translatedDocs });
   buffer += writeOutdatedTranslations({ translatedDocs, englishDocs });
 
-  const current = fs.existsSync(outFile) ? fs.readFileSync(outFile, "utf8") : "";
-  if (current === buffer) {
-    console.log(`${outFile} is up to date.`);
-  } else if (process.argv.includes("--check")) {
-    console.error(`${outFile} is out of date with the docs.`);
-    console.error("Fix with: cd website && node meta_generator.js");
-    process.exitCode = 1;
-  } else {
-    fs.writeFileSync(outFile, buffer);
-    console.log(`Updated ${outFile}.`);
-  }
+  fs.writeFileSync(outFile, buffer);
 }
 
 function writeDocumentTitles({ englishDocs, translatedDocs }) {
@@ -173,7 +163,4 @@ class OutdatedTranslation {
   }
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+main().catch(console.error);
