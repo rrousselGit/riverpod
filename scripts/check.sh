@@ -32,6 +32,10 @@
 # Options:
 #   -p, --package PATH  Only this package (repeatable). Applies to generate,
 #                       format, analyze, test and tested.
+#   --affected          Only the packages that the changes since --base may
+#                       affect (see scripts/affected.sh), for the same steps
+#                       as -p. Combines with -p. CI uses this on pull
+#                       requests.
 #   -j, --jobs N        Max parallel tasks (default: CPU count; or CHECK_JOBS).
 #   --fix               graph, generate, format: fix instead of failing.
 #   --no-coverage       Skip collecting test coverage, and so the check
@@ -40,8 +44,8 @@
 #                       this, as Codecov checks coverage there).
 #   --shard I/N         Only the I-th of N slices of the analyze/test tasks
 #                       (used to split CI across machines).
-#   --base REF          Base ref of changelog, tested and coverage
-#                       (default: origin/master).
+#   --base REF          Base ref of --affected, changelog, tested and
+#                       coverage (default: origin/master).
 #   -h, --help          Show this help.
 #
 # Examples:
@@ -61,6 +65,7 @@ fix=0
 coverage=1
 shard=""
 base="origin/master"
+affected=0
 while [ $# -gt 0 ]; do
   case "$1" in
     -p|--package) [ $# -ge 2 ] || die "$1 needs a path"
@@ -71,6 +76,7 @@ while [ $# -gt 0 ]; do
     --no-coverage-check) [ "$coverage" = 0 ] || coverage=collect; shift ;;
     --shard)      [ $# -ge 2 ] || die "$1 needs I/N"; shard="$2"; shift 2 ;;
     --base)       [ $# -ge 2 ] || die "$1 needs a ref"; base="$2"; shift 2 ;;
+    --affected)   affected=1; shift ;;
     -h|--help)    usage; exit 0 ;;
     all)          steps="$steps graph generate format analyze test changelog tested legacy issues"; shift ;;
     graph|generate|format|analyze|test|changelog|tested|legacy|issues) steps="$steps $1"; shift ;;
@@ -104,6 +110,24 @@ only_shard() {
   awk -v i="${shard%/*}" -v n="${shard#*/}" '(NR - 1) % n == i - 1'
 }
 flag() { [ "$fix" = 1 ] && echo "$1" || echo "$2"; }
+
+if [ "$affected" = 1 ]; then
+  affected_list="$(affected_packages "$base")" || exit
+  affected_list="$(only_selected <<<"$affected_list")"
+  skipped="$(ci_packages | only_selected | grep -Fxv -f <(printf '%s\n' "$affected_list"))"
+  [ -z "$skipped" ] || printf 'Skipped, as no change since %s affects them:\n%s\n' \
+    "$base" "$(sed 's/^/  /' <<<"$skipped")"
+  selected=""
+  for p in $affected_list; do selected="$selected $p"; done
+  # An empty selection means every package, so drop the per-package steps.
+  if [ -z "$selected" ]; then
+    kept=""
+    for s in $steps; do
+      case "$s" in generate|format|analyze|test|tested) ;; *) kept="$kept $s" ;; esac
+    done
+    steps="$kept"
+  fi
+fi
 
 echo "check.sh:${steps}${selected:+ | packages:$selected}${shard:+ | shard $shard} | $POOL_JOBS jobs"
 pool_init

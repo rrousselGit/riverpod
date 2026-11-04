@@ -1,0 +1,31 @@
+name: Skipped packages
+
+# Lists the packages that ci.yml skips on a pull request, as the PR affects
+# neither them nor their dependencies (see scripts/affected.sh).
+# The list is handed to skipped_packages_comment.yml, which comments it on the
+# PR: pull requests from forks get a read-only token here, so this workflow
+# cannot comment itself.
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  list:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      # HEAD is the merge commit and HEAD^1 the target branch, as in ci.yml.
+      - run: scripts/affected.sh --skipped --base HEAD^1 > skipped.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: skipped-packages
+          path: skipped.txt

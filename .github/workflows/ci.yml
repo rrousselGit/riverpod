@@ -21,17 +21,26 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+env:
+  # On pull requests, only the packages the PR may affect are checked: those it
+  # changes and their dependents (see scripts/affected.sh). HEAD is the merge
+  # commit there and HEAD^1 the target branch, hence the `fetch-depth: 2`
+  # below. skipped_packages.yml lists the others in a comment on the PR.
+  AFFECTED: ${{ github.event_name == 'pull_request' && '--affected --base HEAD^1' || '' }}
+
 jobs:
   generate:
     name: Package graph & generated code are up to date
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - uses: subosito/flutter-action@v2
         with:
           channel: master
           cache: true
-      - run: scripts/check.sh graph generate
+      - run: scripts/check.sh $AFFECTED graph generate
 
   analyze:
     name: Format & analyze
@@ -42,12 +51,14 @@ jobs:
       issues: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - uses: subosito/flutter-action@v2
         with:
           channel: master
           cache: true
       # The token lets scripts/issues.sh read the state of the linked issues.
-      - run: scripts/check.sh format analyze legacy issues
+      - run: scripts/check.sh $AFFECTED format analyze legacy issues
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -64,7 +75,7 @@ jobs:
           cache: true
       # On pull requests, HEAD is the merge commit and HEAD^1 the target
       # branch, so this checks the changes of the PR.
-      - run: scripts/check.sh tested --base HEAD^1
+      - run: scripts/check.sh $AFFECTED tested --base HEAD^1
 
   test:
     name: Test (shard ${{ matrix.shard }}/3)
@@ -75,12 +86,14 @@ jobs:
         shard: [1, 2, 3]
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - uses: subosito/flutter-action@v2
         with:
           channel: master
           cache: true
       # Codecov checks the coverage collected here.
-      - run: scripts/check.sh test --no-coverage-check --shard ${{ matrix.shard }}/3
+      - run: scripts/check.sh $AFFECTED test --no-coverage-check --shard ${{ matrix.shard }}/3
       - uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
