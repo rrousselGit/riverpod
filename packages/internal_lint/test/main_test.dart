@@ -14,6 +14,7 @@ void main() {
       'rule_visitor',
       'avoid_sub_read',
       'avoid_legacy_api',
+      'avoid_annotation_api_in_strings',
       'show_all_public_api',
     ]);
   });

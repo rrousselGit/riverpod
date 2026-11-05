@@ -190,7 +190,7 @@ extension ProviderElementNames on GeneratorProviderDeclarationElement {
     if (dependencies == null && !isScoped) return 'null';
     dependencies ??= {};
 
-    final buffer = StringBuffer('<ProviderOrFamily>');
+    final buffer = StringBuffer('<#{{riverpod|ProviderOrFamily}}>');
     buffer.write('[');
 
     buffer.writeAll(dependencies.map((e) => e.providerName(options)), ',');
@@ -204,7 +204,7 @@ extension ProviderElementNames on GeneratorProviderDeclarationElement {
     if (deps == null && !isScoped) return 'null';
     allTransitiveDependencies ??= [];
 
-    final buffer = StringBuffer('<ProviderOrFamily>');
+    final buffer = StringBuffer('<#{{riverpod|ProviderOrFamily}}>');
     if (allTransitiveDependencies.length < 4) {
       buffer.write('[');
     } else {
@@ -297,58 +297,7 @@ extension ProviderNames on GeneratorProviderDeclaration {
   String genericsDefinition() =>
       typeParameters.genericDefinitionDisplayString();
 
-  String notifierBuildType({
-    bool withGenericDefinition = false,
-    bool withArguments = false,
-  }) {
-    final genericsDefinition = withGenericDefinition
-        ? this.genericsDefinition()
-        : '';
-    final notifierType = '$name${generics()}';
-
-    final parameters = withArguments
-        ? buildParamDefinitionQuery(this.parameters, withDefaults: false)
-        : '';
-
-    return '${providerElement.createdTypeNode} Function$genericsDefinition(Ref, $notifierType, $parameters)';
-  }
-
-  String createType({
-    bool withArguments = true,
-    bool withGenericDefinition = false,
-  }) {
-    final generics = this.generics();
-    final genericsDefinition = withGenericDefinition
-        ? this.genericsDefinition()
-        : '';
-
-    final provider = this;
-    switch (provider) {
-      case FunctionalProviderDeclaration():
-        final params = withArguments
-            ? buildParamDefinitionQuery(parameters, withDefaults: false)
-            : '';
-
-        return '${provider.providerElement.createdTypeNode} Function$genericsDefinition(Ref ref, $params)';
-      case ClassBasedProviderDeclaration():
-        return '${provider.name}$generics Function$genericsDefinition()';
-    }
-  }
-
   String get generatedElementName => '_\$${providerElement.name.public}Element';
-
-  String get internalElementName => switch (this) {
-    ClassBasedProviderDeclaration() => switch (providerElement.createdType) {
-      SupportedCreatedType.future => r'$AsyncNotifierProviderElement',
-      SupportedCreatedType.stream => r'$StreamNotifierProviderElement',
-      SupportedCreatedType.value => r'$NotifierProviderElement',
-    },
-    FunctionalProviderDeclaration() => switch (providerElement.createdType) {
-      SupportedCreatedType.future => r'$FutureProviderElement',
-      SupportedCreatedType.stream => r'$StreamProviderElement',
-      SupportedCreatedType.value => r'$ProviderElement',
-    },
-  };
 
   String get hashFnName => '_\$${providerElement.name.lowerFirst}Hash';
 

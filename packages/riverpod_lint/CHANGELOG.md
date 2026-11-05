@@ -5,6 +5,8 @@
 - Added `prefer_keep_alive_annotation`, which warns when the body of a generated
   provider starts with `ref.keepAlive()`, and suggests `@Riverpod(keepAlive: true)`
   instead (#3855).
+- Fixed `functional_ref` reporting a valid ref when `riverpod_annotation` is
+  imported with a prefix, such as `int value(r.Ref ref)`.
 
 ## 3.1.9 - 2026-09-04
 
