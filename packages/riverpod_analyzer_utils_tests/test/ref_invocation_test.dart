@@ -20,7 +20,6 @@ extension on RiverpodAnalysisResult {
 void main() {
   testSource(
     'Parses import aliases',
-    timeout: const Timeout.factor(4),
     runGenerator: true,
     files: {
       'file.dart': '''
