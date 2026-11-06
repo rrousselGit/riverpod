@@ -1300,22 +1300,29 @@ void main() {
         await expectLater(
           future,
           throwsA(
-            isA<ProviderDisposedException>()
-                .having((e) => e.provider, 'provider', provider)
-                .having(
-                  (e) => e.toString(),
-                  'toString',
-                  equalsIgnoringHashCodes(
-                    'ProviderDisposedException: The provider StreamProvider<int>#00000 '
-                    'was disposed during loading state, before it could emit a value.\n'
-                    'This is a normal lifecycle event caused by the provider being '
-                    'no longer listened to while still loading.',
-                  ),
-                ),
+            isA<ProviderDisposedException>().having(
+              (e) => e.provider,
+              'provider',
+              provider,
+            ),
           ),
         );
       },
     );
+
+    test('ProviderDisposedException.toString', () {
+      final provider = Provider((ref) => 0);
+
+      expect(
+        ProviderDisposedException(provider).toString(),
+        equalsIgnoringHashCodes(
+          'ProviderDisposedException: The provider Provider<int>#00000 was '
+          'disposed during loading state, before it could emit a value.\n'
+          'This is a normal lifecycle event caused by the provider being '
+          'no longer listened to while still loading.',
+        ),
+      );
+    });
 
     group('auto dispose', () {
       test(

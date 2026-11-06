@@ -1,7 +1,8 @@
 ## Unreleased minor
 
-- `ProviderObserver.providerDidFail` is no longer called for errors received
-  after a provider was disposed, such as when an `autoDispose` provider awaiting
+- `ProviderObserver`s are no longer notified when a provider's future
+  completes after the provider was disposed. This stops `providerDidFail` from
+  reporting disposal errors, such as when an `autoDispose` provider awaiting
   another provider's `.future` is disposed mid-load (#4706).
 - Added `ProviderDisposedException`. `provider.future` now completes with it
   instead of a `StateError` when the provider is disposed before emitting a value.

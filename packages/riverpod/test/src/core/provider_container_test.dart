@@ -6432,39 +6432,19 @@ void main() {
         },
       );
 
-      test('is not called when a dependent receives the disposal error of a '
-          'StreamProvider disposed before emitting', () async {
+      test('is not called for errors emitted after dispose', () async {
         final observer = ObserverMock();
-        final container = ProviderContainer.test(
-          observers: [observer],
-          retry: (_, _) => null,
-        );
-        final controller = StreamController<int>();
-        addTearDown(controller.close);
-        final stream = StreamProvider.autoDispose<int>(
-          (ref) => controller.stream,
-        );
-        final dependent = FutureProvider.autoDispose<String>((ref) async {
-          final value = await ref.watch(stream.future);
-          return 'got $value';
-        });
+        final container = ProviderContainer.test(observers: [observer]);
+        final completer = Completer<int>();
+        final provider = FutureProvider((ref) => completer.future);
 
-        final sub = container.listen(dependent, (_, _) {}, onError: (_, _) {});
-        final dependentFuture = container.read(dependent.future);
+        final future = container.read(provider.future);
+        container.dispose();
         clearInteractions(observer);
+        completer.completeError('error', StackTrace.empty);
 
-        // Stop listening while the stream is still loading, so that both
-        // providers are auto-disposed.
-        sub.close();
-        await container.pump();
-
-        await expectLater(
-          dependentFuture,
-          throwsA(isA<ProviderDisposedException>()),
-        );
-        await Future<void>.delayed(Duration.zero);
-
-        verifyNever(observer.providerDidFail(any, any, any));
+        await expectLater(future, throwsA('error'));
+        verifyZeroInteractions(observer);
       });
 
       test('is called when FutureProvider emits an error', () async {

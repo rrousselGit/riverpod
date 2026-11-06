@@ -7,9 +7,6 @@ typedef AsyncSubscription = ({
   void Function() cancel,
   void Function()? pause,
   void Function()? resume,
-
-  /// The provider was disposed
-  void Function()? abort,
 });
 
 /// Implementation detail of `riverpod_generator`.

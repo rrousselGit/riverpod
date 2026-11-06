@@ -141,19 +141,13 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   }
 
   /// Life-cycle for when an error from the provider's "build" method is received.
-  ///
-  /// Might be invoked after the element is disposed in the case where `provider.future`
-  /// has yet to complete.
   @internal
   bool onError(AsyncError<ValueT> value, {bool seamless = false}) {
     final notified = asyncTransition(value, seamless: seamless);
 
     final result = resultForValue(value);
-    if (result is! $ResultError<StateT> && !origin._isSynthetic && !_disposed) {
-      // Hard error states are already reported to the observers.
-      // Skip notification if the element is already disposed — the error
-      // is a post-dispose side-effect (e.g. ProviderDisposedException
-      // completing a pending future), not a real provider failure.
+    if (result is! $ResultError<StateT> && !origin._isSynthetic) {
+      // Hard error states are already reported to the observers
       for (final observer in container.observers) {
         container.runTernaryGuarded(
           observer.providerDidFail,
@@ -181,9 +175,6 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   }
 
   /// Life-cycle for when a data from the provider's "build" method is received.
-  ///
-  /// Might be invoked after the element is disposed in the case where `provider.future`
-  /// has yet to complete.
   @internal
   bool onData(AsyncData<ValueT> value, {bool seamless = false}) {
     final notified = asyncTransition(value, seamless: seamless);
@@ -221,7 +212,6 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
         cancel: subscription.cancel,
         pause: subscription.pause,
         resume: subscription.resume,
-        abort: subscription.cancel,
       );
 
       return asyncSub;
@@ -290,14 +280,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
 
       last(futureOr);
 
-      return (
-        cancel: cancel,
-        // We don't call `cancel` here to let `provider.future` resolve with
-        // the last value emitted by the future.
-        abort: null,
-        pause: null,
-        resume: null,
-      );
+      return (cancel: cancel, pause: null, resume: null);
     });
   }
 
@@ -377,12 +360,20 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
 
       final lastFuture = _lastFuture;
       if (lastFuture != null) {
-        _cancelSubscription?.abort?.call();
-
-        // Prevent super.dispose from cancelling the subscription on the "last"
-        // stream value, so that it can be sent to `provider.future`.
-        _lastFuture = null;
-        _cancelSubscription = null;
+        // Send the pending future's result to `provider.future` directly.
+        // The element is disposed, so its state and observers are not updated.
+        lastFuture.then(
+          completer.complete,
+          onError: (Object error, StackTrace stackTrace) {
+            completer.completeError(
+              // The provider was loading, and will never rebuild.
+              error is AsyncValueIsLoadingException
+                  ? _missingLastValueError()
+                  : error,
+              stackTrace,
+            );
+          },
+        );
       } else {
         // The listened stream completed during a "loading" state.
         completer.completeError(_missingLastValueError(), StackTrace.current);
@@ -996,7 +987,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       }
 
       for (final observer in container.observers) {
-        if (next is $ResultError<StateT> && !_disposed) {
+        if (next is $ResultError<StateT>) {
           container.runTernaryGuarded(
             observer.providerDidFail,
             _currentObserverContext(),
