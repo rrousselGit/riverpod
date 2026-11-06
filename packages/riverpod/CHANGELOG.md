@@ -1,4 +1,4 @@
-## Unreleased minor
+## 3.5.0 - 2026-11-06
 
 - `ProviderObserver`s are no longer notified when a provider's future
   completes after the provider was disposed. This stops `providerDidFail` from
@@ -1611,3 +1611,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

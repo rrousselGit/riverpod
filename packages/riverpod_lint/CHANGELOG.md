@@ -1,4 +1,4 @@
-## Unreleased minor
+## 3.2.0 - 2026-11-06
 
 - Updated widget assists to recognize imports from `material_ui` and
   `cupertino_ui`.
@@ -12,6 +12,11 @@
   the used provider instead of adding it. (thanks to @cdeil)
 - Fixed the analyzer plugin crashing on generated providers whose return type
   is unresolved, such as `MissingType` or `Future<MissingType>`.
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.5.0`
+- `riverpod_analyzer_utils` upgraded to `1.0.0`
 
 ## 3.1.9 - 2026-09-04
 
@@ -424,3 +429,4 @@ Fix quick-fix for provider_dependencies
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

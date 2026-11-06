@@ -1,4 +1,4 @@
-## Unreleased minor
+## 3.5.0 - 2026-11-06
 
 - `ProviderObserver`s are no longer notified when a provider's future
   completes after the provider was disposed. This stops `providerDidFail` from
@@ -32,6 +32,10 @@
 - Migrated Material imports to `package:material_ui/material_ui.dart` and added
   `material_ui` as a dependency.
 - Updated the DevTools extension to use Material UI themes and localizations.
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.5.0`
 
 ## 3.4.3 - 2026-09-04
 
@@ -1644,3 +1648,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

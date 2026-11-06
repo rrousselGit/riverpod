@@ -1,3 +1,8 @@
+## 0.4.8 - 2026-11-06
+### Dependency changes
+
+- `riverpod` upgraded to `3.5.0`
+
 ## 0.4.7 - 2026-09-04
 
 - Moved `test` to `dev_dependencies`. It was never imported from `lib/`.

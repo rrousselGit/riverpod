@@ -1,4 +1,4 @@
-## Unreleased fix
+## 1.0.0 - 2026-11-06
 
 - Mark the `ClassMembers` extension as `@internal`.
 - Fix bug with latest analyzer
@@ -189,3 +189,4 @@ the `@riverpod external int value()` syntax.
 ## 0.0.1
 
 - Initial version.
+
