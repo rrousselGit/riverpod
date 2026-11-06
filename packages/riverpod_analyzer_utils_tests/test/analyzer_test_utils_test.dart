@@ -47,4 +47,10 @@ const answer = value;
       );
     },
   );
+
+  test('cascadeSectionSource matches with or without the cascade operator', () {
+    expect('watch(dep)', cascadeSectionSource('watch(dep)'));
+    expect('..watch(dep)', cascadeSectionSource('watch(dep)'));
+    expect('watch(other)', isNot(cascadeSectionSource('watch(dep)')));
+  });
 }

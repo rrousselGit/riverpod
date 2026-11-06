@@ -181,7 +181,10 @@ final provider = Provider<int>((ref) {
       expect(result.refWatchInvocations, hasLength(3));
       expect(result.refInvocations, result.refWatchInvocations);
 
-      expect(result.refWatchInvocations[0].node.toSource(), 'watch(dep)');
+      expect(
+        result.refWatchInvocations[0].node.toSource(),
+        cascadeSectionSource('watch(dep)'),
+      );
       expect(result.refWatchInvocations[0].function.toSource(), 'watch');
       expect(result.refWatchInvocations[0].listenable.node.toSource(), 'dep');
       expect(result.refWatchInvocations[0].listenable.familyArguments, null);
@@ -198,7 +201,7 @@ final provider = Provider<int>((ref) {
 
       expect(
         result.refWatchInvocations[1].node.toSource(),
-        'watch(dep2Provider)',
+        cascadeSectionSource('watch(dep2Provider)'),
       );
       expect(result.refWatchInvocations[1].function.toSource(), 'watch');
       expect(
@@ -221,7 +224,7 @@ final provider = Provider<int>((ref) {
 
       expect(
         result.refWatchInvocations[2].node.toSource(),
-        'watch(dep3Provider)',
+        cascadeSectionSource('watch(dep3Provider)'),
       );
       expect(result.refWatchInvocations[2].function.toSource(), 'watch');
       expect(

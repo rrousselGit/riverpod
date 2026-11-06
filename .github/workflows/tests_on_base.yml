@@ -1,0 +1,41 @@
+name: Tests on base
+
+# Runs the tests a pull request adds or changes against the lib/ code of its
+# target branch, to tell whether they catch the change (see
+# scripts/tests_on_base.sh). This only uploads the reports: pull requests from
+# forks get no write access here, so tests_on_base_comment.yml posts them.
+
+on:
+  pull_request:
+    paths-ignore:
+      - "**.md"
+      - "**.mdx"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  tests_on_base:
+    name: Run the new tests without the lib/ changes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+      # HEAD is the merge commit and HEAD^1 the target branch.
+      - run: scripts/tests_on_base.sh --base HEAD^1 --output tests_on_base.md --json tests_on_base.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tests-on-base
+          path: |
+            tests_on_base.md
+            tests_on_base.json
+          retention-days: 1

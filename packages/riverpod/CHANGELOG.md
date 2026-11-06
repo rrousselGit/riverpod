@@ -1,5 +1,6 @@
 ## Unreleased minor
 
+- Fix `StreamProvider`/`StreamNotifier` retaining obsolete dependency subscriptions across rebuilds until the stream closes, even after emitting data.
 - `AsyncValueIsLoadingException` now has a public constructor. (thanks to @uveshm003)
 - `debugTrackProviderCreation` is now exported by `package:riverpod/misc.dart`.
 - Devtools now retain only the current provider snapshot by default. Set
@@ -11,6 +12,9 @@
 - Deprecated `Ref.exist`.
 - Added `provider.exist`, which is listenable.
   This enables writing `ref.listen(provider.exist, ...)`.
+- Fix the deprecated `container.exists`/`ref.exists` returning `false` from a
+  scoped container for a provider mounted in an ancestor but never read through
+  that scope (#4785).
 - Fix `selectAsync` notifying a closed subscription after an upstream refresh.
 - Fixed `ref.read`/`container.read` of `provider.listenable` throwing an internal `StateError` on `.value`; it now throws a clear one explaining `.listenable` needs `ref.watch`, `ref.listen` or `container.listen` instead (thanks to @Yasser-Ameur)
 - Fixed a debug-only infinite loop in the circular-dependency check. Closing a

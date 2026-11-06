@@ -3,21 +3,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
-import 'fetch_activity/codegen.dart';
+import 'fetch_brewery/codegen.dart';
 
 /* SNIPPET START */
-class ActivityView extends ConsumerWidget {
+class BreweryView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activity = ref.watch(activityProvider);
+    final brewery = ref.watch(breweryProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Pull to refresh')),
       body: Center(
         // {@template render}
-        // If we have an activity, display it, otherwise wait
+        // If we have a brewery, display it, otherwise wait
         // {@endtemplate}
-        child: Text(activity.value?.activity ?? ''),
+        child: Text(brewery.value?.name ?? ''),
       ),
     );
   }

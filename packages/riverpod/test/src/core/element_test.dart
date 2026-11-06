@@ -10,6 +10,75 @@ import '../utils.dart';
 
 void main() {
   group('ProviderElement', () {
+    group('StreamProvider dependencies across rebuilds', () {
+      late ProviderContainer container;
+      late StreamProvider<int> provider;
+      late StreamController<int> controller;
+      var listeners = 0;
+      var throwOnBuild = false;
+
+      setUp(() {
+        listeners = 0;
+        throwOnBuild = false;
+        container = ProviderContainer.test(retry: (_, _) => null);
+        final dependency = Provider((ref) {
+          ref.onAddListener(() => listeners++);
+          ref.onRemoveListener(() => listeners--);
+        });
+        provider = StreamProvider((ref) {
+          ref.watch(dependency);
+          if (throwOnBuild) throw StateError('build');
+
+          final current = controller = StreamController<int>();
+          ref.onDispose(current.close);
+          return current.stream;
+        });
+        container.listen(provider, (_, _) {});
+      });
+
+      Future<void> rebuild() async {
+        container.invalidate(provider);
+        container.read(provider);
+        await container.pump();
+      }
+
+      test('are retained while the new stream has not emitted', () async {
+        await rebuild();
+
+        expect(listeners, 2);
+      });
+
+      test('are released once the new stream emits a value', () async {
+        await rebuild();
+        controller.add(0);
+        await container.pump();
+
+        expect(listeners, 1);
+      });
+
+      test('are released once the new stream emits an error', () async {
+        await rebuild();
+        controller.addError(0);
+        await container.pump();
+
+        expect(listeners, 1);
+      });
+
+      test('are released once the new stream closes empty', () async {
+        await rebuild();
+        await controller.close();
+
+        expect(listeners, 1);
+      });
+
+      test('are released if the new build throws', () async {
+        throwOnBuild = true;
+        await rebuild();
+
+        expect(listeners, 1);
+      });
+    });
+
     group('pausedActiveSubscriptionCount', () {
       test('Handles subscription.pause', () async {
         final container = ProviderContainer.test();
