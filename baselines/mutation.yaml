@@ -4,10 +4,11 @@
 # test/src/**/x_test.dart of lib/src/**/x.dart, still passes. Only that test
 # runs: one that catches the mutant from another file does not count.
 #
-# Enforced by scripts/mutation.sh (`scripts/check.sh mutation`): on the files
-# a change touches, or whose test it touches, on pull requests, and on every
-# file daily. Do not add to these counts: make the test kill the new mutants.
-# Lower an entry once its file has fewer survivors (the check fails until you
+# Enforced on every file daily by scripts/mutation.sh --all, and on the files
+# a change touches, or whose test it touches, by --whole-files. Pull requests
+# only run the mutants on the lines they change, none of which may survive.
+# Do not add to these counts: make the test kill the new mutants. Lower an
+# entry once its file has fewer survivors (the daily check fails until you
 # do), which `scripts/mutation.sh --update-baseline` does.
 # Paths are relative to the repository root.
 baseline:

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 import 'package:repo_checks/src/mutation_check.dart';
+import 'package:repo_checks/src/mutation_scope.dart';
 
 /// Checks a dart_mutant report: each mutated file must have as many
 /// surviving mutants as [mutationBaselinePath] lists for it (see
@@ -11,7 +12,8 @@ import 'package:repo_checks/src/mutation_check.dart';
 ///
 /// ```sh
 /// dart run repo_checks:check_mutation \
-///   root package report coverage [--update-baseline] file...
+///   root package report coverage [--update-baseline]
+///   [--changed-lines diff] file...
 /// ```
 ///
 /// where `root` is the repository root, `package` the path of the mutated
@@ -22,13 +24,23 @@ import 'package:repo_checks/src/mutation_check.dart';
 ///
 /// With `--update-baseline`, the entries of the files are set to their number
 /// of survivors instead.
+///
+/// With `--changed-lines`, only the mutants on the lines that the
+/// `git diff -U0` at `diff` (run in `package`) adds or changes were run: none
+/// of them may survive, and the baseline is not compared.
 Future<void> main(List<String> args) async {
   final arguments = [...args];
   final update = arguments.remove('--update-baseline');
+  String? diffPath;
+  final changedIndex = arguments.indexOf('--changed-lines');
+  if (changedIndex != -1 && changedIndex + 1 < arguments.length) {
+    diffPath = arguments[changedIndex + 1];
+    arguments.removeRange(changedIndex, changedIndex + 2);
+  }
   if (arguments.length < 5) {
     stderr.writeln(
       'Usage: check_mutation <root> <package> <report> <coverage> '
-      '[--update-baseline] <file>...',
+      '[--update-baseline] [--changed-lines <diff>] <file>...',
     );
     exit(2);
   }
@@ -97,16 +109,27 @@ Future<void> main(List<String> args) async {
     return listed[line] == false;
   }
 
+  final changed = diffPath == null
+      ? null
+      : {
+          for (final MapEntry(:key, :value) in parseChangedLines(
+            File(diffPath).readAsStringSync(),
+          ).entries)
+            p.posix.join(package, key): value,
+        };
   final problems = checkMutations(
     baseline: baseline,
     survivors: survivors,
     neverRun: neverRun,
     exists: (path) => File(p.join(root, path)).existsSync(),
+    changed: changed,
   );
   if (problems.isEmpty) {
     stdout.writeln(
-      'Every mutated file has the surviving mutants that '
-      '$mutationBaselinePath lists for it.',
+      changed == null
+          ? 'Every mutated file has the surviving mutants that '
+                '$mutationBaselinePath lists for it.'
+          : 'No mutant on the lines this change touches survived.',
     );
     return;
   }
