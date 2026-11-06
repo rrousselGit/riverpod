@@ -28,10 +28,11 @@
 #                                              lib/ file of packages/riverpod
 #                                              kills the mutants on its
 #                                              changed lines (with
-#                                              --mutate-all: all of them, but
-#                                              those baselines/mutation.yaml
-#                                              exempts). Slow, so not run by
-#                                              default nor by `all`
+#                                              --mutate-all: all of them),
+#                                              but those
+#                                              baselines/mutation.yaml lists.
+#                                              Slow, so not run by default
+#                                              nor by `all`
 # graph and generate run first, one after the other, since the rest reads
 # their output. format, analyze, test, changelog, tested, legacy and issues
 # then share one parallel pool. mutation runs last, alone, as it changes the

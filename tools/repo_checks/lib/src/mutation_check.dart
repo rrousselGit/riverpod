@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:analyzer/dart/analysis/utilities.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
@@ -11,12 +14,12 @@ import 'mutation_scope.dart';
 const mutationBaselinePath = 'baselines/mutation.yaml';
 
 /// Parses the content of [mutationBaselinePath]: for each file, relative to
-/// the repository root, how many mutants of it its own test let survive when
-/// the file was added to the baseline.
+/// the repository root, the keys (see [mutantKey]) of the mutants of it that
+/// its own test lets survive. A key is listed once per such mutant.
 ///
 /// Throws a [FormatException] if it is malformed.
 @internal
-Map<String, int> parseMutationBaseline(String content) {
+Map<String, List<String>> parseMutationBaseline(String content) {
   final yaml = loadYaml(content, sourceUrl: Uri.parse(mutationBaselinePath));
   if (yaml is! YamlMap) {
     throw const FormatException('$mutationBaselinePath must be a map');
@@ -30,56 +33,139 @@ Map<String, int> parseMutationBaseline(String content) {
   final baseline = yaml['baseline'] ?? YamlMap();
   if (baseline is! YamlMap ||
       baseline.entries.any(
-        (e) => e.key is! String || e.value is! int || (e.value as int) < 1,
+        (e) =>
+            e.key is! String ||
+            e.value is! YamlList ||
+            (e.value as YamlList).isEmpty ||
+            (e.value as YamlList).any((key) => key is! String),
       )) {
     throw const FormatException(
-      '`baseline` must map paths to positive numbers',
+      '`baseline` must map paths to non-empty lists of mutants',
     );
   }
-  return baseline.cast<String, int>();
+  return {
+    for (final MapEntry(:key, :value) in baseline.entries)
+      key as String: (value as YamlList).cast<String>().toList(),
+  };
 }
 
 /// Returns [content], the content of [mutationBaselinePath], with the
-/// entries of the files of [counts] set to their count, or removed for a
-/// count of 0. The comments above `baseline:` are kept.
+/// entries of the files of [entries] replaced, or removed when empty. The
+/// comments above `baseline:` are kept.
 @internal
-String updateMutationBaseline(String content, Map<String, int> counts) {
-  final entries = {...parseMutationBaseline(content), ...counts}
-    ..removeWhere((_, count) => count == 0);
+String updateMutationBaseline(
+  String content,
+  Map<String, List<String>> entries,
+) {
+  final all = {...parseMutationBaseline(content), ...entries}
+    ..removeWhere((_, keys) => keys.isEmpty);
   final lines = const LineSplitter().convert(content);
   final header = lines.takeWhile((line) => !line.startsWith('baseline:'));
 
   final buffer = StringBuffer()..writeAll(header.map((line) => '$line\n'));
-  if (entries.isEmpty) return (buffer..writeln('baseline: {}')).toString();
+  if (all.isEmpty) return (buffer..writeln('baseline: {}')).toString();
   buffer.writeln('baseline:');
-  for (final path in entries.keys.toList()..sort()) {
-    buffer.writeln('  $path: ${entries[path]}');
+  for (final path in all.keys.toList()..sort()) {
+    buffer.writeln('  $path:');
+    for (final key in all[path]!.toList()..sort()) {
+      // A JSON string is a double-quoted YAML scalar.
+      buffer.writeln('    - ${jsonEncode(key)}');
+    }
   }
   return buffer.toString();
 }
 
-/// A mutant that no test of its file killed, from `line` and `column` to
-/// `lastLine`.
+/// What a run found of a mutant.
 @internal
-typedef Survivor = ({
+enum MutantOutcome {
+  /// Its test still passed.
+  survived,
+
+  /// Its test failed, or it could not be run (it does not compile, or did
+  /// not end), so it cannot survive.
+  killed,
+
+  /// It was left to another run: another part (`Pending`), or out of the
+  /// lines a change touches ([outOfScopeReason]).
+  notRun,
+}
+
+/// A mutant of a report.
+@internal
+typedef ReportedMutant = ({
+  String key,
+  MutantOutcome outcome,
   int line,
   int column,
-  int lastLine,
-  String mutator,
-  String original,
-  String replacement,
 });
 
-/// The surviving mutants of each file of a dart_mutant [report], in the
+/// What names a mutant in [mutationBaselinePath], so that it is the same
+/// while the code around it moves: the declaration it is in (see
+/// [declarationAt]), its mutator, and the code it replaces and its
+/// replacement, on one line and shortened. Mutants with the same key are
+/// told apart by their number only.
+@internal
+String mutantKey({
+  required String declaration,
+  required String mutator,
+  required String original,
+  required String replacement,
+}) {
+  return '$declaration: $mutator: `${_snippet(original)}` → '
+      '`${_snippet(replacement)}`';
+}
+
+/// The declaration of [unit] that [offset] is in, as the names of the
+/// declarations around it outside of function bodies, joined by dots, such
+/// as `MyClass.method` or `topLevelFunction`. Setters end with `=`, unnamed
+/// constructors are `new`, unnamed extensions `extension`. `(top level)`
+/// when it is in none.
+@internal
+String declarationAt(CompilationUnit unit, int offset) {
+  final names = <String>[];
+  unit.accept(_DeclarationFinder(offset, names));
+  return names.isEmpty ? '(top level)' : names.join('.');
+}
+
+final class _DeclarationFinder extends GeneralizingAstVisitor<void> {
+  _DeclarationFinder(this.offset, this.names);
+
+  final int offset;
+  final List<String> names;
+
+  @override
+  void visitNode(AstNode node) {
+    if (offset < node.offset || offset >= node.end) return;
+    if (node is FunctionBody) return;
+    final name = switch (node) {
+      ClassDeclaration(:final namePart) => namePart.typeName.lexeme,
+      EnumDeclaration(:final namePart) => namePart.typeName.lexeme,
+      ExtensionTypeDeclaration(:final namePart) => namePart.typeName.lexeme,
+      MixinDeclaration(:final name) => name.lexeme,
+      ExtensionDeclaration(:final name) => name?.lexeme ?? 'extension',
+      FunctionDeclaration(:final name, :final isSetter) ||
+      MethodDeclaration(
+        :final name,
+        :final isSetter,
+      ) => '${name.lexeme}${isSetter ? '=' : ''}',
+      ConstructorDeclaration(:final name) => name?.lexeme ?? 'new',
+      VariableDeclaration(:final name) => name.lexeme,
+      EnumConstantDeclaration(:final name) => name.lexeme,
+      _ => null,
+    };
+    if (name != null) names.add(name);
+    node.visitChildren(this);
+  }
+}
+
+/// The mutants of each file of a dart_mutant [report], in the
 /// mutation-testing-elements JSON schema, by path relative to the repository
 /// root. [package] is the path of the mutated package, relative to the
 /// repository root, which the paths of the report are relative to.
 ///
-/// Files without survivors are included, with an empty list.
-///
 /// Throws a [FormatException] if [report] does not follow the schema.
 @internal
-Map<String, List<Survivor>> parseMutationReport(
+Map<String, List<ReportedMutant>> parseMutationReport(
   String report, {
   required String package,
 }) {
@@ -91,44 +177,57 @@ Map<String, List<Survivor>> parseMutationReport(
 
   return {
     for (final MapEntry(:key, :value) in files.entries)
-      p.posix.join(package, key as String): _survivors(key, value),
+      p.posix.join(package, key as String): _mutants(key, value),
   };
 }
 
-List<Survivor> _survivors(String path, Object? file) {
+List<ReportedMutant> _mutants(String path, Object? file) {
   if (file is! Map || file['source'] is! String || file['mutants'] is! List) {
     throw FormatException('`$path` has no `source` or `mutants`');
   }
   final source = file['source'] as String;
+  final unit = parseString(content: source, throwIfDiagnostics: false).unit;
   final lineStarts = [0, for (final m in '\n'.allMatches(source)) m.end];
-  int offset(Object? position) {
-    if (position case {'line': final int line, 'column': final int column}) {
-      return lineStarts[line - 1] + column - 1;
+  int offset(int line, int column) {
+    if (line < 1 || line > lineStarts.length) {
+      throw FormatException('`$path` has a mutant outside of its source');
     }
-    throw FormatException('`$path` has a mutant with a malformed location');
+    return lineStarts[line - 1] + column - 1;
   }
 
   return [
     for (final mutant in file['mutants'] as List)
       if (mutant case {
-        'status': 'Survived',
+        'status': final String status,
         'mutatorName': final String mutator,
         'replacement': final String replacement,
         'location': {
-          'start':
-              {'line': final int line, 'column': final int column} &&
-              final start,
-          'end': final end,
+          'start': {'line': final int line, 'column': final int column},
+          'end': {'line': final int endLine, 'column': final int endColumn},
         },
       })
         (
+          key: mutantKey(
+            declaration: declarationAt(unit, offset(line, column)),
+            mutator: mutator,
+            original: source.substring(
+              offset(line, column),
+              offset(endLine, endColumn),
+            ),
+            replacement: replacement,
+          ),
+          outcome: switch (status) {
+            'Survived' || 'NoCoverage' => MutantOutcome.survived,
+            'Pending' || 'Ignored' => MutantOutcome.notRun,
+            'CompileError' when mutant['statusReason'] == outOfScopeReason =>
+              MutantOutcome.notRun,
+            _ => MutantOutcome.killed,
+          },
           line: line,
           column: column,
-          lastLine: linesOf(source, offset(start), offset(end)).last,
-          mutator: mutator,
-          original: source.substring(offset(start), offset(end)),
-          replacement: replacement,
-        ),
+        )
+      else
+        throw FormatException('`$path` has a malformed mutant'),
   ];
 }
 
@@ -158,70 +257,94 @@ Map<String, Map<int, bool>> parseLcovLines(
   return result;
 }
 
-/// Checks that each file of [survivors] has as many surviving mutants as
-/// [baseline] lists for it (none if unlisted), and that every file of
-/// [baseline] exists.
+/// For each key of the mutants of a file and of its [listed] keys: how many
+/// times it is listed, and how many of its mutants survived, or were not
+/// run.
+Map<String, ({int listed, int survived, int notRun})> _tally(
+  List<String> listed,
+  List<ReportedMutant> mutants,
+) {
+  final tally = <String, ({int listed, int survived, int notRun})>{};
+  void add(String key, {int listed = 0, int survived = 0, int notRun = 0}) {
+    final old = tally[key] ?? (listed: 0, survived: 0, notRun: 0);
+    tally[key] = (
+      listed: old.listed + listed,
+      survived: old.survived + survived,
+      notRun: old.notRun + notRun,
+    );
+  }
+
+  for (final key in listed) {
+    add(key, listed: 1);
+  }
+  for (final mutant in mutants) {
+    switch (mutant.outcome) {
+      case MutantOutcome.survived:
+        add(mutant.key, survived: 1);
+      case MutantOutcome.notRun:
+        add(mutant.key, notRun: 1);
+      case MutantOutcome.killed:
+        add(mutant.key);
+    }
+  }
+  return tally;
+}
+
+/// Checks the [mutants] of each file against the keys [baseline] lists for
+/// it, which may come from a run of only some of them: a key may not have
+/// more survivors than it is listed, nor be listed more often than its
+/// survivors and the mutants with that key that were not run could make up.
+/// Also checks that every file of [baseline] exists.
 ///
 /// [neverRun] tells whether the test of a file never runs a line of it,
 /// which explains why a mutant there survived.
 ///
-/// With [changed], the lines a change touches of each file, by path relative
-/// to the repository root, only the mutants on those lines were run: then
-/// none of them may survive, and [baseline] is not compared, as it counts
-/// the survivors of whole files.
-///
 /// Returns the problems found, one per line.
 @internal
 List<String> checkMutations({
-  required Map<String, int> baseline,
-  required Map<String, List<Survivor>> survivors,
+  required Map<String, List<String>> baseline,
+  required Map<String, List<ReportedMutant>> mutants,
   required bool Function(String path, int line) neverRun,
   required bool Function(String path) exists,
-  Map<String, Set<int>>? changed,
 }) {
   final problems = <String>[];
-  void list(String path, List<Survivor> found) {
-    for (final s in found) {
-      final why = neverRun(path, s.line)
-          ? 'its test never runs this line'
-          : 'its test does not check this';
+  for (final path in mutants.keys.toList()..sort()) {
+    final tally = _tally(baseline[path] ?? const [], mutants[path]!);
+    final added = [
+      for (final MapEntry(:key, :value) in tally.entries)
+        if (value.survived > value.listed) key,
+    ];
+    final stale = [
+      for (final MapEntry(:key, :value) in tally.entries)
+        if (value.listed > value.survived + value.notRun)
+          (key, value.listed - value.survived - value.notRun),
+    ];
+    if (added.isNotEmpty) {
       problems.add(
-        '  $path:${s.line}:${s.column} ${s.mutator}: '
-        '`${_snippet(s.original)}` → `${_snippet(s.replacement)}` ($why)',
+        '$path: surviving mutants that $mutationBaselinePath does not list:',
       );
-    }
-  }
-
-  for (final path in survivors.keys.toList()..sort()) {
-    if (changed != null) {
-      final lines = changed[path] ?? const {};
-      final found = [
-        for (final s in survivors[path]!)
-          if (touches((first: s.line, last: s.lastLine), lines)) s,
-      ];
-      if (found.isNotEmpty) {
-        problems.add(
-          '$path: ${found.length} surviving mutants on the lines this change '
-          'touches:',
-        );
-        list(path, found);
+      for (final m in mutants[path]!) {
+        if (m.outcome != MutantOutcome.survived || !added.contains(m.key)) {
+          continue;
+        }
+        final value = tally[m.key]!;
+        final why = neverRun(path, m.line)
+            ? 'its test never runs this line'
+            : 'its test does not check this';
+        final listed = value.listed == 0
+            ? ''
+            : ', ${value.survived} such survivors but ${value.listed} listed';
+        problems.add('  $path:${m.line}:${m.column} ${m.key} ($why$listed)');
       }
-      continue;
     }
-    final found = survivors[path]!;
-    final allowed = baseline[path] ?? 0;
-    if (found.length > allowed) {
+    if (stale.isNotEmpty) {
       problems.add(
-        '$path: ${found.length} surviving mutants, but $mutationBaselinePath '
-        'allows $allowed:',
+        '$path: mutants that $mutationBaselinePath lists, but that no longer '
+        'survive: remove them',
       );
-      list(path, found);
-    } else if (found.length < allowed) {
-      problems.add(
-        '$path: ${found.length} surviving mutants, fewer than the $allowed of '
-        '$mutationBaselinePath: '
-        '${found.isEmpty ? 'remove its entry' : 'lower its entry to ${found.length}'}',
-      );
+      for (final (key, count) in stale) {
+        problems.add('  ${count == 1 ? '' : '$count× '}$key');
+      }
     }
   }
   for (final path in baseline.keys.toList()..sort()) {
@@ -232,8 +355,37 @@ List<String> checkMutations({
   return problems;
 }
 
+/// The keys that [baseline] should list for each file of [mutants] to pass
+/// [checkMutations]: the survivors of each key, and as many of its other
+/// entries as the mutants that were not run could make up.
+@internal
+Map<String, List<String>> updatedMutationEntries({
+  required Map<String, List<String>> baseline,
+  required Map<String, List<ReportedMutant>> mutants,
+}) {
+  return {
+    for (final MapEntry(key: path, value: found) in mutants.entries)
+      path: [
+        for (final MapEntry(:key, :value) in _tally(
+          baseline[path] ?? const [],
+          found,
+        ).entries)
+          for (
+            var i = 0;
+            i <
+                value.listed.clamp(
+                  value.survived,
+                  value.survived + value.notRun,
+                );
+            i++
+          )
+            key,
+      ],
+  };
+}
+
 /// [code] on one line, shortened, as a mutant may span a whole block.
 String _snippet(String code) {
-  final line = code.replaceAll(RegExp(r'\s+'), ' ');
+  final line = code.replaceAll(RegExp(r'\s+'), ' ').trim();
   return line.length <= 60 ? line : '${line.substring(0, 57)}...';
 }

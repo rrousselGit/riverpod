@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:repo_checks/src/mutation_check.dart';
+import 'package:repo_checks/src/mutation_scope.dart';
 import 'package:test/test.dart';
 
 /// A report in the mutation-testing-elements schema, with a file of
@@ -20,6 +22,7 @@ Map<String, Object?> _mutant(
   required (int, int) end,
   String mutatorName = 'Equality',
   String replacement = '!=',
+  String? statusReason,
 }) {
   return {
     'id': 'lib/a.dart#1',
@@ -30,36 +33,35 @@ Map<String, Object?> _mutant(
       'end': {'line': end.$1, 'column': end.$2},
     },
     'status': status,
+    'statusReason': ?statusReason,
   };
 }
 
-Survivor _survivor(
-  int line, {
-  int? lastLine,
-  String original = '==',
-  String mutator = 'X',
-}) {
-  return (
-    line: line,
-    column: 1,
-    lastLine: lastLine ?? line,
-    mutator: mutator,
-    original: original,
-    replacement: '!=',
-  );
+ReportedMutant _reported(String key, MutantOutcome outcome, {int line = 1}) {
+  return (key: key, outcome: outcome, line: line, column: 1);
 }
+
+const _survived = MutantOutcome.survived;
+const _killed = MutantOutcome.killed;
+const _notRun = MutantOutcome.notRun;
 
 void main() {
   group('parseMutationBaseline', () {
-    test('reads the counts of the files', () {
+    test('reads the mutants of the files', () {
       expect(
         parseMutationBaseline('''
 # A comment
 baseline:
-  packages/a/lib/a.dart: 2
-  packages/a/lib/b.dart: 1
+  packages/a/lib/a.dart:
+    - "f: X: `a` → `b`"
+    - "f: X: `a` → `b`"
+  packages/a/lib/b.dart:
+    - "g: Y: `c` → `d`"
 '''),
-        {'packages/a/lib/a.dart': 2, 'packages/a/lib/b.dart': 1},
+        {
+          'packages/a/lib/a.dart': ['f: X: `a` → `b`', 'f: X: `a` → `b`'],
+          'packages/a/lib/b.dart': ['g: Y: `c` → `d`'],
+        },
       );
     });
 
@@ -76,12 +78,12 @@ baseline:
         );
       });
 
-      test('rejects counts that are not positive numbers', () {
-        for (final count in ['0', '-1', 'two', '[]']) {
+      test('rejects entries that are not lists of mutants', () {
+        for (final entry in ['2', '[]', '[1]', '{a: b}']) {
           expect(
-            () => parseMutationBaseline('baseline:\n  a.dart: $count'),
+            () => parseMutationBaseline('baseline:\n  a.dart: $entry'),
             throwsFormatException,
-            reason: count,
+            reason: entry,
           );
         }
       });
@@ -98,84 +100,162 @@ baseline:
 
   group('updateMutationBaseline', () {
     test('sets, adds and removes entries, sorted, under the comments', () {
-      expect(
-        updateMutationBaseline(
-          '''
-# A comment
-#  baseline: in a comment
-baseline:
-  c.dart: 3
-  a.dart: 2
-  b.dart: 1
-''',
-          {'a.dart': 1, 'b.dart': 0, 'd.dart': 4},
-        ),
+      final updated = updateMutationBaseline(
         '''
 # A comment
 #  baseline: in a comment
 baseline:
-  a.dart: 1
-  c.dart: 3
-  d.dart: 4
+  c.dart:
+    - "c"
+  a.dart:
+    - "a"
+  b.dart:
+    - "b"
 ''',
+        {
+          'a.dart': ['z: `"`', 'y'],
+          'b.dart': [],
+          'd.dart': ['d', 'd'],
+        },
       );
+
+      expect(updated, r'''
+# A comment
+#  baseline: in a comment
+baseline:
+  a.dart:
+    - "y"
+    - "z: `\"`"
+  c.dart:
+    - "c"
+  d.dart:
+    - "d"
+    - "d"
+''');
+      expect(parseMutationBaseline(updated)['a.dart'], ['y', 'z: `"`']);
     });
 
     test('writes an empty map when no entry is left', () {
       expect(
-        updateMutationBaseline('# A comment\nbaseline:\n  a.dart: 2\n', {
-          'a.dart': 0,
+        updateMutationBaseline('# A comment\nbaseline:\n  a.dart:\n    - a\n', {
+          'a.dart': [],
         }),
         '# A comment\nbaseline: {}\n',
       );
     });
   });
 
+  group('mutantKey', () {
+    test('names the declaration, the mutator and the change, on one line', () {
+      expect(
+        mutantKey(
+          declaration: 'A.b',
+          mutator: 'Equality',
+          original: 'a ==\n    b',
+          replacement: 'a != b',
+        ),
+        'A.b: Equality: `a == b` → `a != b`',
+      );
+    });
+
+    test('shortens long code', () {
+      expect(
+        mutantKey(
+          declaration: 'f',
+          mutator: 'BlockStatement',
+          original: '{ ${'a(); ' * 20}}',
+          replacement: '{}',
+        ),
+        'f: BlockStatement: `{ ${'a(); ' * 11}...` → `{}`',
+      );
+    });
+  });
+
+  group('declarationAt', () {
+    const source = '''
+var top = 1;
+int f() => 1;
+class A {
+  final int x = 2;
+  A() : y = 3;
+  A.named();
+  int get g => 4;
+  set g(int v) {
+    void local() {}
+  }
+}
+mixin M { void m() {} }
+enum E { a(5); const E(int v); }
+extension on int { int get e => 6; }
+extension Named on int { void n() {} }
+extension type T(int v) { int t() => 7; }
+''';
+    final unit = parseString(content: source).unit;
+    String at(String code) => declarationAt(unit, source.indexOf(code));
+
+    test('names the declarations around the offset, out of bodies', () {
+      expect(at('1;'), 'top');
+      expect(at('=> 1'), 'f');
+      expect(at('2;'), 'A.x');
+      expect(at('y = 3'), 'A.new');
+      expect(at('named'), 'A.named');
+      expect(at('4;'), 'A.g');
+      expect(at('local'), 'A.g=');
+      expect(at('void m'), 'M.m');
+      expect(at('5)'), 'E.a');
+      expect(at('6;'), 'extension.e');
+      expect(at('void n'), 'Named.n');
+      expect(at('7;'), 'T.t');
+    });
+
+    test('names the top level out of any declaration', () {
+      expect(
+        declarationAt(parseString(content: 'library a;').unit, 0),
+        '(top level)',
+      );
+    });
+  });
+
   group('parseMutationReport', () {
-    test('keeps the survivors, with the text they replace', () {
-      final report = _report('final a = 1 == 2;\nfinal b = 3 +\n  4;\n', [
-        _mutant('Survived', start: (1, 13), end: (1, 15)),
-        _mutant('Killed', start: (1, 13), end: (1, 15)),
-        _mutant('Timeout', start: (1, 13), end: (1, 15)),
-        _mutant('CompileError', start: (1, 13), end: (1, 15)),
+    test('keys the mutants, with what the run found of them', () {
+      const source = 'bool f() => 1 == 2;\nint g() => 3 +\n  4;\n';
+      final report = _report(source, [
+        _mutant('Survived', start: (1, 15), end: (1, 17)),
+        _mutant('Killed', start: (1, 15), end: (1, 17)),
+        _mutant('Timeout', start: (1, 15), end: (1, 17)),
+        _mutant('CompileError', start: (1, 15), end: (1, 17)),
+        _mutant(
+          'CompileError',
+          start: (1, 15),
+          end: (1, 17),
+          statusReason: outOfScopeReason,
+        ),
+        _mutant('Pending', start: (1, 15), end: (1, 17)),
         _mutant(
           'Survived',
-          start: (2, 11),
+          start: (2, 12),
           end: (3, 4),
           mutatorName: 'Arithmetic',
           replacement: '3 - 4',
         ),
       ]);
 
+      const key = 'f: Equality: `==` → `!=`';
       expect(parseMutationReport(report, package: 'packages/a'), {
         'packages/a/lib/a.dart': [
+          (key: key, outcome: _survived, line: 1, column: 15),
+          (key: key, outcome: _killed, line: 1, column: 15),
+          (key: key, outcome: _killed, line: 1, column: 15),
+          (key: key, outcome: _killed, line: 1, column: 15),
+          (key: key, outcome: _notRun, line: 1, column: 15),
+          (key: key, outcome: _notRun, line: 1, column: 15),
           (
-            line: 1,
-            column: 13,
-            lastLine: 1,
-            mutator: 'Equality',
-            original: '==',
-            replacement: '!=',
-          ),
-          (
+            key: 'g: Arithmetic: `3 + 4` → `3 - 4`',
+            outcome: _survived,
             line: 2,
-            column: 11,
-            lastLine: 3,
-            mutator: 'Arithmetic',
-            original: '3 +\n  4',
-            replacement: '3 - 4',
+            column: 12,
           ),
         ],
-      });
-    });
-
-    test('includes files without survivors', () {
-      final report = _report('final a = 1;\n', [
-        _mutant('Killed', start: (1, 11), end: (1, 12)),
-      ]);
-
-      expect(parseMutationReport(report, package: 'packages/a'), {
-        'packages/a/lib/a.dart': isEmpty,
       });
     });
 
@@ -205,7 +285,7 @@ baseline:
         );
       });
 
-      test('rejects a survivor with a malformed location', () {
+      test('rejects a malformed mutant', () {
         final mutant = _mutant('Survived', start: (1, 1), end: (1, 2))
           ..['location'] = {
             'start': {'line': 1, 'column': 1},
@@ -215,6 +295,18 @@ baseline:
         expect(
           () => parseMutationReport(
             _report('final a = 1;\n', [mutant]),
+            package: 'a',
+          ),
+          throwsFormatException,
+        );
+      });
+
+      test('rejects a mutant outside of the source', () {
+        expect(
+          () => parseMutationReport(
+            _report('final a = 1;\n', [
+              _mutant('Survived', start: (9, 1), end: (9, 2)),
+            ]),
             package: 'a',
           ),
           throwsFormatException,
@@ -263,103 +355,106 @@ end_of_record
 
   group('checkMutations', () {
     List<String> check({
-      Map<String, int> baseline = const {},
-      required Map<String, List<Survivor>> survivors,
+      Map<String, List<String>> baseline = const {},
+      required Map<String, List<ReportedMutant>> mutants,
       Set<int> neverRun = const {},
       Set<String> missing = const {},
-      Map<String, Set<int>>? changed,
     }) {
       return checkMutations(
         baseline: baseline,
-        survivors: survivors,
+        mutants: mutants,
         neverRun: (_, line) => neverRun.contains(line),
         exists: (path) => !missing.contains(path),
-        changed: changed,
       );
     }
 
-    test('accepts as many survivors as the baseline lists', () {
+    test('accepts the survivors that the baseline lists', () {
       expect(
         check(
-          baseline: {'a.dart': 2},
-          survivors: {
-            'a.dart': [_survivor(1), _survivor(2)],
-            'b.dart': [],
+          baseline: {
+            'a.dart': ['k', 'k'],
+          },
+          mutants: {
+            'a.dart': [
+              _reported('k', _survived),
+              _reported('k', _survived),
+              _reported('k', _killed),
+              _reported('l', _killed),
+            ],
+            'b.dart': [_reported('k', _killed)],
           },
         ),
         isEmpty,
       );
     });
 
-    test('lists the survivors of a file that has more, and why', () {
+    test('lists the survivors that it does not, and why', () {
       expect(
         check(
-          baseline: {'a.dart': 1},
-          survivors: {
-            'a.dart': [_survivor(1), _survivor(2, original: 'x', mutator: 'Y')],
-            'b.dart': [_survivor(3)],
+          baseline: {
+            'a.dart': ['k'],
           },
-          neverRun: {2},
-        ),
-        [
-          'a.dart: 2 surviving mutants, but baselines/mutation.yaml allows 1:',
-          '  a.dart:1:1 X: `==` → `!=` (its test does not check this)',
-          '  a.dart:2:1 Y: `x` → `!=` (its test never runs this line)',
-          'b.dart: 1 surviving mutants, but baselines/mutation.yaml allows 0:',
-          '  b.dart:3:1 X: `==` → `!=` (its test does not check this)',
-        ],
-      );
-    });
-
-    test('asks to lower the entry of a file that has fewer', () {
-      expect(
-        check(
-          baseline: {'a.dart': 3, 'b.dart': 1},
-          survivors: {
-            'a.dart': [_survivor(1)],
-            'b.dart': [],
-          },
-        ),
-        [
-          'a.dart: 1 surviving mutants, fewer than the 3 of '
-              'baselines/mutation.yaml: lower its entry to 1',
-          'b.dart: 0 surviving mutants, fewer than the 1 of '
-              'baselines/mutation.yaml: remove its entry',
-        ],
-      );
-    });
-
-    test('with changed lines, lists the survivors on them only', () {
-      expect(
-        check(
-          baseline: {'a.dart': 5},
-          survivors: {
+          mutants: {
             'a.dart': [
-              _survivor(1),
-              _survivor(2, lastLine: 4, original: 'x'),
-              _survivor(5),
+              _reported('k', _survived),
+              _reported('k', _survived, line: 2),
+              _reported('l', _survived, line: 3),
+              _reported('m', _survived, line: 4),
             ],
-            'b.dart': [_survivor(1)],
           },
-          changed: {
-            'a.dart': {3, 5},
-          },
+          neverRun: {3},
         ),
         [
-          'a.dart: 2 surviving mutants on the lines this change touches:',
-          '  a.dart:2:1 X: `x` → `!=` (its test does not check this)',
-          '  a.dart:5:1 X: `==` → `!=` (its test does not check this)',
+          'a.dart: surviving mutants that baselines/mutation.yaml does not '
+              'list:',
+          '  a.dart:1:1 k (its test does not check this, 2 such survivors '
+              'but 1 listed)',
+          '  a.dart:2:1 k (its test does not check this, 2 such survivors '
+              'but 1 listed)',
+          '  a.dart:3:1 l (its test never runs this line)',
+          '  a.dart:4:1 m (its test does not check this)',
         ],
       );
     });
 
-    test('with changed lines, does not compare the baseline', () {
+    test('asks to remove the listed mutants that no longer survive', () {
       expect(
         check(
-          baseline: {'a.dart': 3},
-          survivors: {'a.dart': []},
-          changed: {
-            'a.dart': {1},
+          baseline: {
+            'a.dart': ['k', 'k', 'k', 'gone'],
+          },
+          mutants: {
+            'a.dart': [_reported('k', _survived), _reported('k', _killed)],
+          },
+        ),
+        [
+          'a.dart: mutants that baselines/mutation.yaml lists, but that no '
+              'longer survive: remove them',
+          '  2× k',
+          '  gone',
+        ],
+      );
+    });
+
+    test('accepts listed mutants that were not run', () {
+      expect(
+        check(
+          baseline: {
+            'a.dart': ['k', 'k'],
+          },
+          mutants: {
+            'a.dart': [_reported('k', _survived), _reported('k', _notRun)],
+          },
+        ),
+        isEmpty,
+      );
+      expect(
+        check(
+          baseline: {
+            'a.dart': ['k', 'k'],
+          },
+          mutants: {
+            'a.dart': [_reported('k', _notRun), _reported('k', _notRun)],
           },
         ),
         isEmpty,
@@ -369,29 +464,55 @@ end_of_record
     group('edge cases', () {
       test('skips the baseline of files that were not mutated', () {
         expect(
-          check(baseline: {'a.dart': 3}, survivors: {'b.dart': []}),
-          isEmpty,
-        );
-      });
-
-      test('prints a survivor on one line, shortened', () {
-        final block = '{\n  ${'a(); ' * 20}\n}';
-        expect(
           check(
-            survivors: {
-              'a.dart': [_survivor(1, original: block)],
+            baseline: {
+              'a.dart': ['k'],
             },
-          )[1],
-          '  a.dart:1:1 X: `{ ${'a(); ' * 11}...` → `!=` '
-          '(its test does not check this)',
+            mutants: {'b.dart': []},
+          ),
+          isEmpty,
         );
       });
 
       test('reports baseline entries of files that do not exist', () {
         expect(
-          check(baseline: {'a.dart': 3}, survivors: {}, missing: {'a.dart'}),
+          check(
+            baseline: {
+              'a.dart': ['k'],
+            },
+            mutants: {},
+            missing: {'a.dart'},
+          ),
           ['a.dart: listed by baselines/mutation.yaml, but not found'],
         );
+      });
+    });
+  });
+
+  group('updatedMutationEntries', () {
+    test('adds the survivors and keeps what was not run can make up', () {
+      final updated = updatedMutationEntries(
+        baseline: {
+          'a.dart': ['kept', 'kept', 'kept', 'gone', 'k'],
+          'b.dart': ['b'],
+        },
+        mutants: {
+          'a.dart': [
+            _reported('kept', _notRun),
+            _reported('kept', _notRun),
+            _reported('kept', _killed),
+            _reported('gone', _killed),
+            _reported('k', _survived),
+            _reported('k', _survived),
+            _reported('new', _survived),
+          ],
+          'c.dart': [_reported('c', _killed)],
+        },
+      );
+
+      expect(updated, {
+        'a.dart': unorderedEquals(['kept', 'kept', 'k', 'k', 'new']),
+        'c.dart': isEmpty,
       });
     });
   });
