@@ -98,9 +98,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   /// - seamless:true => import previous state and skip loading
   /// - seamless:false => import previous state and prefer loading
   bool asyncTransition(AsyncValue<ValueT> newState, {required bool seamless}) {
-    // Post-dispose, results are only forwarded to `provider.future`.
-    if (_disposed) return false;
-
+    assert(!_disposed, 'Cannot update the state of $origin after its disposal');
     final previous = value;
 
     if (newState._isMultiState) {
@@ -149,7 +147,8 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   /// has yet to complete.
   @internal
   bool onError(AsyncError<ValueT> value, {bool seamless = false}) {
-    final notified = asyncTransition(value, seamless: seamless);
+    // Once disposed, the error is only sent to `provider.future`.
+    final notified = !_disposed && asyncTransition(value, seamless: seamless);
 
     final result = resultForValue(value);
     if (result is! $ResultError<StateT> && !origin._isSynthetic && !_disposed) {
@@ -186,7 +185,8 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   /// has yet to complete.
   @internal
   bool onData(AsyncData<ValueT> value, {bool seamless = false}) {
-    final notified = asyncTransition(value, seamless: seamless);
+    // Once disposed, the value is only sent to `provider.future`.
+    final notified = !_disposed && asyncTransition(value, seamless: seamless);
 
     final completer = _futureCompleter;
     if (completer != null) {
