@@ -40,10 +40,10 @@ class FamilyTemplate extends Template {
     final mixinTypes = <String>[
       ...switch (provider) {
         FunctionalProviderDeclaration(typeParameters: null) => [
-          '\$FunctionalFamilyOverride<${provider.providerElement.createdTypeNode}, $_argumentRecordType>',
+          '#{{riverpod|\$FunctionalFamilyOverride}}<${provider.providerElement.createdTypeNode}, $_argumentRecordType>',
         ],
         ClassBasedProviderDeclaration(typeParameters: null) => [
-          '\$ClassFamilyOverride<$_notifierType, '
+          '#{{riverpod|\$ClassFamilyOverride}}<$_notifierType, '
               '${provider.providerElement.exposedTypeNode}, '
               '${provider.providerElement.valueTypeNode.toCode()}, '
               '${provider.providerElement.createdTypeNode}, '
@@ -58,7 +58,7 @@ class FamilyTemplate extends Template {
     buffer.writeln('''
 ${provider.doc}
 ${provider.metadata}
-final class ${provider.familyTypeName} extends \$Family $mixins {
+final class ${provider.familyTypeName} extends #{{riverpod|\$Family}} $mixins {
   ${provider.familyTypeName}._()
       : super(
         retry: ${provider.annotation.retryNode?.node.toSource() ?? 'null'},
@@ -110,16 +110,16 @@ final class ${provider.familyTypeName} extends \$Family $mixins {
   }) {
     final createType = switch (provider) {
       FunctionalProviderDeclaration(parameters: [_, ...]) =>
-        '${provider.providerElement.createdTypeNode} Function$_genericsDefinition(Ref ref, $_argumentRecordType args,)',
+        '${provider.providerElement.createdTypeNode} Function$_genericsDefinition(#{{riverpod|Ref}} ref, $_argumentRecordType args,)',
       FunctionalProviderDeclaration(parameters: []) =>
-        '${provider.providerElement.createdTypeNode} Function$_genericsDefinition(Ref ref)',
+        '${provider.providerElement.createdTypeNode} Function$_genericsDefinition(#{{riverpod|Ref}} ref)',
       ClassBasedProviderDeclaration() =>
         '$_notifierType Function$_genericsDefinition()',
     };
 
     buffer.writeln('''
 /// {@macro riverpod.override_with}
-Override overrideWith($createType create) =>
+#{{riverpod|Override}} overrideWith($createType create) =>
   ${_override((buffer) {
       buffer.writeln('''
         return provider.\$view(create: ${switch ((hasParameters: provider.parameters.isNotEmpty, provider)) {
@@ -139,13 +139,13 @@ Override overrideWith($createType create) =>
     final runNotifierBuildType =
         '''
 ${provider.providerElement.createdTypeNode} Function$_genericsDefinition(
-  Ref ref,
+  #{{riverpod|Ref}} ref,
   $_notifierType notifier
 )''';
 
     buffer.writeln('''
 /// {@macro riverpod.override_with_build}
-Override overrideWithBuild($runNotifierBuildType build) =>
+#{{riverpod|Override}} overrideWithBuild($runNotifierBuildType build) =>
   ${_override((buffer) {
       buffer.writeln('''
         return provider.\$view(runNotifierBuildOverride: build$_generics).\$createElement(pointer);
@@ -156,7 +156,7 @@ Override overrideWithBuild($runNotifierBuildType build) =>
 
   String _override(void Function(StringBuffer buffer) build) {
     final buffer = StringBuffer('''
-\$FamilyOverride(
+#{{riverpod|\$FamilyOverride}}(
     from: this,
     createElement: 
 (pointer) {

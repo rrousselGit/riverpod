@@ -1,3 +1,4 @@
+// dart format off
 
 // ignore_for_file: invalid_use_of_protected_member
 

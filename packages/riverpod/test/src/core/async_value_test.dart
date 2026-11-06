@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_types_on_closure_parameters, prefer_const_constructors, prefer_const_declarations
+// ignore_for_file: prefer_const_declarations
 
 import 'dart:async';
 
@@ -225,10 +225,9 @@ void main() {
       group('on AsyncData', () {
         test('with AsyncLoading', () {
           expect(
-            const AsyncData<int>(42).copyWithPrevious(
-              const AsyncLoading<int>(progress: .1),
-              isRefresh: true,
-            ),
+            const AsyncData<int>(
+              42,
+            ).copyWithPrevious(const AsyncLoading<int>(progress: .1)),
             const AsyncData<int>(42),
           );
         });
@@ -1357,6 +1356,19 @@ void main() {
     }
   });
 
+  test('AsyncValueIsLoadingException can be constructed', () {
+    const loading = AsyncLoading<int>();
+    final exception = AsyncValueIsLoadingException(loading);
+
+    expect(exception.value, same(loading));
+    expect(
+      exception.toString(),
+      'AsyncValueIsLoadingException: '
+      '`requireValue` was called on the async value `$loading`, '
+      'yet it neither has an error nor a value.',
+    );
+  });
+
   test('requireValue', () {
     expect(const AsyncData(42).requireValue, 42);
 
@@ -1366,7 +1378,7 @@ void main() {
     );
     expect(
       const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(42), isRefresh: true)
+          .copyWithPrevious(const AsyncData(42))
           .requireValue,
       42,
     );
@@ -1377,14 +1389,13 @@ void main() {
               'err',
               StackTrace.empty,
             ).copyWithPrevious(const AsyncData(42)),
-            isRefresh: true,
           )
           .requireValue,
       42,
     );
     expect(
       const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(42), isRefresh: true)
+          .copyWithPrevious(const AsyncData(42))
           .requireValue,
       42,
     );

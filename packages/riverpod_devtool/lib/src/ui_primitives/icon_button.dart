@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A small icon button styled for use in panel header actions, with no
 /// built-in logic.

@@ -29,16 +29,21 @@ $QuestionsResponseCopyWith<QuestionsResponse> get copyWith => _$QuestionsRespons
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuestionsResponse&&const DeepCollectionEquality().equals(other.items, items)&&(identical(other.total, total) || other.total == total));
+  final _this = this as QuestionsResponse;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuestionsResponse&&const DeepCollectionEquality().equals(other.items, _this.items)&&(identical(other.total, _this.total) || other.total == _this.total));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(items),total);
+int get hashCode {
+  final _this = this as QuestionsResponse;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.items),_this.total);
+}
 
 @override
 String toString() {
-  return 'QuestionsResponse(items: $items, total: $total)';
+  final _this = this as QuestionsResponse;
+  return 'QuestionsResponse(items: ${_this.items}, total: ${_this.total})';
 }
 
 
@@ -230,16 +235,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuestionsResponse&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.total, total) || other.total == total));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuestionsResponse&&const DeepCollectionEquality().equals(other.items, _items)&&(identical(other.total, total) || other.total == total));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),total);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),total);
+}
 
 @override
 String toString() {
-  return 'QuestionsResponse(items: $items, total: $total)';
+    return 'QuestionsResponse(items: $items, total: $total)';
 }
 
 
@@ -295,16 +302,21 @@ $QuestionCopyWith<Question> get copyWith => _$QuestionCopyWithImpl<Question>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Question&&const DeepCollectionEquality().equals(other.tags, tags)&&(identical(other.viewCount, viewCount) || other.viewCount == viewCount)&&(identical(other.score, score) || other.score == score)&&(identical(other.bountyAmount, bountyAmount) || other.bountyAmount == bountyAmount)&&(identical(other.acceptedAnswerId, acceptedAnswerId) || other.acceptedAnswerId == acceptedAnswerId)&&(identical(other.owner, owner) || other.owner == owner)&&(identical(other.answerCount, answerCount) || other.answerCount == answerCount)&&(identical(other.creationDate, creationDate) || other.creationDate == creationDate)&&(identical(other.questionId, questionId) || other.questionId == questionId)&&(identical(other.link, link) || other.link == link)&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body));
+  final _this = this as Question;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Question&&const DeepCollectionEquality().equals(other.tags, _this.tags)&&(identical(other.viewCount, _this.viewCount) || other.viewCount == _this.viewCount)&&(identical(other.score, _this.score) || other.score == _this.score)&&(identical(other.bountyAmount, _this.bountyAmount) || other.bountyAmount == _this.bountyAmount)&&(identical(other.acceptedAnswerId, _this.acceptedAnswerId) || other.acceptedAnswerId == _this.acceptedAnswerId)&&(identical(other.owner, _this.owner) || other.owner == _this.owner)&&(identical(other.answerCount, _this.answerCount) || other.answerCount == _this.answerCount)&&(identical(other.creationDate, _this.creationDate) || other.creationDate == _this.creationDate)&&(identical(other.questionId, _this.questionId) || other.questionId == _this.questionId)&&(identical(other.link, _this.link) || other.link == _this.link)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.body, _this.body) || other.body == _this.body));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(tags),viewCount,score,bountyAmount,acceptedAnswerId,owner,answerCount,creationDate,questionId,link,title,body);
+int get hashCode {
+  final _this = this as Question;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.tags),_this.viewCount,_this.score,_this.bountyAmount,_this.acceptedAnswerId,_this.owner,_this.answerCount,_this.creationDate,_this.questionId,_this.link,_this.title,_this.body);
+}
 
 @override
 String toString() {
-  return 'Question(tags: $tags, viewCount: $viewCount, score: $score, bountyAmount: $bountyAmount, acceptedAnswerId: $acceptedAnswerId, owner: $owner, answerCount: $answerCount, creationDate: $creationDate, questionId: $questionId, link: $link, title: $title, body: $body)';
+  final _this = this as Question;
+  return 'Question(tags: ${_this.tags}, viewCount: ${_this.viewCount}, score: ${_this.score}, bountyAmount: ${_this.bountyAmount}, acceptedAnswerId: ${_this.acceptedAnswerId}, owner: ${_this.owner}, answerCount: ${_this.answerCount}, creationDate: ${_this.creationDate}, questionId: ${_this.questionId}, link: ${_this.link}, title: ${_this.title}, body: ${_this.body})';
 }
 
 
@@ -525,16 +537,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Question&&const DeepCollectionEquality().equals(other._tags, _tags)&&(identical(other.viewCount, viewCount) || other.viewCount == viewCount)&&(identical(other.score, score) || other.score == score)&&(identical(other.bountyAmount, bountyAmount) || other.bountyAmount == bountyAmount)&&(identical(other.acceptedAnswerId, acceptedAnswerId) || other.acceptedAnswerId == acceptedAnswerId)&&(identical(other.owner, owner) || other.owner == owner)&&(identical(other.answerCount, answerCount) || other.answerCount == answerCount)&&(identical(other.creationDate, creationDate) || other.creationDate == creationDate)&&(identical(other.questionId, questionId) || other.questionId == questionId)&&(identical(other.link, link) || other.link == link)&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Question&&const DeepCollectionEquality().equals(other.tags, _tags)&&(identical(other.viewCount, viewCount) || other.viewCount == viewCount)&&(identical(other.score, score) || other.score == score)&&(identical(other.bountyAmount, bountyAmount) || other.bountyAmount == bountyAmount)&&(identical(other.acceptedAnswerId, acceptedAnswerId) || other.acceptedAnswerId == acceptedAnswerId)&&(identical(other.owner, owner) || other.owner == owner)&&(identical(other.answerCount, answerCount) || other.answerCount == answerCount)&&(identical(other.creationDate, creationDate) || other.creationDate == creationDate)&&(identical(other.questionId, questionId) || other.questionId == questionId)&&(identical(other.link, link) || other.link == link)&&(identical(other.title, title) || other.title == title)&&(identical(other.body, body) || other.body == body));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_tags),viewCount,score,bountyAmount,acceptedAnswerId,owner,answerCount,creationDate,questionId,link,title,body);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_tags),viewCount,score,bountyAmount,acceptedAnswerId,owner,answerCount,creationDate,questionId,link,title,body);
+}
 
 @override
 String toString() {
-  return 'Question(tags: $tags, viewCount: $viewCount, score: $score, bountyAmount: $bountyAmount, acceptedAnswerId: $acceptedAnswerId, owner: $owner, answerCount: $answerCount, creationDate: $creationDate, questionId: $questionId, link: $link, title: $title, body: $body)';
+    return 'Question(tags: $tags, viewCount: $viewCount, score: $score, bountyAmount: $bountyAmount, acceptedAnswerId: $acceptedAnswerId, owner: $owner, answerCount: $answerCount, creationDate: $creationDate, questionId: $questionId, link: $link, title: $title, body: $body)';
 }
 
 
@@ -606,16 +620,21 @@ $QuestionThemeCopyWith<QuestionTheme> get copyWith => _$QuestionThemeCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuestionTheme&&(identical(other.titleStyle, titleStyle) || other.titleStyle == titleStyle)&&(identical(other.descriptionStyle, descriptionStyle) || other.descriptionStyle == descriptionStyle));
+  final _this = this as QuestionTheme;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuestionTheme&&(identical(other.titleStyle, _this.titleStyle) || other.titleStyle == _this.titleStyle)&&(identical(other.descriptionStyle, _this.descriptionStyle) || other.descriptionStyle == _this.descriptionStyle));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,titleStyle,descriptionStyle);
+int get hashCode {
+  final _this = this as QuestionTheme;
+  return Object.hash(runtimeType,_this.titleStyle,_this.descriptionStyle);
+}
 
 @override
 String toString() {
-  return 'QuestionTheme(titleStyle: $titleStyle, descriptionStyle: $descriptionStyle)';
+  final _this = this as QuestionTheme;
+  return 'QuestionTheme(titleStyle: ${_this.titleStyle}, descriptionStyle: ${_this.descriptionStyle})';
 }
 
 
@@ -798,16 +817,18 @@ _$QuestionThemeCopyWith<_QuestionTheme> get copyWith => __$QuestionThemeCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuestionTheme&&(identical(other.titleStyle, titleStyle) || other.titleStyle == titleStyle)&&(identical(other.descriptionStyle, descriptionStyle) || other.descriptionStyle == descriptionStyle));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuestionTheme&&(identical(other.titleStyle, titleStyle) || other.titleStyle == titleStyle)&&(identical(other.descriptionStyle, descriptionStyle) || other.descriptionStyle == descriptionStyle));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,titleStyle,descriptionStyle);
+int get hashCode {
+    return Object.hash(runtimeType,titleStyle,descriptionStyle);
+}
 
 @override
 String toString() {
-  return 'QuestionTheme(titleStyle: $titleStyle, descriptionStyle: $descriptionStyle)';
+    return 'QuestionTheme(titleStyle: $titleStyle, descriptionStyle: $descriptionStyle)';
 }
 
 

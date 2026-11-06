@@ -1,0 +1,82 @@
+---
+title: provider를 즉시 초기화하는 방법
+version: 2
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import consumerExample from "!!raw-loader!/docs/how_to/eager_initialization/consumer_example.dart";
+import asyncConsumerExample from "!!raw-loader!/docs/how_to/eager_initialization/async_consumer_example.dart";
+import requireValue from "/docs/how_to/eager_initialization/require_value";
+
+모든 provider는 기본적으로 지연(lazy) 초기화됩니다. 즉, provider는 처음 사용될 때에야
+초기화됩니다. 애플리케이션의 특정 부분에서만 쓰이는 provider라면 이 방식이 유용합니다.
+
+아쉽게도 Dart의 동작 방식(트리 셰이킹) 때문에 provider에 즉시 초기화(eager initialization)가
+필요하다고 표시할 방법은 없습니다. 대신 한 가지 해결책은, 즉시 초기화하고 싶은 provider를
+애플리케이션의 루트에서 강제로 읽는 것입니다.
+
+권장하는 방법은 `ProviderScope` 바로 아래에 둔 Consumer에서 provider를 "watch"하는 것입니다.
+
+<AutoSnippet
+  raw={consumerExample}
+  translations={{
+    render: `      // TODO: 여기서 앱을 렌더링하세요`,
+    watch: `    // provider를 watch해서 즉시 초기화합니다.
+    // "watch"를 사용하면 provider가 계속 유지되고 폐기되지 않습니다.`,
+  }}
+/>
+
+:::note 참고
+초기화를 담당하는 consumer는 "MyApp"이나 public 위젯 안에 두는 것을 고려해 보세요.
+이렇게 main에서 로직을 걷어 내면 테스트에서도 같은 동작을 사용할 수 있습니다.
+:::
+
+### FAQ {#faq}
+
+#### provider가 바뀌면 애플리케이션 전체가 다시 빌드되지 않나요? {#wont-this-rebuild-our-entire-application-when-the-provider-changes}
+
+아니요, 그렇지 않습니다.
+위 예제에서 즉시 초기화를 담당하는 consumer는 별도의 위젯이며,
+`child`를 반환하는 것 외에는 아무 일도 하지 않습니다.
+
+핵심은 `MaterialApp`을 직접 생성하지 않고 `child`를 반환한다는 점입니다.
+따라서 `_EagerInitialization`이 다시 빌드되더라도 `child` 변수는
+바뀌지 않습니다. 그리고 위젯이 바뀌지 않으면 Flutter는 그 위젯을 다시 빌드하지 않습니다.
+
+그러므로 다른 위젯이 그 provider를 함께 구독하고 있지 않는 한, `_EagerInitialization`만 다시 빌드됩니다.
+
+#### 이 방법을 쓸 때 로딩 상태와 에러 상태는 어떻게 처리하나요? {#using-this-approach-how-can-i-handle-loading-and-error-states}
+
+`Consumer`에서 평소 하던 대로 로딩/에러 상태를 처리하면 됩니다.
+`_EagerInitialization`에서 provider가 "loading" 상태인지 확인하고,
+그렇다면 `child` 대신 `CircularProgressIndicator`를 반환하면 됩니다.
+
+<AutoSnippet
+  raw={asyncConsumerExample}
+  translations={{
+    states: `    // 에러 상태와 로딩 상태를 처리합니다`,
+  }}
+/>
+
+#### 로딩/에러 상태를 처리했는데도 다른 Consumer들이 여전히 AsyncValue를 받습니다! 모든 위젯에서 로딩/에러 상태를 처리하지 않아도 되는 방법이 있나요? {#ive-handled-loadingerror-states-but-other-consumers-still-receive-an-asyncvalue-is-there-a-way-to-not-have-to-handle-loadingerror-states-in-every-widget}
+
+provider가 `AsyncValue`를 노출하지 _않도록_ 만들려고 하기보다는,
+위젯에서 `AsyncValue.requireValue`를 사용하면 됩니다.  
+이렇게 하면 패턴 매칭 없이 데이터를 읽을 수 있습니다. 혹시 버그가 있더라도
+명확한 메시지와 함께 예외가 발생합니다.
+
+<AutoSnippet
+  {...requireValue}
+  translations={{
+    provider: `// 즉시 초기화되는 provider입니다.`,
+    note: `    /// provider가 제대로 즉시 초기화되었다면
+    /// "requireValue"로 데이터를 바로 읽을 수 있습니다.`,
+  }}
+/>
+
+:::note 참고
+이런 경우 로딩/에러 상태를 노출하지 않는 방법(스코프 활용)도 있지만,
+일반적으로 권장하지 않습니다.  
+provider 두 개를 만들고 오버라이드를 사용하는 복잡성에 비해 얻는 이점이 적습니다.
+:::

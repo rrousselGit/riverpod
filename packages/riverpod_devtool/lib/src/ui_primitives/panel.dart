@@ -1,5 +1,5 @@
 import 'package:devtools_app_shared/ui.dart' as devtools_shared_ui;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class Panel extends StatelessWidget {
   const Panel({

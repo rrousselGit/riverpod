@@ -29,16 +29,21 @@ $TodoCopyWith<Todo> get copyWith => _$TodoCopyWithImpl<Todo>(this as Todo, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Todo&&(identical(other.id, id) || other.id == id)&&(identical(other.description, description) || other.description == description)&&(identical(other.completed, completed) || other.completed == completed));
+  final _this = this as Todo;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Todo&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.description, _this.description) || other.description == _this.description)&&(identical(other.completed, _this.completed) || other.completed == _this.completed));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,description,completed);
+int get hashCode {
+  final _this = this as Todo;
+  return Object.hash(runtimeType,_this.id,_this.description,_this.completed);
+}
 
 @override
 String toString() {
-  return 'Todo(id: $id, description: $description, completed: $completed)';
+  final _this = this as Todo;
+  return 'Todo(id: ${_this.id}, description: ${_this.description}, completed: ${_this.completed})';
 }
 
 
@@ -232,16 +237,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Todo&&(identical(other.id, id) || other.id == id)&&(identical(other.description, description) || other.description == description)&&(identical(other.completed, completed) || other.completed == completed));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Todo&&(identical(other.id, id) || other.id == id)&&(identical(other.description, description) || other.description == description)&&(identical(other.completed, completed) || other.completed == completed));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,description,completed);
+int get hashCode {
+    return Object.hash(runtimeType,id,description,completed);
+}
 
 @override
 String toString() {
-  return 'Todo(id: $id, description: $description, completed: $completed)';
+    return 'Todo(id: $id, description: $description, completed: $completed)';
 }
 
 

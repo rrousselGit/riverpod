@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import '../builder.dart';
 import '../common/internal_lints.dart';
 import '../framework.dart';
-import 'legacy/state_notifier_provider.dart' show StateNotifierProvider;
+import 'notifier.dart' show NotifierProvider;
 import 'stream_provider.dart' show StreamProvider;
 
 /// Implementation detail of `riverpod_generator`.
@@ -169,7 +169,7 @@ final class Provider<ValueT> extends $FunctionalProvider<ValueT, ValueT, ValueT>
 ///   [Provider] is the most basic of all providers. It exposes an object that never
 ///   changes.\
 ///   We could replace [Provider] with other providers like [StreamProvider] or
-///   [StateNotifierProvider], to change how the value is interacted with.
+///   [NotifierProvider], to change how the value is interacted with.
 ///
 /// - A function that creates the shared state.\
 ///   That function will always receive an object called `ref` as a parameter. This object

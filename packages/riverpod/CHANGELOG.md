@@ -1,5 +1,33 @@
-## Unreleased fix
+## Unreleased minor
 
+- Fix `StreamProvider`/`StreamNotifier` retaining obsolete dependency subscriptions across rebuilds until the stream closes, even after emitting data.
+- `AsyncValueIsLoadingException` now has a public constructor. (thanks to @uveshm003)
+- `debugTrackProviderCreation` is now exported by `package:riverpod/misc.dart`.
+- Devtools now retain only the current provider snapshot by default. Set
+  `debugTrackProviderHistory = true` (imported from `package:riverpod/misc.dart`)
+  to opt into time-travel history; setting it back to `false` releases previous
+  frames.
+- Devtools inspection caches are released when their client closes or stops
+  renewing its session for 30 seconds, including after an abrupt disconnect.
+- Deprecated `Ref.exist`.
+- Added `provider.exist`, which is listenable.
+  This enables writing `ref.listen(provider.exist, ...)`.
+- Fix the deprecated `container.exists`/`ref.exists` returning `false` from a
+  scoped container for a provider mounted in an ancestor but never read through
+  that scope (#4785).
+- Fix `selectAsync` notifying a closed subscription after an upstream refresh.
+- Fixed `ref.read`/`container.read` of `provider.listenable` throwing an internal `StateError` on `.value`; it now throws a clear one explaining `.listenable` needs `ref.watch`, `ref.listen` or `container.listen` instead (thanks to @Yasser-Ameur)
+- Fixed a debug-only infinite loop in the circular-dependency check. Closing a
+  dependency ring left the offending subscription in the graph, so a subsequent
+  rebuild could make the check walk the cycle forever. The subscription is now
+  removed when the check throws, and the walk keeps a visited set. (thanks to @chiliec)
+- Migrated Material imports to `package:material_ui/material_ui.dart` and added
+  `material_ui` as a dependency.
+- Updated the DevTools extension to use Material UI themes and localizations.
+
+## 3.4.3 - 2026-09-04
+
+- Upgraded `analyzer` to `<15.0.0`
 - Depend on `test_api` instead of `test`. Riverpod only used `addTearDown`, which
   `test` re-exports unchanged from `test_api`, so `ProviderContainer.test` is
   unaffected. This removes 34 transitive packages from the dependency graph of
@@ -1576,4 +1604,3 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-

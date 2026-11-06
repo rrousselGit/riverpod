@@ -268,6 +268,5 @@ class IndirectEqual with Equatable {
 class ClassicFreezed with _$ClassicFreezed {
   const ClassicFreezed(this.value);
 
-  @override
   final int value;
 }

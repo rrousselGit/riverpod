@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 extension FuzzyMatchString on String {
   /// Checks if `this` contains all characters from [other], in order.

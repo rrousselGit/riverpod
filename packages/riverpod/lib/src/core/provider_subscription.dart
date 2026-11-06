@@ -55,13 +55,15 @@ extension ProviderSubImpl<StateT> on ProviderSubscription<StateT> {
     }
   }
 
-  ProviderProviderSubscription<Object?> get providerSub {
+  ProviderProviderSubscription<Object?>? get providerSub {
     final that = impl;
     switch (that) {
       case final ProviderProviderSubscription<Object?> sub:
         return sub;
       case final ExternalProviderSubscription<Object?, Object?> sub:
         return sub._source;
+      case _ExistenceSubscription():
+        return null;
     }
   }
 }
@@ -76,8 +78,8 @@ extension ProviderSubX<StateT> on ProviderSubscription<StateT> {
       );
     }
     final that = impl;
-    that._listenedElement.mayNeedDispose();
-    that._listenedElement.flush();
+    that._listenedElement?.mayNeedDispose();
+    that._listenedElement?.flush();
 
     return that._callRead();
   }
@@ -117,7 +119,19 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   void Function(OutT? prev, OutT next) get _listener;
   OnError get _errorListener;
 
-  ProviderElement<Object?, Object?> get _listenedElement;
+  ProviderElement<Object?, Object?>? get _listenedElement;
+
+  ProviderContainer get container;
+
+  ProviderElement<Object?, Object?>? _owner;
+
+  @mustCallSuper
+  void _attachToProviderElement(ProviderElement<Object?, Object?> element) {
+    if (_listenedElement != null) return;
+
+    _owner = element;
+    (element.subscriptions ??= []).add(this);
+  }
 
   void _attach(ProviderSubscriptionImpl<void> parent) {
     assert(_parent == null, 'Already attached to a parent: $_parent');
@@ -132,11 +146,11 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   @mustCallSuper
   @override
   void pause() {
-    if (!_attachedToElement) {
+    if (!_attachedToElement || _listenedElement == null) {
       super.pause();
       return;
     }
-    _listenedElement.onSubscriptionPauseOrDeactivate(this, super.pause);
+    _listenedElement?.onSubscriptionPauseOrDeactivate(this, super.pause);
   }
 
   @mustCallSuper
@@ -168,19 +182,19 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
       return;
     }
 
-    _listenedElement.onSubscriptionResumeOrReactivate(this, applyResume);
-
-    _listenedElement.flush();
+    _listenedElement?.onSubscriptionResumeOrReactivate(this, applyResume);
+    if (_listenedElement == null) applyResume();
+    _listenedElement?.flush();
   }
 
   @mustCallSuper
   @override
   void deactivate() {
-    if (!_attachedToElement) {
+    if (!_attachedToElement || _listenedElement == null) {
       super.deactivate();
       return;
     }
-    _listenedElement.onSubscriptionPauseOrDeactivate(this, super.deactivate);
+    _listenedElement?.onSubscriptionPauseOrDeactivate(this, super.deactivate);
   }
 
   @mustCallSuper
@@ -190,7 +204,7 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
       super.reactivate();
       return;
     }
-    _listenedElement.onSubscriptionResumeOrReactivate(this, super.reactivate);
+    _listenedElement?.onSubscriptionResumeOrReactivate(this, super.reactivate);
   }
 
   void _notifyData(OutT? prev, OutT next) {
@@ -200,7 +214,7 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
       return;
     }
 
-    _listenedElement.container.runBinaryGuarded(_listener, prev, next);
+    container.runBinaryGuarded(_listener, prev, next);
   }
 
   void _notifyError(Object error, StackTrace stackTrace) {
@@ -210,11 +224,7 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
       return;
     }
 
-    _listenedElement.container.runBinaryGuarded(
-      _errorListener,
-      error,
-      stackTrace,
-    );
+    container.runBinaryGuarded(_errorListener, error, stackTrace);
   }
 
   /// Stops listening to the provider.
@@ -226,14 +236,22 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
     if (_closed) return;
 
     onClose?.call();
-    _listenedElement.removeDependentSubscription(this, () {
+    final listenedElement = _listenedElement;
+    if (listenedElement == null) {
+      _owner
+        ?..subscriptions?.remove(this)
+        .._inactiveSubscriptions?.remove(this);
       _closed = true;
-    });
+    } else {
+      listenedElement.removeDependentSubscription(this, () {
+        _closed = true;
+      });
+    }
   }
 
   @override
   String toString() {
-    final listenedDisplay = _listenedElement.origin.toString();
+    final listenedDisplay = _listenedElement?.origin.toString() ?? container;
 
     return '''
 ProviderSubscription<$OutT>#${shortHash(this)}(
@@ -250,6 +268,47 @@ ProviderSubscription<$OutT>#${shortHash(this)}(
     }}
 )''';
   }
+}
+
+final class _ExistenceSubscription extends ProviderSubscriptionImpl<bool> {
+  _ExistenceSubscription({
+    required this.pointer,
+    required this.ownerContainer,
+    required this.source,
+    required this._listener,
+    required this._errorListener,
+    required this.weak,
+  }) : super(onClose: null);
+
+  final $ProviderPointer pointer;
+  final ProviderContainer ownerContainer;
+  @override
+  final Node source;
+  @override
+  // ignore: avoid_positional_boolean_parameters
+  final void Function(bool? previous, bool next) _listener;
+  @override
+  final OnError _errorListener;
+  @override
+  final bool weak;
+
+  @override
+  ProviderElement<Object?, Object?>? get _listenedElement => null;
+
+  @override
+  ProviderContainer get container => ownerContainer;
+
+  @override
+  void close() {
+    if (closed) return;
+    pointer.subscriptions.remove(this);
+    pointer.targetContainer._recursivePointerRemoval(pointer.origin, pointer);
+
+    super.close();
+  }
+
+  @override
+  $Result<bool> _callRead() => $ResultData(pointer.existence);
 }
 
 /// Subscriptions obtained from listening to a [ProviderBase]
@@ -273,6 +332,9 @@ final class ProviderProviderSubscription<StateT>
 
   @override
   final ProviderElement<StateT, Object?> _listenedElement;
+
+  @override
+  ProviderContainer get container => _listenedElement.container;
 
   @override
   final Node source;
@@ -301,16 +363,16 @@ final class ExternalProviderSubscription<InT, OutT>
          final ProviderProviderSubscription<Object?> sub => sub,
          final ExternalProviderSubscription<Object?, Object?> sub =>
            sub._source,
+         _ExistenceSubscription() => null,
        },
        _errorListener =
-           onError ??
-           innerSubscription.impl._listenedElement.container.defaultOnError {
+           onError ?? innerSubscription.impl.container.defaultOnError {
     if (attachToInner) innerSubscription.impl._attach(this);
   }
 
   final ProviderSubscription<InT> _innerSubscription;
   final $Result<OutT> Function() _read;
-  final ProviderProviderSubscription<Object?> _source;
+  final ProviderProviderSubscription<Object?>? _source;
 
   @override
   final OnError _errorListener;
@@ -319,8 +381,11 @@ final class ExternalProviderSubscription<InT, OutT>
   final void Function(OutT? prev, OutT next) _listener;
 
   @override
-  ProviderElement<Object?, Object?> get _listenedElement =>
+  ProviderElement<Object?, Object?>? get _listenedElement =>
       _innerSubscription.impl._listenedElement;
+
+  @override
+  ProviderContainer get container => _innerSubscription.impl.container;
 
   @override
   bool get weak => _innerSubscription.weak;

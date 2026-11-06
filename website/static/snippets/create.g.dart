@@ -11,25 +11,25 @@ part of 'create.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(boredSuggestion)
-final boredSuggestionProvider = BoredSuggestionProvider._();
+@ProviderFor(breweryName)
+final breweryNameProvider = BreweryNameProvider._();
 
-final class BoredSuggestionProvider
+final class BreweryNameProvider
     extends $FunctionalProvider<AsyncValue<String>, String, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String> {
-  BoredSuggestionProvider._()
+  BreweryNameProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'boredSuggestionProvider',
+        name: r'breweryNameProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$boredSuggestionHash();
+  String debugGetCreateSourceHash() => _$breweryNameHash();
 
   @$internal
   @override
@@ -38,8 +38,8 @@ final class BoredSuggestionProvider
 
   @override
   FutureOr<String> create(Ref ref) {
-    return boredSuggestion(ref);
+    return breweryName(ref);
   }
 }
 
-String _$boredSuggestionHash() => r'ea7579b20dd2a5f45fd9d9ea09fcbd3608330d24';
+String _$breweryNameHash() => r'346b8df6fe1f1d9055acb74af2d458ae2e10a6cd';

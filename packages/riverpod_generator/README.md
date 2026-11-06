@@ -132,7 +132,7 @@ Let's make a hello world using riverpod_generator:
 // main.dart
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 part 'main.g.dart';
 

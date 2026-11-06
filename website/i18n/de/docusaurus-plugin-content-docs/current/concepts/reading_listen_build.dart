@@ -1,6 +1,6 @@
 // ignore_for_file: omit_local_variable_types, avoid_types_on_closure_parameters, avoid_print
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'reading_counter.dart';

@@ -13,6 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   hooks_riverpod:
+  material_ui: ^1.0.0
 
 dev_dependencies:
   flutter_test:

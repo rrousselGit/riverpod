@@ -1,8 +1,4 @@
-BASEDIR=$(dirname "$0")
-
-cd $BASEDIR/../packages/riverpod
-dart test
-cd ../flutter_riverpod
-flutter test --no-pub
-cd ../hooks_riverpod
-flutter test --no-pub
+#!/usr/bin/env bash
+# Runs the tests of every package CI tests, in parallel. Same options as
+# scripts/test.sh.
+exec "$(dirname "$0")/test.sh" "$@"

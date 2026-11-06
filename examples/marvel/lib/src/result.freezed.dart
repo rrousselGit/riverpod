@@ -21,7 +21,7 @@ mixin _$Result<ValueT> {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Result<ValueT>);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is Result<ValueT>);
 }
 
 
@@ -30,7 +30,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'Result<$ValueT>()';
+    return 'Result<$ValueT>()';
 }
 
 
@@ -191,16 +191,18 @@ _$$ResultDataCopyWith<ValueT, _$ResultData<ValueT>> get copyWith => __$$ResultDa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _$ResultData<ValueT>&&const DeepCollectionEquality().equals(other.value, value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _$ResultData<ValueT>&&const DeepCollectionEquality().equals(other.value, value));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(value));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(value));
+}
 
 @override
 String toString() {
-  return 'Result<$ValueT>.data(value: $value)';
+    return 'Result<$ValueT>.data(value: $value)';
 }
 
 
@@ -258,16 +260,18 @@ _$$ResultErrorCopyWith<ValueT, _$ResultError<ValueT>> get copyWith => __$$Result
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _$ResultError<ValueT>&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _$ResultError<ValueT>&&const DeepCollectionEquality().equals(other.error, error)&&(identical(other.stackTrace, stackTrace) || other.stackTrace == stackTrace));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(error),stackTrace);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(error),stackTrace);
+}
 
 @override
 String toString() {
-  return 'Result<$ValueT>.error(error: $error, stackTrace: $stackTrace)';
+    return 'Result<$ValueT>.error(error: $error, stackTrace: $stackTrace)';
 }
 
 

@@ -1,3 +1,4 @@
+// dart format off
 /* SNIPPET START */ /// `GET /api/activity` 请求的响应。
 class Activity {
   Activity({

@@ -1,3 +1,4 @@
+// dart format off
 // ignore_for_file: omit_local_variable_types
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';

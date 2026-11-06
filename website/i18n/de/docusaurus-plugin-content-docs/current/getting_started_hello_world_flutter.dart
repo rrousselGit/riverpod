@@ -1,8 +1,9 @@
+// dart format off
 // ignore_for_file: use_key_in_widget_constructors, omit_local_variable_types
 
 /* SNIPPET START */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Wir erstellen einen "Provider", der einen Wert speichern wird (hier "Hello world").

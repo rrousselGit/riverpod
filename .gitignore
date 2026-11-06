@@ -62,3 +62,6 @@ lib/generated_plugin_registrant.dart
 
 node_modules
 package-lock.json
+
+# FVM Version Cache
+.fvm/

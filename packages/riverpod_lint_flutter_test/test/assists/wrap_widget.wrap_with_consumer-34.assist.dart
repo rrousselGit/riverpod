@@ -1,5 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, type=warning
+// ignore_for_file: type=lint, type=warning, todo
 // Offsets for "wrap_with_consumer":
 // 33:   Widget build(BuildContext context, WidgetRef ref) {
 // 34:     return <>ElevatedButton<>(
@@ -22,8 +22,8 @@
 @TestFor.wrap_with_provider_scope
 library;
 
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../test_annotation.dart';
 
