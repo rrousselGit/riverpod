@@ -24,6 +24,10 @@
 #                                              links an open GitHub issue,
 #                                              but those baselines/issues.yaml
 #                                              exempts
+#   website     scripts/website.sh --check     the files website/ generates
+#                                              from the docs and examples are
+#                                              current. Needs Node, so not run
+#                                              by default nor by `all`
 # graph and generate run first, one after the other, since the rest reads
 # their output. format, analyze, test, changelog, tested, legacy and issues
 # then share one parallel pool. Each failure is listed with the exact command
@@ -33,7 +37,8 @@
 #   -p, --package PATH  Only this package (repeatable). Applies to generate,
 #                       format, analyze, test and tested.
 #   -j, --jobs N        Max parallel tasks (default: CPU count; or CHECK_JOBS).
-#   --fix               graph, generate, format: fix instead of failing.
+#   --fix               graph, generate, format, website: fix instead of
+#                       failing.
 #   --no-coverage       Skip collecting test coverage, and so the check
 #                       that the tests cover every changed lib/ line.
 #   --no-coverage-check Collect test coverage, but skip that check (CI uses
@@ -73,7 +78,7 @@ while [ $# -gt 0 ]; do
     --base)       [ $# -ge 2 ] || die "$1 needs a ref"; base="$2"; shift 2 ;;
     -h|--help)    usage; exit 0 ;;
     all)          steps="$steps graph generate format analyze test changelog tested legacy issues"; shift ;;
-    graph|generate|format|analyze|test|changelog|tested|legacy|issues) steps="$steps $1"; shift ;;
+    graph|generate|format|analyze|test|changelog|tested|legacy|issues|website) steps="$steps $1"; shift ;;
     *)            die "unknown argument '$1' (see --help)" ;;
   esac
 done
@@ -89,7 +94,12 @@ if [ -n "$shard" ]; then
 fi
 # shellcheck disable=SC2086 # word splitting of the package list is intended
 validate_packages $selected
-command -v flutter >/dev/null || die "flutter is not on PATH (this repo pins its SDK in .fvmrc)"
+# Every step but website runs Flutter.
+for s in $steps; do
+  [ "$s" = website ] && continue
+  command -v flutter >/dev/null || die "flutter is not on PATH (this repo pins its SDK in .fvmrc)"
+  break
+done
 
 # Keeps the lines of stdin that match -p (all of them without -p).
 only_selected() {
@@ -127,6 +137,10 @@ fi
 if has_step generate; then
   echo "==> generate"
   pool_inline "generate" "scripts/generate.sh $(flag "" --check) -j $POOL_JOBS$selected"
+fi
+if has_step website; then
+  echo "==> website"
+  pool_inline "website" "scripts/website.sh $(flag "" --check)"
 fi
 
 pool_steps=""
