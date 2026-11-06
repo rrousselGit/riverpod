@@ -98,6 +98,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   /// - seamless:true => import previous state and skip loading
   /// - seamless:false => import previous state and prefer loading
   bool asyncTransition(AsyncValue<ValueT> newState, {required bool seamless}) {
+    assert(!_disposed, 'Cannot update the state of $origin after its disposal');
     final previous = value;
 
     if (newState._isMultiState) {
