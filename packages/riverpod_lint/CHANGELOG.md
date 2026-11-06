@@ -10,6 +10,8 @@
 - Fixed the `only_use_keep_alive_inside_keep_alive` message, which mentioned
   `KeepAliveLink`, and its correction, which suggested removing `keepAlive` from
   the used provider instead of adding it. (thanks to @cdeil)
+- Fixed the analyzer plugin crashing on generated providers whose return type
+  is unresolved, such as `MissingType` or `Future<MissingType>`.
 
 ## 3.1.9 - 2026-09-04
 
