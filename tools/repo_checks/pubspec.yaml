@@ -8,6 +8,8 @@ environment:
 resolution: workspace
 
 dependencies:
+  analyzer: ">=13.0.0 <15.0.0"
+  glob: ^2.1.2
   meta: ^1.15.0
   path: ^1.8.1
   yaml: ^3.1.0
