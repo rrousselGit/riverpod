@@ -2535,6 +2535,132 @@ void main() {
         ]);
         expect(root.getAllProviderElements().map((e) => e.origin), [provider]);
       });
+
+      group('from a scoped container, for providers never read through it '
+          '(#4785)', () {
+        final scoped = Provider((ref) => 0, dependencies: const []);
+
+        ProviderContainer scope(
+          ProviderContainer parent, {
+          List<Override> overrides = const [],
+        }) {
+          return ProviderContainer.test(
+            parent: parent,
+            overrides: [scoped.overrideWithValue(42), ...overrides],
+          );
+        }
+
+        void expectExists(
+          ProviderContainer container,
+          ProviderBase<Object?> provider,
+          bool expected,
+        ) {
+          expect(container.exists(provider), expected, reason: 'exists');
+          expect(container.read(provider.exists), expected, reason: 'read');
+        }
+
+        test('finds providers mounted in an ancestor after the fork', () {
+          final provider = Provider((ref) => 0);
+          final root = ProviderContainer.test();
+          final leaf = scope(root);
+
+          root.read(provider);
+
+          expectExists(leaf, provider, true);
+        });
+
+        test('finds family members mounted in an ancestor', () {
+          final family = Provider.family<int, int>((ref, i) => i);
+          final root = ProviderContainer.test();
+          final leaf = scope(root);
+
+          root.read(family(0));
+
+          expectExists(leaf, family(0), true);
+          expectExists(leaf, family(1), false);
+        });
+
+        test('finds family members mounted in an ancestor after the family '
+            'was inherited', () {
+          final family = Provider.family<int, int>((ref, i) => i);
+          final root = ProviderContainer.test();
+          final leaf = scope(root);
+
+          leaf.read(family(0));
+          root.read(family(1));
+
+          expectExists(leaf, family(0), true);
+          expectExists(leaf, family(1), true);
+        });
+
+        test('finds providers scoped in an intermediate container', () {
+          final provider = Provider((ref) => 0, dependencies: const []);
+          final root = ProviderContainer.test();
+          final mid = ProviderContainer.test(
+            parent: root,
+            overrides: [provider],
+          );
+          final leaf = scope(mid);
+
+          mid.read(provider);
+
+          expectExists(leaf, provider, true);
+        });
+
+        test('ignores ancestor elements of providers overridden locally', () {
+          final provider = Provider((ref) => 0);
+          final root = ProviderContainer.test();
+          final leaf = scope(root, overrides: [provider.overrideWithValue(1)]);
+
+          root.read(provider);
+
+          expectExists(leaf, provider, false);
+        });
+
+        test('notifies scoped listeners when an ancestor mounts the provider '
+            'or family member', () async {
+          final provider = Provider((ref) => 0);
+          final family = Provider.family<int, int>((ref, i) => i);
+          final root = ProviderContainer.test();
+          final leaf = scope(root);
+          final listener = Listener<bool>();
+          final familyListener = Listener<bool>();
+
+          leaf.read(family(0));
+          leaf.listen(provider.exists, listener.call);
+          leaf.listen(family(1).exists, familyListener.call);
+
+          root.read(provider);
+          root.read(family(1));
+          await root.pump();
+
+          verifyOnly(listener, listener(false, true));
+          verifyOnly(familyListener, familyListener(false, true));
+        });
+
+        test('counts elements created by a weak listener but never built', () {
+          var builds = 0;
+          final provider = Provider((ref) => ++builds);
+          final root = ProviderContainer.test();
+          final leaf = scope(root);
+
+          root.listen(provider, (_, _) {}, weak: true);
+
+          expectExists(leaf, provider, true);
+          expect(builds, 0);
+        });
+
+        test('ignores providers mounted in a sibling scope', () {
+          final provider = Provider((ref) => 0, dependencies: [scoped]);
+          final root = ProviderContainer.test();
+          final sibling = scope(root);
+          final leaf = scope(root);
+
+          sibling.read(provider);
+
+          expectExists(leaf, provider, false);
+        });
+      });
     });
 
     group('.pump', () {

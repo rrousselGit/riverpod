@@ -7,6 +7,9 @@
   instead (#3855).
 - Fixed `functional_ref` reporting a valid ref when `riverpod_annotation` is
   imported with a prefix, such as `int value(r.Ref ref)`.
+- Fixed the `only_use_keep_alive_inside_keep_alive` message, which mentioned
+  `KeepAliveLink`, and its correction, which suggested removing `keepAlive` from
+  the used provider instead of adding it. (thanks to @cdeil)
 
 ## 3.1.9 - 2026-09-04
 
