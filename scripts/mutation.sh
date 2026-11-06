@@ -1,25 +1,23 @@
 #!/usr/bin/env bash
 # Mutation testing of packages/riverpod, with dart_mutant: each lib/ file is
 # changed in one small place at a time (a mutant), and its own test, the
-# test/**/x_test.dart of lib/**/x.dart, must then fail. Each file must have
-# as many surviving mutants as baselines/mutation.yaml lists for it (none if
-# unlisted), and survivors are reported with whether that test even runs
-# their line.
+# test/**/x_test.dart of lib/**/x.dart, must then fail. A mutant that
+# survives must be listed by baselines/mutation.yaml, and a mutant it lists
+# must still survive. Survivors are reported with whether that test even
+# runs their line.
 #
 # By default, only the mutants on the lines changed since REF are run, so
 # that a change pays for the code it touches rather than for the size of its
-# files, and none of them may survive: the baseline counts the survivors of
-# whole files, which such a run does not see. Blank and `//` comment lines do
-# not count as changed. dart_mutant has no option for this, so it is first
-# run without running a test, to list the mutants of the changed files, and
-# the others are then marked as done in its state (see
-# tools/repo_checks/bin/scope_mutation.dart).
+# files. The baseline names each mutant, so it is checked for those alone.
+# Blank and `//` comment lines do not count as changed. dart_mutant has no
+# option for this, so it is first run without running a test, to list the
+# mutants of the changed files, and the others are then marked as done in
+# its state (see tools/repo_checks/bin/scope_mutation.dart).
 #
 # With --whole-files, every mutant of the files changed since REF, or whose
-# test changed, is run instead, and each file must have as many surviving
-# mutants as baselines/mutation.yaml lists for it (none if unlisted). The
-# daily run of --all checks every file that way. Generated and
-# directives-only files, and files without a test, are skipped.
+# test changed, is run instead; with --all, every mutant of every file, as
+# the daily run does. Generated and directives-only files, and files without
+# a test, are skipped.
 #
 # packages/riverpod is in a pub workspace, which dart_mutant cannot copy, so
 # it mutates the files IN PLACE, one mutant at a time: do not edit, commit or
@@ -34,8 +32,8 @@
 #   --base REF           Ref to compare against (default: origin/master;
 #                        fetched if missing).
 #   --all                Every mutant of every file.
-#   --whole-files        Every mutant of the changed files, checked against
-#                        the baseline.
+#   --whole-files        Every mutant of the changed files, and of those
+#                        whose test changed.
 #   --shard I/N          Only run part I of N of the mutants of each file,
 #                        and write it to .dart_tool/mutation/part-I.json
 #                        without checking it.
@@ -44,9 +42,9 @@
 #                        the same files as the parts (--base or --all, and
 #                        --whole-files).
 #   --update-baseline    Set the entries of the mutated files in
-#                        baselines/mutation.yaml to their number of
-#                        survivors, instead of checking them. Implies
-#                        --whole-files.
+#                        baselines/mutation.yaml to what the run found,
+#                        instead of checking them: the survivors are added,
+#                        and the entries that no longer survive removed.
 #
 # The report is left at packages/riverpod/.dart_tool/mutation/, as JSON and
 # as a page for a browser.
@@ -73,7 +71,7 @@ while [ $# -gt 0 ]; do
     --whole-files) whole=1; shift ;;
     --shard) [ $# -ge 2 ] || die "$1 needs I/N"; shard="$2"; shift 2 ;;
     --merge) [ $# -ge 2 ] || die "$1 needs a folder"; merge="$2"; shift 2 ;;
-    --update-baseline) update="--update-baseline"; whole=1; shift ;;
+    --update-baseline) update="--update-baseline"; shift ;;
     -h|--help) usage; exit 0 ;;
     *) die "unknown argument '$1' (see --help)" ;;
   esac
@@ -234,10 +232,7 @@ else
 fi
 echo "Report: $package/$out/mutation.html"
 
-scoped=()
-[ -z "$diff" ] || scoped=(--changed-lines "$diff")
 cd "$ROOT" || exit 1
 # shellcheck disable=SC2086 # $update is empty or a flag
 exec dart run repo_checks:check_mutation "$ROOT" "$package" \
-  "$package/$out/mutation.json" "$package/$out/coverage" $update \
-  ${scoped[@]+"${scoped[@]}"} "${files[@]}"
+  "$package/$out/mutation.json" "$package/$out/coverage" $update "${files[@]}"

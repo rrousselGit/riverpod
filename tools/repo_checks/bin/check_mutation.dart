@@ -2,18 +2,16 @@ import 'dart:io';
 
 import 'package:path/path.dart' as p;
 import 'package:repo_checks/src/mutation_check.dart';
-import 'package:repo_checks/src/mutation_scope.dart';
 
-/// Checks a dart_mutant report: each mutated file must have as many
-/// surviving mutants as [mutationBaselinePath] lists for it (see
-/// [checkMutations]).
+/// Checks a dart_mutant report, which may be of only some mutants of each
+/// file: each mutant that survived must be listed by [mutationBaselinePath],
+/// and each one it lists must still survive (see [checkMutations]).
 ///
 /// Usage:
 ///
 /// ```sh
 /// dart run repo_checks:check_mutation \
-///   root package report coverage [--update-baseline]
-///   [--changed-lines diff] file...
+///   root package report coverage [--update-baseline] file...
 /// ```
 ///
 /// where `root` is the repository root, `package` the path of the mutated
@@ -22,25 +20,15 @@ import 'package:repo_checks/src/mutation_scope.dart';
 /// `coverage/file.info`, and `file` the mutated files, relative to
 /// `package`.
 ///
-/// With `--update-baseline`, the entries of the files are set to their number
-/// of survivors instead.
-///
-/// With `--changed-lines`, only the mutants on the lines that the
-/// `git diff -U0` at `diff` (run in `package`) adds or changes were run: none
-/// of them may survive, and the baseline is not compared.
+/// With `--update-baseline`, the entries of the files are set to what the
+/// report found instead (see [updatedMutationEntries]).
 Future<void> main(List<String> args) async {
   final arguments = [...args];
   final update = arguments.remove('--update-baseline');
-  String? diffPath;
-  final changedIndex = arguments.indexOf('--changed-lines');
-  if (changedIndex != -1 && changedIndex + 1 < arguments.length) {
-    diffPath = arguments[changedIndex + 1];
-    arguments.removeRange(changedIndex, changedIndex + 2);
-  }
   if (arguments.length < 5) {
     stderr.writeln(
       'Usage: check_mutation <root> <package> <report> <coverage> '
-      '[--update-baseline] [--changed-lines <diff>] <file>...',
+      '[--update-baseline] <file>...',
     );
     exit(2);
   }
@@ -66,14 +54,14 @@ Future<void> main(List<String> args) async {
     mutationBaselinePath,
     () => parseMutationBaseline(baselineFile.readAsStringSync()),
   );
-  final survivors = parse(
+  final mutants = parse(
     reportPath,
     () => parseMutationReport(reportFile.readAsStringSync(), package: package),
   );
 
   final missing = [
     for (final file in files)
-      if (!survivors.containsKey(p.posix.join(package, file))) file,
+      if (!mutants.containsKey(p.posix.join(package, file))) file,
   ];
   if (missing.isNotEmpty) {
     stderr
@@ -84,10 +72,10 @@ Future<void> main(List<String> args) async {
 
   if (update) {
     baselineFile.writeAsStringSync(
-      updateMutationBaseline(baselineFile.readAsStringSync(), {
-        for (final MapEntry(:key, :value) in survivors.entries)
-          key: value.length,
-      }),
+      updateMutationBaseline(
+        baselineFile.readAsStringSync(),
+        updatedMutationEntries(baseline: baseline, mutants: mutants),
+      ),
     );
     stdout.writeln('Updated $mutationBaselinePath.');
     return;
@@ -109,27 +97,15 @@ Future<void> main(List<String> args) async {
     return listed[line] == false;
   }
 
-  final changed = diffPath == null
-      ? null
-      : {
-          for (final MapEntry(:key, :value) in parseChangedLines(
-            File(diffPath).readAsStringSync(),
-          ).entries)
-            p.posix.join(package, key): value,
-        };
   final problems = checkMutations(
     baseline: baseline,
-    survivors: survivors,
+    mutants: mutants,
     neverRun: neverRun,
     exists: (path) => File(p.join(root, path)).existsSync(),
-    changed: changed,
   );
   if (problems.isEmpty) {
     stdout.writeln(
-      changed == null
-          ? 'Every mutated file has the surviving mutants that '
-                '$mutationBaselinePath lists for it.'
-          : 'No mutant on the lines this change touches survived.',
+      'The mutants that survived are those that $mutationBaselinePath lists.',
     );
     return;
   }
@@ -138,9 +114,11 @@ Future<void> main(List<String> args) async {
     ..writeln('Mutation testing found problems:')
     ..writeAll(problems.map((problem) => '  $problem\n'))
     ..writeln(
-      'Each lib/ file must be checked by its own test: make it kill these '
-      'mutants, in test/src. For a mutant that no test can tell apart from '
-      'the code, rewrite the code instead.',
+      'Each lib/ file must be checked by its own test: make it kill the '
+      'mutants it does not list, in test/src. For a mutant that no test can '
+      'tell apart from the code, rewrite the code instead. '
+      'scripts/mutation.sh --update-baseline removes what no longer '
+      'survives.',
     );
   exit(1);
 }
