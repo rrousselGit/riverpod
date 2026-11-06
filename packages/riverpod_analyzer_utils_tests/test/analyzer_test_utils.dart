@@ -53,6 +53,9 @@ List<RiverpodAnalysisError> collectErrors(void Function() cb) {
 
 int _testNumber = 0;
 
+/// Whether a test that is not skipped was declared yet in this file.
+bool _declaredRunnableTest = false;
+
 Future<_TestAnalysisContext>? _analysisContext;
 
 /// Shares dependency analysis while keeping each test's files at unique paths.
@@ -184,12 +187,17 @@ void testSource(
     });
   }
   final testId = _testNumber++;
+  // A skipped test does not run, so leaves the first analysis to the next one.
+  final firstRunnable =
+      !_declaredRunnableTest && (skip == null || skip == false);
+  if (firstRunnable) _declaredRunnableTest = true;
   test(
     description,
     skip: skip,
-    // The first test of each file analyzes the dependencies, such as Flutter,
-    // unless another file already cached them: on CI, all files start at once.
-    timeout: timeout ?? (testId == 0 ? const Timeout.factor(4) : null),
+    // The first test of each file to run analyzes the dependencies, such as
+    // Flutter, unless another file already cached them: on CI, all files
+    // start at once.
+    timeout: timeout ?? (firstRunnable ? const Timeout.factor(4) : null),
     () async {
       final analysis = await (_analysisContext ??=
           _TestAnalysisContext.create());
