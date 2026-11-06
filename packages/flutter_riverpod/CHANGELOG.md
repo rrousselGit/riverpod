@@ -1,5 +1,10 @@
 ## Unreleased minor
 
+- `ProviderObserver.providerDidFail` is no longer called for errors received
+  after a provider was disposed (#4706).
+- `ProviderDisposedException` is now exported by `package:flutter_riverpod/misc.dart`.
+  `provider.future` completes with it instead of a `StateError` when the
+  provider is disposed before emitting a value.
 - Fix a `setState() or markNeedsBuild() called during build` error when resuming a consumer with a diamond-shaped provider dependency graph. (thanks to @yazanmg)
 - `AsyncValueIsLoadingException` now has a public constructor. (thanks to @uveshm003)
 - `debugTrackProviderCreation` is now exported by `package:flutter_riverpod/misc.dart`.
