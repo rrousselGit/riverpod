@@ -1,5 +1,9 @@
 part of '../framework.dart';
 
+/// A function that removes the listener it was returned for.
+@internal
+typedef RemoveListener = void Function();
+
 @internal
 @publicInCodegen
 extension $RefArg on Ref {
@@ -40,7 +44,7 @@ Cannot use the Ref of $origin after it has been disposed. This typically happens
 /// {@endtemplate}
 /// {@category Core}
 @publicInRiverpodAndCodegen
-sealed class Ref implements MutationTarget {
+sealed class Ref implements BaseRef, MutationTarget {
   Ref._({required this.isFirstBuild, required this.isReload});
 
   ProviderElement<Object?, Object?> get _element;
@@ -50,6 +54,8 @@ sealed class Ref implements MutationTarget {
   List<void Function()>? _onCancelListeners;
   List<void Function()>? _onAddListeners;
   List<void Function()>? _onRemoveListeners;
+  List<void Function()>? _onManualInvalidationListeners;
+  bool _inManualInvalidationCallback = false;
 
   /// Whether we're initializing this provider for the first time.
   ///
@@ -172,10 +178,12 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     }
 
     final queue = Queue<ProviderElement>();
+    final visited = <ProviderElement>{};
     _element.visitChildren(queue.add);
 
     while (queue.isNotEmpty) {
       final current = queue.removeFirst();
+      if (!visited.add(current)) continue;
       current.visitChildren(queue.add);
 
       if (current.origin == dependency) {
@@ -227,11 +235,13 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     return path;
   }
 
-  void _throwIfInvalidUsage() {
-    assert(
-      _debugCallbackStack == 0,
-      'Cannot use Ref or modify other providers inside life-cycles/selectors.',
-    );
+  void _throwIfInvalidUsage({bool skipAssert = false}) {
+    if (!skipAssert) {
+      assert(
+        _debugCallbackStack == 0,
+        'Cannot use Ref or modify other providers inside life-cycles/selectors.',
+      );
+    }
     if (!mounted) {
       throw UnmountedRefException(_element.origin);
     }
@@ -245,6 +255,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// If [keepAlive] is invoked multiple times, all [KeepAliveLink] will have
   /// to be closed for the provider to dispose itself when all listeners are removed.
+  @override
   KeepAliveLink keepAlive() {
     _throwIfInvalidUsage();
 
@@ -287,6 +298,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// This method is useful for features like "pull to refresh" or "retry on error",
   /// to restart a specific provider.
   /// {@endtemplate}
+  @override
   @useResult
   StateT refresh<StateT>(Refreshable<StateT> refreshable) {
     _throwIfInvalidUsage();
@@ -319,8 +331,11 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// If used on a provider which is not initialized or disposed, this method will have no effect.
   /// {@endtemplate}
+  @override
   void invalidate(ProviderOrFamily providerOrFamily, {bool asReload = false}) {
-    _throwIfInvalidUsage();
+    // Allow invalidate calls within onManualInvalidation callbacks
+    _throwIfInvalidUsage(skipAssert: _inManualInvalidationCallback);
+
     if (kDebugMode) _debugAssertCanDependOn(providerOrFamily);
 
     container.invalidate(providerOrFamily, asReload: asReload);
@@ -329,10 +344,62 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// Invokes [invalidate] on itself.
   ///
   /// {@macro riverpod.invalidate}
+  @override
   void invalidateSelf({bool asReload = false}) {
+    _invalidateSelf(asReload: asReload, manual: true);
+  }
+
+  void _invalidateSelf({required bool asReload, required bool manual}) {
     _throwIfInvalidUsage();
 
-    _element.invalidateSelf(asReload: asReload);
+    _element.invalidateSelf(asReload: asReload, manual: manual);
+  }
+
+  /// {@template riverpod.onManualInvalidation}
+  /// A life-cycle for whenever this provider is manually invalidated, as opposed
+  /// to automatic invalidation caused by dependency changes.
+  ///
+  /// This callback is triggered when:
+  /// - [invalidateSelf] is called
+  /// - [invalidate] is called on this provider
+  /// - [refresh] on this provider
+  ///
+  /// This callback is NOT triggered when:
+  /// - A dependency watched with [watch] changes
+  ///
+  /// ## Common Use Cases
+  ///
+  /// **Invalidation forwarding**: Forward manual invalidations to upstream providers:
+  /// ```dart
+  /// final sourceProvider = Provider((ref) => 'source data');
+  ///
+  /// final derivedProvider = Provider((ref) {
+  ///   final data = ref.watch(sourceProvider);
+  ///
+  ///   // Forward manual invalidations to the source
+  ///   ref.onManualInvalidation(() {
+  ///     ref.invalidate(sourceProvider);
+  ///   });
+  ///
+  ///   return 'processed: $data';
+  /// });
+  /// ```
+  ///
+  /// Returns a function which can be called to remove the listener.
+  ///
+  /// See also:
+  /// - [invalidateSelf], to manually invalidate this provider
+  /// - [invalidate], to manually invalidate other providers
+  /// - [refresh], to forcefully re-evaluate a provider
+  /// {@endtemplate}
+  @experimental
+  RemoveListener onManualInvalidation(void Function() cb) {
+    _throwIfInvalidUsage();
+
+    final list = _onManualInvalidationListeners ??= [];
+    list.add(cb);
+
+    return () => list.remove(cb);
   }
 
   /// Notify dependents that this provider has changed.
@@ -350,16 +417,18 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///   }
   /// }
   /// ```
+  @override
   void notifyListeners() {
     _throwIfInvalidUsage();
 
-    final currentValue = _element.value;
-
     if (_element._didBuild) {
+      final currentValue = _element.value;
+      final currentValueResult = _element.resultForValue(currentValue);
+
       _element._notifyListeners(
-        currentValue,
-        currentValue,
-        checkUpdateShouldNotify: false,
+        next: currentValueResult!,
+        previous: currentValueResult,
+        updateShouldNotifyResult: null,
       );
     }
   }
@@ -370,6 +439,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// See also:
   /// - [onRemoveListener], for when a listener is removed
+  @override
   RemoveListener onAddListener(void Function() cb) {
     _throwIfInvalidUsage();
 
@@ -385,6 +455,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// See also:
   /// - [onAddListener], for when a listener is added
+  @override
   RemoveListener onRemoveListener(void Function() cb) {
     _throwIfInvalidUsage();
 
@@ -413,6 +484,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///   destroy its state when no longer listened to.
   /// - [onDispose], a life-cycle for when a provider is disposed.
   /// - [onResume], a life-cycle for when the provider is listened to again.
+  @override
   RemoveListener onCancel(void Function() cb) {
     _throwIfInvalidUsage();
 
@@ -434,6 +506,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///   destroy its state when no longer listened to.
   /// - [onDispose], a life-cycle for when a provider is disposed.
   /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
+  @override
   RemoveListener onResume(void Function() cb) {
     _throwIfInvalidUsage();
 
@@ -491,6 +564,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// - [ProviderContainer.dispose], to destroy all providers associated with
   ///   a [ProviderContainer] at once.
   /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
+  @override
   RemoveListener onDispose(void Function() listener) {
     _throwIfInvalidUsage();
 
@@ -534,6 +608,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// If possible, avoid using [read] and prefer [watch], which is generally
   /// safer to use.
+  @override
   StateT read<StateT>(ProviderListenable<StateT> listenable) {
     _throwIfInvalidUsage();
 
@@ -577,6 +652,8 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// });
   /// ```
   /// {@endtemplate}
+  @Deprecated('Use `ref.read/watch/listen(provider.exist)` instead')
+  @override
   bool exists(ProviderBase<Object?> provider) {
     _throwIfInvalidUsage();
 
@@ -649,13 +726,14 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///    return sub.read();
   /// }
   /// ```
+  @override
   StateT watch<StateT>(ProviderListenable<StateT> listenable) {
     _throwIfInvalidUsage();
     late ProviderSubscription<StateT> sub;
     sub = _element.listen<StateT>(
       listenable,
-      (prev, value) => invalidateSelf(asReload: true),
-      onError: (err, stack) => invalidateSelf(asReload: true),
+      (prev, value) => _invalidateSelf(asReload: true, manual: false),
+      onError: (err, stack) => _invalidateSelf(asReload: true, manual: false),
       onDependencyMayHaveChanged: _element._markDependencyMayHaveChanged,
     );
 
@@ -686,6 +764,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///   This enables listening to changes on a provider, without causing it to
   ///   perform any work if it currently isn't used.
   /// {@endtemplate}
+  @override
   ProviderSubscription<StateT> listen<StateT>(
     ProviderListenable<StateT> provider,
     void Function(StateT? previous, StateT next) listener, {
@@ -694,13 +773,15 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     bool fireImmediately = false,
   }) {
     _throwIfInvalidUsage();
-    return _element.listen(
+    final sub = _element.listen(
       provider,
       listener,
       weak: weak,
       onError: onError,
       fireImmediately: fireImmediately,
     );
+
+    return sub;
   }
 }
 
@@ -718,6 +799,27 @@ void _runCallbacks(
       }
       container.runGuarded(cb);
     } finally {
+      if (kDebugMode) {
+        _debugCallbackStack--;
+      }
+    }
+  }
+}
+
+void _runManualInvalidationCallbacks(ProviderContainer container, Ref? ref) {
+  // toList() protects against ConcurrentModificationError
+  final callbacks = ref?._onManualInvalidationListeners?.toList();
+  if (ref == null || callbacks == null) return;
+
+  for (final cb in callbacks) {
+    try {
+      if (kDebugMode) {
+        _debugCallbackStack++;
+      }
+      ref._inManualInvalidationCallback = true;
+      container.runGuarded(cb);
+    } finally {
+      ref._inManualInvalidationCallback = false;
       if (kDebugMode) {
         _debugCallbackStack--;
       }

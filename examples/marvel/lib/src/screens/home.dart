@@ -1,8 +1,7 @@
 import 'package:dio/dio.dart';
-// ignore: undefined_hidden_name
-import 'package:flutter/material.dart' hide SearchBar;
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart' hide SearchBar;
 
 import '../marvel.dart';
 import '../widgets/loading_image.dart';
@@ -85,11 +84,10 @@ class Home extends HookConsumerWidget {
     return ref
         .watch(charactersCount(''))
         .when(
-          loading:
-              () => Container(
-                color: Colors.white,
-                child: const Center(child: CircularProgressIndicator()),
-              ),
+          loading: () => Container(
+            color: Colors.white,
+            child: const Center(child: CircularProgressIndicator()),
+          ),
           error: (err, stack) {
             return Scaffold(
               appBar: AppBar(title: const Text('Error')),
@@ -145,8 +143,8 @@ class Home extends HookConsumerWidget {
                 ],
               ),
               floatingActionButton: FloatingActionButton.extended(
-                onPressed:
-                    () => Navigator.pushNamed(context, '/characters/1009368'),
+                onPressed: () =>
+                    Navigator.pushNamed(context, '/characters/1009368'),
                 label: const Text('Deep link to Iron-man'),
                 icon: const Icon(Icons.link),
               ),

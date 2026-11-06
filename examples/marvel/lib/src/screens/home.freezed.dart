@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'home.dart';
@@ -9,6 +9,7 @@ part of 'home.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $CharacterPaginationCopyWith<CharacterPagination> get copyWith => _$CharacterPag
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CharacterPagination&&(identical(other.page, page) || other.page == page)&&(identical(other.name, name) || other.name == name));
+  final _this = this as CharacterPagination;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CharacterPagination&&(identical(other.page, _this.page) || other.page == _this.page)&&(identical(other.name, _this.name) || other.name == _this.name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,page,name);
+int get hashCode {
+  final _this = this as CharacterPagination;
+  return Object.hash(runtimeType,_this.page,_this.name);
+}
 
 @override
 String toString() {
-  return 'CharacterPagination(page: $page, name: $name)';
+  final _this = this as CharacterPagination;
+  return 'CharacterPagination(page: ${_this.page}, name: ${_this.name})';
 }
 
 
@@ -63,7 +69,7 @@ class _$CharacterPaginationCopyWithImpl<$Res>
 /// Create a copy of CharacterPagination
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? page = null,Object? name = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(CharacterPagination(
 page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
 as int,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -217,16 +223,18 @@ _$CharacterPaginationCopyWith<_CharacterPagination> get copyWith => __$Character
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CharacterPagination&&(identical(other.page, page) || other.page == page)&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CharacterPagination&&(identical(other.page, page) || other.page == page)&&(identical(other.name, name) || other.name == name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,page,name);
+int get hashCode {
+    return Object.hash(runtimeType,page,name);
+}
 
 @override
 String toString() {
-  return 'CharacterPagination(page: $page, name: $name)';
+    return 'CharacterPagination(page: $page, name: $name)';
 }
 
 
@@ -279,16 +287,21 @@ $CharacterOffsetCopyWith<CharacterOffset> get copyWith => _$CharacterOffsetCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CharacterOffset&&(identical(other.offset, offset) || other.offset == offset)&&(identical(other.name, name) || other.name == name));
+  final _this = this as CharacterOffset;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CharacterOffset&&(identical(other.offset, _this.offset) || other.offset == _this.offset)&&(identical(other.name, _this.name) || other.name == _this.name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,offset,name);
+int get hashCode {
+  final _this = this as CharacterOffset;
+  return Object.hash(runtimeType,_this.offset,_this.name);
+}
 
 @override
 String toString() {
-  return 'CharacterOffset(offset: $offset, name: $name)';
+  final _this = this as CharacterOffset;
+  return 'CharacterOffset(offset: ${_this.offset}, name: ${_this.name})';
 }
 
 
@@ -317,7 +330,7 @@ class _$CharacterOffsetCopyWithImpl<$Res>
 /// Create a copy of CharacterOffset
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? offset = null,Object? name = null,}) {
-  return _then(_self.copyWith(
+  return _then(CharacterOffset(
 offset: null == offset ? _self.offset : offset // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,
@@ -471,16 +484,18 @@ _$CharacterOffsetCopyWith<_CharacterOffset> get copyWith => __$CharacterOffsetCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CharacterOffset&&(identical(other.offset, offset) || other.offset == offset)&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CharacterOffset&&(identical(other.offset, offset) || other.offset == offset)&&(identical(other.name, name) || other.name == name));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,offset,name);
+int get hashCode {
+    return Object.hash(runtimeType,offset,name);
+}
 
 @override
 String toString() {
-  return 'CharacterOffset(offset: $offset, name: $name)';
+    return 'CharacterOffset(offset: $offset, name: $name)';
 }
 
 

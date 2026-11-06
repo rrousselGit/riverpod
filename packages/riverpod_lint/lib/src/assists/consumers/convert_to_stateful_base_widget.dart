@@ -143,7 +143,8 @@ abstract class ConvertToStatefulBaseWidget extends ResolvedCorrectionProducer {
           .firstWhereOrNull((element) => element.name.lexeme == 'build');
       if (buildMethod == null) return;
 
-      final createdStateClassName = '_${widgetClass.name.lexeme.public}State';
+      final createdStateClassName =
+          '_${widgetClass.namePart.typeName.lexeme.public}State';
       final String baseStateName;
       switch (targetWidget) {
         case StatefulBaseWidgetType.consumerStatefulWidget:
@@ -157,10 +158,10 @@ abstract class ConvertToStatefulBaseWidget extends ResolvedCorrectionProducer {
       // Split the class into two classes right before the build method
       builder.addSimpleInsertion(buildMethod.offset, '''
 @override
-  $baseStateName<${widgetClass.name.lexeme}> createState() => $createdStateClassName();
+  $baseStateName<${widgetClass.namePart.typeName.lexeme}> createState() => $createdStateClassName();
 }
 
-class $createdStateClassName extends $baseStateName<${widgetClass.name}> {
+class $createdStateClassName extends $baseStateName<${widgetClass.namePart.typeName}> {
 ''');
 
       final buildParams = buildMethod.parameters;
@@ -209,11 +210,11 @@ class $createdStateClassName extends $baseStateName<${widgetClass.name}> {
           .firstWhereOrNull((element) => element.name.lexeme == 'createState');
       if (createStateMethod != null) {
         final returnTypeString = createStateMethod.returnType?.toSource() ?? '';
-        if (returnTypeString != stateClass.name.lexeme) {
+        if (returnTypeString != stateClass.namePart.typeName.lexeme) {
           // Replace State
           builder.addSimpleReplacement(
             range.node(createStateMethod.returnType!),
-            '$baseStateName<${widgetClass.name}>',
+            '$baseStateName<${widgetClass.namePart.typeName}>',
           );
         }
       }
@@ -223,7 +224,7 @@ class $createdStateClassName extends $baseStateName<${widgetClass.name}> {
         // Replace State
         builder.addSimpleReplacement(
           range.node(stateExtends.superclass),
-          '$baseStateName<${widgetClass.name}>',
+          '$baseStateName<${widgetClass.namePart.typeName}>',
         );
       }
     });

@@ -371,7 +371,10 @@ base class ConsumerStatefulElement extends StatefulElement
   BuildContext get context => this;
 
   @override
-  late ProviderContainer container = ProviderScope.containerOf(this);
+  late ProviderContainer container = ProviderScope.containerOf(
+    this,
+    listen: false,
+  );
   var _dependencies =
       <ProviderListenable<Object?>, ProviderSubscription<Object?>>{};
   Map<ProviderListenable<Object?>, ProviderSubscription<Object?>>?
@@ -380,6 +383,18 @@ base class ConsumerStatefulElement extends StatefulElement
   List<ProviderSubscription<Object?>>? _manualListeners;
   ValueListenable<bool>? _tickerModeNotifier;
   bool? _isActive;
+
+  @override
+  void mount(Element? parent, Object? newSlot) {
+    super.mount(parent, newSlot);
+    try {
+      // Forcibly listen to the container, to guarantee that didChangeDependencies
+      // is called when the container changes.
+      ProviderScope.containerOf(this);
+    } catch (e) {
+      // Silence 'no scope' error. It is already reported by the container variable.
+    }
+  }
 
   @override
   void activate() {
@@ -486,9 +501,6 @@ base class ConsumerStatefulElement extends StatefulElement
 
   @override
   void unmount() {
-    /// Calling `super.unmount()` will call `dispose` on the state
-    /// And [ListenManual] subscriptions should be closed after `dispose`
-    super.unmount();
     _tickerModeNotifier?.removeListener(_updateTickerMode);
 
     for (final dependency in _dependencies.values) {
@@ -497,12 +509,20 @@ base class ConsumerStatefulElement extends StatefulElement
     for (var i = 0; i < _listeners.length; i++) {
       _listeners[i].close();
     }
-    final manualListeners = _manualListeners?.toList();
-    if (manualListeners != null) {
-      for (final listener in manualListeners) {
-        listener.close();
+
+    // Prevents memory leaks if State.dispose throws.
+    try {
+      /// Calling `super.unmount()` will call `dispose` on the state
+      /// And [ListenManual] subscriptions should be closed after `dispose`
+      super.unmount();
+    } finally {
+      final manualListeners = _manualListeners?.toList();
+      if (manualListeners != null) {
+        for (final listener in manualListeners) {
+          listener.close();
+        }
+        _manualListeners = null;
       }
-      _manualListeners = null;
     }
   }
 
@@ -531,6 +551,7 @@ base class ConsumerStatefulElement extends StatefulElement
     _listeners.add(sub);
   }
 
+  @Deprecated('Use `ref.read/watch/listen(provider.exist)` instead')
   @override
   bool exists(ProviderBase<Object?> provider) {
     _assertNotDisposed();

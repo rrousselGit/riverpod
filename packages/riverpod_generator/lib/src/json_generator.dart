@@ -46,13 +46,13 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
     AnalyzerBuffer buffer,
     ClassBasedProviderDeclaration provider,
   ) {
-    if (provider.node.typeParameters?.typeParameters.isNotEmpty ?? false) {
+    if (provider.node.namePart.typeParameters?.typeParameters.isNotEmpty ??
+        false) {
       throw InvalidGenerationSourceError(
         'Encoding generic notifiers is currently not supported',
-        element:
-            provider.node.declaredFragment!.libraryFragment.element.classes
-                .where((e) => e.name == provider.name.lexeme)
-                .firstOrNull,
+        element: provider.node.declaredFragment!.libraryFragment.element.classes
+            .where((e) => e.name == provider.name.lexeme)
+            .firstOrNull,
         node: provider.node,
       );
     }
@@ -62,10 +62,9 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
 
     final genericsDefinition = provider.genericsDefinition();
 
-    final resolvedKey =
-        !provider.providerElement.isFamily
-            ? 'const resolvedKey = "${provider.name}";'
-            : '''
+    final resolvedKey = !provider.providerElement.isFamily
+        ? 'const resolvedKey = "${provider.name}";'
+        : '''
     late final args = ${provider.argumentToRecord()};
     late final resolvedKey = '${provider.name}(\$args)';
 ''';
@@ -111,19 +110,19 @@ abstract class $notifierClass$genericsDefinition extends $baseClass {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  PersistResult persist(
-    FutureOr<Storage<String, String>> storage, {
+  #{{riverpod|PersistResult}} persist(
+    #{{dart:async|FutureOr}}<#{{riverpod|Storage}}<String, String>> storage, {
     String? key,
     String Function(${provider.providerElement.valueTypeNode.toCode()} state)? encode,
     ${provider.providerElement.valueTypeNode.toCode()} Function(String encoded)? decode,
-    StorageOptions options = const StorageOptions(),
+    #{{riverpod|StorageOptions}} options = const #{{riverpod|StorageOptions}}(),
   }) {
-    return NotifierPersistX(this).persist<String, String>(
+    return #{{riverpod|NotifierPersistX}}(this).persist<String, String>(
       storage,
       key: key ?? this.key,
-      encode: encode ?? \$jsonCodex.encode,
+      encode: encode ?? #{{riverpod_annotation|\$jsonCodex}}.encode,
       decode: decode ?? (encoded) {
-        final e = \$jsonCodex.decode(encoded);
+        final e = #{{riverpod_annotation|\$jsonCodex}}.decode(encoded);
         return $decoded;
       },
       options: options,

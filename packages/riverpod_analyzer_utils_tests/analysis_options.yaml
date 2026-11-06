@@ -1,0 +1,5 @@
+include: ../../analysis_options.yaml
+analyzer:
+  errors:
+    # These tests are for the internals of riverpod_analyzer_utils.
+    invalid_use_of_internal_member: ignore

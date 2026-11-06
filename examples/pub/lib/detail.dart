@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'pub_repository.dart';
@@ -148,24 +148,22 @@ class PackageDetailPage extends HookConsumerWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed:
-            isToggleLikeLoading
-                ? null
-                : () {
-                  final packageLikes = ref.read(
-                    packageMetricsProvider(packageName: packageName).notifier,
-                  );
+        onPressed: isToggleLikeLoading
+            ? null
+            : () {
+                final packageLikes = ref.read(
+                  packageMetricsProvider(packageName: packageName).notifier,
+                );
 
-                  if (isLiked) {
-                    pendingToggleLike.value = packageLikes.unlike();
-                  } else {
-                    pendingToggleLike.value = packageLikes.like();
-                  }
-                },
-        child:
-            isLiked
-                ? const Icon(Icons.favorite)
-                : const Icon(Icons.favorite_border),
+                if (isLiked) {
+                  pendingToggleLike.value = packageLikes.unlike();
+                } else {
+                  pendingToggleLike.value = packageLikes.like();
+                }
+              },
+        child: isLiked
+            ? const Icon(Icons.favorite)
+            : const Icon(Icons.favorite_border),
       ),
     );
   }

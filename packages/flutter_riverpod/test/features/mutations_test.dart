@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_riverpod/experimental/mutation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -33,7 +33,7 @@ void main() {
 
     expect(find.text('42'), findsNothing);
 
-    await mut.run(container, (tsx) async {
+    await mut.run(container, (_) async {
       return 42;
     });
     await tester.pump();

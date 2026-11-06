@@ -207,8 +207,9 @@ class NestedClass {
         ),
       );
 
-      final constructor2 =
-          unit.declarations.findByName('constructor2').riverpod;
+      final constructor2 = unit.declarations
+          .findByName('constructor2')
+          .riverpod;
       expect(
         constructor2,
         isRiverpod(
@@ -237,18 +238,17 @@ class NestedClass {
         ),
       );
 
-      final nestedVariable =
-          unit.declarations
-              .findByName<ClassDeclaration>('NestedClass')
-              .members
-              .findByName<MethodDeclaration>('method')
-              .body
-              .cast<BlockFunctionBody>()!
-              .block
-              .statements
-              .first
-              .cast<VariableDeclarationStatement>()!
-              .variables;
+      final nestedVariable = unit.declarations
+          .findByName<ClassDeclaration>('NestedClass')
+          .members
+          .findByName<MethodDeclaration>('method')
+          .body
+          .cast<BlockFunctionBody>()!
+          .block
+          .statements
+          .first
+          .cast<VariableDeclarationStatement>()!
+          .variables;
 
       expect(
         nestedVariable.riverpod,
@@ -265,4 +265,11 @@ class NestedClass {
       );
     },
   );
+}
+
+extension ClassMembers on ClassDeclaration {
+  List<ClassMember> get members => switch (body) {
+    BlockClassBody(:final members) => members,
+    EmptyClassBody() => const [],
+  };
 }

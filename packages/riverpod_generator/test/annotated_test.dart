@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/token.dart';
 import 'package:test/test.dart';
 
 void main() async {
@@ -29,8 +30,10 @@ void main() async {
   });
 
   test('Annotations on generated functionalProvider', () {
-    final annotations =
-        declarations.findNamed('functionalProvider').metadata.toString();
+    final annotations = declarations
+        .findNamed('functionalProvider')
+        .metadata
+        .toString();
 
     expect(
       annotations,
@@ -39,8 +42,10 @@ void main() async {
   });
 
   test('Annotations on generated classBasedProvider', () {
-    final annotations =
-        declarations.findNamed('classBasedProvider').metadata.toString();
+    final annotations = declarations
+        .findNamed('classBasedProvider')
+        .metadata
+        .toString();
 
     expect(
       annotations,
@@ -49,8 +54,10 @@ void main() async {
   });
 
   test('Annotations on generated familyProvider', () {
-    final annotations =
-        declarations.findNamed('familyProvider').metadata.toString();
+    final annotations = declarations
+        .findNamed('familyProvider')
+        .metadata
+        .toString();
     expect(
       annotations,
       "[@ProviderFor(family), @Deprecated('Deprecation message'), @visibleForTesting, @protected]",
@@ -58,26 +65,26 @@ void main() async {
   });
 
   test('Annotations on generated notCopiedFunctionalProvider', () {
-    final annotations =
-        declarations
-            .findNamed('notCopiedFunctionalProvider')
-            .metadata
-            .toString();
+    final annotations = declarations
+        .findNamed('notCopiedFunctionalProvider')
+        .metadata
+        .toString();
     expect(annotations, '[@ProviderFor(notCopiedFunctional)]');
   });
 
   test('Annotations on generated notCopiedClassBasedProvider', () {
-    final annotations =
-        declarations
-            .findNamed('notCopiedClassBasedProvider')
-            .metadata
-            .toString();
+    final annotations = declarations
+        .findNamed('notCopiedClassBasedProvider')
+        .metadata
+        .toString();
     expect(annotations, '[@ProviderFor(NotCopiedClassBased)]');
   });
 
   test('Annotations on generated notCopiedFamilyProvider', () {
-    final annotations =
-        declarations.findNamed('notCopiedFamilyProvider').metadata.toString();
+    final annotations = declarations
+        .findNamed('notCopiedFamilyProvider')
+        .metadata
+        .toString();
     expect(annotations, '[@ProviderFor(notCopiedFamily)]');
   });
 }
@@ -92,8 +99,8 @@ extension TopLevelVariableDeclarationFindNamedX on List<Declaration> {
           return element.fields.variables.first.name.lexeme == name;
         case MethodDeclaration():
           return element.name.lexeme == name;
-        case NamedCompilationUnitMember():
-          return element.name.lexeme == name;
+        case CompilationUnitMember():
+          return element.name?.lexeme == name;
         case ConstructorDeclaration():
           return element.name?.lexeme == name;
         case _:
@@ -101,4 +108,28 @@ extension TopLevelVariableDeclarationFindNamedX on List<Declaration> {
       }
     });
   }
+}
+
+extension CompilationUnitMemberName on CompilationUnitMember {
+  Token? get name {
+    switch (this) {
+      // CompilationUnitMember subtypes
+      case ClassDeclaration(namePart: ClassNamePart(typeName: final nameToken)):
+      case MixinDeclaration(name: final nameToken):
+      case ExtensionDeclaration(name: final nameToken?):
+      case EnumDeclaration(namePart: ClassNamePart(typeName: final nameToken)):
+      case TypeAlias(name: final nameToken):
+      case FunctionDeclaration(name: final nameToken):
+        return nameToken;
+      default:
+        return null;
+    }
+  }
+}
+
+extension ClassMembers on ClassDeclaration {
+  List<ClassMember> get members => switch (body) {
+    BlockClassBody(:final members) => members,
+    EmptyClassBody() => const [],
+  };
 }

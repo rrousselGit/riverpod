@@ -204,7 +204,7 @@ abstract class _$GenericClass<ObjT extends num>
   FutureOr<List<ObjT>> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<List<ObjT>>, List<ObjT>>;
     final element =
         ref.element
@@ -214,7 +214,7 @@ abstract class _$GenericClass<ObjT extends num>
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -324,7 +324,7 @@ abstract class _$GenericArg<ObjT extends num> extends $AsyncNotifier<String> {
   FutureOr<String> build(ObjT arg);
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -334,7 +334,7 @@ abstract class _$GenericArg<ObjT extends num> extends $AsyncNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }
 
@@ -618,7 +618,7 @@ abstract class _$PublicClass extends $AsyncNotifier<String> {
   FutureOr<String> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -628,7 +628,7 @@ abstract class _$PublicClass extends $AsyncNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -662,7 +662,7 @@ abstract class _$PrivateClass extends $AsyncNotifier<String> {
   FutureOr<String> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -672,7 +672,7 @@ abstract class _$PrivateClass extends $AsyncNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -751,7 +751,7 @@ abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
   FutureOr<String> build(int first);
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -761,7 +761,7 @@ abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }
 
@@ -885,7 +885,7 @@ abstract class _$FamilyClass extends $AsyncNotifier<String> {
   });
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element =
         ref.element
@@ -895,7 +895,7 @@ abstract class _$FamilyClass extends $AsyncNotifier<String> {
               Object?,
               Object?
             >;
-    element.handleCreate(
+    return element.handleCreate(
       ref,
       () => build(
         _$args.$1,
@@ -1051,7 +1051,7 @@ abstract class _$Regression3490<ModelT, SortT, CursorT>
   });
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<void, void>;
     final element =
         ref.element
@@ -1061,7 +1061,7 @@ abstract class _$Regression3490<ModelT, SortT, CursorT>
               Object?,
               Object?
             >;
-    element.handleCreate(
+    return element.handleCreate(
       ref,
       () => build(
         type: _$args.type,
@@ -1101,7 +1101,7 @@ abstract class _$VoidClass extends $AsyncNotifier<void> {
   FutureOr<void> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<void>, void>;
     final element =
         ref.element
@@ -1111,6 +1111,6 @@ abstract class _$VoidClass extends $AsyncNotifier<void> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

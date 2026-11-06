@@ -2,20 +2,25 @@
   &__card {
     display: flex;
     flex-direction: column;
-    max-width: $max-width;
-    margin: 1rem;
-    margin-top: 0;
-    margin-bottom: 2rem;
-    padding: 2rem;
+    max-width: 1380px;
+    margin: 1.5rem auto;
+    padding: 1.5rem;
     border-radius: 24px;
-    background-color: var(--ifm-color-emphasis-100);
+    background: var(--ifm-color-emphasis-100);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+    &:hover {
+      border-color: rgba(0, 168, 255, 0.3);
+      box-shadow: 0 20px 48px -16px rgba(0, 168, 255, 0.18);
+    }
 
     @include min-width(lg) {
       flex-direction: row;
       align-items: center;
-      margin: 6rem;
-      margin-top: 0;
-      padding: 6rem;
+      margin: 3rem auto;
+      padding: 2.5rem 3rem;
 
       &--reverse {
         flex-direction: row-reverse;
@@ -26,25 +31,53 @@
   &__content {
     display: flex;
     flex-direction: column;
-    flex: 2;
+    flex: 1.8;
+
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--ifm-font-color-base) 40%, var(--ifm-color-primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      @include min-width(lg) {
+        font-size: 34px;
+      }
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--ifm-color-emphasis-700);
+      margin: 0;
+    }
   }
 
   &__space {
-    width: 2rem;
-    height: 2rem;
+    width: 1.5rem;
+    height: 1.5rem;
 
     @include min-width(lg) {
-      width: 4rem;
-      height: 4rem;
+      width: 2.5rem;
+      height: 2.5rem;
     }
   }
 
   &__preview {
-    flex: 3;
+    flex: 3.8;
+
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+    }
 
     > * {
-      border-radius: 8px;
-      box-shadow: 0px 14px 50px -34px rgba(0, 0, 0, 0.64);
+      border-radius: 12px;
+      box-shadow: 0px 20px 50px -20px rgba(0, 0, 0, 0.5);
     }
   }
 }

@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod/experimental/mutation.dart';
 
 final addTodo = Mutation<Todo>();
@@ -35,11 +35,9 @@ class AddTodoButton extends ConsumerWidget {
     return ElevatedButton(
       onPressed: () {
         // Trigger the mutation, and run the callback.
-        // During the callback, we obtain a MutationTransaction (tsx) object
-        // which we can use to access providers and perform operations.
+        // Reads inside the callback keep providers alive
+        // for the duration of the mutation.
         addTodo.run(ref, (tsx) async {
-          // We use tsx.get to access providers within mutations.
-          // This will keep the provider alive for the duration of the operation.
           final todoNotifier = tsx.get(todoNotifierProvider.notifier);
 
           // We perform a request using a Notifier.

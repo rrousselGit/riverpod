@@ -132,7 +132,7 @@ Let's make a hello world using riverpod_generator:
 // main.dart
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 part 'main.g.dart';
 
@@ -191,7 +191,7 @@ targets:
           provider_name_strip_pattern: "Notifier$" # (default)
 ```
 
-[family]: https://riverpod.dev/docs/concepts/modifiers/family
+[family]: https://riverpod.dev/docs/concepts2/family
 [provider]: https://github.com/rrousselGit/provider
 [riverpod]: https://github.com/rrousselGit/riverpod
 [flutter_hooks]: https://github.com/rrousselGit/flutter_hooks

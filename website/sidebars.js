@@ -203,11 +203,6 @@ module.exports = {
             },
             {
               type: "link",
-              label: "MutationTransaction",
-              href: "https://pub.dev/documentation/hooks_riverpod/latest/experimental_mutation/MutationTransaction-class.html",
-            },
-            {
-              type: "link",
               label: "MutationState",
               href: "https://pub.dev/documentation/hooks_riverpod/latest/experimental_mutation/MutationState-class.html",
             },

@@ -1,3 +1,4 @@
+// dart format off
 // ignore_for_file: unnecessary_async, avoid_dynamic_calls
 
 import 'package:flutter_riverpod/experimental/persist.dart';

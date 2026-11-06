@@ -5,7 +5,6 @@ import 'analyzer_test_utils.dart';
 void main() {
   testSource(
     'Decode ProviderContainer creations',
-    timeout: const Timeout.factor(4),
     source: '''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/misc.dart';
@@ -40,10 +39,14 @@ void main() {
     (resolver, unit, units) async {
       final result = await resolver.resolveRiverpodAnalysisResult();
 
-      final provider =
-          result.manualProviderDeclarations.takeAll(['provider']).values.single;
-      final family =
-          result.manualProviderDeclarations.takeAll(['family']).values.single;
+      final provider = result.manualProviderDeclarations
+          .takeAll(['provider'])
+          .values
+          .single;
+      final family = result.manualProviderDeclarations
+          .takeAll(['family'])
+          .values
+          .single;
 
       final containers = result.providerContainerInstanceCreationExpressions;
 

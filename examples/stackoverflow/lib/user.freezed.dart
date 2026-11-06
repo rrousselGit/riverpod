@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'user.dart';
@@ -9,6 +9,7 @@ part of 'user.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $UserCopyWith<User> get copyWith => _$UserCopyWithImpl<User>(this as User, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.reputation, reputation) || other.reputation == reputation)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.badgeCounts, badgeCounts) || other.badgeCounts == badgeCounts)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.profileImage, profileImage) || other.profileImage == profileImage)&&(identical(other.link, link) || other.link == link));
+  final _this = this as User;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.reputation, _this.reputation) || other.reputation == _this.reputation)&&(identical(other.userId, _this.userId) || other.userId == _this.userId)&&(identical(other.badgeCounts, _this.badgeCounts) || other.badgeCounts == _this.badgeCounts)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.profileImage, _this.profileImage) || other.profileImage == _this.profileImage)&&(identical(other.link, _this.link) || other.link == _this.link));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,reputation,userId,badgeCounts,displayName,profileImage,link);
+int get hashCode {
+  final _this = this as User;
+  return Object.hash(runtimeType,_this.reputation,_this.userId,_this.badgeCounts,_this.displayName,_this.profileImage,_this.link);
+}
 
 @override
 String toString() {
-  return 'User(reputation: $reputation, userId: $userId, badgeCounts: $badgeCounts, displayName: $displayName, profileImage: $profileImage, link: $link)';
+  final _this = this as User;
+  return 'User(reputation: ${_this.reputation}, userId: ${_this.userId}, badgeCounts: ${_this.badgeCounts}, displayName: ${_this.displayName}, profileImage: ${_this.profileImage}, link: ${_this.link})';
 }
 
 
@@ -66,7 +72,7 @@ class _$UserCopyWithImpl<$Res>
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? reputation = null,Object? userId = null,Object? badgeCounts = freezed,Object? displayName = null,Object? profileImage = null,Object? link = null,}) {
-  return _then(_self.copyWith(
+  return _then(User(
 reputation: null == reputation ? _self.reputation : reputation // ignore: cast_nullable_to_non_nullable
 as int,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as int,badgeCounts: freezed == badgeCounts ? _self.badgeCounts : badgeCounts // ignore: cast_nullable_to_non_nullable
@@ -243,16 +249,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _User&&(identical(other.reputation, reputation) || other.reputation == reputation)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.badgeCounts, badgeCounts) || other.badgeCounts == badgeCounts)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.profileImage, profileImage) || other.profileImage == profileImage)&&(identical(other.link, link) || other.link == link));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _User&&(identical(other.reputation, reputation) || other.reputation == reputation)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.badgeCounts, badgeCounts) || other.badgeCounts == badgeCounts)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.profileImage, profileImage) || other.profileImage == profileImage)&&(identical(other.link, link) || other.link == link));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,reputation,userId,badgeCounts,displayName,profileImage,link);
+int get hashCode {
+    return Object.hash(runtimeType,reputation,userId,badgeCounts,displayName,profileImage,link);
+}
 
 @override
 String toString() {
-  return 'User(reputation: $reputation, userId: $userId, badgeCounts: $badgeCounts, displayName: $displayName, profileImage: $profileImage, link: $link)';
+    return 'User(reputation: $reputation, userId: $userId, badgeCounts: $badgeCounts, displayName: $displayName, profileImage: $profileImage, link: $link)';
 }
 
 
@@ -324,16 +332,21 @@ $BadgeCountCopyWith<BadgeCount> get copyWith => _$BadgeCountCopyWithImpl<BadgeCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BadgeCount&&(identical(other.bronze, bronze) || other.bronze == bronze)&&(identical(other.silver, silver) || other.silver == silver)&&(identical(other.gold, gold) || other.gold == gold));
+  final _this = this as BadgeCount;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BadgeCount&&(identical(other.bronze, _this.bronze) || other.bronze == _this.bronze)&&(identical(other.silver, _this.silver) || other.silver == _this.silver)&&(identical(other.gold, _this.gold) || other.gold == _this.gold));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,bronze,silver,gold);
+int get hashCode {
+  final _this = this as BadgeCount;
+  return Object.hash(runtimeType,_this.bronze,_this.silver,_this.gold);
+}
 
 @override
 String toString() {
-  return 'BadgeCount(bronze: $bronze, silver: $silver, gold: $gold)';
+  final _this = this as BadgeCount;
+  return 'BadgeCount(bronze: ${_this.bronze}, silver: ${_this.silver}, gold: ${_this.gold})';
 }
 
 
@@ -362,7 +375,7 @@ class _$BadgeCountCopyWithImpl<$Res>
 /// Create a copy of BadgeCount
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? bronze = null,Object? silver = null,Object? gold = null,}) {
-  return _then(_self.copyWith(
+  return _then(BadgeCount(
 bronze: null == bronze ? _self.bronze : bronze // ignore: cast_nullable_to_non_nullable
 as int,silver: null == silver ? _self.silver : silver // ignore: cast_nullable_to_non_nullable
 as int,gold: null == gold ? _self.gold : gold // ignore: cast_nullable_to_non_nullable
@@ -521,16 +534,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BadgeCount&&(identical(other.bronze, bronze) || other.bronze == bronze)&&(identical(other.silver, silver) || other.silver == silver)&&(identical(other.gold, gold) || other.gold == gold));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _BadgeCount&&(identical(other.bronze, bronze) || other.bronze == bronze)&&(identical(other.silver, silver) || other.silver == silver)&&(identical(other.gold, gold) || other.gold == gold));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,bronze,silver,gold);
+int get hashCode {
+    return Object.hash(runtimeType,bronze,silver,gold);
+}
 
 @override
 String toString() {
-  return 'BadgeCount(bronze: $bronze, silver: $silver, gold: $gold)';
+    return 'BadgeCount(bronze: $bronze, silver: $silver, gold: $gold)';
 }
 
 

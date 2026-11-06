@@ -130,7 +130,7 @@ abstract class _$BugsEncounteredNotifier extends $AsyncNotifier<int> {
   FutureOr<int> build(String featureId);
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element =
         ref.element
@@ -140,6 +140,6 @@ abstract class _$BugsEncounteredNotifier extends $AsyncNotifier<int> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }

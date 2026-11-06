@@ -1,0 +1,107 @@
+---
+title: Family
+---
+import { Link } from "/src/components/Link";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+import functionalFamily from './family/functional';
+import notifierFamily from './family/notifier';
+import singleOverride from 'raw-loader!./family/single_override.dart';
+import allOverride from 'raw-loader!./family/all_overrides.dart';
+import activeProviders from 'raw-loader!./family/all_of.dart';
+
+Одна из самых мощных возможностей Riverpod называется Family.  
+Проще говоря, она позволяет связывать provider с несколькими независимыми состояниями, 
+зависящими от уникальной комбинации параметров.
+
+Типичный пример использования — получение данных из удалённого API, где ответ зависит от параметров (например, ID пользователя, поисковый запрос или номер страницы). 
+Это позволяет определить один provider, который можно использовать для получения и кэширования данных для любой комбинации параметров.
+
+![Graph showing how family links a provider to multiple independent states](/img/concepts2/family/users.svg)
+
+
+:::info
+Если обычные providers можно представить как переменную, то family можно представить как Map.
+:::
+
+## Создание Family
+
+Определение family выполняется путём небольшого изменения объявления provider 
+— теперь он принимает параметр.
+
+Для функциональных providers синтаксис выглядит следующим образом:
+
+<AutoSnippet  {...functionalFamily} />
+
+Для notifier providers синтаксис выглядит следующим образом:
+
+<AutoSnippet {...notifierFamily} />
+
+:::info
+Хотя это и не является строго обязательным, настоятельно рекомендуется включать <Link documentID="concepts2/auto_dispose" />
+при использовании `family`.
+
+Это помогает избежать утечек памяти в ситуациях, когда параметр меняется, а предыдущее состояние больше не нужно.
+:::
+
+## Использование Family
+
+Providers, которые принимают параметры, также немного меняют способ использования.
+
+Проще говоря, нужно передавать параметры, которые ожидает provider:
+
+```dart
+final user = ref.watch(userProvider('123'));
+```
+
+:::caution
+Передаваемые параметры должны иметь корректную и стабильную реализацию `==` и `hashCode`.
+
+Можно рассматривать "family" как Map, где параметры — это ключ, а состояние provider — значение.
+Поэтому если `==`/`hashCode` параметра ведут себя некорректно, вы можете получать разные состояния для "одинаковых" входных данных.
+
+Из-за этого следующий код считается некорректным:
+
+```dart
+// Неправильный параметр, так как `[1, 2, 3] != [1, 2, 3]`
+ref.watch(myProvider([1, 2, 3]));
+```
+
+Чтобы легче находить такие ошибки, рекомендуется использовать [riverpod_lint](https://pub.dev/packages/riverpod_lint)
+и включить правило [provider_parameters](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#provider_parameters). 
+Тогда подобные случаи будут подсвечиваться как предупреждения
+Подробнее см. в разделе установки <Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint" />.
+:::
+
+
+Вы можете использовать сколько угодно family — все они будут независимыми. Например:
+
+```dart
+class Example extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user1 = ref.watch(userProvider('123'));
+    final user2 = ref.watch(userProvider('456'));
+
+    // user1 и user2 независимы
+  }
+}
+```
+
+## Доступ ко всем активным provider'ам family
+
+Используя <Link documentID="concepts2/containers" />, можно получить доступ ко всем 
+provider'ам, связанным с `Family`, с помощью метода `allProviders`:
+
+<AutoSnippet raw={activeProviders} />
+
+## Переопределение family
+
+При попытке замокать provider в тестах может потребоваться переопределить family provider.
+
+В этом случае есть два варианта:
+- Переопределить только конкретную комбинацию параметров:
+  <AutoSnippet raw={singleOverride} />
+- Переопределить все комбинации параметров:
+  <AutoSnippet raw={allOverride} />

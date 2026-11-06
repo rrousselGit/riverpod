@@ -18,8 +18,9 @@ extension WidgetRefInvocationX on MethodInvocation {
       }
       final function = this.function;
       if (function is! SimpleIdentifier) return null;
-      final functionOwner =
-          function.element.cast<MethodElement>()?.enclosingElement;
+      final functionOwner = function.element
+          .cast<MethodElement>()
+          ?.enclosingElement;
 
       if (functionOwner == null ||
           // Since Ref is sealed, checking that the function is from the package:riverpod
@@ -82,11 +83,10 @@ final class WidgetRefWatchInvocation extends WidgetRefDependencyInvocation {
       'Argument error, function is not a ref.watch function',
     );
 
-    final providerListenableExpression =
-        node.argumentList
-            .positionalArguments()
-            .singleOrNull
-            ?.providerListenable;
+    final providerListenableExpression = node.argumentList
+        .positionalArguments()
+        .singleOrNull
+        ?.providerListenable;
     if (providerListenableExpression == null) return null;
 
     return WidgetRefWatchInvocation._(
@@ -113,11 +113,10 @@ final class WidgetRefReadInvocation extends WidgetRefDependencyInvocation {
       'Argument error, function is not a ref.read function',
     );
 
-    final providerListenableExpression =
-        node.argumentList
-            .positionalArguments()
-            .singleOrNull
-            ?.providerListenable;
+    final providerListenableExpression = node.argumentList
+        .positionalArguments()
+        .singleOrNull
+        ?.providerListenable;
     if (providerListenableExpression == null) return null;
 
     return WidgetRefReadInvocation._(

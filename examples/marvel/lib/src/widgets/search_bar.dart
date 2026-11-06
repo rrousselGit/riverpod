@@ -1,15 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../screens/home.dart';
 
 class _SearchTheme {
   const _SearchTheme({
     required this.width,
-    // ignore: unused_element, blocked by https://github.com/dart-lang/linter/issues/3232
     this.height = 300,
     required this.searchDecoration,
     required this.iconPadding,
@@ -113,22 +111,20 @@ class _SearchHints extends HookConsumerWidget {
     return ref
         .watch(charactersCount(search))
         .when(
-          loading:
-              () => const Center(
-                heightFactor: 1,
-                child: Padding(
-                  padding: EdgeInsets.all(8),
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-          error:
-              (err, stack) => const Center(
-                heightFactor: 1,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  child: Text('Error'),
-                ),
-              ),
+          loading: () => const Center(
+            heightFactor: 1,
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: CircularProgressIndicator(),
+            ),
+          ),
+          error: (err, stack) => const Center(
+            heightFactor: 1,
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: Text('Error'),
+            ),
+          ),
           data: (count) {
             return ListView.separated(
               shrinkWrap: true,
@@ -256,8 +252,8 @@ class _SearchbarView extends StatelessWidget {
         AnimatedTheme(
           data:
               isFocused //
-                  ? ThemeData.light()
-                  : ThemeData.dark(),
+              ? ThemeData.light()
+              : ThemeData.dark(),
           child: AnimatedPadding(
             duration: const Duration(milliseconds: 150),
             padding: theme.iconPadding,

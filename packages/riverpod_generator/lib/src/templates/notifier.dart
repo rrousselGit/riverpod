@@ -12,19 +12,18 @@ class NotifierTemplate extends Template {
 
   @override
   void run(StringBuffer buffer) {
-    final notifierBaseName =
-        provider.isPersisted
-            ? '_\$${provider.name.lexeme.public}Base'
-            : '_\$${provider.name.lexeme.public}';
+    final notifierBaseName = provider.isPersisted
+        ? '_\$${provider.name.lexeme.public}Base'
+        : '_\$${provider.name.lexeme.public}';
     final genericsDefinition = provider.genericsDefinition();
 
     final baseClass = switch (provider.providerElement.createdType) {
       SupportedCreatedType.future =>
-        '\$AsyncNotifier<${provider.providerElement.valueTypeNode.toCode()}>',
+        '#{{riverpod|\$AsyncNotifier}}<${provider.providerElement.valueTypeNode.toCode()}>',
       SupportedCreatedType.stream =>
-        '\$StreamNotifier<${provider.providerElement.valueTypeNode.toCode()}>',
+        '#{{riverpod|\$StreamNotifier}}<${provider.providerElement.valueTypeNode.toCode()}>',
       SupportedCreatedType.value =>
-        '\$Notifier<${provider.providerElement.valueTypeNode.toCode()}>',
+        '#{{riverpod|\$Notifier}}<${provider.providerElement.valueTypeNode.toCode()}>',
     };
 
     final paramsPassThrough = buildParamInvocationQuery({
@@ -40,17 +39,15 @@ class NotifierTemplate extends Template {
     final _$args = 'late final _\$args = ref.\$arg${provider.argumentCast};';
 
     var paramOffset = 0;
-    final parametersAsFields =
-        provider.parameters.map((p) {
-          final metadata =
-              p.metadata.isNotEmpty
-                  ? '${p.metadata.map((e) => e.toSource()).join(' ')} '
-                  : '';
-          return '${p.doc} $metadata ${p.typeDisplayString} get ${p.name!.lexeme} => ${switch (provider.parameters) {
-            [_] => r'_$args;',
-            _ => '_\$args.${p.isPositional ? '\$${++paramOffset}' : p.name!.lexeme};',
-          }}';
-        }).join();
+    final parametersAsFields = provider.parameters.map((p) {
+      final metadata = p.metadata.isNotEmpty
+          ? '${p.metadata.map((e) => e.toSource()).join(' ')} '
+          : '';
+      return '${p.doc} $metadata ${p.typeDisplayString} get ${p.name!.lexeme} => ${switch (provider.parameters) {
+        [_] => r'_$args;',
+        _ => '_\$args.${p.isPositional ? '\$${++paramOffset}' : p.name!.lexeme};',
+      }}';
+    }).join();
 
     buffer.writeln('''
 ${provider.doc}
@@ -68,13 +65,13 @@ abstract class $notifierBaseName$genericsDefinition extends $baseClass {
     };
 
     buffer.writeln('''
-  @\$mustCallSuper
+  @#{{riverpod_annotation|\$mustCallSuper}}
   @override
-  void runBuild() {
-    final ref = this.ref as \$Ref<${provider.providerElement.exposedTypeNode}, ${provider.providerElement.valueTypeNode.toCode()}>;
-    final element = ref.element as \$ClassProviderElement<AnyNotifier<${provider.providerElement.exposedTypeNode}, ${provider.providerElement.valueTypeNode.toCode()}>,
+  #{{riverpod|WhenComplete}} runBuild() {
+    final ref = this.ref as #{{riverpod|\$Ref}}<${provider.providerElement.exposedTypeNode}, ${provider.providerElement.valueTypeNode.toCode()}>;
+    final element = ref.element as #{{riverpod|\$ClassProviderElement}}<#{{riverpod|AnyNotifier}}<${provider.providerElement.exposedTypeNode}, ${provider.providerElement.valueTypeNode.toCode()}>,
           ${provider.providerElement.exposedTypeNode}, Object?, Object?>;
-    element.handleCreate(ref, $buildVarUsage);
+    return element.handleCreate(ref, $buildVarUsage);
   }
 }
 ''');
@@ -88,7 +85,9 @@ abstract class $notifierBaseName$genericsDefinition extends $baseClass {
     );
 
     if (provider.buildMethod.isAbstract) {
-      buffer.writeln('=> throw MissingScopeException(ref);');
+      buffer.writeln(
+        '=> throw #{{riverpod_annotation|MissingScopeException}}(ref);',
+      );
     } else {
       buffer.writeln(';');
     }

@@ -1,0 +1,92 @@
+---
+title: Provider'lar nasıl önden başlatılır
+version: 2
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import consumerExample from "!!raw-loader!/docs/how_to/eager_initialization/consumer_example.dart";
+import asyncConsumerExample from "!!raw-loader!/docs/how_to/eager_initialization/async_consumer_example.dart";
+import requireValue from "/docs/how_to/eager_initialization/require_value";
+
+Tüm provider'lar varsayılan olarak tembel (lazy) şekilde başlatılır. Yani bir
+provider ancak ilk kez kullanıldığında başlatılır. Bu, yalnızca uygulamanın
+belirli bölümlerinde kullanılan provider'lar için oldukça kullanışlıdır.
+
+Ne yazık ki Dart'ın çalışma biçimi gereği (tree shaking amacıyla), bir
+provider'ı önden başlatılması (eager initialization) gerektiği şeklinde
+işaretlemenin bir yolu yok. Ancak bir çözüm var: önden başlatmak istediğiniz
+provider'ları uygulamanızın kökünde zorla okumak.
+
+Önerilen yaklaşım, `ProviderScope`unuzun hemen altına yerleştirilmiş bir
+Consumer içinde provider'ı basitçe "watch" etmektir:
+
+<AutoSnippet
+  raw={consumerExample}
+  translations={{
+    render: `      // TODO: Uygulamanızı burada oluşturun`,
+    watch: `    // Provider'ları dinleyerek önden başlatın.
+    // "watch" kullanıldığında provider hayatta kalır ve yok edilmez.`,
+  }}
+/>
+
+:::note NOT
+Başlatmayı yapan consumer'ı "MyApp" içine ya da herkese açık (public) bir
+widget içine koymayı düşünün.
+Böylece mantığı main'inizden çıkararak testlerinizin de aynı davranışı
+kullanmasını sağlarsınız.
+:::
+
+### SSS {#faq}
+
+#### Provider değiştiğinde bu, uygulamamızın tamamını yeniden oluşturmaz mı? {#wont-this-rebuild-our-entire-application-when-the-provider-changes}
+
+Hayır, öyle olmaz.
+Yukarıdaki örnekte, önden başlatmadan sorumlu consumer ayrı bir widget'tır ve
+bir `child` döndürmek dışında hiçbir şey yapmaz.
+
+Kilit nokta, `MaterialApp`i kendisinin oluşturması yerine bir `child`
+döndürmesidir. Bu da şu anlama gelir: `_EagerInitialization` yeniden
+oluşturulsa bile `child` değişkeni değişmemiş olur. Bir widget değişmediğinde
+ise Flutter onu yeniden oluşturmaz.
+
+Dolayısıyla, başka bir widget da o provider'ı dinlemiyorsa yalnızca
+`_EagerInitialization` yeniden oluşturulur.
+
+#### Bu yaklaşımı kullanırken yükleme ve hata durumlarını nasıl yönetebilirim? {#using-this-approach-how-can-i-handle-loading-and-error-states}
+
+Yükleme/hata durumlarını bir `Consumer` içinde normalde nasıl yönetiyorsanız
+öyle yönetebilirsiniz.
+`_EagerInitialization` widget'ınız bir provider'ın "loading" durumunda olup
+olmadığını kontrol edebilir ve öyleyse `child` yerine bir
+`CircularProgressIndicator` döndürebilir:
+
+<AutoSnippet
+  raw={asyncConsumerExample}
+  translations={{
+    states: `    // Hata ve yükleme durumlarını yönetin`,
+  }}
+/>
+
+#### Yükleme/hata durumlarını yönettim ama diğer Consumer'lar hâlâ bir AsyncValue alıyor! Her widget'ta yükleme/hata durumlarını yönetmek zorunda kalmamanın bir yolu var mı? {#ive-handled-loadingerror-states-but-other-consumers-still-receive-an-asyncvalue-is-there-a-way-to-not-have-to-handle-loadingerror-states-in-every-widget}
+
+Provider'ınızın bir `AsyncValue` sunmamasını sağlamaya çalışmak yerine,
+widget'larınızın `AsyncValue.requireValue` kullanmasını sağlayabilirsiniz.  
+Bu sayede desen eşleme (pattern matching) yapmadan veriyi doğrudan okursunuz.
+Gözden kaçan bir hata olması durumunda ise net bir mesajla bir istisna fırlatır.
+
+<AutoSnippet
+  {...requireValue}
+  translations={{
+    provider: `// Önden başlatılmış bir provider.`,
+    note: `    /// Provider doğru şekilde önden başlatıldıysa, veriyi doğrudan
+    /// "requireValue" ile okuyabiliriz.`,
+  }}
+/>
+
+:::note NOT
+Bu durumlarda yükleme/hata durumlarını dışarıya hiç açmamanın yolları olsa da
+(kapsamlamaya (scoping) dayanarak), bunu yapmak genellikle önerilmez.  
+İki provider oluşturmanın ve override kullanmanın getirdiği ek karmaşıklık
+zahmetine değmez.
+:::

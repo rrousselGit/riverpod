@@ -1,0 +1,83 @@
+---
+title: Provider/widget yeniden oluşturmaları nasıl azaltılır
+version: 1
+---
+
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import select from "/docs/how_to/select/select";
+import selectAsync from "/docs/how_to/select/select_async";
+
+Şimdiye kadar gördüklerimizle tamamen çalışan bir uygulama yazabilecek
+durumdayız. Yine de performans konusunda aklınıza bazı sorular takılmış olabilir.
+
+Bu sayfada, kodunuzu optimize etmenize yardımcı olabilecek birkaç ipucuna
+değineceğiz.
+
+:::caution DİKKAT
+Herhangi bir optimizasyon yapmadan önce uygulamanızı mutlaka ölçümleyin.
+Optimizasyonların getirdiği ek karmaşıklık, elde edilen küçük kazanımlara
+değmeyebilir.
+:::
+
+## "select" ile widget/provider yeniden oluşturmalarını filtreleme {#filtering-widgetprovider-rebuild-using-select}
+
+Fark etmiş olabileceğiniz gibi, `ref.watch` varsayılan olarak bir nesnenin
+_herhangi_ bir özelliği değiştiğinde consumer'ların/provider'ların yeniden
+oluşturulmasına neden olur.  
+Örneğin, bir `User` dinleyip yalnızca "name" özelliğini kullansanız bile,
+"age" değiştiğinde consumer yeniden oluşturulur.
+
+Ancak bir consumer özelliklerin yalnızca bir kısmını kullanıyorsa, diğer
+özellikler değiştiğinde widget'ın yeniden oluşturulmasını istemezsiniz.
+
+Bunu provider'ların `select` özelliğini kullanarak sağlayabilirsiniz.  
+Bu durumda `ref.watch` artık nesnenin tamamını değil, yalnızca seçilen
+özellikleri döndürür.  
+Ve consumer'larınız/provider'larınız yalnızca bu seçilen özellikler
+değiştiğinde yeniden oluşturulur.
+
+<AutoSnippet
+  {...select}
+  translations={{
+    watch: `    // Şunu yazmak yerine:
+    // String name = ref.watch(provider).firstName!;
+    // Şöyle yazabiliriz:`,
+    note: `    // Bu, widget'ın yalnızca "firstName" üzerindeki değişiklikleri dinlemesini sağlar.`,
+  }}
+/>
+
+:::info
+`select`i istediğiniz kadar çağırabilirsiniz.
+İhtiyaç duyduğunuz her özellik için bir kez çağırmakta serbestsiniz.
+:::
+
+:::caution DİKKAT
+Seçilen özelliklerin değişmez (immutable) olması beklenir.
+Bir `List` döndürüp ardından o listeyi değiştirmek yeniden oluşturmayı tetiklemez.
+:::
+
+:::caution DİKKAT
+`select` kullanmak tekil okuma işlemlerini bir miktar yavaşlatır ve kodunuzun
+karmaşıklığını çok az da olsa artırır.
+Söz konusu "diğer özellikler" nadiren değişiyorsa kullanmaya değmeyebilir.
+:::
+
+### Asenkron özellikleri seçme {#selecting-asynchronous-properties}
+
+Başka bir provider'ı dinleyen bir provider'ı optimize etmeye çalışıyorsanız,
+büyük ihtimalle o diğer provider asenkrondur.
+
+Normalde değeri almak için `ref.watch(anotherProvider.future)` yazardınız.  
+Sorun şu ki `select`, await edemeyeceğiniz bir `AsyncValue` üzerinde uygulanır.
+
+Bunun için `selectAsync` kullanabilirsiniz. Yalnızca asenkron koda özgüdür ve
+bir provider'ın yaydığı veri üzerinde `select` işlemi yapmanızı sağlar.  
+Kullanımı `select` ile benzerdir, ancak bunun yerine bir `Future` döndürür:
+
+<AutoSnippet
+  {...selectAsync}
+  translations={{
+    watch: `  // Bir kullanıcı hazır olana kadar bekleyin ve yalnızca "firstName" özelliğini dinleyin`,
+    todo: `  // TODO "firstName" değerini başka bir şeyi getirmek için kullanın`,
+  }}
+/>

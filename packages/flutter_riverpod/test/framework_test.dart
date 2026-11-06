@@ -1,10 +1,8 @@
-// ignore_for_file: invalid_use_of_internal_member
-
 import 'dart:async';
 
-import 'package:flutter/material.dart' hide Listener;
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart' hide Listener;
 import 'package:mockito/mockito.dart';
 
 import 'utils.dart';
@@ -50,7 +48,7 @@ void main() {
   testWidgets('Supports multiple ProviderScope roots in the same tree', (
     tester,
   ) async {
-    final a = StateProvider((_) => 0);
+    final a = NotifierProvider(() => SettableNotifier((_) => 0));
     final b = Provider((ref) => ref.watch(a));
 
     await tester.pumpWidget(
@@ -76,11 +74,10 @@ void main() {
       ),
     );
 
-    final containers =
-        tester.allElements
-            .where((e) => e.widget is Consumer)
-            .map(ProviderScope.containerOf)
-            .toList();
+    final containers = tester.allElements
+        .where((e) => e.widget is Consumer)
+        .map(ProviderScope.containerOf)
+        .toList();
 
     expect(containers, hasLength(2));
 
@@ -225,10 +222,10 @@ void main() {
       error = details.exception;
     };
 
-    final provider = StateProvider((ref) => 0);
+    final provider = NotifierProvider(() => SettableNotifier((ref) => 0));
     final container = ProviderContainer.test();
 
-    // using runZonedGuarded as StateNotifier will emit an handleUncaughtError
+    // using runZonedGuarded as the notifier will emit an handleUncaughtError
     // if a listener threw
     await runZonedGuarded(
       () => tester.pumpWidget(
@@ -253,7 +250,7 @@ void main() {
     tester,
   ) async {
     final container = ProviderContainer.test();
-    final dep = StateProvider((ref) => 0);
+    final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
     final provider = Provider((ref) => ref.watch(dep));
 
     // reading `provider` but not listening to it, so that it is active
@@ -329,7 +326,7 @@ void main() {
     tester,
   ) async {
     var buildCount = 0;
-    final dep = StateProvider((ref) => 0);
+    final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
     final provider = Provider((ref) {
       buildCount++;
       return ref.watch(dep);
@@ -363,6 +360,43 @@ void main() {
     expect(buildCount, 2);
     expect(find.text('Hello 1'), findsOneWidget);
     expect(find.text('Hello 0'), findsNothing);
+  });
+
+  testWidgets('autoDispose does not notify flutter vsyncs', (tester) async {
+    final container = ProviderContainer.test();
+    addTearDown(container.dispose);
+
+    final provider = Provider.autoDispose((ref) => 0);
+    var vsyncCount = 0;
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(container: container, child: Container()),
+    );
+
+    final onVsync = _TestVsync(
+      scheduleRefresh: (task) {
+        vsyncCount++;
+        task.call();
+        return null;
+      },
+      scheduleDispose: (_) {
+        return null;
+      },
+    );
+
+    container.scheduler.flutterVsyncs.add(onVsync);
+    addTearDown(() => container.scheduler.flutterVsyncs.remove(onVsync));
+
+    final sub = container.listen(provider, (_, _) {});
+
+    expect(container.exists(provider), true);
+    expect(vsyncCount, 0);
+
+    sub.close();
+    await container.pump();
+
+    expect(vsyncCount, 0);
+    expect(container.exists(provider), false);
   });
 
   testWidgets(
@@ -604,7 +638,9 @@ void main() {
     final key = GlobalKey();
 
     await tester.pumpWidget(
-      ProviderScope(child: ProviderScope(key: key, child: Container())),
+      ProviderScope(
+        child: ProviderScope(key: key, child: Container()),
+      ),
     );
 
     expect(find.byType(Container), findsOneWidget);
@@ -683,10 +719,13 @@ void main() {
     tester,
   ) async {
     var disposeCount = 0;
-    final counterProvider = StateProvider.autoDispose((ref) {
-      ref.onDispose(() => disposeCount++);
-      return 0;
-    });
+    final counterProvider = NotifierProvider(
+      () => SettableNotifier((ref) {
+        ref.onDispose(() => disposeCount++);
+        return 0;
+      }),
+      isAutoDispose: true,
+    );
 
     final container = ProviderContainer.test();
     final key = GlobalKey<NavigatorState>();
@@ -713,18 +752,16 @@ void main() {
 
     expect(find.text('1'), findsOneWidget);
 
-    unawaited(
-      key.currentState!.pushReplacement<void, void>(
-        PageRouteBuilder<void>(
-          pageBuilder: (_, _, _) {
-            return Consumer(
-              builder: (context, ref, _) {
-                final count = ref.watch(counterProvider);
-                return Text('new $count');
-              },
-            );
-          },
-        ),
+    key.currentState!.pushReplacement<void, void>(
+      PageRouteBuilder<void>(
+        pageBuilder: (_, _, _) {
+          return Consumer(
+            builder: (context, ref, _) {
+              final count = ref.watch(counterProvider);
+              return Text('new $count');
+            },
+          );
+        },
       ),
     );
 
@@ -756,4 +793,17 @@ class _InitStateState extends ConsumerState<_InitState> {
   Widget build(BuildContext context) {
     return Container();
   }
+}
+
+final class _TestVsync implements Vsync {
+  _TestVsync({required this._scheduleRefresh, required this._scheduleDispose});
+
+  final void Function()? Function(Task task) _scheduleRefresh;
+  final void Function()? Function(Task task) _scheduleDispose;
+
+  @override
+  void Function()? scheduleRefresh(Task task) => _scheduleRefresh(task);
+
+  @override
+  void Function()? scheduleDispose(Task task) => _scheduleDispose(task);
 }

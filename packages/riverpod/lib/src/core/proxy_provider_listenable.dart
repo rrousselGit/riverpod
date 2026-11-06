@@ -18,7 +18,7 @@ final class $LazyProxyListenable<OutT, InT>
     required void Function()? onDependencyMayHaveChanged,
     required bool weak,
   }) {
-    final element = source.readProviderElement(provider);
+    final element = source.container.readProviderElement(provider);
 
     final innerSub = source.container.listen(provider, (a, b) {});
 
@@ -95,7 +95,7 @@ final class ProviderElementProxy<OutT, InT>
     required void Function()? onDependencyMayHaveChanged,
     required bool weak,
   }) {
-    final element = source.readProviderElement(provider);
+    final element = source.container.readProviderElement(provider);
 
     // While we don't care about changes to the element, calling addListener
     // is necessary to tell the listened element that it is being listened.
@@ -126,7 +126,7 @@ final class ProviderElementProxy<OutT, InT>
       listener: listener,
       onError: onError,
       read: () {
-        final element = source.readProviderElement(provider);
+        final element = source.container.readProviderElement(provider);
         element.flush();
         element.mayNeedDispose();
 

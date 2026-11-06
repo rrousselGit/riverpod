@@ -1,5 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, type=warning
+// ignore_for_file: type=lint, type=warning, todo
 // Offsets for "notifier_extends":
 // 30: // ignore: riverpod_lint/notifier_extends
 // 31: class NoGenerics<FirstT extends num, SecondT> extends <>_$NoGenerics {

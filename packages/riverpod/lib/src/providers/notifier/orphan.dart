@@ -66,9 +66,7 @@ abstract class Notifier<ValueT> extends $Notifier<ValueT> {
 
   @mustCallSuper
   @override
-  void runBuild() {
-    requireElement().handleCreate(ref, build);
-  }
+  WhenComplete runBuild() => requireElement().handleCreate(ref, build);
 }
 
 /// {@template riverpod.notifier_provider}

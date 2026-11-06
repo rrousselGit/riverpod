@@ -43,10 +43,10 @@ export const features: IFeatureProps[] = [
           br: <br></br>,
           Provider: (
             <code>
-              <a href={"./docs/concepts/combining_providers"}>Provider</a>
+              <a href={"./docs/concepts2/providers"}>Provider</a>
             </code>
           ),
-          families: <a href={"./docs/concepts/modifiers/family"}>"families"</a>,
+          families: <a href={"./docs/concepts2/family"}>"families"</a>,
           build: <code>build</code>,
           truly: <strong>truly</strong>,
         }}
@@ -55,6 +55,24 @@ export const features: IFeatureProps[] = [
           method or have to resort to advanced cache mechanism. {br} {br}
           With {Provider} and {families}, sort your lists or do HTTP
           requests only when you {truly} need it.`}
+      </Translate>
+    ),
+  },
+  {
+    imageUrl: "img/intro/devtool.png",
+    title: translate({
+      id: "home.devtool_title",
+      message: "Inspect your state with the Flutter DevTools extension",
+    }),
+    description: (
+      <Translate
+        id="home.devtool_body"
+        values={{
+          br: <br></br>,
+        }}
+      >
+        {`Riverpod includes a dedicated Flutter DevTools extension that allows inspecting the state of all your providers. {br} {br}
+          It even allows going back in time to inspect older states.`}
       </Translate>
     ),
   },
@@ -125,24 +143,6 @@ export const features: IFeatureProps[] = [
           This even applies to asynchronously loaded values. As opposed
           to with provider, Riverpod allows cleanly handling
           loading/error cases.`}
-      </Translate>
-    ),
-  },
-  {
-    imageUrl: "img/intro/devtool.png",
-    title: translate({
-      id: "home.devtool_title",
-      message: " Inspect your state in the devtool",
-    }),
-    description: (
-      <Translate
-        id="home.devtool_body"
-        values={{
-          br: <br></br>,
-        }}
-      >
-        {`Using Riverpod, your state is visible out of the box inside Flutter's devtool. {br}
-          Furthermore, a full-blown state-inspector is in progress.`}
       </Translate>
     ),
   },

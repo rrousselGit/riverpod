@@ -1,3 +1,83 @@
+## Unreleased minor
+
+- Updated widget assists to recognize imports from `material_ui` and
+  `cupertino_ui`.
+- Added `prefer_keep_alive_annotation`, which warns when the body of a generated
+  provider starts with `ref.keepAlive()`, and suggests `@Riverpod(keepAlive: true)`
+  instead (#3855).
+- Fixed `functional_ref` reporting a valid ref when `riverpod_annotation` is
+  imported with a prefix, such as `int value(r.Ref ref)`.
+- Fixed the `only_use_keep_alive_inside_keep_alive` message, which mentioned
+  `KeepAliveLink`, and its correction, which suggested removing `keepAlive` from
+  the used provider instead of adding it. (thanks to @cdeil)
+- Fixed the analyzer plugin crashing on generated providers whose return type
+  is unresolved, such as `MissingType` or `Future<MissingType>`.
+
+## 3.1.9 - 2026-09-04
+
+- Upgraded `analyzer` to `<15.0.0`
+- Require Dart 3.13: the analysis server protocol needed by `analysis_server_plugin` 0.3.18 (pulled in by the analyzer 13 upgrade) ships in Dart 3.13. On earlier SDKs the plugin previously hung `dart analyze`; now version solving fails with a clear error instead (#4839).
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.4.3`
+- `riverpod_analyzer_utils` upgraded to `1.0.0-dev.12`
+
+## 3.1.8 - 2026-07-28
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.4.2`
+
+## 3.1.7 - 2026-07-27
+
+### Dependency changes
+
+- `riverpod_analyzer_utils` upgraded to `1.0.0-dev.11`
+
+## 3.1.6 - 2026-07-26
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.4.1`
+
+## 3.1.5 - 2026-07-26
+
+- Upgraded `analyzer` to `<15.0.0`
+- Fixed `provider_parameters` false positive for extension type arguments.
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.4.0`
+
+## 3.1.4 - 2026-06-10
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.3.2`
+
+## 3.1.4-dev.3 - 2026-05-06
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.3.2-dev.2`
+
+## 3.1.4-dev.2 - 2026-05-03
+
+Upgrade `riverpod`
+
+### Dependency changes
+
+- `riverpod` upgraded to `3.3.2-dev.1`
+
+## 3.1.4-dev.1 - 2026-04-23
+
+Support analyzer 12
+
+### Dependency changes
+
+- `riverpod_analyzer_utils` upgraded to `1.0.0-dev.10`
+
 ## 3.1.3 - 2026-02-03
 
 - Assists to convert widgets to other widget types now correctly trigger on anything
@@ -344,4 +424,3 @@ Fix quick-fix for provider_dependencies
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-

@@ -6,6 +6,8 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/error/error.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
+import '../node.dart';
+
 const buildContextType = TypeChecker.fromName(
   'BuildContext',
   packageName: 'flutter',

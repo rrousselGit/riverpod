@@ -17,6 +17,27 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
+  void addAnonymousBlockBody(AbstractAnalysisRule rule, AstVisitor visitor) {
+    visitors.add((rule, visitor));
+  }
+
+  @override
+  void addAnonymousExpressionBody(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
+    visitors.add((rule, visitor));
+  }
+
+  @override
+  void addAnonymousMethodInvocation(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
+    visitors.add((rule, visitor));
+  }
+
+  @override
   void addArgumentList(AbstractAnalysisRule rule, AstVisitor visitor) {
     visitors.add((rule, visitor));
   }
@@ -66,6 +87,11 @@ class Registry extends RuleVisitorRegistry {
 
   @override
   void addBlockClassBody(AbstractAnalysisRule rule, AstVisitor visitor) {
+    visitors.add((rule, visitor));
+  }
+
+  @override
+  void addBlockEnumBody(AbstractAnalysisRule rule, AstVisitor visitor) {
     visitors.add((rule, visitor));
   }
 
@@ -126,11 +152,6 @@ class Registry extends RuleVisitorRegistry {
 
   @override
   void addCommentReference(AbstractAnalysisRule rule, AstVisitor visitor) {
-    visitors.add((rule, visitor));
-  }
-
-  @override
-  void addCompilationUnit(AbstractAnalysisRule rule, AstVisitor visitor) {
     visitors.add((rule, visitor));
   }
 
@@ -199,14 +220,6 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addDefaultFormalParameter(
-    AbstractAnalysisRule rule,
-    AstVisitor visitor,
-  ) {
-    visitors.add((rule, visitor));
-  }
-
-  @override
   void addDoStatement(AbstractAnalysisRule rule, AstVisitor visitor) {
     visitors.add((rule, visitor));
   }
@@ -251,17 +264,17 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
+  void addEmptyEnumBody(AbstractAnalysisRule rule, AstVisitor visitor) {
+    visitors.add((rule, visitor));
+  }
+
+  @override
   void addEmptyFunctionBody(AbstractAnalysisRule rule, AstVisitor visitor) {
     visitors.add((rule, visitor));
   }
 
   @override
   void addEmptyStatement(AbstractAnalysisRule rule, AstVisitor visitor) {
-    visitors.add((rule, visitor));
-  }
-
-  @override
-  void addEnumBody(AbstractAnalysisRule rule, AstVisitor visitor) {
     visitors.add((rule, visitor));
   }
 
@@ -369,6 +382,14 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
+  void addFormalParameterDefaultClause(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
+    visitors.add((rule, visitor));
+  }
+
+  @override
   void addFormalParameterList(AbstractAnalysisRule rule, AstVisitor visitor) {
     visitors.add((rule, visitor));
   }
@@ -436,7 +457,7 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addFunctionTypedFormalParameter(
+  void addFunctionTypedFormalParameterSuffix(
     AbstractAnalysisRule rule,
     AstVisitor visitor,
   ) {
@@ -540,12 +561,12 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addLibraryDirective(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addLabelReference(AbstractAnalysisRule rule, AstVisitor visitor) {
     visitors.add((rule, visitor));
   }
 
   @override
-  void addLibraryIdentifier(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addLibraryDirective(AbstractAnalysisRule rule, AstVisitor visitor) {
     visitors.add((rule, visitor));
   }
 
@@ -605,7 +626,7 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addNamedExpression(AbstractAnalysisRule rule, AstVisitor visitor) {
+  void addNamedArgument(AbstractAnalysisRule rule, AstVisitor visitor) {
     visitors.add((rule, visitor));
   }
 
@@ -727,6 +748,14 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
+  void addPrimaryConstructorBody(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
+    visitors.add((rule, visitor));
+  }
+
+  @override
   void addPrimaryConstructorDeclaration(
     AbstractAnalysisRule rule,
     AstVisitor visitor,
@@ -749,6 +778,14 @@ class Registry extends RuleVisitorRegistry {
 
   @override
   void addRecordLiteral(AbstractAnalysisRule rule, AstVisitor visitor) {
+    visitors.add((rule, visitor));
+  }
+
+  @override
+  void addRecordLiteralNamedField(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
     visitors.add((rule, visitor));
   }
 
@@ -795,23 +832,15 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
+  void addRegularFormalParameter(
+    AbstractAnalysisRule rule,
+    AstVisitor visitor,
+  ) {
+    visitors.add((rule, visitor));
+  }
+
+  @override
   void addRelationalPattern(AbstractAnalysisRule rule, AstVisitor visitor) {
-    visitors.add((rule, visitor));
-  }
-
-  @override
-  void addRepresentationConstructorName(
-    AbstractAnalysisRule rule,
-    AstVisitor visitor,
-  ) {
-    visitors.add((rule, visitor));
-  }
-
-  @override
-  void addRepresentationDeclaration(
-    AbstractAnalysisRule rule,
-    AstVisitor visitor,
-  ) {
     visitors.add((rule, visitor));
   }
 
@@ -842,11 +871,6 @@ class Registry extends RuleVisitorRegistry {
 
   @override
   void addShowCombinator(AbstractAnalysisRule rule, AstVisitor visitor) {
-    visitors.add((rule, visitor));
-  }
-
-  @override
-  void addSimpleFormalParameter(AbstractAnalysisRule rule, AstVisitor visitor) {
     visitors.add((rule, visitor));
   }
 
@@ -1013,34 +1037,7 @@ class Registry extends RuleVisitorRegistry {
   }
 
   @override
-  void addAnonymousBlockBody(
-    AbstractAnalysisRule rule,
-    AstVisitor visitor,
-  ) {
-    visitors.add((rule, visitor));
-  }
-
-  @override
-  void addAnonymousExpressionBody(
-    AbstractAnalysisRule rule,
-    AstVisitor visitor,
-  ) {
-    visitors.add((rule, visitor));
-  }
-
-  @override
-  void addAnonymousMethodInvocation(
-    AbstractAnalysisRule rule,
-    AstVisitor visitor,
-  ) {
-    visitors.add((rule, visitor));
-  }
-
-  @override
-  void addPrimaryConstructorBody(
-    AbstractAnalysisRule rule,
-    AstVisitor visitor,
-  ) {
+  void addCompilationUnit(AbstractAnalysisRule rule, AstVisitor visitor) {
     visitors.add((rule, visitor));
   }
 

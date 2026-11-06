@@ -42,9 +42,8 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
             'The default constructor of classes annotated with @riverpod '
             'cannot have required parameters.',
             targetNode: this,
-            code:
-                RiverpodAnalysisErrorCode
-                    .notifierDefaultConstructorHasRequiredParameters,
+            code: RiverpodAnalysisErrorCode
+                .notifierDefaultConstructorHasRequiredParameters,
           ),
         );
       }
@@ -75,7 +74,7 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
       });
 
       final classBasedProviderDeclaration = ClassBasedProviderDeclaration._(
-        name: name,
+        name: namePart.typeName,
         node: this,
         buildMethod: buildMethod,
         providerElement: providerElement,
@@ -151,7 +150,12 @@ class ClassBasedProviderDeclarationElement
       }
 
       final rootUnit = from.root as CompilationUnit;
-      final types = _computeTypes(buildMethod.returnType, rootUnit);
+      final types = _computeTypes(
+        buildMethod.returnType,
+        rootUnit,
+        providerName: element.name!,
+        from: from,
+      );
       if (types == null) {
         // Error already reported
         return null;

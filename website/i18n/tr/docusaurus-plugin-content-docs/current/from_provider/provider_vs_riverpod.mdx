@@ -1,0 +1,421 @@
+---
+title: Provider ve Riverpod karşılaştırması
+version: 2
+---
+
+import family from "/docs/from_provider/family";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+
+
+Bu yazı, Provider ile Riverpod arasındaki farkları ve benzerlikleri özetliyor.
+
+## Provider'ları tanımlamak {#defining-providers}
+
+İki paket arasındaki temel fark, "provider"ların nasıl tanımlandığıdır.
+
+[Provider] ile provider'lar birer widget'tır ve bu nedenle widget ağacının içine,
+genellikle bir `MultiProvider` içine yerleştirilir:
+
+```dart
+class Counter extends ChangeNotifier {
+ ...
+}
+
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<Counter>(create: (context) => Counter()),
+      ],
+      child: MyApp(),
+    )
+  );
+}
+```
+
+Riverpod'da provider'lar widget **değildir**. Bunun yerine sıradan Dart nesneleridir.  
+Benzer şekilde provider'lar widget ağacının dışında tanımlanır ve global final
+değişkenler olarak bildirilir.
+
+Ayrıca Riverpod'un çalışabilmesi için uygulamanın tamamının üzerine bir `ProviderScope`
+widget'ı eklemek gerekir. Buna göre, yukarıdaki Provider örneğinin Riverpod karşılığı
+şöyle olurdu:
+
+```dart
+// Provider'lar artık üst düzey değişkenler
+final counterProvider = ChangeNotifierProvider<Counter>((ref) => Counter());
+
+void main() {
+  runApp(
+    // Bu widget, projenin tamamı için Riverpod'u etkinleştirir
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
+```
+
+Provider tanımının nasıl da sadece birkaç satır yukarı taşındığına dikkat edin.
+
+:::info
+Riverpod'da provider'lar sıradan Dart nesneleri olduğundan, Riverpod'u Flutter
+olmadan kullanmak mümkündür.  
+Örneğin Riverpod, komut satırı uygulamaları yazmak için kullanılabilir.
+:::
+
+## Provider'ları okumak: BuildContext {#reading-providers-buildcontext}
+
+Provider ile provider'ları okumanın yollarından biri, bir widget'ın `BuildContext`'ini kullanmaktır.
+
+Örneğin bir provider şöyle tanımlanmışsa:
+
+```dart
+Provider<Model>(...);
+```
+
+[Provider] ile bunu okumak şöyle yapılır:
+
+```dart
+class Example extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    Model model = context.watch<Model>();
+
+  }
+}
+```
+
+Riverpod'daki karşılığı şöyle olurdu:
+
+```dart
+final modelProvider = Provider<Model>(...);
+
+class Example extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    Model model = ref.watch(modelProvider);
+
+  }
+}
+```
+
+Şunlara dikkat edin:
+
+- Riverpod'un örneği `StatelessWidget` yerine `ConsumerWidget`'tan türüyor.
+  Bu farklı widget türü, `build` fonksiyonumuza fazladan bir parametre ekliyor:
+  `WidgetRef`.
+
+- `BuildContext.watch` yerine Riverpod'da, `ConsumerWidget`'tan elde ettiğimiz
+  `WidgetRef`'i kullanarak `WidgetRef.watch` yapıyoruz.
+
+- Riverpod jenerik türlere dayanmaz. Bunun yerine provider tanımıyla oluşturulan
+  değişkene dayanır.
+
+Ayrıca ifadelerin ne kadar benzer olduğuna da dikkat edin. Hem Provider hem de Riverpod,
+"değer değiştiğinde bu widget yeniden oluşturulmalı" anlamında "watch" kelimesini kullanır.
+
+:::info
+Riverpod, provider'ları okumak için Provider ile aynı terminolojiyi kullanır.
+
+- `BuildContext.watch` -> `WidgetRef.watch`
+- `BuildContext.read` -> `WidgetRef.read`
+- `BuildContext.select` -> `WidgetRef.watch(myProvider.select)`
+
+`context.watch` ile `context.read` arasındaki kurallar Riverpod için de geçerlidir:  
+`build` metodunun içinde "watch" kullanın. Tıklama işleyicilerinin ve diğer olayların
+içinde "read" kullanın. Değerleri ve yeniden oluşturmaları filtrelemeniz gerektiğinde "select" kullanın.
+:::
+
+## Provider'ları okumak: Consumer {#reading-providers-consumer}
+
+Provider, provider'ları okumak için isteğe bağlı olarak `Consumer` adında bir widget
+(ve `Consumer2` gibi varyantlarını) sunar.
+
+`Consumer`, widget ağacının daha ince taneli biçimde yeniden oluşturulmasına izin vererek
+bir performans optimizasyonu olarak faydalıdır; durum değiştiğinde yalnızca ilgili widget'lar güncellenir:
+
+Buna göre, bir provider şöyle tanımlanmışsa:
+
+```dart
+Provider<Model>(...);
+```
+
+Provider, bu provider'ı `Consumer` ile şöyle okumaya izin verir:
+
+```dart
+Consumer<Model>(
+  builder: (BuildContext context, Model model, Widget? child) {
+
+  }
+)
+```
+
+Riverpod'da da aynı ilke geçerli. Riverpod'un da tam olarak aynı amaç için
+`Consumer` adında bir widget'ı var.
+
+Bir provider'ı şöyle tanımlarsak:
+
+```dart
+final modelProvider = Provider<Model>(...);
+```
+
+O zaman `Consumer` kullanarak şunu yapabiliriz:
+
+```dart
+Consumer(
+  builder: (BuildContext context, WidgetRef ref, Widget? child) {
+    Model model = ref.watch(modelProvider);
+
+  }
+)
+```
+
+`Consumer`'ın bize bir `WidgetRef` nesnesi verdiğine dikkat edin. Bu, önceki bölümde
+`ConsumerWidget` ile ilgili olarak gördüğümüz nesnenin aynısıdır.
+
+### Riverpod'da `ConsumerN` karşılığı yoktur {#there-is-no-consumern-equivalent-in-riverpod}
+
+pkg:Provider'ın `Consumer2`, `Consumer3` gibi widget'larına Riverpod'da ne ihtiyaç duyulduğuna
+ne de onların eksikliğinin hissedildiğine dikkat edin.
+
+Riverpod'da birden fazla provider'dan değer okumak istiyorsanız, şöyle birden fazla
+`ref.watch` ifadesi yazmanız yeterlidir:
+
+```dart
+Consumer(
+  builder: (context, ref, child) {
+    Model1 model = ref.watch(model1Provider);
+    Model2 model = ref.watch(model2Provider);
+    Model3 model = ref.watch(model3Provider);
+    // ...
+  }
+)
+```
+
+pkg:Provider'ın `ConsumerN` API'leriyle karşılaştırıldığında yukarıdaki çözüm çok daha hafif geliyor ve anlaşılması daha kolay olmalı.
+
+## Provider'ları birleştirmek: durumsuz nesnelerle ProxyProvider {#combining-providers-proxyprovider-with-stateless-objects}
+
+Provider kullanırken provider'ları birleştirmenin resmî yolu, `ProxyProvider`
+widget'ını (ya da `ProxyProvider2` gibi varyantlarını) kullanmaktır.
+
+Örneğin şunu tanımlayabiliriz:
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+ChangeNotifierProvider<UserIdNotifier>(create: (context) => UserIdNotifier()),
+```
+
+Buradan itibaren iki seçeneğimiz var. Yeni bir "durumsuz" provider oluşturmak için
+`UserIdNotifier`'ı birleştirebiliriz (genellikle == operatörünü geçersiz kılabilen,
+değişmez (immutable) bir değer). Şöyle:
+
+```dart
+ProxyProvider<UserIdNotifier, String>(
+  update: (context, userIdNotifier, _) {
+    return 'The user ID of the user is ${userIdNotifier.userId}';
+  }
+)
+```
+
+Bu provider, `UserIdNotifier.userId` her değiştiğinde otomatik olarak yeni bir `String`
+döndürecektir.
+
+Riverpod'da da benzer bir şey yapabiliriz, ancak sözdizimi farklıdır.  
+Öncelikle Riverpod'da `UserIdNotifier` tanımımız şöyle olurdu:
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+final userIdNotifierProvider = ChangeNotifierProvider<UserIdNotifier>(
+  (ref) => UserIdNotifier(),
+);
+```
+
+Buradan itibaren, `userId`'ye dayalı `String`'imizi üretmek için şunu yapabiliriz:
+
+```dart
+final labelProvider = Provider<String>((ref) {
+  UserIdNotifier userIdNotifier = ref.watch(userIdNotifierProvider);
+  return 'The user ID of the user is ${userIdNotifier.userId}';
+});
+```
+
+`ref.watch(userIdNotifierProvider)` yapan satıra dikkat edin.
+
+Bu kod satırı Riverpod'a, `userIdNotifierProvider`'ın içeriğini elde etmesini ve
+o değer her değiştiğinde `labelProvider`'ın da yeniden hesaplanmasını söyler.
+Böylece `labelProvider`'ımızın yaydığı `String`, `userId` her değiştiğinde
+otomatik olarak güncellenecektir.
+
+Bu `ref.watch` satırı size tanıdık gelmeli. Bu desen daha önce
+[provider'ların widget'lar içinde nasıl okunacağı](#reading-providers-buildcontext) anlatılırken ele alınmıştı.
+Gerçekten de provider'lar artık, widget'ların yaptığı gibi başka provider'ları dinleyebiliyor.
+
+## Provider'ları birleştirmek: durumlu nesnelerle ProxyProvider {#combining-providers-proxyprovider-with-stateful-objects}
+
+Provider'ları birleştirirken bir başka kullanım senaryosu da, örneğin bir `ChangeNotifier`
+örneği gibi durumlu nesneleri sunmaktır.
+
+Bunun için `ChangeNotifierProxyProvider`'ı (ya da `ChangeNotifierProxyProvider2` gibi varyantlarını) kullanabiliriz.  
+Örneğin şunu tanımlayabiliriz:
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+ChangeNotifierProvider<UserIdNotifier>(create: (context) => UserIdNotifier()),
+```
+
+Ardından, `UserIdNotifier.userId`'ye dayanan yeni bir `ChangeNotifier` tanımlayabiliriz.
+Örneğin şunu yapabiliriz:
+
+```dart
+class UserNotifier extends ChangeNotifier {
+  String? _userId;
+
+  void setUserId(String? userId) {
+    if (userId != _userId) {
+      print('The user ID changed from $_userId to $userId');
+      _userId = userId;
+    }
+  }
+}
+
+// ...
+
+ChangeNotifierProxyProvider<UserIdNotifier, UserNotifier>(
+  create: (context) => UserNotifier(),
+  update: (context, userIdNotifier, userNotifier) {
+    return userNotifier!
+      ..setUserId(userIdNotifier.userId);
+  },
+);
+```
+
+Bu yeni provider, `UserNotifier`'dan tek bir örnek oluşturur (bu örnek hiçbir zaman yeniden inşa edilmez)
+ve kullanıcı kimliği her değiştiğinde bir metin yazdırır.
+
+Aynı şeyi provider'da yapmak farklı biçimde gerçekleştirilir.
+Öncelikle Riverpod'da `UserIdNotifier` tanımımız şöyle olurdu:
+
+```dart
+class UserIdNotifier extends ChangeNotifier {
+  String? userId;
+}
+
+// ...
+
+final userIdNotifierProvider = ChangeNotifierProvider<UserIdNotifier>(
+  (ref) => UserIdNotifier(),
+),
+```
+
+Buradan itibaren, önceki `ChangeNotifierProxyProvider`'ın karşılığı şöyle olurdu:
+
+```dart
+class UserNotifier extends ChangeNotifier {
+  String? _userId;
+
+  void setUserId(String? userId) {
+    if (userId != _userId) {
+      print('The user ID changed from $_userId to $userId');
+      _userId = userId;
+    }
+  }
+}
+
+// ...
+
+final userNotifierProvider = ChangeNotifierProvider<UserNotifier>((ref) {
+  final userNotifier = UserNotifier();
+  ref.listen<UserIdNotifier>(
+    userIdNotifierProvider,
+    (previous, next) {
+      if (previous?.userId != next.userId) {
+        userNotifier.setUserId(next.userId);
+      }
+    },
+  );
+
+  return userNotifier;
+});
+```
+
+Bu örneğin özü `ref.listen` satırıdır.  
+`ref.listen` fonksiyonu, bir provider'ı dinlemeyi ve provider her değiştiğinde
+bir fonksiyon çalıştırmayı sağlayan bir yardımcıdır.
+
+Bu fonksiyonun `previous` ve `next` parametreleri, sırasıyla provider değişmeden
+önceki son değere ve değiştikten sonraki yeni değere karşılık gelir.
+
+## Provider'ları kapsamlamak (scoping) ile `.family` + `.autoDispose` karşılaştırması {#scoping-providers-vs-family--autodispose}
+pkg:Provider'da kapsamlama iki amaçla kullanılıyordu:
+  - bir sayfadan ayrılırken durumu yok etmek
+  - her sayfa için özel duruma sahip olmak
+
+Sadece durumu yok etmek için kapsamlama kullanmak ideal değildir.  
+Sorun şu ki kapsamlama, büyük uygulamalarda iyi çalışmaz.  
+Örneğin durum çoğu zaman bir sayfada oluşturulur, ancak gezinmeden sonra farklı bir sayfada yok edilir.  
+Bu da farklı sayfalarda birden fazla önbelleğin etkin olmasına izin vermez.
+
+Benzer şekilde, "her sayfa için özel durum" yaklaşımı da, o durumun widget ağacının 
+başka bir bölümüyle paylaşılması gerektiğinde -örneğin modal'larda ya da 
+çok adımlı bir formda ihtiyaç duyacağınız gibi- hızla yönetilmesi zor bir hale gelir.
+
+Riverpod farklı bir yaklaşım benimser: birincisi, provider'ları kapsamlamak bir bakıma önerilmez; ikincisi, 
+`.family` ve `.autoDispose` bunun için eksiksiz bir alternatif çözümdür.
+
+Riverpod'da `.autoDispose` olarak işaretlenen Provider'lar, artık kullanılmadıklarında durumlarını otomatik olarak yok eder.  
+Bir provider'ı kullanan son widget ağaçtan kaldırıldığında Riverpod bunu algılar ve provider'ı yok eder.  
+Bu davranışı test etmek için bir provider'da şu iki yaşam döngüsü metodunu kullanmayı deneyin:
+
+```dart
+ref.onCancel((){
+  print("No one listens to me anymore!");
+});
+ref.onDispose((){
+  print("If I've been defined as `.autoDispose`, I just got disposed!");
+});
+```
+
+Bu, doğası gereği "durumu yok etme" sorununu çözer.
+
+Ayrıca bir Provider'ı `.family` olarak (ve aynı anda `.autoDispose` olarak) işaretlemek de mümkündür.  
+Bu, provider'lara parametre aktarmayı mümkün kılar; böylece birden fazla provider oluşturulur ve dahili olarak takip edilir.  
+Başka bir deyişle, parametre aktarıldığında *her benzersiz parametre için benzersiz bir durum oluşturulur*.
+
+<AutoSnippet language="dart" {...family}></AutoSnippet>
+
+
+Bu da "her sayfa için özel durum" sorununu çözer. Aslında bir avantajı daha var: böyle bir durum artık tek bir sayfaya bağlı değildir.  
+Bunun yerine, farklı bir sayfa aynı duruma erişmeye çalışırsa, sadece aynı parametreleri yeniden kullanarak bunu yapabilir.
+ 
+Birçok açıdan provider'lara parametre aktarmak, bir Map anahtarına eşdeğerdir.  
+Anahtar aynıysa elde edilen değer de aynıdır. Farklı bir anahtarsa farklı bir durum elde edilir.
+
+[provider]: https://pub.dev/packages/provider
+[autodispose]: /docs/concepts2/auto_dispose
+[workaround]: https://pub.dev/packages/provider#can-i-obtain-two-different-providers-using-the-same-type
+[keepAlive]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref/keepAlive.html
+[we have to]: https://github.com/flutter/flutter/issues/128432
+[it turns out]: https://github.com/flutter/flutter/issues/106549
+[*can't* react when a consumer stops listening to them]: https://github.com/flutter/flutter/issues/106546
+[ChangeNotifierProvider]: https://pub.dev/documentation/hooks_riverpod/latest/legacy/ChangeNotifierProvider-class.html
+[Code generation]: /docs/about_code_generation
+[AsyncNotifiers]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/AsyncNotifierProvider-class.html
+[global final variable]: /docs/concepts2/providers#creating-a-provider

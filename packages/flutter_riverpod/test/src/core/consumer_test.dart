@@ -1,16 +1,57 @@
-// ignore_for_file: invalid_use_of_internal_member
-
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/src/internals.dart' show ProviderScopeState;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:riverpod/legacy.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod/src/internals.dart'
-    show NodeInternal, InternalProviderContainer;
+    show ContainerReadElement, InternalProviderContainer;
+
+import '../../utils.dart';
 
 void main() {
+  testWidgets('TickerMode + mutation triggers assertion', (tester) async {
+    // Regression test for https://github.com/rrousselGit/riverpod/issues/4709
+    final container = ProviderContainer.test();
+
+    final rootProvider = NotifierProvider(
+      () => DeferredNotifier((ref, self) => 0),
+    );
+    final middle = Provider<int>(
+      name: 'middle',
+      (ref) => ref.watch(rootProvider),
+    );
+    final leaf = Provider<int>(name: 'leaf', (ref) => ref.watch(middle));
+
+    final testWidget = Consumer(
+      builder: (context, ref, _) {
+        ref.watch(middle);
+        ref.watch(leaf);
+
+        return const SizedBox();
+      },
+    );
+
+    Widget app({required bool tickerModeEnabled}) {
+      return TickerMode(
+        enabled: tickerModeEnabled,
+        child: UncontrolledProviderScope(
+          container: container,
+          child: testWidget,
+        ),
+      );
+    }
+
+    // pump with TickerMode disabled
+    await tester.pumpWidget(app(tickerModeEnabled: false));
+
+    // mutate
+    container.read(rootProvider.notifier).state++;
+
+    // pump with TickerMode enabled - asserts
+    await tester.pumpWidget(app(tickerModeEnabled: true));
+  });
+
   group('Handles TickerMode', () {
     testWidgets('Does not rebuild widgets when TickerMode changes', (
       tester,
@@ -69,7 +110,7 @@ void main() {
         ),
       );
 
-      unawaited(navigator.pushNamed('/detail'));
+      navigator.pushNamed('/detail');
       await tester.pump();
 
       expect(
@@ -170,6 +211,35 @@ void main() {
         ),
       );
     });
+
+    testWidgets(
+      'mounting a Consumer that watches a paused provider does not throw',
+      (tester) async {
+        var count = 0;
+        final dep = Provider((ref) => count++);
+        final provider = Provider((ref) => ref.watch(dep));
+
+        await tester.pumpWidget(const ProviderScope(child: SizedBox()));
+
+        final container = tester.container();
+
+        container.read(provider);
+        container.invalidate(dep);
+
+        await tester.pumpWidget(
+          ProviderScope(
+            child: Consumer(
+              builder: (c, ref, _) {
+                ref.watch(provider);
+                return const SizedBox();
+              },
+            ),
+          ),
+        );
+
+        expect(tester.takeException(), isNull);
+      },
+    );
   });
 
   testWidgets('Riverpod test', (tester) async {
@@ -381,16 +451,19 @@ void main() {
   testWidgets(
     'Consumer removing one of multiple listeners on a provider still listen to the provider',
     (tester) async {
-      final stateProvider = StateProvider((ref) => 0, name: 'state');
+      final stateProvider = NotifierProvider(
+        () => SettableNotifier((ref) => 0),
+        name: 'state',
+      );
       final notifier0 = TestNotifier();
       final notifier1 = TestNotifier(42);
-      final provider0 = StateNotifierProvider<TestNotifier, int>(
+      final provider0 = NotifierProvider<TestNotifier, int>(
         name: '0',
-        (_) => notifier0,
+        () => notifier0,
       );
-      final provider1 = StateNotifierProvider<TestNotifier, int>(
+      final provider1 = NotifierProvider<TestNotifier, int>(
         name: '1',
-        (_) => notifier1,
+        () => notifier1,
       );
       var buildCount = 0;
 
@@ -400,8 +473,9 @@ void main() {
             builder: (c, ref, _) {
               buildCount++;
               final state = ref.watch(stateProvider);
-              final value =
-                  state == 0 ? ref.watch(provider0) : ref.watch(provider1);
+              final value = state == 0
+                  ? ref.watch(provider0)
+                  : ref.watch(provider1);
 
               return Text(
                 '${ref.watch(provider0)} $value',
@@ -467,16 +541,19 @@ void main() {
   testWidgets(
     'Stops listening to a provider when recomputed but no longer using it',
     (tester) async {
-      final stateProvider = StateProvider((ref) => 0, name: 'state');
+      final stateProvider = NotifierProvider(
+        () => SettableNotifier((ref) => 0),
+        name: 'state',
+      );
       final notifier0 = TestNotifier();
       final notifier1 = TestNotifier(42);
-      final provider0 = StateNotifierProvider<TestNotifier, int>(
+      final provider0 = NotifierProvider<TestNotifier, int>(
         name: '0',
-        (_) => notifier0,
+        () => notifier0,
       );
-      final provider1 = StateNotifierProvider<TestNotifier, int>(
+      final provider1 = NotifierProvider<TestNotifier, int>(
         name: '1',
-        (_) => notifier1,
+        () => notifier1,
       );
       var buildCount = 0;
 
@@ -488,9 +565,9 @@ void main() {
               final state = ref.watch(stateProvider);
               final result =
                   state ==
-                          0 //
-                      ? ref.watch(provider0)
-                      : ref.watch(provider1);
+                      0 //
+                  ? ref.watch(provider0)
+                  : ref.watch(provider1);
               return Text('$result', textDirection: TextDirection.ltr);
             },
           ),
@@ -550,16 +627,16 @@ void main() {
 
   testWidgets('Consumer supports changing the provider', (tester) async {
     final notifier1 = TestNotifier();
-    final provider1 = StateNotifierProvider<TestNotifier, int>((_) {
+    final provider1 = NotifierProvider<TestNotifier, int>(() {
       return notifier1;
     });
     final notifier2 = TestNotifier(42);
-    final provider2 = StateNotifierProvider<TestNotifier, int>((_) {
+    final provider2 = NotifierProvider<TestNotifier, int>(() {
       return notifier2;
     });
     var buildCount = 0;
 
-    Widget build(StateNotifierProvider<TestNotifier, int> provider) {
+    Widget build(NotifierProvider<TestNotifier, int> provider) {
       return ProviderScope(
         child: Consumer(
           builder: (c, ref, _) {
@@ -598,7 +675,7 @@ void main() {
     'multiple watch, when one of them forces rebuild, all dependencies are still flushed',
     (tester) async {
       final notifier = TestNotifier();
-      final provider = StateNotifierProvider<TestNotifier, int>((_) {
+      final provider = NotifierProvider<TestNotifier, int>(() {
         return notifier;
       });
       var callCount = 0;
@@ -634,7 +711,7 @@ void main() {
     tester,
   ) async {
     final notifier = TestNotifier();
-    final provider = StateNotifierProvider<TestNotifier, int>((_) => notifier);
+    final provider = NotifierProvider<TestNotifier, int>(() => notifier);
     final computed = Provider((ref) => !ref.watch(provider).isNegative);
     var buildCount = 0;
     final container = ProviderContainer.test();
@@ -678,7 +755,7 @@ void main() {
 
   testWidgets('remove listener when destroying the consumer', (tester) async {
     final notifier = TestNotifier();
-    final provider = StateNotifierProvider<TestNotifier, int>((_) => notifier);
+    final provider = NotifierProvider<TestNotifier, int>(() => notifier);
 
     await tester.pumpWidget(
       ProviderScope(
@@ -710,11 +787,11 @@ void main() {
 
   testWidgets('Multiple providers', (tester) async {
     final notifier = TestNotifier();
-    final firstProvider = StateNotifierProvider<TestNotifier, int>((_) {
+    final firstProvider = NotifierProvider<TestNotifier, int>(() {
       return notifier;
     });
     final notifier2 = TestNotifier();
-    final secondProvider = StateNotifierProvider<TestNotifier, int>((_) {
+    final secondProvider = NotifierProvider<TestNotifier, int>(() {
       return notifier2;
     });
 
@@ -749,7 +826,7 @@ void main() {
 
   testWidgets('Consumer', (tester) async {
     final notifier = TestNotifier();
-    final provider = StateNotifierProvider<TestNotifier, int>((_) => notifier);
+    final provider = NotifierProvider<TestNotifier, int>(() => notifier);
 
     await tester.pumpWidget(
       ProviderScope(
@@ -830,15 +907,283 @@ void main() {
 
     expect(find.text('21'), findsOneWidget);
   });
+
+  testWidgets('Dependencies are closed even if dispose throws', (tester) async {
+    final container = ProviderContainer.test();
+    var show = true;
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: StatefulBuilder(
+          builder: (context, setState) {
+            return Column(
+              children: [
+                if (show) const _ThrowingDisposeConsumer(),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      show = false;
+                    });
+                  },
+                  child: const Text('Remove', textDirection: TextDirection.ltr),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+
+    // Tap to remove the Consumer, which triggers its dispose()
+    // We expect a FlutterError because of the simulated exception in dispose
+    final exceptions = <dynamic>[];
+    final originalOnError = FlutterError.onError;
+    FlutterError.onError = (details) {
+      exceptions.add(details.exception);
+    };
+
+    await tester.tap(find.text('Remove'));
+    await tester.pump();
+
+    // Restore error handler
+    FlutterError.onError = originalOnError;
+
+    expect(exceptions, isNotEmpty);
+    expect(
+      exceptions.first.toString(),
+      contains('Simulated dispose exception'),
+    );
+
+    // Now modify the provider.
+    // If the subscriptions were not closed because dispose threw,
+    // markNeedsBuild() will be called on the defunct widget, crashing the test.
+    container.read(_counterProvider.notifier).increment();
+
+    // The provider update should succeed without any defunct assertion errors.
+  });
+
+  testWidgets('invalidating an unlistened keepAlive graph then re-watching it '
+      'during build must neither throw nor freeze the scheduler', (
+    tester,
+  ) async {
+    // https://github.com/rrousselGit/riverpod/issues/4812
+    var count = 0;
+    final counterProvider = NotifierProvider<DeferredNotifier<int>, int>(
+      () => DeferredNotifier((ref, self) => count),
+    );
+    final parentProvider = Provider<int>((ref) => ref.watch(counterProvider));
+    final childAProvider = Provider<int>((ref) => ref.watch(parentProvider));
+    final childBProvider = Provider<int>((ref) => ref.watch(parentProvider));
+
+    Widget pageA() {
+      return Consumer(
+        builder: (context, ref, _) {
+          final a = ref.watch(childAProvider);
+          final b = ref.watch(childBProvider);
+          return Text('a=$a b=$b', textDirection: TextDirection.ltr);
+        },
+      );
+    }
+
+    // 1. Mount and activate the graph (a page watches it).
+    await tester.pumpWidget(ProviderScope(child: pageA()));
+    final container = tester.container();
+
+    expect(find.text('a=0 b=0'), findsOneWidget);
+
+    // 2. Navigate away: no listener left -> the keepAlive graph is inactive.
+    await tester.pumpWidget(const ProviderScope(child: SizedBox()));
+
+    // 3. The root dependency changes while the graph is unlistened. The
+    //    refresh task runs, but skips the inactive elements: the graph
+    //    stays dirty.
+    count++;
+    container.invalidate(counterProvider);
+    await tester.pump();
+
+    // 4. Navigate back: PageA.build re-watches the stale graph.
+    await tester.pumpWidget(ProviderScope(child: pageA()));
+    expect(find.text('a=1 b=1'), findsOneWidget);
+
+    // 5. The scheduler must still be functional afterwards.
+    count++;
+    container.invalidate(counterProvider);
+    await tester.pump();
+    await tester.pump();
+
+    expect(container.read(counterProvider), 2);
+    expect(
+      find.text('a=2 b=2'),
+      findsOneWidget,
+      reason:
+          'scheduler is frozen: the providers were invalidated but '
+          'never rebuilt',
+    );
+  });
+
+  testWidgets('flushes the provider', (tester) async {
+    // Regression test for https://github.com/rrousselGit/riverpod/issues/4669
+    final dep = NotifierProvider(() => DeferredNotifier<int>((ref, _) => 0));
+    final provider = Provider((ref) => ref.watch(dep));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          routes: {'/settings': (context) => Container()},
+          home: Consumer(
+            builder: (context, ref, _) {
+              final value = ref.watch(provider);
+              return Text('$value', textDirection: TextDirection.ltr);
+            },
+          ),
+        ),
+      ),
+    );
+
+    final container = tester.container();
+    final navigator = tester.state<NavigatorState>(find.byType(Navigator));
+
+    navigator.pushNamed('/settings');
+    await tester.pumpAndSettle();
+
+    container.read(dep.notifier).state++;
+
+    navigator.maybePop();
+    await tester.pumpAndSettle();
+
+    expect(find.text('1'), findsOneWidget);
+  });
+
+  for (final reverseWatchOrder in <bool>[false, true]) {
+    testWidgets(
+      'resuming a TickerMode consumer with a diamond dependency does not throw '
+      '(${reverseWatchOrder ? 'right first' : 'left first'})',
+      (tester) async {
+        // https://github.com/rrousselGit/riverpod/issues/4882
+        final container = ProviderContainer.test();
+        addTearDown(container.dispose);
+
+        final seed = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier((ref, self) => 0),
+        );
+        final shared = Provider<int>((ref) => ref.watch(seed));
+        final left = Provider<int>((ref) => ref.watch(shared) + 1);
+        final rightLeaf = Provider<int>((ref) => ref.watch(shared) * 2);
+        final right = Provider<int>((ref) => ref.watch(rightLeaf));
+        final top = Provider<int>((ref) {
+          if (reverseWatchOrder) {
+            final rightValue = ref.watch(right);
+            final leftValue = ref.watch(left);
+            return leftValue + rightValue;
+          }
+
+          final leftValue = ref.watch(left);
+          final rightValue = ref.watch(right);
+          return leftValue + rightValue;
+        });
+
+        Widget app({required bool enabled}) {
+          return UncontrolledProviderScope(
+            container: container,
+            child: TickerMode(
+              enabled: enabled,
+              child: Consumer(
+                builder: (context, ref, _) {
+                  final value = ref.watch(top);
+                  return Text('$value', textDirection: TextDirection.ltr);
+                },
+              ),
+            ),
+          );
+        }
+
+        await tester.pumpWidget(app(enabled: true));
+        expect(find.text('1'), findsOneWidget);
+
+        await tester.pumpWidget(app(enabled: false));
+        container.read(seed.notifier).state++;
+
+        await tester.pumpWidget(app(enabled: true));
+        expect(tester.takeException(), isNull);
+        expect(find.text('4'), findsOneWidget);
+
+        container.read(seed.notifier).state++;
+        await tester.pump();
+        expect(tester.takeException(), isNull);
+        expect(find.text('7'), findsOneWidget);
+      },
+    );
+  }
+
+  testWidgets(
+    'resuming a TickerMode consumer with a diamond dependency does not throw '
+    'when the sibling branch has another active listener',
+    (tester) async {
+      // https://github.com/rrousselGit/riverpod/issues/4882
+      final container = ProviderContainer.test();
+      addTearDown(container.dispose);
+
+      final seed = NotifierProvider<DeferredNotifier<int>, int>(
+        () => DeferredNotifier((ref, self) => 0),
+      );
+      final shared = Provider<int>((ref) => ref.watch(seed));
+      final left = Provider<int>((ref) => ref.watch(shared) + 1);
+      final rightLeaf = Provider<int>((ref) => ref.watch(shared) * 2);
+      final right = Provider<int>((ref) => ref.watch(rightLeaf));
+      final top = Provider<int>((ref) => ref.watch(left) + ref.watch(right));
+
+      Widget app({required bool enabled}) {
+        return UncontrolledProviderScope(
+          container: container,
+          child: Column(
+            textDirection: TextDirection.ltr,
+            children: [
+              TickerMode(
+                enabled: enabled,
+                child: Consumer(
+                  builder: (context, ref, _) => Text(
+                    'top ${ref.watch(top)}',
+                    textDirection: TextDirection.ltr,
+                  ),
+                ),
+              ),
+              // Never paused, so rightLeaf stays active while top is paused.
+              Consumer(
+                builder: (context, ref, _) => Text(
+                  'leaf ${ref.watch(rightLeaf)}',
+                  textDirection: TextDirection.ltr,
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+
+      await tester.pumpWidget(app(enabled: true));
+      expect(find.text('top 1'), findsOneWidget);
+      expect(find.text('leaf 0'), findsOneWidget);
+
+      await tester.pumpWidget(app(enabled: false));
+      container.read(seed.notifier).state++;
+
+      await tester.pumpWidget(app(enabled: true));
+      expect(tester.takeException(), isNull);
+      expect(find.text('top 4'), findsOneWidget);
+      expect(find.text('leaf 2'), findsOneWidget);
+    },
+  );
 }
 
-class TestNotifier extends StateNotifier<int> {
-  TestNotifier([super.initialValue = 0]);
+class TestNotifier extends Notifier<int> {
+  TestNotifier([this._initialState = 0]);
 
-  void increment() => state++;
+  final int _initialState;
 
   @override
-  int get state;
+  int build() => _initialState;
+
+  void increment() => state++;
 }
 
 final _provider = Provider((ref) => 'hello world');
@@ -914,5 +1259,37 @@ class _CallbackConsumerWidgetState
   @override
   Widget build(BuildContext context) {
     return Container();
+  }
+}
+
+class _Counter extends Notifier<int> {
+  @override
+  int build() => 0;
+
+  void increment() => state++;
+}
+
+final _counterProvider = NotifierProvider<_Counter, int>(_Counter.new);
+
+class _ThrowingDisposeConsumer extends ConsumerStatefulWidget {
+  const _ThrowingDisposeConsumer({super.key});
+
+  @override
+  _ThrowingDisposeConsumerState createState() =>
+      _ThrowingDisposeConsumerState();
+}
+
+class _ThrowingDisposeConsumerState
+    extends ConsumerState<_ThrowingDisposeConsumer> {
+  @override
+  void dispose() {
+    super.dispose();
+    throw Exception('Simulated dispose exception');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ref.watch(_counterProvider);
+    return const SizedBox();
   }
 }

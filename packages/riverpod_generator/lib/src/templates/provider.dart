@@ -37,16 +37,16 @@ class ProviderTemplate extends Template {
         switch (provider.providerElement.createdType) {
           case SupportedCreatedType.future:
             modifiers = [
-              '\$FutureModifier<$valueType>',
-              '\$FutureProvider<$valueType>',
+              '#{{riverpod|\$FutureModifier}}<$valueType>',
+              '#{{riverpod|\$FutureProvider}}<$valueType>',
             ];
           case SupportedCreatedType.stream:
             modifiers = [
-              '\$FutureModifier<$valueType>',
-              '\$StreamProvider<$valueType>',
+              '#{{riverpod|\$FutureModifier}}<$valueType>',
+              '#{{riverpod|\$StreamProvider}}<$valueType>',
             ];
           case SupportedCreatedType.value:
-            modifiers = ['\$Provider<$valueType>'];
+            modifiers = ['#{{riverpod|\$Provider}}<$valueType>'];
         }
 
         final mixins = modifiers.isEmpty ? '' : ' with ${modifiers.join(', ')}';
@@ -55,7 +55,7 @@ class ProviderTemplate extends Template {
 ${provider.doc}
 ${provider.metadata}
 final class $name$_genericsDefinition
-    extends \$FunctionalProvider<
+    extends #{{riverpod|\$FunctionalProvider}}<
         $exposedType,
         $valueType,
         $createdType
@@ -70,11 +70,14 @@ final class $name$_genericsDefinition
 
         switch (provider.providerElement.createdType) {
           case SupportedCreatedType.future:
-            baseClass = '\$AsyncNotifierProvider<$notifierType, $valueType>';
+            baseClass =
+                '#{{riverpod|\$AsyncNotifierProvider}}<$notifierType, $valueType>';
           case SupportedCreatedType.stream:
-            baseClass = '\$StreamNotifierProvider<$notifierType, $valueType>';
+            baseClass =
+                '#{{riverpod|\$StreamNotifierProvider}}<$notifierType, $valueType>';
           case SupportedCreatedType.value:
-            baseClass = '\$NotifierProvider<$notifierType, $valueType>';
+            baseClass =
+                '#{{riverpod|\$NotifierProvider}}<$notifierType, $valueType>';
         }
 
         buffer.writeln(
@@ -88,11 +91,10 @@ final class $name$_genericsDefinition
   }
 
   void _writeConstructor(StringBuffer buffer) {
-    final superParameters =
-        [
-          if (!provider.providerElement.isFamily) 'from: null,',
-          if (provider.parameters.isEmpty) 'argument: null,',
-        ].join();
+    final superParameters = [
+      if (!provider.providerElement.isFamily) 'from: null,',
+      if (provider.parameters.isEmpty) 'argument: null,',
+    ].join();
 
     final constructorParameters = [
       if (provider.providerElement.isFamily)
@@ -100,10 +102,9 @@ final class $name$_genericsDefinition
       if (provider.parameters.isNotEmpty)
         'required $_argumentRecordType super.argument',
     ];
-    final params =
-        constructorParameters.isEmpty
-            ? ''
-            : '{${constructorParameters.join(',')}}';
+    final params = constructorParameters.isEmpty
+        ? ''
+        : '{${constructorParameters.join(',')}}';
 
     buffer.writeln('''
   ${provider.doc} ${provider.providerTypeName}._($params): super(
@@ -144,12 +145,20 @@ final class $name$_genericsDefinition
 
     switch (provider) {
       case FunctionalProviderDeclaration():
+        final elementName = switch (provider.providerElement.createdType) {
+          SupportedCreatedType.future =>
+            r'#{{riverpod|$FutureProviderElement}}',
+          SupportedCreatedType.stream =>
+            r'#{{riverpod|$StreamProviderElement}}',
+          SupportedCreatedType.value => r'#{{riverpod|$ProviderElement}}',
+        };
+
         buffer.writeln('''
-  @\$internal
+  @#{{riverpod_annotation|\$internal}}
   @override
-  ${provider.internalElementName}<${provider.providerElement.valueTypeNode.toCode()}> \$createElement(
-    \$ProviderPointer pointer
-  ) => ${provider.internalElementName}(pointer);
+  $elementName<${provider.providerElement.valueTypeNode.toCode()}> \$createElement(
+    #{{riverpod|\$ProviderPointer}} pointer
+  ) => $elementName(pointer);
 ''');
 
         _writeFunctionalCreate(buffer);
@@ -158,7 +167,7 @@ final class $name$_genericsDefinition
         final notifierType = '${provider.name}$_generics';
 
         buffer.writeln('''
-  @\$internal
+  @#{{riverpod_annotation|\$internal}}
   @override
   $notifierType create() => $notifierType();
 ''');
@@ -177,10 +186,10 @@ final class $name$_genericsDefinition
 
     buffer.writeln('''
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(${provider.providerElement.exposedTypeNode} value) {
-    return \$ProviderOverride(
+  #{{riverpod|Override}} overrideWithValue(${provider.providerElement.exposedTypeNode} value) {
+    return #{{riverpod|\$ProviderOverride}}(
       origin: this,
-      providerOverride: \$SyncValueProvider<${provider.providerElement.valueTypeNode.toCode()}>(value),
+      providerOverride: #{{riverpod|\$SyncValueProvider}}<${provider.providerElement.valueTypeNode.toCode()}>(value),
     );
   }
 ''');
@@ -189,7 +198,7 @@ final class $name$_genericsDefinition
   void _writeFunctionalCreate(StringBuffer buffer) {
     buffer.write('''
   @override
-  ${provider.providerElement.createdTypeNode} create(Ref ref) {
+  ${provider.providerElement.createdTypeNode} create(#{{riverpod|Ref}} ref) {
 ''');
 
     switch (provider.parameters) {
@@ -244,8 +253,8 @@ final class $name$_genericsDefinition
 
     final encodedGenerics =
         provider.typeParameters?.typeParameters.isEmpty ?? true
-            ? ''
-            : '<${provider.typeParameters!.typeParameters.map((e) => '\${${e.name}}').join(', ')}>';
+        ? ''
+        : '<${provider.typeParameters!.typeParameters.map((e) => '\${${e.name}}').join(', ')}>';
 
     buffer.writeln('''
 @override

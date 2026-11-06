@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   runApp(const ProviderScope(child: RandomNumberApp()));
@@ -42,9 +42,8 @@ class RandomNumberApp extends StatelessWidget {
                 builder: (context, ref, child) {
                   return ElevatedButton(
                     child: const Text('Generate'),
-                    onPressed:
-                        () =>
-                            ref.read(randomNumberProvider.notifier).generate(),
+                    onPressed: () =>
+                        ref.read(randomNumberProvider.notifier).generate(),
                   );
                 },
               ),

@@ -21,6 +21,12 @@ const providerContainerType = TypeChecker.fromName(
   packageName: 'riverpod',
 );
 
+/// [TypeChecker] from `ProviderElement`
+const providerElementType = TypeChecker.fromName(
+  'ProviderElement',
+  packageName: 'riverpod',
+);
+
 /// [TypeChecker] from `ProviderSubscription`
 const providerSubscriptionType = TypeChecker.fromName(
   'ProviderSubscription',

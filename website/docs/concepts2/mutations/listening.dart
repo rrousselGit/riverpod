@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod/experimental/mutation.dart';
 
 final addTodo = Mutation<void>();
@@ -27,7 +27,7 @@ class Example extends ConsumerWidget {
             },
           ),
           onPressed: () {
-            addTodo.run(ref, (tsx) async {
+            addTodo.run(ref, (_) async {
               // todo
             });
           },

@@ -15,7 +15,17 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
     required this.$allTransitiveDependencies,
     required this.isAutoDispose,
     required this.retry,
-  });
+  }) {
+    if (kDebugMode &&
+        debugTrackProviderCreation &&
+        (from == null || this is Family)) {
+      _debugCreationStackTrace = StackTrace.current;
+    } else {
+      _debugCreationStackTrace = null;
+    }
+  }
+
+  late StackTrace? _debugCreationStackTrace;
 
   /// The family that this provider/family depends on.
   Family? get from;
@@ -193,7 +203,7 @@ String shortHash(Object? object) {
 /// Should override ==/hashCode when possible
 ///
 /// See also:
-/// - [SyncProviderTransformerMixin] for making custom [ProviderListenable]s.
+/// - [CustomProviderListenable] for making custom [ProviderListenable]s.
 @publicInCodegen
 @publicInMisc
 abstract interface class ProviderListenable<StateT>

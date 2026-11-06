@@ -156,3 +156,40 @@ ElevatedButton(
   }
 )
 ```
+
+## Known caveat: a provider may recompute (and throw) one frame before its widget is removed
+
+This is a known limitation of eager recomputation, with no clean fix yet.
+
+When a provider's dependency changes, every dependent provider that still has a
+listener recomputes **immediately**, before the next frame in which the listening
+widgets would rebuild or be removed.
+
+So if the same change is also what removes the listener (logging out, or a filter
+shrinking a list), the dependent still recomputes once against the new value
+before its widget is unmounted. If that computation assumed the previous value,
+it throws:
+
+```dart
+final userNameProvider = Provider((ref) {
+  final user = ref.watch(userProvider);
+  return user!.name; // throws on logout, the frame before the screen is removed
+});
+```
+
+:::caution
+There is currently no way to skip this last recompute. Until there is, the
+recommended workaround is to make the computation total: return `null` (or a
+sentinel) for the transient state instead of throwing.
+:::
+
+```dart
+final userNameProvider = Provider((ref) {
+  final user = ref.watch(userProvider);
+  if (user == null) return null; // handles the brief invalid window
+  return user.name;
+});
+```
+
+This is noisy, but it avoids the exception. Keep `throw` for states that are
+genuinely impossible rather than merely transient.

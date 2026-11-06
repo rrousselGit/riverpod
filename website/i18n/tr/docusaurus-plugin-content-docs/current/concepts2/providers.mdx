@@ -1,0 +1,597 @@
+---
+title: Provider'lar
+version: 1
+---
+
+import declaringManyProviders from "/docs/concepts2/providers/declaring_many_providers";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+import Legend, { colors } from "/src/components/Legend";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+Provider'lar Riverpod'un merkezî özelliğidir. Riverpod kullanıyorsanız, onu provider'ları için kullanıyorsunuzdur.
+
+## Provider nedir? {#what-is-a-provider}
+
+Provider'lar özünde, üzerine biraz şeker serpiştirilmiş "hafızalanmış (memoized) fonksiyonlardır".  
+Bunun anlamı şudur: provider'lar, aynı parametrelerle çağrıldıklarında önbelleğe alınmış bir değer
+döndüren fonksiyonlardır.
+
+Provider kullanmanın en yaygın kullanım senaryosu bir ağ isteği yapmaktır.  
+Bir API'den kullanıcı çeken bir fonksiyon düşünün:
+
+```dart
+Future<User> fetchUser() async {
+  final response = await http.get('https://api.example.com/user/123');
+  return User.fromJson(response.body);
+}
+```
+
+Bu fonksiyonun bir sorunu şu: onu widget'ların içinde kullanmaya kalksaydık,
+sonucu kendimiz önbelleğe almamız; ardından değeri ihtiyaç duyan tüm widget'lar arasında
+paylaşmanın bir yolunu bulmamız gerekirdi.
+
+İşte provider'lar burada devreye giriyor. Provider'lar fonksiyonların etrafındaki sarmalayıcılardır. 
+Söz konusu fonksiyonun sonucunu önbelleğe alır ve birden fazla widget'ın
+aynı değere erişmesine izin verirler:
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+  // fetchUser fonksiyonumuzun eşdeğeri, ancak sonuç önbelleğe alınır.
+  // Bu bir "userProvider" üretecektir. Onu birden çok kez kullanmak
+  // aynı değeri döndürecektir.
+  @riverpod
+  Future<User> user(Ref ref) async {
+    final response = await http.get('https://api.example.com/user/123');
+    return User.fromJson(response.body);
+  }
+  `}
+  raw={`
+  // fetchUser fonksiyonumuzun eşdeğeri, ancak sonuç önbelleğe alınır.
+  // userProvider'ı birden çok kez kullanmak aynı değeri döndürecektir.
+  final userProvider = FutureProvider<User>((ref) async {
+    final response = await http.get('https://api.example.com/user/123');
+    return User.fromJson(response.body);
+  });
+  `}
+  ></AutoSnippet>
+
+Temel önbelleklemenin üzerine provider'lar, kendilerini daha güçlü kılmak için
+çeşitli özellikler ekler:
+
+- **Yerleşik önbellek geçersizleştirme mekanizmaları**  
+  Özellikle [Ref.watch](https://pub.dev/documentation/riverpod/latest/riverpod/Ref/watch.html),
+  önbellekleri birbiriyle birleştirmenize ve gerekli olanı otomatik olarak geçersizleştirmenize olanak tanır.
+- **<Link documentID="concepts2/auto_dispose" />** <br/>
+  Provider'lar artık gerek duyulmadığında kaynakları otomatik olarak serbest bırakabilir.
+- **Veri bağlama**  
+  Provider'lar [FutureBuilder](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html)
+  veya [StreamBuilder](https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html) ihtiyacını ortadan kaldırır.
+- **Otomatik hata yönetimi**  
+  Provider'lar hataları otomatik olarak yakalayıp kullanıcı arayüzüne sunabilir.
+- **Sahteleme desteği**  
+  Daha iyi test edebilmek ve başka amaçlar için tüm provider'lar sahtelenebilir.
+  Bkz. <Link documentID="concepts2/overrides" />.
+- **<Link documentID="concepts2/offline"/>** <br/>
+  Bir provider'ın sonucu diske kalıcı olarak yazılabilir ve uygulama yeniden
+  başlatıldığında otomatik olarak geri yüklenebilir.
+- **<Link documentID="concepts2/mutations" />** <br/>
+  Provider'lar, form gönderimi gibi yan etkiler için kullanıcı arayüzlerinin bir yükleme göstergesi/hata durumu göstermesine yönelik yerleşik bir yol sunar.
+
+Provider'lar 6 çeşitte gelir:
+
+|              | Senkron      | Future                | Stream                 |
+| ------------ | ---------------- | --------------------- | ---------------------- |
+| Değiştirilemez | [Provider]         | [FutureProvider]        | [StreamProvider]         |
+| Değiştirilebilir   | [NotifierProvider] | [AsyncNotifierProvider] | [StreamNotifierProvider] |
+
+Bu ilk bakışta göz korkutucu görünebilir. Adım adım açalım.
+
+**Sync** ile **Future** ile **Stream** karşılaştırması:  
+Bu tablonun sütunları, fonksiyonlar için Dart'ın yerleşik türlerini temsil eder.
+```dart
+int synchronous() => 0;
+Future<int> future() async => 0;
+Stream<int> stream() => Stream.value(0);
+```
+
+**Değiştirilemez ile Değiştirilebilir**:  
+Varsayılan olarak provider'lar widget'lar tarafından değiştirilemez. Provider'ların "Notifier"
+çeşidi onları dışarıdan değiştirilebilir kılar.  
+Bu, özel (private) bir setter'a benzer ("değiştirilemez" provider'lar)
+```dart
+// _state içeriden değiştirilebilir
+// ancak dışarıdan değiştirilemez
+var _state = 0;
+int get state => _state;
+```
+Buna karşılık açık (public) bir setter ("değiştirilebilir" provider'lar)
+```dart
+// Her şey "state"i değiştirebilir
+var state = 0;
+```
+
+:::info
+**Değiştirilemez** ile **değiştirilebilir** ayrımını, ilke olarak sırasıyla `StatelessWidget` ile `StatefulWidget` gibi de düşünebilirsiniz.  
+
+Bu tamamen doğru değildir; çünkü provider'lar widget değildir ve her iki tür de "durum" saklar.
+Ancak ilke benzerdir: "Tek nesne, değişmez" ile "İki nesne, değiştirilebilir".
+:::
+
+
+## Provider oluşturmak {#creating-a-provider}
+
+Provider'lar "en üst düzey" bildirimler olarak oluşturulmalıdır.  
+Bu, herhangi bir sınıfın veya fonksiyonun dışında bildirilmeleri gerektiği anlamına gelir.
+
+Bir provider oluşturmanın sözdizimi, yukarıdaki tabloya göre onun "değiştirilebilir" mi yoksa
+"değiştirilemez" mi olduğuna bağlıdır.
+
+<Tabs>
+<TabItem value="Unmodifiable" label="Değiştirilemez (fonksiyonel)">
+
+<Tabs groupId="riverpod">
+<TabItem value="riverpod" label="riverpod">
+<Legend
+  code={`
+    final name = SomeProvider.someModifier<Result>((ref) {
+      <your logic here>
+    });
+  `}
+  annotations={[
+    {
+      offset: 6,
+      length: 4,
+      label: "Provider değişkeni",
+        description: <>
+
+Bu değişken, provider'ımızla etkileşime girmek için kullanılacak olan şeydir.  
+Değişken final ve "en üst düzey" (global) olmalıdır.
+
+:::note NOT
+Provider'ların global oluşundan korkmayın.
+Provider'lar tamamen değişmezdir. Bir provider bildirmek, bir fonksiyon bildirmekten
+farklı değildir; ayrıca provider'lar test edilebilir ve bakımı kolaydır.
+:::
+
+</>
+    },
+    {
+      offset: 13,
+      length: 12,
+      label: "Provider türü",
+      description: <>
+
+Genellikle [Provider], [FutureProvider] veya [StreamProvider]'dan biri.  
+Kullanılan provider türü, fonksiyonunuzun döndürdüğü değere bağlıdır.
+Örneğin bir `Future<Activity>` oluşturmak için bir `FutureProvider<Activity>` istersiniz.
+
+`FutureProvider`, en çok kullanmak isteyeceğiniz türdür.
+
+:::tip
+"Hangi provider'ı seçmeliyim" diye düşünmeyin.
+Bunun yerine "Ne döndürmek istiyorum" diye düşünün. Provider türü
+doğal olarak arkasından gelecektir.
+:::
+
+</>
+    },
+    {
+      offset: 25,
+      length: 13,
+      label: "Değiştiriciler (isteğe bağlı)",
+      description: <>
+
+Çoğu zaman provider türünden sonra bir "değiştirici" görebilirsiniz.  
+Değiştiriciler isteğe bağlıdır ve provider'ın davranışını tür güvenli
+bir biçimde ayarlamak için kullanılır.
+
+Şu anda iki değiştirici mevcuttur:
+
+- `autoDispose`, provider kullanılmayı bıraktığında önbelleği otomatik olarak
+  temizler.  
+  Ayrıca bkz. <Link documentID="concepts2/auto_dispose" />
+- `family`, provider'ınıza argüman geçirmenizi sağlar.  
+  Ayrıca bkz. <Link documentID="concepts2/family" />.
+
+</>
+    },
+    {
+      offset: 48,
+      length: 3,
+      label: "Ref",
+      description: <>
+
+Diğer provider'larla etkileşime girmek için kullanılan bir nesne.  
+Tüm provider'ların bir tane vardır; ya provider fonksiyonunun parametresi olarak,
+ya da bir Notifier'ın özelliği olarak.
+
+</>
+    },
+    {
+      offset: 57,
+      length: 17,
+      label: "Provider fonksiyonu",
+      description: <>
+
+Provider'larımızın mantığını buraya yerleştiririz.
+Bu fonksiyon, provider ilk okunduğunda çağrılır.  
+Sonraki okumalar fonksiyonu yeniden çağırmaz, bunun yerine önbelleğe alınmış değeri döndürür.
+
+</>
+    },
+  ]}
+/>
+</TabItem>
+<TabItem value="riverpod_generator" label="riverpod_generator">
+<Legend
+  code={`
+    @riverpod
+    Result myFunction(Ref ref) {
+      <your logic here>
+    }
+  `}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "Anotasyon",
+      description: <>
+
+Üretilen tüm provider'lar `@riverpod` veya `@Riverpod()` ile işaretlenmelidir.
+Bu anotasyon global fonksiyonlara veya sınıflara yerleştirilebilir. Bu anotasyon aracılığıyla 
+provider'ı yapılandırmak mümkündür.
+
+Örneğin, `@Riverpod(keepAlive: true)` yazarak "auto-dispose" özelliğini (ileride göreceğiz) devre dışı bırakabiliriz.
+
+</>
+    },
+    {
+      offset: 17,
+      length: 10,
+      label: "İşaretlenmiş fonksiyon",
+      description: <>
+
+İşaretlenmiş fonksiyonun adı, provider ile nasıl etkileşime girileceğini
+belirler.  
+Verilen bir `myFunction` fonksiyonu için bir `myFunctionProvider` üretilecektir.
+
+İşaretlenmiş fonksiyonlar ilk parametre olarak **mutlaka** bir [Ref] belirtmelidir.  
+Bunun dışında fonksiyon, generic'ler dahil istediği sayıda parametre alabilir.
+Fonksiyon dilerse bir `Future`/`Stream` de döndürebilir.
+
+Bu fonksiyon, provider ilk okunduğunda çağrılır.  
+Sonraki okumalar fonksiyonu yeniden çağırmaz, bunun yerine önbelleğe alınmış değeri döndürür.
+
+</>
+    },
+    {
+      offset: 28,
+      length: 7,
+      label: "Ref",
+      description: <>
+
+Diğer provider'larla etkileşime girmek için kullanılan bir nesne.  
+Tüm provider'ların bir tane vardır; ya provider fonksiyonunun parametresi olarak,
+ya da bir Notifier'ın özelliği olarak.  
+Bu nesnenin türü, fonksiyonun/sınıfın adına göre belirlenir.
+
+</>
+    },
+]}
+/>
+</TabItem>
+</Tabs>
+
+</TabItem>
+
+<TabItem value="Modifiable" label="Değiştirilebilir (notifier)">
+<Tabs groupId="riverpod">
+<TabItem value="riverpod" label="riverpod">
+<Legend
+  code={`final name = SomeNotifierProvider.someModifier<MyNotifier, Result>(MyNotifier.new);
+ 
+class MyNotifier extends SomeNotifier<Result> {
+  @override
+  Result build() {
+    <your logic here>
+  }
+
+  <your methods here>
+}`}
+  annotations={[
+    {
+      offset: 6,
+      length: 4,
+      label: "Provider değişkeni",
+       description: <>
+
+Bu değişken, provider'ımızla etkileşime girmek için kullanılacak olan şeydir.  
+Değişken final ve "en üst düzey" (global) olmalıdır.
+
+:::note NOT
+Provider'ların global oluşundan korkmayın.
+Provider'lar tamamen değişmezdir. Bir provider bildirmek, bir fonksiyon bildirmekten
+farklı değildir; ayrıca provider'lar test edilebilir ve bakımı kolaydır.
+:::
+
+</>
+    },
+    {
+      offset: 13,
+      length: 20,
+      label: "Provider türü",
+       description: <>
+
+Genellikle [NotifierProvider], [AsyncNotifierProvider] veya [StreamNotifierProvider]'dan biri.  
+Kullanılan provider türü, fonksiyonunuzun döndürdüğü değere bağlıdır.
+Örneğin bir `Future<Activity>` oluşturmak için bir `AsyncNotifierProvider<Activity>` istersiniz.
+
+[AsyncNotifierProvider], en çok kullanmak isteyeceğiniz türdür.
+
+:::tip
+Fonksiyonel provider'larda olduğu gibi, "Hangi provider'ı seçmeliyim" diye düşünmeyin.
+Hangi durumu oluşturmak istiyorsanız onu oluşturun; provider türü doğal olarak arkasından gelecektir.
+:::
+
+</>
+    },
+    {
+      offset: 33,
+      length: 13,
+      label: "Değiştiriciler (isteğe bağlı)",
+      description: <>
+
+Çoğu zaman provider türünden sonra bir "değiştirici" görebilirsiniz.  
+Değiştiriciler isteğe bağlıdır ve provider'ın davranışını tür güvenli
+bir biçimde ayarlamak için kullanılır.
+
+Şu anda iki değiştirici mevcuttur:
+
+- `autoDispose`, provider kullanılmayı bıraktığında önbelleği otomatik olarak
+  temizler.  
+  Ayrıca bkz. <Link documentID="concepts2/auto_dispose" />
+- `family`, provider'ınıza argüman geçirmenizi sağlar.  
+  Ayrıca bkz. <Link documentID="concepts2/family" />.
+
+</>
+    },
+    {
+      offset: 67,
+      length: 14,
+      label: "Notifier'ın kurucusu",
+      description: <>
+
+"Notifier provider"ların parametresi, "notifier"ı örneklemesi
+beklenen bir fonksiyondur.  
+Genellikle bir "constructor tear-off" olmalıdır.
+
+</>
+    },
+    {
+      offset: 86,
+      length: 16,
+      label: "Notifier",
+      description: <>
+
+`NotifierProvider`, `StatefulWidget`'ın eşdeğeriyse, bu kısım da
+`State` sınıfıdır.
+
+Bu sınıf, provider'ın durumunu değiştirmenin yollarını sunmaktan sorumludur.  
+Bu sınıftaki açık (public) metotlara, tüketiciler `ref.read(yourProvider.notifier).yourMethod()` ile erişebilir.
+
+:::caution DİKKAT
+Notifier'ınızın kurucusuna mantık koymayın.  
+Notifier'ların kurucusu olmamalıdır; çünkü `ref` ve diğer özellikler o noktada
+henüz kullanılabilir durumda değildir. Bunun yerine mantığınızı `build` metoduna koyun.
+
+```dart
+class MyNotifier extends ... {
+  MyNotifier() {
+    // ❌ Bunu yapmayın
+    // Bu bir exception fırlatacaktır
+    state = AsyncValue.data(42);
+  }
+
+  @override
+  Future<int> build() {
+    // ✅ Bunun yerine bunu yapın
+    state = AsyncValue.data(42);
+  }
+}
+```
+:::
+
+</>
+    },
+    {
+      offset: 111,
+      length: 12,
+      label: "Notifier türü",
+      description: <>
+
+Notifier'ınızın türetildiği temel sınıf, provider'ınkiyle (ve kullanılıyorsa "family" ile) eşleşmelidir.
+Bazı örnekler:
+
+- <span style={{ color: colors[0] }}>Notifier</span>Provider -> <span style={{ color: colors[0] }}>Notifier</span>
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider -> <span style={{ color: colors[0] }}>AsyncNotifier</span>
+- <span style={{ color: colors[0] }}>StreamNotifier</span>Provider -> <span style={{ color: colors[0] }}>StreamNotifier</span>
+
+</>
+    },
+    {
+      offset: 136,
+      length: 54,
+      label: "build metodu",
+      description: <>
+
+Tüm notifier'lar `build` metodunu geçersiz kılmalıdır.  
+Bu metot, notifier olmayan bir provider'da mantığınızı normalde koyacağınız
+yerin eşdeğeridir.
+
+Bu metot doğrudan çağrılmamalıdır.
+
+</>
+    },
+]}
+/>
+</TabItem>
+<TabItem value="riverpod_generator" label="riverpod_generator">
+<Legend
+  code={`@riverpod
+class MyNotifier extends _$MyNotifier {
+  @override
+  Result build() {
+    <your logic here>
+  }
+
+  <your methods here>
+}`}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "Anotasyon",
+      description: <>
+
+Tüm provider'lar `@riverpod` veya `@Riverpod()` ile işaretlenmelidir.
+Bu anotasyon global fonksiyonlara veya sınıflara yerleştirilebilir.  
+Bu anotasyon aracılığıyla provider'ı yapılandırmak mümkündür.
+
+Örneğin, `@Riverpod(keepAlive: true)` yazarak "auto-dispose" özelliğini (ileride göreceğiz) devre dışı bırakabiliriz.
+
+</>
+    },
+    {
+      offset: 10,
+      length: 16,
+      label: "Notifier",
+       description: <>
+
+Bir `@riverpod` anotasyonu bir sınıfa yerleştirildiğinde, o sınıfa
+"Notifier" denir.  
+Sınıf `_$NotifierName` sınıfından türetilmelidir; buradaki `NotifierName` sınıf adıdır.
+
+Notifier'lar, provider'ın durumunu değiştirmenin yollarını sunmaktan sorumludur.  
+Bu sınıftaki açık (public) metotlara, tüketiciler `ref.read(yourProvider.notifier).yourMethod()` ile erişebilir.
+
+:::caution DİKKAT
+Notifier'ınızın kurucusuna mantık koymayın.  
+Notifier'ların kurucusu olmamalıdır; çünkü `ref` ve diğer özellikler o noktada
+henüz kullanılabilir durumda değildir. Bunun yerine mantığınızı `build` metoduna koyun.
+
+```dart
+class MyNotifier extends ... {
+  MyNotifier() {
+    // ❌ Bunu yapmayın
+    // Bu bir exception fırlatacaktır
+    state = AsyncValue.data(42);
+  }
+
+  @override
+  Future<int> build() {
+    // ✅ Bunun yerine bunu yapın
+    state = AsyncValue.data(42);
+  }
+}
+```
+:::
+
+</>
+    },
+    {
+      offset: 52,
+      length: 54,
+      label: "build metodu",
+      description: <>
+
+Tüm notifier'lar `build` metodunu geçersiz kılmalıdır.  
+Bu metot, notifier olmayan bir provider'da mantığınızı normalde koyacağınız
+yerin eşdeğeridir.
+
+Bu metot doğrudan çağrılmamalıdır.
+
+</>
+    },
+]}
+/>
+</TabItem>
+</Tabs>
+</TabItem>
+</Tabs>
+
+:::info
+Herhangi bir sınırlama olmaksızın istediğiniz kadar provider bildirebilirsiniz.
+`package:provider` kullanımının aksine, Riverpod aynı "türde" bir durum sunan
+birden fazla provider oluşturmanıza izin verir:
+
+<AutoSnippet language="dart" {...declaringManyProviders}></AutoSnippet>
+
+Her iki provider'ın da bir `String` oluşturuyor olması hiçbir soruna yol açmaz.
+:::
+
+
+## Provider'ları kullanmak {#using-providers}
+
+Provider'lar, kendi başlarına hiçbir şey yapmamaları bakımından widget'lara benzer.  
+Widget'ların kullanıcı arayüzünün bir tarifi olması gibi, provider'lar da durumun
+bir tarifidir.  
+Şaşırtıcı biçimde bir provider tamamen durumsuzdur ve sözdizimini biraz daha
+uzatacak olmasa `const` olarak örneklenebilirdi.
+
+Bir provider'ı kullanmak için ayrı bir nesneye ihtiyacınız vardır: [ProviderContainer]. 
+Daha fazla bilgi için <Link documentID="concepts2/containers" /> sayfasına bakın.
+
+Kısacası, bir provider'ı kullanabilmeniz için önce Flutter uygulamalarınızı
+bir [ProviderScope] ile sarmalayın:
+
+```dart
+void main() {
+  runApp(ProviderScope(child: MyApp()));
+}
+```
+
+Bu yapıldıktan sonra, provider'larınızla etkileşime girmek için bir [Ref] elde etmeniz gerekecek. 
+Bunlar hakkında bilgi için <Link documentID="concepts2/refs" /> sayfasına bakın.
+
+Kısaca, bir [Ref] elde etmenin iki yolu vardır:
+- Provider'lar doğal olarak bir tanesine erişir.  
+  Bu, provider fonksiyonunun ilk parametresi ya da bir Notifier'ın `ref` özelliğidir.
+  Bu, provider'ların birbirleriyle iletişim kurmasını sağlar.
+- Widget ağacı ise <Link documentID="concepts2/consumers" /> adı verilen özel bir widget türüne ihtiyaç duyar.
+  Bu widget'lar size bir [WidgetRef] vererek widget ağacı ile provider ağacı arasındaki boşluğu doldurur.
+
+Örnek olarak, basit bir string döndüren bir `helloWorldProvider` düşünün.
+Onu widget'ların içinde şöyle kullanabilirsiniz:
+
+```dart
+class Example extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer(
+      builder: (context, ref, _) {
+        // Provider'ın değerini elde et
+        final helloWorld = ref.watch(helloWorldProvider);
+
+        // Değeri kullanıcı arayüzünde kullan
+        return Text(helloWorld);
+      },
+    );
+  }
+}
+```
+
+[provider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Provider-class.html
+[futureprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/FutureProvider-class.html
+[streamprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/StreamProvider-class.html
+[notifierprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/NotifierProvider-class.html
+[asyncnotifierprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/AsyncNotifierProvider-class.html
+[streamnotifierprovider]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/StreamNotifierProvider-class.html
+[ref]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Ref-class.html
+[widgetref]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/WidgetRef-class.html
+[providerscope]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderScope-class.html
+[providercontainer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderContainer-class.html

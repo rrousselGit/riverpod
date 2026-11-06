@@ -1,0 +1,158 @@
+---
+title: Otomatik yeniden deneme
+---
+import { Link } from "/src/components/Link";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+
+Riverpod'da <Link documentID="concepts2/providers"/> başarısız olduklarında otomatik olarak yeniden denenir.
+
+Provider'ın hesaplaması sırasında bir istisna fırlatıldığında yeniden deneme yapılır.
+Yeniden deneme mantığı, provider bazında veya tüm provider'lar için global olarak özelleştirilebilir.
+
+Varsayılan olarak bir provider en fazla 10 kez, 200 ms'den 6,4 saniyeye kadar
+üstel olarak artan bir bekleme süresiyle yeniden denenir.
+Varsayılan yeniden deneme mantığının tüm ayrıntıları için [retry] belgesine bakın.
+
+## Yeniden deneme mantığını özelleştirmek {#customizing-retry-logic}
+
+Özel bir yeniden deneme mantığı, uygulamanın tamamı için veya belirli bir provider için sağlanabilir.
+
+Her iki durumda da uygulama aynıdır: Özel yeniden deneme mantığı, bir sonraki denemeden önceki
+gecikmeyi belirten bir `Duration?` değeri döndürmesi beklenen bir fonksiyondur (yeniden denemeyi
+durdurmak için `null` döndürülür).
+
+Aşağıdaki kod, en fazla 5 kez yeniden deneyen, 200 ms'den başlayan üstel bir bekleme süresi kullanan
+ve [ProviderException] hatalarını göz ardı eden özel bir [retry] fonksiyonu tanımlar
+
+```dart
+Duration? myRetry(int retryCount, Object error) {
+  // ProviderException durumunda yeniden denemeyi durdur
+  if (retryCount >= 5) return null;
+  // ProviderException'ı göz ardı et
+  if (error is ProviderException) return null;
+
+  return Duration(milliseconds: 200 * (1 << retryCount)); // Üstel bekleme süresi
+}
+```
+
+Bu fonksiyon daha sonra, ilgili provider'ın yeniden deneme mantığını güncellemek için
+provider'ların içinde kullanılabilir:
+
+<AutoSnippet
+  codegen={`
+  // highlight-next-line
+  @Riverpod(retry: myRetry)
+  int myProvider(MyProviderRef ref) {
+    return 0;
+  }
+  `}
+  raw={`final myProvider = Provider<int>(
+    // highlight-next-line
+    retry: myRetry,
+    (ref) => 0,
+  );
+  `}
+/>
+
+Ya da <Link documentID="concepts2/containers" /> bileşenine iletilerek global olarak kullanılabilir:
+
+```dart
+// Saf Dart kodu için
+final container = ProviderContainer(
+  // highlight-next-line
+  retry: myRetry,
+);
+
+...
+
+// Flutter kodu için
+runApp(
+  ProviderScope(
+    // highlight-next-line
+    retry: myRetry,
+    child: MyApp(),
+  ),
+);
+```
+
+### Yeniden denemeyi devre dışı bırakmak {#disabling-retry}
+
+Yeniden denemeyi devre dışı bırakmak, yeniden deneme fonksiyonunda her zaman `null` döndürmek kadar basittir.
+Uygulamanızın tamamı için yeniden denemeyi devre dışı bırakmak isterseniz şunu yapın:
+
+```dart
+runApp(
+  ProviderScope(
+    // highlight-next-line
+    retry: (retryCount, error) => null,
+    child: MyApp(),
+  ),
+);
+```
+
+## Varsayılan yeniden deneme mantığı hakkında {#about-the-default-retry-logic}
+
+Varsayılan yeniden deneme mantığı, saf bir "başarısız olursa yeniden dene" yaklaşımından daha akıllı olacak şekilde tasarlanmıştır.
+Özellikle [Error] ve [ProviderException] türlerini yeniden denemez.
+
+Error'lar yeniden denenmez, çünkü kurtarılabilir değildirler. Koddaki bir hataya işaret ederler ve
+yeniden denemek işe yaramaz. Bu durumlarda yeniden denemek, günlükleri gereksiz deneme kayıtlarıyla kirletmekten başka bir işe yaramaz.
+
+ProviderException'lara gelince, bunlar yeniden denenmez; çünkü bir provider'ın kendisinin başarısız olduğunu değil,
+başarısız olan bir provider'dan gelen istisnayı yeniden fırlattığını gösterirler. Şunu düşünün:
+
+<AutoSnippet
+  codegen={`
+  @riverpod
+  int failed(MyProviderRef ref) {
+    throw Exception('This provider always fails');
+  }
+  
+  @riverpod
+  int myProvider(MyProviderRef ref) {
+    // Bu provider, başarısız olan bir provider'a bağımlıdır
+    // ve bu nedenle bir ProviderException fırlatacaktır
+    return ref.watch(failedProvider);
+  }
+  `}
+  raw={`
+  final failedProvider = Provider<int>(
+    (ref) => throw Exception('This provider always fails'),
+  );
+  
+  final myProvider = Provider<int>(
+    // Bu provider, başarısız olan bir provider'a bağımlıdır
+    // ve bu nedenle bir ProviderException fırlatacaktır
+    (ref) => ref.watch(failedProvider),
+  );
+  `}
+/>
+
+Bu örnekte, `myProvider` başarısız olsa da bu başarısızlıktan o sorumlu değildir.
+Onu yeniden denemek işe yaramaz. Bunun yerine yeniden denenmesi gereken `failedProvider`'dır.
+
+Bu da şu anlama gelir: `failedProvider` için yeniden denemeyi devre dışı bırakırsanız, `myProvider` da yeniden denenmez.
+
+## Yeniden denemelerin tamamlanmasını beklemek {#awaiting-for-retries-to-complete}
+
+[FutureProvider.future] kullanarak asenkron provider'ların tamamlanmasını bekleyebileceğinizi biliyor olabilirsiniz:
+
+```dart
+final value = await ref.watch(myProvider.future);
+```
+
+Peki otomatik yeniden denemenin bununla nasıl etkileşime girdiğini merak ediyor olabilirsiniz.
+
+Kısaca, asenkron bir provider başarısız olup yeniden denendiğinde, ilişkili future
+şu iki durumdan biri gerçekleşene kadar beklemeyi sürdürür:
+- tüm yeniden denemeler tükenene kadar veya
+- provider başarılı olana kadar.
+
+Bu, `await ref.watch(myProvider.future)` ifadesinin aradaki başarısızlıkları atlamasını sağlar.
+
+[retry]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderContainer/retry.html
+[ProviderException]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/ProviderException-class.html
+[Error]: https://api.dart.dev/stable/2.19.6/dart-core/Error-class.html
+[FutureProvider.future]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/FutureProvider/future.html

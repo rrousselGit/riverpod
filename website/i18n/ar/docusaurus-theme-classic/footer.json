@@ -1,0 +1,62 @@
+{
+  "link.title.Docs": {
+    "message": "الوثائق",
+    "description": "The title of the footer links column with title=Docs in the footer"
+  },
+  "link.title.Community": {
+    "message": "المجتمع",
+    "description": "The title of the footer links column with title=Community in the footer"
+  },
+  "link.title.Sponsors": {
+    "message": "الرعاة",
+    "description": "The title of the footer links column with title=Sponsors in the footer"
+  },
+  "link.item.label.Getting started": {
+    "message": "ابدأ الآن",
+    "description": "The label of footer link with label=Getting started linking to docs/introduction/getting_started"
+  },
+  "link.item.label.What's new in Riverpod 3.0": {
+    "message": "ما هو الجديد في Riverpod 3.0",
+    "description": "The label of footer link with label=What's new in Riverpod 3.0 linking to docs/whats_new"
+  },
+  "link.item.label.FAQ": {
+    "message": "الأسئلة الشائعة",
+    "description": "The label of footer link with label=FAQ linking to docs/root/FAQ"
+  },
+  "link.item.label.DO/DON'T": {
+    "message": "افعل/لا تفعل",
+    "description": "The label of footer link with label=DO/DON'T linking to docs/root/do_dont"
+  },
+  "link.item.label.Discord": {
+    "message": "ديسكورد",
+    "description": "The label of footer link with label=Discord linking to https://discord.gg/GSt793j6eT"
+  },
+  "link.item.label.GitHub": {
+    "message": "جيت هاب",
+    "description": "The label of footer link with label=GitHub linking to https://github.com/rrousselgit/riverpod"
+  },
+  "link.item.label.Stack Overflow": {
+    "message": "ستاك أوفرفلو",
+    "description": "The label of footer link with label=Stack Overflow linking to https://stackoverflow.com/questions/tagged/riverpod"
+  },
+  "link.item.label.Twitter": {
+    "message": "تويتر",
+    "description": "The label of footer link with label=Twitter linking to https://twitter.com/remi_rousselet"
+  },
+  "link.item.label.Code of conduct": {
+    "message": "قواعد السلوك",
+    "description": "The label of footer link with label=Code of conduct linking to https://github.com/rrousselGit/riverpod/blob/master/CODE_OF_CONDUCT.md"
+  },
+  "link.item.label.Contributing guide": {
+    "message": "دليل المساهمة",
+    "description": "The label of footer link with label=Contributing guide linking to https://github.com/rrousselGit/riverpod/blob/master/CONTRIBUTING.md"
+  },
+  "copyright": {
+    "message": "جميع الحقوق محفوظة © 2026 Remi Rousselet.<br /> تم بناؤه باستخدام Docusaurus.",
+    "description": "The footer copyright"
+  },
+  "logo.alt": {
+    "message": "Riverpod",
+    "description": "The alt text of footer logo"
+  }
+}

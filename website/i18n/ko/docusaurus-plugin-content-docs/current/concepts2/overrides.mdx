@@ -1,0 +1,57 @@
+---
+title: Provider 오버라이드
+---
+import { Link } from "/src/components/Link";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+Riverpod에서는 _모든_ provider를 오버라이드해 동작을 바꿀 수 있습니다.
+테스트나 디버깅, 환경별로 다른 구현을 제공할 때, 나아가 <Link documentID="concepts2/scoping"/>에도 유용합니다.
+
+provider 오버라이드는 <Link documentID="concepts2/containers"/>에서 `overrides` 매개변수로 지정합니다.
+이 매개변수에는 특정 provider를 어떻게 오버라이드할지 알려주는 지시 목록을 넘깁니다.
+
+이 "지시"는 provider에 `overrideWithSomething` 형태의 메서드를 조합해 만듭니다.  
+이런 메서드는 여러 가지가 있지만, 모두 이름이 `overrideWith`로 시작합니다.
+예를 들면 다음과 같습니다.
+- [overrideWith](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Provider/overrideWith.html)
+- [overrideWithValue](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/FutureProvider/overrideWithValue.html)
+- [overrideWithBuild](https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/StreamProvider/overrideWithBuild.html)
+
+일반적인 오버라이드는 다음과 같습니다.
+
+<Tabs>
+<TabItem value="scope" label="ProviderScope">
+
+```dart
+void main() {
+  runApp(
+    ProviderScope(
+      overrides: [
+        // 오버라이드는 여기에 정의합니다.
+        // 다음은 "counter provider"가 다른 초기값을
+        // 사용하도록 오버라이드하는 예시입니다.
+        counterProvider.overrideWith((ref) => 42),
+      ]
+    )
+  );
+}
+```
+</TabItem>
+<TabItem value="container" label="ProviderContainer">
+
+```dart
+final container = ProviderContainer(
+  overrides: [
+    // 오버라이드는 여기에 정의합니다.
+    // 다음은 "counter provider"가 다른 초기값을
+    // 사용하도록 오버라이드하는 예시입니다.
+    counterProvider.overrideWith((ref) => 42),
+  ]
+);
+```
+</TabItem>
+</Tabs>

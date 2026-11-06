@@ -1,6 +1,130 @@
-## 3.3.1 - 2026-03-09
+## Unreleased minor
 
-- Add missing `disposeNotifier` flag on `overrideWith`.
+- `AsyncValueIsLoadingException` now has a public constructor. (thanks to @uveshm003)
+- `debugTrackProviderCreation` is now exported by `package:hooks_riverpod/misc.dart`.
+- `provider.listenable` is now available from `package:hooks_riverpod/hooks_riverpod.dart`, and
+  `CustomProviderListenable`, `ProviderTransformer2`,
+  `SyncProviderTransformer2` and `WhenComplete` from
+  `package:hooks_riverpod/misc.dart`, as they already were in `riverpod`.
+- Devtools now retain only the current provider snapshot by default. Set
+  `debugTrackProviderHistory = true` (imported from `package:riverpod/misc.dart`)
+  to opt into time-travel history; setting it back to `false` releases previous
+  frames.
+- Devtools inspection caches are released when their client closes or stops
+  renewing its session for 30 seconds, including after an abrupt disconnect.
+- Deprecated `Ref.exist`.
+- Added `provider.exist`, which is listenable.
+  This enables writing `ref.listen(provider.exist, ...)`.
+- Fix `selectAsync` notifying a closed subscription after an upstream refresh.
+- Fixed `ref.read`/`container.read` of `provider.listenable` throwing an internal `StateError` on `.value`; it now throws a clear one explaining `.listenable` needs `ref.watch`, `ref.listen` or `container.listen` instead (thanks to @Yasser-Ameur)
+- Fixed a debug-only infinite loop in the circular-dependency check. Closing a
+  dependency ring left the offending subscription in the graph, so a subsequent
+  rebuild could make the check walk the cycle forever. The subscription is now
+  removed when the check throws, and the walk keeps a visited set. (thanks to @chiliec)
+- Migrated Material imports to `package:material_ui/material_ui.dart` and added
+  `material_ui` as a dependency.
+- Updated the DevTools extension to use Material UI themes and localizations.
+
+## 3.4.3 - 2026-09-04
+
+### Dependency changes
+
+- `flutter_riverpod` upgraded to `3.4.3`
+- `riverpod` upgraded to `3.4.3`
+
+## 3.4.2 - 2026-07-28
+
+Fix a different source of `markNeedsBuild` error. Those are tricky!
+
+### Dependency changes
+
+- `flutter_riverpod` upgraded to `3.4.2`
+- `riverpod` upgraded to `3.4.2`
+
+## 3.4.1 - 2026-07-26
+
+- Update devtool extension
+
+### Dependency changes
+
+- `flutter_riverpod` upgraded to `3.4.1`
+- `riverpod` upgraded to `3.4.1`
+
+## 3.4.0 - 2026-07-26
+
+- Deprecated `SyncProviderTransformerMixin`. It is replaced by the newly added APIs
+- Devtool-only: Better support for scoped providers with multiple overrides.
+- Upgraded `analyzer` to `<15.0.0`
+- Added `CustomProviderListenable`, a slightly simplified way of making custom provider extensions
+- Added the ability to do `ValueListenable<int> listenable = ref.watch(counterProvider.listenable)`.
+  This uses the new `pkg:listen`.
+- Fix `invalidate`/`refresh` not finding providers and families when called
+  from a scoped `ProviderContainer`/`ProviderScope` with overrides, if the
+  provider was never read through that scope. (thanks to @itsUndefined)
+- Fix markNeedsBuild exception when flushing a provider inside Widget lifecycle
+- Fix `invalidate`/`refresh` not finding providers and families when called
+  from a scoped `ProviderScope` with overrides, if the provider was never
+  read through that scope. (thanks to @itsUndefined)
+- Fixed a listener leak if `ConsumerState.dispose` threw.
+
+### Dependency changes
+
+- `flutter_riverpod` upgraded to `3.4.0`
+- `riverpod` upgraded to `3.4.0`
+
+## 3.3.2 - 2026-06-10
+
+- Fixes assertion error when providers are unpaused.
+- Fixes assertion error when invalidating a provider after an autoDispose
+  provider schedules disposal. (thanks to @a1573595)
+
+### Dependency changes
+
+- `flutter_riverpod` upgraded to `3.3.2`
+- `riverpod` upgraded to `3.3.2`
+
+## 3.3.2-dev.2 - 2026-05-06
+
+### Dependency changes
+
+- `flutter_riverpod` upgraded to `3.3.2-dev.2`
+- `riverpod` upgraded to `3.3.2-dev.2`
+
+## 3.3.2-dev.1 - 2026-05-03
+
+- Devtool-only:
+  Added `debugTrackProviderCreation`, which can be set to `true` to enable the Riverpod devtool
+  to jump to the source of a provider.
+- Added `Ref.onManualInvalidation()` lifecycle method to listen for manual provider invalidations.
+  This allows distinguishing between manual invalidations (via `refresh`/`invalidate`/`invalidateSelf`)
+  and automatic invalidations caused by dependency changes. Additionally, providers can now forward
+  invalidations to other providers within `onManualInvalidation` callbacks, enabling patterns like:
+
+  ```dart
+  final sourceProvider = Provider<String>(...);
+  final derivedProvider = Provider((ref) {
+    final thing = ref.watch(sourceProvider);
+    ref.onManualInvalidation(() {
+      ref.invalidate(sourceProvider);
+    });
+    return '$thing is derived!';
+  });
+
+  ref.invalidate(derivedProvider); // also invalidates sourceProvider!
+  ```
+
+  Which allows for users to invalidate only the providers they care about, while implementation details can be handled privately. (thanks to @TekExplorer)
+
+- Added `ProviderContainer.allProviders()`, to obtain all providers accessible from said container. You can optionally specify `allProviders(family: myFamily)` to only include providers from said family.
+- Refactored internal scheduling mechanism to solve some markNeedsBuild error.
+- Removed `@internal` for `ProviderFamily.new`
+- Added various life-cycles to `ProviderObserver`
+- Fix `.future` incorrectly notifying listeners even when `AsyncValue` doesn't change.
+
+### Dependency changes
+
+- `flutter_riverpod` upgraded to `3.3.2-dev.1`
+- `riverpod` upgraded to `3.3.2-dev.1`
 
 ## 3.3.0 - 2026-03-09
 

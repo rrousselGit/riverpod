@@ -74,20 +74,19 @@ class Context extends RuleContext {
   ) {
     // Create RuleContextUnit for each unit in the library
     final resourceProvider = result.session.resourceProvider;
-    final allUnits =
-        libraryResult.units.map((unit) {
-          final reporter = DiagnosticReporter(
-            diagnosticsListener,
-            unit.libraryFragment.source,
-          );
+    final allUnits = libraryResult.units.map((unit) {
+      final reporter = DiagnosticReporter(
+        diagnosticsListener,
+        unit.libraryFragment.source,
+      );
 
-          return RuleContextUnit(
-            file: resourceProvider.getFile(unit.path),
-            content: unit.content,
-            diagnosticReporter: reporter,
-            unit: unit.unit,
-          );
-        }).toList();
+      return RuleContextUnit(
+        file: resourceProvider.getFile(unit.path),
+        content: unit.content,
+        diagnosticReporter: reporter,
+        unit: unit.unit,
+      );
+    }).toList();
 
     final definingUnit = allUnits.firstWhere(
       (u) => u.file.path == result.path,

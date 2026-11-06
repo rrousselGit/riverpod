@@ -53,7 +53,8 @@ class _Visitor extends SimpleAstVisitor<void> {
     if (functionElement is! ExecutableElement) return;
 
     // runApp call detected, now checking if if the first widget is a ProviderScope
-    final firstArgument = node.argumentList.arguments.firstOrNull?.staticType;
+    final firstArgument =
+        node.argumentList.arguments.firstOrNull?.argumentExpression.staticType;
     if (firstArgument == null) return;
 
     // There is correctly a ProviderScope at the top of the widget tree

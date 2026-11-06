@@ -174,7 +174,7 @@ For example, we could create a provider that returns "is tick divisible by 4?":
   }
   `}
   raw={`
-  final isDivisibleBy4 = Provider<bool>((ref) {
+  final isDivisibleBy4Provider = Provider<bool>((ref) {
     final tick = ref.watch(tickProvider);
     return tick % 4 == 0;
   });

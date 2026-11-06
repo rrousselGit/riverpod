@@ -1,5 +1,23 @@
-include: ../../analysis_options_without_plugins.yaml
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
+include: ../../analysis_options.yaml
 linter:
   rules:
     # We don't really have public API
     public_member_api_docs: false
+
+plugins:
+  riverpod_lint:
+    path: ../riverpod_lint
+    diagnostics:
+      # The tests define providers that riverpod_lint warns about, to check that
+      # the generator supports them.
+      provider_dependencies: false
+      prefer_keep_alive_annotation: false

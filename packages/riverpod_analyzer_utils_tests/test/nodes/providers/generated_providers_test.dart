@@ -40,14 +40,17 @@ class ParametrizedClass extends _$ParametrizedClass {
 ''',
     (resolver, unit, units) async {
       final generic = unit.declarations.findByName('generic').provider!;
-      final genericClass =
-          unit.declarations.findByName('GenericClass').provider!;
+      final genericClass = unit.declarations
+          .findByName('GenericClass')
+          .provider!;
       final value = unit.declarations.findByName('value').provider!;
       final valueClass = unit.declarations.findByName('ValueClass').provider!;
-      final parametrized =
-          unit.declarations.findByName('parametrized').provider!;
-      final parametrizedClass =
-          unit.declarations.findByName('ParametrizedClass').provider!;
+      final parametrized = unit.declarations
+          .findByName('parametrized')
+          .provider!;
+      final parametrizedClass = unit.declarations
+          .findByName('ParametrizedClass')
+          .provider!;
 
       expect(generic.providerElement.isFamily, true);
       expect(genericClass.providerElement.isFamily, true);
@@ -75,12 +78,15 @@ Future<int> value2(Ref ref) async => 0;
 Future<Raw<int>> value3(Ref ref) async => 0;
 ''',
     (resolver, unit, units) async {
-      final value =
-          unit.declarations.findByName<FunctionDeclaration>('value').provider!;
-      final value2 =
-          unit.declarations.findByName<FunctionDeclaration>('value2').provider!;
-      final value3 =
-          unit.declarations.findByName<FunctionDeclaration>('value3').provider!;
+      final value = unit.declarations
+          .findByName<FunctionDeclaration>('value')
+          .provider!;
+      final value2 = unit.declarations
+          .findByName<FunctionDeclaration>('value2')
+          .provider!;
+      final value3 = unit.declarations
+          .findByName<FunctionDeclaration>('value3')
+          .provider!;
       expect(
         value.providerElement.createdTypeNode,
         '#{{package:riverpod_annotation/src/riverpod_annotation.dart|Raw}}<#{{dart:async|Future}}<#{{dart:core|int}}>>',
@@ -124,6 +130,97 @@ Future<Raw<int>> value3(Ref ref) async => 0;
     },
   );
 
+  group('Invalid provider types', () {
+    testSource(
+      'Reports an error and skips providers with unresolved types',
+      source: r'''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+@riverpod
+MissingType invalid(Ref ref) => throw UnimplementedError();
+
+@riverpod
+Future<MissingType> invalidFuture(Ref ref) async => throw UnimplementedError();
+
+@riverpod
+class InvalidNotifier extends _$InvalidNotifier {
+  @override
+  MissingType build() => throw UnimplementedError();
+}
+
+@riverpod
+class InvalidStream extends _$InvalidStream {
+  @override
+  Stream<MissingType> build() => throw UnimplementedError();
+}
+''',
+      (resolver, unit, units) async {
+        final errors = collectErrors(() {
+          for (final name in [
+            'invalid',
+            'invalidFuture',
+            'InvalidNotifier',
+            'InvalidStream',
+          ]) {
+            expect(unit.declarations.findByName(name).provider, isNull);
+          }
+        });
+
+        expect(errors.map((e) => (e.code, e.message, e.targetNode)), [
+          for (final name in [
+            'invalid',
+            'invalidFuture',
+            'InvalidNotifier',
+            'InvalidStream',
+          ])
+            (
+              RiverpodAnalysisErrorCode.invalidProviderType,
+              'Invalid provider type: the return type of "$name" '
+                  'could not be resolved.',
+              unit.declarations.findByName(name),
+            ),
+        ]);
+      },
+    );
+
+    testSource(
+      'Depending on a provider with an unresolved type does not report a second error',
+      source: r'''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+@riverpod
+MissingType invalid(Ref ref) => throw UnimplementedError();
+
+@riverpod
+class InvalidNotifier extends _$InvalidNotifier {
+  @override
+  MissingType build() => throw UnimplementedError();
+}
+
+@Riverpod(dependencies: [invalid, InvalidNotifier])
+int dependent(Ref ref) => 0;
+''',
+      (resolver, unit, units) async {
+        final errors = collectErrors(() {
+          for (final d in unit.declarations) {
+            d.provider;
+          }
+        });
+
+        expect(errors.map((e) => (e.code, e.targetNode)), [
+          (
+            RiverpodAnalysisErrorCode.invalidProviderType,
+            unit.declarations.findByName('invalid'),
+          ),
+          (
+            RiverpodAnalysisErrorCode.invalidProviderType,
+            unit.declarations.findByName('InvalidNotifier'),
+          ),
+        ]);
+      },
+    );
+  });
+
   testSource(
     'Decode isScoped',
     source: '''
@@ -136,10 +233,12 @@ int scoped() => 0;
 int plain(Ref ref) => 0;
 ''',
     (resolver, unit, units) async {
-      final scoped =
-          unit.declarations.findByName<FunctionDeclaration>('scoped').provider!;
-      final plain =
-          unit.declarations.findByName<FunctionDeclaration>('plain').provider!;
+      final scoped = unit.declarations
+          .findByName<FunctionDeclaration>('scoped')
+          .provider!;
+      final plain = unit.declarations
+          .findByName<FunctionDeclaration>('plain')
+          .provider!;
 
       expect(scoped.providerElement.isScoped, true);
       expect(plain.providerElement.isScoped, false);
@@ -178,7 +277,11 @@ class Counter extends _$Counter {
             .having((e) => e.node.name.toString(), 'node.name', 'second'),
         isA<ClassBasedProviderDeclaration>()
             .having((e) => e.name.toString(), 'name', 'Counter')
-            .having((e) => e.node.name.toString(), 'node.name', 'Counter'),
+            .having(
+              (e) => e.node.namePart.typeName.toString(),
+              'node.name',
+              'Counter',
+            ),
       ]);
     },
   );
@@ -219,8 +322,10 @@ class KeepAliveNotifier extends _$KeepAliveNotifier {
 }
 ''',
     (resolver, unit, units) async {
-      final providers =
-          unit.declarations.map((e) => e.provider).nonNulls.toList();
+      final providers = unit.declarations
+          .map((e) => e.provider)
+          .nonNulls
+          .toList();
 
       final autoDispose = providers.takeAll([
         'autoDispose',
@@ -325,8 +430,10 @@ class FamilyClass extends _$FamilyClass {
 }
 ''',
     (resolver, unit, units) async {
-      final providers =
-          unit.declarations.map((e) => e.provider).nonNulls.toList();
+      final providers = unit.declarations
+          .map((e) => e.provider)
+          .nonNulls
+          .toList();
 
       final roots = providers.takeAll(['root', 'RootNotifier']);
       final empty = providers.takeAll(['empty', 'EmptyNotifier']);

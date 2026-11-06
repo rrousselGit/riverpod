@@ -1,0 +1,14 @@
+name: code_changes
+description: Tells which Dart files changed in more than comments and whitespace.
+publish_to: "none"
+
+environment:
+  sdk: ^3.12.0
+
+resolution: workspace
+
+dependencies:
+  analyzer: ">=13.0.0 <15.0.0"
+
+dev_dependencies:
+  test: ^1.0.0

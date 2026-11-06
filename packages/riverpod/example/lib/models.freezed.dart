@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'models.dart';
@@ -9,6 +9,7 @@ part of 'models.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $ConfigurationCopyWith<Configuration> get copyWith => _$ConfigurationCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Configuration&&(identical(other.publicKey, publicKey) || other.publicKey == publicKey)&&(identical(other.privateKey, privateKey) || other.privateKey == privateKey));
+  final _this = this as Configuration;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Configuration&&(identical(other.publicKey, _this.publicKey) || other.publicKey == _this.publicKey)&&(identical(other.privateKey, _this.privateKey) || other.privateKey == _this.privateKey));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,publicKey,privateKey);
+int get hashCode {
+  final _this = this as Configuration;
+  return Object.hash(runtimeType,_this.publicKey,_this.privateKey);
+}
 
 @override
 String toString() {
-  return 'Configuration(publicKey: $publicKey, privateKey: $privateKey)';
+  final _this = this as Configuration;
+  return 'Configuration(publicKey: ${_this.publicKey}, privateKey: ${_this.privateKey})';
 }
 
 
@@ -66,7 +72,7 @@ class _$ConfigurationCopyWithImpl<$Res>
 /// Create a copy of Configuration
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? publicKey = null,Object? privateKey = null,}) {
-  return _then(_self.copyWith(
+  return _then(Configuration(
 publicKey: null == publicKey ? _self.publicKey : publicKey // ignore: cast_nullable_to_non_nullable
 as String,privateKey: null == privateKey ? _self.privateKey : privateKey // ignore: cast_nullable_to_non_nullable
 as String,
@@ -223,16 +229,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Configuration&&(identical(other.publicKey, publicKey) || other.publicKey == publicKey)&&(identical(other.privateKey, privateKey) || other.privateKey == privateKey));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Configuration&&(identical(other.publicKey, publicKey) || other.publicKey == publicKey)&&(identical(other.privateKey, privateKey) || other.privateKey == privateKey));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,publicKey,privateKey);
+int get hashCode {
+    return Object.hash(runtimeType,publicKey,privateKey);
+}
 
 @override
 String toString() {
-  return 'Configuration(publicKey: $publicKey, privateKey: $privateKey)';
+    return 'Configuration(publicKey: $publicKey, privateKey: $privateKey)';
 }
 
 
@@ -288,16 +296,21 @@ $MarvelResponseCopyWith<MarvelResponse> get copyWith => _$MarvelResponseCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MarvelResponse&&(identical(other.data, data) || other.data == data));
+  final _this = this as MarvelResponse;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MarvelResponse&&(identical(other.data, _this.data) || other.data == _this.data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,data);
+int get hashCode {
+  final _this = this as MarvelResponse;
+  return Object.hash(runtimeType,_this.data);
+}
 
 @override
 String toString() {
-  return 'MarvelResponse(data: $data)';
+  final _this = this as MarvelResponse;
+  return 'MarvelResponse(data: ${_this.data})';
 }
 
 
@@ -326,8 +339,8 @@ class _$MarvelResponseCopyWithImpl<$Res>
 /// Create a copy of MarvelResponse
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? data = null,}) {
-  return _then(_self.copyWith(
-data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+  return _then(MarvelResponse(
+null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as MarvelData,
   ));
 }
@@ -490,16 +503,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MarvelResponse&&(identical(other.data, data) || other.data == data));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MarvelResponse&&(identical(other.data, data) || other.data == data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,data);
+int get hashCode {
+    return Object.hash(runtimeType,data);
+}
 
 @override
 String toString() {
-  return 'MarvelResponse(data: $data)';
+    return 'MarvelResponse(data: $data)';
 }
 
 
@@ -563,16 +578,21 @@ $MarvelDataCopyWith<MarvelData> get copyWith => _$MarvelDataCopyWithImpl<MarvelD
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MarvelData&&const DeepCollectionEquality().equals(other.results, results));
+  final _this = this as MarvelData;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MarvelData&&const DeepCollectionEquality().equals(other.results, _this.results));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(results));
+int get hashCode {
+  final _this = this as MarvelData;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.results));
+}
 
 @override
 String toString() {
-  return 'MarvelData(results: $results)';
+  final _this = this as MarvelData;
+  return 'MarvelData(results: ${_this.results})';
 }
 
 
@@ -601,8 +621,8 @@ class _$MarvelDataCopyWithImpl<$Res>
 /// Create a copy of MarvelData
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? results = null,}) {
-  return _then(_self.copyWith(
-results: null == results ? _self.results : results // ignore: cast_nullable_to_non_nullable
+  return _then(MarvelData(
+null == results ? _self.results : results // ignore: cast_nullable_to_non_nullable
 as List<Map<String, Object?>>,
   ));
 }
@@ -738,7 +758,7 @@ return $default(_that.results);case _:
 @JsonSerializable()
 
 class _MarvelData implements MarvelData {
-   _MarvelData(final  List<Map<String, Object?>> results): _results = results;
+   _MarvelData( List<Map<String, Object?>> results): _results = results;
   factory _MarvelData.fromJson(Map<String, dynamic> json) => _$MarvelDataFromJson(json);
 
  final  List<Map<String, Object?>> _results;
@@ -762,16 +782,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MarvelData&&const DeepCollectionEquality().equals(other._results, _results));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MarvelData&&const DeepCollectionEquality().equals(other.results, _results));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_results));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_results));
+}
 
 @override
 String toString() {
-  return 'MarvelData(results: $results)';
+    return 'MarvelData(results: $results)';
 }
 
 
@@ -826,16 +848,21 @@ $ComicCopyWith<Comic> get copyWith => _$ComicCopyWithImpl<Comic>(this as Comic, 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Comic&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title));
+  final _this = this as Comic;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Comic&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.title, _this.title) || other.title == _this.title));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title);
+int get hashCode {
+  final _this = this as Comic;
+  return Object.hash(runtimeType,_this.id,_this.title);
+}
 
 @override
 String toString() {
-  return 'Comic(id: $id, title: $title)';
+  final _this = this as Comic;
+  return 'Comic(id: ${_this.id}, title: ${_this.title})';
 }
 
 
@@ -864,7 +891,7 @@ class _$ComicCopyWithImpl<$Res>
 /// Create a copy of Comic
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,}) {
-  return _then(_self.copyWith(
+  return _then(Comic(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,
@@ -1021,16 +1048,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Comic&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Comic&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title);
+int get hashCode {
+    return Object.hash(runtimeType,id,title);
+}
 
 @override
 String toString() {
-  return 'Comic(id: $id, title: $title)';
+    return 'Comic(id: $id, title: $title)';
 }
 
 

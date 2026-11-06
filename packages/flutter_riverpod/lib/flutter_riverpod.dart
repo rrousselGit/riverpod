@@ -5,6 +5,7 @@ export 'src/internals.dart'
         AsyncLoading,
         AsyncError,
         ProviderContainer,
+        ProviderReference,
         ProviderObserverContext,
         ProviderObserver,
         ProviderSubscription,
@@ -28,6 +29,7 @@ export 'src/internals.dart'
         UncontrolledProviderScope,
         RiverpodWidgetTesterX,
         ProviderListenableSelect,
+        ProviderListenableListenable,
         AsyncResult,
         AsyncValueExtensions,
         AsyncValueIsLoadingException;

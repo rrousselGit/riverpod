@@ -1,7 +1,5 @@
 // fork of fake_async to disable microtask mock
 
-// ignore_for_file: type=lint
-
 // Copyright 2014 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -185,12 +183,10 @@ class FakeAsync {
   T run<T>(T Function(FakeAsync self) callback) => runZoned(
     () => withClock(_clock, () => callback(this)),
     zoneSpecification: ZoneSpecification(
-      createTimer:
-          (_, _, _, duration, callback) =>
-              _createTimer(duration, callback, false),
-      createPeriodicTimer:
-          (_, _, _, duration, callback) =>
-              _createTimer(duration, callback, true),
+      createTimer: (_, _, _, duration, callback) =>
+          _createTimer(duration, callback, false),
+      createPeriodicTimer: (_, _, _, duration, callback) =>
+          _createTimer(duration, callback, true),
       // scheduleMicrotask: (_, _, _, microtask) =>
       //     _microtasks.add(microtask)
     ),
@@ -340,11 +336,9 @@ class FakeTimer implements Timer {
     _tick++;
     if (isPeriodic) {
       _nextCall += duration;
-      // ignore: avoid_dynamic_calls
       _callback(this);
     } else {
       cancel();
-      // ignore: avoid_dynamic_calls
       _callback();
     }
   }

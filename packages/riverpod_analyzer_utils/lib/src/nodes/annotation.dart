@@ -44,10 +44,10 @@ extension RiverpodAnnotatedAnnotatedNodeX on Annotation {
       final dependenciesNode = arguments?.named('dependencies');
 
       final dependencyList = dependenciesNode.let(
-        (e) => e.expression.providerDependencyList,
+        (e) => e.argumentExpression.providerDependencyList,
       );
 
-      final retryNode = arguments?.named('retry')?.expression;
+      final retryNode = arguments?.named('retry')?.argumentExpression;
       final parsedRetryNode = retryNode.let(ConstantSymbol.tryParse);
 
       if (retryNode != null && parsedRetryNode == null) {
@@ -84,8 +84,8 @@ final class RiverpodAnnotation {
 
   final Annotation node;
   final RiverpodAnnotationElement element;
-  final NamedExpression? keepAliveNode;
-  final NamedExpression? dependenciesNode;
+  final NamedArgument? keepAliveNode;
+  final NamedArgument? dependenciesNode;
   final ProviderDependencyList? dependencyList;
   final ConstantSymbol? retryNode;
 }
@@ -166,15 +166,14 @@ final class RiverpodAnnotationElement {
       if (dependencies == null) return null;
 
       final dependencyList = dependencies.toDependencyList(from: from);
-      final allTransitiveDependencies =
-          dependencyList == null
-              ? null
-              : <GeneratorProviderDeclarationElement>{
-                ...dependencyList,
-                ...dependencyList.expand(
-                  (e) => e.annotation.allTransitiveDependencies ?? const {},
-                ),
-              };
+      final allTransitiveDependencies = dependencyList == null
+          ? null
+          : <GeneratorProviderDeclarationElement>{
+              ...dependencyList,
+              ...dependencyList.expand(
+                (e) => e.annotation.allTransitiveDependencies ?? const {},
+              ),
+            };
 
       return RiverpodAnnotationElement._(
         keepAlive: keepAlive.toBoolValue()!,

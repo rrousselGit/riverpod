@@ -6,8 +6,8 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
 
-import '../../old/utils.dart';
 import '../matrix.dart' as utils;
+import '../utils.dart';
 import '../utils.dart' as utils;
 
 void main() {
@@ -309,11 +309,10 @@ void main() {
     group('onClose', () {
       test('guards the listener', () {
         final errors = <Object>[];
-        final container =
-            runZonedGuarded(
-              ProviderContainer.test,
-              (err, _) => errors.add(err),
-            )!;
+        final container = runZonedGuarded(
+          ProviderContainer.test,
+          (err, _) => errors.add(err),
+        )!;
         final provider = Provider<int>((ref) => 0);
 
         final listenable = SyncDelegatingTransformer<int, String>(provider, (
@@ -400,8 +399,10 @@ void main() {
   group('error handling', () {
     test('If transform throws, reports to onError', () {
       final errors = <Object>[];
-      final container =
-          runZonedGuarded(ProviderContainer.test, (err, _) => errors.add(err))!;
+      final container = runZonedGuarded(
+        ProviderContainer.test,
+        (err, _) => errors.add(err),
+      )!;
       final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
       final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
@@ -425,8 +426,10 @@ void main() {
 
     test('If listener throws, reports to onError', () {
       final errors = <Object>[];
-      final container =
-          runZonedGuarded(ProviderContainer.test, (err, _) => errors.add(err))!;
+      final container = runZonedGuarded(
+        ProviderContainer.test,
+        (err, _) => errors.add(err),
+      )!;
       final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
       final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 

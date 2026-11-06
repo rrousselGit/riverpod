@@ -34,11 +34,11 @@ enum SupportedCreatedType {
   static SupportedCreatedType from(DartType type) {
     final dartType = type;
     switch (dartType) {
-      case != null
+      case _
           when !dartType.isRaw &&
               (dartType.isDartAsyncFutureOr || dartType.isDartAsyncFuture):
         return SupportedCreatedType.future;
-      case != null when !dartType.isRaw && dartType.isDartAsyncStream:
+      case _ when !dartType.isRaw && dartType.isDartAsyncStream:
         return SupportedCreatedType.stream;
       case _:
         return SupportedCreatedType.value;
@@ -85,14 +85,12 @@ sealed class GeneratorProviderDeclarationElement
   String providerName(BuildYamlOptions options) {
     if (annotation.name case final name?) return name;
 
-    final prefix =
-        (isFamily
-            ? options.providerFamilyNamePrefix
-            : options.providerNamePrefix);
-    final suffix =
-        (isFamily
-            ? options.providerFamilyNameSuffix
-            : options.providerNameSuffix);
+    final prefix = (isFamily
+        ? options.providerFamilyNamePrefix
+        : options.providerNamePrefix);
+    final suffix = (isFamily
+        ? options.providerFamilyNameSuffix
+        : options.providerNameSuffix);
 
     var baseName = name;
 
@@ -117,7 +115,12 @@ sealed class GeneratorProviderDeclarationElement
   String exposedType,
   SupportedCreatedType supportedCreatedType,
 })?
-_computeTypes(DartType buildReturnValue, CompilationUnit unit) {
+_computeTypes(
+  DartType buildReturnValue,
+  CompilationUnit unit, {
+  required String providerName,
+  required AstNode from,
+}) {
   final valueType = _getValueType(
     buildReturnValue,
     typeProvider: unit.declaredFragment!.element.typeProvider,
@@ -129,14 +132,24 @@ _computeTypes(DartType buildReturnValue, CompilationUnit unit) {
     valueType: valueType,
   );
 
-  final exposedType = _computeExposedType(createdType);
-
-  return (
-    createdType: createdType.toCode(),
-    valueType: valueType,
-    exposedType: exposedType,
-    supportedCreatedType: supportedCreatedType,
-  );
+  try {
+    return (
+      createdType: createdType.toCode(),
+      valueType: valueType,
+      exposedType: _computeExposedType(createdType),
+      supportedCreatedType: supportedCreatedType,
+    );
+  } on InvalidTypeException {
+    errorReporter(
+      RiverpodAnalysisError.ast(
+        'Invalid provider type: the return type of "$providerName" '
+        'could not be resolved.',
+        targetNode: from,
+        code: RiverpodAnalysisErrorCode.invalidProviderType,
+      ),
+    );
+    return null;
+  }
 }
 
 (DartType, SupportedCreatedType) _computeCreatedType(

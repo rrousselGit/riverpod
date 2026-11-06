@@ -14,20 +14,18 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>({
         ),
       );
     },
-    provider:
-        <ValueT>(create) =>
-            AsyncNotifierProvider<AsyncNotifier<ValueT>, ValueT>(
-              () => create() as AsyncNotifier<ValueT>,
-            ),
-    value:
-        (create, {name, dependencies, retry}) => ([arg]) {
-          return AsyncNotifierProvider<AsyncNotifier<Object?>, Object?>(
-            () => create(null, arg) as AsyncNotifier<Object?>,
-            name: name,
-            dependencies: dependencies,
-            retry: retry,
-          );
-        },
+    provider: <ValueT>(create) =>
+        AsyncNotifierProvider<AsyncNotifier<ValueT>, ValueT>(
+          () => create() as AsyncNotifier<ValueT>,
+        ),
+    value: (create, {name, dependencies, retry}) => ([arg]) {
+      return AsyncNotifierProvider<AsyncNotifier<Object?>, Object?>(
+        () => create(null, arg) as AsyncNotifier<Object?>,
+        name: name,
+        dependencies: dependencies,
+        retry: retry,
+      );
+    },
   ),
   'AsyncNotifierProvider.autoDispose': AsyncNotifierTestFactory(
     isAutoDispose: true,
@@ -50,18 +48,14 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>({
         () => create() as AsyncNotifier<ValueT>,
       );
     },
-    value:
-        (create, {name, dependencies, retry}) => ([arg]) {
-          return AsyncNotifierProvider.autoDispose<
-            AsyncNotifier<Object?>,
-            Object?
-          >(
-            () => create(null, arg) as AsyncNotifier<Object?>,
-            name: name,
-            dependencies: dependencies,
-            retry: retry,
-          );
-        },
+    value: (create, {name, dependencies, retry}) => ([arg]) {
+      return AsyncNotifierProvider.autoDispose<AsyncNotifier<Object?>, Object?>(
+        () => create(null, arg) as AsyncNotifier<Object?>,
+        name: name,
+        dependencies: dependencies,
+        retry: retry,
+      );
+    },
   ),
   'AsyncNotifierProvider.family': AsyncNotifierTestFactory(
     isAutoDispose: false,
@@ -69,37 +63,38 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>({
     deferredNotifier: DeferredAsyncNotifier.new,
     deferredProvider: <ValueT>(create, {updateShouldNotify, retry}) {
       return AsyncNotifierProvider.family<
-        DeferredAsyncNotifier<ValueT>,
-        ValueT,
-        Object?
-      >(
-        retry: retry,
-        (arg) => DeferredAsyncNotifier(
-          create,
-          updateShouldNotify: updateShouldNotify,
-        ),
-      ).call(42);
+            DeferredAsyncNotifier<ValueT>,
+            ValueT,
+            Object?
+          >(
+            retry: retry,
+            (arg) => DeferredAsyncNotifier(
+              create,
+              updateShouldNotify: updateShouldNotify,
+            ),
+          )
+          .call(42);
     },
     provider: <ValueT>(create) {
       return AsyncNotifierProvider.family<
-        AsyncNotifier<ValueT>,
-        ValueT,
-        Object?
-      >((arg) => create() as AsyncNotifier<ValueT>).call(42);
-    },
-    value:
-        (create, {name, dependencies, retry}) => ([arg]) {
-          return AsyncNotifierProvider.family<
-            AsyncNotifier<Object?>,
-            Object?,
+            AsyncNotifier<ValueT>,
+            ValueT,
             Object?
-          >(
-            (arg) => create(null, arg) as AsyncNotifier<Object?>,
-            name: name,
-            dependencies: dependencies,
-            retry: retry,
-          )(arg);
-        },
+          >((arg) => create() as AsyncNotifier<ValueT>)
+          .call(42);
+    },
+    value: (create, {name, dependencies, retry}) => ([arg]) {
+      return AsyncNotifierProvider.family<
+        AsyncNotifier<Object?>,
+        Object?,
+        Object?
+      >(
+        (arg) => create(null, arg) as AsyncNotifier<Object?>,
+        name: name,
+        dependencies: dependencies,
+        retry: retry,
+      )(arg);
+    },
   ),
   'AsyncNotifierProvider.autoDispose.family': AsyncNotifierTestFactory(
     isAutoDispose: true,
@@ -123,16 +118,15 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>({
           )
           .call(42);
     },
-    value:
-        (create, {name, dependencies, retry}) => ([arg]) {
-          return AsyncNotifierProvider.autoDispose
-              .family<AsyncNotifier<Object?>, Object?, Object?>(
-                (arg) => create(null, arg) as AsyncNotifier<Object?>,
-                name: name,
-                dependencies: dependencies,
-                retry: retry,
-              )(arg);
-        },
+    value: (create, {name, dependencies, retry}) => ([arg]) {
+      return AsyncNotifierProvider.autoDispose
+          .family<AsyncNotifier<Object?>, Object?, Object?>(
+            (arg) => create(null, arg) as AsyncNotifier<Object?>,
+            name: name,
+            dependencies: dependencies,
+            retry: retry,
+          )(arg);
+    },
   ),
 });
 
@@ -140,11 +134,7 @@ abstract class TestAsyncNotifier<ValueT> implements $AsyncNotifier<ValueT> {}
 
 class DeferredAsyncNotifier<ValueT> extends AsyncNotifier<ValueT>
     implements TestAsyncNotifier<ValueT> {
-  DeferredAsyncNotifier(
-    this._create, {
-    bool Function(AsyncValue<ValueT>, AsyncValue<ValueT>)? updateShouldNotify,
-    this.arg,
-  }) : _updateShouldNotify = updateShouldNotify;
+  DeferredAsyncNotifier(this._create, {this._updateShouldNotify, this.arg});
 
   final Object? arg;
 

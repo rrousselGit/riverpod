@@ -46,7 +46,7 @@ abstract class _$ScopedClass extends $Notifier<int> {
   int build() => throw MissingScopeException(ref);
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -56,7 +56,7 @@ abstract class _$ScopedClass extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
 
@@ -136,7 +136,7 @@ abstract class _$ScopedClassFamily extends $Notifier<int> {
   int build(int a) => throw MissingScopeException(ref);
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -146,6 +146,6 @@ abstract class _$ScopedClassFamily extends $Notifier<int> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, () => build(_$args));
   }
 }

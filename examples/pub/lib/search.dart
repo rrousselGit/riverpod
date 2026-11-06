@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart' hide SearchBar;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'detail.dart';
@@ -78,10 +78,9 @@ class SearchPage extends HookConsumerWidget {
               child: ListView.custom(
                 padding: const EdgeInsets.only(top: 30),
                 childrenDelegate: SliverChildBuilderDelegate((context, index) {
-                  final pageSize =
-                      searchController.text.isEmpty
-                          ? packagesPackageSize
-                          : searchPageSize;
+                  final pageSize = searchController.text.isEmpty
+                      ? packagesPackageSize
+                      : searchPageSize;
 
                   final page = index ~/ pageSize + 1;
                   final indexInPage = index % pageSize;
@@ -104,17 +103,16 @@ class SearchPage extends HookConsumerWidget {
                         name: package.name,
                         description: package.latest.pubspec.description,
                         version: package.latest.version,
-                        onTap:
-                            () => Navigator.push(
-                              context,
-                              MaterialPageRoute<void>(
-                                builder: (context) {
-                                  return PackageDetailPage(
-                                    packageName: package.name,
-                                  );
-                                },
-                              ),
-                            ),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (context) {
+                              return PackageDetailPage(
+                                packageName: package.name,
+                              );
+                            },
+                          ),
+                        ),
                       );
                     },
                   );

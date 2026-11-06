@@ -119,14 +119,8 @@ abstract class TypeChecker {
   ///
   /// Throws [UnresolvedAnnotationException] on unresolved annotations unless
   /// [throwOnUnresolved] is explicitly set to `false` (default is `true`).
-  bool hasAnnotationOfExact(
-    Element element, {
-    bool throwOnUnresolved = true,
-  }) =>
-      firstAnnotationOfExact(
-        element,
-        throwOnUnresolved: throwOnUnresolved,
-      ) !=
+  bool hasAnnotationOfExact(Element element, {bool throwOnUnresolved = true}) =>
+      firstAnnotationOfExact(element, throwOnUnresolved: throwOnUnresolved) !=
       null;
 
   DartObject? _computeConstantValue(
@@ -190,8 +184,7 @@ abstract class TypeChecker {
   /// Returns `true` if the type of [element] can be assigned to this type.
   bool isAssignableFrom(Element element) =>
       isExactly(element) ||
-      (element is InterfaceElement &&
-          element.allSupertypes.any(isExactlyType));
+      (element is InterfaceElement && element.allSupertypes.any(isExactlyType));
 
   /// Returns `true` if [staticType] can be assigned to this type.
   bool isAssignableFromType(DartType staticType) {
@@ -350,8 +343,7 @@ class _AnyChecker extends TypeChecker {
   final Iterable<TypeChecker> _checkers;
 
   @override
-  bool isExactly(Element element) =>
-      _checkers.any((c) => c.isExactly(element));
+  bool isExactly(Element element) => _checkers.any((c) => c.isExactly(element));
 }
 
 class _EveryChecker extends TypeChecker {
@@ -441,15 +433,14 @@ class UnresolvedAnnotationException implements Exception {
 }
 
 /// Returns a URL representing [element].
-String _urlOfElement(Element element) =>
-    element.kind == ElementKind.DYNAMIC
-        ? 'dart:core#dynamic'
-        : element.kind == ElementKind.NEVER
-        ? 'dart:core#Never'
-        // using librarySource.uri – in case the element is in a part
-        : _normalizeUrl(
-          element.library!.uri,
-        ).replace(fragment: element.name).toString();
+String _urlOfElement(Element element) => element.kind == ElementKind.DYNAMIC
+    ? 'dart:core#dynamic'
+    : element.kind == ElementKind.NEVER
+    ? 'dart:core#Never'
+    // using librarySource.uri – in case the element is in a part
+    : _normalizeUrl(
+        element.library!.uri,
+      ).replace(fragment: element.name).toString();
 
 Uri _normalizeUrl(Uri url) {
   switch (url.scheme) {
@@ -470,10 +461,9 @@ Uri _normalizeUrl(Uri url) {
 ///
 /// This isn't a user-knowable path, so we strip out extra path segments
 /// and only expose `dart:core`.
-Uri _normalizeDartUrl(Uri url) =>
-    url.pathSegments.isNotEmpty
-        ? url.replace(pathSegments: url.pathSegments.take(1))
-        : url;
+Uri _normalizeDartUrl(Uri url) => url.pathSegments.isNotEmpty
+    ? url.replace(pathSegments: url.pathSegments.take(1))
+    : url;
 
 Uri _fileToAssetUrl(Uri url) {
   if (!p.isWithin(p.url.current, url.path)) return url;
@@ -489,14 +479,13 @@ Uri _fileToAssetUrl(Uri url) {
 ///
 /// For example, this transforms `package:source_gen/source_gen.dart` into:
 /// `asset:source_gen/lib/source_gen.dart`.
-Uri _packageToAssetUrl(Uri url) =>
-    url.scheme == 'package'
-        ? url.replace(
-          scheme: 'asset',
-          pathSegments: <String>[
-            url.pathSegments.first,
-            'lib',
-            ...url.pathSegments.skip(1),
-          ],
-        )
-        : url;
+Uri _packageToAssetUrl(Uri url) => url.scheme == 'package'
+    ? url.replace(
+        scheme: 'asset',
+        pathSegments: <String>[
+          url.pathSegments.first,
+          'lib',
+          ...url.pathSegments.skip(1),
+        ],
+      )
+    : url;

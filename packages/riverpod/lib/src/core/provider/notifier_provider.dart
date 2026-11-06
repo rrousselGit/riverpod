@@ -37,13 +37,14 @@ typedef RunNotifierBuild<NotifierT, CreatedT> =
 /// ```dart
 /// mixin MyMixin<T> extends AnyNotifier<T, FutureOr<T>> {
 ///   @override
-///   void runBuild() {
+///   WhenComplete runBuild() {
 ///     // It is safe to use "ref" here.
 ///     listenSelf((prev, next) => print("New state $next"));
 ///
 ///     print('Before build');
-///     super.runBuild();
+///     final result = super.runBuild();
 ///     print('After build');
+///     return result;
 ///   }
 /// }
 /// ```
@@ -127,6 +128,11 @@ abstract class AnyNotifier<StateT, ValueT> {
   ///
   /// You can override this method to provide a custom comparison logic,
   /// such as using [identical] to use a more efficient comparison.
+  ///
+  /// **Note:**
+  /// This also affects whether [AsyncNotifier.future] notifies.
+  /// If [updateShouldNotify] returns false, then [AsyncNotifier.future] will not notify
+  /// when the state changes. However, the future will still resolve with the new state.
   @visibleForOverriding
   bool updateShouldNotify(StateT previous, StateT next) {
     return ProviderElement.defaultUpdateShouldNotify(previous, next);
@@ -143,10 +149,11 @@ abstract class AnyNotifier<StateT, ValueT> {
   /// ```dart
   /// mixin LoggingMixin<T> on AnyNotifier<T> {
   ///   @override
-  ///   void runBuild() {
+  ///   WhenComplete runBuild() {
   ///     print('Will build $this');
-  ///     super.runBuild();
+  ///     final result = super.runBuild();
   ///     print('Did build $this');
+  ///     return result;
   ///   }
   /// }
   /// ```
@@ -154,7 +161,7 @@ abstract class AnyNotifier<StateT, ValueT> {
   /// The benefit of this method is that it applies on all notifiers,
   /// regardless of whether they use arguments or not.
   @mustCallSuper
-  void runBuild();
+  WhenComplete runBuild();
 
   void _debugAssertNoDuplicateKey(
     Object? key,
@@ -539,25 +546,28 @@ abstract class $ClassProviderElement<
     // ignore: not public
     $Ref<StateT, ValueT> ref,
   ) {
-    final result =
-        classListenable.result ??= $Result.guard(() {
-          final notifier = provider.create();
-          if (notifier._element != null) {
-            throw StateError(alreadyInitializedError);
-          }
+    final result = classListenable.result ??= $Result.guard(() {
+      final notifier = provider.create();
+      if (notifier._element != null) {
+        throw StateError(alreadyInitializedError);
+      }
 
-          notifier._element = this;
-          return notifier;
-        });
+      notifier._element = this;
+      return notifier;
+    });
 
+    WhenComplete whenComplete;
     switch (result) {
       case $ResultData():
         try {
           switch (_runNotifierBuildOverride) {
             case final override?:
-              handleCreate(ref, () => override(ref, result.value));
+              whenComplete = handleCreate(
+                ref,
+                () => override(ref, result.value),
+              );
             case null:
-              result.value.runBuild();
+              whenComplete = result.value.runBuild();
           }
         } catch (err, stack) {
           handleError(ref, err, stack);
@@ -566,10 +576,11 @@ abstract class $ClassProviderElement<
         handleError(ref, result.error, result.stackTrace);
     }
 
-    return null;
+    return whenComplete;
   }
 
-  void handleCreate(Ref ref, CreatedT Function() created);
+  WhenComplete handleCreate(Ref ref, CreatedT Function() created);
+
   void handleError(Ref ref, Object error, StackTrace stackTrace);
 
   @override
@@ -583,6 +594,7 @@ abstract class $ClassProviderElement<
     return ProviderObserverContext(
       origin,
       container,
+      this,
       mutation: _currentMutationContext(),
     );
   }

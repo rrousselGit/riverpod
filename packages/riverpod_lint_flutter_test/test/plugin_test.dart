@@ -20,10 +20,12 @@ import 'package:analyzer_plugin/utilities/change_builder/change_builder_core.dar
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:collection/collection.dart';
 import 'package:dart_style/dart_style.dart';
+import 'package:glob/glob.dart';
 import 'package:path/path.dart' as p;
 import 'package:riverpod_lint/main.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:test/test.dart';
+import 'package:yaml/yaml.dart';
 
 import 'encoders.dart';
 import 'io_utils.dart';
@@ -36,9 +38,11 @@ Future<void> main() async {
   plugin.register(registry);
 
   final filesToAnalyze = await _findFilesToAnalyze().toList();
+  final codegenExcludes = _readCodegenExcludes();
 
   final collection = AnalysisContextCollection(
     includedPaths: filesToAnalyze.map((e) => e.absolute.path).toList(),
+    sdkPath: dartSdkPath,
   );
 
   for (final file in filesToAnalyze) {
@@ -113,7 +117,89 @@ Future<void> main() async {
         file,
         id: (producer) => producer.fixKind!.id,
       );
+
+      final relativePath = p.posix.joinAll(
+        p.split(p.relative(file.absolute.path)),
+      );
+      if (codegenExcludes.any((glob) => glob.matches(relativePath))) {
+        test('excluded from codegen, so only contains failing cases', () {
+          _verifyOnlyFailingProviders(
+            registry,
+            unit: unit,
+            library: library,
+            testIds: testIds,
+          );
+        });
+      }
     });
+  }
+}
+
+/// The `generate_for.exclude` globs of riverpod_generator in `build.yaml`.
+List<Glob> _readCodegenExcludes() {
+  final buildYaml = loadYaml(File('build.yaml').readAsStringSync()) as YamlMap;
+  final excludes =
+      buildYaml['targets'][r'$default']['builders']['riverpod_generator']['generate_for']['exclude']
+          as YamlList;
+
+  return excludes.cast<String>().map((e) => Glob(e, context: p.posix)).toList();
+}
+
+/// Fixtures excluded from codegen must only contain providers that the
+/// fixture's rules report. Valid providers belong in a generated fixture,
+/// so that riverpod_generator checks they are indeed valid.
+void _verifyOnlyFailingProviders(
+  _PluginRegistry registry, {
+  required ResolvedUnitResult unit,
+  required ResolvedLibraryResult library,
+  required Set<String> testIds,
+}) {
+  final rules = registry.rules
+      .map((e) => e.$1)
+      .where((rule) => testIds.contains(rule.name))
+      .toList();
+  if (rules.isEmpty) {
+    fail(
+      'This fixture is excluded from codegen, '
+      'but its @TestFor does not name any rule.',
+    );
+  }
+
+  final diagnostics = _runRules(unit: unit, library: library, rules: rules);
+
+  final validProviders = unit.unit.declarations
+      .where(
+        (declaration) => switch (declaration) {
+          ClassDeclaration() || FunctionDeclaration() => true,
+          _ => false,
+        },
+      )
+      .where(
+        (declaration) => declaration.metadata.any((annotation) {
+          final type = annotation.elementAnnotation
+              ?.computeConstantValue()
+              ?.type;
+          return type != null && riverpodType.isExactlyType(type);
+        }),
+      )
+      .where(
+        (declaration) => !diagnostics.any(
+          (diagnostic) =>
+              diagnostic.offset >= declaration.offset &&
+              diagnostic.offset < declaration.end,
+        ),
+      )
+      .map((declaration) => declaration.declaredFragment!.element.displayName)
+      .toList();
+
+  if (validProviders.isNotEmpty) {
+    fail(
+      'This fixture is excluded from codegen (see build.yaml), '
+      'so it should only contain failing cases. '
+      'No ${rules.map((e) => e.name).join('/')} diagnostic was reported for: '
+      '${validProviders.join(', ')}.\n'
+      'Move them to a fixture that riverpod_generator runs on.',
+    );
   }
 }
 
@@ -131,6 +217,9 @@ void _testFixes(
   required Function(CorrectionProducer<ParsedUnitResult> producer) id,
 }) {
   for (final fix in pluginRegistry.fixes) {
+    final producerId = id(
+      fix.generator(context: StubCorrectionProducerContext.instance),
+    );
     _testProducers(
       [fix.generator],
       () {
@@ -141,12 +230,22 @@ void _testFixes(
           :testIds,
         ) = result();
 
-        final rules =
-            pluginRegistry.rules
-                .where(
-                  (e) => e.$1.diagnosticCodes.contains(fix.code),
-                )
-                .single;
+        // Fixtures only request a subset of fixes. Avoid traversing the AST
+        // for rules whose fixes will be skipped by _testProducers.
+        if (!testIds.contains(producerId)) {
+          return (
+            unit: unit,
+            library: library,
+            uniqueOffsets: uniqueOffsets,
+            testIds: testIds,
+          );
+        }
+
+        final rules = pluginRegistry.rules
+            .where(
+              (e) => e.$1.diagnosticCodes.contains(fix.code),
+            )
+            .single;
 
         final diagnostics = _runRules(
           unit: unit,
@@ -180,7 +279,8 @@ void _verifyAllIdsExist(_PluginRegistry plugin, Set<String> testIds) {
   expect(
     actualIds,
     containsAll(testIds),
-    reason: '''
+    reason:
+        '''
 class TestFor {
   const TestFor(this.id);
   ${actualIds.map((e) => "static const $e = TestFor('$e');").join('\n')}
@@ -359,8 +459,9 @@ extension on File {
 }
 
 Set<String> _findTestIds(ResolvedUnitResult unit) {
-  final library =
-      unit.unit.directives.whereType<LibraryDirective>().firstOrNull;
+  final library = unit.unit.directives
+      .whereType<LibraryDirective>()
+      .firstOrNull;
   final testIds = <String>{};
 
   for (final meta in library?.metadata ?? <Annotation>[]) {
@@ -416,37 +517,38 @@ Future<void> _verifyGoldensMatchProducers(
   required String producerId,
   required String groupName,
 }) async {
-  final goldens =
-      file.goldensForFile(id: producerId).map((e) => e.path).toSet();
+  final goldens = file
+      .goldensForFile(id: producerId)
+      .map((e) => e.path)
+      .toSet();
   final mismatch = <({String? expected, String actual})>[];
   final missing = <({String filePath})>[];
   final sourceContent = file.readAsStringSync();
 
-  final actualFiles =
-      uniqueSourceOutputs.entries.map(
-        (entry) {
-          final lineLabel = _goldenLineLabel(
-            sourceContent: sourceContent,
-            offsets: entry.value.map((e) => e.offset),
-          );
-          final goldenFile = file.goldenFile(
-            id: producerId,
-            groupName: groupName,
-            lineLabel: lineLabel,
-          );
+  final actualFiles = uniqueSourceOutputs.entries.map(
+    (entry) {
+      final lineLabel = _goldenLineLabel(
+        sourceContent: sourceContent,
+        offsets: entry.value.map((e) => e.offset),
+      );
+      final goldenFile = file.goldenFile(
+        id: producerId,
+        groupName: groupName,
+        lineLabel: lineLabel,
+      );
 
-          return (
-            goldenFile,
-            _encodeProducerOutput(
-              sourceFile: file,
-              source: entry.key,
-              goldenFile: goldenFile,
-              producerId: producerId,
-              offsets: entry.value.map((e) => e.offset),
-            ),
-          );
-        },
-      ).toList();
+      return (
+        goldenFile,
+        _encodeProducerOutput(
+          sourceFile: file,
+          source: entry.key,
+          goldenFile: goldenFile,
+          producerId: producerId,
+          offsets: entry.value.map((e) => e.offset),
+        ),
+      );
+    },
+  ).toList();
 
   for (final (file, actual) in actualFiles) {
     try {
@@ -501,7 +603,7 @@ String _encodeProducerOutput({
 
   final buffer = StringBuffer();
   buffer.writeln('// GENERATED CODE - DO NOT MODIFY BY HAND');
-  buffer.writeln('// ignore_for_file: type=lint, type=warning');
+  buffer.writeln('// ignore_for_file: type=lint, type=warning, todo');
   buffer.write(
     _renderOffsetsWithContext(
       offsetsForKind: offsetsForKind,

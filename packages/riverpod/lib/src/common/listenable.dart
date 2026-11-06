@@ -51,10 +51,24 @@ final class $Observable<ValueT> extends _ValueListenable<ValueT> {
     }
     return result;
   }
+
+  void setResultAndMaybeNotify(
+    $Result<ValueT> newResult, {
+    required bool shouldNotify,
+  }) {
+    if (shouldNotify || hasSkippedNotification) {
+      result = newResult;
+    } else {
+      _result = newResult;
+    }
+  }
 }
 
 final class _ValueListenable<ValueT> {
   void Function()? onCancel;
+
+  bool get hasSkippedNotification =>
+      _skippedNotification?.data != null || _skippedNotification?.error != null;
 
   var _count = 0;
   // The _listeners is intentionally set to a fixed-length _GrowableList instead

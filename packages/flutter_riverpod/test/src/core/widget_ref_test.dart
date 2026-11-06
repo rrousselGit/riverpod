@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_riverpod/experimental/mutation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,7 +23,7 @@ void main() {
 
     final sub = ref.listenManual(mutation, (a, b) {});
 
-    await mutation.run(ref, (tsx) async {
+    await mutation.run(ref, (_) async {
       return 1;
     });
 

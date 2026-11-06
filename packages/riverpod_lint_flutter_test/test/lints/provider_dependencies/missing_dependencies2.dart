@@ -3,10 +3,11 @@
 @TestFor.provider_dependencies
 library;
 
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/experimental/scope.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 import '../../test_annotation.dart';
 import 'another.dart' as import_alias;
 import 'another.dart';
@@ -121,11 +122,11 @@ int watchGeneratedScopedAndContainsDependency(
 
 @Riverpod(
   dependencies:
-  // The dependency is redundant because it is not a scoped provider
-  // ignore: riverpod_lint/provider_dependencies
-  [
-    generatedRoot,
-  ],
+      // The dependency is redundant because it is not a scoped provider
+      // ignore: riverpod_lint/provider_dependencies
+      [
+        generatedRoot,
+      ],
 )
 int watchGeneratedRootAndContainsDependency(
   Ref ref,
@@ -137,12 +138,12 @@ int watchGeneratedRootAndContainsDependency(
 
 @Riverpod(
   dependencies:
-  // generatedRoot is extra
-  // ignore: riverpod_lint/provider_dependencies
-  [
-    dep,
-    generatedRoot,
-  ],
+      // generatedRoot is extra
+      // ignore: riverpod_lint/provider_dependencies
+      [
+        dep,
+        generatedRoot,
+      ],
 )
 int specifiedDependencyButNeverUsed(Ref ref) {
   ref.watch(depProvider);

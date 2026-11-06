@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
+import 'package:material_ui/material_ui.dart';
 
 // A Counter example implemented with riverpod
 
@@ -21,7 +20,14 @@ class MyApp extends StatelessWidget {
 }
 
 /// Providers are declared globally and specify how to create a state
-final counterProvider = StateProvider((ref) => 0);
+final counterProvider = NotifierProvider<Counter, int>(Counter.new);
+
+class Counter extends Notifier<int> {
+  @override
+  int build() => 0;
+
+  void increment() => state++;
+}
 
 class Home extends ConsumerWidget {
   const Home({super.key});
@@ -41,7 +47,7 @@ class Home extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         // The read method is a utility to read a provider without listening to it
-        onPressed: () => ref.read(counterProvider.notifier).state++,
+        onPressed: () => ref.read(counterProvider.notifier).increment(),
         child: const Icon(Icons.add),
       ),
     );

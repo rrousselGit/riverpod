@@ -15,12 +15,12 @@ extension ProviderScopeInstanceCreationExpressionX
       }
 
       final overrides = argumentList.namedArguments().firstWhereOrNull(
-        (e) => e.name.label.name == 'overrides',
+        (e) => e.name.lexeme == 'overrides',
       );
 
       return ProviderScopeInstanceCreationExpression._(
         node: this,
-        overrides: overrides?.expression.overrides,
+        overrides: overrides?.argumentExpression.overrides,
       );
     });
   }

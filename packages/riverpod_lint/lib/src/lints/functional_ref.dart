@@ -14,7 +14,6 @@ import 'package:collection/collection.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../imports.dart';
-import '../riverpod_custom_lint.dart';
 
 class FunctionalRef extends AnalysisRule {
   FunctionalRef() : super(name: code.name, description: code.problemMessage);
@@ -65,17 +64,19 @@ class _Visitor extends SimpleAstVisitor<void> {
       return;
     }
 
-    if (refNode is! SimpleFormalParameter) {
+    if (refNode.isNamed || refNode.isOptionalPositional) {
       // Users likely forgot to specify "ref" and the provider has other parameters
-      rule.reportAtToken(refNode.name!, arguments: []);
+      rule.reportAtToken(refNode.name ?? refNode.beginToken, arguments: []);
       return;
     }
 
     final refNodeType = refNode.type;
     if (refNodeType == null) return;
 
-    final expectedRefName = refNameFor(declaration);
-    if (refNodeType.beginToken.lexeme != expectedRefName) {
+    // Checks the resolved type rather than the source, so that a prefixed
+    // `r.Ref` is accepted.
+    final type = refNodeType.type;
+    if (type == null || !refType.isExactlyType(type)) {
       rule.reportAtNode(refNodeType, arguments: []);
     }
   }
@@ -100,14 +101,15 @@ class FunctionalRefFix extends ResolvedCorrectionProducer {
   @override
   Future<void> compute(ChangeBuilder builder) async {
     final node = this.node;
-    final declaration =
-        node.thisOrAncestorOfType<FunctionDeclaration>()?.provider;
+    final declaration = node
+        .thisOrAncestorOfType<FunctionDeclaration>()
+        ?.provider;
     if (declaration == null) return;
 
     final refNode =
         declaration.node.functionExpression.parameters?.parameters.firstOrNull;
 
-    if (refNode == null || refNode.isNamed) {
+    if (refNode == null || refNode.isNamed || refNode.isOptionalPositional) {
       // No ref parameter, adding one
       await builder.addDartFileEdit(file, (builder) {
         final ref = builder.importRef();
@@ -124,7 +126,7 @@ class FunctionalRefFix extends ResolvedCorrectionProducer {
       return;
     }
 
-    if (refNode is! SimpleFormalParameter) return;
+    if (refNode is! RegularFormalParameter) return;
 
     await builder.addDartFileEdit(file, (builder) {
       final ref = builder.importRef();
@@ -145,10 +147,7 @@ extension LibraryForNode on AstNode {
 }
 
 TypeAnnotation? typeAnnotationFor(FormalParameter param) {
-  if (param is DefaultFormalParameter) {
-    return typeAnnotationFor(param.parameter);
-  }
-  if (param is SimpleFormalParameter) {
+  if (param is RegularFormalParameter) {
     return param.type;
   }
 

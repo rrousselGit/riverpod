@@ -12,10 +12,11 @@ class OnlyUseKeepAliveInsideKeepAlive extends AnalysisRule {
 
   static const code = LintCode(
     'only_use_keep_alive_inside_keep_alive',
-    'KeepAliveLink can only be used inside providers that are kept alive.',
+    'If a provider is declared as `keepAlive`, '
+        'it can only use providers that are also declared as `keepAlive`.',
     correctionMessage:
         'Either stop marking this provider as `keepAlive` or '
-        'remove `keepAlive` from the used provider.',
+        'mark the used provider as `keepAlive` too.',
     severity: DiagnosticSeverity.WARNING,
   );
 
@@ -49,8 +50,9 @@ class _Visitor extends SimpleAstVisitor<void> {
     if (dependencyElement is! GeneratorProviderDeclarationElement) return;
     if (!dependencyElement.isAutoDispose) return;
 
-    final provider =
-        node.thisOrAncestorOfType<NamedCompilationUnitMember>()?.provider;
+    final provider = node
+        .thisOrAncestorOfType<CompilationUnitMember>()
+        ?.provider;
     if (provider == null) return;
 
     // The enclosing provider is "autoDispose", so it is allowed to use other "autoDispose" providers

@@ -11,7 +11,7 @@ void main() {
     source: '''
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 final provider = Provider((ref) => 0);
 final family = Provider.family<int, int>((ref, id) => 0);
@@ -55,10 +55,14 @@ class Example extends ConsumerWidget {
 
       final scopes = result.providerScopeInstanceCreationExpressions;
 
-      final provider =
-          result.manualProviderDeclarations.takeAll(['provider']).values.single;
-      final family =
-          result.manualProviderDeclarations.takeAll(['family']).values.single;
+      final provider = result.manualProviderDeclarations
+          .takeAll(['provider'])
+          .values
+          .single;
+      final family = result.manualProviderDeclarations
+          .takeAll(['family'])
+          .values
+          .single;
 
       expect(scopes, hasLength(5));
 

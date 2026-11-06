@@ -1,11 +1,117 @@
-## Unreleased
+## Unreleased minor
 
-- Fixed `providerDidFail` being incorrectly called when an `autoDispose` provider
-  is disposed before emitting its first value. Disposal is a normal lifecycle event
-  and should not be reported as a provider failure.
-- Added `ProviderDisposedException`, thrown on `provider.future` when a provider
-  is disposed during loading state. Previously a `StateError` was thrown, making it
-  indistinguishable from real programmer errors.
+- `ProviderObserver.providerDidFail` is no longer called for errors received
+  after a provider was disposed, such as when an `autoDispose` provider awaiting
+  another provider's `.future` is disposed mid-load (#4706).
+- Added `ProviderDisposedException`. `provider.future` now completes with it
+  instead of a `StateError` when the provider is disposed before emitting a value.
+- Fix resuming a paused subscription scheduling a provider refresh while its dependency graph is still being flushed, which could throw `setState() or markNeedsBuild() called during build` in Flutter with diamond-shaped dependencies. (thanks to @yazanmg)
+- Fix `StreamProvider`/`StreamNotifier` retaining obsolete dependency subscriptions across rebuilds until the stream closes, even after emitting data.
+- `AsyncValueIsLoadingException` now has a public constructor. (thanks to @uveshm003)
+- `debugTrackProviderCreation` is now exported by `package:riverpod/misc.dart`.
+- Devtools now retain only the current provider snapshot by default. Set
+  `debugTrackProviderHistory = true` (imported from `package:riverpod/misc.dart`)
+  to opt into time-travel history; setting it back to `false` releases previous
+  frames.
+- Devtools inspection caches are released when their client closes or stops
+  renewing its session for 30 seconds, including after an abrupt disconnect.
+- Deprecated `Ref.exist`.
+- Added `provider.exist`, which is listenable.
+  This enables writing `ref.listen(provider.exist, ...)`.
+- Fix the deprecated `container.exists`/`ref.exists` returning `false` from a
+  scoped container for a provider mounted in an ancestor but never read through
+  that scope (#4785).
+- Fix `selectAsync` notifying a closed subscription after an upstream refresh.
+- Fixed `ref.read`/`container.read` of `provider.listenable` throwing an internal `StateError` on `.value`; it now throws a clear one explaining `.listenable` needs `ref.watch`, `ref.listen` or `container.listen` instead (thanks to @Yasser-Ameur)
+- Fixed a debug-only infinite loop in the circular-dependency check. Closing a
+  dependency ring left the offending subscription in the graph, so a subsequent
+  rebuild could make the check walk the cycle forever. The subscription is now
+  removed when the check throws, and the walk keeps a visited set. (thanks to @chiliec)
+- Migrated Material imports to `package:material_ui/material_ui.dart` and added
+  `material_ui` as a dependency.
+- Updated the DevTools extension to use Material UI themes and localizations.
+
+## 3.4.3 - 2026-09-04
+
+- Upgraded `analyzer` to `<15.0.0`
+- Depend on `test_api` instead of `test`. Riverpod only used `addTearDown`, which
+  `test` re-exports unchanged from `test_api`, so `ProviderContainer.test` is
+  unaffected. This removes 34 transitive packages from the dependency graph of
+  every project that uses Riverpod, including `analyzer`, whose version ceiling
+  was blocking other tooling. (thanks to @samithahansaka)
+
+## 3.4.2 - 2026-07-28
+
+Fix a different source of `markNeedsBuild` error. Those are tricky!
+
+## 3.4.1 - 2026-07-26
+
+- Update devtool extension
+
+## 3.4.0 - 2026-07-26
+
+- Deprecated `SyncProviderTransformerMixin`. It is replaced by the newly added APIs
+- Devtool-only: Better support for scoped providers with multiple overrides.
+- Upgraded `analyzer` to `<15.0.0`
+- Added `CustomProviderListenable`, a slightly simplified way of making custom provider extensions
+- Added the ability to do `ValueListenable<int> listenable = ref.watch(counterProvider.listenable)`.
+  This uses the new `pkg:listen`.
+- Fix `invalidate`/`refresh` not finding providers and families when called
+  from a scoped `ProviderContainer`/`ProviderScope` with overrides, if the
+  provider was never read through that scope. (thanks to @itsUndefined)
+- Fix markNeedsBuild exception when flushing a provider inside Widget lifecycle
+- Fix `invalidate`/`refresh` not finding providers and families when called
+  from a scoped `ProviderScope` with overrides, if the provider was never
+  read through that scope. (thanks to @itsUndefined)
+- Fixed a listener leak if `ConsumerState.dispose` threw.
+
+## 3.3.2 - 2026-06-10
+
+- Fixes assertion error when providers are unpaused.
+- Fix `AsyncNotifierProvider`/`StreamNotifierProvider` disposing dependencies
+  watched after an asynchronous gap during rebuild. (thanks to @a1573595)
+- Devtool-only:
+  Fixed a `TapGestureRecognizer` leak in the state inspector, where the
+  recognizer was recreated on every rebuild and never disposed. (thanks to @Gyeony95)
+- Fix `Mutation.run` throwing a `StateError` ("subscription was closed") when
+  the `ProviderContainer` was disposed while the mutation was still running. (thanks to @Gyeony95)
+- Fix `Mutation.reset` not cancelling an in-flight `run`. The pending run could
+  previously write its result back over the reset state once it completed. (thanks to @Gyeony95)
+
+## 3.3.2-dev.2 - 2026-05-06
+
+- Fixed Riverpod devtool not starting.
+
+## 3.3.2-dev.1 - 2026-05-03
+
+- Devtool-only:
+  Added `debugTrackProviderCreation`, which can be set to `true` to enable the Riverpod devtool
+  to jump to the source of a provider.
+- Added `Ref.onManualInvalidation()` lifecycle method to listen for manual provider invalidations.
+  This allows distinguishing between manual invalidations (via `refresh`/`invalidate`/`invalidateSelf`)
+  and automatic invalidations caused by dependency changes. Additionally, providers can now forward
+  invalidations to other providers within `onManualInvalidation` callbacks, enabling patterns like:
+
+  ```dart
+  final sourceProvider = Provider<String>(...);
+  final derivedProvider = Provider((ref) {
+    final thing = ref.watch(sourceProvider);
+    ref.onManualInvalidation(() {
+      ref.invalidate(sourceProvider);
+    });
+    return '$thing is derived!';
+  });
+
+  ref.invalidate(derivedProvider); // also invalidates sourceProvider!
+  ```
+
+  Which allows for users to invalidate only the providers they care about, while implementation details can be handled privately. (thanks to @TekExplorer)
+
+- Added `ProviderContainer.allProviders()`, to obtain all providers accessible from said container. You can optionally specify `allProviders(family: myFamily)` to only include providers from said family.
+- Refactored internal scheduling mechanism to solve some markNeedsBuild error.
+- Removed `@internal` for `ProviderFamily.new`
+- Added various life-cycles to `ProviderObserver`
+- Fix `.future` incorrectly notifying listeners even when `AsyncValue` doesn't change.
 
 ## 3.2.1 - 2026-02-03
 
@@ -812,7 +918,6 @@ Riverpod is now stable!
 
   That allows providers to implement features that is not shared with other
   providers.
-
   - `Provider`, `FutureProvider` and `StreamProvider`'s `ref` now have a `state`
     property, which represents the currently exposed value. Modifying it will
     notify the listeners:
@@ -1085,7 +1190,6 @@ Fixed various issues related to scoped providers.
 
   That allows providers to implement features that is not shared with other
   providers.
-
   - `Provider`, `FutureProvider` and `StreamProvider`'s `ref` now have a `state`
     property, which represents the currently exposed value. Modifying it will
     notify the listeners:
@@ -1506,4 +1610,3 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
-

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'pub_repository.dart';
@@ -9,6 +9,7 @@ part of 'pub_repository.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -27,23 +28,29 @@ $PackageMetricsScoreCopyWith<PackageMetricsScore> get copyWith => _$PackageMetri
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as PackageMetricsScore;
   properties
     ..add(DiagnosticsProperty('type', 'PackageMetricsScore'))
-    ..add(DiagnosticsProperty('grantedPoints', grantedPoints))..add(DiagnosticsProperty('maxPoints', maxPoints))..add(DiagnosticsProperty('likeCount', likeCount))..add(DiagnosticsProperty('tags', tags));
+    ..add(DiagnosticsProperty('grantedPoints', _this.grantedPoints))..add(DiagnosticsProperty('maxPoints', _this.maxPoints))..add(DiagnosticsProperty('likeCount', _this.likeCount))..add(DiagnosticsProperty('tags', _this.tags));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PackageMetricsScore&&(identical(other.grantedPoints, grantedPoints) || other.grantedPoints == grantedPoints)&&(identical(other.maxPoints, maxPoints) || other.maxPoints == maxPoints)&&(identical(other.likeCount, likeCount) || other.likeCount == likeCount)&&const DeepCollectionEquality().equals(other.tags, tags));
+  final _this = this as PackageMetricsScore;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PackageMetricsScore&&(identical(other.grantedPoints, _this.grantedPoints) || other.grantedPoints == _this.grantedPoints)&&(identical(other.maxPoints, _this.maxPoints) || other.maxPoints == _this.maxPoints)&&(identical(other.likeCount, _this.likeCount) || other.likeCount == _this.likeCount)&&const DeepCollectionEquality().equals(other.tags, _this.tags));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,grantedPoints,maxPoints,likeCount,const DeepCollectionEquality().hash(tags));
+int get hashCode {
+  final _this = this as PackageMetricsScore;
+  return Object.hash(runtimeType,_this.grantedPoints,_this.maxPoints,_this.likeCount,const DeepCollectionEquality().hash(_this.tags));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'PackageMetricsScore(grantedPoints: $grantedPoints, maxPoints: $maxPoints, likeCount: $likeCount, tags: $tags)';
+  final _this = this as PackageMetricsScore;
+  return 'PackageMetricsScore(grantedPoints: ${_this.grantedPoints}, maxPoints: ${_this.maxPoints}, likeCount: ${_this.likeCount}, tags: ${_this.tags})';
 }
 
 
@@ -72,7 +79,7 @@ class _$PackageMetricsScoreCopyWithImpl<$Res>
 /// Create a copy of PackageMetricsScore
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? grantedPoints = null,Object? maxPoints = null,Object? likeCount = null,Object? tags = null,}) {
-  return _then(_self.copyWith(
+  return _then(PackageMetricsScore(
 grantedPoints: null == grantedPoints ? _self.grantedPoints : grantedPoints // ignore: cast_nullable_to_non_nullable
 as int,maxPoints: null == maxPoints ? _self.maxPoints : maxPoints // ignore: cast_nullable_to_non_nullable
 as int,likeCount: null == likeCount ? _self.likeCount : likeCount // ignore: cast_nullable_to_non_nullable
@@ -212,7 +219,7 @@ return $default(_that.grantedPoints,_that.maxPoints,_that.likeCount,_that.tags);
 @JsonSerializable()
 
 class _PackageMetricsScore with DiagnosticableTreeMixin implements PackageMetricsScore {
-   _PackageMetricsScore({required this.grantedPoints, required this.maxPoints, required this.likeCount, required final  List<String> tags}): _tags = tags;
+   _PackageMetricsScore({required this.grantedPoints, required this.maxPoints, required this.likeCount, required  List<String> tags}): _tags = tags;
   factory _PackageMetricsScore.fromJson(Map<String, dynamic> json) => _$PackageMetricsScoreFromJson(json);
 
 @override final  int grantedPoints;
@@ -238,23 +245,25 @@ Map<String, dynamic> toJson() {
 }
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'PackageMetricsScore'))
     ..add(DiagnosticsProperty('grantedPoints', grantedPoints))..add(DiagnosticsProperty('maxPoints', maxPoints))..add(DiagnosticsProperty('likeCount', likeCount))..add(DiagnosticsProperty('tags', tags));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PackageMetricsScore&&(identical(other.grantedPoints, grantedPoints) || other.grantedPoints == grantedPoints)&&(identical(other.maxPoints, maxPoints) || other.maxPoints == maxPoints)&&(identical(other.likeCount, likeCount) || other.likeCount == likeCount)&&const DeepCollectionEquality().equals(other._tags, _tags));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PackageMetricsScore&&(identical(other.grantedPoints, grantedPoints) || other.grantedPoints == grantedPoints)&&(identical(other.maxPoints, maxPoints) || other.maxPoints == maxPoints)&&(identical(other.likeCount, likeCount) || other.likeCount == likeCount)&&const DeepCollectionEquality().equals(other.tags, _tags));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,grantedPoints,maxPoints,likeCount,const DeepCollectionEquality().hash(_tags));
+int get hashCode {
+    return Object.hash(runtimeType,grantedPoints,maxPoints,likeCount,const DeepCollectionEquality().hash(_tags));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'PackageMetricsScore(grantedPoints: $grantedPoints, maxPoints: $maxPoints, likeCount: $likeCount, tags: $tags)';
+    return 'PackageMetricsScore(grantedPoints: $grantedPoints, maxPoints: $maxPoints, likeCount: $likeCount, tags: $tags)';
 }
 
 
@@ -311,23 +320,29 @@ $PackageMetricsResponseCopyWith<PackageMetricsResponse> get copyWith => _$Packag
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as PackageMetricsResponse;
   properties
     ..add(DiagnosticsProperty('type', 'PackageMetricsResponse'))
-    ..add(DiagnosticsProperty('score', score));
+    ..add(DiagnosticsProperty('score', _this.score));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PackageMetricsResponse&&(identical(other.score, score) || other.score == score));
+  final _this = this as PackageMetricsResponse;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PackageMetricsResponse&&(identical(other.score, _this.score) || other.score == _this.score));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,score);
+int get hashCode {
+  final _this = this as PackageMetricsResponse;
+  return Object.hash(runtimeType,_this.score);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'PackageMetricsResponse(score: $score)';
+  final _this = this as PackageMetricsResponse;
+  return 'PackageMetricsResponse(score: ${_this.score})';
 }
 
 
@@ -356,7 +371,7 @@ class _$PackageMetricsResponseCopyWithImpl<$Res>
 /// Create a copy of PackageMetricsResponse
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? score = null,}) {
-  return _then(_self.copyWith(
+  return _then(PackageMetricsResponse(
 score: null == score ? _self.score : score // ignore: cast_nullable_to_non_nullable
 as PackageMetricsScore,
   ));
@@ -519,23 +534,25 @@ Map<String, dynamic> toJson() {
 }
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'PackageMetricsResponse'))
     ..add(DiagnosticsProperty('score', score));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PackageMetricsResponse&&(identical(other.score, score) || other.score == score));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PackageMetricsResponse&&(identical(other.score, score) || other.score == score));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,score);
+int get hashCode {
+    return Object.hash(runtimeType,score);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'PackageMetricsResponse(score: $score)';
+    return 'PackageMetricsResponse(score: $score)';
 }
 
 
@@ -598,23 +615,29 @@ $PackageDetailsCopyWith<PackageDetails> get copyWith => _$PackageDetailsCopyWith
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as PackageDetails;
   properties
     ..add(DiagnosticsProperty('type', 'PackageDetails'))
-    ..add(DiagnosticsProperty('version', version))..add(DiagnosticsProperty('pubspec', pubspec));
+    ..add(DiagnosticsProperty('version', _this.version))..add(DiagnosticsProperty('pubspec', _this.pubspec));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PackageDetails&&(identical(other.version, version) || other.version == version)&&(identical(other.pubspec, pubspec) || other.pubspec == pubspec));
+  final _this = this as PackageDetails;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PackageDetails&&(identical(other.version, _this.version) || other.version == _this.version)&&(identical(other.pubspec, _this.pubspec) || other.pubspec == _this.pubspec));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,version,pubspec);
+int get hashCode {
+  final _this = this as PackageDetails;
+  return Object.hash(runtimeType,_this.version,_this.pubspec);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'PackageDetails(version: $version, pubspec: $pubspec)';
+  final _this = this as PackageDetails;
+  return 'PackageDetails(version: ${_this.version}, pubspec: ${_this.pubspec})';
 }
 
 
@@ -643,7 +666,7 @@ class _$PackageDetailsCopyWithImpl<$Res>
 /// Create a copy of PackageDetails
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? version = null,Object? pubspec = null,}) {
-  return _then(_self.copyWith(
+  return _then(PackageDetails(
 version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
 as String,pubspec: null == pubspec ? _self.pubspec : pubspec // ignore: cast_nullable_to_non_nullable
 as Pubspec,
@@ -799,23 +822,25 @@ Map<String, dynamic> toJson() {
 }
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'PackageDetails'))
     ..add(DiagnosticsProperty('version', version))..add(DiagnosticsProperty('pubspec', pubspec));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PackageDetails&&(identical(other.version, version) || other.version == version)&&(identical(other.pubspec, pubspec) || other.pubspec == pubspec));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PackageDetails&&(identical(other.version, version) || other.version == version)&&(identical(other.pubspec, pubspec) || other.pubspec == pubspec));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,version,pubspec);
+int get hashCode {
+    return Object.hash(runtimeType,version,pubspec);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'PackageDetails(version: $version, pubspec: $pubspec)';
+    return 'PackageDetails(version: $version, pubspec: $pubspec)';
 }
 
 
@@ -870,23 +895,29 @@ $PackageCopyWith<Package> get copyWith => _$PackageCopyWithImpl<Package>(this as
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as Package;
   properties
     ..add(DiagnosticsProperty('type', 'Package'))
-    ..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('latest', latest));
+    ..add(DiagnosticsProperty('name', _this.name))..add(DiagnosticsProperty('latest', _this.latest));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Package&&(identical(other.name, name) || other.name == name)&&(identical(other.latest, latest) || other.latest == latest));
+  final _this = this as Package;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Package&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.latest, _this.latest) || other.latest == _this.latest));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,latest);
+int get hashCode {
+  final _this = this as Package;
+  return Object.hash(runtimeType,_this.name,_this.latest);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Package(name: $name, latest: $latest)';
+  final _this = this as Package;
+  return 'Package(name: ${_this.name}, latest: ${_this.latest})';
 }
 
 
@@ -915,7 +946,7 @@ class _$PackageCopyWithImpl<$Res>
 /// Create a copy of Package
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? latest = null,}) {
-  return _then(_self.copyWith(
+  return _then(Package(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,latest: null == latest ? _self.latest : latest // ignore: cast_nullable_to_non_nullable
 as PackageDetails,
@@ -1080,23 +1111,25 @@ Map<String, dynamic> toJson() {
 }
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'Package'))
     ..add(DiagnosticsProperty('name', name))..add(DiagnosticsProperty('latest', latest));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Package&&(identical(other.name, name) || other.name == name)&&(identical(other.latest, latest) || other.latest == latest));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Package&&(identical(other.name, name) || other.name == name)&&(identical(other.latest, latest) || other.latest == latest));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,latest);
+int get hashCode {
+    return Object.hash(runtimeType,name,latest);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'Package(name: $name, latest: $latest)';
+    return 'Package(name: $name, latest: $latest)';
 }
 
 
@@ -1160,23 +1193,29 @@ $LikedPackageCopyWith<LikedPackage> get copyWith => _$LikedPackageCopyWithImpl<L
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as LikedPackage;
   properties
     ..add(DiagnosticsProperty('type', 'LikedPackage'))
-    ..add(DiagnosticsProperty('package', package))..add(DiagnosticsProperty('liked', liked));
+    ..add(DiagnosticsProperty('package', _this.package))..add(DiagnosticsProperty('liked', _this.liked));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LikedPackage&&(identical(other.package, package) || other.package == package)&&(identical(other.liked, liked) || other.liked == liked));
+  final _this = this as LikedPackage;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LikedPackage&&(identical(other.package, _this.package) || other.package == _this.package)&&(identical(other.liked, _this.liked) || other.liked == _this.liked));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,package,liked);
+int get hashCode {
+  final _this = this as LikedPackage;
+  return Object.hash(runtimeType,_this.package,_this.liked);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'LikedPackage(package: $package, liked: $liked)';
+  final _this = this as LikedPackage;
+  return 'LikedPackage(package: ${_this.package}, liked: ${_this.liked})';
 }
 
 
@@ -1205,7 +1244,7 @@ class _$LikedPackageCopyWithImpl<$Res>
 /// Create a copy of LikedPackage
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? package = null,Object? liked = null,}) {
-  return _then(_self.copyWith(
+  return _then(LikedPackage(
 package: null == package ? _self.package : package // ignore: cast_nullable_to_non_nullable
 as String,liked: null == liked ? _self.liked : liked // ignore: cast_nullable_to_non_nullable
 as bool,
@@ -1361,23 +1400,25 @@ Map<String, dynamic> toJson() {
 }
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'LikedPackage'))
     ..add(DiagnosticsProperty('package', package))..add(DiagnosticsProperty('liked', liked));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LikedPackage&&(identical(other.package, package) || other.package == package)&&(identical(other.liked, liked) || other.liked == liked));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _LikedPackage&&(identical(other.package, package) || other.package == package)&&(identical(other.liked, liked) || other.liked == liked));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,package,liked);
+int get hashCode {
+    return Object.hash(runtimeType,package,liked);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'LikedPackage(package: $package, liked: $liked)';
+    return 'LikedPackage(package: $package, liked: $liked)';
 }
 
 
@@ -1439,23 +1480,29 @@ $LikedPackagesResponseCopyWith<LikedPackagesResponse> get copyWith => _$LikedPac
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as LikedPackagesResponse;
   properties
     ..add(DiagnosticsProperty('type', 'LikedPackagesResponse'))
-    ..add(DiagnosticsProperty('likedPackages', likedPackages));
+    ..add(DiagnosticsProperty('likedPackages', _this.likedPackages));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LikedPackagesResponse&&const DeepCollectionEquality().equals(other.likedPackages, likedPackages));
+  final _this = this as LikedPackagesResponse;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LikedPackagesResponse&&const DeepCollectionEquality().equals(other.likedPackages, _this.likedPackages));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(likedPackages));
+int get hashCode {
+  final _this = this as LikedPackagesResponse;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.likedPackages));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'LikedPackagesResponse(likedPackages: $likedPackages)';
+  final _this = this as LikedPackagesResponse;
+  return 'LikedPackagesResponse(likedPackages: ${_this.likedPackages})';
 }
 
 
@@ -1484,7 +1531,7 @@ class _$LikedPackagesResponseCopyWithImpl<$Res>
 /// Create a copy of LikedPackagesResponse
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? likedPackages = null,}) {
-  return _then(_self.copyWith(
+  return _then(LikedPackagesResponse(
 likedPackages: null == likedPackages ? _self.likedPackages : likedPackages // ignore: cast_nullable_to_non_nullable
 as List<LikedPackage>,
   ));
@@ -1621,7 +1668,7 @@ return $default(_that.likedPackages);case _:
 @JsonSerializable()
 
 class _LikesPackagesResponse with DiagnosticableTreeMixin implements LikedPackagesResponse {
-   _LikesPackagesResponse({required final  List<LikedPackage> likedPackages}): _likedPackages = likedPackages;
+   _LikesPackagesResponse({required  List<LikedPackage> likedPackages}): _likedPackages = likedPackages;
   factory _LikesPackagesResponse.fromJson(Map<String, dynamic> json) => _$LikesPackagesResponseFromJson(json);
 
  final  List<LikedPackage> _likedPackages;
@@ -1644,23 +1691,25 @@ Map<String, dynamic> toJson() {
 }
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'LikedPackagesResponse'))
     ..add(DiagnosticsProperty('likedPackages', likedPackages));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LikesPackagesResponse&&const DeepCollectionEquality().equals(other._likedPackages, _likedPackages));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _LikesPackagesResponse&&const DeepCollectionEquality().equals(other.likedPackages, _likedPackages));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_likedPackages));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_likedPackages));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'LikedPackagesResponse(likedPackages: $likedPackages)';
+    return 'LikedPackagesResponse(likedPackages: $likedPackages)';
 }
 
 
@@ -1714,23 +1763,29 @@ $PubPackagesResponseCopyWith<PubPackagesResponse> get copyWith => _$PubPackagesR
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as PubPackagesResponse;
   properties
     ..add(DiagnosticsProperty('type', 'PubPackagesResponse'))
-    ..add(DiagnosticsProperty('packages', packages));
+    ..add(DiagnosticsProperty('packages', _this.packages));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PubPackagesResponse&&const DeepCollectionEquality().equals(other.packages, packages));
+  final _this = this as PubPackagesResponse;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PubPackagesResponse&&const DeepCollectionEquality().equals(other.packages, _this.packages));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(packages));
+int get hashCode {
+  final _this = this as PubPackagesResponse;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.packages));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'PubPackagesResponse(packages: $packages)';
+  final _this = this as PubPackagesResponse;
+  return 'PubPackagesResponse(packages: ${_this.packages})';
 }
 
 
@@ -1759,7 +1814,7 @@ class _$PubPackagesResponseCopyWithImpl<$Res>
 /// Create a copy of PubPackagesResponse
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? packages = null,}) {
-  return _then(_self.copyWith(
+  return _then(PubPackagesResponse(
 packages: null == packages ? _self.packages : packages // ignore: cast_nullable_to_non_nullable
 as List<Package>,
   ));
@@ -1896,7 +1951,7 @@ return $default(_that.packages);case _:
 @JsonSerializable()
 
 class _PubPackagesResponse with DiagnosticableTreeMixin implements PubPackagesResponse {
-   _PubPackagesResponse({required final  List<Package> packages}): _packages = packages;
+   _PubPackagesResponse({required  List<Package> packages}): _packages = packages;
   factory _PubPackagesResponse.fromJson(Map<String, dynamic> json) => _$PubPackagesResponseFromJson(json);
 
  final  List<Package> _packages;
@@ -1919,23 +1974,25 @@ Map<String, dynamic> toJson() {
 }
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'PubPackagesResponse'))
     ..add(DiagnosticsProperty('packages', packages));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PubPackagesResponse&&const DeepCollectionEquality().equals(other._packages, _packages));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PubPackagesResponse&&const DeepCollectionEquality().equals(other.packages, _packages));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_packages));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_packages));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'PubPackagesResponse(packages: $packages)';
+    return 'PubPackagesResponse(packages: $packages)';
 }
 
 
@@ -1989,23 +2046,29 @@ $SearchPackageCopyWith<SearchPackage> get copyWith => _$SearchPackageCopyWithImp
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as SearchPackage;
   properties
     ..add(DiagnosticsProperty('type', 'SearchPackage'))
-    ..add(DiagnosticsProperty('package', package));
+    ..add(DiagnosticsProperty('package', _this.package));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchPackage&&(identical(other.package, package) || other.package == package));
+  final _this = this as SearchPackage;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchPackage&&(identical(other.package, _this.package) || other.package == _this.package));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,package);
+int get hashCode {
+  final _this = this as SearchPackage;
+  return Object.hash(runtimeType,_this.package);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchPackage(package: $package)';
+  final _this = this as SearchPackage;
+  return 'SearchPackage(package: ${_this.package})';
 }
 
 
@@ -2034,7 +2097,7 @@ class _$SearchPackageCopyWithImpl<$Res>
 /// Create a copy of SearchPackage
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? package = null,}) {
-  return _then(_self.copyWith(
+  return _then(SearchPackage(
 package: null == package ? _self.package : package // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -2188,23 +2251,25 @@ Map<String, dynamic> toJson() {
 }
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'SearchPackage'))
     ..add(DiagnosticsProperty('package', package));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchPackage&&(identical(other.package, package) || other.package == package));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchPackage&&(identical(other.package, package) || other.package == package));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,package);
+int get hashCode {
+    return Object.hash(runtimeType,package);
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'SearchPackage(package: $package)';
+    return 'SearchPackage(package: $package)';
 }
 
 
@@ -2258,23 +2323,29 @@ $PubSearchResponseCopyWith<PubSearchResponse> get copyWith => _$PubSearchRespons
 
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as PubSearchResponse;
   properties
     ..add(DiagnosticsProperty('type', 'PubSearchResponse'))
-    ..add(DiagnosticsProperty('packages', packages));
+    ..add(DiagnosticsProperty('packages', _this.packages));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PubSearchResponse&&const DeepCollectionEquality().equals(other.packages, packages));
+  final _this = this as PubSearchResponse;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PubSearchResponse&&const DeepCollectionEquality().equals(other.packages, _this.packages));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(packages));
+int get hashCode {
+  final _this = this as PubSearchResponse;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.packages));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'PubSearchResponse(packages: $packages)';
+  final _this = this as PubSearchResponse;
+  return 'PubSearchResponse(packages: ${_this.packages})';
 }
 
 
@@ -2303,7 +2374,7 @@ class _$PubSearchResponseCopyWithImpl<$Res>
 /// Create a copy of PubSearchResponse
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? packages = null,}) {
-  return _then(_self.copyWith(
+  return _then(PubSearchResponse(
 packages: null == packages ? _self.packages : packages // ignore: cast_nullable_to_non_nullable
 as List<SearchPackage>,
   ));
@@ -2440,7 +2511,7 @@ return $default(_that.packages);case _:
 @JsonSerializable()
 
 class _PubSearchResponse with DiagnosticableTreeMixin implements PubSearchResponse {
-   _PubSearchResponse({required final  List<SearchPackage> packages}): _packages = packages;
+   _PubSearchResponse({required  List<SearchPackage> packages}): _packages = packages;
   factory _PubSearchResponse.fromJson(Map<String, dynamic> json) => _$PubSearchResponseFromJson(json);
 
  final  List<SearchPackage> _packages;
@@ -2463,23 +2534,25 @@ Map<String, dynamic> toJson() {
 }
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-  properties
+    properties
     ..add(DiagnosticsProperty('type', 'PubSearchResponse'))
     ..add(DiagnosticsProperty('packages', packages));
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PubSearchResponse&&const DeepCollectionEquality().equals(other._packages, _packages));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PubSearchResponse&&const DeepCollectionEquality().equals(other.packages, _packages));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_packages));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_packages));
+}
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'PubSearchResponse(packages: $packages)';
+    return 'PubSearchResponse(packages: $packages)';
 }
 
 

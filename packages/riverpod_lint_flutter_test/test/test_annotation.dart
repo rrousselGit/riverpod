@@ -50,6 +50,9 @@ class TestFor {
   static const only_use_keep_alive_inside_keep_alive = TestFor(
     'only_use_keep_alive_inside_keep_alive',
   );
+  static const prefer_keep_alive_annotation = TestFor(
+    'prefer_keep_alive_annotation',
+  );
   static const protected_notifier_properties = TestFor(
     'protected_notifier_properties',
   );

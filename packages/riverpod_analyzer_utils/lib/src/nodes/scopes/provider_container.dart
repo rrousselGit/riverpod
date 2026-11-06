@@ -15,12 +15,12 @@ extension ProviderContainerInstanceCreationExpressionX
       }
 
       final overrides = argumentList.namedArguments().firstWhereOrNull(
-        (e) => e.name.label.name == 'overrides',
+        (e) => e.name.lexeme == 'overrides',
       );
 
       return ProviderContainerInstanceCreationExpression._(
         node: this,
-        overrides: overrides?.expression.overrides,
+        overrides: overrides?.argumentExpression.overrides,
       );
     });
   }
@@ -35,5 +35,5 @@ final class ProviderContainerInstanceCreationExpression {
   final InstanceCreationExpression node;
   final ProviderOverrideList? overrides;
 
-  late final NamedExpression? parent = node.argumentList.named('parent');
+  late final NamedArgument? parent = node.argumentList.named('parent');
 }

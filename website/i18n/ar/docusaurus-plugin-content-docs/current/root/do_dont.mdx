@@ -1,0 +1,168 @@
+---
+title: افعل/لا تفعل
+version: 2
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
+
+لضمان سهولة صيانة الكود الخاص بك، إليك قائمة بأفضل الممارسات التي يجب عليك اتباعها عند استخدام Riverpod.
+
+هذه القائمة ليست شاملة، و هي قابلة للتغيير.  
+إذا كنت تمتلك أي اقتراحات، فلا تتردد في [اضافة مشكلة](https://github.com/rrousselGit/riverpod/issues/new?assignees=rrousselGit&labels=documentation%2C+needs+triage&projects=&template=example_request.md&title=).
+
+العناصر في هذه القائمة ليست في أي ترتيب محدد.
+
+يمكنك تطبيق معظم هذه الممارسات باستخدام [riverpod_lint](https://pub.dev/packages/riverpod_lint).
+يرجى مراجعة <Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint"/>
+لتعليمات التثبيت.
+
+## تجنب تهيئة providers في widget
+
+Providers يجب أن تقوم بتهيئة نفسها.  
+لا ينبغي تهيئتها بواسطة عنصر خارجي مثل widget.
+
+قد يؤدي عدم القيام بذلك إلى حدوث حالة تسابق وسلوكيات غير متوقعة.
+**لا تفعل**
+
+```dart
+class WidgetState extends State<MyWidget> {
+  @override
+  void initState() {
+    super.initState();
+    // سوء الممارسات:  Providers يجب أن تقوم بتهيئة نفسها
+    ref.read(provider).init();
+  }
+}
+```
+
+**خذ في نظر الاعتبار**
+
+لا يوجد حل واحد يناسب جميع الحالات لهذه المشكلة.
+
+إذا كان منطق التهيئة لديك يعتمد على عوامل خارجية عن الـ Provider
+فغالبًا ما يكون المكان الأمثل لوضع هذا المنطق هو دالة `onPressed` الخاصة بالزر
+الذي يُفعّل التنقل.
+
+```dart
+ElevatedButton(
+  onPressed: () {
+    ref.read(provider).init();
+    Navigator.of(context).push(...);
+  },
+  child: Text('Navigate'),
+)
+```
+
+## تجنب استخدام providers ل Ephemeral state.
+
+Providers مصممة لتمثيل حالة الأعمال المشتركة.
+
+Providers ليست مصممة لتمثيل [Ephemeral state](https://docs.flutter.dev/data-and-backend/state-mgmt/ephemeral-vs-app#ephemeral-state), مثل:
+
+* العنصر المحدد حالياً.
+* حالة النموذج (Form state)/
+لأن مغادرة النموذج والدخول إليه مجدداً يجب عادةً أن يعيد تعيين حالة النموذج.
+وهذا يشمل الضغط على زر الرجوع أثناء استخدام النماذج متعددة الصفحات.
+* الرسوم المتحركة (Animations).
+* بشكل عام، كل شيء يتعامل معه Flutter باستخدام "متحكم" (مثل `TextEditingController`).
+
+إذا كنت تبحث عن طريقة للتعامل مع الحالة المحلية للودجت (local widget state)، فكر في استخدام [flutter_hooks](https://pub.dev/packages/flutter_hooks) بدلاً من ذلك.
+
+أحد الأسباب التي تجعل هذا الأمر غير محبذ هو أن مثل هذه الحالة غالباً ما تكون محصورة في مسار أو شاشة معينة (scoped to a route).
+الفشل في مراعاة ذلك قد يؤدي إلى تعطيل عمل زر الرجوع في تطبيقك، وذلك بسبب قيام صفحة جديدة بالكتابة فوق حالة صفحة سابقة.
+
+على سبيل المثال، لنفترض أننا قمنا بتخزين `book` (الكتاب) المحدد حالياً داخل provider:
+
+```dart
+final selectedBookProvider = StateProvider<String?>((ref) => null);
+```
+التحدي الذي قد نواجهه هو أن سجل التنقل قد يبدو كالتالي:
+```
+/books
+/books/42
+/books/21
+```
+
+في هذا السيناريو، عند الضغط على زر الرجوع، يجب أن نتوقع العودة إلى `/books/42`.
+ولكن لو استخدمنا `selectedBookProvider` لتخزين الكتاب المحدد، فإن المعرف (ID) المحدد لن يعود إلى قيمته السابقة، وسنستمر في رؤية `/books/21`.
+
+## لا تقم بتنفيذ آثار جانبية (Side Effects) أثناء تهيئة الـ provider
+
+يجب استخدام الـ providers عموماً لتمثيل عملية "قراءة".
+ولا ينبغي استخدامها لعمليات "الكتابة"، مثل إرسال نموذج (submitting a form).
+
+استخدام الـ providers لمثل هذه العمليات قد يؤدي إلى سلوكيات غير متوقعة، مثل تخطي أثر جانبي معين إذا تم تنفيذ واحد سابق له بالفعل.
+
+إذا كنت تبحث عن طريقة للتعامل مع حالات التحميل/الخطأ الخاصة بأثر جانبي، راجع <Link documentID="concepts2/mutations"/>.
+
+**لا تفعل**:
+
+```dart
+final submitProvider = FutureProvider((ref) async {
+  final formState = ref.watch(formState);
+
+// سيء: لا ينبغي استخدام الـ 
+// Providers 
+// لعمليات الكتابة
+return http.post('https://my-api.com', body: formState.toJson());
+});
+```
+
+## تفضيل استخدام ref.watch/read/listen (و APIs مماثلة) مع providers معروفين بشكل ثابت
+
+Riverpod ينصح بتمكين قواعد التصحيح (من خلال `riverpod_lint`).  
+لكن لكي تصبح هذه القواعد فعالة، يجب كتابة الكود بطريقة يمكن تحليلها بشكل ثابت.
+
+عدم الالتزام بذلك قد يجعل العثور على الأخطاء البرمجية أصعب، أو قد يتسبب في ظهور "إيجابيات كاذبة" (false positives) مع أدوات التدقيق البرمجي (lints).
+
+**افعل**:
+
+```dart
+final provider = Provider((ref) => 42);
+
+...
+
+// جيد لأن الـ 
+// provider معروف بشكل ثابت (statically).
+ref.watch(provider);
+```
+
+**لا تفعل**:
+
+```dart
+class Example extends ConsumerWidget {
+  Example({required this.provider});
+  final Provider<int> provider;
+
+  @override
+  Widget build(context, ref) {
+  // سيء لأن التحليل الثابت (static analysis) لا يمكنه معرفة ما هو الـ `provider`
+    ref.watch(provider);
+  }
+}
+```
+
+## تجنب إنشاء providers بشكل ديناميكي
+
+Providers يجب أن تكون فقط متغيرات ثابتة (top-level final variables).
+
+**افعل**:
+
+```dart
+final provider = Provider<String>((ref) => 'مرحبا بالعالم!');
+```
+
+**لا تفعل**:
+
+```dart
+class Example {
+  // غير مدعوم. يمكن أن يؤدي إلى تسرب الذاكرة وسلوك غير متوقع.
+  final provider = Provider<String>((ref) => 'مرحبا بالعالم!');
+}
+```
+
+:::info
+إنشاء providers كمتغيرات ثابتة (static final variables) مسموح به،
+لكن ليس مدعومًا من قبل code-generator.
+:::

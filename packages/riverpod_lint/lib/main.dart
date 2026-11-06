@@ -16,6 +16,7 @@ import 'src/lints/missing_provider_scope.dart';
 import 'src/lints/notifier_build.dart';
 import 'src/lints/notifier_extends.dart';
 import 'src/lints/only_use_keep_alive_inside_keep_alive.dart';
+import 'src/lints/prefer_keep_alive_annotation.dart';
 import 'src/lints/protected_notifier_properties.dart';
 import 'src/lints/provider_dependencies.dart';
 import 'src/lints/provider_parameters.dart';
@@ -57,6 +58,7 @@ class _RiverpodPlugin extends Plugin {
     registry.registerFixForRule(NotifierExtends.code, NotifierExtendsFix.new);
 
     registry.registerWarningRule(OnlyUseKeepAliveInsideKeepAlive());
+    registry.registerWarningRule(PreferKeepAliveAnnotation());
     registry.registerWarningRule(ProtectedNotifierProperties());
 
     registry.registerWarningRule(ProviderDependencies());

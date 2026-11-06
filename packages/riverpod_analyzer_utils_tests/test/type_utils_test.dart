@@ -1,5 +1,3 @@
-// ignore_for_file: invalid_use_of_internal_member
-
 @Timeout.factor(2)
 library;
 
@@ -22,8 +20,8 @@ ProviderBase? fromRiverpod = null;
 Consumer? fromFlutterRiverpod = null;
 ''',
     (resolver, unit, units) async {
-      final variables =
-          unit.declarations.whereType<TopLevelVariableDeclaration>();
+      final variables = unit.declarations
+          .whereType<TopLevelVariableDeclaration>();
 
       for (final variable in variables) {
         expect(
@@ -115,13 +113,13 @@ class D3 extends _$D3 {
 }
 ''',
     (resolver, unit, units) async {
-      final generated =
-          units.singleWhere((e) => e.path.endsWith('.g.dart')).unit;
+      final generated = units
+          .singleWhere((e) => e.path.endsWith('.g.dart'))
+          .unit;
 
-      final variables =
-          generated.declarations
-              .whereType<TopLevelVariableDeclaration>()
-              .toList();
+      final variables = generated.declarations
+          .whereType<TopLevelVariableDeclaration>()
+          .toList();
 
       expect(variables, hasLength(12));
 
@@ -183,8 +181,8 @@ final streamNotifierProvider = StreamNotifierProvider((ref) => throws());
 final streamNotifierProviderFamily = StreamNotifierProvider.family<int, int>((ref, id) => throws());
 ''',
     (resolver, unit, units) async {
-      final variables =
-          unit.declarations.whereType<TopLevelVariableDeclaration>();
+      final variables = unit.declarations
+          .whereType<TopLevelVariableDeclaration>();
 
       expect(variables, hasLength(18));
 

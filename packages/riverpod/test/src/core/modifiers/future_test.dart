@@ -1,6 +1,6 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show NodeInternal;
+import 'package:riverpod/src/internals.dart' show ContainerReadElement;
 import 'package:test/test.dart';
 
 import '../../utils.dart';
@@ -72,11 +72,10 @@ void main() {
         container.read(provider);
 
         expect(buildCount, 1);
-        final [future as Future<String>] =
-            verifyOnly(
-              listener,
-              listener.call(argThat(isNull), captureAny),
-            ).captured;
+        final [future as Future<String>] = verifyOnly(
+          listener,
+          listener.call(argThat(isNull), captureAny),
+        ).captured;
         expect(await future, 'Hello');
       });
 
@@ -97,15 +96,67 @@ void main() {
 
           expect(await sub.read(), 'Hello');
 
-          final [future as Future<String>] =
-              verifyOnly(
-                listener,
-                listener.call(argThat(isNull), captureAny),
-              ).captured;
+          final [future as Future<String>] = verifyOnly(
+            listener,
+            listener.call(argThat(isNull), captureAny),
+          ).captured;
 
           expect(await future, 'Hello');
         },
       );
+    });
+
+    test('Listening to a modifier correctly fires ref life-cycles', () async {
+      final container = ProviderContainer.test();
+      final onDispose = OnDisposeMock();
+      final onAddListener = OnAddListener();
+      final onRemoveListener = OnRemoveListener();
+      final onResume = OnResume();
+      final onCancel = OnCancel();
+
+      final provider = FutureProvider((ref) {
+        ref.onDispose(onDispose.call);
+        ref.onAddListener(onAddListener.call);
+        ref.onRemoveListener(onRemoveListener.call);
+        ref.onCancel(onCancel.call);
+        ref.onResume(onResume.call);
+        return 0;
+      });
+
+      final sub = container.listen(provider.future, (prev, value) {});
+
+      verifyOnly(onAddListener, onAddListener());
+
+      final sub2 = container.listen(provider.future, (prev, value) {});
+
+      verifyOnly(onAddListener, onAddListener());
+
+      sub.close();
+
+      verifyOnly(onRemoveListener, onRemoveListener());
+      verifyZeroInteractions(onCancel);
+
+      sub2.close();
+
+      verifyOnly(onRemoveListener, onRemoveListener());
+      verifyZeroInteractions(onResume);
+      verifyOnly(onCancel, onCancel());
+
+      container.listen(provider.future, (prev, value) {});
+
+      verifyOnly(onAddListener, onAddListener());
+      verifyOnly(onResume, onResume());
+
+      container.listen(provider.future, (prev, value) {});
+
+      verifyOnly(onAddListener, onAddListener());
+      verifyNoMoreInteractions(onCancel);
+      verifyNoMoreInteractions(onResume);
+      verifyZeroInteractions(onDispose);
+
+      container.invalidate(provider);
+
+      verifyOnly(onDispose, onDispose());
     });
   });
 }

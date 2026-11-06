@@ -120,7 +120,7 @@ class _SyncValueProviderElement<ValueT>
 
   @override
   void _setValue(ValueT value) {
-    this.value = AsyncData(value);
+    setValue(AsyncData(value));
   }
 }
 

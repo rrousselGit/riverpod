@@ -174,21 +174,21 @@ class $StreamProviderElement<ValueT>
   }
 
   @override
-  void onData(AsyncData<ValueT> value, {bool seamless = false}) {
+  bool onData(AsyncData<ValueT> value, {bool seamless = false}) {
     if (!_streamController.isClosed) {
       // The controller might be closed if onData is executed post dispose. Cf onData
       _streamController.add(value.value);
     }
-    super.onData(value, seamless: seamless);
+    return super.onData(value, seamless: seamless);
   }
 
   @override
-  void onError(AsyncError<ValueT> value, {bool seamless = false}) {
+  bool onError(AsyncError<ValueT> value, {bool seamless = false}) {
     if (!_streamController.isClosed) {
       // The controller might be closed if onError is executed post dispose. Cf onError
       _streamController.addError(value.error, value.stackTrace);
     }
-    super.onError(value, seamless: seamless);
+    return super.onError(value, seamless: seamless);
   }
 }
 

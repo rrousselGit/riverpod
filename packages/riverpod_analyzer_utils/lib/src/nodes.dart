@@ -49,6 +49,14 @@ part 'nodes.g.dart';
 
 const _ast = Object();
 
+@internal
+extension ClassMembers on ClassDeclaration {
+  List<ClassMember> get members => switch (body) {
+    BlockClassBody(:final members) => members,
+    EmptyClassBody() => const [],
+  };
+}
+
 extension AstX on AstNode {
   Iterable<AstNode> get ancestors sync* {
     var parent = this.parent;

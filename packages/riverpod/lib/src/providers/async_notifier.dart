@@ -13,6 +13,7 @@ part 'async_notifier/family.dart';
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
+@internal
 @publicInCodegen
 abstract class $AsyncNotifier<ValueT> extends $AsyncNotifierBase<ValueT>
     with $AsyncClassModifier<ValueT, FutureOr<ValueT>> {}
@@ -20,6 +21,7 @@ abstract class $AsyncNotifier<ValueT> extends $AsyncNotifierBase<ValueT>
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
 @publicInCodegen
+@internal
 abstract base class $AsyncNotifierProvider<
   //
   NotifierT extends $AsyncNotifier<ValueT>,
@@ -85,7 +87,7 @@ class $AsyncNotifierProviderElement<
   $AsyncNotifierProviderElement(super.pointer);
 
   @override
-  void handleCreate(Ref ref, FutureOr<ValueT> Function() created) {
-    handleFuture(ref, created);
+  WhenComplete handleCreate(Ref ref, FutureOr<ValueT> Function() created) {
+    return handleFuture(ref, created);
   }
 }

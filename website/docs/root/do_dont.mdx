@@ -77,7 +77,14 @@ the state of a previous page.
 For instance say we were to store the currently selected `book` in a provider:
 
 ```dart
-final selectedBookProvider = StateProvider<String?>((ref) => null);
+final selectedBookProvider = NotifierProvider<SelectedBook, String?>(
+  SelectedBook.new,
+);
+
+class SelectedBook extends Notifier<String?> {
+  @override
+  String? build() => null;
+}
 ```
 One challenge we could face is, the navigation history could look like:
 ```

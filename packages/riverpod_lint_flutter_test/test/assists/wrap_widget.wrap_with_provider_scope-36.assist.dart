@@ -1,5 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, type=warning
+// ignore_for_file: type=lint, type=warning, todo
 // Offsets for "wrap_with_provider_scope":
 // 35:       onPressed: () => onSaved?.call(),
 // 36:       child: <>const Placeholder(),
@@ -16,8 +16,8 @@
 @TestFor.wrap_with_provider_scope
 library;
 
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../test_annotation.dart';
 
