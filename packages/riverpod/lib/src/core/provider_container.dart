@@ -456,11 +456,10 @@ class ProviderPointerManager {
             previousPointer
               ..familyOverride = override
               ..targetContainer = container
-                  // Remove inherited family values and keep only local ones
-                  ..pointers
-                  .removeWhere(
-                    (key, value) => value.targetContainer != container,
-                  );
+              // Remove inherited family values and keep only local ones
+              ..pointers.removeWhere(
+                (key, value) => value.targetContainer != container,
+              );
             continue;
           }
 
@@ -1157,11 +1156,7 @@ final class ProviderContainer implements MutationTarget {
   bool exists(ProviderBase<Object?> provider) {
     switch (provider) {
       case $ProviderBaseImpl():
-        return _pointerManager
-                .readDirectory(provider)
-                ?.pointers[provider]
-                ?.element !=
-            null;
+        return _pointerManager.readElement(provider) != null;
     }
   }
 

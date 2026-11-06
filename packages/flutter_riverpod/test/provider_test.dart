@@ -1,9 +1,6 @@
-// ignore_for_file: omit_obvious_local_variable_types
-
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/mockito.dart';
 
 import 'utils.dart';
@@ -15,18 +12,15 @@ void main() {
       yield 42;
     });
     final provider = Provider((_) => 42);
-    final changeNotifierProvider = ChangeNotifierProvider((_) {
-      return ValueNotifier(0);
-    });
+    final notifierProvider = NotifierProvider<Counter, int>(Counter.new);
 
     Consumer(
       builder: (context, ref, _) {
         final int providerValue = ref.read(provider);
         final AsyncValue<int> futureProviderValue = ref.read(futureProvider);
         final AsyncValue<int> streamProviderValue = ref.read(streamProvider);
-        final ValueNotifier<int> changeNotifierProviderValue = ref.read(
-          changeNotifierProvider,
-        );
+        final int notifierProviderValue = ref.read(notifierProvider);
+        final Counter notifierValue = ref.read(notifierProvider.notifier);
 
         return Container();
       },

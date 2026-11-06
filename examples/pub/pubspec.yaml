@@ -18,6 +18,7 @@ dependencies:
   hooks_riverpod:
   html: ^0.15.0
   json_annotation: ^4.9.0
+  material_ui: ^1.0.0
   pubspec_parse: ^1.2.1
   riverpod_annotation:
   shimmer: ^4.0.0

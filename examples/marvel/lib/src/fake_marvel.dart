@@ -1,25 +1,22 @@
-// ignore: import_of_legacy_library_into_null_safe
-// ignore_for_file: invalid_annotation_target
-
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'fake_marvel.g.dart';
 
 @JsonLiteral('characters.json')
-final _characters = _$_charactersJsonLiteral;
+Map<String, Object> get _characters => _$_charactersJsonLiteral;
 
 @JsonLiteral('characters_20.json')
-final _characters20 = _$_characters20JsonLiteral;
+Map<String, Object> get _characters20 => _$_characters20JsonLiteral;
 
 @JsonLiteral('characters_name= Iron man.json')
-final _charactersIronMan = _$_charactersIronManJsonLiteral;
+Map<String, Object> get _charactersIronMan => _$_charactersIronManJsonLiteral;
 
 @JsonLiteral('characters_name= Iron man (.json')
-final _charactersIronMan2 = _$_charactersIronMan2JsonLiteral;
+Map<String, Object> get _charactersIronMan2 => _$_charactersIronMan2JsonLiteral;
 
 @JsonLiteral('character_1009368.json')
-final _character1009368 = _$_character1009368JsonLiteral;
+Map<String, Object> get _character1009368 => _$_character1009368JsonLiteral;
 
 class FakeDio implements Dio {
   FakeDio([this._apiKey = '42']);

@@ -1,3 +1,4 @@
+// dart format off
 /* SNIPPET START */ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'activity.freezed.dart';

@@ -271,17 +271,24 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
     })
     listen,
   ) {
-    void callOnError(Object error, StackTrace stackTrace) {
-      onValue(triggerRetry(error, stackTrace), seamless: !ref.isReload);
+    void Function()? onInitialized;
+    var isInitialized = false;
+    // Streams may never close, so their first event completes initialization.
+    void markInitialized() {
+      isInitialized = true;
+      onInitialized?.call();
     }
 
-    void Function()? onDone;
-    var isDone = false;
+    void callOnError(Object error, StackTrace stackTrace) {
+      onValue(triggerRetry(error, stackTrace), seamless: !ref.isReload);
+      markInitialized();
+    }
 
     try {
       _cancelSubscription = listen(
         data: (value) {
           onData(AsyncData(value), seamless: !ref.isReload);
+          markInitialized();
         },
         error: callOnError,
         last: (last) {
@@ -290,8 +297,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
         },
         done: () {
           _lastFuture = null;
-          isDone = true;
-          onDone?.call();
+          markInitialized();
         },
       );
     } on AsyncValueIsLoadingException {
@@ -303,10 +309,10 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
       callOnError(error, stackTrace);
     }
 
-    return (onDoneCb) {
-      onDone = onDoneCb;
+    return (onInitializedCb) {
+      onInitialized = onInitializedCb;
       // Handle synchronous completion
-      if (isDone) onDoneCb();
+      if (isInitialized) onInitializedCb();
     };
   }
 

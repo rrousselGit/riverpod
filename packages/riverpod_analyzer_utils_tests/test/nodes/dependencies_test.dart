@@ -17,7 +17,7 @@ void main() {
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:riverpod_annotation/experimental/scope.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 @riverpod
 int a(Ref ref) => 0;

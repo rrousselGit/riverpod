@@ -1,5 +1,9 @@
 part of '../framework.dart';
 
+/// A function that removes the listener it was returned for.
+@internal
+typedef RemoveListener = void Function();
+
 @internal
 @publicInCodegen
 extension $RefArg on Ref {

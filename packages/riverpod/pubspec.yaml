@@ -34,6 +34,7 @@ dev_dependencies:
   analyzer: ">=13.0.0 <15.0.0"
   build_runner: ^2.11.0
   expect_error: ^1.0.0
+  fake_async: ^1.3.3
   mockito: ^5.0.0
   path: ^1.9.0
   riverpod_devtool_generator: ^0.0.0

@@ -19,11 +19,11 @@ class NotifierTemplate extends Template {
 
     final baseClass = switch (provider.providerElement.createdType) {
       SupportedCreatedType.future =>
-        '\$AsyncNotifier<${provider.providerElement.valueTypeNode.toCode()}>',
+        '#{{riverpod|\$AsyncNotifier}}<${provider.providerElement.valueTypeNode.toCode()}>',
       SupportedCreatedType.stream =>
-        '\$StreamNotifier<${provider.providerElement.valueTypeNode.toCode()}>',
+        '#{{riverpod|\$StreamNotifier}}<${provider.providerElement.valueTypeNode.toCode()}>',
       SupportedCreatedType.value =>
-        '\$Notifier<${provider.providerElement.valueTypeNode.toCode()}>',
+        '#{{riverpod|\$Notifier}}<${provider.providerElement.valueTypeNode.toCode()}>',
     };
 
     final paramsPassThrough = buildParamInvocationQuery({
@@ -65,11 +65,11 @@ abstract class $notifierBaseName$genericsDefinition extends $baseClass {
     };
 
     buffer.writeln('''
-  @\$mustCallSuper
+  @#{{riverpod_annotation|\$mustCallSuper}}
   @override
-  WhenComplete runBuild() {
-    final ref = this.ref as \$Ref<${provider.providerElement.exposedTypeNode}, ${provider.providerElement.valueTypeNode.toCode()}>;
-    final element = ref.element as \$ClassProviderElement<AnyNotifier<${provider.providerElement.exposedTypeNode}, ${provider.providerElement.valueTypeNode.toCode()}>,
+  #{{riverpod|WhenComplete}} runBuild() {
+    final ref = this.ref as #{{riverpod|\$Ref}}<${provider.providerElement.exposedTypeNode}, ${provider.providerElement.valueTypeNode.toCode()}>;
+    final element = ref.element as #{{riverpod|\$ClassProviderElement}}<#{{riverpod|AnyNotifier}}<${provider.providerElement.exposedTypeNode}, ${provider.providerElement.valueTypeNode.toCode()}>,
           ${provider.providerElement.exposedTypeNode}, Object?, Object?>;
     return element.handleCreate(ref, $buildVarUsage);
   }
@@ -85,7 +85,9 @@ abstract class $notifierBaseName$genericsDefinition extends $baseClass {
     );
 
     if (provider.buildMethod.isAbstract) {
-      buffer.writeln('=> throw MissingScopeException(ref);');
+      buffer.writeln(
+        '=> throw #{{riverpod_annotation|MissingScopeException}}(ref);',
+      );
     } else {
       buffer.writeln(';');
     }

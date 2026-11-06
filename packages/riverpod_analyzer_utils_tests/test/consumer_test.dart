@@ -9,7 +9,7 @@ void main() {
     source: '''
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ProviderWidget<T> extends ConsumerWidget {
   const ProviderWidget({super.key, required this.provider});
@@ -41,7 +41,7 @@ class ProviderWidget<T> extends ConsumerWidget {
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 final provider = Provider<int>((ref) => 0);
 
@@ -71,7 +71,7 @@ class MyConsumerWidget extends ConsumerWidget {
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 final provider = Provider<int>((ref) => 0);
 
@@ -101,7 +101,7 @@ class MyConsumerWidget extends HookConsumerWidget {
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 final provider = Provider<int>((ref) => 0);
 final provider2 = Provider<int>((ref) => 0);
@@ -153,7 +153,7 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 final provider = Provider<int>((ref) => 0);
 final provider2 = Provider<int>((ref) => 0);

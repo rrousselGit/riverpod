@@ -11,6 +11,7 @@ import 'package:riverpod_lint/src/lints/prefer_keep_alive_annotation.dart';
 import 'package:test/test.dart';
 
 import 'context.dart';
+import 'io_utils.dart';
 import 'registry.dart';
 
 /// The declarations of [_fixturePath] which are expected to be reported.
@@ -38,7 +39,10 @@ Future<void> main() async {
   late final List<Diagnostic> diagnostics;
 
   setUpAll(() async {
-    final collection = AnalysisContextCollection(includedPaths: [_fixturePath]);
+    final collection = AnalysisContextCollection(
+      includedPaths: [_fixturePath],
+      sdkPath: dartSdkPath,
+    );
     final session = collection.contextFor(_fixturePath).currentSession;
 
     final unitResult =

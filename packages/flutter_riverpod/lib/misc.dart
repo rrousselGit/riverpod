@@ -1,5 +1,7 @@
 export 'src/internals.dart'
     show
+        debugTrackProviderCreation,
+        debugTrackProviderHistory,
         ProviderListenableOrFamily,
         ProviderOrFamily,
         AsyncNotifierProviderFamily,
@@ -18,7 +20,11 @@ export 'src/internals.dart'
         ProviderTransformerContext,
         ProviderTransformer,
         SyncProviderTransformerMixin,
-        AsyncProviderListenable;
+        AsyncProviderListenable,
+        CustomProviderListenable,
+        ProviderTransformer2,
+        SyncProviderTransformer2,
+        WhenComplete;
 
 @Deprecated('Import misc.dart instead')
 export 'src/internals.dart' show ChangeNotifierProviderFamily;

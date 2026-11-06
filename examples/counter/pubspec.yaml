@@ -10,13 +10,14 @@ environment:
 resolution: workspace
 
 dependencies:
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^2.0.0
   flutter:
     sdk: flutter
   flutter_riverpod:
   freezed_annotation: ^3.0.0
   hooks_riverpod:
   json_annotation: ^4.9.0
+  material_ui: ^1.0.0
   riverpod:
   riverpod_annotation:
 

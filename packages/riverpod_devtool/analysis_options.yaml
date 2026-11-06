@@ -7,8 +7,17 @@ analyzer:
     - windows/**
     - macos/**
     - linux/**
+  errors:
+    # The devtool ships with Riverpod and is built on its internals.
+    invalid_use_of_internal_member: ignore
 include: ../../analysis_options.yaml
 linter:
   rules:
     # We don't really have public API
     public_member_api_docs: false
+
+    # The devtool ships with Riverpod and is built on its internals.
+    implementation_imports: false
+
+    # The devtool logs to the console.
+    avoid_print: false

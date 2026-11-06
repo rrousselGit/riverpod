@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+// dart format off
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'detail_screen/codegen.dart';
 
@@ -15,13 +16,13 @@ class MyApp extends StatelessWidget {
       routes: {
         '/detail-page': (_) => const DetailPageView(),
       },
-      home: const ActivityView(),
+      home: const HomeView(),
     );
   }
 }
 
-class ActivityView extends ConsumerWidget {
-  const ActivityView({super.key});
+class HomeView extends ConsumerWidget {
+  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

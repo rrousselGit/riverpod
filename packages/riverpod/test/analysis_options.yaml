@@ -1,12 +1,27 @@
 include: ../../../analysis_options.yaml
 analyzer:
+  exclude:
+    # A fork of package:fake_async, kept close to the original.
+    - third_party/**
   errors:
     unused_local_variable: ignore
+    # Tests read the state of notifiers, which is protected.
+    invalid_use_of_protected_member: ignore
+    # Deprecated APIs are tested until they are removed.
+    deprecated_member_use_from_same_package: ignore
 
 linter:
   rules:
     # Some tests may want to explicitly create an unused variable without type inference,
     # for the sake of testing that that two types are assignable
     omit_local_variable_types: false
+    omit_obvious_local_variable_types: false
+    # Some tests annotate the parameters of closures to check their inferred
+    # types.
+    avoid_types_on_closure_parameters: false
+    # Some tests create instances that must not be identical.
+    prefer_const_constructors: false
+    # Some tests throw objects that are not errors, as users may.
+    only_throw_errors: false
     # Some tests rely on explicit async behavior
     unnecessary_async: false

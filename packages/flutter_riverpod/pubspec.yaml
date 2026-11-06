@@ -26,11 +26,13 @@ dependencies:
     sdk: flutter
   flutter_test:
     sdk: flutter
+  material_ui: ^1.0.0
   meta: ^1.15.0
   riverpod: 3.4.3
   state_notifier: ">=0.7.2 <2.0.0"
 
 dev_dependencies:
+  cupertino_ui: ^1.0.0
   mockito: ^5.0.0
   stack_trace: ^1.0.0
 

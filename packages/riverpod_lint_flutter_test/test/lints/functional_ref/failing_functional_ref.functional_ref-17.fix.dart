@@ -1,5 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, type=warning
+// ignore_for_file: type=lint, type=warning, todo
 // Offsets for "functional_ref":
 // 16:   // ignore: riverpod_lint/functional_ref
 // 17:   <>int ref,
@@ -39,6 +39,3 @@ int incorrectlyTyped(
 int noRefButArgs({int a = 42}) {
   return 0;
 }
-
-@riverpod
-int valid(Ref ref) => 0;

@@ -368,7 +368,12 @@ typedef _LoadingRecord = ({num? progress});
 ///
 /// {@macro chaining_providers_synchronously}
 class AsyncValueIsLoadingException implements Exception {
-  AsyncValueIsLoadingException._(this.value);
+  /// Creates the exception thrown by [AsyncValue.requireValue] when [value]
+  /// is loading.
+  ///
+  /// This is useful to reproduce the behavior of [AsyncValue.requireValue],
+  /// such as when mocking a provider.
+  AsyncValueIsLoadingException(this.value);
 
   /// The [AsyncValue] that was in loading state when [AsyncValue.requireValue] was called.
   final AsyncValue<Object?> value;
@@ -600,7 +605,7 @@ sealed class AsyncValue<ValueT> {
     }
 
     assert(this is! AsyncData, 'Bad state');
-    throw AsyncValueIsLoadingException._(this);
+    throw AsyncValueIsLoadingException(this);
   }
 
   /// The [error].

@@ -115,7 +115,12 @@ sealed class GeneratorProviderDeclarationElement
   String exposedType,
   SupportedCreatedType supportedCreatedType,
 })?
-_computeTypes(DartType buildReturnValue, CompilationUnit unit) {
+_computeTypes(
+  DartType buildReturnValue,
+  CompilationUnit unit, {
+  required String providerName,
+  required AstNode from,
+}) {
   final valueType = _getValueType(
     buildReturnValue,
     typeProvider: unit.declaredFragment!.element.typeProvider,
@@ -127,14 +132,24 @@ _computeTypes(DartType buildReturnValue, CompilationUnit unit) {
     valueType: valueType,
   );
 
-  final exposedType = _computeExposedType(createdType);
-
-  return (
-    createdType: createdType.toCode(),
-    valueType: valueType,
-    exposedType: exposedType,
-    supportedCreatedType: supportedCreatedType,
-  );
+  try {
+    return (
+      createdType: createdType.toCode(),
+      valueType: valueType,
+      exposedType: _computeExposedType(createdType),
+      supportedCreatedType: supportedCreatedType,
+    );
+  } on InvalidTypeException {
+    errorReporter(
+      RiverpodAnalysisError.ast(
+        'Invalid provider type: the return type of "$providerName" '
+        'could not be resolved.',
+        targetNode: from,
+        code: RiverpodAnalysisErrorCode.invalidProviderType,
+      ),
+    );
+    return null;
+  }
 }
 
 (DartType, SupportedCreatedType) _computeCreatedType(

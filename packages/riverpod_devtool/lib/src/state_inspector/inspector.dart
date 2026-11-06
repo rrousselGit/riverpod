@@ -1,8 +1,8 @@
 import 'package:devtools_app_shared/utils.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/misc.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:vm_service/vm_service.dart';
 
 import '../frame_view.dart';
@@ -55,31 +55,27 @@ final class _ClosingNode extends _VariableNode {
   final String symbol;
 }
 
-final _openedVariableNodesProvider =
-    NotifierProvider<_OpenedVariableNodes<CachedObject>, Set<CachedObject>>(
+// Each tree owns its expansion state. Paths contain only field names and
+// collection indices, so keeping them does not retain previous frame values.
+final _openedVariableNodesProvider = NotifierProvider.autoDispose
+    .family<_OpenedVariableNodes, Set<Object>, Object>(
       _OpenedVariableNodes.new,
     );
 
-final _expandedStringsProvider =
-    NotifierProvider<_OpenedVariableNodes<CachedObject>, Set<CachedObject>>(
-      _OpenedVariableNodes.new,
-    );
+class _OpenedVariableNodes extends Notifier<Set<Object>> {
+  _OpenedVariableNodes(this.scope);
 
-class _OpenedVariableNodes<ElementT> extends Notifier<Set<ElementT>> {
+  final Object scope;
+
   @override
-  Set<ElementT> build() => {};
+  Set<Object> build() => {};
 
-  void toggle(ElementT byte) {
-    if (state.contains(byte)) {
-      state = {...state}..remove(byte);
+  void toggle(Object path) {
+    if (state.contains(path)) {
+      state = {...state}..remove(path);
     } else {
-      state = {...state}..add(byte);
+      state = {...state}..add(path);
     }
-  }
-
-  void remove(ElementT byte) {
-    // We're only cleaning memory. No need to notify listeners.
-    state.remove(byte);
   }
 }
 
@@ -115,16 +111,18 @@ _ClosingNode? _resolveClosingNode(
   }
 }
 
-final ProviderFamily<_VariableNode, (CachedObject, int level)>
+final ProviderFamily<_VariableNode, (CachedObject, int level, Object scope)>
 _variableNodeForObjectProvider = .new(
   name: '_variableNodeForByte',
   isAutoDispose: true,
   (ref, args) {
-    final (object, level) = args;
+    final (object, level, scope) = args;
 
     final variable = ref.watch(_resolvedVariableForObject(object)).value;
     final isOpen = ref.watch(
-      _openedVariableNodesProvider.select((nodes) => nodes.contains(object)),
+      _openedVariableNodesProvider(
+        scope,
+      ).select((nodes) => nodes.contains(object.inspectionPath)),
     );
 
     final closingNode = _resolveClosingNode(variable, isOpen, level);
@@ -137,7 +135,7 @@ _variableNodeForObjectProvider = .new(
       case ByteVariable<ResolvedVariable>(:final instance):
         final _children = instance.children.map((child) {
           final childNode = ref.watch(
-            _variableNodeForObjectProvider((child, level + 1)),
+            _variableNodeForObjectProvider((child, level + 1, scope)),
           );
 
           switch (childNode) {
@@ -185,10 +183,7 @@ class SliverVariableTree extends ConsumerStatefulWidget {
 }
 
 class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
-  late final notifier = ref.listenManual(
-    _openedVariableNodesProvider,
-    (_, _) {},
-  );
+  final _scope = Object();
 
   final _disposable = Disposable();
   late final nodes = TreeList<_VariableNode>();
@@ -198,7 +193,7 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
     assert(sub == null, 'Listener already exists for $byte');
 
     sub = ref.listenManual(
-      _variableNodeForObjectProvider((byte, 0)),
+      _variableNodeForObjectProvider((byte, 0, _scope)),
       fireImmediately: true,
       (_, resolvedVariableByte) {
         late final indexForNode = nodes.indexWhere(
@@ -226,6 +221,7 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
   void initState() {
     super.initState();
 
+    ref.listenManual(_openedVariableNodesProvider(_scope), (_, _) {});
     _listen(widget.object);
   }
 
@@ -270,7 +266,7 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
                 EdgeInsets.only(left: 20.0 * node.level);
 
             final openNotifier = ref.watch(
-              _openedVariableNodesProvider.notifier,
+              _openedVariableNodesProvider(_scope).notifier,
             );
 
             return Padding(
@@ -283,11 +279,11 @@ class _SliverVariableTreeState extends ConsumerState<SliverVariableTree> {
                   shouldShowExpansible: true,
                   label: node.object.label,
                   isOpen: ref.watch(
-                    _openedVariableNodesProvider.select(
-                      (nodes) => nodes.contains(node.object),
+                    _openedVariableNodesProvider(_scope).select(
+                      (nodes) => nodes.contains(node.object.inspectionPath),
                     ),
                   ),
-                  open: () => openNotifier.toggle(node.object),
+                  open: () => openNotifier.toggle(node.object.inspectionPath),
                 ),
               },
             );
@@ -319,7 +315,12 @@ class _ByteTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return switch (byte) {
-      ByteError(:final error) => ByteErrorTile(error: error, label: label),
+      ByteError(:final error) => ByteErrorTile(
+        error: error,
+        label: label,
+        isExpanded: isOpen,
+        onToggle: open,
+      ),
       ByteVariable(:final instance) => _ResolvedVariableTile(
         variable: instance,
         isOpen: isOpen,
@@ -332,19 +333,34 @@ class _ByteTile extends StatelessWidget {
 }
 
 class ByteErrorTile extends StatefulWidget {
-  const ByteErrorTile({super.key, required this.error, required this.label});
+  const ByteErrorTile({
+    super.key,
+    required this.error,
+    required this.label,
+    this.isExpanded,
+    this.onToggle,
+  });
 
   final ByteErrorType error;
   final String? label;
+  final bool? isExpanded;
+  final VoidCallback? onToggle;
 
   @override
   State<ByteErrorTile> createState() => _ByteErrorTileState();
 }
 
 class _ByteErrorTileState extends State<ByteErrorTile> {
-  var _isExpanded = false;
+  var _localExpanded = false;
+  bool get _isExpanded => widget.isExpanded ?? _localExpanded;
 
-  void _toggle() => setState(() => _isExpanded = !_isExpanded);
+  void _toggle() {
+    if (widget.onToggle case final onToggle?) {
+      onToggle();
+    } else {
+      setState(() => _localExpanded = !_localExpanded);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -439,49 +455,31 @@ class _ResolvedVariableTile extends StatelessWidget {
           style: const TextStyle(color: _NodeTileTheme.boolColor),
         );
       case StringVariable(:final value):
-        content = Consumer(
-          builder: (context, ref, _) {
-            final isExpanded = ref.watch(
-              _expandedStringsProvider.select(
-                (nodes) => nodes.contains(variable.object),
-              ),
-            );
-            final expandedNotifier = ref.watch(
-              _expandedStringsProvider.notifier,
-            );
+        final displayValue = isOpen
+            ? value
+            : value
+                  .replaceAll('\n', r'\n')
+                  .replaceAll('\r', r'\r')
+                  .replaceAll('\t', r'\t');
 
-            final displayValue = isExpanded
-                ? value
-                : value
-                      .replaceAll('\n', r'\n')
-                      .replaceAll('\r', r'\r')
-                      .replaceAll('\t', r'\t');
-
-            final hasEscapeChars =
-                value.contains('\n') ||
-                value.contains('\r') ||
-                value.contains('\t');
-            final textWidget = Text(
-              '"${displayValue.escape('"')}"',
-              style: const TextStyle(color: _NodeTileTheme.stringColor),
-              maxLines: isExpanded ? null : 1,
-              overflow: isExpanded ? null : TextOverflow.ellipsis,
-            );
-
-            if (hasEscapeChars) {
-              return _ExpansibleTile(
-                isExpanded: isExpanded,
-                onPressed: () => expandedNotifier.toggle(variable.object),
-                child: InkWell(
-                  onTap: () => expandedNotifier.toggle(variable.object),
-                  child: textWidget,
-                ),
-              );
-            }
-
-            return textWidget;
-          },
+        final hasEscapeChars =
+            value.contains('\n') ||
+            value.contains('\r') ||
+            value.contains('\t');
+        content = Text(
+          '"${displayValue.escape('"')}"',
+          style: const TextStyle(color: _NodeTileTheme.stringColor),
+          maxLines: isOpen ? null : 1,
+          overflow: isOpen ? null : TextOverflow.ellipsis,
         );
+
+        if (hasEscapeChars) {
+          content = _ExpansibleTile(
+            isExpanded: isOpen,
+            onPressed: open,
+            child: InkWell(onTap: open, child: content),
+          );
+        }
       case IntVariable(:final num value) || DoubleVariable(:final num value):
         content = Text(
           '$value',
@@ -658,6 +656,7 @@ final _resolvedVariableForObject = FutureProvider.autoDispose
     .family<Byte<ResolvedVariable>, CachedObject>(
       name: '_variableInspectorProvider',
       (ref, object) async {
+        ref.watch(devtoolSessionProvider);
         final eval = await ref.watch(evalProvider.future);
 
         final byte = await object.read(eval, isAlive: ref.disposable());

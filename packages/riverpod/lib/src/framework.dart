@@ -11,7 +11,6 @@ import 'package:collection/collection.dart';
 import 'package:listen/listen.dart';
 import 'package:meta/meta.dart';
 import 'package:stack_trace/stack_trace.dart';
-import 'package:state_notifier/state_notifier.dart';
 import 'package:test_api/scaffolding.dart' as test;
 import 'package:uuid/uuid.dart';
 

@@ -145,3 +145,11 @@ final class RPCErrorType extends ByteErrorType {
   @override
   String toString() => 'RPCError: $error';
 }
+
+/// A previously exported value belongs to a closed or expired DevTools session.
+final class ExpiredDevtoolSessionType extends ByteErrorType {
+  const ExpiredDevtoolSessionType();
+
+  @override
+  String toString() => 'DevTools session expired';
+}

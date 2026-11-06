@@ -71,7 +71,7 @@ extension ProviderMetaToBytes on ProviderMeta {
     }
 
     res1['$path.elementId'] = elementId;
-    res1['$path.element'] = RiverpodDevtool.instance.cache(element);
+    res1['$path.element'] = RiverpodDevtool.instance.cacheFrame(element);
 
     res1['$path.creationStackTrace.__present'] = (creationStackTrace != null);
     if (creationStackTrace case final value2?) {
@@ -170,7 +170,7 @@ extension EventToBytes on Event {
 extension ProviderContainerAddEventToBytes on ProviderContainerAddEvent {
   Map<String, Object?> toBytes({required String path}) {
     final res5 = <String, Object?>{path: 'ProviderContainerAddEvent'};
-    res5['$path.container'] = RiverpodDevtool.instance.cache(container);
+    res5['$path.container'] = RiverpodDevtool.instance.cacheFrame(container);
 
     res5['$path.containerId'] = containerId;
     {
@@ -189,7 +189,7 @@ extension ProviderContainerDisposeEventToBytes
     on ProviderContainerDisposeEvent {
   Map<String, Object?> toBytes({required String path}) {
     final res6 = <String, Object?>{path: 'ProviderContainerDisposeEvent'};
-    res6['$path.container'] = RiverpodDevtool.instance.cache(container);
+    res6['$path.container'] = RiverpodDevtool.instance.cacheFrame(container);
 
     return res6;
   }
@@ -225,7 +225,7 @@ extension ProviderElementDisposeEventToBytes on ProviderElementDisposeEvent {
 extension ProviderStateRefToBytes on ProviderStateRef {
   Map<String, Object?> toBytes({required String path}) {
     final res10 = <String, Object?>{path: 'ProviderStateRef'};
-    res10['$path.state'] = RiverpodDevtool.instance.cache(state);
+    res10['$path.state'] = RiverpodDevtool.instance.cacheFrame(state);
 
     return res10;
   }
@@ -285,7 +285,7 @@ extension ContainerNodeMetaToBytes on ContainerNodeMeta {
 extension ConsumerNodeMetaToBytes on ConsumerNodeMeta {
   Map<String, Object?> toBytes({required String path}) {
     final res15 = <String, Object?>{path: 'ConsumerNodeMeta'};
-    res15['$path.consumerId'] = RiverpodDevtool.instance.cache(consumerId);
+    res15['$path.consumerId'] = RiverpodDevtool.instance.cacheFrame(consumerId);
 
     return res15;
   }
@@ -330,7 +330,7 @@ extension ProviderDependencyChangeEventToBytes
 extension ConsumerMetaToBytes on ConsumerMeta {
   Map<String, Object?> toBytes({required String path}) {
     final res17 = <String, Object?>{path: 'ConsumerMeta'};
-    res17['$path.id'] = RiverpodDevtool.instance.cache(id);
+    res17['$path.id'] = RiverpodDevtool.instance.cacheFrame(id);
 
     {
       final $value = hashValue;

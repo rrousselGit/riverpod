@@ -7,14 +7,47 @@ sealed class CachedObject {
 
   final String? label;
 
+  /// A structural path within an inspector, independent of cached frame values.
+  Object get inspectionPath => 'root';
+
   VmInstanceRef? _lastKnownRef;
+
+  String? get _sessionId => null;
+  bool get _reuseRef => true;
+
+  bool _sessionExpired(EvalFactory eval) {
+    final sessionId = _sessionId;
+    return sessionId != null && sessionId != eval.sessionId;
+  }
+
+  Future<ByteErrorType?> _validateCachedSession(
+    EvalFactory eval,
+    Disposable isAlive,
+  ) async {
+    if (_sessionExpired(eval)) return const ExpiredDevtoolSessionType();
+    if (_sessionId == null || _lastKnownRef == null) return null;
+    // Cached children must still validate their root's remote lease, without
+    // rerunning getters just to recover an already inspected value.
+    var root = this;
+    while (root is DerivedCachedObject) {
+      root = root.from;
+    }
+    if (root == this) return null;
+    return switch (await root.readRef(eval, isAlive)) {
+      ByteError(:final error) => error,
+      ByteVariable() => null,
+    };
+  }
 
   Future<Byte<VmInstance>> read(
     EvalFactory eval, {
     required Disposable isAlive,
   }) async {
+    final sessionError = await _validateCachedSession(eval, isAlive);
+    if (sessionError != null) return ByteError(sessionError);
     VmInstanceRef ref;
-    if (_lastKnownRef case final lastKnownRef?) {
+    if (_reuseRef && _lastKnownRef != null) {
+      final lastKnownRef = _lastKnownRef!;
       ref = lastKnownRef;
     } else {
       final byte = await _fetchInstance(eval, isAlive);
@@ -59,9 +92,14 @@ sealed class CachedObject {
     );
   }
 
-  Future<Byte<VmInstanceRef>> readRef(EvalFactory eval, Disposable isAlive) {
-    if (_lastKnownRef case final lastKnownRef?) {
-      return Future.value(ByteVariable(lastKnownRef));
+  Future<Byte<VmInstanceRef>> readRef(
+    EvalFactory eval,
+    Disposable isAlive,
+  ) async {
+    final sessionError = await _validateCachedSession(eval, isAlive);
+    if (sessionError != null) return ByteError(sessionError);
+    if (_reuseRef && _lastKnownRef != null) {
+      return ByteVariable(_lastKnownRef!);
     }
 
     return _fetchInstance(eval, isAlive);
@@ -83,6 +121,8 @@ class RootCachedObject extends CachedObject {
     Map<String, String>? scope,
   }) async {
     // No retry because retrying <code> could have side-effects.
+    final sessionId = eval.factory.sessionId;
+    if (sessionId == null) return ByteError(const ExpiredDevtoolSessionType());
     final devtoolRef = await eval.factory.riverpodFramework.eval(
       'RiverpodDevtool.instance',
       isAlive: isAlive,
@@ -95,7 +135,9 @@ class RootCachedObject extends CachedObject {
     }
     final idByte = await eval.eval(
       // Casting to allow assigning `void`
-      'RiverpodDevtool.cache(($code) as Object?)',
+      '() { RiverpodDevtool.validateSession("$sessionId"); '
+      'return RiverpodDevtool.cache(($code) as Object?, '
+      'sessionId: "$sessionId"); }()',
       isAlive: isAlive,
       scope: {...?scope, 'RiverpodDevtool': devtoolRef.instance.id!},
     );
@@ -116,6 +158,17 @@ class RootCachedObject extends CachedObject {
   }
 
   final CacheId id;
+
+  @override
+  String? get _sessionId {
+    final separator = id.value.indexOf(':');
+    return separator == -1 ? null : id.value.substring(0, separator);
+  }
+
+  // Session-owned roots must check the application-side lease even if the VM
+  // object ID is still valid. Expired terminal expressions are never replayed.
+  @override
+  bool get _reuseRef => _sessionId == null;
 
   @override
   Future<Byte<VmInstanceRef>> _fetchInstance(
@@ -165,15 +218,29 @@ abstract class DerivedCachedObject extends CachedObject {
     CachedObject mapObject,
     int index,
   ) = _DelegatingDerivedCachedObject.mapAssociationValue;
+
+  CachedObject get from;
+
+  Object get pathSegment;
+
+  @override
+  Object get inspectionPath => (from.inspectionPath, pathSegment);
+
+  @override
+  String? get _sessionId => from._sessionId;
 }
 
 final class _GetterCachedObject extends DerivedCachedObject {
   _GetterCachedObject(this.from, {required this.name, required this.uri})
     : super(label: name);
 
+  @override
   final CachedObject from;
   final String name;
   final Uri uri;
+
+  @override
+  Object get pathSegment => ('getter', uri, name);
 
   @override
   Future<Byte<VmInstanceRef>> _fetchInstance(
@@ -202,6 +269,7 @@ final class _GetterCachedObject extends DerivedCachedObject {
 final class _DelegatingDerivedCachedObject extends DerivedCachedObject {
   _DelegatingDerivedCachedObject({
     required this.from,
+    required this.pathSegment,
     required this.obtainRefFromParentInstance,
     super.label,
   });
@@ -212,6 +280,7 @@ final class _DelegatingDerivedCachedObject extends DerivedCachedObject {
   ) {
     return _DelegatingDerivedCachedObject(
       from: object,
+      pathSegment: ('field', name),
       label: switch (name) {
         PositionalFieldKey() => null,
         NamedFieldKey(:final name) => name,
@@ -237,6 +306,7 @@ final class _DelegatingDerivedCachedObject extends DerivedCachedObject {
   ) {
     return _DelegatingDerivedCachedObject(
       from: object,
+      pathSegment: ('element', index),
       obtainRefFromParentInstance: (obj) {
         final elements = obj.elements;
         if (elements == null || index < 0 || index >= elements.length) {
@@ -256,6 +326,7 @@ final class _DelegatingDerivedCachedObject extends DerivedCachedObject {
   ) {
     return _DelegatingDerivedCachedObject(
       from: mapObject,
+      pathSegment: ('mapKey', index),
       label: 'key',
       obtainRefFromParentInstance: (obj) {
         final associations = obj.associations;
@@ -274,6 +345,7 @@ final class _DelegatingDerivedCachedObject extends DerivedCachedObject {
   ) {
     return _DelegatingDerivedCachedObject(
       from: mapObject,
+      pathSegment: ('mapValue', index),
       label: 'value',
       obtainRefFromParentInstance: (obj) {
         final associations = obj.associations;
@@ -286,7 +358,10 @@ final class _DelegatingDerivedCachedObject extends DerivedCachedObject {
     );
   }
 
+  @override
   final CachedObject from;
+  @override
+  final Object pathSegment;
   final Byte<VmInstanceRef> Function(VmInstance parent)
   obtainRefFromParentInstance;
 

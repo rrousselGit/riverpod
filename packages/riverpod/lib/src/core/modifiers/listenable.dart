@@ -3,6 +3,11 @@ part of '../../framework.dart';
 /// Adds [listenable] to [ProviderListenable].
 extension ProviderListenableListenable<T> on ProviderListenable<T> {
   /// Exposes a [ValueListenable] that tracks the state of this provider.
+  ///
+  /// Note:
+  /// A unique [ValueListenable] is created per listener on this modifier. As such,
+  /// doing `ref.read(provider.listenable)` will have the [ValueListenable] immediately get disposed of.
+  /// Consider using `listen/watch` methods instead.
   ProviderListenable<ValueListenable<T>> get listenable {
     return _ListenableListenable(this);
   }
@@ -38,8 +43,22 @@ final class _ListenableTransformer2<T>
         >
     with ChangeNotifier
     implements ValueListenable<T> {
+  void _checkSubscriptionIsAlive() {
+    final innerSub = _innerSub;
+    if (innerSub == null || innerSub.closed) {
+      throw StateError(
+        'The subscription backing this `.listenable` was closed. Obtain '
+        '`.listenable` through `ref.watch`, `ref.listen` or '
+        '`container.listen`, not `read`.',
+      );
+    }
+  }
+
   @override
-  T get value => read();
+  T get value {
+    _checkSubscriptionIsAlive();
+    return read();
+  }
 
   @override
   ValueListenable<T> initState() {
@@ -56,6 +75,7 @@ final class _ListenableTransformer2<T>
 
   @override
   void addListener(VoidCallback listener) {
+    _checkSubscriptionIsAlive();
     if (!hasListeners) resume();
 
     super.addListener(listener);
