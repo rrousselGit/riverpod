@@ -1156,11 +1156,7 @@ final class ProviderContainer implements MutationTarget {
   bool exists(ProviderBase<Object?> provider) {
     switch (provider) {
       case $ProviderBaseImpl():
-        return _pointerManager
-                .readDirectory(provider)
-                ?.pointers[provider]
-                ?.element !=
-            null;
+        return _pointerManager.readElement(provider) != null;
     }
   }
 
