@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:async/async.dart' hide DelegatingStream;
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/misc.dart' show ProviderDisposedException;
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart' show UnmountedRefException;
 import 'package:test/test.dart';

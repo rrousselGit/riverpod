@@ -1297,7 +1297,23 @@ void main() {
 
         container.dispose();
 
-        await expectLater(future, throwsA(isA<ProviderDisposedException>()));
+        await expectLater(
+          future,
+          throwsA(
+            isA<ProviderDisposedException>()
+                .having((e) => e.provider, 'provider', provider)
+                .having(
+                  (e) => e.toString(),
+                  'toString',
+                  equalsIgnoringHashCodes(
+                    'ProviderDisposedException: The provider StreamProvider<int>#00000 '
+                    'was disposed during loading state, before it could emit a value.\n'
+                    'This is a normal lifecycle event caused by the provider being '
+                    'no longer listened to while still loading.',
+                  ),
+                ),
+          ),
+        );
       },
     );
 

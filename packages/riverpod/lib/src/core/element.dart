@@ -38,7 +38,7 @@ typedef WhenComplete = void Function(void Function() cb)?;
 /// Thrown when a [FutureProvider] or [StreamProvider] is disposed before it
 /// has emitted its first value.
 ///
-/// This is a normal lifecycle event — it occurs when an [autoDispose] provider
+/// This is a normal lifecycle event — it occurs when an `autoDispose` provider
 /// is no longer listened to (e.g. due to navigation) while it is still loading.
 /// It is **not** a programming error.
 ///

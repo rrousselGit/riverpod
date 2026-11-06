@@ -24,5 +24,4 @@ export 'src/internals.dart'
         ProviderListenableListenable,
         AsyncResult,
         AsyncValueExtensions,
-        AsyncValueIsLoadingException,
-        ProviderDisposedException;
+        AsyncValueIsLoadingException;
