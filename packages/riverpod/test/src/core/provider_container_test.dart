@@ -6432,6 +6432,21 @@ void main() {
         },
       );
 
+      test('is not called for errors emitted after dispose', () async {
+        final observer = ObserverMock();
+        final container = ProviderContainer.test(observers: [observer]);
+        final completer = Completer<int>();
+        final provider = FutureProvider((ref) => completer.future);
+
+        final future = container.read(provider.future);
+        container.dispose();
+        clearInteractions(observer);
+        completer.completeError('error', StackTrace.empty);
+
+        await expectLater(future, throwsA('error'));
+        verifyZeroInteractions(observer);
+      });
+
       test('is called when FutureProvider emits an error', () async {
         final observer = ObserverMock();
         final container = ProviderContainer.test(

@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:async/async.dart';
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/misc.dart' show ProviderDisposedException;
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart' show UnmountedRefException;
 import 'package:riverpod/src/providers/async_notifier.dart' show $AsyncNotifier;
@@ -1186,7 +1187,7 @@ void main() {
       });
 
       test(
-        'if going back to loading after future resolved, throws StateError',
+        'if going back to loading after future resolved, throws ProviderDisposedException',
         () async {
           final container = ProviderContainer.test();
           final completer = Completer<int>.sync();
@@ -1205,7 +1206,7 @@ void main() {
 
           container.dispose();
 
-          await expectLater(future, throwsStateError);
+          await expectLater(future, throwsA(isA<ProviderDisposedException>()));
         },
       );
 

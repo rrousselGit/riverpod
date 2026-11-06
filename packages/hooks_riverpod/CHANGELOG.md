@@ -1,5 +1,12 @@
 ## Unreleased minor
 
+- `ProviderObserver`s are no longer notified when a provider's future
+  completes after the provider was disposed. This stops `providerDidFail` from
+  reporting disposal errors, such as when an `autoDispose` provider awaiting
+  another provider's `.future` is disposed mid-load (#4706).
+- `ProviderDisposedException` is now exported by `package:hooks_riverpod/misc.dart`.
+  `provider.future` completes with it instead of a `StateError` when the
+  provider is disposed before emitting a value.
 - `AsyncValueIsLoadingException` now has a public constructor. (thanks to @uveshm003)
 - `debugTrackProviderCreation` is now exported by `package:hooks_riverpod/misc.dart`.
 - `provider.listenable` is now available from `package:hooks_riverpod/hooks_riverpod.dart`, and

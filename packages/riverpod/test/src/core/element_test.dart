@@ -1286,7 +1286,7 @@ void main() {
     });
 
     test(
-      'throws StateError if the provider is disposed before a value was emitted',
+      'throws ProviderDisposedException if the provider is disposed before a value was emitted',
       () async {
         final provider = StreamProvider<int>((ref) async* {});
         final container = ProviderContainer.test(
@@ -1300,18 +1300,29 @@ void main() {
         await expectLater(
           future,
           throwsA(
-            isStateError.having(
-              (e) => e.message,
-              'message',
-              equalsIgnoringHashCodes(
-                'The provider StreamProvider<int>#00000 was disposed during loading state, '
-                'yet no value could be emitted.',
-              ),
+            isA<ProviderDisposedException>().having(
+              (e) => e.provider,
+              'provider',
+              provider,
             ),
           ),
         );
       },
     );
+
+    test('ProviderDisposedException.toString', () {
+      final provider = Provider((ref) => 0);
+
+      expect(
+        ProviderDisposedException(provider).toString(),
+        equalsIgnoringHashCodes(
+          'ProviderDisposedException: The provider Provider<int>#00000 was '
+          'disposed during loading state, before it could emit a value.\n'
+          'This is a normal lifecycle event caused by the provider being '
+          'no longer listened to while still loading.',
+        ),
+      );
+    });
 
     group('auto dispose', () {
       test(
