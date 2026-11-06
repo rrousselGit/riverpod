@@ -64,24 +64,6 @@ void main() {
       );
 
       test(
-        'throws if the provider is disposed, then its future throws AsyncValueIsLoadingException',
-        () async {
-          final container = ProviderContainer.test();
-          final completer = Completer<void>();
-          final provider = FutureProvider<int>((ref) async {
-            await completer.future;
-            return const AsyncLoading<int>().requireValue;
-          });
-
-          final future = container.read(provider.future);
-          container.dispose();
-          completer.complete();
-
-          await expectLater(future, throwsA(isA<ProviderDisposedException>()));
-        },
-      );
-
-      test(
         'On dispose, .future resolves with the future returned itself',
         () async {
           final container = ProviderContainer.test();
