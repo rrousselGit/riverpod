@@ -76,7 +76,7 @@ jobs:
     runs-on: ubuntu-latest
     # Every mutant runs the test of its file, one at a time, so the mutants
     # are spread over several machines: many for the daily run, which
-    # mutates every file of packages/riverpod, a few for the files a PR
+    # mutates every file of packages/riverpod, a few for the lines a PR
     # changed. The mutation job below checks the parts together.
     timeout-minutes: 90
     strategy:

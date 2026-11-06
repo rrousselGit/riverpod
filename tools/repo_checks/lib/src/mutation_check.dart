@@ -4,6 +4,8 @@ import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
 
+import 'mutation_scope.dart';
+
 /// The path of the baseline file, relative to the repository root.
 @internal
 const mutationBaselinePath = 'baselines/mutation.yaml';
@@ -56,11 +58,13 @@ String updateMutationBaseline(String content, Map<String, int> counts) {
   return buffer.toString();
 }
 
-/// A mutant that no test of its file killed.
+/// A mutant that no test of its file killed, from `line` and `column` to
+/// `lastLine`.
 @internal
 typedef Survivor = ({
   int line,
   int column,
+  int lastLine,
   String mutator,
   String original,
   String replacement,
@@ -120,6 +124,7 @@ List<Survivor> _survivors(String path, Object? file) {
         (
           line: line,
           column: column,
+          lastLine: linesOf(source, offset(start), offset(end)).last,
           mutator: mutator,
           original: source.substring(offset(start), offset(end)),
           replacement: replacement,
@@ -160,6 +165,11 @@ Map<String, Map<int, bool>> parseLcovLines(
 /// [neverRun] tells whether the test of a file never runs a line of it,
 /// which explains why a mutant there survived.
 ///
+/// With [changed], the lines a change touches of each file, by path relative
+/// to the repository root, only the mutants on those lines were run: then
+/// none of them may survive, and [baseline] is not compared, as it counts
+/// the survivors of whole files.
+///
 /// Returns the problems found, one per line.
 @internal
 List<String> checkMutations({
@@ -167,9 +177,37 @@ List<String> checkMutations({
   required Map<String, List<Survivor>> survivors,
   required bool Function(String path, int line) neverRun,
   required bool Function(String path) exists,
+  Map<String, Set<int>>? changed,
 }) {
   final problems = <String>[];
+  void list(String path, List<Survivor> found) {
+    for (final s in found) {
+      final why = neverRun(path, s.line)
+          ? 'its test never runs this line'
+          : 'its test does not check this';
+      problems.add(
+        '  $path:${s.line}:${s.column} ${s.mutator}: '
+        '`${_snippet(s.original)}` → `${_snippet(s.replacement)}` ($why)',
+      );
+    }
+  }
+
   for (final path in survivors.keys.toList()..sort()) {
+    if (changed != null) {
+      final lines = changed[path] ?? const {};
+      final found = [
+        for (final s in survivors[path]!)
+          if (touches((first: s.line, last: s.lastLine), lines)) s,
+      ];
+      if (found.isNotEmpty) {
+        problems.add(
+          '$path: ${found.length} surviving mutants on the lines this change '
+          'touches:',
+        );
+        list(path, found);
+      }
+      continue;
+    }
     final found = survivors[path]!;
     final allowed = baseline[path] ?? 0;
     if (found.length > allowed) {
@@ -177,15 +215,7 @@ List<String> checkMutations({
         '$path: ${found.length} surviving mutants, but $mutationBaselinePath '
         'allows $allowed:',
       );
-      for (final s in found) {
-        final why = neverRun(path, s.line)
-            ? 'its test never runs this line'
-            : 'its test does not check this';
-        problems.add(
-          '  $path:${s.line}:${s.column} ${s.mutator}: '
-          '`${_snippet(s.original)}` → `${_snippet(s.replacement)}` ($why)',
-        );
-      }
+      list(path, found);
     } else if (found.length < allowed) {
       problems.add(
         '$path: ${found.length} surviving mutants, fewer than the $allowed of '

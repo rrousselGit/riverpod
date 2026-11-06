@@ -33,10 +33,16 @@ Map<String, Object?> _mutant(
   };
 }
 
-Survivor _survivor(int line, {String original = '==', String mutator = 'X'}) {
+Survivor _survivor(
+  int line, {
+  int? lastLine,
+  String original = '==',
+  String mutator = 'X',
+}) {
   return (
     line: line,
     column: 1,
+    lastLine: lastLine ?? line,
     mutator: mutator,
     original: original,
     replacement: '!=',
@@ -146,6 +152,7 @@ baseline:
           (
             line: 1,
             column: 13,
+            lastLine: 1,
             mutator: 'Equality',
             original: '==',
             replacement: '!=',
@@ -153,6 +160,7 @@ baseline:
           (
             line: 2,
             column: 11,
+            lastLine: 3,
             mutator: 'Arithmetic',
             original: '3 +\n  4',
             replacement: '3 - 4',
@@ -259,12 +267,14 @@ end_of_record
       required Map<String, List<Survivor>> survivors,
       Set<int> neverRun = const {},
       Set<String> missing = const {},
+      Map<String, Set<int>>? changed,
     }) {
       return checkMutations(
         baseline: baseline,
         survivors: survivors,
         neverRun: (_, line) => neverRun.contains(line),
         exists: (path) => !missing.contains(path),
+        changed: changed,
       );
     }
 
@@ -316,6 +326,43 @@ end_of_record
           'b.dart: 0 surviving mutants, fewer than the 1 of '
               'baselines/mutation.yaml: remove its entry',
         ],
+      );
+    });
+
+    test('with changed lines, lists the survivors on them only', () {
+      expect(
+        check(
+          baseline: {'a.dart': 5},
+          survivors: {
+            'a.dart': [
+              _survivor(1),
+              _survivor(2, lastLine: 4, original: 'x'),
+              _survivor(5),
+            ],
+            'b.dart': [_survivor(1)],
+          },
+          changed: {
+            'a.dart': {3, 5},
+          },
+        ),
+        [
+          'a.dart: 2 surviving mutants on the lines this change touches:',
+          '  a.dart:2:1 X: `x` → `!=` (its test does not check this)',
+          '  a.dart:5:1 X: `==` → `!=` (its test does not check this)',
+        ],
+      );
+    });
+
+    test('with changed lines, does not compare the baseline', () {
+      expect(
+        check(
+          baseline: {'a.dart': 3},
+          survivors: {'a.dart': []},
+          changed: {
+            'a.dart': {1},
+          },
+        ),
+        isEmpty,
       );
     });
 
