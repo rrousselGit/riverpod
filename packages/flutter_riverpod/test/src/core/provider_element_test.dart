@@ -124,4 +124,62 @@ void main() {
       },
     );
   }
+
+  testWidgets(
+    'resuming a TickerMode consumer with a diamond dependency does not throw '
+    'when the sibling branch has another active listener',
+    (tester) async {
+      // https://github.com/rrousselGit/riverpod/issues/4882
+      final container = ProviderContainer.test();
+      addTearDown(container.dispose);
+
+      final seed = NotifierProvider<DeferredNotifier<int>, int>(
+        () => DeferredNotifier((ref, self) => 0),
+      );
+      final shared = Provider<int>((ref) => ref.watch(seed));
+      final left = Provider<int>((ref) => ref.watch(shared) + 1);
+      final rightLeaf = Provider<int>((ref) => ref.watch(shared) * 2);
+      final right = Provider<int>((ref) => ref.watch(rightLeaf));
+      final top = Provider<int>((ref) => ref.watch(left) + ref.watch(right));
+
+      Widget app({required bool enabled}) {
+        return UncontrolledProviderScope(
+          container: container,
+          child: Column(
+            textDirection: TextDirection.ltr,
+            children: [
+              TickerMode(
+                enabled: enabled,
+                child: Consumer(
+                  builder: (context, ref, _) => Text(
+                    'top ${ref.watch(top)}',
+                    textDirection: TextDirection.ltr,
+                  ),
+                ),
+              ),
+              // Never paused, so rightLeaf stays active while top is paused.
+              Consumer(
+                builder: (context, ref, _) => Text(
+                  'leaf ${ref.watch(rightLeaf)}',
+                  textDirection: TextDirection.ltr,
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+
+      await tester.pumpWidget(app(enabled: true));
+      expect(find.text('top 1'), findsOneWidget);
+      expect(find.text('leaf 0'), findsOneWidget);
+
+      await tester.pumpWidget(app(enabled: false));
+      container.read(seed.notifier).state++;
+
+      await tester.pumpWidget(app(enabled: true));
+      expect(tester.takeException(), isNull);
+      expect(find.text('top 4'), findsOneWidget);
+      expect(find.text('leaf 2'), findsOneWidget);
+    },
+  );
 }

@@ -153,5 +153,24 @@ void main() {
       sub.resume();
       expect(sub.isPaused, false);
     });
+
+    group('when a dependency changed during the pause', () {
+      test('notifies the listener once with the latest value', () {
+        final container = ProviderContainer.test();
+        final dep = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier((ref, _) => 0),
+        );
+        final provider = Provider((ref) => ref.watch(dep));
+        final listener = Listener<int>();
+
+        final sub = container.listen(provider, listener.call);
+
+        sub.pause();
+        container.read(dep.notifier).state++;
+        sub.resume();
+
+        verifyOnly(listener, listener(0, 1));
+      });
+    });
   });
 }
