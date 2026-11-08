@@ -1,3 +1,9 @@
+## Unreleased fix
+
+- Fixed the documentation of `Riverpod.retry`, which said the default retry logic
+  retries without limit and retries all failures. It retries up to 10 times and
+  does not retry `Error`s or `ProviderException`s. (thanks to @ZainnQureshii)
+
 ## 4.0.8 - 2026-11-06
 ### Dependency changes
 
