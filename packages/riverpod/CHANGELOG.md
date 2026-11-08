@@ -9,6 +9,10 @@
 - Fixed reading `provider.notifier` throwing a type error when a generated
   `Notifier` is overridden with `overrideWithValue`. This requires regenerating
   the code with the latest `riverpod_generator`.
+- Fix `persist` replacing the data of an `AsyncNotifier`/`StreamNotifier` with
+  the persisted value when the provider emitted data before an asynchronous
+  `Storage.read` completed. The provider no longer goes back to `AsyncLoading`
+  with stale data. (thanks to @uveshm003)
 
 ## 3.5.0 - 2026-11-06
 
