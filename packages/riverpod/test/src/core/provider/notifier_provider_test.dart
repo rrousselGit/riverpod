@@ -427,6 +427,26 @@ void main() {
               expect(container.read(provider).valueOf, 0);
             },
           );
+
+          if (factory.isAsync) {
+            test('If a provider emits data before an asynchronous adapter, '
+                'the decoded value does not override it', () async {
+              final read = Completer<PersistedData<Object?>?>();
+              final provider = factory.simpleProvider(
+                (ref, self) => Future.value(0),
+                storage: DelegatingStorage(read: (_) => read.future),
+              );
+              final container = ProviderContainer.test();
+
+              final sub = container.listen(provider, (a, b) {});
+              expect(await container.read(provider.future!), 0);
+
+              read.complete(const PersistedData(42));
+              await container.pump();
+
+              expect(container.read(provider), const AsyncData<Object?>(0));
+            });
+          }
         });
 
         group('encode', () {

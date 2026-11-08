@@ -1,3 +1,10 @@
+## Unreleased fix
+
+- Fix `persist` replacing the data of an `AsyncNotifier`/`StreamNotifier` with
+  the persisted value when the provider emitted data before an asynchronous
+  `Storage.read` completed. The provider no longer goes back to `AsyncLoading`
+  with stale data. (thanks to @uveshm003)
+
 ## 3.5.0 - 2026-11-06
 
 - `ProviderObserver`s are no longer notified when a provider's future
