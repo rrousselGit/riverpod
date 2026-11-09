@@ -1,5 +1,6 @@
 ---
 title: Migrating from 2.0 to 3.0
+version: 1
 ---
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -22,7 +23,8 @@ improve the migration guide, or even include helpers to make the migration easie
 ## Automatic retry
 
 Riverpod 3.0 now [automatically retries](./whats_new.mdx#automatic-retry) failing providers by default.
-This means that if a provider fails to compute its value, it will automatically retry until it succeeds.
+This means that if a provider fails to compute its value, it will automatically retry, up to 10 times by default.
+By default, `Error`s and `ProviderException`s are not retried.
 
 In general, this is a good thing as it makes your app more resilient to transient errors.
 However, you may want to disable/customize this behavior in some cases.
