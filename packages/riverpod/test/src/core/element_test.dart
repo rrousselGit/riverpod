@@ -799,9 +799,9 @@ void main() {
 
       test('errors emitted by a watched provider after build (e.g. on retry) '
           'can be caught by the dependent provider', () {
-        // Regression test for https://github.com/rrousselGit/riverpod/issues/4432
-        // The counterpart of the WidgetRef.watch fix: errors emitted by a
-        // dependency after the initial build (such as from retries) must
+        // Guards the Ref.watch behavior that WidgetRef.watch mirrors since
+        // https://github.com/rrousselGit/riverpod/issues/4432: errors emitted
+        // by a dependency after the initial build (such as from retries)
         // rebuild the dependent provider so that `ref.watch` rethrows the
         // error, instead of being sent to the zone's uncaught handler.
         final errors = <Object>[];

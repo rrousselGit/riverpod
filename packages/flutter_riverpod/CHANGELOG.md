@@ -1,3 +1,12 @@
+## Unreleased fix
+
+- `WidgetRef.watch` now rebuilds the widget when a watched provider emits an
+  error after the initial build (such as from an automatic retry), like
+  `Ref.watch` does. The error is rethrown by `ref.watch` during `build`, so a
+  `try/catch` can handle it, instead of being reported as uncaught to the zone.
+  Widgets that don't catch it now show Flutter's error widget instead of
+  keeping their previous UI. (#4432) (thanks to @naghinezhad)
+
 ## 3.5.0 - 2026-11-06
 
 - `ProviderObserver`s are no longer notified when a provider's future
@@ -32,10 +41,6 @@
 - Migrated Material imports to `package:material_ui/material_ui.dart` and added
   `material_ui` as a dependency.
 - Updated the DevTools extension to use Material UI themes and localizations.
-- Fixes errors emitted by a watched provider after the initial build (such as
-  those produced by automatic retries) being incorrectly reported as uncaught
-  to the zone instead of letting the widget handle them. The widget now rebuilds
-  so the error is rethrown by `ref.watch` during `build`. (#4432) (thanks to @naghinezhad)
 
 ### Dependency changes
 

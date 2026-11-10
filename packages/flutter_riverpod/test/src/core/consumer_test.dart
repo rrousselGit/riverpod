@@ -351,14 +351,14 @@ void main() {
     });
   });
 
-  testWidgets(
-    'watch errors emitted after build (e.g. on retry) can be caught by the widget',
-    (tester) async {
-      // Regression test for https://github.com/rrousselGit/riverpod/issues/4432
-      // The error emitted by a retry must rebuild the widget instead of being
-      // sent to the zone's uncaught error handler, so that a try/catch around
-      // `ref.watch` can handle it.
+  group('WidgetRef.watch errors emitted after build', () {
+    // https://github.com/rrousselGit/riverpod/issues/4432
+    // Such errors rebuild the widget so that `ref.watch` rethrows them,
+    // instead of being sent to the zone's uncaught error handler.
+
+    testWidgets('retry errors can be caught by the widget', (tester) async {
       var attempt = 0;
+      var buildCount = 0;
       final provider = Provider<String>((ref) {
         attempt++;
         throw Exception('Test error $attempt');
@@ -366,6 +366,46 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
+          child: Consumer(
+            builder: (context, ref, _) {
+              buildCount++;
+              String displayText;
+              try {
+                displayText = ref.watch(provider);
+              } catch (_) {
+                displayText = 'Error caught';
+              }
+              return Text(displayText, textDirection: TextDirection.ltr);
+            },
+          ),
+        ),
+      );
+
+      expect(find.text('Error caught'), findsOneWidget);
+      expect(attempt, 1);
+      expect(buildCount, 1);
+
+      await tester.pump(const Duration(seconds: 30));
+      await tester.pump(const Duration(seconds: 30));
+
+      expect(tester.takeException(), isNull);
+      expect(attempt, greaterThan(1));
+      expect(buildCount, greaterThan(1));
+      expect(find.text('Error caught'), findsOneWidget);
+    });
+
+    testWidgets('an error after data rebuilds the widget instead of keeping '
+        'the previous UI', (tester) async {
+      var shouldThrow = false;
+      final provider = Provider<String>(retry: (_, _) => null, (ref) {
+        if (shouldThrow) throw Exception('Oops');
+        return 'data';
+      });
+      final container = ProviderContainer.test();
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
           child: Consumer(
             builder: (context, ref, _) {
               String displayText;
@@ -380,17 +420,22 @@ void main() {
         ),
       );
 
-      expect(find.text('Error caught'), findsOneWidget);
+      expect(find.text('data'), findsOneWidget);
 
-      // Let the retries fire. None of the re-thrown errors should escape to the
-      // zone as an uncaught exception.
-      await tester.pump(const Duration(seconds: 30));
-      await tester.pump(const Duration(seconds: 30));
+      shouldThrow = true;
+      container.invalidate(provider);
+      await tester.pump();
 
       expect(tester.takeException(), isNull);
       expect(find.text('Error caught'), findsOneWidget);
-    },
-  );
+
+      shouldThrow = false;
+      container.invalidate(provider);
+      await tester.pump();
+
+      expect(find.text('data'), findsOneWidget);
+    });
+  });
 
   testWidgets('WidgetRef.context exposes the BuildContext', (tester) async {
     late WidgetRef ref;
