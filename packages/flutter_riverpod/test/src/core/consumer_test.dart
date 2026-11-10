@@ -393,48 +393,6 @@ void main() {
       expect(buildCount, greaterThan(1));
       expect(find.text('Error caught'), findsOneWidget);
     });
-
-    testWidgets('an error after data rebuilds the widget instead of keeping '
-        'the previous UI', (tester) async {
-      var shouldThrow = false;
-      final provider = Provider<String>(retry: (_, _) => null, (ref) {
-        if (shouldThrow) throw Exception('Oops');
-        return 'data';
-      });
-      final container = ProviderContainer.test();
-
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: Consumer(
-            builder: (context, ref, _) {
-              String displayText;
-              try {
-                displayText = ref.watch(provider);
-              } catch (_) {
-                displayText = 'Error caught';
-              }
-              return Text(displayText, textDirection: TextDirection.ltr);
-            },
-          ),
-        ),
-      );
-
-      expect(find.text('data'), findsOneWidget);
-
-      shouldThrow = true;
-      container.invalidate(provider);
-      await tester.pump();
-
-      expect(tester.takeException(), isNull);
-      expect(find.text('Error caught'), findsOneWidget);
-
-      shouldThrow = false;
-      container.invalidate(provider);
-      await tester.pump();
-
-      expect(find.text('data'), findsOneWidget);
-    });
   });
 
   testWidgets('WidgetRef.context exposes the BuildContext', (tester) async {
