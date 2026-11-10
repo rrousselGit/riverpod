@@ -22,4 +22,4 @@ esac
 
 ensure_deps
 cd "$ROOT" || exit 1
-exec dart run internal_lint:check_issues "$ROOT"
+exec dart run repo_checks:check_issues "$ROOT"

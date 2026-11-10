@@ -1156,11 +1156,7 @@ final class ProviderContainer implements MutationTarget {
   bool exists(ProviderBase<Object?> provider) {
     switch (provider) {
       case $ProviderBaseImpl():
-        return _pointerManager
-                .readDirectory(provider)
-                ?.pointers[provider]
-                ?.element !=
-            null;
+        return _pointerManager.readElement(provider) != null;
     }
   }
 
@@ -1505,7 +1501,11 @@ abstract base class ProviderObserver {
   void didAddProvider(ProviderObserverContext context, Object? value) {}
 
   /// A provider emitted an error, be it by throwing during initialization
-  /// or by having a [Future]/[Stream] emit an error
+  /// or by having a [Future]/[Stream] emit an error.
+  ///
+  /// This is **not** called when a provider is disposed before emitting its
+  /// first value (see [ProviderDisposedException]). That case is a normal
+  /// lifecycle event, not a failure.
   void providerDidFail(
     ProviderObserverContext context,
     Object error,

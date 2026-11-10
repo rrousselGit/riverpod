@@ -1,8 +1,16 @@
-## Unreleased fix
+## 4.0.10 - 2026-11-06
 
 - Allow `build` 5, as required by `build_runner` 2.17.1. (thanks to @uveshm003)
 - `mockito` is now a dev dependency, as only the tests of `riverpod_generator` use it. (thanks to @uveshm003)
 - Generated code now uses the import prefix of `riverpod_annotation` (`import ... as r`) for every Riverpod type it references, instead of only for the types of user code.
+- Providers whose return type is unresolved now fail generation with an
+  "Invalid provider type" error pointing at the provider, instead of an
+  `InvalidTypeException` stack trace.
+
+### Dependency changes
+
+- `riverpod_analyzer_utils` upgraded to `1.0.0`
+- `riverpod_annotation` upgraded to `4.0.8`
 
 ## 4.0.9 - 2026-09-04
 

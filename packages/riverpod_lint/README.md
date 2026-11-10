@@ -521,12 +521,42 @@ to behave as a `keepAlive`, even though it isn't marked as such.
 
 ```dart
 @riverpod
-int nonKeepAlive(Ref ref) => 0;
+int dependency(Ref ref) => 0;
 
 @Riverpod(keepAlive: true)
-int fn(Ref ref) {
+int consumer(Ref ref) {
   // `keepAlive` providers should only depend on keepAlive providers.
-  ref.watch(nonKeepAliveProvider);
+  ref.watch(dependencyProvider);
+
+  return 0;
+}
+```
+
+**Good**: Let the consumer be disposed too.
+
+```dart
+@riverpod
+int dependency(Ref ref) => 0;
+
+@riverpod
+int consumer(Ref ref) {
+  ref.watch(dependencyProvider);
+
+  return 0;
+}
+```
+
+**Good**: Mark the dependency as `keepAlive` too. This also changes its lifetime for its other consumers.
+
+```dart
+@Riverpod(keepAlive: true)
+int dependency(Ref ref) => 0;
+
+@Riverpod(keepAlive: true)
+int consumer(Ref ref) {
+  ref.watch(dependencyProvider);
+
+  return 0;
 }
 ```
 

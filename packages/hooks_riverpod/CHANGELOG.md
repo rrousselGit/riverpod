@@ -1,5 +1,12 @@
-## Unreleased minor
+## 3.5.0 - 2026-11-06
 
+- `ProviderObserver`s are no longer notified when a provider's future
+  completes after the provider was disposed. This stops `providerDidFail` from
+  reporting disposal errors, such as when an `autoDispose` provider awaiting
+  another provider's `.future` is disposed mid-load (#4706).
+- `ProviderDisposedException` is now exported by `package:hooks_riverpod/misc.dart`.
+  `provider.future` completes with it instead of a `StateError` when the
+  provider is disposed before emitting a value.
 - `AsyncValueIsLoadingException` now has a public constructor. (thanks to @uveshm003)
 - `debugTrackProviderCreation` is now exported by `package:hooks_riverpod/misc.dart`.
 - `provider.listenable` is now available from `package:hooks_riverpod/hooks_riverpod.dart`, and
@@ -24,6 +31,11 @@
 - Migrated Material imports to `package:material_ui/material_ui.dart` and added
   `material_ui` as a dependency.
 - Updated the DevTools extension to use Material UI themes and localizations.
+
+### Dependency changes
+
+- `flutter_riverpod` upgraded to `3.5.0`
+- `riverpod` upgraded to `3.5.0`
 
 ## 3.4.3 - 2026-09-04
 
@@ -1842,3 +1854,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

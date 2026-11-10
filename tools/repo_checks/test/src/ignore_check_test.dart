@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/analysis/utilities.dart';
-import 'package:internal_lint/src/ignore_check.dart';
+import 'package:repo_checks/src/ignore_check.dart';
 import 'package:test/test.dart';
 
 /// The lines and texts of the ignore comments of [content].

@@ -53,6 +53,9 @@ List<RiverpodAnalysisError> collectErrors(void Function() cb) {
 
 int _testNumber = 0;
 
+/// Whether a test that is not skipped was declared yet in this file.
+bool _declaredRunnableTest = false;
+
 Future<_TestAnalysisContext>? _analysisContext;
 
 /// Shares dependency analysis while keeping each test's files at unique paths.
@@ -184,51 +187,68 @@ void testSource(
     });
   }
   final testId = _testNumber++;
-  test(description, skip: skip, timeout: timeout, () async {
-    final analysis = await (_analysisContext ??= _TestAnalysisContext.create());
-    final testDirectory = p.join(analysis.directory.path, 'lib', 'test$testId');
-    final path = p.join(testDirectory, 'foo.dart');
-    analysis.write(path, 'library foo;$source');
-    for (final entry in files.entries) {
-      analysis.write(
-        p.join(testDirectory, entry.key),
-        'library "${entry.key}"; ${entry.value}',
+  // A skipped test does not run, so leaves the first analysis to the next one.
+  final firstRunnable =
+      !_declaredRunnableTest && (skip == null || skip == false);
+  if (firstRunnable) _declaredRunnableTest = true;
+  test(
+    description,
+    skip: skip,
+    // The first test of each file to run analyzes the dependencies, such as
+    // Flutter, unless another file already cached them: on CI, all files
+    // start at once.
+    timeout: timeout ?? (firstRunnable ? const Timeout.factor(4) : null),
+    () async {
+      final analysis = await (_analysisContext ??=
+          _TestAnalysisContext.create());
+      final testDirectory = p.join(
+        analysis.directory.path,
+        'lib',
+        'test$testId',
       );
-    }
-    final context = analysis.collection.contextFor(path);
-    await context.applyPendingFileChanges();
-
-    Future<ResolvedLibraryResult> getLibrary() async {
-      return await context.currentSession.getResolvedLibrary(path)
-          as ResolvedLibraryResult;
-    }
-
-    if (runGenerator) {
-      final library = await getLibrary();
-      final generated = RiverpodGenerator(
-        const {},
-      ).generateForUnit(library.units.map((e) => e.unit).toList());
-      analysis.write(
-        p.join(testDirectory, 'foo.g.dart'),
-        'part of "foo.dart";$generated',
-      );
+      final path = p.join(testDirectory, 'foo.dart');
+      analysis.write(path, 'library foo;$source');
+      for (final entry in files.entries) {
+        analysis.write(
+          p.join(testDirectory, entry.key),
+          'library "${entry.key}"; ${entry.value}',
+        );
+      }
+      final context = analysis.collection.contextFor(path);
       await context.applyPendingFileChanges();
-    }
 
-    final library = await getLibrary();
-    // Writes are asynchronous, and lost if the isolate exits before they end.
-    await analysis.byteStore.flush();
-    final unit = library.units.firstWhere((unit) => unit.path == path).unit;
-    try {
-      await run(TestSourceResolver(context, path), unit, library.units);
-    } finally {
-      collectErrors(() {
-        for (final unit in library.units) {
-          expectRiverpodAstOnlyHasASingleOptionPerNode(unit.unit);
-        }
-      });
-    }
-  });
+      Future<ResolvedLibraryResult> getLibrary() async {
+        return await context.currentSession.getResolvedLibrary(path)
+            as ResolvedLibraryResult;
+      }
+
+      if (runGenerator) {
+        final library = await getLibrary();
+        final generated = RiverpodGenerator(
+          const {},
+        ).generateForUnit(library.units.map((e) => e.unit).toList());
+        analysis.write(
+          p.join(testDirectory, 'foo.g.dart'),
+          'part of "foo.dart";$generated',
+        );
+        await context.applyPendingFileChanges();
+      }
+
+      final library = await getLibrary();
+      // Writes are asynchronous, and lost if the isolate exits before they end.
+      await analysis.byteStore.flush();
+      final unit = library.units.firstWhere((unit) => unit.path == path).unit;
+      try {
+        await run(TestSourceResolver(context, path), unit, library.units);
+      } finally {
+        collectErrors(() {
+          for (final unit in library.units) {
+            expectRiverpodAstOnlyHasASingleOptionPerNode(unit.unit);
+          }
+        });
+      }
+    },
+  );
 }
 
 /// Matches the `toSource()` of the node that begins a cascade section.

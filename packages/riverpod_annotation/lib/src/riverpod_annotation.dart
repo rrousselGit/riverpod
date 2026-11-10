@@ -42,10 +42,10 @@ final class Riverpod {
   /// The default retry logic used by providers associated to this container.
   ///
   /// The default implementation:
-  /// - has unlimited retries
+  /// - retries up to 10 times
   /// - starts with a delay of 200ms
   /// - doubles the delay on each retry up to 6.4 seconds
-  /// - retries all failures
+  /// - does not retry `Error`s or `ProviderException`s
   final Duration? Function(int retryCount, Object error)? retry;
 
   /// Whether the state of the provider should be maintained if it is no-longer used.

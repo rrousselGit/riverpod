@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:async/async.dart' hide DelegatingStream;
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/misc.dart' show ProviderDisposedException;
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart' show UnmountedRefException;
 import 'package:test/test.dart';
@@ -65,7 +66,7 @@ void main() {
 
       verifyOnly(onCancel, onCancel());
 
-      await expectLater(future, throwsStateError);
+      await expectLater(future, throwsA(isA<ProviderDisposedException>()));
     });
 
     test('Pauses the Stream when the provider is paused', () {
@@ -741,7 +742,7 @@ void main() {
           );
 
           final future = container.read(provider.future);
-          expect(future, throwsA(isStateError));
+          expect(future, throwsA(isA<ProviderDisposedException>()));
 
           container.dispose();
         },
@@ -761,13 +762,13 @@ void main() {
         container.read(provider.notifier).state = const AsyncLoading<int>();
 
         final future = container.read(provider.future);
-        expect(future, throwsA(isStateError));
+        expect(future, throwsA(isA<ProviderDisposedException>()));
 
         container.dispose();
       });
 
       test(
-        'if going back to loading after future resolved, throws StateError',
+        'if going back to loading after future resolved, throws ProviderDisposedException',
         () async {
           final container = ProviderContainer.test();
           final completer = Completer<int>.sync();
@@ -786,7 +787,7 @@ void main() {
 
           container.dispose();
 
-          await expectLater(future, throwsStateError);
+          await expectLater(future, throwsA(isA<ProviderDisposedException>()));
         },
       );
 

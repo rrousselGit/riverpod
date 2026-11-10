@@ -43,6 +43,8 @@ extension on CollectionElement {
         if (dependencyProvider != null) {
           return ProviderDependency._(provider: dependencyProvider, node: that);
         }
+        // Annotated but unparsable: parsing the provider reported the error.
+        if (RiverpodAnnotationElement._of(element, this) != null) return null;
 
         errorReporter(
           RiverpodAnalysisError.ast(
@@ -63,6 +65,8 @@ extension on CollectionElement {
         if (dependencyProvider != null) {
           return ProviderDependency._(provider: dependencyProvider, node: that);
         }
+        // Annotated but unparsable: parsing the provider reported the error.
+        if (RiverpodAnnotationElement._of(element, this) != null) return null;
 
         errorReporter(
           RiverpodAnalysisError.ast(
@@ -144,6 +148,10 @@ extension on DartObject {
       );
 
       if (provider != null) return provider;
+      // Annotated but unparsable: parsing the provider reported the error.
+      if (RiverpodAnnotationElement._of(functionType, from) != null) {
+        return null;
+      }
     }
 
     final type = toTypeValue();
@@ -154,6 +162,9 @@ extension on DartObject {
       );
 
       if (provider != null) return provider;
+      if (RiverpodAnnotationElement._of(type.element!, from) != null) {
+        return null;
+      }
     }
 
     errorReporter(

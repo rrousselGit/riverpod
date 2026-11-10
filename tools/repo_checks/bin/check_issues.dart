@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:internal_lint/src/ignore_check.dart';
-import 'package:internal_lint/src/issue_links.dart';
-import 'package:internal_lint/src/todo_check.dart';
 import 'package:path/path.dart' as p;
+import 'package:repo_checks/src/ignore_check.dart';
+import 'package:repo_checks/src/issue_links.dart';
+import 'package:repo_checks/src/todo_check.dart';
 
 /// Checks that every `// ignore` comment ([ignoreCheck]) and `TODO`
 /// ([todoCheck]) links the GitHub issue that requires it (see
@@ -15,7 +15,7 @@ import 'package:path/path.dart' as p;
 /// API, authenticated by `GITHUB_TOKEN`, `GH_TOKEN` or `gh auth token`.
 /// Without a token, that part is skipped, except on CI where it fails.
 ///
-/// Usage: `dart run internal_lint:check_issues [root]`, where `root` is the
+/// Usage: `dart run repo_checks:check_issues [root]`, where `root` is the
 /// repository root (default: the current directory).
 Future<void> main(List<String> args) async {
   const checks = [ignoreCheck, todoCheck];

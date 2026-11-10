@@ -1,5 +1,12 @@
-## Unreleased minor
+## 3.5.0 - 2026-11-06
 
+- `ProviderObserver`s are no longer notified when a provider's future
+  completes after the provider was disposed. This stops `providerDidFail` from
+  reporting disposal errors, such as when an `autoDispose` provider awaiting
+  another provider's `.future` is disposed mid-load (#4706).
+- Added `ProviderDisposedException`. `provider.future` now completes with it
+  instead of a `StateError` when the provider is disposed before emitting a value.
+- Fix resuming a paused subscription scheduling a provider refresh while its dependency graph is still being flushed, which could throw `setState() or markNeedsBuild() called during build` in Flutter with diamond-shaped dependencies. (thanks to @yazanmg)
 - Fix `StreamProvider`/`StreamNotifier` retaining obsolete dependency subscriptions across rebuilds until the stream closes, even after emitting data.
 - `AsyncValueIsLoadingException` now has a public constructor. (thanks to @uveshm003)
 - Confirmed `Ref.watch` catches errors emitted after build by a watched provider (such as from retries) by rebuilding the dependent provider. (#4432) (thanks to @naghinezhad)
@@ -13,6 +20,9 @@
 - Deprecated `Ref.exist`.
 - Added `provider.exist`, which is listenable.
   This enables writing `ref.listen(provider.exist, ...)`.
+- Fix the deprecated `container.exists`/`ref.exists` returning `false` from a
+  scoped container for a provider mounted in an ancestor but never read through
+  that scope (#4785).
 - Fix `selectAsync` notifying a closed subscription after an upstream refresh.
 - Fixed `ref.read`/`container.read` of `provider.listenable` throwing an internal `StateError` on `.value`; it now throws a clear one explaining `.listenable` needs `ref.watch`, `ref.listen` or `container.listen` instead (thanks to @Yasser-Ameur)
 - Fixed a debug-only infinite loop in the circular-dependency check. Closing a
@@ -1602,3 +1612,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

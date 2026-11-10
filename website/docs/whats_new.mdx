@@ -1,6 +1,6 @@
 ---
 title: What's new in Riverpod 3.0
-version: 2
+version: 3
 ---
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -269,9 +269,9 @@ onPressed: () {
 
 Starting 3.0, providers that fail during initialization will automatically retry.
 The retry is done with an exponential backoff, and the provider will be retried
-until it succeeds or is disposed. This helps when an operation fails due to a temporary issue, such as a lack of network connection.
+until it succeeds or is disposed, up to 10 times by default. This helps when an operation fails due to a temporary issue, such as a lack of network connection.
 
-The default behavior retries any error, and starts with a 200ms delay that
+The default behavior retries any error except `Error`s and `ProviderException`s, and starts with a 200ms delay that
 doubles after each retry up to 6.4 seconds.  
 This can be customized for all providers on [ProviderContainer]/[ProviderScope] by passing a `retry` parameter:
 

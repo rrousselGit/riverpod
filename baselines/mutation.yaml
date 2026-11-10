@@ -1,0 +1,47 @@
+# How many mutants of each lib/ file of packages/riverpod its own test let
+# survive when mutation testing was added. A mutant is a small change to the
+# code, such as `>` to `>=`; it survives when the test of its file, the
+# test/src/**/x_test.dart of lib/src/**/x.dart, still passes. Only that test
+# runs: one that catches the mutant from another file does not count.
+#
+# Enforced on every file daily by scripts/mutation.sh --all, and on the files
+# a change touches, or whose test it touches, by --whole-files. Pull requests
+# only run the mutants on the lines they change, none of which may survive.
+# Do not add to these counts: make the test kill the new mutants. Lower an
+# entry once its file has fewer survivors (the daily check fails until you
+# do), which `scripts/mutation.sh --update-baseline` does.
+# Paths are relative to the repository root.
+baseline:
+  packages/riverpod/lib/src/common/result.dart: 5
+  packages/riverpod/lib/src/core/async_value.dart: 44
+  packages/riverpod/lib/src/core/devtool.dart: 70
+  packages/riverpod/lib/src/core/element.dart: 263
+  packages/riverpod/lib/src/core/family.dart: 2
+  packages/riverpod/lib/src/core/foundation.dart: 36
+  packages/riverpod/lib/src/core/modifiers/future.dart: 3
+  packages/riverpod/lib/src/core/modifiers/listenable.dart: 6
+  packages/riverpod/lib/src/core/modifiers/select.dart: 6
+  packages/riverpod/lib/src/core/modifiers/select_async.dart: 8
+  packages/riverpod/lib/src/core/mutations.dart: 24
+  packages/riverpod/lib/src/core/override_with_value.dart: 15
+  packages/riverpod/lib/src/core/persist.dart: 8
+  packages/riverpod/lib/src/core/provider/notifier_provider.dart: 28
+  packages/riverpod/lib/src/core/provider/provider.dart: 26
+  packages/riverpod/lib/src/core/provider_container.dart: 149
+  packages/riverpod/lib/src/core/provider_listenable_transformer.dart: 1
+  packages/riverpod/lib/src/core/provider_listenable_transformer2.dart: 18
+  packages/riverpod/lib/src/core/provider_subscription.dart: 78
+  packages/riverpod/lib/src/core/proxy_provider_listenable.dart: 3
+  packages/riverpod/lib/src/core/ref.dart: 45
+  packages/riverpod/lib/src/providers/async_notifier/family.dart: 1
+  packages/riverpod/lib/src/providers/async_notifier/orphan.dart: 1
+  packages/riverpod/lib/src/providers/future_provider.dart: 1
+  packages/riverpod/lib/src/providers/legacy/state_notifier_provider.dart: 6
+  packages/riverpod/lib/src/providers/legacy/state_provider.dart: 7
+  packages/riverpod/lib/src/providers/notifier.dart: 1
+  packages/riverpod/lib/src/providers/notifier/family.dart: 1
+  packages/riverpod/lib/src/providers/notifier/orphan.dart: 1
+  packages/riverpod/lib/src/providers/provider.dart: 2
+  packages/riverpod/lib/src/providers/stream_notifier/family.dart: 1
+  packages/riverpod/lib/src/providers/stream_notifier/orphan.dart: 1
+  packages/riverpod/lib/src/providers/stream_provider.dart: 17
