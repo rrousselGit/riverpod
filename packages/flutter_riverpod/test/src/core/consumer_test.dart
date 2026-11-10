@@ -351,6 +351,50 @@ void main() {
     });
   });
 
+  group('WidgetRef.watch errors emitted after build', () {
+    // https://github.com/rrousselGit/riverpod/issues/4432
+    // Such errors rebuild the widget so that `ref.watch` rethrows them,
+    // instead of being sent to the zone's uncaught error handler.
+
+    testWidgets('retry errors can be caught by the widget', (tester) async {
+      var attempt = 0;
+      var buildCount = 0;
+      final provider = Provider<String>((ref) {
+        attempt++;
+        throw Exception('Test error $attempt');
+      });
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(
+            builder: (context, ref, _) {
+              buildCount++;
+              String displayText;
+              try {
+                displayText = ref.watch(provider);
+              } catch (_) {
+                displayText = 'Error caught';
+              }
+              return Text(displayText, textDirection: TextDirection.ltr);
+            },
+          ),
+        ),
+      );
+
+      expect(find.text('Error caught'), findsOneWidget);
+      expect(attempt, 1);
+      expect(buildCount, 1);
+
+      await tester.pump(const Duration(seconds: 30));
+      await tester.pump(const Duration(seconds: 30));
+
+      expect(tester.takeException(), isNull);
+      expect(attempt, greaterThan(1));
+      expect(buildCount, greaterThan(1));
+      expect(find.text('Error caught'), findsOneWidget);
+    });
+  });
+
   testWidgets('WidgetRef.context exposes the BuildContext', (tester) async {
     late WidgetRef ref;
 

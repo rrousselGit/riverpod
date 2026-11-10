@@ -490,6 +490,11 @@ base class ConsumerStatefulElement extends StatefulElement
               final sub = container.listen<StateT>(
                 target,
                 (_, _) => markNeedsBuild(),
+                // Errors are not sent to the zone's uncaught handler.
+                // Instead we rebuild the widget, so that the error is rethrown
+                // by `ref.watch` during build. This lets the widget handle the
+                // error (e.g. with a try/catch) just like a synchronous error.
+                onError: (_, _) => markNeedsBuild(),
               );
               _applyTickerMode(sub);
               return sub;
