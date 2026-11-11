@@ -244,18 +244,22 @@ void main() {
         service.stuck = 'stuck';
         // Created here for its pending work to follow the fake clock.
         final factory = EvalFactory(FakeConnection(service));
-        void eval(String code) {
+        void eval(String code, {Disposable? isAlive}) {
           // Ends with a cancellation once the factory is disposed.
-          factory.dartCore.eval(code, isAlive: alive).ignore();
+          factory.dartCore.eval(code, isAlive: isAlive ?? alive).ignore();
         }
 
+        final abandoned = Disposable();
         eval('stuck');
+        eval('abandoned', isAlive: abandoned);
         eval('first');
         eval('second');
         async.elapse(
           EvalFactory.stuckEvaluationTimeout - const Duration(milliseconds: 1),
         );
         expect(service.evaluations.map((e) => e.expression), ['stuck']);
+        // Code whose owner went away while it waited never runs.
+        abandoned.dispose();
 
         async.elapse(const Duration(milliseconds: 1));
         expect(service.evaluations.map((e) => e.expression), [

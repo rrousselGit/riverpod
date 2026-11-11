@@ -122,6 +122,7 @@ String _describeCompilationError(
     r'^org-dartlang-debug:synthetic_debug_expression:\d+:\d+: ',
   );
   final indent = ' ' * prefix.length;
+  var followsPrefix = false;
 
   return details
       .split('\n')
@@ -129,13 +130,16 @@ String _describeCompilationError(
         // The compiler shows the line of the error. The first line of the
         // code follows the prefix, and its last line precedes the suffix.
         var shown = line;
-        if (shown.startsWith(prefix)) shown = shown.substring(prefix.length);
+        final marksPrefixedLine = followsPrefix;
+        followsPrefix = shown.startsWith(prefix);
+        if (followsPrefix) shown = shown.substring(prefix.length);
         if (shown.endsWith(suffix)) {
           shown = shown.substring(0, shown.length - suffix.length);
         }
         if (shown != line) return shown;
-        // Markers such as `^^^` point at a column of the expression.
-        if (line.trim().isNotEmpty && line.startsWith(indent)) {
+        // Markers such as `^^^` point at a column of the line above them,
+        // which only the prefix shifts.
+        if (marksPrefixedLine && line.startsWith(indent)) {
           return line.substring(indent.length);
         }
         return line.replaceFirst(location, '');

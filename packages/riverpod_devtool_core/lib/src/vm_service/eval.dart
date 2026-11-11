@@ -277,6 +277,7 @@ class Eval {
     IsolateRef isolateRef,
     String expression,
     Map<String, String>? scope,
+    Disposable isAlive,
   ) async {
     final libraries = await factory._libraries(
       isolateRef,
@@ -294,26 +295,31 @@ class Eval {
         isolateRef,
         '(${scope.keys.join(',')}) => $expression',
         null,
+        isAlive,
       );
-      result = await factory._oneAtATime(
-        () => _service.invoke(
+      result = await factory._oneAtATime(() {
+        _checkAlive(isAlive, isolateRef);
+        return _service.invoke(
           isolateRef.id!,
           closure.id!,
           'call',
           scope.values.toList(),
           disableBreakpoints: true,
-        ),
-      );
+        );
+      });
     } else {
-      result = await factory._oneAtATime(
-        () => _service.evaluate(
+      result = await factory._oneAtATime(() {
+        // Its owner may have gone away while it waited for its turn, and
+        // the code may change the application.
+        _checkAlive(isAlive, isolateRef);
+        return _service.evaluate(
           isolateRef.id!,
           library.id!,
           expression,
           scope: scope,
           disableBreakpoints: true,
-        ),
-      );
+        );
+      });
     }
 
     switch (result) {
@@ -347,7 +353,7 @@ class Eval {
     Map<String, String>? scope,
   }) {
     return _run(isAlive, (isolate) async {
-      return VmInstanceRef(await _evaluate(isolate, code, scope));
+      return VmInstanceRef(await _evaluate(isolate, code, scope, isAlive));
     });
   }
 

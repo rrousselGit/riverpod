@@ -470,6 +470,16 @@ void main() {
         ),
         '$error\nunknown\n^^^^^^^',
       );
+      // Markers of the other lines are where the compiler put them, however
+      // far they are.
+      final far = ' ' * (prefix.length + 1);
+      expect(
+        await describe(
+          '1 +\n${far}unknown',
+          '$location:2:1: $error\n${far}unknown$suffix\n$far^^^^^^^',
+        ),
+        '$error\n${far}unknown\n$far^^^^^^^',
+      );
     });
 
     test('toString includes the cache id', () {
