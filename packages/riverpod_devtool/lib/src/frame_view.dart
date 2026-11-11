@@ -25,6 +25,9 @@ class InspectorSettingsButton extends StatelessWidget {
     return DevtoolIconButton(
       onPressed: () => showDialog<void>(
         context: context,
+        // DevTools wraps the devtool in the Material app of the SDK. Its root
+        // navigator has neither our theme nor our localizations.
+        useRootNavigator: false,
         builder: (context) => const _InspectorSettingsDialog(),
       ),
       tooltip: 'Inspector settings',
