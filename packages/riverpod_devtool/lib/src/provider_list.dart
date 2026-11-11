@@ -1,11 +1,9 @@
 import 'package:hooks_riverpod/src/internals.dart' as internals;
 import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_devtool_core/riverpod_devtool_core.dart';
 
-import 'frames.dart';
 import 'object.dart';
-import 'providers/providers.dart';
-import 'search/fuzzy_match.dart';
-import 'vm_service.dart';
+import 'search/fuzzy_text.dart';
 
 class ProviderList extends StatelessWidget {
   const ProviderList({

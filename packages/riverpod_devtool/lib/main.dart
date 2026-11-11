@@ -6,7 +6,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' as flutter_material;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_devtool_core/riverpod_devtool_core.dart';
 
+import 'src/connection.dart';
 import 'src/frame_view.dart';
 import 'src/observer.dart';
 
@@ -15,9 +17,12 @@ void main() {
     () {
       WidgetsFlutterBinding.ensureInitialized();
       runApp(
-        const ProviderScope(
-          observers: [Observer()],
-          child: RiverpodDevtoolExtension(),
+        ProviderScope(
+          observers: const [Observer()],
+          overrides: [
+            appConnectionProvider.overrideWith(devtoolsAppConnection),
+          ],
+          child: const RiverpodDevtoolExtension(),
         ),
       );
     },

@@ -1,0 +1,40 @@
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
+include: ../../analysis_options.yaml
+linter:
+  rules:
+    # Useful for packages but not for apps
+    type_annotate_public_apis: false
+
+    # generates false positives
+    close_sinks: false
+
+    # Our example actually wants to print to the console
+    avoid_print: false
+
+    # Not necessary for examples
+    public_member_api_docs: false
+
+    # Not necessary for examples
+    use_key_in_widget_constructors: false
+
+    # Too verbose for apps and bring very little value
+    diagnostic_describe_all_properties: false
+
+    # Voluntary for devtool testing
+    unreachable_from_main: false
+    avoid_returning_this: false
+
+    # The devtool only exposes its UI through its DevTools entrypoint, which
+    # does not compile outside of the web. Its widgets are imported from src.
+    implementation_imports: false
+
+    # The driver extension is enabled through --dart-define.
+    do_not_use_environment: false

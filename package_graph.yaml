@@ -57,6 +57,14 @@ packages:
     dependencies: [flutter_riverpod, hooks_riverpod, riverpod, riverpod_annotation]
     dev_dependencies: [riverpod_generator]
     dependency_overrides: []
+    dependents: [devtool_embedded_app]
+  devtool_embedded_app:
+    path: other_projects/devtool_embedded_app
+    codegen: false
+    test: none
+    dependencies: [devtool_debug_app, hooks_riverpod, riverpod_devtool, riverpod_devtool_core]
+    dev_dependencies: []
+    dependency_overrides: []
     dependents: []
   example:
     path: packages/riverpod_sqflite/example
@@ -105,7 +113,7 @@ packages:
     dependencies: [flutter_riverpod, riverpod]
     dev_dependencies: []
     dependency_overrides: []
-    dependents: [counter, devtool_debug_app, flutter_riverpod_example, hooks_riverpod_example, marvel, pub_app, riverpod_devtool, riverpod_lint_flutter_test, stackoverflow, todos, website_snippets]
+    dependents: [counter, devtool_debug_app, devtool_embedded_app, flutter_riverpod_example, hooks_riverpod_example, marvel, pub_app, riverpod_devtool, riverpod_lint_flutter_test, stackoverflow, todos, website_snippets]
   hooks_riverpod_example:
     path: packages/hooks_riverpod/example
     codegen: false
@@ -177,7 +185,7 @@ packages:
     dependencies: []
     dev_dependencies: [riverpod_devtool_generator]
     dependency_overrides: []
-    dependents: [benchmarks, build_yaml, counter, devtool_debug_app, example, flutter_riverpod, flutter_riverpod_example, hooks_riverpod, riverpod_annotation, riverpod_example, riverpod_generator, riverpod_lint, riverpod_sqflite, todos, website_snippets]
+    dependents: [benchmarks, build_yaml, counter, devtool_debug_app, example, flutter_riverpod, flutter_riverpod_example, hooks_riverpod, riverpod_annotation, riverpod_devtool_core, riverpod_example, riverpod_generator, riverpod_lint, riverpod_mcp, riverpod_sqflite, todos, website_snippets]
   riverpod_analyzer_utils:
     path: packages/riverpod_analyzer_utils
     codegen: true
@@ -206,10 +214,18 @@ packages:
     path: packages/riverpod_devtool
     codegen: true
     test: chrome
-    dependencies: [hooks_riverpod]
+    dependencies: [hooks_riverpod, riverpod_devtool_core]
     dev_dependencies: [riverpod_devtool_generator]
     dependency_overrides: []
-    dependents: []
+    dependents: [devtool_embedded_app]
+  riverpod_devtool_core:
+    path: packages/riverpod_devtool_core
+    codegen: true
+    test: dart
+    dependencies: [riverpod]
+    dev_dependencies: [riverpod_devtool_generator]
+    dependency_overrides: []
+    dependents: [devtool_embedded_app, riverpod_devtool, riverpod_mcp]
   riverpod_devtool_generator:
     path: packages/riverpod_devtool_generator
     codegen: true
@@ -217,7 +233,7 @@ packages:
     dependencies: [riverpod_analyzer_utils]
     dev_dependencies: []
     dependency_overrides: []
-    dependents: [riverpod, riverpod_devtool]
+    dependents: [riverpod, riverpod_devtool, riverpod_devtool_core]
   riverpod_example:
     path: packages/riverpod/example
     codegen: true
@@ -248,6 +264,14 @@ packages:
     test: flutter
     dependencies: [hooks_riverpod, riverpod_annotation]
     dev_dependencies: [riverpod_generator, riverpod_lint]
+    dependency_overrides: []
+    dependents: []
+  riverpod_mcp:
+    path: packages/riverpod_mcp
+    codegen: false
+    test: dart
+    dependencies: [riverpod, riverpod_devtool_core]
+    dev_dependencies: []
     dependency_overrides: []
     dependents: []
   riverpod_sqflite:
@@ -352,12 +376,44 @@ tree:
           riverpod_devtool_generator (dev):
             riverpod_analyzer_utils:
               lint_visitor_generator (dev): {}
-  devtool_debug_app:
-    flutter_riverpod:
+  devtool_embedded_app:
+    devtool_debug_app:
+      flutter_riverpod:
+        riverpod:
+          riverpod_devtool_generator (dev):
+            riverpod_analyzer_utils:
+              lint_visitor_generator (dev): {}
+      hooks_riverpod:
+        flutter_riverpod:
+          riverpod:
+            riverpod_devtool_generator (dev):
+              riverpod_analyzer_utils:
+                lint_visitor_generator (dev): {}
+        riverpod:
+          riverpod_devtool_generator (dev):
+            riverpod_analyzer_utils:
+              lint_visitor_generator (dev): {}
       riverpod:
         riverpod_devtool_generator (dev):
           riverpod_analyzer_utils:
             lint_visitor_generator (dev): {}
+      riverpod_annotation:
+        riverpod:
+          riverpod_devtool_generator (dev):
+            riverpod_analyzer_utils:
+              lint_visitor_generator (dev): {}
+      riverpod_generator (dev):
+        riverpod (dev):
+          riverpod_devtool_generator (dev):
+            riverpod_analyzer_utils:
+              lint_visitor_generator (dev): {}
+        riverpod_analyzer_utils:
+          lint_visitor_generator (dev): {}
+        riverpod_annotation:
+          riverpod:
+            riverpod_devtool_generator (dev):
+              riverpod_analyzer_utils:
+                lint_visitor_generator (dev): {}
     hooks_riverpod:
       flutter_riverpod:
         riverpod:
@@ -368,27 +424,36 @@ tree:
         riverpod_devtool_generator (dev):
           riverpod_analyzer_utils:
             lint_visitor_generator (dev): {}
-    riverpod:
-      riverpod_devtool_generator (dev):
-        riverpod_analyzer_utils:
-          lint_visitor_generator (dev): {}
-    riverpod_annotation:
-      riverpod:
-        riverpod_devtool_generator (dev):
-          riverpod_analyzer_utils:
-            lint_visitor_generator (dev): {}
-    riverpod_generator (dev):
-      riverpod (dev):
-        riverpod_devtool_generator (dev):
-          riverpod_analyzer_utils:
-            lint_visitor_generator (dev): {}
-      riverpod_analyzer_utils:
-        lint_visitor_generator (dev): {}
-      riverpod_annotation:
+    riverpod_devtool:
+      hooks_riverpod:
+        flutter_riverpod:
+          riverpod:
+            riverpod_devtool_generator (dev):
+              riverpod_analyzer_utils:
+                lint_visitor_generator (dev): {}
         riverpod:
           riverpod_devtool_generator (dev):
             riverpod_analyzer_utils:
               lint_visitor_generator (dev): {}
+      riverpod_devtool_core:
+        riverpod:
+          riverpod_devtool_generator (dev):
+            riverpod_analyzer_utils:
+              lint_visitor_generator (dev): {}
+        riverpod_devtool_generator (dev):
+          riverpod_analyzer_utils:
+            lint_visitor_generator (dev): {}
+      riverpod_devtool_generator (dev):
+        riverpod_analyzer_utils:
+          lint_visitor_generator (dev): {}
+    riverpod_devtool_core:
+      riverpod:
+        riverpod_devtool_generator (dev):
+          riverpod_analyzer_utils:
+            lint_visitor_generator (dev): {}
+      riverpod_devtool_generator (dev):
+        riverpod_analyzer_utils:
+          lint_visitor_generator (dev): {}
   example:
     flutter_riverpod:
       riverpod:
@@ -524,20 +589,6 @@ tree:
           riverpod_devtool_generator (dev):
             riverpod_analyzer_utils:
               lint_visitor_generator (dev): {}
-  riverpod_devtool:
-    hooks_riverpod:
-      flutter_riverpod:
-        riverpod:
-          riverpod_devtool_generator (dev):
-            riverpod_analyzer_utils:
-              lint_visitor_generator (dev): {}
-      riverpod:
-        riverpod_devtool_generator (dev):
-          riverpod_analyzer_utils:
-            lint_visitor_generator (dev): {}
-    riverpod_devtool_generator (dev):
-      riverpod_analyzer_utils:
-        lint_visitor_generator (dev): {}
   riverpod_example:
     riverpod:
       riverpod_devtool_generator (dev):
@@ -578,6 +629,19 @@ tree:
             lint_visitor_generator (dev): {}
       riverpod_analyzer_utils:
         lint_visitor_generator (dev): {}
+  riverpod_mcp:
+    riverpod:
+      riverpod_devtool_generator (dev):
+        riverpod_analyzer_utils:
+          lint_visitor_generator (dev): {}
+    riverpod_devtool_core:
+      riverpod:
+        riverpod_devtool_generator (dev):
+          riverpod_analyzer_utils:
+            lint_visitor_generator (dev): {}
+      riverpod_devtool_generator (dev):
+        riverpod_analyzer_utils:
+          lint_visitor_generator (dev): {}
   stackoverflow:
     hooks_riverpod:
       flutter_riverpod:
@@ -672,6 +736,7 @@ layers:
   - [riverpod_analyzer_utils]
   - [internal_lint, riverpod_devtool_generator]
   - [riverpod]
-  - [benchmarks, flutter_riverpod, riverpod_annotation, riverpod_example, riverpod_lint, riverpod_sqflite]
-  - [first_app, hooks_riverpod, random_number, riverpod_generator]
+  - [benchmarks, flutter_riverpod, riverpod_annotation, riverpod_devtool_core, riverpod_example, riverpod_lint, riverpod_sqflite]
+  - [first_app, hooks_riverpod, random_number, riverpod_generator, riverpod_mcp]
   - [build_yaml, counter, devtool_debug_app, example, flutter_riverpod_example, hooks_riverpod_example, marvel, pub_app, riverpod_analyzer_utils_tests, riverpod_devtool, riverpod_lint_flutter_test, stackoverflow, todos, website_snippets]
+  - [devtool_embedded_app]

@@ -1,5 +1,5 @@
-import 'package:devtools_app_shared/service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_devtool_core/riverpod_devtool_core.dart';
 
 final class Observer extends ProviderObserver {
   const Observer();

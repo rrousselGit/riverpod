@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Fix the devtool failing to refresh when several tools inspect an application at the same time.
+
 ## 3.5.0 - 2026-11-06
 
 - `ProviderObserver`s are no longer notified when a provider's future

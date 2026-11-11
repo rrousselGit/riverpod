@@ -62,10 +62,9 @@ baseline:
     packages/riverpod/test/src/providers/stream_notifier_test.dart: 1
     packages/riverpod_analyzer_utils/lib/src/nodes.dart: 1
     packages/riverpod_annotation/lib/riverpod_annotation.dart: 32
-    packages/riverpod_devtool/lib/src/vm_service/byte.dart: 2
-    packages/riverpod_devtool/lib/src/vm_service/instance.dart: 2
-    packages/riverpod_devtool/test/src/collection_test.dart: 1
-    packages/riverpod_devtool/test/src/vm_service/eval_test.dart: 1
+    packages/riverpod_devtool/test/src/connection_test.dart: 1
+    packages/riverpod_devtool_core/lib/src/vm_service/byte.dart: 2
+    packages/riverpod_devtool_core/lib/src/vm_service/instance.dart: 2
     packages/riverpod_generator/lib/src/riverpod_generator.dart: 1
     packages/riverpod_generator/test/integration/auto_dispose.dart: 1
     packages/riverpod_generator/test/integration/generated.dart: 1
@@ -76,5 +75,5 @@ baseline:
   todos:
     packages/riverpod_analyzer_utils/analysis_options.yaml: 1
     packages/riverpod_devtool/lib/src/frame_view.dart: 1
-    packages/riverpod_devtool/lib/src/frames.dart: 1
     packages/riverpod_devtool/lib/src/terminal.dart: 1
+    packages/riverpod_devtool_core/lib/src/frames.dart: 1
