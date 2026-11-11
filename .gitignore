@@ -18,6 +18,8 @@ other_projects/**/macos/
 other_projects/**/linux/
 # Include specific entitlements files which enable internet access
 !examples/**/macos/Runner/DebugProfile.entitlements
+# Its runner is hand-written: it hosts two Flutter engines in one window.
+!other_projects/devtool_embedded_app/macos/
 
 # Miscellaneous
 coverage/

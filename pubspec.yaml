@@ -41,6 +41,7 @@ workspace:
   - tools/package_graph
   - tools/repo_checks
   - other_projects/devtool_debug_app
+  - other_projects/devtool_embedded_app
   - website
 
 dependency_overrides:
