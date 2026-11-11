@@ -176,11 +176,11 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
     final connectionFuture = ref.watch(appConnectionProvider.future);
     final evalFuture = ref.watch(riverpodEvalProvider.future);
     final sessionId = await sessionFuture;
-    final service = (await connectionFuture).service;
+    final connection = await connectionFuture;
     final riverpodEval = await evalFuture;
     if (isAlive.disposed) throw CancelledException();
 
-    final sub = service.onNotification
+    final sub = connection.onNotification
         // Using asyncMap to ensure that notifications are processed in order
         // and one at a time.
         .asyncMap((event) async {

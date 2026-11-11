@@ -71,17 +71,20 @@ void main() {
       'maps recognized extension events to Riverpod notifications',
       () async {
         final extensionData = vm.ExtensionData()..data['offset'] = 7;
-        final service = _FakeVmService(
-          Stream.value(
-            vm.Event(
-              kind: vm.EventKind.kExtension,
-              extensionKind: 'riverpod:new_event',
-              extensionData: extensionData,
+        final connection = FakeConnection(
+          _FakeVmService(
+            Stream.value(
+              vm.Event(
+                kind: vm.EventKind.kExtension,
+                isolate: vm.IsolateRef(id: 'isolates/1'),
+                extensionKind: 'riverpod:new_event',
+                extensionData: extensionData,
+              ),
             ),
           ),
         );
 
-        final notifications = await service.onNotification.toList();
+        final notifications = await connection.onNotification.toList();
 
         expect(notifications, hasLength(1));
         expect(notifications.single.name, 'riverpod:new_event');
@@ -90,18 +93,50 @@ void main() {
     );
 
     test('ignores unrelated extension events', () async {
-      final service = _FakeVmService(
-        Stream.fromIterable([
-          vm.Event(
-            kind: vm.EventKind.kExtension,
-            extensionKind: 'not-riverpod',
-            extensionData: vm.ExtensionData(),
-          ),
-          vm.Event(kind: vm.EventKind.kExtension),
-        ]),
+      final isolate = vm.IsolateRef(id: 'isolates/1');
+      final connection = FakeConnection(
+        _FakeVmService(
+          Stream.fromIterable([
+            vm.Event(
+              kind: vm.EventKind.kExtension,
+              isolate: isolate,
+              extensionKind: 'not-riverpod',
+              extensionData: vm.ExtensionData(),
+            ),
+            vm.Event(kind: vm.EventKind.kExtension, isolate: isolate),
+          ]),
+        ),
       );
 
-      expect(await service.onNotification.toList(), isEmpty);
+      expect(await connection.onNotification.toList(), isEmpty);
+    });
+
+    test('ignores the notifications of other isolates', () async {
+      vm.Event event(String isolateId, int offset) => vm.Event(
+        kind: vm.EventKind.kExtension,
+        isolate: vm.IsolateRef(id: isolateId),
+        extensionKind: 'riverpod:new_event',
+        extensionData: vm.ExtensionData()..data['offset'] = offset,
+      );
+      final connection = FakeConnection(
+        _FakeVmService(
+          Stream.fromIterable([
+            event('isolates/2', 1),
+            event('isolates/1', 2),
+            vm.Event(
+              kind: vm.EventKind.kExtension,
+              extensionKind: 'riverpod:new_event',
+              extensionData: vm.ExtensionData()..data['offset'] = 3,
+            ),
+          ]),
+        ),
+      );
+
+      final notifications = await connection.onNotification.toList();
+
+      expect(notifications.map((e) => e.toJson()), [
+        {'offset': 2},
+      ]);
     });
   });
 

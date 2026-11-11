@@ -96,6 +96,8 @@ class _FrameService implements vm.VmService {
   void notify() => events.add(
     vm.Event(
       kind: vm.EventKind.kExtension,
+      // The isolate of FakeConnection.
+      isolate: vm.IsolateRef(id: 'isolates/1'),
       timestamp: 0,
       extensionKind: 'riverpod:new_event',
       extensionData: vm.ExtensionData()..data['offset'] = 0,

@@ -88,9 +88,15 @@ final hotRestartEventProvider = Provider<void>(
   },
 );
 
-extension NotificationService on VmService {
-  Stream<internals.Notification> get onNotification =>
-      onExtensionEvent.expand((event) {
+extension NotificationService on AppConnection {
+  /// The notifications sent by [isolate].
+  ///
+  /// A VM service reports the events of all of its isolates. The ones of other
+  /// isolates are ignored, as they may use Riverpod too and are not what the
+  /// devtool inspects.
+  Stream<internals.Notification> get onNotification => service.onExtensionEvent
+      .where((event) => event.isolate?.id == isolate?.id)
+      .expand((event) {
         final notification = internals.Notification.fromJson(
           event.extensionKind ?? '',
           event.extensionData?.data ?? {},
