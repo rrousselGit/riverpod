@@ -86,6 +86,7 @@ Future<void> _show(
       overrides: [
         evalProvider.overrideWith((ref) => Future.value(factory)),
         devtoolSessionProvider.overrideWith(_Session.new),
+        hotReloadEventProvider.overrideWith((ref) {}),
       ],
       child: testApp(child),
     ),

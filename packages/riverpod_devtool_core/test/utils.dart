@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate' as dart_isolate;
 
 import 'package:fake_async/fake_async.dart';
 import 'package:riverpod/misc.dart';
@@ -107,14 +108,19 @@ class TestApp {
 /// Starts `test/fixtures/app.dart` and connects to its VM service.
 ///
 /// The application is stopped once the current test or group is done.
-Future<TestApp> startApp() async {
+/// [script] runs a copy of the fixture instead, such as one that a test edits
+/// to hot-reload it.
+Future<TestApp> startApp({String script = 'test/fixtures/app.dart'}) async {
+  final packages = await dart_isolate.Isolate.packageConfig;
   final process = await Process.start(Platform.resolvedExecutable, [
     '--enable-vm-service=0',
     '--no-dds',
     '--disable-service-auth-codes',
     '--no-serve-devtools',
     '--enable-asserts',
-    'test/fixtures/app.dart',
+    // A copy of the fixture is outside of this package.
+    '--packages=${packages!.toFilePath()}',
+    script,
   ]);
   // Before anything can fail, or the application would outlive the tests.
   addTearDown(() async {

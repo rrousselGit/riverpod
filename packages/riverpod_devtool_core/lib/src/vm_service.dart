@@ -88,6 +88,30 @@ final hotRestartEventProvider = Provider<void>(
   },
 );
 
+/// A provider that emits an update when the application is hot-reloaded.
+///
+/// A hot-reload changes the members of existing objects, without changing
+/// the state of providers.
+final hotReloadEventProvider = Provider<void>(name: 'hotReloadEventProvider', (
+  ref,
+) async {
+  final connection = await ref.watch(appConnectionProvider.future);
+  if (!ref.mounted) return;
+
+  final sub = connection.service.onIsolateEvent.listen((event) {
+    if (event.kind != EventKind.kIsolateReload) return;
+    final isolate = connection.isolate;
+    // The VM reloads all the isolates of a group at once, and reports the
+    // group instead of an isolate.
+    final reloaded = switch (event.isolate) {
+      final eventIsolate? => eventIsolate.id == isolate?.id,
+      null => event.isolateGroup?.id == isolate?.isolateGroupId,
+    };
+    if (reloaded) ref.notifyListeners();
+  });
+  ref.onDispose(sub.cancel);
+});
+
 extension NotificationService on AppConnection {
   /// The notifications sent by [isolate].
   ///

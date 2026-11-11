@@ -270,6 +270,8 @@ extension ClassIdOnRef on ClassRef {
 final classFromIdProvider = FutureProvider.autoDispose
     .family<Byte<Class>, ClassId>((ref, classId) async {
       ref.watch(hotRestartEventProvider);
+      // A hot-reload can change the members of a class.
+      ref.watch(hotReloadEventProvider);
 
       final evalFactory = await ref.watch(evalProvider.future);
       final isAlive = ref.disposable();

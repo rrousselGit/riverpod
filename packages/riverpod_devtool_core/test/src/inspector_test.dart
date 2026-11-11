@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:collection/collection.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_devtool_core/src/connection.dart';
@@ -174,6 +176,50 @@ void main() {
 
       expect(await members('my_app'), isNot(contains(startsWith('_'))));
       expect(await members('riverpod'), contains(startsWith('_')));
+    });
+
+    test('reads objects again after a hot-reload', () async {
+      final directory = Directory.systemTemp.createTempSync('riverpod_devtool');
+      addTearDown(() => directory.deleteSync(recursive: true));
+      final script = File('${directory.path}/app.dart');
+      final source = File('test/fixtures/app.dart').readAsStringSync();
+      script.writeAsStringSync(source);
+      final app = await startApp(script: script.path);
+      final container = app.container();
+      final user = await container.element('userProvider');
+      final async = (await container.resolve(
+        user.state.state,
+      )).require.instance;
+      final object = async.children.single;
+      // Inspectors keep listening to what they show.
+      container.listen(resolvedVariableForObjectProvider(object), (_, _) {});
+      Iterable<String?> members(Byte<ResolvedVariable> byte) =>
+          byte.require.instance.children.map((e) => e.label);
+      expect(members(await container.resolve(object)), contains('greeting'));
+
+      // The same object gains a getter and loses another.
+      const greeting = r"String get greeting => 'Hello $name ($_secret)';";
+      expect(source, contains(greeting));
+      script.writeAsStringSync(
+        source.replaceFirst(greeting, r"String get farewell => 'Bye $name';"),
+      );
+      final report = await app.connection.service.reloadSources(
+        app.connection.isolate!.id!,
+      );
+      expect(report.success, isTrue);
+
+      final reloaded = await container.waitFor(
+        resolvedVariableForObjectProvider(object),
+        (byte) => members(byte).contains('farewell'),
+      );
+      expect(members(reloaded), isNot(contains('greeting')));
+      final farewell = reloaded.require.instance.children.firstWhere(
+        (e) => e.label == 'farewell',
+      );
+      expect(
+        (await container.resolve(farewell)).require.instance,
+        isA<StringVariable>().having((e) => e.value, 'value', 'Bye john'),
+      );
     });
 
     test('reports values that are no longer retained', () async {

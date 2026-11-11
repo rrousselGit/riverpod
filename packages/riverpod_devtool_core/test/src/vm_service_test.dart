@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_devtool_core/src/connection.dart';
 import 'package:riverpod_devtool_core/src/vm_service.dart';
@@ -7,12 +9,17 @@ import 'package:vm_service/vm_service.dart' as vm;
 import '../utils.dart';
 
 class _FakeVmService implements vm.VmService {
-  _FakeVmService(this._events);
+  _FakeVmService(this._events, {Stream<vm.Event>? isolateEvents})
+    : _isolateEvents = isolateEvents ?? const Stream.empty();
 
   final Stream<vm.Event> _events;
+  final Stream<vm.Event> _isolateEvents;
 
   @override
   Stream<vm.Event> get onExtensionEvent => _events;
+
+  @override
+  Stream<vm.Event> get onIsolateEvent => _isolateEvents;
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -187,6 +194,70 @@ void main() {
       // What failed to be read without an isolate can be read again.
       connection.isolate = vm.IsolateRef(id: 'isolates/1');
       expect(restarts, 1);
+    });
+  });
+
+  group('hotReloadEventProvider', () {
+    test('notifies when the isolate of the application is reloaded', () async {
+      final events = StreamController<vm.Event>(sync: true);
+      addTearDown(events.close);
+      final connection = FakeConnection(
+        _FakeVmService(const Stream.empty(), isolateEvents: events.stream),
+        isolate: vm.IsolateRef(
+          id: 'isolates/1',
+          isolateGroupId: 'isolateGroups/1',
+        ),
+      );
+      final container = ProviderContainer.test(
+        overrides: [appConnectionProvider.overrideWith((ref) => connection)],
+      );
+      var reloads = 0;
+      container.listen(hotReloadEventProvider, (_, _) => reloads++);
+      await container.read(appConnectionProvider.future);
+      await pumpEventQueue();
+
+      // The VM reports the group that it reloaded.
+      events.add(
+        vm.Event(
+          kind: vm.EventKind.kIsolateReload,
+          isolateGroup: vm.IsolateGroupRef(id: 'isolateGroups/1'),
+        ),
+      );
+      expect(reloads, 1);
+
+      events.add(
+        vm.Event(
+          kind: vm.EventKind.kIsolateReload,
+          isolate: vm.IsolateRef(id: 'isolates/1'),
+        ),
+      );
+      expect(reloads, 2);
+
+      // Other isolates, and other events of the isolate, are ignored.
+      events
+        ..add(
+          vm.Event(
+            kind: vm.EventKind.kIsolateReload,
+            isolateGroup: vm.IsolateGroupRef(id: 'isolateGroups/2'),
+          ),
+        )
+        ..add(
+          vm.Event(
+            kind: vm.EventKind.kIsolateReload,
+            isolate: vm.IsolateRef(id: 'isolates/2'),
+            isolateGroup: vm.IsolateGroupRef(id: 'isolateGroups/1'),
+          ),
+        )
+        ..add(
+          vm.Event(
+            kind: vm.EventKind.kIsolateUpdate,
+            isolate: vm.IsolateRef(id: 'isolates/1'),
+          ),
+        );
+      expect(reloads, 2);
+
+      container.dispose();
+      expect(events.hasListener, isFalse);
     });
   });
 }

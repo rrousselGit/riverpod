@@ -115,6 +115,7 @@ export 'src/vm_service.dart'
         encodeList,
         evalProvider,
         gettersForClassProvider,
+        hotReloadEventProvider,
         hotRestartEventProvider,
         riverpodEvalProvider,
         runAndRetryOnExpired;

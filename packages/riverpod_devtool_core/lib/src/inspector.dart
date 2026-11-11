@@ -38,6 +38,8 @@ final resolvedVariableForObjectProvider = FutureProvider.autoDispose
       name: 'resolvedVariableForObjectProvider',
       (ref, object) async {
         ref.watch(devtoolSessionProvider);
+        // A hot-reload can change what an object contains.
+        ref.watch(hotReloadEventProvider);
         final eval = await ref.watch(evalProvider.future);
 
         final byte = await object.read(eval, isAlive: ref.disposable());
