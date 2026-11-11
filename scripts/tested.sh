@@ -28,6 +28,8 @@
 #   PACKAGE     Package paths (default: every workspace package).
 #
 # Exempt from the rule:
+# - Example packages (see is_example) without a test/ folder, such as
+#   other_projects/devtool_embedded_app.
 # - Changes that only touch comments or whitespace (docs, formatting), as
 #   told by tools/code_changes, which compares unresolved ASTs.
 # - Deleted files, tests themselves (*_test.dart), and generated files
@@ -152,6 +154,7 @@ while IFS=$'\t' read -r status path package; do
   case "$path" in *_test.dart) continue ;; *.dart) ;; *) continue ;; esac
   [ -f "$path" ] || continue
   is_generated "$path" && continue
+  is_example "$package" && [ ! -d "$package/test" ] && continue
   # <package>/lib/<rel>.dart -> <package>/test/<rel>_test.dart, or fixtures
   rel="${path#"$package/lib/"}"
   candidates="$(tests_for "$package" "$rel")"

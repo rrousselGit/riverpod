@@ -1,5 +1,5 @@
 name: riverpod_devtool
-description: "A new Flutter project."
+description: The DevTools extension of Riverpod.
 publish_to: "none"
 
 environment:
@@ -19,7 +19,7 @@ dependencies:
   intl: ^0.20.2
   material_ui: ^1.0.0
   meta: ^1.17.0
-  stack_trace: ^1.12.1
+  riverpod_devtool_core: ^0.0.0
   vm_service: ^15.0.2
 
 dev_dependencies:
