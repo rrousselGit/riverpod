@@ -372,6 +372,41 @@ void main() {
       );
     });
 
+    test('evaluate reads private members only when asked to', () async {
+      final id = await agent.id('counterProvider');
+      Future<Map<String, Object?>> evaluate([
+        Map<String, Object?> args = const {},
+      ]) async {
+        final result = await agent.call('evaluate', {
+          'id': id,
+          'expression': r'$notifier',
+          ...args,
+        });
+        return result! as Map<String, Object?>;
+      }
+
+      List<Object?> members(Map<String, Object?> evaluation) {
+        final result = evaluation['result']! as Map<String, Object?>;
+        return [
+          for (final child in result['children']! as List<Object?>)
+            (child! as Map<String, Object?>)['name'],
+        ];
+      }
+
+      // What another tool asked for does not change what the paths lead to.
+      await agent.inspect('counterProvider', {
+        'target': 'notifier',
+        'showPrivateMembers': true,
+      });
+      final byDefault = await evaluate();
+      expect(byDefault, isNot(contains('showPrivateMembers')));
+      expect(members(byDefault), isNot(contains(startsWith('_'))));
+
+      final withPrivate = await evaluate({'showPrivateMembers': true});
+      expect(withPrivate, containsPair('showPrivateMembers', true));
+      expect(members(withPrivate), contains(startsWith('_')));
+    });
+
     test(r'evaluate forgets $previous once it expired', () async {
       final id = await agent.id('counterProvider');
       await agent.call('evaluate', {'id': id, 'expression': '42'});
@@ -555,6 +590,13 @@ void main() {
 
       await agent.call('connect', {'uri': other.uri});
 
+      // The session of the previous application does not wait to expire.
+      expect(
+        await app.evalInRiverpod(
+          'RiverpodDevtool.instance._sessions.length.toString()',
+        ),
+        '0',
+      );
       await expectLater(
         agent.call('inspect_provider', {'id': id}),
         throwsToolError(startsWith('No provider with id')),

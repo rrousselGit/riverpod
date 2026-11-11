@@ -396,6 +396,92 @@ void main() {
       },
     );
 
+    test('compilation errors only show the line that was typed', () async {
+      final framework = _MockEval();
+      final eval = _MockEval();
+      eval.factory = _FakeEvalFactory(
+        dartCore: eval,
+        riverpodFramework: framework,
+      )..sessionId = 'session';
+      final alive = Disposable();
+      when(
+        framework.eval('RiverpodDevtool.instance', isAlive: alive),
+      ).thenAnswer(
+        (_) async =>
+            ByteVariable(VmInstanceRef.string('devtool', id: 'devtool-ref')),
+      );
+      const prefix =
+          '() { RiverpodDevtool.validateSession("session"); '
+          'return RiverpodDevtool.cache((';
+      const suffix = ') as Object?, sessionId: "session"); }()';
+      const location = 'org-dartlang-debug:synthetic_debug_expression';
+
+      // What the compiler reports of [code], as [details], once rewritten.
+      Future<String> describe(String code, String details) async {
+        when(
+          eval.eval(
+            '$prefix$code$suffix',
+            isAlive: alive,
+            scope: {'RiverpodDevtool': 'devtool-ref'},
+          ),
+        ).thenAnswer(
+          (_) async => ByteError(
+            RPCErrorType(
+              vm.RPCError(
+                'evaluate',
+                vm.RPCErrorKind.kExpressionCompilationError.code,
+                'Expression compilation error',
+                {'details': details},
+              ),
+            ),
+          ),
+        );
+        final result = await RootCachedObject.create(
+          code,
+          eval,
+          isAlive: alive,
+        );
+        return '${(result as ByteError).error}';
+      }
+
+      const error = "Error: Undefined name 'unknown'.";
+      // The first line of the code follows code that was not typed.
+      expect(
+        await describe(
+          'unknown +\n1',
+          '$location:1:${prefix.length + 1}: $error\n'
+              '${prefix}unknown +\n'
+              '${' ' * prefix.length}^^^^^^^',
+        ),
+        '$error\nunknown +\n^^^^^^^',
+      );
+      expect(
+        await describe(
+          '1 +\n  unknown +\n1',
+          '$location:2:3: $error\n  unknown +\n  ^^^^^^^',
+        ),
+        '$error\n  unknown +\n  ^^^^^^^',
+      );
+      // Its last line precedes code that was not typed.
+      expect(
+        await describe(
+          '1 +\nunknown',
+          '$location:2:1: $error\nunknown$suffix\n^^^^^^^',
+        ),
+        '$error\nunknown\n^^^^^^^',
+      );
+      // Markers of the other lines are where the compiler put them, however
+      // far they are.
+      final far = ' ' * (prefix.length + 1);
+      expect(
+        await describe(
+          '1 +\n${far}unknown',
+          '$location:2:1: $error\n${far}unknown$suffix\n$far^^^^^^^',
+        ),
+        '$error\n${far}unknown\n$far^^^^^^^',
+      );
+    });
+
     test('toString includes the cache id', () {
       expect(
         RootCachedObject(CacheId('cache-1')).toString(),

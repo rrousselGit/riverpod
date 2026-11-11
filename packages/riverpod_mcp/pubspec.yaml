@@ -19,8 +19,8 @@ dependencies:
   riverpod: 3.5.0
   riverpod_devtool_core: ^0.0.0
   stack_trace: ^1.12.1
-  stream_channel: ^2.1.4
   vm_service: ^15.0.2
 
 dev_dependencies:
+  stream_channel: ^2.1.4
   test: ^1.25.0

@@ -12,7 +12,12 @@ class Disposable {
 
 /// Thrown by requests whose owner or connection went away before they
 /// completed.
-final class CancelledException implements Exception {}
+final class CancelledException implements Exception {
+  @override
+  String toString() =>
+      'The request was cancelled, as the application restarted, '
+      'disconnected or took too long. Try again.';
+}
 
 final riverpodEvalProvider = FutureProvider((ref) {
   return ref.watch(
@@ -58,15 +63,27 @@ class EvalFactory {
 
   final _evalCache = <String, Eval>{};
 
+  /// How long an evaluation can run before the next ones stop waiting for it.
+  static const stuckEvaluationTimeout = Duration(seconds: 10);
+
   Future<void> _evaluating = Future.value();
 
   /// Runs [evaluate] once the previous evaluation is done.
   ///
   /// The VM can otherwise start an evaluation in the middle of another one,
   /// which breaks code that is not reentrant, such as exporting frames.
+  ///
+  /// The next evaluation stops waiting after [stuckEvaluationTimeout], as an
+  /// evaluation that never completes would otherwise block all the others.
   Future<ResultT> _oneAtATime<ResultT>(Future<ResultT> Function() evaluate) {
-    final result = _evaluating.then((_) => evaluate());
-    _evaluating = result.then<void>((_) {}, onError: (Object _) {});
+    final previous = _evaluating;
+    final result = previous.then((_) => evaluate());
+    // Counted from when the evaluation starts, not from when it is queued.
+    _evaluating = previous.then(
+      (_) => result
+          .then<void>((_) {}, onError: (Object _) {})
+          .timeout(stuckEvaluationTimeout, onTimeout: () {}),
+    );
     return result;
   }
 
@@ -260,6 +277,7 @@ class Eval {
     IsolateRef isolateRef,
     String expression,
     Map<String, String>? scope,
+    Disposable isAlive,
   ) async {
     final libraries = await factory._libraries(
       isolateRef,
@@ -277,26 +295,31 @@ class Eval {
         isolateRef,
         '(${scope.keys.join(',')}) => $expression',
         null,
+        isAlive,
       );
-      result = await factory._oneAtATime(
-        () => _service.invoke(
+      result = await factory._oneAtATime(() {
+        _checkAlive(isAlive, isolateRef);
+        return _service.invoke(
           isolateRef.id!,
           closure.id!,
           'call',
           scope.values.toList(),
           disableBreakpoints: true,
-        ),
-      );
+        );
+      });
     } else {
-      result = await factory._oneAtATime(
-        () => _service.evaluate(
+      result = await factory._oneAtATime(() {
+        // Its owner may have gone away while it waited for its turn, and
+        // the code may change the application.
+        _checkAlive(isAlive, isolateRef);
+        return _service.evaluate(
           isolateRef.id!,
           library.id!,
           expression,
           scope: scope,
           disableBreakpoints: true,
-        ),
-      );
+        );
+      });
     }
 
     switch (result) {
@@ -330,7 +353,7 @@ class Eval {
     Map<String, String>? scope,
   }) {
     return _run(isAlive, (isolate) async {
-      return VmInstanceRef(await _evaluate(isolate, code, scope));
+      return VmInstanceRef(await _evaluate(isolate, code, scope, isAlive));
     });
   }
 

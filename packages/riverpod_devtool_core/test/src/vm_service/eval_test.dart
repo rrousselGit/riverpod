@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fake_async/fake_async.dart';
 import 'package:riverpod_devtool_core/src/vm_service.dart';
 import 'package:test/test.dart';
 import 'package:vm_service/vm_service.dart';
@@ -38,6 +39,9 @@ class _EvalService implements VmService {
   int isolateLookups = 0;
   StateError? isolateError;
   Exception? failure;
+
+  /// An expression whose evaluation never completes.
+  String? stuck;
   Response Function()? respond;
   Response response = InstanceRef(
     id: 'objects/ok',
@@ -62,6 +66,7 @@ class _EvalService implements VmService {
     String? idZoneId,
   }) async {
     evaluations.add((target: targetId, expression: expression, scope: scope));
+    if (expression == stuck) await Completer<void>().future;
     if (failure case final failure?) throw failure;
     return respond?.call() ?? response;
   }
@@ -188,6 +193,13 @@ void main() {
       await expectation;
     });
 
+    test('cancellations tell what happened to those reading them', () {
+      expect(
+        '${CancelledException()}',
+        allOf(contains('cancelled'), contains('Try again')),
+      );
+    });
+
     test('preserves unexpected failures while still connected', () async {
       final result = eval.getClass(ClassRef(id: 'classes/1'), isAlive: alive);
       final error = StateError('lookup failed');
@@ -225,6 +237,38 @@ void main() {
       expect(service.evaluations.map((e) => '$e'), [
         '(expression: a\n+ b, scope: {a: objects/1}, target: libraries/core)',
       ]);
+    });
+
+    test('evaluates one expression at a time, unless one is stuck', () {
+      fakeAsync((async) {
+        service.stuck = 'stuck';
+        // Created here for its pending work to follow the fake clock.
+        final factory = EvalFactory(FakeConnection(service));
+        void eval(String code, {Disposable? isAlive}) {
+          // Ends with a cancellation once the factory is disposed.
+          factory.dartCore.eval(code, isAlive: isAlive ?? alive).ignore();
+        }
+
+        final abandoned = Disposable();
+        eval('stuck');
+        eval('abandoned', isAlive: abandoned);
+        eval('first');
+        eval('second');
+        async.elapse(
+          EvalFactory.stuckEvaluationTimeout - const Duration(milliseconds: 1),
+        );
+        expect(service.evaluations.map((e) => e.expression), ['stuck']);
+        // Code whose owner went away while it waited never runs.
+        abandoned.dispose();
+
+        async.elapse(const Duration(milliseconds: 1));
+        expect(service.evaluations.map((e) => e.expression), [
+          'stuck',
+          'first',
+          'second',
+        ]);
+        factory.dispose();
+      });
     });
 
     test('looks up the libraries of an isolate once', () async {

@@ -111,27 +111,35 @@ sealed class CachedObject {
   );
 }
 
-/// Rewrites what the compiler reported about [expression] as if it compiled
-/// [code] alone, which is all that the user typed.
+/// Rewrites what the compiler reported about the code that the user typed as
+/// if it compiled that code alone, instead of between [prefix] and [suffix].
 String _describeCompilationError(
   String details, {
-  required String code,
-  required String expression,
   required String prefix,
+  required String suffix,
 }) {
-  // The VM evaluates expressions on a single line.
-  final flatExpression = expression.replaceAll('\n', ' ');
   final location = RegExp(
     r'^org-dartlang-debug:synthetic_debug_expression:\d+:\d+: ',
   );
   final indent = ' ' * prefix.length;
+  var followsPrefix = false;
 
   return details
       .split('\n')
       .map((line) {
-        if (line == flatExpression) return code.replaceAll('\n', ' ');
-        // Markers such as `^^^` point at a column of the expression.
-        if (line.trim().isNotEmpty && line.startsWith(indent)) {
+        // The compiler shows the line of the error. The first line of the
+        // code follows the prefix, and its last line precedes the suffix.
+        var shown = line;
+        final marksPrefixedLine = followsPrefix;
+        followsPrefix = shown.startsWith(prefix);
+        if (followsPrefix) shown = shown.substring(prefix.length);
+        if (shown.endsWith(suffix)) {
+          shown = shown.substring(0, shown.length - suffix.length);
+        }
+        if (shown != line) return shown;
+        // Markers such as `^^^` point at a column of the line above them,
+        // which only the prefix shifts.
+        if (marksPrefixedLine && line.startsWith(indent)) {
           return line.substring(indent.length);
         }
         return line.replaceFirst(location, '');
@@ -174,13 +182,12 @@ class RootCachedObject extends CachedObject {
         '() { RiverpodDevtool.validateSession("$sessionId"); '
         'return RiverpodDevtool.cache(('
         '${nullVariables.isEmpty ? '' : '(($parameters) => '}';
-    final expression =
-        '$prefix$code'
+    final suffix =
         '${nullVariables.isEmpty ? '' : ')($arguments)'}'
         // Casting to allow assigning `void`
         ') as Object?, sessionId: "$sessionId"); }()';
     final idByte = await eval.eval(
-      expression,
+      '$prefix$code$suffix',
       isAlive: isAlive,
       scope: {...?scope, 'RiverpodDevtool': devtoolRef.instance.id!},
     );
@@ -192,9 +199,8 @@ class RootCachedObject extends CachedObject {
           CompilationErrorType(
             _describeCompilationError(
               error.details ?? error.message,
-              code: code,
-              expression: expression,
               prefix: prefix,
+              suffix: suffix,
             ),
           ),
         );
