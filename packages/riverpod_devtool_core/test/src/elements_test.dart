@@ -165,30 +165,14 @@ void main() {
       expect(() => frame.elements, throwsStateError);
     });
 
-    test('keeps the last state of an element in the frame disposing it', () {
-      final initial = FoldedFrame(
-        frame: Frame.test(
-          index: 0,
-          events: [addEvent('provider-1', stateId: 'state-1')],
-        ),
-        previous: null,
-      );
-      final disposed = FoldedFrame(
-        frame: Frame.test(index: 1, events: [disposeEvent('provider-1')]),
-        previous: initial,
-      );
-
-      final meta = disposed.elements[internals.ElementId('provider-1')];
-
-      expect(meta, isNotNull);
-      expect(meta!.state.state.id.value, 'state-1');
-    });
-
     test('removes disposed elements from the frames after their disposal', () {
       final initial = FoldedFrame(
         frame: Frame.test(
           index: 0,
-          events: [addEvent('disposed'), addEvent('alive')],
+          events: [
+            addEvent('disposed', stateId: 'state-1'),
+            addEvent('alive'),
+          ],
         ),
         previous: null,
       );
@@ -207,38 +191,58 @@ void main() {
 
       expect(after.elements.keys, [internals.ElementId('alive')]);
       expect(later.elements.keys, [internals.ElementId('alive')]);
-      // Past frames are unaffected.
-      expect(disposed.elements, hasLength(2));
+      // Past frames are unaffected, including the one disposing the element,
+      // which shows its last state.
       expect(initial.elements, hasLength(2));
-    });
-
-    test('keeps elements that are created again after their disposal', () {
-      final initial = FoldedFrame(
-        frame: Frame.test(index: 0, events: [addEvent('provider-1')]),
-        previous: null,
-      );
-      final disposed = FoldedFrame(
-        frame: Frame.test(index: 1, events: [disposeEvent('provider-1')]),
-        previous: initial,
-      );
-      final recreated = FoldedFrame(
-        frame: Frame.test(
-          index: 2,
-          events: [addEvent('provider-1', stateId: 'state-2')],
-        ),
-        previous: disposed,
-      );
-
+      expect(disposed.elements, hasLength(2));
       expect(
-        recreated
-            .elements[internals.ElementId('provider-1')]!
+        disposed
+            .elements[internals.ElementId('disposed')]!
             .state
             .state
             .id
             .value,
-        'state-2',
+        'state-1',
       );
     });
+
+    test(
+      'starts anew elements that are created again after their disposal',
+      () {
+        final id = internals.ElementId('provider-1');
+        final initial = FoldedFrame(
+          frame: Frame.test(
+            index: 0,
+            events: [
+              addEvent('provider-1'),
+              ProviderDependencyChangeEvent(
+                elementId: id,
+                dependents: const {},
+                weakDependents: const {},
+                dependencies: {internals.ElementId('parent')},
+              ),
+            ],
+          ),
+          previous: null,
+        );
+        final disposed = FoldedFrame(
+          frame: Frame.test(index: 1, events: [disposeEvent('provider-1')]),
+          previous: initial,
+        );
+        final recreated = FoldedFrame(
+          frame: Frame.test(
+            index: 2,
+            events: [addEvent('provider-1', stateId: 'state-2')],
+          ),
+          previous: disposed,
+        );
+
+        final element = recreated.elements[id]!;
+        expect(element.state.state.id.value, 'state-2');
+        // What the disposed element depended on is not carried over.
+        expect(element.parents, isEmpty);
+      },
+    );
   });
 
   group('ElementMeta.invalidate', () {
