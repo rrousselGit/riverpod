@@ -142,6 +142,17 @@ final class RPCErrorType extends ByteErrorType {
   String toString() => 'RPCError: $error';
 }
 
+/// Code typed by the user does not compile.
+final class CompilationErrorType extends ByteErrorType {
+  const CompilationErrorType(this.message);
+
+  /// What the compiler reported, about the code as the user typed it.
+  final String message;
+
+  @override
+  String toString() => message;
+}
+
 /// A previously exported value belongs to a closed or expired DevTools session.
 final class ExpiredDevtoolSessionType extends ByteErrorType {
   const ExpiredDevtoolSessionType();

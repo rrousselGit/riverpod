@@ -194,7 +194,7 @@ class _TerminalHelp extends StatelessWidget {
           ),
           TextSpan(
             text:
-                ': the associated Notifier, if any\n'
+                ': the associated Notifier as it is now, or null\n'
                 '- ',
           ),
           TextSpan(
@@ -212,8 +212,10 @@ class _TerminalHelp extends StatelessWidget {
           ),
           TextSpan(
             text:
-                ': the last value from history\n\n'
-                'Only types/variables that are accessible to the Notifier/Provider can be used here.',
+                ': the last value from history, or null\n\n'
+                'The code runs in the library of the Notifier, or of the '
+                'state for providers without one. Only what this library '
+                'can access can be used here.',
           ),
         ],
       ),

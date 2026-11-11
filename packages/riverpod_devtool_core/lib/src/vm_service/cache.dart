@@ -111,14 +111,48 @@ sealed class CachedObject {
   );
 }
 
+/// Rewrites what the compiler reported about [expression] as if it compiled
+/// [code] alone, which is all that the user typed.
+String _describeCompilationError(
+  String details, {
+  required String code,
+  required String expression,
+  required String prefix,
+}) {
+  // The VM evaluates expressions on a single line.
+  final flatExpression = expression.replaceAll('\n', ' ');
+  final location = RegExp(
+    r'^org-dartlang-debug:synthetic_debug_expression:\d+:\d+: ',
+  );
+  final indent = ' ' * prefix.length;
+
+  return details
+      .split('\n')
+      .map((line) {
+        if (line == flatExpression) return code.replaceAll('\n', ' ');
+        // Markers such as `^^^` point at a column of the expression.
+        if (line.trim().isNotEmpty && line.startsWith(indent)) {
+          return line.substring(indent.length);
+        }
+        return line.replaceFirst(location, '');
+      })
+      .join('\n')
+      .trim();
+}
+
 class RootCachedObject extends CachedObject {
   RootCachedObject(this.id, {super.label});
 
+  /// Evaluates [code] and retains its result in the application.
+  ///
+  /// [nullVariables] are names that [code] can use besides the ones of
+  /// [scope], and which are `null`.
   static Future<Byte<RootCachedObject>> create(
     String code,
     Eval eval, {
     required Disposable isAlive,
     Map<String, String>? scope,
+    List<String> nullVariables = const [],
   }) async {
     // No retry because retrying <code> could have side-effects.
     final sessionId = eval.factory.sessionId;
@@ -133,16 +167,37 @@ class RootCachedObject extends CachedObject {
       case ByteVariable():
         break;
     }
+    // Null variables are the parameters of a closure around the code.
+    final parameters = nullVariables.map((name) => 'dynamic $name').join(', ');
+    final arguments = nullVariables.map((_) => 'null').join(', ');
+    final prefix =
+        '() { RiverpodDevtool.validateSession("$sessionId"); '
+        'return RiverpodDevtool.cache(('
+        '${nullVariables.isEmpty ? '' : '(($parameters) => '}';
+    final expression =
+        '$prefix$code'
+        '${nullVariables.isEmpty ? '' : ')($arguments)'}'
+        // Casting to allow assigning `void`
+        ') as Object?, sessionId: "$sessionId"); }()';
     final idByte = await eval.eval(
-      // Casting to allow assigning `void`
-      '() { RiverpodDevtool.validateSession("$sessionId"); '
-      'return RiverpodDevtool.cache(($code) as Object?, '
-      'sessionId: "$sessionId"); }()',
+      expression,
       isAlive: isAlive,
       scope: {...?scope, 'RiverpodDevtool': devtoolRef.instance.id!},
     );
 
     switch (idByte) {
+      case ByteError(error: RPCErrorType(:final error))
+          when error.code == RPCErrorKind.kExpressionCompilationError.code:
+        return ByteError(
+          CompilationErrorType(
+            _describeCompilationError(
+              error.details ?? error.message,
+              code: code,
+              expression: expression,
+              prefix: prefix,
+            ),
+          ),
+        );
       case ByteError():
         return ByteError(idByte.error);
       case ByteVariable():

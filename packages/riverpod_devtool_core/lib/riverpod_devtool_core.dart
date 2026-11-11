@@ -57,6 +57,7 @@ export 'src/vm_service.dart'
         CancelledException,
         ClassId,
         ClassIdOnRef,
+        CompilationErrorType,
         ConsumerMeta,
         ConsumerNodeMeta,
         ContainerNodeMeta,
