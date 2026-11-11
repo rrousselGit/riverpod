@@ -201,6 +201,16 @@ abstract class DerivedCachedObject extends CachedObject {
     required Uri uri,
   }) = _GetterCachedObject;
 
+  /// The text that describes [from]: the result of its `toString`.
+  factory DerivedCachedObject.description(CachedObject from) {
+    // Any library can call `toString`.
+    return _GetterCachedObject(
+      from,
+      name: 'toString()',
+      uri: Uri.parse('dart:core'),
+    );
+  }
+
   factory DerivedCachedObject.objectField(CachedObject object, FieldKey name) =
       _DelegatingDerivedCachedObject.objectField;
 

@@ -48,6 +48,8 @@ final valuesProvider = Provider<Map<String, Object?>>(
     'user': User('jane', tags: []),
     'loading': const AsyncLoading<int>(progress: .5),
     'error': AsyncError<int>('oops', StackTrace.empty),
+    'exception': Exception('boom'),
+    'stackTrace': StackTrace.current,
   },
 );
 

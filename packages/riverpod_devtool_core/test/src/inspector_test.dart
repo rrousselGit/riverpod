@@ -80,7 +80,39 @@ void main() {
           'children',
           ['error', 'stackTrace', 'retrying'],
         ),
+        // Objects with their own toString expose it first.
+        'exception': isA<UnknownObjectVariable>().having(
+          (e) => e.children.map((e) => e.label),
+          'children',
+          ['toString()', 'message'],
+        ),
+        'stackTrace': isA<UnknownObjectVariable>().having(
+          (e) => e.children.map((e) => e.label),
+          'children',
+          ['toString()'],
+        ),
       });
+      expect(
+        (await container.resolve(
+          entries['stackTrace']!.children.single,
+        )).require.instance,
+        // Stack traces of the VM have no Dart implementation of toString.
+        isA<StringVariable>().having(
+          (e) => e.value,
+          'value',
+          contains('fixtures/app.dart'),
+        ),
+      );
+      expect(
+        (await container.resolve(
+          entries['exception']!.children.first,
+        )).require.instance,
+        isA<StringVariable>().having(
+          (e) => e.value,
+          'value',
+          'Exception: boom',
+        ),
+      );
       final name = entries['user']!.children.firstWhere(
         (e) => e.label == 'name',
       );

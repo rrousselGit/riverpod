@@ -117,5 +117,6 @@ export 'src/vm_service.dart'
         gettersForClassProvider,
         hotReloadEventProvider,
         hotRestartEventProvider,
+        overridesToStringProvider,
         riverpodEvalProvider,
         runAndRetryOnExpired;

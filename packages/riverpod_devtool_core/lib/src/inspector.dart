@@ -124,6 +124,16 @@ final resolvedVariableForObjectProvider = FutureProvider.autoDispose
                       ? await ref.watch(gettersForClassProvider(classId).future)
                       : const <({String name, Uri uri})>{};
 
+                  // Some objects, such as exceptions, only describe
+                  // themselves through `toString`.
+                  final overridesToString =
+                      // The VM implements the toString of stack traces.
+                      byte.instance.kind == InstanceKind.kStackTrace ||
+                      classId != null &&
+                          await ref.watch(
+                            overridesToStringProvider(classId).future,
+                          );
+
                   final showExternalPrivateMembers = ref.watch(
                     inspectorSettingsProvider.select(
                       (s) => s.showExternalPrivateMembers,
@@ -136,13 +146,17 @@ final resolvedVariableForObjectProvider = FutureProvider.autoDispose
                   instance = UnknownObjectVariable(
                     object,
                     byte.instance,
-                    children: UnknownObjectVariable.computeChildren(
-                      object,
-                      getters,
-                      byte.instance.fields ?? const [],
-                      showExternalPrivateMembers: showExternalPrivateMembers,
-                      currentPackageName: currentPackageName,
-                    ),
+                    children: [
+                      if (overridesToString)
+                        DerivedCachedObject.description(object),
+                      ...UnknownObjectVariable.computeChildren(
+                        object,
+                        getters,
+                        byte.instance.fields ?? const [],
+                        showExternalPrivateMembers: showExternalPrivateMembers,
+                        currentPackageName: currentPackageName,
+                      ),
+                    ],
                   );
               }
             }

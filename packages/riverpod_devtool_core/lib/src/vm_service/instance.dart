@@ -351,6 +351,33 @@ final gettersForClassProvider = FutureProvider.autoDispose
           .toSet();
     });
 
+/// Whether the instances of a class have their own `toString`, instead of
+/// the one of [Object].
+///
+/// `false` if the class cannot be resolved.
+final FutureProviderFamily<bool, ClassId> overridesToStringProvider =
+    FutureProvider.autoDispose.family<bool, ClassId>((ref, classId) async {
+      final klass = await ref.watch(classFromIdProvider(classId).future);
+      switch (klass) {
+        case ByteError<Class>():
+          return false;
+        case ByteVariable<Class>(instance: final klass):
+          if (klass.isDartCodeObject) return false;
+
+          final functions = klass.functions ?? <FuncRef>[];
+          if (functions.any((function) => function.name == 'toString')) {
+            return true;
+          }
+
+          return switch (klass.superClass) {
+            final superClass? => ref.watch(
+              overridesToStringProvider(superClass.classId).future,
+            ),
+            null => false,
+          };
+      }
+    });
+
 extension IsDartCoreObject on Class {
   bool get isDartCodeObject => library?.uri == 'dart:core' && name == 'Object';
 }
