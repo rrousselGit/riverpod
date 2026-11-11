@@ -135,6 +135,8 @@ class _FrameViewer extends HookConsumerWidget {
       filteredProvidersForCurrentFrameProvider(search.text),
     );
     final selected = ref.watch(selectedProviderProvider(search.text));
+    final selectedFrame = ref.watch(selectedFrameProvider);
+    final frames = ref.watch(filteredFramesProvider).value;
     final selectedNotifier = ref.watch(
       selectedProviderIdProvider(search.text).notifier,
     );
@@ -162,7 +164,12 @@ class _FrameViewer extends HookConsumerWidget {
         ),
 
         if (selected case final selected?)
-          ProviderViewer(element: selected.element)
+          ProviderViewer(
+            element: selected.element,
+            isCurrent:
+                selectedFrame?.id == frames?.lastOrNull?.id &&
+                selected.status != ProviderStatusInFrame.disposed,
+          )
         else
           const Panel(child: Text('No provider selected')),
       ],
@@ -175,10 +182,18 @@ extension DevtoolTheme on ThemeData {
 }
 
 class InvalidateProviderButton extends ConsumerWidget {
-  const InvalidateProviderButton({super.key, required this.element});
+  const InvalidateProviderButton({
+    super.key,
+    required this.element,
+    this.enabled = true,
+  });
 
   /// The live ProviderElement backing the provider to invalidate.
   final ElementMeta element;
+
+  /// Whether [element] can be invalidated. A provider cannot when it is
+  /// disposed, or shown as it was in a past frame.
+  final bool enabled;
 
   Future<void> _invalidate(WidgetRef ref) async {
     final isAlive = Disposable();
@@ -203,8 +218,10 @@ class InvalidateProviderButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DevtoolIconButton(
-      onPressed: () => _invalidate(ref),
-      tooltip: 'Invalidate provider',
+      onPressed: enabled ? () => _invalidate(ref) : null,
+      tooltip: enabled
+          ? 'Invalidate provider'
+          : 'Only the current state of a provider can be invalidated',
       icon: const Icon(Icons.refresh),
     );
   }
@@ -213,9 +230,17 @@ class InvalidateProviderButton extends ConsumerWidget {
 const dividerHeight = 16.0;
 
 class ProviderViewer extends StatelessWidget {
-  const ProviderViewer({super.key, required this.element});
+  const ProviderViewer({
+    super.key,
+    required this.element,
+    required this.isCurrent,
+  });
 
   final ElementMeta element;
+
+  /// Whether [element] is the provider as it currently is in the application,
+  /// as opposed to a past frame or a disposed provider.
+  final bool isCurrent;
 
   @override
   Widget build(BuildContext context) {
@@ -234,7 +259,7 @@ class ProviderViewer extends StatelessWidget {
               includeTopBorder: false,
               title: const Text('State'),
               actions: [
-                InvalidateProviderButton(element: element),
+                InvalidateProviderButton(element: element, enabled: isCurrent),
                 const InspectorSettingsButton(),
               ],
             ),
@@ -253,11 +278,12 @@ class ProviderViewer extends StatelessWidget {
       return (
         minSize: stateMinSize,
         fraction: .2,
-        heading: const PreferredSize(
-          preferredSize: Size(0, 28),
+        heading: PreferredSize(
+          preferredSize: const Size(0, 28),
           child: devtools_shared_ui.AreaPaneHeader(
             roundedTopBorder: false,
-            title: Text('Notifier'),
+            // Frames record states, but notifiers are live objects.
+            title: Text(isCurrent ? 'Notifier' : 'Notifier (as it is now)'),
           ),
         ),
         content: Material(
