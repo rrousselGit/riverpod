@@ -116,6 +116,58 @@ void main() {
       });
     });
 
+    test('a session can export frames while another one does', () {
+      fakeAsync((async) {
+        final first = devtool.openSession();
+        final second = devtool.openSession();
+        final value = Object();
+        late String secondKey;
+        late String afterInterruption;
+
+        // The VM can evaluate the export of a client during the one of another.
+        final firstKey = devtool.withFrameCache(first, () {
+          final key = devtool.cacheFrame(value);
+          secondKey = devtool.withFrameCache(
+            second,
+            () => devtool.cacheFrame(value),
+          );
+          afterInterruption = devtool.cacheFrame(value);
+          return key;
+        });
+
+        expect(afterInterruption, firstKey);
+        expect(secondKey, startsWith('$second:'));
+        expect(devtool.getCache(firstKey), same(value));
+        expect(devtool.getCache(secondKey), same(value));
+        expect(() => devtool.cacheFrame(value), throwsStateError);
+        devtool.closeSession(first);
+        devtool.closeSession(second);
+      });
+    });
+
+    test('a session cannot export frames while it already does', () {
+      fakeAsync((async) {
+        final first = devtool.openSession();
+        final second = devtool.openSession();
+
+        devtool.withFrameCache(first, () {
+          devtool.withFrameCache(second, () {
+            expect(
+              () => devtool.withFrameCache(first, () {}),
+              throwsStateError,
+            );
+            expect(
+              () => devtool.withFrameCache(second, () {}),
+              throwsStateError,
+            );
+          });
+        });
+
+        devtool.closeSession(first);
+        devtool.closeSession(second);
+      });
+    });
+
     test('failed serialization preserves the displayed snapshot', () {
       fakeAsync((async) {
         final session = devtool.openSession();

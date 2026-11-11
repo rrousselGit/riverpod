@@ -57,6 +57,19 @@ class EvalFactory {
   final _closed = StreamController<void>.broadcast(sync: true);
 
   final _evalCache = <String, Eval>{};
+
+  Future<void> _evaluating = Future.value();
+
+  /// Runs [evaluate] once the previous evaluation is done.
+  ///
+  /// The VM can otherwise start an evaluation in the middle of another one,
+  /// which breaks code that is not reentrant, such as exporting frames.
+  Future<ResultT> _oneAtATime<ResultT>(Future<ResultT> Function() evaluate) {
+    final result = _evaluating.then((_) => evaluate());
+    _evaluating = result.then<void>((_) {}, onError: (Object _) {});
+    return result;
+  }
+
   final _isolates = <String, Future<Isolate>>{};
 
   Future<Isolate> _loadIsolate(IsolateRef ref, {bool refresh = false}) {
@@ -265,20 +278,24 @@ class Eval {
         '(${scope.keys.join(',')}) => $expression',
         null,
       );
-      result = await _service.invoke(
-        isolateRef.id!,
-        closure.id!,
-        'call',
-        scope.values.toList(),
-        disableBreakpoints: true,
+      result = await factory._oneAtATime(
+        () => _service.invoke(
+          isolateRef.id!,
+          closure.id!,
+          'call',
+          scope.values.toList(),
+          disableBreakpoints: true,
+        ),
       );
     } else {
-      result = await _service.evaluate(
-        isolateRef.id!,
-        library.id!,
-        expression,
-        scope: scope,
-        disableBreakpoints: true,
+      result = await factory._oneAtATime(
+        () => _service.evaluate(
+          isolateRef.id!,
+          library.id!,
+          expression,
+          scope: scope,
+          disableBreakpoints: true,
+        ),
       );
     }
 

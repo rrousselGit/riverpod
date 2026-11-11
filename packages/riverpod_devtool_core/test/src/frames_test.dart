@@ -216,6 +216,18 @@ void main() {
       expect(await state(), '${before + 1}');
     });
 
+    test('exports frames one at a time when fetched concurrently', () async {
+      final container = app.container();
+      await container.element('counterProvider');
+      final notifier = container.read(framesProvider.notifier);
+
+      // The VM can run an evaluation in the middle of another one, which the
+      // application rejects for frame exports.
+      await Future.wait([for (var i = 0; i < 20; i++) notifier.sync()]);
+
+      expect(container.read(framesProvider).requireValue, hasLength(1));
+    });
+
     test('time travel records a frame per change until stopped', () async {
       final container = app.container();
       container.listen(selectedFrameProvider, (_, _) {});
