@@ -57,13 +57,21 @@ Map<internals.ElementId, ElementMeta> computeElementsForFrame(
     frame.previous?.elements ?? const {},
   );
 
+  // The frame that disposes an element still shows its last state. Later
+  // frames no longer include it.
+  for (final event in frame.previous?.frame.events ?? const <Event>[]) {
+    if (event case ProviderElementDisposeEvent(:final provider)) {
+      state.remove(provider.elementId);
+    }
+  }
+
   for (final event in frame.frame.events) {
     switch (event) {
       case ProviderContainerAddEvent():
       case ProviderContainerDisposeEvent():
       // Unrelated events
       case ProviderElementDisposeEvent():
-        // We keep the state on purpose
+        // The last state stays visible in this frame.
         break;
       case ProviderElementAddEvent(
         state: final currentState,

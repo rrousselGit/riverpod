@@ -165,7 +165,7 @@ void main() {
       expect(() => frame.elements, throwsStateError);
     });
 
-    test('ignores dispose events and keeps previous state snapshot', () {
+    test('keeps the last state of an element in the frame disposing it', () {
       final initial = FoldedFrame(
         frame: Frame.test(
           index: 0,
@@ -182,6 +182,62 @@ void main() {
 
       expect(meta, isNotNull);
       expect(meta!.state.state.id.value, 'state-1');
+    });
+
+    test('removes disposed elements from the frames after their disposal', () {
+      final initial = FoldedFrame(
+        frame: Frame.test(
+          index: 0,
+          events: [addEvent('disposed'), addEvent('alive')],
+        ),
+        previous: null,
+      );
+      final disposed = FoldedFrame(
+        frame: Frame.test(index: 1, events: [disposeEvent('disposed')]),
+        previous: initial,
+      );
+      final after = FoldedFrame(
+        frame: Frame.test(index: 2, events: [updateEvent('alive')]),
+        previous: disposed,
+      );
+      final later = FoldedFrame(
+        frame: Frame.test(index: 3, events: const []),
+        previous: after,
+      );
+
+      expect(after.elements.keys, [internals.ElementId('alive')]);
+      expect(later.elements.keys, [internals.ElementId('alive')]);
+      // Past frames are unaffected.
+      expect(disposed.elements, hasLength(2));
+      expect(initial.elements, hasLength(2));
+    });
+
+    test('keeps elements that are created again after their disposal', () {
+      final initial = FoldedFrame(
+        frame: Frame.test(index: 0, events: [addEvent('provider-1')]),
+        previous: null,
+      );
+      final disposed = FoldedFrame(
+        frame: Frame.test(index: 1, events: [disposeEvent('provider-1')]),
+        previous: initial,
+      );
+      final recreated = FoldedFrame(
+        frame: Frame.test(
+          index: 2,
+          events: [addEvent('provider-1', stateId: 'state-2')],
+        ),
+        previous: disposed,
+      );
+
+      expect(
+        recreated
+            .elements[internals.ElementId('provider-1')]!
+            .state
+            .state
+            .id
+            .value,
+        'state-2',
+      );
     });
   });
 
