@@ -152,14 +152,15 @@ void main() {
 
         devtool.withFrameCache(first, () {
           devtool.withFrameCache(second, () {
-            expect(
-              () => devtool.withFrameCache(first, () {}),
-              throwsStateError,
+            final throwsNested = throwsA(
+              isStateError.having(
+                (error) => error.message,
+                'message',
+                'Nested frame serialization',
+              ),
             );
-            expect(
-              () => devtool.withFrameCache(second, () {}),
-              throwsStateError,
-            );
+            expect(() => devtool.withFrameCache(first, () {}), throwsNested);
+            expect(() => devtool.withFrameCache(second, () {}), throwsNested);
           });
         });
 
