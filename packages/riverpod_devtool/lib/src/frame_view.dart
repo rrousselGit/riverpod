@@ -2,51 +2,20 @@ import 'dart:async';
 
 import 'package:devtools_app_shared/ui.dart' as devtools_shared_ui;
 import 'package:devtools_app_shared/ui.dart';
-import 'package:devtools_app_shared/utils.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:hooks_riverpod/src/internals.dart' as internals;
 import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_devtool_core/riverpod_devtool_core.dart';
 
-import 'elements.dart';
 import 'frames.dart';
-import 'ide.dart';
 import 'object.dart';
 import 'provider_list.dart';
-import 'providers/providers.dart';
 import 'state_inspector/inspector.dart';
 import 'terminal.dart';
 import 'ui_primitives/icon_button.dart';
 import 'ui_primitives/panel.dart';
 import 'ui_primitives/search_bar.dart';
-import 'vm_service.dart';
-
-class InspectorSettings {
-  const InspectorSettings({this.showExternalPrivateMembers = false});
-
-  final bool showExternalPrivateMembers;
-
-  InspectorSettings copyWith({bool? showExternalPrivateMembers}) {
-    return InspectorSettings(
-      showExternalPrivateMembers:
-          showExternalPrivateMembers ?? this.showExternalPrivateMembers,
-    );
-  }
-}
-
-final inspectorSettingsProvider =
-    NotifierProvider<InspectorSettingsNotifier, InspectorSettings>(
-      InspectorSettingsNotifier.new,
-    );
-
-class InspectorSettingsNotifier extends Notifier<InspectorSettings> {
-  @override
-  InspectorSettings build() => const InspectorSettings();
-
-  void setShowExternalPrivateMembers({required bool value}) {
-    state = state.copyWith(showExternalPrivateMembers: value);
-  }
-}
 
 class InspectorSettingsButton extends StatelessWidget {
   const InspectorSettingsButton({super.key});

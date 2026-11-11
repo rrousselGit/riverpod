@@ -28,6 +28,8 @@ workspace:
   - packages/riverpod_generator/integration/build_yaml
   - packages/riverpod_generator
   - packages/riverpod_devtool
+  - packages/riverpod_devtool_core
+  - packages/riverpod_mcp
   - packages/riverpod_devtool_generator
   - packages/riverpod_lint
   # Custom_lint doesn't handle plugins from workspaces yet

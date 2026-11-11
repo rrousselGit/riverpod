@@ -1,16 +1,14 @@
 import 'dart:math' as math;
 
 import 'package:collection/collection.dart';
-import 'package:devtools_app_shared/utils.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/experimental/mutation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_devtool_core/riverpod_devtool_core.dart';
 
-import 'object.dart';
 import 'state_inspector/inspector.dart';
 import 'ui_primitives/borderless_text_field.dart';
-import 'vm_service.dart';
 
 final _submit = Mutation<void>();
 
@@ -158,47 +156,14 @@ final class _TerminalState extends ConsumerState<Terminal> {
               await tsx.get(devtoolSessionProvider.future);
               final evalFactory = await tsx.get(evalProvider.future);
 
-              Byte<RootCachedObject> result;
-              final stateFuture = widget.state.readRef(
+              final result = await evalInTerminal(
+                code,
                 evalFactory,
-                _disposable,
+                state: widget.state,
+                notifier: widget.notifier,
+                previous: history.firstOrNull?.byte.valueOrNull,
+                isAlive: _disposable,
               );
-              final notifierFuture = widget.notifier?.readRef(
-                evalFactory,
-                _disposable,
-              );
-              final previousFuture = history.firstOrNull?.byte.let(
-                (byte) => byte.valueOrNull?.readRef(evalFactory, _disposable),
-              );
-
-              final state = await stateFuture;
-              final notifier = await notifierFuture;
-              final previous = await previousFuture;
-
-              switch ((state, notifier, previous)) {
-                case (ByteError(:final error), _, _):
-                case (_, ByteError(:final error), _):
-                case (_, _, ByteError(:final error)):
-                  result = ByteError(error);
-                case (
-                  ByteVariable(instance: final state),
-                  final ByteVariable<VmInstanceRef>? notifier,
-                  final ByteVariable<VmInstanceRef>? previous,
-                ):
-                  final eval =
-                      evalFactory.forRef(state) ?? evalFactory.dartCore;
-
-                  result = await RootCachedObject.create(
-                    code,
-                    eval,
-                    isAlive: _disposable,
-                    scope: {
-                      r'$state': ?state.id,
-                      r'$notifier': ?notifier?.instance.id,
-                      r'$previous': ?previous?.instance.id,
-                    },
-                  );
-              }
 
               setState(() => history.insert(0, (code: code, byte: result)));
             });
