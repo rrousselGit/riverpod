@@ -192,13 +192,24 @@ void main() {
         ),
       );
       await expectLater(at([-1]), throwsFormatException);
-      // Values without children, including those that cannot be read.
+      // Values without children.
       await expectLater(at([0, 0]), throwsFormatException);
+    });
+
+    test('reports values of the path that cannot be read', () async {
       await expectLater(
         objectAtPath(RootCachedObject(CacheId('unknown-session:gone')), [
           0,
         ], resolve: resolve),
-        throwsFormatException,
+        throwsA(
+          isA<FormatException>().having(
+            (e) => e.message,
+            'message',
+            startsWith(
+              'Cannot follow path [0]: the value at [] cannot be read. ',
+            ),
+          ),
+        ),
       );
     });
   });

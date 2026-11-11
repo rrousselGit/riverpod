@@ -139,7 +139,8 @@ Future<Map<String, Object?>> _describe(
 /// [path] lists the index of the child to go through at every level. The
 /// children of maps alternate between keys and values.
 ///
-/// Throws a [FormatException] if [path] does not lead to an object.
+/// Throws a [FormatException] if [path] does not lead to an object, or goes
+/// through one that cannot be read.
 Future<CachedObject> objectAtPath(
   CachedObject root,
   List<int> path, {
@@ -147,10 +148,16 @@ Future<CachedObject> objectAtPath(
 }) async {
   var object = root;
   for (final (depth, index) in path.indexed) {
-    final children = switch (await resolve(object)) {
-      ByteVariable(:final instance) => instance.children,
-      ByteError() => const <CachedObject>[],
-    };
+    final List<CachedObject> children;
+    switch (await resolve(object)) {
+      case ByteVariable(:final instance):
+        children = instance.children;
+      case ByteError(:final error):
+        throw FormatException(
+          'Cannot follow path $path: the value at ${path.sublist(0, depth)} '
+          'cannot be read. $error',
+        );
+    }
     if (index < 0 || index >= children.length) {
       throw FormatException(
         'Invalid path $path: no child at index $index of '

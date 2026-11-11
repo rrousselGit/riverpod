@@ -12,7 +12,12 @@ class Disposable {
 
 /// Thrown by requests whose owner or connection went away before they
 /// completed.
-final class CancelledException implements Exception {}
+final class CancelledException implements Exception {
+  @override
+  String toString() =>
+      'The request was cancelled, as the application restarted, '
+      'disconnected or took too long. Try again.';
+}
 
 final riverpodEvalProvider = FutureProvider((ref) {
   return ref.watch(
@@ -58,15 +63,27 @@ class EvalFactory {
 
   final _evalCache = <String, Eval>{};
 
+  /// How long an evaluation can run before the next ones stop waiting for it.
+  static const stuckEvaluationTimeout = Duration(seconds: 10);
+
   Future<void> _evaluating = Future.value();
 
   /// Runs [evaluate] once the previous evaluation is done.
   ///
   /// The VM can otherwise start an evaluation in the middle of another one,
   /// which breaks code that is not reentrant, such as exporting frames.
+  ///
+  /// The next evaluation stops waiting after [stuckEvaluationTimeout], as an
+  /// evaluation that never completes would otherwise block all the others.
   Future<ResultT> _oneAtATime<ResultT>(Future<ResultT> Function() evaluate) {
-    final result = _evaluating.then((_) => evaluate());
-    _evaluating = result.then<void>((_) {}, onError: (Object _) {});
+    final previous = _evaluating;
+    final result = previous.then((_) => evaluate());
+    // Counted from when the evaluation starts, not from when it is queued.
+    _evaluating = previous.then(
+      (_) => result
+          .then<void>((_) {}, onError: (Object _) {})
+          .timeout(stuckEvaluationTimeout, onTimeout: () {}),
+    );
     return result;
   }
 

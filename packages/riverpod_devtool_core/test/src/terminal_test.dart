@@ -173,6 +173,33 @@ void main() {
       }
     });
 
+    test('reports code of several lines that does not compile', () async {
+      final container = app.container();
+      final counter = await container.element('counterProvider');
+      final eval = await container.read(evalProvider.future);
+      Future<String> error(String code) async {
+        final result = await evalInTerminal(
+          code,
+          eval,
+          state: counter.state.state,
+          notifier: null,
+          previous: null,
+          isAlive: Disposable(),
+        );
+        return '${(result as ByteError).error}';
+      }
+
+      // The compiler shows the line of the error. Only the first and last
+      // ones are next to code that was not typed.
+      const undefined = "Error: Undefined name 'unknown'.\n";
+      expect(await error('unknown +\n1'), '${undefined}unknown +\n^^^^^^^');
+      expect(
+        await error('1 +\n  unknown +\n1'),
+        '$undefined  unknown +\n  ^^^^^^^',
+      );
+      expect(await error('1 +\nunknown'), '${undefined}unknown\n^^^^^^^');
+    });
+
     test('reports code that fails as an error', () async {
       final container = app.container();
       final counter = await container.element('counterProvider');

@@ -118,6 +118,11 @@ class _Session {
   }
 
   Future<void> close() async {
+    // Disposing the container does not wait for the application to release
+    // the session, which the closed connection would then prevent.
+    if (connection.connected) {
+      await container.read(devtoolSessionProvider.notifier).close();
+    }
     container.dispose();
     await connection.dispose();
   }
@@ -204,11 +209,7 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
                   'for the "previous" target.',
               items: Schema.int(),
             ),
-            'showPrivateMembers': Schema.bool(
-              description:
-                  'Also reads the private members of objects that the '
-                  "application's package does not define.",
-            ),
+            'showPrivateMembers': _showPrivateMembersSchema,
           },
           required: ['id'],
         ),
@@ -260,8 +261,8 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
             '(the result of the previous evaluation for this provider). '
             r'For example `$notifier.increment()` or `$state.length`. '
             'Truncated values of the result are read by passing their '
-            '`path` to `inspect_provider`, with the "previous" target. '
-            'This can modify the application.',
+            '`path` to `inspect_provider`, with the "previous" target and '
+            'the same `showPrivateMembers`. This can modify the application.',
         inputSchema: Schema.object(
           properties: {
             'id': _idSchema,
@@ -270,6 +271,7 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
               description: 'How many levels of nested values to read.',
               minimum: 0,
             ),
+            'showPrivateMembers': _showPrivateMembersSchema,
           },
           required: ['id', 'expression'],
         ),
@@ -284,6 +286,12 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
   static final _frameSchema = Schema.int(
     description:
         'The id of a frame from `list_frames`. Defaults to the latest one.',
+  );
+
+  static final _showPrivateMembersSchema = Schema.bool(
+    description:
+        'Also reads the private members of objects that the '
+        "application's package does not define.",
   );
 
   static const _defaultDepth = 2;
@@ -508,10 +516,7 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
       );
     }
 
-    final showPrivateMembers = args['showPrivateMembers'] as bool? ?? false;
-    session.container
-        .read(inspectorSettingsProvider.notifier)
-        .setShowExternalPrivateMembers(value: showPrivateMembers);
+    final showPrivateMembers = _showPrivateMembers(session, args);
     final resolve = session.resolve(isAlive);
     final path = (args['path'] as List<Object?>? ?? const []).cast<int>();
     final CachedObject object;
@@ -533,6 +538,17 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
         path: path,
       ),
     };
+  }
+
+  /// Applies the `showPrivateMembers` of a tool, which defaults to false.
+  ///
+  /// The setting is shared by tools, so each one that reads values sets it.
+  bool _showPrivateMembers(_Session session, Map<String, Object?> args) {
+    final value = args['showPrivateMembers'] as bool? ?? false;
+    session.container
+        .read(inspectorSettingsProvider.notifier)
+        .setShowExternalPrivateMembers(value: value);
+    return value;
   }
 
   /// The provider that [event] changed and how, if it is about a provider.
@@ -638,8 +654,11 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
         // Only the latest result is kept in the memory of the application.
         await session.previous[id]?.delete(eval, isAlive: isAlive);
         session.previous[id] = instance;
+        final showPrivateMembers = _showPrivateMembers(session, args);
 
         return {
+          // Reminds of what the paths of truncated values depend on.
+          if (showPrivateMembers) 'showPrivateMembers': true,
           'result': await describeObject(
             instance,
             resolve: session.resolve(isAlive),

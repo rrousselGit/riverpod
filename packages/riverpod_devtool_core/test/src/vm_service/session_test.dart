@@ -172,6 +172,28 @@ void main() {
     expect(eval.commands, commands);
   });
 
+  testFakeAsync('close releases the session of hosts that disconnect', (
+    tester,
+  ) async {
+    final eval = _SessionEval();
+    final container = _container(eval);
+    container.listen(devtoolSessionProvider, (_, _) {});
+    final notifier = container.read(devtoolSessionProvider.notifier);
+
+    // There is nothing to close before the session is opened.
+    eval.pendingOpen = Completer();
+    await notifier.close();
+    expect(eval.commands, ['RiverpodDevtool.instance.openSession()']);
+
+    eval.pendingOpen!.complete(ByteVariable(VmInstanceRef.string('session-1')));
+    await container.read(devtoolSessionProvider.future);
+    await notifier.close();
+    expect(
+      eval.commands.last,
+      'RiverpodDevtool.instance.closeSession("session-1")',
+    );
+  });
+
   testFakeAsync('idle heartbeats do not refresh state or notifier consumers', (
     tester,
   ) async {

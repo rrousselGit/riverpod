@@ -54,6 +54,17 @@ class DevtoolSessionNotifier extends AsyncNotifier<String> {
     });
     return sessionId;
   }
+
+  /// Closes the session in the application and waits for it, for hosts that
+  /// are about to disconnect.
+  ///
+  /// Disposing this provider closes the session too, but without waiting.
+  Future<void> close() async {
+    final sessionId = state.value;
+    if (sessionId == null) return;
+    final eval = await ref.read(riverpodEvalProvider.future);
+    await _closeSession(eval, sessionId);
+  }
 }
 
 Future<void> _closeSession(Eval eval, String sessionId) async {

@@ -216,6 +216,31 @@ void main() {
       expect(await state(), '${before + 1}');
     });
 
+    test('sync waits for the frames of a provider that rebuilds', () async {
+      final container = app.container();
+      await container.element('counterProvider');
+      final notifier = container.read(framesProvider.notifier);
+
+      final sync = notifier.sync();
+      // Such as when the session of the devtool is renewed.
+      container.invalidate(framesProvider);
+      container.read(framesProvider);
+
+      await sync;
+      expect(container.read(framesProvider).requireValue, hasLength(1));
+    });
+
+    test('sync is cancelled once the provider is disposed', () async {
+      final container = app.container();
+      await container.element('counterProvider');
+      final notifier = container.read(framesProvider.notifier);
+
+      final sync = notifier.sync();
+      container.dispose();
+
+      await expectLater(sync, throwsA(isA<CancelledException>()));
+    });
+
     test('exports frames one at a time when fetched concurrently', () async {
       final container = app.container();
       await container.element('counterProvider');

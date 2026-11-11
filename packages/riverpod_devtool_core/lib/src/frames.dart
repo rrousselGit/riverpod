@@ -231,9 +231,11 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
 
   /// Waits for [state] to include every change that the application made so
   /// far, instead of waiting for the application to notify of them.
-  Future<void> sync() async {
-    await future;
-    await _oneAtATime(() async {
+  Future<void> sync() {
+    return _oneAtATime(() async {
+      if (!ref.mounted) throw CancelledException();
+      // The provider may have rebuilt while earlier fetches were running.
+      await future;
       state = AsyncData(_lastFrames = await _fetchAll());
     });
   }
