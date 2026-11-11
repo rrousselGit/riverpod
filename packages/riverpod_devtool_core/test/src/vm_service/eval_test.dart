@@ -166,6 +166,17 @@ void main() {
       await expectation;
     });
 
+    test('discards responses of an isolate that was replaced', () async {
+      final result = eval.getClass(ClassRef(id: 'classes/1'), isAlive: alive);
+      final expectation = expectLater(
+        result,
+        throwsA(isA<CancelledException>()),
+      );
+      connection.isolate = IsolateRef(id: 'isolates/2', name: 'main');
+      service.response.complete(Class(id: 'classes/1'));
+      await expectation;
+    });
+
     test('cancels a lookup whose inspector was disposed', () async {
       final result = eval.getClass(ClassRef(id: 'classes/1'), isAlive: alive);
       final expectation = expectLater(
@@ -212,7 +223,7 @@ void main() {
 
       expect(result.require.instance.valueAsString, 'ok');
       expect(service.evaluations.map((e) => '$e'), [
-        '(expression: a + b, scope: {a: objects/1}, target: libraries/core)',
+        '(expression: a\n+ b, scope: {a: objects/1}, target: libraries/core)',
       ]);
     });
 
@@ -405,9 +416,19 @@ void main() {
         valueAsString: answers.removeAt(0),
       );
 
-      await factory.dartCore.waitUntil('done', isAlive: alive);
+      final stopwatch = Stopwatch()..start();
+      await factory.dartCore.waitUntil(
+        'done',
+        isAlive: alive,
+        pollInterval: const Duration(milliseconds: 20),
+      );
 
       expect(service.evaluations, hasLength(3));
+      // The application is given time to progress between evaluations.
+      expect(
+        stopwatch.elapsed,
+        greaterThanOrEqualTo(const Duration(milliseconds: 40)),
+      );
     });
 
     test('waitUntil gives up on conditions that stay false or fail', () async {
@@ -419,9 +440,11 @@ void main() {
       await factory.dartCore.waitUntil(
         'done',
         isAlive: alive,
-        timeout: const Duration(milliseconds: 20),
+        timeout: const Duration(milliseconds: 100),
+        pollInterval: const Duration(milliseconds: 30),
       );
-      expect(service.evaluations, isNotEmpty);
+      // Evaluations are spaced out, instead of filling the timeout.
+      expect(service.evaluations.length, inInclusiveRange(2, 5));
 
       service.evaluations.clear();
       service.failure = RPCError('evaluate', 100, 'Feature is disabled');
@@ -452,6 +475,13 @@ void main() {
 
       final sum = await factory.dartCore.evalInstance('1 + 1', isAlive: alive);
       expect(sum.require.instance.valueAsString, '2');
+
+      // Line breaks are part of the code.
+      final lines = await factory.dartCore.eval(
+        '1 // one\n + """a\nb""".length',
+        isAlive: alive,
+      );
+      expect(lines.require.instance.valueAsString, '4');
 
       final scoped = await factory.dartCore.eval(
         'that.length',

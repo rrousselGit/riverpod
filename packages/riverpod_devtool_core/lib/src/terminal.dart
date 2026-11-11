@@ -16,13 +16,11 @@ Future<Byte<RootCachedObject>> evalInTerminal(
   required CachedObject? previous,
   required Disposable isAlive,
 }) async {
-  final stateFuture = state.readRef(evalFactory, isAlive);
-  final notifierFuture = notifier?.readRef(evalFactory, isAlive);
-  final previousFuture = previous?.readRef(evalFactory, isAlive);
-
-  final stateRef = await stateFuture;
-  final notifierRef = await notifierFuture;
-  final previousRef = await previousFuture;
+  // One at a time: nothing would handle the failure of a read that started
+  // before another one threw.
+  final stateRef = await state.readRef(evalFactory, isAlive);
+  final notifierRef = await notifier?.readRef(evalFactory, isAlive);
+  final previousRef = await previous?.readRef(evalFactory, isAlive);
 
   switch ((stateRef, notifierRef, previousRef)) {
     case (ByteError(:final error), _, _):

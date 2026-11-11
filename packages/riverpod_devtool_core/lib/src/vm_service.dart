@@ -63,7 +63,10 @@ void _validate(
   }
 }
 
-/// A provider that emits an update when a hot-restart is detected.
+/// A provider that emits an update once a hot-restart is done.
+///
+/// The isolate of the application goes away during a hot-restart. Updates are
+/// emitted when its successor is there, as nothing can be read until then.
 final hotRestartEventProvider = Provider<void>(
   name: 'hotRestartEventProvider',
   (ref) async {
@@ -74,13 +77,10 @@ final hotRestartEventProvider = Provider<void>(
 
     void listener() {
       final newId = connection.isolate?.id;
-      final oldId = isolateId;
-      isolateId = newId;
+      if (newId == null || newId == isolateId) return;
 
-      if (oldId != null && oldId != newId) {
-        ref.notifyListeners();
-        return;
-      }
+      isolateId = newId;
+      ref.notifyListeners();
     }
 
     connection.addListener(listener);

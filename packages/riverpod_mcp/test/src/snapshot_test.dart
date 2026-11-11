@@ -107,6 +107,44 @@ void main() {
       });
     });
 
+    test(
+      'stops after a number of values, with the paths to continue',
+      () async {
+        final map = await describeObject(
+          values,
+          resolve: resolve,
+          depth: 5,
+          maxValues: 4,
+        );
+
+        // The map, then its first key, value and second key.
+        expect(map['entries'], hasLength(7));
+        expect((map['entries']! as List).take(3), [
+          {
+            'key': {'type': 'String', 'value': 'nan'},
+            'value': {'type': 'double', 'value': 'NaN'},
+          },
+          {
+            'key': {'type': 'String', 'value': isA<String>()},
+            'value': {
+              'truncated': true,
+              'path': [3],
+            },
+          },
+          {
+            'key': {
+              'truncated': true,
+              'path': [4],
+            },
+            'value': {
+              'truncated': true,
+              'path': [5],
+            },
+          },
+        ]);
+      },
+    );
+
     test('omits the children of large collections past a limit', () async {
       final big = await describe('big');
 

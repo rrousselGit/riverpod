@@ -46,6 +46,8 @@ class VmServiceConnection implements AppConnection {
 
   /// Subscribes to the events that the devtool needs, and selects the isolate
   /// of the application.
+  ///
+  /// The connection owns [service], and closes it if it fails to start.
   static Future<VmServiceConnection> start(VmService service) async {
     final connection = VmServiceConnection._(service);
     connection._isolateEvents = service.onIsolateEvent.listen(
@@ -57,20 +59,26 @@ class VmServiceConnection implements AppConnection {
         connection._set(null);
       }),
     );
-    await Future.wait([
-      for (final stream in [EventStreams.kIsolate, EventStreams.kExtension])
-        service
-            .streamListen(stream)
-            .then<void>((_) {})
-            .catchError(
-              // Another client of this VmService may have subscribed already.
-              (Object _) {},
-              test: (error) =>
-                  error is RPCError &&
-                  error.code == RPCErrorKind.kStreamAlreadySubscribed.code,
-            ),
-    ]);
-    await connection._selectIsolate();
+    try {
+      await Future.wait([
+        for (final stream in [EventStreams.kIsolate, EventStreams.kExtension])
+          service
+              .streamListen(stream)
+              .then<void>((_) {})
+              .catchError(
+                // Another client of this VmService may have subscribed already.
+                (Object _) {},
+                test: (error) =>
+                    error is RPCError &&
+                    error.code == RPCErrorKind.kStreamAlreadySubscribed.code,
+              ),
+      ]);
+      await connection._selectIsolate();
+    } catch (_) {
+      // Nobody else can close the service of a connection that never started.
+      await connection.dispose();
+      rethrow;
+    }
     return connection;
   }
 
@@ -90,17 +98,28 @@ class VmServiceConnection implements AppConnection {
 
   Future<void> _selectIsolate() async {
     final isolates = (await service.getVM()).isolates ?? const <IsolateRef>[];
+    final candidate =
+        isolates.firstWhereOrNull((isolate) => isolate.name == 'main') ??
+        isolates.firstOrNull;
     // An event may have selected an isolate while waiting for the VM.
-    if (_isolate != null || !_connected) return;
-    _set(
-      isolates.firstWhereOrNull((isolate) => isolate.name == 'main') ??
-          isolates.firstOrNull,
-    );
+    if (_shouldSelect(candidate)) _set(candidate);
+  }
+
+  /// Whether [candidate] is a better choice than the selected isolate.
+  ///
+  /// Riverpod runs in the main isolate. Others are only selected until the
+  /// main one is there.
+  bool _shouldSelect(IsolateRef? candidate) {
+    if (candidate == null || !_connected) return false;
+    if (_isolate case final isolate?) {
+      return candidate.name == 'main' && isolate.name != 'main';
+    }
+    return true;
   }
 
   void _onIsolateEvent(Event event) {
     switch (event.kind) {
-      case EventKind.kIsolateRunnable when _isolate == null && _connected:
+      case EventKind.kIsolateRunnable when _shouldSelect(event.isolate):
         _set(event.isolate);
       case EventKind.kIsolateExit when event.isolate?.id == _isolate?.id:
         _set(null);

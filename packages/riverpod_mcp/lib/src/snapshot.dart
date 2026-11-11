@@ -7,9 +7,13 @@ typedef ResolveObject =
 /// How many children of a value are described before omitting the rest.
 const maxDescribedChildren = 100;
 
-/// Describes [object] as JSON, [depth] levels deep.
+/// How many values a description holds before truncating the rest.
+const maxDescribedValues = 1000;
+
+/// Describes [object] as JSON, [depth] levels deep and up to [maxValues]
+/// values.
 ///
-/// Values nested deeper are flagged as `truncated`, along with the `path` to
+/// Values past those are flagged as `truncated`, along with the `path` to
 /// describe them on their own: the indexes of the children to go through from
 /// the root, see [objectAtPath].
 Future<Map<String, Object?>> describeObject(
@@ -17,7 +21,34 @@ Future<Map<String, Object?>> describeObject(
   required ResolveObject resolve,
   required int depth,
   List<int> path = const [],
+  int maxValues = maxDescribedValues,
+}) {
+  return _describe(
+    object,
+    resolve: resolve,
+    depth: depth,
+    path: path,
+    budget: _Budget(maxValues),
+  );
+}
+
+/// How many more values a description may read from the application.
+class _Budget {
+  _Budget(this.values);
+  int values;
+}
+
+Future<Map<String, Object?>> _describe(
+  CachedObject object, {
+  required ResolveObject resolve,
+  required int depth,
+  required List<int> path,
+  required _Budget budget,
 }) async {
+  // Wide and deep values would otherwise take an unbounded number of reads.
+  if (budget.values <= 0) return {'truncated': true, 'path': path};
+  budget.values--;
+
   final ResolvedVariable variable;
   switch (await resolve(object)) {
     case ByteError(:final error):
@@ -75,28 +106,28 @@ Future<Map<String, Object?>> describeObject(
   if (depth <= 0) return {...result, 'truncated': true, 'path': path};
 
   Future<Map<String, Object?>> child(int index) {
-    return describeObject(
+    return _describe(
       children[index],
       resolve: resolve,
       depth: depth - 1,
       path: [...path, index],
+      budget: budget,
     );
   }
 
+  // Children are read one at a time. Reading them all at once would send a
+  // number of requests that grows exponentially with the depth.
   final described = size > maxDescribedChildren ? maxDescribedChildren : size;
   if (isMap) {
-    result['entries'] = await Future.wait([
+    result['entries'] = [
       for (var i = 0; i < described; i++)
-        (
-          child(i * 2),
-          child(i * 2 + 1),
-        ).wait.then((entry) => {'key': entry.$1, 'value': entry.$2}),
-    ]);
+        {'key': await child(i * 2), 'value': await child(i * 2 + 1)},
+    ];
   } else {
-    result['children'] = await Future.wait([
+    result['children'] = [
       for (var i = 0; i < described; i++)
-        child(i).then((value) => {'name': children[i].label ?? '$i', ...value}),
-    ]);
+        {'name': children[i].label ?? '$i', ...await child(i)},
+    ];
   }
   if (size > described) result['omitted'] = size - described;
 

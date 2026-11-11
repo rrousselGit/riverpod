@@ -1,10 +1,13 @@
 import 'package:riverpod/riverpod.dart';
 
 import 'connection.dart';
+import 'vm_service.dart';
 
 /// A provider that returns the current package name as discovered from the
 /// currently selected isolate in the connected VM service.
 final currentPackageNameProvider = FutureProvider<String?>((ref) async {
+  // The connection stays the same when its isolate changes.
+  ref.watch(hotRestartEventProvider);
   final connection = await ref.watch(appConnectionProvider.future);
 
   final isolateId = connection.isolate?.id;

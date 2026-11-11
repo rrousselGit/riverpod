@@ -64,6 +64,20 @@ void main() {
       expect(await _packageName(connection), isNull);
     });
 
+    test('follows the isolate that is selected', () async {
+      final connection = FakeConnection(_Service('package:my_app/main.dart'))
+        ..isolate = null;
+      final container = ProviderContainer.test(
+        overrides: [appConnectionProvider.overrideWith((ref) => connection)],
+      );
+      container.listen(currentPackageNameProvider, (_, _) {});
+      expect(await container.read(currentPackageNameProvider.future), isNull);
+
+      connection.isolate = IsolateRef(id: 'isolates/2', name: 'main');
+
+      expect(await container.read(currentPackageNameProvider.future), 'my_app');
+    });
+
     test('is null for applications started from a file', () async {
       final app = await startApp();
 

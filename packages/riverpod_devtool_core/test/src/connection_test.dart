@@ -16,6 +16,10 @@ class _Service implements VmService {
   ];
   final listened = <String>[];
   RPCError? listenError;
+  RPCError? vmError;
+
+  /// When set, [getVM] waits for it.
+  Completer<void>? vmReady;
   bool disposed = false;
 
   @override
@@ -32,7 +36,11 @@ class _Service implements VmService {
   }
 
   @override
-  Future<VM> getVM() async => VM(isolates: isolates);
+  Future<VM> getVM() async {
+    if (vmError case final error?) throw error;
+    await vmReady?.future;
+    return VM(isolates: isolates);
+  }
 
   @override
   Future<void> dispose() async => disposed = true;
@@ -83,6 +91,18 @@ void main() {
       final error = service.listenError = RPCError('streamListen', 100, 'no');
 
       await expectLater(VmServiceConnection.start(service), throwsA(error));
+
+      expect(service.disposed, isTrue);
+      expect(service.isolateEvents.hasListener, isFalse);
+    });
+
+    test('closes the VM service when the isolate cannot be selected', () async {
+      final error = service.vmError = RPCError('getVM', 100, 'no');
+
+      await expectLater(VmServiceConnection.start(service), throwsA(error));
+
+      expect(service.disposed, isTrue);
+      expect(service.isolateEvents.hasListener, isFalse);
     });
 
     test('selects the main isolate, or else the first one', () async {
@@ -99,6 +119,32 @@ void main() {
 
       service.isolates = [];
       expect((await VmServiceConnection.start(service)).isolate, isNull);
+    });
+
+    test('prefers the main isolate over one that started earlier', () async {
+      final [worker, main] = service.isolates;
+      void runnable(IsolateRef isolate) {
+        service.isolateEvents.add(
+          Event(kind: EventKind.kIsolateRunnable, isolate: isolate),
+        );
+      }
+
+      // Found when listing the isolates of the application.
+      final vmReady = service.vmReady = Completer<void>();
+      final starting = VmServiceConnection.start(service);
+      await pumpEventQueue();
+      runnable(worker);
+      vmReady.complete();
+      expect((await starting).isolate?.id, 'isolates/main');
+
+      // Or when it starts.
+      service.isolates = [worker];
+      final connection = await VmServiceConnection.start(service);
+      expect(connection.isolate?.id, 'isolates/worker');
+      runnable(IsolateRef(id: 'isolates/other', name: 'other'));
+      expect(connection.isolate?.id, 'isolates/worker');
+      runnable(main);
+      expect(connection.isolate?.id, 'isolates/main');
     });
 
     test('follows the application across a hot-restart', () async {

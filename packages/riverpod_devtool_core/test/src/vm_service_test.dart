@@ -106,7 +106,7 @@ void main() {
   });
 
   group('hotRestartEventProvider', () {
-    test('notifies when the isolate of the application is replaced', () async {
+    test('notifies once the isolate of the application is replaced', () async {
       final connection = FakeConnection(_FakeVmService(const Stream.empty()));
       final container = ProviderContainer.test(
         overrides: [appConnectionProvider.overrideWith((ref) => connection)],
@@ -117,8 +117,9 @@ void main() {
       await pumpEventQueue();
 
       // The isolate goes away during the restart, before its successor starts.
+      // Nothing can be read from the application until then.
       connection.isolate = null;
-      expect(restarts, 1);
+      expect(restarts, 0);
       connection.isolate = vm.IsolateRef(id: 'isolates/2');
       expect(restarts, 1);
 
@@ -128,8 +129,29 @@ void main() {
       connection.isolate = vm.IsolateRef(id: 'isolates/3');
       expect(restarts, 2);
 
+      // The restart is aborted, and the application keeps its isolate.
+      connection.isolate = null;
+      connection.isolate = vm.IsolateRef(id: 'isolates/3');
+      expect(restarts, 2);
+
       container.dispose();
       expect(connection.hasListeners, isFalse);
+    });
+
+    test('notifies of the first isolate of the application', () async {
+      final connection = FakeConnection(_FakeVmService(const Stream.empty()))
+        ..isolate = null;
+      final container = ProviderContainer.test(
+        overrides: [appConnectionProvider.overrideWith((ref) => connection)],
+      );
+      var restarts = 0;
+      container.listen(hotRestartEventProvider, (_, _) => restarts++);
+      await container.read(appConnectionProvider.future);
+      await pumpEventQueue();
+
+      // What failed to be read without an isolate can be read again.
+      connection.isolate = vm.IsolateRef(id: 'isolates/1');
+      expect(restarts, 1);
     });
   });
 }

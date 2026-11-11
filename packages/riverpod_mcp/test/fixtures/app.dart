@@ -9,7 +9,21 @@ class Counter extends Notifier<int> {
   int build() => 0;
 
   void increment() => state++;
+
+  /// Creates a provider and changes it right away, within the same frame.
+  void addAndUpdate() {
+    ref.container.listen(extraProvider, (_, _) {});
+    ref.read(extraProvider.notifier).increment();
+    // Frames are published from a microtask, and evaluations alone do not
+    // run those.
+    Timer.run(() {});
+  }
 }
+
+final extraProvider = NotifierProvider<Counter, int>(
+  Counter.new,
+  name: 'extraProvider',
+);
 
 final counterProvider = NotifierProvider<Counter, int>(
   Counter.new,

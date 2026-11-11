@@ -99,6 +99,26 @@ void main() {
       );
     });
 
+    test('fails once when nothing can be read anymore', () async {
+      final container = app.container();
+      final counter = await container.element('counterProvider');
+      final eval = await container.read(evalProvider.future);
+
+      // Failures that nothing handles would fail this test.
+      await expectLater(
+        evalInTerminal(
+          '0',
+          eval,
+          state: counter.state.state,
+          notifier: counter.notifier?.state,
+          previous: counter.state.state,
+          isAlive: Disposable()..dispose(),
+        ),
+        throwsA(isA<CancelledException>()),
+      );
+      await pumpEventQueue();
+    });
+
     test('reports objects that cannot be read anymore', () async {
       final container = app.container();
       final counter = await container.element('counterProvider');

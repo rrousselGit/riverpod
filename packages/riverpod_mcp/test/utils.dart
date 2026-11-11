@@ -6,6 +6,8 @@ import 'package:dart_mcp/client.dart';
 import 'package:riverpod_mcp/riverpod_mcp.dart';
 import 'package:stream_channel/stream_channel.dart';
 import 'package:test/test.dart';
+import 'package:vm_service/vm_service.dart';
+import 'package:vm_service/vm_service_io.dart';
 
 /// The application of `test/fixtures/app.dart`, running in its own process.
 class TestApp {
@@ -19,6 +21,33 @@ class TestApp {
   Future<void> stop() async {
     _process.kill();
     await _process.exitCode;
+  }
+
+  /// Evaluates [code] within Riverpod, in the application.
+  Future<String?> evalInRiverpod(String code) async {
+    final service = await vmServiceConnectUri(
+      '${uri.replaceFirst('http', 'ws')}ws',
+    );
+    try {
+      final isolateId = (await service.getVM()).isolates!.first.id!;
+      final isolate = await service.getIsolate(isolateId);
+      final library = isolate.libraries!.firstWhere(
+        (e) => e.uri == 'package:riverpod/src/framework.dart',
+      );
+      final result = await service.evaluate(isolateId, library.id!, code);
+      return (result as InstanceRef).valueAsString;
+    } finally {
+      await service.dispose();
+    }
+  }
+
+  /// Closes the sessions of the devtools inspecting the application, as the
+  /// application does when it stops hearing from them.
+  Future<void> expireDevtoolSessions() async {
+    await evalInRiverpod(
+      'RiverpodDevtool.instance._sessions.keys.toList()'
+      '.forEach(RiverpodDevtool.instance.closeSession)',
+    );
   }
 }
 
@@ -34,6 +63,11 @@ Future<TestApp> startApp([String name = 'app']) async {
     '--enable-asserts',
     'test/fixtures/$name.dart',
   ]);
+  // Before anything can fail, or the application would outlive the tests.
+  addTearDown(() async {
+    process.kill();
+    await process.exitCode;
+  });
   final lines = StreamIterator(
     process.stdout.transform(utf8.decoder).transform(const LineSplitter()),
   );
@@ -44,16 +78,17 @@ Future<TestApp> startApp([String name = 'app']) async {
     uri ??= listening.firstMatch(lines.current)?.group(1);
   }
 
-  final app = TestApp._(process, uri!);
-  addTearDown(app.stop);
-  return app;
+  return TestApp._(process, uri!);
 }
 
 /// An MCP client connected to a [RiverpodMcpServer], as an agent would be.
 class Agent {
-  Agent._(this.server);
+  Agent._(this.server, this.mcp);
 
   final ServerConnection server;
+
+  /// The server that the agent talks to.
+  final RiverpodMcpServer mcp;
 
   /// Calls a tool and decodes its JSON result.
   ///
@@ -117,7 +152,7 @@ Future<Agent> startAgent() async {
   );
   server.notifyInitialized();
 
-  return Agent._(server);
+  return Agent._(server, mcp);
 }
 
 /// Matches tools failing with a message matching [message].

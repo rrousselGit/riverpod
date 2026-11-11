@@ -30,7 +30,7 @@ The agent connects by calling `connect` with that URI.
 | --------------------- | --------------------------------------------------------------------------- |
 | `connect`             | Connects to an application from its VM service URI.                         |
 | `list_providers`      | Lists providers: name, family argument, where they are defined and changes. |
-| `inspect_provider`    | Reads the state or notifier of a provider as a tree of values.              |
+| `inspect_provider`    | Reads the state, notifier or last evaluation of a provider as a tree.       |
 | `list_frames`         | Lists recorded frames, and which providers changed in each.                 |
 | `set_time_travel`     | Starts or stops recording a frame per change, to inspect past states.       |
 | `invalidate_provider` | Invalidates a provider.                                                     |
@@ -38,4 +38,5 @@ The agent connects by calling `connect` with that URI.
 
 `inspect_provider` and `evaluate` read values `depth` levels deep. Deeper
 values are marked as `truncated` and come with the `path` to pass to
-`inspect_provider` to read them.
+`inspect_provider` to read them. The paths that `evaluate` returns have to
+come with the `previous` target, which reads the result of the last evaluation.

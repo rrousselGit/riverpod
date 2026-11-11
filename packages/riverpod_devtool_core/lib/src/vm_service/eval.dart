@@ -191,12 +191,14 @@ class Eval {
 
   VmService get _service => factory.vmService;
 
-  String _formatCode(String code) => code.replaceAll('\n', ' ');
-
-  void _checkAlive(Disposable isAlive) {
+  /// Throws unless a request sent to [isolate] is still of use.
+  ///
+  /// What an isolate returns means nothing to the one that replaced it.
+  void _checkAlive(Disposable isAlive, IsolateRef? isolate) {
     if (isAlive.disposed ||
         factory._disposable.disposed ||
-        factory.connection.isolate == null) {
+        isolate == null ||
+        factory.connection.isolate?.id != isolate.id) {
       throw CancelledException();
     }
   }
@@ -205,22 +207,20 @@ class Eval {
     Disposable isAlive,
     Future<ValueT> Function(IsolateRef isolate) cb,
   ) async {
-    _checkAlive(isAlive);
+    final isolate = factory.connection.isolate;
+    _checkAlive(isAlive, isolate);
     final cancelled = Completer<ValueT>();
     final subscription = factory._closed.stream.listen((_) {
       cancelled.completeError(CancelledException());
     });
     try {
-      final ref = await Future.any([
-        cb(factory.connection.isolate!),
-        cancelled.future,
-      ]);
-      _checkAlive(isAlive);
+      final ref = await Future.any([cb(isolate!), cancelled.future]);
+      _checkAlive(isAlive, isolate);
       return ByteVariable(ref);
     } catch (error) {
       // The isolate may go away while an outstanding request fails.
       // Translate only requests whose connection or owner has gone away.
-      _checkAlive(isAlive);
+      _checkAlive(isAlive, isolate);
       if (error is EvalErrorException) {
         final e = error;
         if (e.errorRef.message?.contains('Riverpod devtool session expired') ??
@@ -313,25 +313,29 @@ class Eval {
     Map<String, String>? scope,
   }) {
     return _run(isAlive, (isolate) async {
-      return VmInstanceRef(await _evaluate(isolate, _formatCode(code), scope));
+      return VmInstanceRef(await _evaluate(isolate, code, scope));
     });
   }
 
   /// Evaluates [condition] until it is true, or [timeout] elapsed.
   ///
-  /// Every evaluation gives the application the opportunity to make progress
-  /// on its asynchronous work. This may wait for longer than [timeout] if
-  /// evaluations are slow, and stops early if [condition] cannot be evaluated.
+  /// The application makes progress on its asynchronous work between
+  /// evaluations, which are [pollInterval] apart. This may wait for longer
+  /// than [timeout] if evaluations are slow, and stops early if [condition]
+  /// cannot be evaluated.
   Future<void> waitUntil(
     String condition, {
     required Disposable isAlive,
     Map<String, String>? scope,
     Duration timeout = const Duration(seconds: 2),
+    Duration pollInterval = const Duration(milliseconds: 10),
   }) async {
     final stopwatch = Stopwatch()..start();
-    while (stopwatch.elapsed < timeout) {
+    while (true) {
       final result = await eval(condition, isAlive: isAlive, scope: scope);
       if (result.valueOrNull?.valueAsString != 'false') return;
+      if (stopwatch.elapsed + pollInterval >= timeout) return;
+      await Future<void>.delayed(pollInterval);
     }
   }
 

@@ -9,6 +9,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart' as internals;
 import 'package:riverpod_devtool_core/riverpod_devtool_core.dart';
 import 'package:stack_trace/stack_trace.dart';
+import 'package:vm_service/vm_service.dart' show VmService;
 import 'package:vm_service/vm_service_io.dart';
 
 import 'snapshot.dart';
@@ -54,6 +55,8 @@ class _Session {
     // Inspected values only stay readable while frames are listened to.
     container.listen(framesProvider, (_, _) {});
     container.listen(timeTravelProvider, (_, _) {});
+    // Results do not outlive the session of the devtool that evaluated them.
+    container.listen(devtoolSessionProvider, (_, _) => previous.clear());
   }
 
   final VmServiceConnection connection;
@@ -62,8 +65,18 @@ class _Session {
   /// The result of the last `evaluate` of every provider, for `$previous`.
   final previous = <internals.ElementId, RootCachedObject>{};
 
+  /// The providers that [read] is waiting for.
+  final _reads = <ProviderSubscription<Object?>>{};
+
   /// The up-to-date value of [provider].
-  Future<ValueT> read<ValueT>(ProviderListenable<AsyncValue<ValueT>> provider) {
+  ///
+  /// Fails with a [CancelledException] if [isAlive] is disposed.
+  Future<ValueT> read<ValueT>(
+    ProviderListenable<AsyncValue<ValueT>> provider,
+    Disposable isAlive,
+  ) {
+    if (isAlive.disposed) return Future.error(CancelledException());
+
     final result = Completer<ValueT>();
     final subscription = container.listen(provider, fireImmediately: true, (
       _,
@@ -77,16 +90,32 @@ class _Session {
         result.complete(next.requireValue);
       }
     });
-    return result.future.whenComplete(subscription.close);
+    _reads.add(subscription);
+    return result.future.whenComplete(() {
+      if (_reads.remove(subscription)) subscription.close();
+    });
   }
 
-  Future<Byte<ResolvedVariable>> resolve(CachedObject object) {
-    return read(resolvedVariableForObjectProvider(object));
+  /// Stops waiting for the providers that a tool which ended was reading.
+  ///
+  /// Tools run one at a time, so those are all from that tool.
+  void cancelReads() {
+    for (final subscription in _reads) {
+      subscription.close();
+    }
+    _reads.clear();
+  }
+
+  ResolveObject resolve(Disposable isAlive) {
+    return (object) => read(resolvedVariableForObjectProvider(object), isAlive);
   }
 
   /// Waits for the changes that a tool just made to be visible to the next
   /// tools.
-  Future<void> sync() => container.read(framesProvider.notifier).sync();
+  Future<void> sync(Disposable isAlive) async {
+    if (isAlive.disposed) throw CancelledException();
+    await container.read(framesProvider.notifier).sync();
+  }
 
   Future<void> close() async {
     container.dispose();
@@ -149,15 +178,17 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
       Tool(
         name: 'inspect_provider',
         description:
-            'Reads the state of a provider (or its notifier) as a tree of '
-            'values. Values nested deeper than `depth` are marked as '
-            'truncated, with the `path` to pass to inspect them.',
+            'Reads the state of a provider (or its notifier, or the result '
+            'of its last `evaluate`) as a tree of values. Values nested '
+            'deeper than `depth`, or past the first $maxDescribedValues '
+            'values, are marked as truncated, with the `path` to pass to '
+            'inspect them.',
         inputSchema: Schema.object(
           properties: {
             'id': _idSchema,
             'target': Schema.string(
               description: 'What to read. Defaults to "state".',
-              enumValues: ['state', 'notifier'],
+              enumValues: ['state', 'notifier', 'previous'],
             ),
             'frame': _frameSchema,
             'depth': Schema.int(
@@ -167,7 +198,10 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
             'path': Schema.list(
               description:
                   'Starts from a nested value: the `path` of a truncated '
-                  'value from a previous call.',
+                  'value from a previous call. Has to come with the `target` '
+                  'and `showPrivateMembers` of that call, which change what '
+                  'a path leads to. The paths that `evaluate` returns are '
+                  'for the "previous" target.',
               items: Schema.int(),
             ),
             'showPrivateMembers': Schema.bool(
@@ -225,6 +259,8 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
             r'can use `$state`, `$notifier` (for Notifiers) and `$previous` '
             '(the result of the previous evaluation for this provider). '
             r'For example `$notifier.increment()` or `$state.length`. '
+            'Truncated values of the result are read by passing their '
+            '`path` to `inspect_provider`, with the "previous" target. '
             'This can modify the application.',
         inputSchema: Schema.object(
           properties: {
@@ -252,7 +288,24 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
 
   static const _defaultDepth = 2;
 
+  /// How long tools have to complete, before they are stopped.
+  @visibleForTesting
+  Duration toolTimeout = const Duration(seconds: 30);
+
   _Session? _session;
+
+  /// The tool that runs, or the last one that did.
+  Future<void> _lastTool = Future.value();
+
+  /// Runs tools one at a time, in the order they were called.
+  ///
+  /// Agents may call tools in parallel, but tools share one application and
+  /// its settings.
+  Future<CallToolResult> _queue(Future<CallToolResult> Function() tool) {
+    final result = _lastTool.then((_) => tool());
+    _lastTool = result.then((_) {}, onError: (Object _) {});
+    return result;
+  }
 
   CallToolResult _result(Object? json) {
     return CallToolResult(content: [TextContent(text: jsonEncode(json))]);
@@ -274,36 +327,59 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
     await super.shutdown();
   }
 
-  Future<CallToolResult> _connect(CallToolRequest request) async {
-    await _disconnect();
-    try {
-      final uri = vmServiceWebSocketUri(request.arguments!['uri']! as String);
-      final service = await vmServiceConnectUri(uri.toString());
-      final session = _session = _Session(
-        await VmServiceConnection.start(service),
-      );
-
-      final frames = await session
-          .read(framesProvider)
-          .timeout(const Duration(seconds: 30));
-      return _result({
-        'connected': true,
-        'providers': frames.lastOrNull?.elements.length ?? 0,
-      });
-    } catch (error) {
+  Future<CallToolResult> _connect(CallToolRequest request) {
+    return _queue(() async {
       await _disconnect();
-      return _error(
-        'Could not connect: $error\n'
-        'The application has to be running in debug mode and use Riverpod.',
-      );
-    }
+      final isAlive = Disposable();
+      VmService? service;
+      try {
+        // Applications may accept the connection and never answer.
+        final frames = await () async {
+          final uri = vmServiceWebSocketUri(
+            request.arguments!['uri']! as String,
+          );
+          final opened = service = await vmServiceConnectUri(uri.toString());
+          // Nothing closes what is opened once connecting took too long.
+          if (isAlive.disposed) {
+            await opened.dispose();
+            throw CancelledException();
+          }
+          // Fails if taking too long, as the service gets closed.
+          final session = _session = _Session(
+            await VmServiceConnection.start(opened),
+          );
+
+          return session.read(framesProvider, isAlive);
+        }().timeout(toolTimeout);
+        return _result({
+          'connected': true,
+          'providers': frames.lastOrNull?.elements.length ?? 0,
+        });
+      } catch (error) {
+        isAlive.dispose();
+        await _disconnect();
+        await service?.dispose();
+        return _error(
+          'Could not connect: $error\n'
+          'The application has to be running in debug mode and use Riverpod.',
+        );
+      }
+    });
   }
 
   /// A tool that needs a connected application.
+  ///
+  /// `isAlive` is disposed once the tool ended, including by taking too long.
+  /// Tools stop at their next step when that happens.
   FutureOr<CallToolResult> Function(CallToolRequest) _tool(
-    Future<Object?> Function(_Session session, Map<String, Object?> args) run,
+    Future<Object?> Function(
+      _Session session,
+      Map<String, Object?> args,
+      Disposable isAlive,
+    )
+    run,
   ) {
-    return (request) async {
+    return (request) => _queue(() async {
       final session = _session;
       if (session == null) {
         return _error(
@@ -318,20 +394,29 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
         );
       }
 
+      final isAlive = Disposable();
       try {
         final result = await run(
           session,
           request.arguments ?? const {},
-        ).timeout(const Duration(seconds: 30));
+          isAlive,
+        ).timeout(toolTimeout);
         return _result(result);
       } catch (error) {
         return _error('$error');
+      } finally {
+        isAlive.dispose();
+        session.cancelReads();
       }
-    };
+    });
   }
 
-  Future<FoldedFrame> _frame(_Session session, Object? id) async {
-    final frames = await session.read(framesProvider);
+  Future<FoldedFrame> _frame(
+    _Session session,
+    Object? id,
+    Disposable isAlive,
+  ) async {
+    final frames = await session.read(framesProvider, isAlive);
     final frame = id == null
         ? frames.lastOrNull
         : frames.firstWhereOrNull((frame) => frame.id == FrameId(id as int));
@@ -347,8 +432,9 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
   Future<ElementMeta> _element(
     _Session session,
     Map<String, Object?> args,
+    Disposable isAlive,
   ) async {
-    final frame = await _frame(session, args['frame']);
+    final frame = await _frame(session, args['frame'], isAlive);
     final id = args['id']! as String;
     final element = frame.elements[internals.ElementId(id)];
     if (element != null) return element;
@@ -379,8 +465,9 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
   Future<Object?> _listProviders(
     _Session session,
     Map<String, Object?> args,
+    Disposable isAlive,
   ) async {
-    final frame = await _frame(session, args['frame']);
+    final frame = await _frame(session, args['frame'], isAlive);
     final origins = session.container.read(
       filteredProvidersProvider((
         search: args['search'] as String? ?? '',
@@ -405,28 +492,31 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
   Future<Object?> _inspectProvider(
     _Session session,
     Map<String, Object?> args,
+    Disposable isAlive,
   ) async {
-    final element = await _element(session, args);
+    final element = await _element(session, args, isAlive);
     final target = args['target'] as String? ?? 'state';
     final root = switch (target) {
       'notifier' => element.notifier?.state,
+      'previous' => session.previous[element.provider.elementId],
       _ => element.state.state,
     };
     if (root == null) {
       throw _ToolException(
-        '${element.provider.origin.toStringValue} has no notifier.',
+        '${element.provider.origin.toStringValue} has no '
+        '${target == 'previous' ? 'evaluation result' : target}.',
       );
     }
 
+    final showPrivateMembers = args['showPrivateMembers'] as bool? ?? false;
     session.container
         .read(inspectorSettingsProvider.notifier)
-        .setShowExternalPrivateMembers(
-          value: args['showPrivateMembers'] as bool? ?? false,
-        );
+        .setShowExternalPrivateMembers(value: showPrivateMembers);
+    final resolve = session.resolve(isAlive);
     final path = (args['path'] as List<Object?>? ?? const []).cast<int>();
     final CachedObject object;
     try {
-      object = await objectAtPath(root, path, resolve: session.resolve);
+      object = await objectAtPath(root, path, resolve: resolve);
     } on FormatException catch (error) {
       throw _ToolException(error.message);
     }
@@ -434,40 +524,60 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
     return {
       'provider': _describeProvider(element.provider),
       'target': target,
+      // Reminds of what the paths of truncated values depend on.
+      if (showPrivateMembers) 'showPrivateMembers': true,
       'value': await describeObject(
         object,
-        resolve: session.resolve,
+        resolve: resolve,
         depth: args['depth'] as int? ?? _defaultDepth,
         path: path,
       ),
     };
   }
 
+  /// The provider that [event] changed and how, if it is about a provider.
+  (ProviderMeta, ProviderStatusInFrame)? _change(Event event) {
+    return switch (event) {
+      ProviderElementAddEvent(:final provider) => (
+        provider,
+        ProviderStatusInFrame.added,
+      ),
+      ProviderElementUpdateEvent(:final provider) => (
+        provider,
+        ProviderStatusInFrame.modified,
+      ),
+      ProviderElementDisposeEvent(:final provider) => (
+        provider,
+        ProviderStatusInFrame.disposed,
+      ),
+      _ => null,
+    };
+  }
+
   Future<Object?> _listFrames(
     _Session session,
     Map<String, Object?> args,
+    Disposable isAlive,
   ) async {
-    final frames = await session.read(framesProvider);
+    final frames = await session.read(framesProvider, isAlive);
 
     return {
-      'timeTravel': await session.read(timeTravelProvider),
+      'timeTravel': await session.read(timeTravelProvider, isAlive),
       'frames': [
         for (final frame in frames.where((frame) => frame.hasStateChanges))
           {
             'id': frame.id,
             'timestamp': frame.frame.timestamp.toIso8601String(),
             'changes': [
+              // A provider may change more than once in a frame.
               for (final event in frame.frame.events)
-                if (event
-                    case ProviderElementAddEvent(:final provider) ||
-                        ProviderElementUpdateEvent(:final provider) ||
-                        ProviderElementDisposeEvent(:final provider))
+                if (_change(event) case (final provider, final change)?)
                   {
                     'id': provider.elementId,
                     'name': provider.origin.toStringValue,
                     if (provider.origin.isFamily)
                       'argument': provider.argToStringValue,
-                    'change': frame.statusOf(provider.elementId)!.name,
+                    'change': change.name,
                   },
             ],
           },
@@ -478,33 +588,38 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
   Future<Object?> _setTimeTravel(
     _Session session,
     Map<String, Object?> args,
+    Disposable isAlive,
   ) async {
     final enabled = args['enabled']! as bool;
     await session.container
         .read(timeTravelProvider.notifier)
         .setEnabled(enabled);
-    await session.sync();
+    await session.sync(isAlive);
 
-    return {'timeTravel': await session.read(timeTravelProvider)};
+    return {'timeTravel': await session.read(timeTravelProvider, isAlive)};
   }
 
   Future<Object?> _invalidateProvider(
     _Session session,
     Map<String, Object?> args,
+    Disposable isAlive,
   ) async {
-    final element = await _element(session, args);
-    final eval = await session.read(evalProvider);
-    await element.invalidate(eval, isAlive: Disposable());
-    await session.sync();
+    final element = await _element(session, args, isAlive);
+    final eval = await session.read(evalProvider, isAlive);
+    await element.invalidate(eval, isAlive: isAlive);
+    await session.sync(isAlive);
 
     return {'invalidated': _describeProvider(element.provider)};
   }
 
-  Future<Object?> _evaluate(_Session session, Map<String, Object?> args) async {
-    final element = await _element(session, args);
+  Future<Object?> _evaluate(
+    _Session session,
+    Map<String, Object?> args,
+    Disposable isAlive,
+  ) async {
+    final element = await _element(session, args, isAlive);
     final id = element.provider.elementId;
-    final eval = await session.read(evalProvider);
-    final isAlive = Disposable();
+    final eval = await session.read(evalProvider, isAlive);
 
     final result = await evalInTerminal(
       args['expression']! as String,
@@ -514,7 +629,7 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
       previous: session.previous[id],
       isAlive: isAlive,
     );
-    await session.sync();
+    await session.sync(isAlive);
 
     switch (result) {
       case ByteError(:final error):
@@ -527,7 +642,7 @@ base class RiverpodMcpServer extends MCPServer with ToolsSupport {
         return {
           'result': await describeObject(
             instance,
-            resolve: session.resolve,
+            resolve: session.resolve(isAlive),
             depth: args['depth'] as int? ?? _defaultDepth,
           ),
         };

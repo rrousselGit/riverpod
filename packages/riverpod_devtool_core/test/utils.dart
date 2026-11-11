@@ -116,6 +116,11 @@ Future<TestApp> startApp() async {
     '--enable-asserts',
     'test/fixtures/app.dart',
   ]);
+  // Before anything can fail, or the application would outlive the tests.
+  addTearDown(() async {
+    process.kill();
+    await process.exitCode;
+  });
   final lines = StreamIterator(
     process.stdout.transform(utf8.decoder).transform(const LineSplitter()),
   );
@@ -127,9 +132,8 @@ Future<TestApp> startApp() async {
   }
 
   final service = await vmServiceConnectUri('ws://127.0.0.1:$port/ws');
-  final app = TestApp._(process, await VmServiceConnection.start(service));
-  addTearDown(app.close);
-  return app;
+  addTearDown(service.dispose);
+  return TestApp._(process, await VmServiceConnection.start(service));
 }
 
 extension InspectApp on ProviderContainer {

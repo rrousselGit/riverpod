@@ -186,11 +186,13 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
         .asyncMap((event) async {
           switch (event) {
             case internals.NewEventNotification():
-              await _fetchNewNotifications(
-                event,
-                sessionId: sessionId,
-                riverpodEval: riverpodEval,
-                isAlive: isAlive,
+              await _oneAtATime(
+                () => _fetchNewNotifications(
+                  event,
+                  sessionId: sessionId,
+                  riverpodEval: riverpodEval,
+                  isAlive: isAlive,
+                ),
               );
           }
         })
@@ -231,7 +233,22 @@ class FramesNotifier extends AsyncNotifier<List<FoldedFrame>> {
   /// far, instead of waiting for the application to notify of them.
   Future<void> sync() async {
     await future;
-    state = AsyncData(_lastFrames = await _fetchAll());
+    await _oneAtATime(() async {
+      state = AsyncData(_lastFrames = await _fetchAll());
+    });
+  }
+
+  /// The fetch of frames that runs, or the last one that did.
+  Future<void> _lastFetch = Future.value();
+
+  /// Fetches frames one at a time.
+  ///
+  /// The application cannot export frames twice at once, and a fetch that
+  /// started earlier would otherwise replace the frames of a later one.
+  Future<void> _oneAtATime(Future<void> Function() fetch) {
+    final result = _lastFetch.then((_) => fetch());
+    _lastFetch = result.then((_) {}, onError: (Object _) {});
+    return result;
   }
 
   Future<List<Frame>> _evalFrames(
