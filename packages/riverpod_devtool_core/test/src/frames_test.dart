@@ -236,6 +236,8 @@ void main() {
       final notifier = container.read(framesProvider.notifier);
 
       final sync = notifier.sync();
+      // Waiting for a rebuild must not turn this into reading the future of
+      // a disposed provider.
       container.dispose();
 
       await expectLater(sync, throwsA(isA<CancelledException>()));
