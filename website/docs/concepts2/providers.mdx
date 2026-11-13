@@ -12,6 +12,24 @@ import Legend, { colors } from "/src/components/Legend";
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
+<!-- Examples can assume:
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
+
+class User {
+  User();
+  factory User.fromJson(Object? json) => User();
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => const Placeholder();
+}
+
+final helloWorldProvider = Provider<String>((ref) => 'Hello world!');
+-->
+
 Providers are the central feature of Riverpod. If you use Riverpod, you use it for its providers.
 
 ## What is a provider?
@@ -25,7 +43,7 @@ Consider a function that fetches a user from an API:
 
 ```dart
 Future<User> fetchUser() async {
-  final response = await http.get('https://api.example.com/user/123');
+  final response = await http.get(Uri.parse('https://api.example.com/user/123'));
   return User.fromJson(response.body);
 }
 ```
@@ -46,7 +64,7 @@ to access the same value:
   // return the same value.
   @riverpod
   Future<User> user(Ref ref) async {
-    final response = await http.get('https://api.example.com/user/123');
+    final response = await http.get(Uri.parse('https://api.example.com/user/123'));
     return User.fromJson(response.body);
   }
   `}
@@ -54,7 +72,7 @@ to access the same value:
   // The equivalent of our fetchUser function, but the result is cached.
   // Using userProvider multiple times will return the same value.
   final userProvider = FutureProvider<User>((ref) async {
-    final response = await http.get('https://api.example.com/user/123');
+    final response = await http.get(Uri.parse('https://api.example.com/user/123'));
     return User.fromJson(response.body);
   });
   `}
@@ -389,7 +407,7 @@ Do not put logic in the constructor of your notifier.
 Notifiers should not have a constructor, as `ref` and other properties aren't
 yet available at that point. Instead, put your logic in the `build` method.
 
-```dart
+```dart no-analyze
 class MyNotifier extends ... {
   MyNotifier() {
     // ❌ Don't do this
@@ -484,7 +502,7 @@ Do not put logic in the constructor of your notifier.
 Notifiers should not have a constructor, as `ref` and other properties aren't
 yet available at that point. Instead, put your logic in the `build` method.
 
-```dart
+```dart no-analyze
 class MyNotifier extends ... {
   MyNotifier() {
     // ❌ Don't do this
