@@ -1,5 +1,9 @@
 part of '../framework.dart';
 
+// Examples can assume:
+// late Ref ref;
+// final myFamily = Provider.family<int, int>((ref, id) => id);
+
 /// An abstraction of both [ProviderContainer] and [$ProviderElement] used by
 /// [ProviderListenable].
 @internal
@@ -1526,7 +1530,7 @@ abstract base class ProviderObserver {
   /// that caused the state change.
   /// This includes when a mutation manually calls `state=`:
   ///
-  /// ```dart
+  /// ```dart no-analyze
   /// @riverpod
   /// class Example extends _$Example {
   ///   @override

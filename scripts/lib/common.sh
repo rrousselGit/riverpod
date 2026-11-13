@@ -62,6 +62,19 @@ fork_point() {
   git -C "$ROOT" merge-base "$1" HEAD 2>/dev/null || echo "$1"
 }
 
+# snapshot DIR: prints the tree a `git add -A` of the repository would
+# produce now, without touching the real index, of which DIR holds a copy.
+# Comparing it before and after generating files catches modified, new and
+# deleted files while ignoring changes the working copy already had.
+snapshot() {
+  local idx="$1/snapshot.index" real
+  real="$(git -C "$ROOT" rev-parse --git-path index)"
+  case "$real" in /*) ;; *) real="$ROOT/$real" ;; esac
+  if [ -f "$real" ]; then cp "$real" "$idx"; else rm -f "$idx"; fi
+  GIT_INDEX_FILE="$idx" git -C "$ROOT" add -A . &&
+    GIT_INDEX_FILE="$idx" git -C "$ROOT" write-tree
+}
+
 # Generated Dart files: *.g.dart, *.freezed.dart, or a "GENERATED" header.
 is_generated() {
   case "$1" in *.g.dart|*.freezed.dart) return 0 ;; esac

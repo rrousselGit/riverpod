@@ -1,0 +1,26 @@
+name: doc_snippets
+description: Extracts the Dart snippets of the docs into snippets/, so that they are analyzed and can be tested.
+publish_to: "none"
+
+environment:
+  sdk: ^3.12.0
+
+resolution: workspace
+
+dependencies:
+  analyzer: ">=13.0.0 <15.0.0"
+  # What the extracted snippets import, besides the packages of this
+  # repository.
+  flutter:
+    sdk: flutter
+  flutter_riverpod:
+  glob: ^2.1.2
+  hooks_riverpod:
+  meta: ^1.15.0
+  path: ^1.8.1
+  riverpod:
+  riverpod_annotation:
+  yaml: ^3.1.0
+
+dev_dependencies:
+  test: ^1.24.9

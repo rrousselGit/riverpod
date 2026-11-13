@@ -1,0 +1,12 @@
+# The snippets of the docs, extracted by scripts/snippets.sh, are analyzed for
+# what would mislead a reader: errors, and the warnings that are not about
+# style. So no lint is enabled, and snippets may leave what they declare
+# unused, and import again what their file lets them assume.
+analyzer:
+  errors:
+    duplicate_import: ignore
+    unused_element: ignore
+    unused_element_parameter: ignore
+    unused_field: ignore
+    unused_import: ignore
+    unused_local_variable: ignore
