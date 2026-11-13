@@ -30,7 +30,7 @@ env:
 
 jobs:
   generate:
-    name: Package graph & generated code are up to date
+    name: Package graph, generated code & doc snippets are up to date
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,7 +38,7 @@ jobs:
         with:
           channel: master
           cache: true
-      - run: scripts/check.sh graph generate
+      - run: scripts/check.sh graph generate snippets
 
   analyze:
     name: Format & analyze
