@@ -43,7 +43,7 @@ Duration? myRetry(int retryCount, Object error) {
   codegen={`
   // highlight-next-line
   @Riverpod(retry: myRetry)
-  int myProvider(MyProviderRef ref) {
+  int myProvider(Ref ref) {
     return 0;
   }
   `}
@@ -105,12 +105,12 @@ ProviderException을 재시도하지 않는 이유는, 이 예외가 provider �
 <AutoSnippet
   codegen={`
   @riverpod
-  int failed(MyProviderRef ref) {
+  int failed(Ref ref) {
     throw Exception('This provider always fails');
   }
   
   @riverpod
-  int myProvider(MyProviderRef ref) {
+  int myProvider(Ref ref) {
     // 이 provider는 실패한 provider에 의존하므로
     // ProviderException을 던집니다
     return ref.watch(failedProvider);

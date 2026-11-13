@@ -44,7 +44,7 @@ provider'ların içinde kullanılabilir:
   codegen={`
   // highlight-next-line
   @Riverpod(retry: myRetry)
-  int myProvider(MyProviderRef ref) {
+  int myProvider(Ref ref) {
     return 0;
   }
   `}
@@ -106,12 +106,12 @@ başarısız olan bir provider'dan gelen istisnayı yeniden fırlattığını g�
 <AutoSnippet
   codegen={`
   @riverpod
-  int failed(MyProviderRef ref) {
+  int failed(Ref ref) {
     throw Exception('This provider always fails');
   }
   
   @riverpod
-  int myProvider(MyProviderRef ref) {
+  int myProvider(Ref ref) {
     // Bu provider, başarısız olan bir provider'a bağımlıdır
     // ve bu nedenle bir ProviderException fırlatacaktır
     return ref.watch(failedProvider);
