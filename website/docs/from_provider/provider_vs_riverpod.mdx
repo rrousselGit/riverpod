@@ -8,6 +8,34 @@ import {
   AutoSnippet,
 } from "/src/components/CodeSnippet";
 
+<!-- Examples can assume:
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
+
+// The snippet that defines modelProvider, for the ones that use it.
+import 'model_provider.dart';
+
+late Ref ref;
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => const Placeholder();
+}
+
+class Counter extends ChangeNotifier {}
+
+// Not a class, for modelProvider to have the same type in all snippets.
+typedef Model = Object;
+
+class Model1 {}
+class Model2 {}
+class Model3 {}
+final model1Provider = Provider((ref) => Model1());
+final model2Provider = Provider((ref) => Model2());
+final model3Provider = Provider((ref) => Model3());
+-->
+
 
 This article recaps the differences and the similarities between Provider and Riverpod.
 
@@ -18,7 +46,7 @@ The primary difference between both packages is how "providers" are defined.
 With [Provider], providers are widgets and as such placed inside the widget tree,
 typically inside a `MultiProvider`:
 
-```dart
+```dart no-analyze
 class Counter extends ChangeNotifier {
  ...
 }
@@ -71,18 +99,19 @@ With Provider, one way of reading providers is to use a Widget's `BuildContext`.
 
 For example, if a provider was defined as:
 
-```dart
+```dart no-analyze
 Provider<Model>(...);
 ```
 
 then reading it using [Provider] is done with:
 
-```dart
+```dart no-analyze
 class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Model model = context.watch<Model>();
 
+    return const Placeholder();
   }
 }
 ```
@@ -90,13 +119,14 @@ class Example extends StatelessWidget {
 The equivalent in Riverpod would be:
 
 ```dart
-final modelProvider = Provider<Model>(...);
+final modelProvider = Provider<Model>((ref) => Model());
 
 class Example extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Model model = ref.watch(modelProvider);
 
+    return const Placeholder();
   }
 }
 ```
@@ -138,16 +168,17 @@ of the widget tree - updating only the relevant widgets when the state changes:
 
 As such, if a provider was defined as:
 
-```dart
+```dart no-analyze
 Provider<Model>(...);
 ```
 
 Provider allows reading that provider using `Consumer` with:
 
-```dart
+```dart no-analyze
 Consumer<Model>(
   builder: (BuildContext context, Model model, Widget? child) {
 
+    return const Placeholder();
   }
 )
 ```
@@ -157,8 +188,8 @@ for the exact same purpose.
 
 If we defined a provider as:
 
-```dart
-final modelProvider = Provider<Model>(...);
+```dart name=model_provider
+final modelProvider = Provider<Model>((ref) => Model());
 ```
 
 Then using `Consumer` we could do:
@@ -168,6 +199,7 @@ Consumer(
   builder: (BuildContext context, WidgetRef ref, Widget? child) {
     Model model = ref.watch(modelProvider);
 
+    return const Placeholder();
   }
 )
 ```
@@ -185,10 +217,11 @@ like so:
 ```dart
 Consumer(
   builder: (context, ref, child) {
-    Model1 model = ref.watch(model1Provider);
-    Model2 model = ref.watch(model2Provider);
-    Model3 model = ref.watch(model3Provider);
+    Model1 model1 = ref.watch(model1Provider);
+    Model2 model2 = ref.watch(model2Provider);
+    Model3 model3 = ref.watch(model3Provider);
     // ...
+    return const Placeholder();
   }
 )
 ```
@@ -202,7 +235,7 @@ When using Provider, the official way of combining providers is using the
 
 For example we may define:
 
-```dart
+```dart no-analyze
 class UserIdNotifier extends ChangeNotifier {
   String? userId;
 }
@@ -216,7 +249,7 @@ From there we have two options. We may combine `UserIdNotifier` to create a new
 "stateless" provider (typically an immutable value that possibly override ==).
 Such as:
 
-```dart
+```dart no-analyze
 ProxyProvider<UserIdNotifier, String>(
   update: (context, userIdNotifier, _) {
     return 'The user ID of the user is ${userIdNotifier.userId}';
@@ -244,7 +277,7 @@ final userIdNotifierProvider = ChangeNotifierProvider<UserIdNotifier>(
 
 From there, to generate our `String` based on the `userId`, we could do:
 
-```dart
+```dart continued
 final labelProvider = Provider<String>((ref) {
   UserIdNotifier userIdNotifier = ref.watch(userIdNotifierProvider);
   return 'The user ID of the user is ${userIdNotifier.userId}';
@@ -271,7 +304,7 @@ stateful objects, such as a `ChangeNotifier` instance.
 For that, we could use `ChangeNotifierProxyProvider` (or variants such as `ChangeNotifierProxyProvider2`).  
 For example we may define:
 
-```dart
+```dart no-analyze
 class UserIdNotifier extends ChangeNotifier {
   String? userId;
 }
@@ -284,7 +317,7 @@ ChangeNotifierProvider<UserIdNotifier>(create: (context) => UserIdNotifier()),
 Then, we can define a new `ChangeNotifier` that is based on `UserIdNotifier.userId`.
 For example we could do:
 
-```dart
+```dart no-analyze
 class UserNotifier extends ChangeNotifier {
   String? _userId;
 
@@ -322,12 +355,12 @@ class UserIdNotifier extends ChangeNotifier {
 
 final userIdNotifierProvider = ChangeNotifierProvider<UserIdNotifier>(
   (ref) => UserIdNotifier(),
-),
+);
 ```
 
 From there, the equivalent to the previous `ChangeNotifierProxyProvider` would be:
 
-```dart
+```dart continued
 class UserNotifier extends ChangeNotifier {
   String? _userId;
 
