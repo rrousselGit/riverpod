@@ -5,6 +5,30 @@ version: 2
 
 import { Link } from "/src/components/Link";
 
+<!-- Examples can assume:
+import 'package:flutter/widgets.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
+
+final counterProvider = Provider<int>((ref) => 0);
+
+class MyNotifier extends Notifier<int> {
+  @override
+  int build() => 0;
+  void doSomething() {}
+}
+final provider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
+
+class SomeButton extends StatelessWidget {
+  const SomeButton({super.key, required this.onPressed});
+  final void Function() onPressed;
+
+  @override
+  Widget build(BuildContext context) => const Placeholder();
+}
+-->
+
 
 After a long wait, the first stable version of Riverpod is finally released 👏
 
@@ -55,7 +79,7 @@ The tool will then analyze your project and suggest changes. For example you may
 
 ```diff
 -Widget build(BuildContext context, ScopedReader watch) {
-+Widget build(BuildContext context, Widget ref) {
++Widget build(BuildContext context, WidgetRef ref) {
 -  MyModel state = watch(provider);
 +  MyModel state = ref.watch(provider);
 }
@@ -85,13 +109,14 @@ As such:
 
   Before:
 
-  ```dart
+  ```dart no-analyze
   class Example extends HookWidget {
     @override
     Widget build(BuildContext context) {
-      useState(...);
+      useState(0);
       int count = useProvider(counterProvider);
-      ...
+      // ...
+      return Text('$count');
     }
   }
   ```
@@ -102,9 +127,10 @@ As such:
   class Example extends HookConsumerWidget {
     @override
     Widget build(BuildContext context, WidgetRef ref) {
-      useState(...);
+      useState(0);
       int count = ref.watch(counterProvider);
-      ...
+      // ...
+      return Text('$count');
     }
   }
   ```
@@ -113,19 +139,23 @@ As such:
  
   Before:
 
-  ```dart
+  ```dart no-analyze
   class Example extends ConsumerWidget {
     @override
     Widget build(BuildContext context, ScopedReader watch) {
       int count = watch(counterProvider);
-      ...
+      // ...
+      return Text('$count');
     }
   }
+  ```
 
+  ```dart no-analyze
   Consumer(
     builder: (context, watch, child) {
       int count = watch(counterProvider);
-      ...
+      // ...
+      return Text('$count');
     }
   )
   ```
@@ -137,14 +167,18 @@ As such:
     @override
     Widget build(BuildContext context, WidgetRef ref) {
       int count = ref.watch(counterProvider);
-      ...
+      // ...
+      return Text('$count');
     }
   }
+  ```
 
+  ```dart
   Consumer(
     builder: (context, ref, child) {
       int count = ref.watch(counterProvider);
-      ...
+      // ...
+      return Text('$count');
     }
   )
   ```
@@ -153,11 +187,11 @@ As such:
 
   Before:
 
-  ```dart
+  ```dart no-analyze
   class Example extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
-      SomeButton(
+      return SomeButton(
         onPressed: () => context.read(provider.notifier).doSomething(),
       );
     }
@@ -170,7 +204,7 @@ As such:
   class Example extends ConsumerWidget {
     @override
     Widget build(BuildContext context, WidgetRef ref) {
-      SomeButton(
+      return SomeButton(
         onPressed: () => ref.read(provider.notifier).doSomething(),
       );
     }
@@ -187,8 +221,8 @@ Now it only returns the state of the `StateController`.
 To migrate you have a few solutions.  
 If your code only obtained the state without modifying it, you can change from:
 
-```dart
-final provider = StateProvider<int>(...);
+```dart no-analyze
+final provider = StateProvider<int>((ref) => 0);
 
 Consumer(
   builder: (context, ref, child) {
@@ -196,13 +230,13 @@ Consumer(
 
     return Text('${count.state}');
   }
-)
+);
 ```
 
 to:
 
 ```dart
-final provider = StateProvider<int>(...);
+final provider = StateProvider<int>((ref) => 0);
 
 Consumer(
   builder: (context, ref, child) {
@@ -210,13 +244,13 @@ Consumer(
 
     return Text('${count}');
   }
-)
+);
 ```
 
 Alternatively you can use the new `StateProvider.state` to keep the old behavior.
 
-```dart
-final provider = StateProvider<int>(...);
+```dart no-analyze
+final provider = StateProvider<int>((ref) => 0);
 
 Consumer(
   builder: (context, ref, child) {
@@ -224,7 +258,7 @@ Consumer(
 
     return Text('${count.state}');
   }
-)
+);
 ```
 
 [statenotifierprovider]: https://pub.dev/documentation/hooks_riverpod/latest/legacy/StateNotifierProvider-class.html
