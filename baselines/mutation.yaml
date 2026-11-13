@@ -14,8 +14,8 @@
 baseline:
   packages/riverpod/lib/src/common/result.dart: 5
   packages/riverpod/lib/src/core/async_value.dart: 44
-  packages/riverpod/lib/src/core/devtool.dart: 70
-  packages/riverpod/lib/src/core/element.dart: 263
+  packages/riverpod/lib/src/core/devtool.dart: 65
+  packages/riverpod/lib/src/core/element.dart: 262
   packages/riverpod/lib/src/core/family.dart: 2
   packages/riverpod/lib/src/core/foundation.dart: 36
   packages/riverpod/lib/src/core/modifiers/future.dart: 3
@@ -30,7 +30,7 @@ baseline:
   packages/riverpod/lib/src/core/provider_container.dart: 149
   packages/riverpod/lib/src/core/provider_listenable_transformer.dart: 1
   packages/riverpod/lib/src/core/provider_listenable_transformer2.dart: 18
-  packages/riverpod/lib/src/core/provider_subscription.dart: 78
+  packages/riverpod/lib/src/core/provider_subscription.dart: 77
   packages/riverpod/lib/src/core/proxy_provider_listenable.dart: 3
   packages/riverpod/lib/src/core/ref.dart: 45
   packages/riverpod/lib/src/providers/async_notifier/family.dart: 1
