@@ -1,5 +1,8 @@
 part of '../framework.dart';
 
+// Examples can assume:
+// class Foo {}
+
 /// A shared interface between [ProviderListenable] and [Family].
 @publicInMisc
 interface class ProviderListenableOrFamily {}
@@ -85,7 +88,7 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
   /// Then if we were to depend on `rootProvider` in a scoped provider, we
   /// could write any of:
   ///
-  /// ```dart
+  /// ```dart no-analyze
   /// final dependentProvider = Provider((ref) {
   ///   ref.watch(rootProvider);
   ///   // This provider does not depend on any scoped provider,
@@ -109,7 +112,7 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
   ///
   /// However, if we were to depend on `scopedProvider` then our only choice is:
   ///
-  /// ```dart
+  /// ```dart continued
   /// final dependentProvider = Provider((ref) {
   ///   ref.watch(scopedProvider);
   ///   // Since "scopedProvider" specifies "dependencies", any provider that
