@@ -19,7 +19,6 @@ ignored:
 # instead, or tag the ones that are not meant to compile `dart no-analyze`.
 # Remove an entry once the snippets of its file are valid.
 unchecked:
-  - packages/riverpod/lib/src/core/provider/notifier_provider.dart
   - packages/riverpod/lib/src/core/provider/provider.dart
   - packages/riverpod/lib/src/core/provider_listenable_transformer.dart
   - packages/riverpod/lib/src/core/provider_listenable_transformer2.dart
