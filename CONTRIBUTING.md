@@ -134,6 +134,55 @@ lower an entry once its file has fewer unlinked comments. Locally, checking
 that the issues are open needs `GITHUB_TOKEN` or `gh auth login`, and is
 skipped otherwise.
 
+#### Code snippets are analyzed
+
+`scripts/check.sh snippets` (part of CI) extracts every `dart` snippet of the
+doc comments, and of the Markdown and MDX files, into a Dart file of
+`tools/doc_snippets/snippets`. Those files are committed and analyzed like any
+other code, so a snippet that no longer compiles fails CI. The n-th snippet of
+`packages/riverpod/README.md` is extracted to
+`tools/doc_snippets/snippets/packages/riverpod/README_md/snippet_n.dart`. Run
+`scripts/snippets.sh` after changing a snippet.
+
+A snippet need not be a whole library:
+
+- It imports the main library of its package, such as
+  `package:riverpod/riverpod.dart`. Its own imports work too.
+- Statements and expressions are placed in an `async` function.
+- It can use what its file declares in an "Examples can assume" comment. In a
+  Dart file, that is a `//` comment:
+
+  ```dart no-analyze
+  // Examples can assume:
+  // import 'dart:async';
+  // late Ref ref;
+  ```
+
+  In a Markdown file, an HTML comment:
+
+  ```md
+  <!-- Examples can assume:
+  import 'dart:async';
+  late Ref ref;
+  -->
+  ```
+
+The text after `dart` on the opening fence changes how a snippet is extracted:
+
+- `dart continued`: the snippet follows the code of the one before it, and
+  can use its declarations.
+- `dart name=counter`: the snippet is extracted to `counter.dart` instead of
+  `snippet_n.dart`. Name the snippets that a test of `tools/doc_snippets`
+  imports, so that their path does not change with the snippets around them.
+- `dart no-analyze`: the snippet is not extracted. Only use it for code that
+  is not meant to compile. For an omission, prefer a comment such as
+  `/* ... */`, which is valid code.
+
+The files listed under `unchecked` in `baselines/snippets.yaml` had invalid
+snippets when this check was added, and none of their snippets are extracted.
+Do not add to that list; remove an entry once the snippets of its file are
+valid. Changelogs and translations are never extracted.
+
 ### Updating English docs
 
 English docs are the source of truth for Riverpod docs. As such, translations
