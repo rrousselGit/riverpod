@@ -11,6 +11,11 @@ import hookConsumerWidget from "!!raw-loader!./about_hooks/hook_consumer_widget.
 import { CodeSnippet } from "/src/components/CodeSnippet";
 import { Link } from "/src/components/Link";
 
+<!-- Examples can assume:
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:material_ui/material_ui.dart';
+-->
+
 This page explains what hooks are and how they are related to Riverpod.
 
 "Hooks" are utilities common from a separate package, independent from Riverpod:
@@ -154,7 +159,6 @@ There are a few interesting things to note in this code:
   As such, we can create multiple `AnimationController` if we want:
 
   ```dart
-  @override
   Widget build(BuildContext context) {
     final animationController = useAnimationController(
       duration: const Duration(seconds: 2),
@@ -163,7 +167,8 @@ There are a few interesting things to note in this code:
       duration: const Duration(seconds: 2),
     );
 
-    ...
+    // ...
+    return const Placeholder();
   }
   ```
 
@@ -187,7 +192,7 @@ There are a few interesting things to note in this code:
 
   We could then use this function inside our widgets, as long as that widget is a [HookWidget]:
 
-  ```dart
+  ```dart continued
   class FadeIn extends HookWidget {
     const FadeIn({Key? key, required this.child}) : super(key: key);
 
@@ -220,7 +225,8 @@ Hooks comes with unique constraints:
     @override
     Widget build(BuildContext context) {
       final controller = useAnimationController();
-      ...
+      // ...
+      return const Placeholder();
     }
   }
   ```
@@ -233,7 +239,8 @@ Hooks comes with unique constraints:
     @override
     Widget build(BuildContext context) {
       final controller = useAnimationController();
-      ...
+      // ...
+      return const Placeholder();
     }
   }
   ```
@@ -270,7 +277,8 @@ Hooks comes with unique constraints:
         // Hooks should not be used inside "if"s/"for"s, ...
         final controller = useAnimationController();
       }
-      ...
+      // ...
+      return const Placeholder();
     }
   }
   ```

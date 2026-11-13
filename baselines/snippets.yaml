@@ -19,7 +19,6 @@ ignored:
 # instead, or tag the ones that are not meant to compile `dart no-analyze`.
 # Remove an entry once the snippets of its file are valid.
 unchecked:
-  - website/docs/concepts/about_hooks.mdx
   - website/docs/concepts2/auto_dispose.mdx
   - website/docs/concepts2/consumers.mdx
   - website/docs/concepts2/containers.mdx
