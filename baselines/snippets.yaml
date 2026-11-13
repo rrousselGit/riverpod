@@ -19,6 +19,5 @@ ignored:
 # instead, or tag the ones that are not meant to compile `dart no-analyze`.
 # Remove an entry once the snippets of its file are valid.
 unchecked:
-  - website/docs/root/faq.mdx
   - website/docs/tutorials/first_app.mdx
   - website/docs/whats_new.mdx
