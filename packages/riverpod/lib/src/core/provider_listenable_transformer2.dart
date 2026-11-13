@@ -1,5 +1,8 @@
 part of '../framework.dart';
 
+// Examples can assume:
+// import 'package:riverpod/misc.dart';
+
 /// A [ProviderListenable] whose value is derived from transforming another
 /// [ProviderListenable] ([source]).
 ///
