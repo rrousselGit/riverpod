@@ -1,5 +1,11 @@
 part of '../../framework.dart';
 
+// Examples can assume:
+// import 'package:flutter/widgets.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart'
+//     show ConsumerWidget, WidgetRef;
+// import 'package:flutter_riverpod/legacy.dart';
+
 /// Adds [select] to [ProviderListenable].
 extension ProviderListenableSelect<InT> on ProviderListenable<InT> {
   /// Partially listen to a provider.
@@ -41,11 +47,13 @@ extension ProviderListenableSelect<InT> on ProviderListenable<InT> {
   ///
   /// A typical usage would be:
   ///
-  /// ```dart
-  /// @override
-  /// Widget build(BuildContext context, WidgetRef ref) {
-  ///   final age = ref.watch(personProvider.select((p) => p.age));
-  ///   return Text('$age');
+  /// ```dart continued
+  /// class Age extends ConsumerWidget {
+  ///   @override
+  ///   Widget build(BuildContext context, WidgetRef ref) {
+  ///     final age = ref.watch(personProvider.select((p) => p.age));
+  ///     return Text('$age');
+  ///   }
   /// }
   /// ```
   ///
@@ -57,11 +65,13 @@ extension ProviderListenableSelect<InT> on ProviderListenable<InT> {
   ///
   /// For example, instead of `age`, we could return a "isAdult" boolean:
   ///
-  /// ```dart
-  /// @override
-  /// Widget build(BuildContext context, WidgetRef ref) {
-  ///   final isAdult = ref.watch(personProvider.select((p) => p.age >= 18));
-  ///   return Text('$isAdult');
+  /// ```dart continued
+  /// class IsAdult extends ConsumerWidget {
+  ///   @override
+  ///   Widget build(BuildContext context, WidgetRef ref) {
+  ///     final isAdult = ref.watch(personProvider.select((p) => p.age >= 18));
+  ///     return Text('$isAdult');
+  ///   }
   /// }
   /// ```
   ///
