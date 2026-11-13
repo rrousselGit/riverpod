@@ -19,7 +19,6 @@ ignored:
 # instead, or tag the ones that are not meant to compile `dart no-analyze`.
 # Remove an entry once the snippets of its file are valid.
 unchecked:
-  - website/docs/concepts2/refs.mdx
   - website/docs/concepts2/retry.mdx
   - website/docs/concepts2/scoping.mdx
   - website/docs/from_provider/provider_vs_riverpod.mdx
