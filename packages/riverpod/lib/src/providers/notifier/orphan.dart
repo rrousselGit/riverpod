@@ -1,11 +1,19 @@
 part of '../notifier.dart';
 
+// Examples can assume:
+// import 'package:flutter/widgets.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:material_ui/material_ui.dart';
+//
+// // The snippet that defines Counter, for the ones that use it.
+// import 'counter.dart';
+
 /// {@template riverpod.notifier}
 /// A class which exposes a state that can change over time.
 ///
 /// For example, [Notifier] can be used to implement a counter by doing:
 ///
-/// ```dart
+/// ```dart name=counter
 /// final counterProvider = NotifierProvider<Counter, int>(Counter.new);
 ///
 /// class Counter extends Notifier<int> {
@@ -25,7 +33,7 @@ part of '../notifier.dart';
 ///
 /// ```dart
 /// Consumer(
-///   builder: (context, ref) {
+///   builder: (context, ref, child) {
 ///     return Text('count: ${ref.watch(counterProvider)}');
 ///   },
 /// )
@@ -35,9 +43,9 @@ part of '../notifier.dart';
 ///
 /// ```dart
 /// Consumer(
-///   builder: (context, ref) {
+///   builder: (context, ref, child) {
 ///     return ElevatedButton(
-///       onTap: () => ref.read(counterProvider.notifier).increment(),
+///       onPressed: () => ref.read(counterProvider.notifier).increment(),
 ///       child: const Text('increment'),
 ///     );
 ///   },
