@@ -6,6 +6,20 @@ import {
   AutoSnippet,
 } from "/src/components/CodeSnippet";
 
+<!-- Examples can assume:
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => const Placeholder();
+}
+
+final myProvider = FutureProvider<int>((ref) async => 0);
+late Ref ref;
+-->
+
 In Riverpod, <Link documentID="concepts2/providers"/> are automatically retried when they fail.
 
 A retry is attempted when an exception is thrown during the provider's computation.
@@ -28,7 +42,7 @@ will retry up to 5 times, with an exponential backoff starting at 200ms, and ign
 
 ```dart
 Duration? myRetry(int retryCount, Object error) {
-  // Stop retrying on ProviderException
+  // Stop retrying after 5 attempts
   if (retryCount >= 5) return null;
   // Ignore ProviderException
   if (error is ProviderException) return null;
@@ -58,14 +72,14 @@ for that specific provider:
 
 Or globally by passing it to <Link documentID="concepts2/containers" />:
 
-```dart
+```dart continued
 // For pure Dart code
 final container = ProviderContainer(
   // highlight-next-line
   retry: myRetry,
 );
 
-...
+// ...
 
 // For Flutter code
 runApp(
