@@ -11,6 +11,11 @@ import cacheForExtension from "!!raw-loader!./auto_dispose/cache_for_extension.d
 import cacheForUsage from "./auto_dispose/cache_for_usage";
 import invalidateFamilyExample from './auto_dispose/invalidate_family_example'
 
+<!-- Examples can assume:
+import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+-->
+
 In Riverpod, it is possible to tell the framework to automatically
 destroy resources associated with a provider when it is no longer used.
 
