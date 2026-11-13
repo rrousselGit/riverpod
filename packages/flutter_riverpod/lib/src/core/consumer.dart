@@ -1,5 +1,18 @@
 part of '../core.dart';
 
+// Examples can assume:
+// import 'package:material_ui/material_ui.dart';
+// import 'package:riverpod_annotation/riverpod_annotation.dart'
+//     show riverpod;
+//
+// class User {
+//   String get name => 'John';
+// }
+//
+// final userProvider = FutureProvider<User>((ref) async => User());
+// final someProvider = Provider((ref) => 'Hello world');
+// final anotherProvider = Provider((ref) => 42);
+
 /// A function that can also listen to providers
 ///
 /// See also [Consumer]
@@ -17,8 +30,9 @@ typedef ConsumerBuilder =
 ///
 /// ```dart
 /// @riverpod
-/// Future<User> fetchUser(Ref ref) async {
+/// Future<User> user(Ref ref) async {
 ///   // ...
+///   return User();
 /// }
 /// ```
 ///
@@ -30,11 +44,12 @@ typedef ConsumerBuilder =
 ///   Widget build(BuildContext context, WidgetRef ref) {
 ///     return Scaffold(
 ///      appBar: AppBar(title: Text('User')),
-///      body: switch (ref.watch(userProvider) {
+///      body: switch (ref.watch(userProvider)) {
 ///        AsyncValue(:final value?) => Text(value.name),
 ///        AsyncValue(hasError: true) => Text('Error'),
 ///        _ => CircularProgressIndicator(),
 ///      },
+///     );
 ///   }
 /// }
 /// ```
@@ -55,7 +70,7 @@ typedef ConsumerBuilder =
 ///      appBar: AppBar(title: Text('User')),
 ///      body: Consumer(
 ///        builder: (context, ref, child) {
-///          return switch (ref.watch(userProvider) {
+///          return switch (ref.watch(userProvider)) {
 ///            AsyncValue(:final value?) => Text(value.name),
 ///            AsyncValue(hasError: true) => Text('Error'),
 ///            _ => CircularProgressIndicator(),
@@ -97,7 +112,7 @@ final class Consumer extends ConsumerWidget {
   ///   builder: (context, ref, child) {
   ///     final value = ref.watch(someProvider);
   ///     final another = ref.watch(anotherProvider);
-  ///     ...
+  ///     return Text('$value $another');
   ///   },
   /// );
   /// ```
@@ -199,7 +214,7 @@ final class Consumer extends ConsumerWidget {
 ///
 /// We can then subclass [ConsumerWidget] to listen to `helloWorldProvider` like so:
 ///
-/// ```dart
+/// ```dart continued
 /// class Example extends ConsumerWidget {
 ///   const Example({Key? key}): super(key: key);
 ///
@@ -215,11 +230,13 @@ final class Consumer extends ConsumerWidget {
 /// You can watch as many providers inside [build] as you want to:
 ///
 /// ```dart
-/// @override
-/// Widget build(BuildContext context, WidgetRef ref) {
-///   final value = ref.watch(someProvider);
-///   final another = ref.watch(anotherProvider);
-///   return Text(value); // Hello world
+/// class Example extends ConsumerWidget {
+///   @override
+///   Widget build(BuildContext context, WidgetRef ref) {
+///     final value = ref.watch(someProvider);
+///     final another = ref.watch(anotherProvider);
+///     return Text(value); // Hello world
+///   }
 /// }
 /// ```
 ///
@@ -307,7 +324,8 @@ class _ConsumerState extends ConsumerState<ConsumerWidget> {
 ///   @override
 ///   Widget build(BuildContext context) {
 ///     // "ref" is a property of ConsumerState and can be used to read providers
-///     ref.watch(someProvider);
+///     final value = ref.watch(someProvider);
+///     return Text(value);
 ///   }
 /// }
 /// ```
@@ -349,7 +367,8 @@ abstract class ConsumerStatefulWidget extends StatefulWidget {
 ///   @override
 ///   Widget build(BuildContext context) {
 ///     // "ref" is a property of ConsumerState and can be used to read providers
-///     ref.watch(someProvider);
+///     final value = ref.watch(someProvider);
+///     return Text(value);
 ///   }
 /// }
 /// ```
