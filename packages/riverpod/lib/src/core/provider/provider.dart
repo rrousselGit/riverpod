@@ -1,5 +1,9 @@
 part of '../../framework.dart';
 
+// Examples can assume:
+// late Ref ref;
+// final provider = Provider((ref) => 0);
+
 /// A callback used by providers to create the value exposed.
 ///
 /// If an exception is thrown within that callback, all attempts at reading
