@@ -5,10 +5,12 @@
 # Paths are relative to the repository root.
 
 # Globs of the files whose snippets are never extracted: the changelogs,
-# whose snippets are about past versions, the translations of the docs, which
-# may be out of date, and the extraction itself.
+# whose snippets are about past versions, the tests, whose doc comments are
+# not docs of the packages, the translations of the docs, which may be out of
+# date, and the extraction itself.
 ignored:
   - "**/CHANGELOG.md"
+  - "**/test/**"
   - tools/doc_snippets/**
   - website/i18n/**
 
@@ -22,7 +24,6 @@ unchecked:
   - packages/flutter_riverpod/lib/src/core/provider_scope.dart
   - packages/flutter_riverpod/lib/src/core/widget_ref.dart
   - packages/flutter_riverpod/lib/src/providers/legacy/change_notifier_provider.dart
-  - packages/flutter_riverpod/test/utils.dart
   - packages/riverpod/lib/src/core/async_value.dart
   - packages/riverpod/lib/src/core/devtool.dart
   - packages/riverpod/lib/src/core/element.dart
@@ -44,14 +45,12 @@ unchecked:
   - packages/riverpod/lib/src/providers/notifier/orphan.dart
   - packages/riverpod/lib/src/providers/provider.dart
   - packages/riverpod/lib/src/providers/stream_provider.dart
-  - packages/riverpod/test/src/utils.dart
   - packages/riverpod_analyzer_utils/lib/src/type_checker.dart
   - packages/riverpod_annotation/lib/experimental/json_persist.dart
   - packages/riverpod_annotation/lib/experimental/scope.dart
   - packages/riverpod_annotation/lib/src/riverpod_annotation.dart
   - packages/riverpod_devtool_core/README.md
   - packages/riverpod_generator/README.md
-  - packages/riverpod_generator/test/mock.dart
   - packages/riverpod_lint/README.md
   - packages/riverpod_sqflite/README.md
   - tools/generate_providers/src/docs.dart
