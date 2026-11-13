@@ -29,6 +29,20 @@ using Sqflite.
 
 ## Usage
 
+<!-- Examples can assume:
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter_riverpod/experimental/persist.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+
+class Todo {
+  Todo.fromJson(Map<String, Object?> json);
+}
+-->
+
 First, you need to create a connector to the database. This can be done by creating a `storageProvider`:
 
 ```dart
@@ -42,7 +56,7 @@ final storageProvider = FutureProvider<JsonSqFliteStorage>((ref) async {
 
 Then, create a `Notifier`, mix-in `Persistable` and then invoke `persist` inside `Notifier.build`:
 
-```dart
+```dart continued
 class TodosNotifier extends AsyncNotifier<List<Todo>> {
   @override
   FutureOr<List<Todo>> build() async {
