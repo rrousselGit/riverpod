@@ -1,3 +1,47 @@
+// Examples can assume:
+// import 'package:dio/dio.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:material_ui/material_ui.dart';
+//
+// final dio = Dio();
+// final httpClient = Dio();
+//
+// class User {
+//   User(this.name);
+//
+//   final String name;
+// }
+//
+// class UserRepository {
+//   Future<User> fetch(int userId) async => User('John');
+// }
+//
+// final userRepositoryProvider = Provider((ref) => UserRepository());
+//
+// class Configurations {
+//   Configurations(this.host);
+//
+//   final String host;
+// }
+//
+// class Repository {
+//   Repository({required this.host});
+//
+//   final String host;
+// }
+//
+// class Message {
+//   Message.fromJson(Map<String, Object?> json);
+// }
+//
+// class ComplexParameter {}
+//
+// class Value {
+//   Value(this.param);
+//
+//   final ComplexParameter param;
+// }
+
 final _writtenDocs = <String>{};
 var _macrosOnly = false;
 
@@ -41,7 +85,7 @@ const _autoDisposeDoc = '''
 ///
 /// ```dart
 /// final myProvider = FutureProvider.autoDispose((ref) async {
-///   final response = await httpClient.get(...);
+///   final response = await httpClient.get('path');
 ///   ref.keepAlive();
 ///   return response;
 /// });
@@ -85,11 +129,11 @@ const _familyDoc = r'''
 ///     } else if (locale == const Locale('fr')) {
 ///       return 'Titre Français';
 ///     }
+///     throw UnsupportedError('Unsupported locale: $locale');
 ///   });
 ///
 ///   // ...
 ///
-///   @override
 ///   Widget build(BuildContext context, WidgetRef ref) {
 ///     final locale = Localizations.localeOf(context);
 ///
@@ -111,9 +155,8 @@ const _familyDoc = r'''
 ///
 ///   // ...
 ///
-///   @override
 ///   Widget build(BuildContext context, WidgetRef ref) {
-///     int userId; // Read the user ID from somewhere
+///     final userId = 42; // Read the user ID from somewhere
 ///
 ///     // Read and potentially fetch the user with id `userId`.
 ///     // When `userId` changes, this will automatically update the UI
@@ -132,7 +175,7 @@ const _familyDoc = r'''
 /// - Connect a provider with another provider without having a direct reference on it.
 ///
 ///   ```dart
-///   final repositoryProvider = Provider.family<String, FutureProvider<Configurations>>((ref, configurationsProvider) {
+///   final repositoryProvider = FutureProvider.family<Repository, FutureProvider<Configurations>>((ref, configurationsProvider) async {
 ///     // Read a provider without knowing what that provider is.
 ///     final configurations = await ref.read(configurationsProvider.future);
 ///     return Repository(host: configurations.host);
@@ -149,14 +192,17 @@ const _familyDoc = r'''
 ///
 /// ```dart
 /// final messagesFamily = FutureProvider.family<Message, String>((ref, id) async {
-///   return dio.get('http://my_api.dev/messages/$id');
+///   final response = await dio.get<Map<String, Object?>>(
+///     'http://my_api.dev/messages/$id',
+///   );
+///   return Message.fromJson(response.data!);
 /// });
 /// ```
 ///
 /// Then, when using our `messagesFamily` provider, the syntax is slightly modified.
 /// The usual:
 /// 
-/// ```dart
+/// ```dart no-analyze
 /// Widget build(BuildContext context, WidgetRef ref) {
 ///   // Error – messagesFamily is not a provider
 ///   final response = ref.watch(messagesFamily);
@@ -166,9 +212,11 @@ const _familyDoc = r'''
 /// will not work anymore.
 /// Instead, we need to pass a parameter to `messagesFamily`:
 ///
-/// ```dart
+/// ```dart continued
 /// Widget build(BuildContext context, WidgetRef ref) {
 ///   final response = ref.watch(messagesFamily('id'));
+///   // ...
+///   return const SizedBox();
 /// }
 /// ```
 ///
@@ -176,7 +224,7 @@ const _familyDoc = r'''
 /// simultaneously. For example, we could use a `titleFamily` to read both
 /// the french and english translations at the same time:
 ///
-/// ```dart
+/// ```dart no-analyze
 /// @override
 /// Widget build(BuildContext context, WidgetRef ref) {
 ///   final frenchTitle = ref.watch(titleFamily(const Locale('fr')));
@@ -200,6 +248,7 @@ const _familyDoc = r'''
 /// 
 ///   ```dart
 ///   final example = Provider.autoDispose.family<Value, ComplexParameter>((ref, param) {
+///     return Value(param);
 ///   });
 ///   ```
 /// 
@@ -221,7 +270,7 @@ const _familyDoc = r'''
 /// This includes:
 /// - A tuple (using `package:tuple`)
 /// - Objects generated with Freezed/built_value, such as:
-///   ```dart
+///   ```dart no-analyze
 ///   @freezed
 ///   abstract class MyParameter with _$MyParameter {
 ///     factory MyParameter({
@@ -248,15 +297,15 @@ const _familyDoc = r'''
 ///   ```
 ///
 /// - Objects based on `package:equatable`, such as:
-///   ```dart
+///   ```dart no-analyze
 ///   class MyParameter extends Equatable  {
-///     factory MyParameter({
+///     MyParameter({
 ///       required this.userId,
-///       requires this.locale,
+///       required this.locale,
 ///     });
 ///
 ///     final int userId;
-///     final Local locale;
+///     final Locale locale;
 ///
 ///     @override
 ///     List<Object> get props => [userId, locale];
