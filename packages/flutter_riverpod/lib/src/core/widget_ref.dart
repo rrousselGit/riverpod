@@ -2,6 +2,44 @@
 
 part of '../core.dart';
 
+// Examples can assume:
+// import 'dart:convert';
+//
+// import 'package:collection/collection.dart';
+// import 'package:dio/dio.dart';
+// import 'package:http/http.dart' as http;
+// import 'package:material_ui/material_ui.dart';
+//
+// late WidgetRef ref;
+// final provider = Provider((ref) => 0);
+//
+// final counterProvider = NotifierProvider<Counter, int>(Counter.new);
+// class Counter extends Notifier<int> {
+//   @override
+//   int build() => 0;
+//   void increment() => state++;
+// }
+//
+// class Model {
+//   int get valueThatNeverChanges => 0;
+// }
+// final modelProvider = Provider((ref) => Model());
+//
+// class Item {
+//   factory Item.fromJson(Object? json) => throw UnimplementedError();
+//   String get id => '';
+// }
+//
+// class Product {}
+// class Products {
+//   factory Products.fromJson(Object? json) => throw UnimplementedError();
+//   List<Product> get items => [];
+// }
+// class ProductItem extends SizedBox {
+//   ProductItem({required Product product});
+// }
+// final httpClient = Dio();
+
 /// {@template flutter_riverpod.widget_ref}
 /// An object that allows widgets to interact with providers.
 ///
@@ -12,6 +50,7 @@ part of '../core.dart';
 ///   @override
 ///   Widget build(BuildContext context, WidgetRef ref) {
 ///     // We now have a "ref"
+///     return const SizedBox();
 ///   }
 /// }
 /// ```
@@ -23,11 +62,13 @@ part of '../core.dart';
 /// changes:
 ///
 /// ```dart
-/// @override
-/// Widget build(BuildContext context, WidgetRef ref) {
-///   final count = ref.watch(counterProvider);
-///   // The text will automatically update whenever `counterProvider` emits a new value
-///   return Text('$count');
+/// class Example extends ConsumerWidget {
+///   @override
+///   Widget build(BuildContext context, WidgetRef ref) {
+///     final count = ref.watch(counterProvider);
+///     // The text will automatically update whenever `counterProvider` emits a new value
+///     return Text('$count');
+///   }
 /// }
 /// ```
 ///
@@ -56,6 +97,7 @@ sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
   ///   Widget build(BuildContext context, WidgetRef ref) {
   ///     // Correct, we are inside the build method and at its root.
   ///     final count = ref.watch(counterProvider);
+  ///     return Text('$count');
   ///   }
   /// }
   /// ```
@@ -65,9 +107,10 @@ sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
   ///   @override
   ///   Widget build(BuildContext context, WidgetRef ref) {
   ///     return ListView.builder(
-  ///       itemBuilder: (context) {
+  ///       itemBuilder: (context, index) {
   ///          // This is accepted, as we are at the root of a "builder"
   ///          final count = ref.watch(counterProvider);
+  ///          return Text('$count');
   ///       },
   ///     );
   ///   }
@@ -88,6 +131,9 @@ sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
   ///     // Incorrect, we are not inside the build method.
   ///     final count = ref.watch(counterProvider);
   ///   }
+  ///
+  ///   @override
+  ///   Widget build(BuildContext context) => const SizedBox();
   /// }
   /// ```
   ///
@@ -97,11 +143,12 @@ sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
   ///   @override
   ///   Widget build(BuildContext context, WidgetRef ref) {
   ///     return ElevatedButton(
-  ///       onTap: () {
+  ///       onPressed: () {
   ///         // Incorrect, we are inside the build method, but neither at its
   ///         // root, nor inside a "builder".
   ///         final count = ref.watch(counterProvider);
-  ///       }
+  ///       },
+  ///       child: Text('Tap'),
   ///     );
   ///   }
   /// }
@@ -127,10 +174,10 @@ sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
   /// object if a different network request already obtained it:
   ///
   /// ```dart
-  /// final fetchItemList = FutureProvider<List<Item>>(...);
+  /// final fetchItemList = FutureProvider<List<Item>>((ref) async => [/* ... */]);
   ///
   /// final fetchItem = FutureProvider.autoDispose.family<Item, String>((ref, id) async {
-  ///   if (ref.exists(fetchItemList)) {
+  ///   if (ref.read(fetchItemList.exists)) {
   ///     // If `fetchItemList` is initialized, we look into its state
   ///     // and return the already obtained item.
   ///     final itemFromItemList = await ref.watch(
@@ -142,8 +189,8 @@ sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
   ///   // If `fetchItemList` is not initialized, perform a network request for
   ///   // "id" separately
   ///
-  ///   final json = await http.get('api/items/$id');
-  ///   return Item.fromJson(json);
+  ///   final response = await http.get(Uri.parse('api/items/$id'));
+  ///   return Item.fromJson(jsonDecode(response.body));
   /// });
   /// ```
   @Deprecated('Use `ref.read/watch/listen(provider.exist)` instead')
@@ -162,6 +209,7 @@ sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
   ///   Widget build(BuildContext context, WidgetRef ref) {
   ///     // Correct, we are inside the build method and at its root.
   ///     ref.listen(counterProvider, (prev, next) {});
+  ///     return const SizedBox();
   ///   }
   /// }
   /// ```
@@ -172,9 +220,10 @@ sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
   ///   @override
   ///   Widget build(BuildContext context, WidgetRef ref) {
   ///     return ListView.builder(
-  ///       itemBuilder: (context) {
-  ///          // This is accepted, as we are at the root of a "builder"
+  ///       itemBuilder: (context, index) {
+  ///          // Incorrect, we are inside a "builder"
   ///          ref.listen(counterProvider, (prev, next) {});
+  ///          return const SizedBox();
   ///       },
   ///     );
   ///   }
@@ -195,6 +244,9 @@ sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
   ///     // Incorrect, we are not inside the build method.
   ///     ref.listen(counterProvider, (prev, next) {});
   ///   }
+  ///
+  ///   @override
+  ///   Widget build(BuildContext context) => const SizedBox();
   /// }
   /// ```
   ///
@@ -204,11 +256,12 @@ sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
   ///   @override
   ///   Widget build(BuildContext context, WidgetRef ref) {
   ///     return ElevatedButton(
-  ///       onTap: () {
+  ///       onPressed: () {
   ///         // Incorrect, we are inside the build method, but neither at its
   ///         // root, nor inside a "builder".
   ///         ref.listen(counterProvider, (prev, next) {});
-  ///       }
+  ///       },
+  ///       child: Text('Tap'),
   ///     );
   ///   }
   /// }
@@ -261,11 +314,12 @@ sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
   ///
   /// ```dart
   /// Widget build(BuildContext context) {
-  ///   // counter is used only for the onPressed of RaisedButton
-  ///   final counter = ref.read(counterProvider);
+  ///   // counter is used only for the onPressed of ElevatedButton
+  ///   final counter = ref.read(counterProvider.notifier);
   ///
-  ///   return RaisedButton(
+  ///   return ElevatedButton(
   ///     onPressed: () => counter.increment(),
+  ///     child: Text('Increment'),
   ///   );
   /// }
   /// ```
@@ -278,11 +332,12 @@ sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
   ///
   /// ```dart
   /// Widget build(BuildContext context) {
-  ///   return RaisedButton(
+  ///   return ElevatedButton(
   ///     onPressed: () {
   ///       // as performant as the previous solution, but resilient to refactoring
-  ///       ref.read(counterProvider).increment(),
+  ///       ref.read(counterProvider.notifier).increment();
   ///     },
+  ///     child: Text('Increment'),
   ///   );
   /// }
   /// ```
@@ -361,13 +416,14 @@ sealed class WidgetRef implements BaseWidgetRef, MutationTarget {
   /// class Example extends ConsumerWidget {
   ///   @override
   ///   Widget build(BuildContext context, WidgetRef ref) {
-  ///     final Products products = ref.watch(productsProvider);
+  ///     final AsyncValue<Products> products = ref.watch(productsProvider);
   ///
   ///     return RefreshIndicator(
   ///       onRefresh: () => ref.refresh(productsProvider.future),
   ///       child: ListView(
   ///         children: [
-  ///           for (final product in products.items) ProductItem(product: product),
+  ///           for (final product in products.value?.items ?? [])
+  ///             ProductItem(product: product),
   ///         ],
   ///       ),
   ///     );
