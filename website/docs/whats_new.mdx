@@ -7,6 +7,49 @@ import TabItem from '@theme/TabItem';
 import { AutoSnippet } from "/src/components/CodeSnippet";
 import { Link } from "/src/components/Link";
 
+<!-- Examples can assume:
+import 'package:flutter_riverpod/experimental/mutation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_annotation/experimental/scope.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:test/test.dart';
+
+// The snippets that define addTodoMutation, the scoped myFuture, and the
+// widgets MyApp and MyWidget, for the ones that use them.
+import 'add_todo_mutation.dart';
+import 'my_future.dart';
+import 'scoped_app.dart';
+
+late Ref ref;
+
+class TodoList extends Notifier<List<String>> {
+  @override
+  List<String> build() => [];
+  Future<void> addTodo(String todo) async {}
+}
+final todoListProvider = NotifierProvider<TodoList, List<String>>(
+  TodoList.new,
+);
+
+class SomeSpecificError implements Exception {}
+class MyException implements Exception {}
+class Argument {}
+
+final myProvider = FutureProvider<int>((ref) async => 0);
+final failingProvider = Provider<int>((ref) => throw SomeSpecificError());
+
+// What the generator creates for the "multiply" and "myFuture" providers.
+Provider<T> multiplyProvider<T extends num>(T a, T b) {
+  return Provider<T>((ref) => (a * b) as T);
+}
+final myFutureProvider = FutureProvider<int>(
+  (ref) => throw UnimplementedError(),
+  dependencies: const [],
+);
+-->
+
 
 Welcome to Riverpod 3.0!  
 This update includes many long-due features, bug fixes, and simplifications of the API.
@@ -212,7 +255,7 @@ This feature solves two problems:
 The TL;DR is, a new [Mutation] object is added. It is declared as a top-level final variable,
 like providers:
 
-```dart
+```dart name=add_todo_mutation
 final addTodoMutation = Mutation<void>();
 ```
 
@@ -255,13 +298,16 @@ Last but not least, inside our `onPressed` callback, we can trigger our side-eff
 followed:
 
 ```dart
-onPressed: () {
-  addTodoMutation.run(ref, () async {
-    // This is where we run our side-effect.
-    // Here, we can read a Notifier directly and call a method on it.
-    await ref.read(todoListProvider.notifier).addTodo('New Todo');
-  });
-}
+ElevatedButton(
+  onPressed: () {
+    addTodoMutation.run(ref, (tsx) async {
+      // This is where we run our side-effect.
+      // Here, we can obtain a Notifier using the transaction and call a method on it.
+      await tsx.get(todoListProvider.notifier).addTodo('New Todo');
+    });
+  },
+  child: const Text('Submit'),
+)
 ```
 
 
@@ -409,8 +455,8 @@ when watching the provider.
 
 ```dart
 @riverpod
-T multiply<T extends num>(T a, T b) {
-  return a * b;
+T multiply<T extends num>(Ref ref, T a, T b) {
+  return (a * b) as T;
 }
 
 // ...
@@ -499,9 +545,9 @@ are now fused.
 
 Long story short, instead of:
 
-```dart
+```dart no-analyze
 final provider = NotifierProvider.family<CounterNotifier, int, Argument>(
-  MyNotifier.new,
+  CounterNotifier.new,
 );
 
 class CounterNotifier extends FamilyNotifier<int, Argument> {
@@ -689,7 +735,7 @@ This has multiple benefits:
 For example, a [ProviderObserver] can use this to avoid logging the same error twice:
 
 ```dart
-class MyObserver extends ProviderObserver {
+final class MyObserver extends ProviderObserver {
   @override
   void providerDidFail(ProviderObserverContext context, Object error, StackTrace stackTrace) {
     if (error is ProviderException) {
@@ -714,6 +760,7 @@ ProviderContainer(
     if (error is ProviderException) return null;
 
     // ...
+    return const Duration(milliseconds: 200);
   },
 );
 ```
@@ -1127,7 +1174,7 @@ They are finally back!
 
 A simple way to access the `ProviderContainer` in your widget tree.
 
-```dart
+```dart no-analyze
 void main() {
   testWidgets('can access a ProviderContainer', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: MyWidget()));
@@ -1164,11 +1211,7 @@ final class _WhereTransformer<T>
   T initState() => sourceState.requireValue;
 
   @override
-  void onEvent(
-    ProviderTransformer2<T, T, Where<T>> self,
-    AsyncResult<T> prev,
-    AsyncResult<T> next,
-  ) {
+  void onEvent(AsyncResult<T> prev, AsyncResult<T> next) {
     if (listenable.where(prev.requireValue, next.requireValue)) {
       state = next;
     }
@@ -1191,10 +1234,10 @@ This lints detects when an override is missing, to avoid runtime errors.
 
 Consider:
 
-```dart
+```dart name=my_future
 // A typical "scoped provider"
 @Riverpod(dependencies: [])
-Future<int> myFutureProvider() => throw UnimplementedError();
+Future<int> myFuture(Ref ref) => throw UnimplementedError();
 ```
 
 To use this provider, you have two options.  
@@ -1237,7 +1280,7 @@ If neither of the following options are used, the provider will throw an error a
   After specifying `@Dependencies`, all usages of `MyWidget` will
   require the same two options as above:
   - Either override the provider using `ProviderScope` before using `MyWidget`
-    ```dart
+    ```dart continued
     void main() {
       runApp(
         ProviderScope(
@@ -1250,7 +1293,7 @@ If neither of the following options are used, the provider will throw an error a
     }
     ```
   - Or specify `@Dependencies` on whatever uses `MyWidget` to indicate that it depends on it.
-    ```dart
+    ```dart continued name=scoped_app
     @Dependencies([myFuture])
     class MyApp extends ConsumerWidget {
       @override
@@ -1269,7 +1312,7 @@ If neither of the following options are used, the provider will throw an error a
 
 * It is now "sealed". This enables exhaustive pattern matching:
   ```dart
-  AsyncValue<int> value;
+  AsyncValue<int> value = ref.watch(myProvider);
   switch (value) {
     case AsyncData():
       print('data');
