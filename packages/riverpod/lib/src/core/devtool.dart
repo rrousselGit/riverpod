@@ -1,5 +1,8 @@
 part of '../framework.dart';
 
+// Examples can assume:
+// import 'package:riverpod/misc.dart';
+
 /// A flag to control whether Riverpod should track the [StackTrace] of providers
 /// when they are created.
 ///
