@@ -6,6 +6,30 @@ version: 2
 import { Link } from "/src/components/Link";
 import { AutoSnippet, When } from "/src/components/CodeSnippet";
 
+<!-- Examples can assume:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
+import 'package:material_ui/material_ui.dart';
+
+late WidgetRef ref;
+late BuildContext context;
+
+class MyWidget extends ConsumerStatefulWidget {
+  @override
+  ConsumerState<MyWidget> createState() => throw UnimplementedError();
+}
+
+class Model {
+  void init() {}
+}
+final myProvider = Provider((ref) => Model());
+
+class MyForm {
+  Map<String, String> toJson() => {};
+}
+final formStateProvider = Provider((ref) => MyForm());
+-->
+
 To ensure good maintainability of your code, here is a list of good practices
 you should follow when using Riverpod.
 
@@ -28,13 +52,16 @@ Failing to do so could cause possible race conditions and unexpected behaviors.
 **DON'T**
 
 ```dart
-class WidgetState extends State<MyWidget> {
+class WidgetState extends ConsumerState<MyWidget> {
   @override
   void initState() {
     super.initState();
     // Bad: the provider should initialize itself
-    ref.read(provider).init();
+    ref.read(myProvider).init();
   }
+
+  @override
+  Widget build(BuildContext context) => const Placeholder();
 }
 ```
 
@@ -48,8 +75,8 @@ triggering navigation:
 ```dart
 ElevatedButton(
   onPressed: () {
-    ref.read(provider).init();
-    Navigator.of(context).push(...);
+    ref.read(myProvider).init();
+    Navigator.of(context).pushNamed('/details');
   },
   child: Text('Navigate'),
 )
@@ -112,10 +139,10 @@ see <Link documentID="concepts2/mutations"/>.
 
 ```dart
 final submitProvider = FutureProvider((ref) async {
-  final formState = ref.watch(formState);
+  final formState = ref.watch(formStateProvider);
 
   // Bad: Providers should not be used for "write" operations.
-  return http.post('https://my-api.com', body: formState.toJson());
+  return http.post(Uri.parse('https://my-api.com'), body: formState.toJson());
 });
 ```
 
@@ -133,7 +160,7 @@ false positives with lints.
 ```dart
 final provider = Provider((ref) => 42);
 
-...
+// ...
 
 // OK because the provider is known statically
 ref.watch(provider);
@@ -150,6 +177,8 @@ class Example extends ConsumerWidget {
   Widget build(context, ref) {
     // Bad because static analysis cannot know what `provider` is
     ref.watch(provider);
+    // ...
+    return const Placeholder();
   }
 }
 ```
