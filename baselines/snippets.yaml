@@ -18,14 +18,11 @@ ignored:
 # Remove an entry once the snippets of its file are valid.
 unchecked:
   - README.md
-  - packages/flutter_riverpod/README.md
   - packages/flutter_riverpod/lib/src/core/consumer.dart
   - packages/flutter_riverpod/lib/src/core/provider_scope.dart
   - packages/flutter_riverpod/lib/src/core/widget_ref.dart
   - packages/flutter_riverpod/lib/src/providers/legacy/change_notifier_provider.dart
   - packages/flutter_riverpod/test/utils.dart
-  - packages/hooks_riverpod/README.md
-  - packages/riverpod/README.md
   - packages/riverpod/lib/src/core/async_value.dart
   - packages/riverpod/lib/src/core/devtool.dart
   - packages/riverpod/lib/src/core/element.dart
