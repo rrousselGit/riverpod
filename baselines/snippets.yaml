@@ -19,7 +19,6 @@ ignored:
 # instead, or tag the ones that are not meant to compile `dart no-analyze`.
 # Remove an entry once the snippets of its file are valid.
 unchecked:
-  - website/docs/concepts2/offline.mdx
   - website/docs/concepts2/overrides.mdx
   - website/docs/concepts2/providers.mdx
   - website/docs/concepts2/refs.mdx
