@@ -3,6 +3,35 @@ import 'package:meta/meta.dart';
 import '../../internals.dart';
 import 'builder.dart';
 
+// Examples can assume:
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:flutter_riverpod/legacy.dart';
+// import 'package:flutter/widgets.dart';
+//
+// class Product {
+//   Product(this.id);
+//
+//   final String id;
+// }
+//
+// class ProductsNotifier extends StateNotifier<List<Product>> {
+//   ProductsNotifier() : super([]);
+// }
+//
+// class ProductItem extends StatelessWidget {
+//   const ProductItem({
+//     super.key,
+//     required this.product,
+//     required this.isSelected,
+//   });
+//
+//   final Product product;
+//   final bool isSelected;
+//
+//   @override
+//   Widget build(BuildContext context) => Text(product.id);
+// }
+
 /// {@template riverpod.state_provider}
 /// A provider that exposes a value that can be modified from outside.
 ///
@@ -28,7 +57,7 @@ import 'builder.dart';
 ///           onTap: () => ref.read(selectedProductIdProvider.notifier).state = product.id,
 ///           child: ProductItem(
 ///             product: product,
-///             isSelected: selectedProductId.state == product.id,
+///             isSelected: selectedProductId == product.id,
 ///           ),
 ///         ),
 ///     ],
