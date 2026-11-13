@@ -9,6 +9,19 @@ import 'async_notifier.dart';
 import 'provider.dart' show Provider;
 import 'stream_provider.dart' show StreamProvider;
 
+// Examples can assume:
+// import 'dart:convert';
+// import 'package:flutter/services.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart' show WidgetRef;
+// import 'package:material_ui/material_ui.dart';
+//
+// class Configuration {
+//   Configuration.fromJson(Map<String, Object?> json)
+//     : host = json['host']! as String;
+//
+//   final String host;
+// }
+
 /// Implementation detail of `riverpod_generator`.
 /// Do not use, as this may be removed at any time.
 @internal
@@ -63,7 +76,7 @@ base mixin $FutureProvider<ValueT>
 ///
 /// Then, the UI can listen to configurations like so:
 ///
-/// ```dart
+/// ```dart continued
 /// Widget build(BuildContext context, WidgetRef ref) {
 ///   AsyncValue<Configuration> config = ref.watch(configProvider);
 ///

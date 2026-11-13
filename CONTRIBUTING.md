@@ -178,10 +178,14 @@ The text after `dart` on the opening fence changes how a snippet is extracted:
   is not meant to compile. For an omission, prefer a comment such as
   `/* ... */`, which is valid code.
 
-The files listed under `unchecked` in `baselines/snippets.yaml` had invalid
-snippets when this check was added, and none of their snippets are extracted.
-Do not add to that list; remove an entry once the snippets of its file are
-valid. Changelogs and translations are never extracted.
+A file cannot let its snippets assume a name that one of them declares, as
+that snippet would declare it twice. Name that snippet instead, and import it
+in the "Examples can assume" comment, with `import 'counter.dart';`: the
+other snippets of the file then see its declarations.
+
+The files listed under `unchecked` in `baselines/snippets.yaml` are not
+extracted. Do not add to that list: every snippet must be valid, or tagged
+`dart no-analyze`. Changelogs, tests and translations are never extracted.
 
 ### Updating English docs
 

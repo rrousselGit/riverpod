@@ -1,5 +1,10 @@
 part of '../../framework.dart';
 
+// Examples can assume:
+// import 'dart:async';
+//
+// import 'package:riverpod/misc.dart';
+
 /// An error thrown if a Notifier is associated multiple times with a provider.
 @internal
 const alreadyInitializedError = '''
@@ -35,7 +40,7 @@ typedef RunNotifierBuild<NotifierT, CreatedT> =
 /// [runBuild]:
 ///
 /// ```dart
-/// mixin MyMixin<T> extends AnyNotifier<T, FutureOr<T>> {
+/// mixin MyMixin<T> on AnyNotifier<T, FutureOr<T>> {
 ///   @override
 ///   WhenComplete runBuild() {
 ///     // It is safe to use "ref" here.
@@ -147,7 +152,7 @@ abstract class AnyNotifier<StateT, ValueT> {
   /// For example, you could implement a mixin that logs state changes:
   ///
   /// ```dart
-  /// mixin LoggingMixin<T> on AnyNotifier<T> {
+  /// mixin LoggingMixin<T> on AnyNotifier<T, T> {
   ///   @override
   ///   WhenComplete runBuild() {
   ///     print('Will build $this');

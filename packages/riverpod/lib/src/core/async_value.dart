@@ -1,5 +1,28 @@
 part of '../framework.dart';
 
+// Examples can assume:
+// import 'package:dio/dio.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart'
+//     show ConsumerWidget, WidgetRef;
+// import 'package:material_ui/material_ui.dart';
+//
+// class User {
+//   String get name => '';
+// }
+//
+// class MyData {
+//   MyData();
+//   factory MyData.fromJson(Object? json) => MyData();
+// }
+//
+// final dio = Dio();
+// late Ref ref;
+// late Object error;
+// Future<void> something() async {}
+// final provider = FutureProvider<int>((ref) async => 0);
+// final someProvider = FutureProvider<int>((ref) async => 0);
+// final anotherProvider = FutureProvider<int>((ref) async => 0);
+
 @internal
 extension AsyncTransition<ValueT> on AsyncValue<ValueT> {
   AsyncValue<NewT> cast<NewT>() => _cast<NewT>();
@@ -104,9 +127,16 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
   /// Notifiers can set this manually as such:
   ///
   /// ```dart
-  /// state = AsyncLoading(progress: 0);
-  /// await something();
-  /// ref.state = AsyncLoading(progress: 1);
+  /// class MyNotifier extends AsyncNotifier<MyData> {
+  ///   @override
+  ///   Future<MyData> build() async {
+  ///     state = AsyncLoading(progress: 0);
+  ///     await something();
+  ///     state = AsyncLoading(progress: 1);
+  ///
+  ///     return MyData();
+  ///   }
+  /// }
   /// ```
   num? get progress => _loading?.progress;
 
@@ -406,9 +436,9 @@ class AsyncValueIsLoadingException implements Exception {
 ///
 ///     return switch (user) {
 ///       AsyncValue(hasError: true) => Text('Oops, something unexpected happened'),
-///       AsyncValue(:final value, hasValue: true) => Text('Hello ${value.name}'),
+///       AsyncValue(:final value?) => Text('Hello ${value.name}'),
 ///       _ => CircularProgressIndicator(),
-///     );
+///     };
 ///   }
 /// }
 /// ```
@@ -416,12 +446,12 @@ class AsyncValueIsLoadingException implements Exception {
 /// If a consumer of an [AsyncValue] does not care about the loading/error
 /// state, consider using [requireValue] to read the state:
 ///
-/// ```dart
+/// ```dart continued
 /// Widget build(BuildContext context, WidgetRef ref) {
 ///   // Reading .requireValue will be thrown both on loading and error states.
 ///   final User user = ref.watch(userProvider).requireValue;
 ///
-///   ...
+///   return Text('Hello ${user.name}');
 /// }
 /// ```
 ///
@@ -488,7 +518,7 @@ sealed class AsyncValue<ValueT> {
   ///     state = const AsyncValue.loading();
   ///     try {
   ///       final response = await dio.get('my_api/data');
-  ///       final data = MyData.fromJson(response);
+  ///       final data = MyData.fromJson(response.data);
   ///       state = AsyncValue.data(data);
   ///     } catch (err, stack) {
   ///       state = AsyncValue.error(err, stack);
@@ -509,7 +539,7 @@ sealed class AsyncValue<ValueT> {
   ///     // does the try/catch for us like previously
   ///     state = await AsyncValue.guard(() async {
   ///       final response = await dio.get('my_api/data');
-  ///       return Data.fromJson(response);
+  ///       return MyData.fromJson(response.data);
   ///     });
   ///   }
   /// }
@@ -524,7 +554,6 @@ sealed class AsyncValue<ValueT> {
   ///     // Catch all errors beside [FormatException]s.
   ///    (err) => err is! FormatException,
   ///   );
-  /// }
   /// ```
   static Future<AsyncValue<ValueT>> guard<ValueT>(
     Future<ValueT> Function() future, [
@@ -586,7 +615,7 @@ sealed class AsyncValue<ValueT> {
   /// ```dart
   /// // We use FutureProvider + AsyncValue to sycnhronously combine asynchronous providers.
   /// // Notice how the callback of FutureProvider is not marked as async.
-  /// final sumProvider = FutureProvider<User>((ref) {
+  /// final sumProvider = FutureProvider<int>((ref) {
   ///   AsyncValue<int> value = ref.watch(someProvider);
   ///   AsyncValue<int> anotherValue = ref.watch(anotherProvider);
   ///

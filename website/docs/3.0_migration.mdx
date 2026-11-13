@@ -6,6 +6,19 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { AutoSnippet } from "/src/components/CodeSnippet";
 
+<!-- Examples can assume:
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+late WidgetRef ref;
+final myProvider = FutureProvider<int>((ref) async => 0);
+class NotFoundException implements Exception {}
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => const Placeholder();
+}
+-->
+
 For the list of changes, please refer to the [What's new in Riverpod 3.0](whats_new) page.
 
 Riverpod 3.0 introduces a number of breaking changes that may require you to update your code.
@@ -126,7 +139,7 @@ life-cycle bugs.
 To migrate, guard any usage of `Ref` that happens after an async gap with
 `ref.mounted`, or cancel the pending work with `ref.onDispose`:
 
-```dart
+```dart no-analyze
 @riverpod
 class Example extends _$Example {
   @override
@@ -215,7 +228,7 @@ This object contains both the container, provider, and extra information (such a
 To migrate, you need to update all methods of your observers like so:
 
 ```diff
-class MyObserver extends ProviderObserver {
+final class MyObserver extends ProviderObserver {
   @override
 -  void didAddProvider(ProviderBase provider, Object? value, ProviderContainer container) {
 +  void didAddProvider(ProviderObserverContext context, Object? value) {

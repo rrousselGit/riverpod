@@ -70,7 +70,7 @@ packages:
     path: tools/doc_snippets
     codegen: false
     test: flutter
-    dependencies: [flutter_riverpod, hooks_riverpod, riverpod, riverpod_annotation]
+    dependencies: [flutter_riverpod, hooks_riverpod, riverpod, riverpod_annotation, riverpod_devtool_core, riverpod_sqflite]
     dev_dependencies: []
     dependency_overrides: []
     dependents: []
@@ -233,7 +233,7 @@ packages:
     dependencies: [riverpod]
     dev_dependencies: [riverpod_devtool_generator]
     dependency_overrides: []
-    dependents: [devtool_embedded_app, riverpod_devtool, riverpod_mcp]
+    dependents: [devtool_embedded_app, doc_snippets, riverpod_devtool, riverpod_mcp]
   riverpod_devtool_generator:
     path: packages/riverpod_devtool_generator
     codegen: true
@@ -289,7 +289,7 @@ packages:
     dependencies: [riverpod]
     dev_dependencies: []
     dependency_overrides: []
-    dependents: [example, website_snippets]
+    dependents: [doc_snippets, example, website_snippets]
   stackoverflow:
     path: examples/stackoverflow
     codegen: true
@@ -483,6 +483,19 @@ tree:
         riverpod_analyzer_utils:
           lint_visitor_generator (dev): {}
     riverpod_annotation:
+      riverpod:
+        riverpod_devtool_generator (dev):
+          riverpod_analyzer_utils:
+            lint_visitor_generator (dev): {}
+    riverpod_devtool_core:
+      riverpod:
+        riverpod_devtool_generator (dev):
+          riverpod_analyzer_utils:
+            lint_visitor_generator (dev): {}
+      riverpod_devtool_generator (dev):
+        riverpod_analyzer_utils:
+          lint_visitor_generator (dev): {}
+    riverpod_sqflite:
       riverpod:
         riverpod_devtool_generator (dev):
           riverpod_analyzer_utils:

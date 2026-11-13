@@ -2,6 +2,11 @@
 
 part of '../framework.dart';
 
+// Examples can assume:
+// // The examples are about the deprecated API that this file declares.
+// // ignore_for_file: deprecated_member_use
+// import 'package:riverpod/misc.dart';
+
 /// An object containing metadata about the listened object of a
 /// [ProviderTransformer].
 @Deprecated(
@@ -240,7 +245,7 @@ abstract class _ProviderTransformerMixin<InT, StateT, ValueT>
 ///      return ProviderTransformer(
 ///        initState: (_) => context.sourceState.requireValue,
 ///        listener: (self, previous, next) {
-///          if (where(previous, next))
+///          if (where(previous.requireValue, next.requireValue))
 ///            self.state = next;
 ///        },
 ///      );

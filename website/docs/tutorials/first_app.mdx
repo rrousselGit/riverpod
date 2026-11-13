@@ -8,6 +8,27 @@ import { AutoSnippet } from "/src/components/CodeSnippet";
 import { Link } from "/src/components/Link";
 import { DartPad } from "/src/components/DartPad";
 
+<!-- Examples can assume:
+import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
+
+// The snippet that defines randomJokeProvider, for the ones that use it.
+import 'random_joke_provider.dart';
+
+final dio = Dio();
+
+class Joke {
+  factory Joke.fromJson(Map<String, Object?> json) {
+    throw UnimplementedError();
+  }
+}
+
+late WidgetRef ref;
+late AsyncValue<String> asyncValue;
+late AsyncValue<Joke> randomJoke;
+-->
+
 In this tutorial, we will build a random joke generator app using Riverpod:
 
 <DartPad id="6bf918e3fc97a40b53d1ea80fd937146" />
@@ -265,7 +286,7 @@ many times we access to the value, the network request will only be performed on
 The separation between our `fetchRandomJoke` function and the `randomJokeProvider` is not mandatory.  
 You can directly write the content of `fetchRandomJoke` inside the provider if you prefer:
 
-```dart
+```dart name=random_joke_provider
 final randomJokeProvider = FutureProvider<Joke>((ref) async {
   final response = await dio.get<Map<String, Object?>>(
     'https://official-joke-api.appspot.com/random_joke',
@@ -353,6 +374,7 @@ Consumer(
     // highlight-next-line
     final randomJoke = ref.watch(randomJokeProvider);
     // ...
+    return Stack(/* ... */);
   },
 )
 ```
@@ -440,7 +462,7 @@ ElevatedButton(
   // highlight-next-line
   onPressed: () => ref.invalidate(randomJokeProvider),
   child: const Text('Get another joke'),
-),
+)
 ```
 
 That is all we need to do!  

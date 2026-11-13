@@ -5,6 +5,12 @@ import 'package:state_notifier/state_notifier.dart';
 
 import '../../common/internal_lints.dart';
 
+// Examples can assume:
+// import 'package:riverpod/legacy.dart';
+//
+// late Ref ref;
+// final provider = StateProvider<int>((ref) => 0);
+
 /// A [StateNotifier] that allows modifying its [state] from outside.
 ///
 /// This avoids having to make a [StateNotifier] subclass for simple scenarios.

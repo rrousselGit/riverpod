@@ -1,5 +1,12 @@
 part of '../framework.dart';
 
+// Examples can assume:
+// import 'package:riverpod/misc.dart';
+//
+// late Ref ref;
+// final provider = FutureProvider<int>((ref) async => 0);
+// final myProvider = FutureProvider<int>((ref) async => 0);
+
 /// {@template riverpod.refreshable}
 /// An interface for provider expressions that can be passed to `ref.refresh`
 ///

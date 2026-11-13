@@ -12,8 +12,10 @@
 # Paths are relative to the repository root.
 
 # Globs of the files that are not checked at all. Translations of the docs
-# follow the English docs, which are checked.
+# follow the English docs, which are checked. The snippets that
+# scripts/snippets.sh extracts are copies of those of the docs.
 ignored:
+  - tools/doc_snippets/snippets/**
   - website/i18n/**
 
 # Globs of the files that may always use legacy APIs: their implementation,

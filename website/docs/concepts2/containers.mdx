@@ -8,6 +8,21 @@ import {
 import allProviders from 'raw-loader!./containers/all_providers.dart';
 import familyProviders from 'raw-loader!./containers/all_providers_family.dart';
 
+<!-- Examples can assume:
+import 'package:riverpod/riverpod.dart';
+import 'package:test/test.dart';
+
+class Counter extends Notifier<int> {
+  @override
+  int build() => 0;
+
+  void increment() => state++;
+  void decrement() => state--;
+}
+
+final counterProvider = NotifierProvider<Counter, int>(Counter.new);
+-->
+
 [ProviderContainer] is _the_ central piece of Riverpod's architecture.  
 In Riverpod, <Link documentID="concepts2/providers" /> hold no state themselves. Instead,
 the state of a given provider is stored inside this container object.
@@ -91,6 +106,7 @@ void main() {
           final counter = ref.watch(counterProvider);
 
           // TODO use "counter"
+          return const Placeholder();
         },
       ),
     ),
@@ -103,7 +119,7 @@ void main() {
 One might wonder why providers don't store their state themselves.
 If we got rid of that requirement, we could imagine a world where we could write:
 
-```dart
+```dart no-analyze
 print(helloWorldProvider.value); // Prints "Hello world!"
 ```
 
