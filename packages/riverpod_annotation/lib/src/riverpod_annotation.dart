@@ -6,6 +6,19 @@ import 'package:meta/meta_meta.dart';
 import '../experimental/scope.dart';
 import '../riverpod_annotation.dart';
 
+// Examples can assume:
+// import 'package:flutter/foundation.dart';
+// import 'package:riverpod/riverpod.dart';
+//
+// class Foo {}
+//
+// @Riverpod(dependencies: [])
+// Foo scoped(Ref ref) => Foo();
+//
+// final scopedProvider = Provider<Foo>(scoped);
+//
+// class MyChangeNotifier extends ChangeNotifier {}
+
 /// {@template riverpod_annotation.provider}
 /// An annotation placed on classes or functions.
 ///
@@ -66,7 +79,7 @@ final class Riverpod {
   /// this provider may depend on which can be scoped.
   ///
   /// For example, consider the following providers:
-  /// ```dart
+  /// ```dart no-analyze
   /// // By not specifying "dependencies", we are saying that this provider is never scoped
   /// @riverpod
   /// Foo root(Ref ref) => Foo();
@@ -87,28 +100,28 @@ final class Riverpod {
   /// Then if we were to depend on `rootProvider` in a scoped provider, we
   /// could write any of:
   ///
-  /// ```dart
+  /// ```dart no-analyze
   /// @riverpod
   /// Object? dependent(Ref ref) {
-  ///   ref.watch(rootProvider);
   ///   // This provider does not depend on any scoped provider,
   ///   // as such "dependencies" is optional
+  ///   return ref.watch(rootProvider);
   /// }
   ///
   /// @Riverpod(dependencies: [])
   /// Object? dependent(Ref ref) {
-  ///   ref.watch(rootProvider);
   ///   // This provider decided to specify "dependencies" anyway, marking
   ///   // "dependentProvider" as possibly scoped.
   ///   // Since "rootProvider" is never scoped, it doesn't need to be included
   ///   // in "dependencies".
+  ///   return ref.watch(rootProvider);
   /// }
   ///
   /// @Riverpod(dependencies: [root])
   /// Object? dependent(Ref ref) {
-  ///   ref.watch(rootProvider);
   ///   // Including "rootProvider" in "dependencies" is fine too, even though
   ///   // it is not required. It is a no-op.
+  ///   return ref.watch(rootProvider);
   /// }
   /// ```
   ///
@@ -117,9 +130,9 @@ final class Riverpod {
   /// ```dart
   /// @Riverpod(dependencies: [scoped])
   /// Object? dependent(Ref ref) {
-  ///   ref.watch(scopedProvider);
   ///   // Since "scopedProvider" specifies "dependencies", any provider that
   ///   // depends on it must also specify "dependencies" and include "scopedProvider".
+  ///   return ref.watch(scopedProvider);
   /// }
   /// ```
   ///
@@ -129,7 +142,7 @@ final class Riverpod {
   /// **Note**:
   /// It is not necessary to specify an empty "dependencies" on notifiers with
   /// an abstract build method:
-  /// ```dart
+  /// ```dart no-analyze
   /// @riverpod
   /// class MyNotifier extends _$MyNotifier {
   ///   @override
@@ -180,7 +193,7 @@ class ProviderFor {
 /// This serves two purposes:
 /// - It enables a provider to return a [Future]/[Stream] without
 ///   having the provider converting it into an [AsyncValue].
-///   ```dart
+///   ```dart no-analyze
 ///   @riverpod
 ///   Raw<Future<int>> myProvider(...) async => ...;
 ///   ...
@@ -193,7 +206,7 @@ class ProviderFor {
 ///   ```dart
 ///   // Will not trigger the "unsupported return type" lint
 ///   @riverpod
-///   Raw<MyChangeNotifier> myProvider(...) => MyChangeNotifier();
+///   Raw<MyChangeNotifier> myProvider(Ref ref) => MyChangeNotifier();
 ///   ```
 ///
 /// The typedef can be used at various places within the return type declaration.
@@ -202,7 +215,7 @@ class ProviderFor {
 /// This way, Riverpod will convert the [Future] into an [AsyncValue], and
 /// the usage of `ChangeNotifier` will not trigger the linter:
 ///
-/// ```dart
+/// ```dart no-analyze
 /// @riverpod
 /// Future<Raw<ChangeNotifier>> myProvider(...) async => ...;
 /// ...
