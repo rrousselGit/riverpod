@@ -1,5 +1,41 @@
 part of '../framework.dart';
 
+// Examples can assume:
+// // Ref.onManualInvalidation is experimental, and its doc has an example.
+// import 'dart:convert';
+//
+// import 'package:collection/collection.dart';
+// import 'package:dio/dio.dart';
+// import 'package:http/http.dart' as http;
+// import 'package:riverpod/legacy.dart';
+//
+// class Configs {
+//   String get host => '';
+// }
+//
+// class User {
+//   factory User.fromJson(Object? json) => throw UnimplementedError();
+// }
+//
+// class Item {
+//   factory Item.fromJson(Object? json) => throw UnimplementedError();
+//   String get id => '';
+// }
+//
+// class Todo {
+//   String get title => '';
+// }
+//
+// enum Sort { byName }
+//
+// class Disposable {
+//   void dispose() {}
+// }
+//
+// final dio = Dio();
+// late Ref ref;
+// final provider = Provider((ref) => 0);
+
 /// A function that removes the listener it was returned for.
 @internal
 typedef RemoveListener = void Function();
@@ -91,7 +127,7 @@ sealed class Ref implements BaseRef, MutationTarget {
   ///   // Cancel pending network requests upon dispose
   ///   ref.onDispose(cancelToken.cancel);
   ///
-  ///   return dio.get(..., cancelToken: cancelToken);
+  ///   return dio.get('my_api/data', cancelToken: cancelToken);
   /// });
   /// ```
   ///
@@ -100,10 +136,10 @@ sealed class Ref implements BaseRef, MutationTarget {
   /// ```dart
   /// import 'package:dio/dio.dart';
   /// final myProvider = FutureProvider((ref) async {
-  ///   await dio.get(..., cancelToken: cancelToken);
+  ///   final response = await dio.get('my_api/data');
   ///   if (!ref.mounted) throw Exception('cancelled');
   ///
-  ///   return ...;
+  ///   return response.data;
   /// });
   /// ```
   ///
@@ -409,7 +445,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// ```dart
   /// class TodoList extends Notifier<List<Todo>> {
   ///   @override
-  ///   List<Todo>> build() => [];
+  ///   List<Todo> build() => [];
   ///
   ///   void addTodo(Todo todo) {
   ///     state.add(todo);
@@ -528,17 +564,17 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// Good:
   /// ```dart
-  /// final disposable1 = Disposable(...);
+  /// final disposable1 = Disposable(/* ... */);
   /// ref.onDispose(disposable1.dispose);
   ///
-  /// final disposable2 = Disposable(...);
+  /// final disposable2 = Disposable(/* ... */);
   /// ref.onDispose(disposable2.dispose);
   /// ```
   ///
   /// Bad:
   /// ```dart
-  /// final disposable1 = Disposable(...);
-  /// final disposable2 = Disposable(...);
+  /// final disposable1 = Disposable(/* ... */);
+  /// final disposable2 = Disposable(/* ... */);
   ///
   /// ref.onDispose(() {
   ///   disposable1.dispose();
@@ -583,7 +619,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// object like so:
   ///
   /// ```dart
-  /// final configsProvider = FutureProvider(...);
+  /// final configsProvider = FutureProvider((ref) async => Configs());
   /// final myServiceProvider = Provider(MyService.new);
   ///
   /// class MyService {
@@ -591,12 +627,13 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   ///   final Ref ref;
   ///
-  ///   Future<User> fetchUser() {
+  ///   Future<User> fetchUser() async {
   ///     // We read the current configurations, but do not care about
   ///     // rebuilding MyService when the configurations changes
-  ///     final configs = ref.read(configsProvider.future);
+  ///     final configs = await ref.read(configsProvider.future);
   ///
-  ///     return dio.get(configs.host);
+  ///     final response = await dio.get(configs.host);
+  ///     return User.fromJson(response.data);
   ///   }
   /// }
   /// ```
@@ -632,10 +669,10 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// object if a different network request already obtained it:
   ///
   /// ```dart
-  /// final fetchItemList = FutureProvider<List<Item>>(...);
+  /// final fetchItemList = FutureProvider<List<Item>>((ref) async => [/* ... */]);
   ///
   /// final fetchItem = FutureProvider.autoDispose.family<Item, String>((ref, id) async {
-  ///   if (ref.exists(fetchItemList)) {
+  ///   if (ref.read(fetchItemList.exists)) {
   ///     // If `fetchItemList` is initialized, we look into its state
   ///     // and return the already obtained item.
   ///     final itemFromItemList = await ref.watch(
@@ -647,8 +684,8 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///   // If `fetchItemList` is not initialized, perform a network request for
   ///   // "id" separately
   ///
-  ///   final json = await http.get('api/items/$id');
-  ///   return Item.fromJson(json);
+  ///   final response = await http.get(Uri.parse('api/items/$id'));
+  ///   return Item.fromJson(jsonDecode(response.body));
   /// });
   /// ```
   /// {@endtemplate}
@@ -703,7 +740,10 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   ///   // Creates a new sorted list from the combination of the unfiltered
   ///   // list and the filter type.
-  ///   return [...todos].sort((a, b) { ... });
+  ///   return [...todos]..sort((a, b) {
+  ///     // ...
+  ///     return a.title.compareTo(b.title);
+  ///   });
   /// });
   /// ```
   ///
@@ -718,7 +758,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// **Note**:
   /// This can be considered as the combination of [listen] and [invalidateSelf] :
-  /// ```dart
+  /// ```dart no-analyze
   /// T watch<T>(ProviderListenable<T> provider) {
   ///    final sub = listen(provider, (previous, next) {
   ///      invalidateSelf(asReload: true);
