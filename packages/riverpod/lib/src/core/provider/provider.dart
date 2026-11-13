@@ -1,5 +1,9 @@
 part of '../../framework.dart';
 
+// Examples can assume:
+// late Ref ref;
+// final provider = Provider((ref) => 0);
+
 /// A callback used by providers to create the value exposed.
 ///
 /// If an exception is thrown within that callback, all attempts at reading
@@ -65,7 +69,7 @@ sealed class ProviderBase<StateT> extends ProviderOrFamily
   /// listening the associated provider:
   ///
   /// ```dart
-  /// print(ref.watch(provider.exist)); // false initially
+  /// print(ref.watch(provider.exists)); // false initially
   /// ref.watch(provider); // `provider` was mounted right after the exist check
   /// ```
   ProviderListenable<bool> get exists => _exists;
