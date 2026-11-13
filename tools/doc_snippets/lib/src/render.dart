@@ -12,7 +12,7 @@ import 'package:meta/meta.dart';
 /// - Declarations are kept as is. Code that is not made of declarations is
 ///   the body of a `snippet` function when it is made of statements, and what
 ///   that function returns when it is an expression. The function is `async`,
-///   so that the snippet can `await`.
+///   so that the snippet can `await`. Such code may follow declarations.
 ///
 /// [source] is where the snippet is from, for the header.
 @internal
@@ -67,16 +67,33 @@ String renderSnippet({
 
 /// Wraps [body] in what makes it parse, if anything does.
 String _complete(String body) {
-  final candidates = [
-    body,
-    'dynamic snippet() async {\n$body\n}',
-    'dynamic snippet() async =>\n$body\n;',
-  ];
-  return candidates.firstWhere(
-    _parses,
-    // Invalid, whatever it is. The analyzer reports why on the code as is.
-    orElse: () => body,
-  );
+  if (_parses(body)) return body;
+  if (_wrap(body) case final wrapped?) return wrapped;
+
+  // Declarations followed by code that uses them: only that code is wrapped.
+  final lines = body.split('\n');
+  for (var split = lines.length - 1; split > 0; split--) {
+    final declarations = lines.take(split).join('\n').trim();
+    if (!_parses(declarations)) continue;
+    if (_wrap(lines.skip(split).join('\n').trim()) case final wrapped?) {
+      return '$declarations\n\n$wrapped';
+    }
+  }
+
+  // Invalid, whatever it is. The analyzer reports why on the code as is.
+  return body;
+}
+
+/// Places [code] in a function if it is made of statements or is an
+/// expression.
+String? _wrap(String code) {
+  for (final wrapped in [
+    'dynamic snippet() async {\n$code\n}',
+    'dynamic snippet() async =>\n$code\n;',
+  ]) {
+    if (_parses(wrapped)) return wrapped;
+  }
+  return null;
 }
 
 bool _parses(String code) =>

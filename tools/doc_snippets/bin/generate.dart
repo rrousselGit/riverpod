@@ -53,6 +53,9 @@ void main(List<String> args) {
       .where((path) => path.isNotEmpty)
       // Deleted files are still listed until the deletion is staged.
       .where((path) => File(p.join(root, path)).existsSync())
+      // The copies of a file, such as the README.md of the packages, would
+      // have its snippets extracted again.
+      .where((path) => !FileSystemEntity.isLinkSync(p.join(root, path)))
       .toList();
 
   final generation = generateSnippets(

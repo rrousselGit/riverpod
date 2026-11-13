@@ -68,12 +68,40 @@ void main() {
       );
     });
 
+    test('wraps the statements that follow declarations', () {
+      expect(
+        render('class A {}\n\nfinal a = A();\n\nprint(a);\nprint(a);'),
+        '$_header\n'
+        'class A {}\n'
+        '\n'
+        'final a = A();\n'
+        '\n'
+        'dynamic snippet() async {\n'
+        'print(a);\n'
+        'print(a);\n'
+        '}\n',
+      );
+    });
+
+    test('returns the expression that follows declarations', () {
+      expect(
+        render('class A {}\n\nA(\n)'),
+        '$_header\nclass A {}\n\ndynamic snippet() async =>\nA(\n)\n;\n',
+      );
+    });
+
     group('edge cases', () {
       test('keeps code that parses as nothing as is', () {
         expect(render('final a = ...;\nprint(a);'), '''
 $_header
 final a = ...;
 print(a);
+''');
+        // Declarations do not follow statements.
+        expect(render('print(1);\nclass A {}'), '''
+$_header
+print(1);
+class A {}
 ''');
       });
 
