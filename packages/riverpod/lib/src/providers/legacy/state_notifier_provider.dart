@@ -3,6 +3,36 @@ import 'package:meta/meta.dart';
 import '../../internals.dart';
 import 'builder.dart';
 
+// Examples can assume:
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:flutter_riverpod/legacy.dart';
+// import 'package:material_ui/material_ui.dart';
+//
+// class Todo {
+//   Todo({required this.id, required this.description, this.completed = false});
+//
+//   final String id;
+//   final String description;
+//   final bool completed;
+//
+//   Todo copyWith({bool? completed}) => Todo(
+//     id: id,
+//     description: description,
+//     completed: completed ?? this.completed,
+//   );
+// }
+//
+// class Counter extends StateNotifier<int> {
+//   Counter() : super(0);
+//
+//   void increment() => state++;
+// }
+//
+// late WidgetRef ref;
+// final stateNotifierProvider = StateNotifierProvider<Counter, int>(
+//   (ref) => Counter(),
+// );
+
 /// {@template riverpod.state_notifier_provider}
 /// Creates a [StateNotifier] and exposes its current state.
 ///
@@ -42,13 +72,13 @@ import 'builder.dart';
 ///
 /// Which you can then pass to a [StateNotifierProvider] like so:
 ///
-/// ```dart
+/// ```dart continued
 /// final todosProvider = StateNotifierProvider<TodosNotifier, List<Todo>>((ref) => TodosNotifier());
 /// ```
 ///
 /// And finally, you can interact with it inside your UI:
 ///
-/// ```dart
+/// ```dart continued
 /// Widget build(BuildContext context, WidgetRef ref) {
 ///   // rebuild the widget when the todo list changes
 ///   List<Todo> todos = ref.watch(todosProvider);
@@ -126,8 +156,9 @@ final class StateNotifierProvider<
   /// This is typically used to invoke methods on a [StateNotifier]. For example:
   ///
   /// ```dart
-  /// Button(
-  ///   onTap: () => ref.read(stateNotifierProvider.notifier).increment(),
+  /// ElevatedButton(
+  ///   onPressed: () => ref.read(stateNotifierProvider.notifier).increment(),
+  ///   child: const Text('increment'),
   /// )
   /// ```
   ///
