@@ -1,0 +1,206 @@
+// A fake phone around the Flutter view.
+.flutter-embed {
+  $bezel: 12px;
+  $radius: 48px;
+  // Material 3's default surface color, so the status bar blends with the app.
+  $surface: #fef7ff;
+
+  position: relative;
+  max-width: 100%;
+  flex-shrink: 0;
+  align-self: flex-start;
+  padding: $bezel;
+  border-radius: $radius;
+  background: #1b1b1f;
+  box-shadow:
+    inset 0 0 0 2px #3a3a40,
+    0 0 0 1px rgba(0, 0, 0, 0.6),
+    0 30px 60px -20px rgba(0, 0, 0, 0.5);
+
+  // Side buttons.
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    border-radius: 2px;
+    background: #2c2c31;
+  }
+
+  &::before {
+    left: -3px;
+    top: 120px;
+    height: 56px;
+    box-shadow: 0 72px 0 #2c2c31;
+  }
+
+  &::after {
+    right: -3px;
+    top: 160px;
+    height: 80px;
+  }
+
+  &__screen {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    border-radius: $radius - $bezel;
+    overflow: hidden;
+    background: $surface;
+  }
+
+  &__status-bar {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    height: 40px;
+    padding: 4px 26px 0 32px;
+    background: $surface;
+    color: #1d1b20;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  &__island {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    width: 96px;
+    height: 26px;
+    border-radius: 13px;
+    transform: translateX(-50%);
+    background: #000;
+  }
+
+  &__viewport {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+  }
+
+  &__home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    width: 120px;
+    height: 4px;
+    border-radius: 2px;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+  }
+
+  &__host {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__poster {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    img {
+      position: absolute;
+      inset: 0;
+      width: 100% !important;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.6);
+    }
+  }
+
+  &__play {
+    position: relative;
+  }
+
+  &__error {
+    position: relative;
+    margin: 0 16px;
+    padding: 8px;
+    border-radius: 6px;
+    background: var(--ifm-color-danger-contrast-background);
+    color: var(--ifm-color-danger-contrast-foreground);
+    font-size: 0.8rem;
+  }
+}
+
+.flutter-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: var(--ifm-leading);
+
+  &__panel {
+    flex: 1 1 260px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__hint {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--ifm-color-emphasis-700);
+  }
+
+  &__controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 8px;
+    background: var(--ifm-color-emphasis-100);
+
+    &[aria-disabled='true'] {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    input[type='range'] {
+      flex: 1;
+    }
+  }
+
+  &__state {
+    margin: 0;
+    font-size: 0.8rem;
+    white-space: pre-wrap;
+  }
+
+  &__log {
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--ifm-font-family-monospace);
+    font-size: 0.75rem;
+
+    li {
+      padding: 2px 0;
+      border-bottom: 1px solid var(--ifm-color-emphasis-200);
+    }
+  }
+
+  &__log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+  }
+}

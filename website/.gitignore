@@ -1,6 +1,7 @@
 macos
 linux
 web
+!/web/
 windows
 android
 ios
@@ -28,3 +29,5 @@ yarn-debug.log*
 yarn-error.log*
 /.yarn
 .yarnrc.yml
+# Flutter demos, built by `npm run build:demos`
+/static/flutter
