@@ -1,5 +1,9 @@
 part of '../framework.dart';
 
+// Examples can assume:
+// late Ref ref;
+// final futureProvider = FutureProvider<int>((ref) async => 0);
+
 @internal
 @publicInCodegen
 final class $LazyProxyListenable<OutT, InT>
