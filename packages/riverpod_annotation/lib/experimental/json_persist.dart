@@ -13,7 +13,7 @@ import 'persist.dart';
 /// Notifiers should then call [NotifierPersistX.persist] in their `build` method,
 /// and pass a compatible [Storage].
 ///
-/// ```dart
+/// ```dart no-analyze
 /// @riverpod
 /// @JsonPersist()
 /// class MyNotifier extends _$MyNotifier {
