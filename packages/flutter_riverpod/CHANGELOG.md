@@ -1,5 +1,6 @@
 ## Unreleased fix
 
+- Fix the deprecation messages of `exists` pointing to `provider.exist`, which does not exist, instead of `provider.exists`. (thanks to @BiAksoy)
 - `WidgetRef.watch` now rebuilds the widget when a watched provider emits an
   error after the initial build (such as from an automatic retry), like
   `Ref.watch` does. The error is rethrown by `ref.watch` during `build`, so a
@@ -29,9 +30,9 @@
   frames.
 - Devtools inspection caches are released when their client closes or stops
   renewing its session for 30 seconds, including after an abrupt disconnect.
-- Deprecated `Ref.exist`.
-- Added `provider.exist`, which is listenable.
-  This enables writing `ref.listen(provider.exist, ...)`.
+- Deprecated `Ref.exists`.
+- Added `provider.exists`, which is listenable.
+  This enables writing `ref.listen(provider.exists, ...)`.
 - Fix `selectAsync` notifying a closed subscription after an upstream refresh.
 - Fixed `ref.read`/`container.read` of `provider.listenable` throwing an internal `StateError` on `.value`; it now throws a clear one explaining `.listenable` needs `ref.watch`, `ref.listen` or `container.listen` instead (thanks to @Yasser-Ameur)
 - Fixed a debug-only infinite loop in the circular-dependency check. Closing a

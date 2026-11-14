@@ -1,5 +1,6 @@
 ## Unreleased patch
 
+- Fix the deprecation messages of `exists` pointing to `provider.exist`, which does not exist, instead of `provider.exists`. (thanks to @BiAksoy)
 - Fix the devtool failing to refresh when several tools inspect an application at the same time.
 
 ## 3.5.0 - 2026-11-06
@@ -20,9 +21,9 @@
   frames.
 - Devtools inspection caches are released when their client closes or stops
   renewing its session for 30 seconds, including after an abrupt disconnect.
-- Deprecated `Ref.exist`.
-- Added `provider.exist`, which is listenable.
-  This enables writing `ref.listen(provider.exist, ...)`.
+- Deprecated `Ref.exists`.
+- Added `provider.exists`, which is listenable.
+  This enables writing `ref.listen(provider.exists, ...)`.
 - Fix the deprecated `container.exists`/`ref.exists` returning `false` from a
   scoped container for a provider mounted in an ancestor but never read through
   that scope (#4785).
