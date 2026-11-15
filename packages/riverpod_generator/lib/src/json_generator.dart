@@ -86,7 +86,7 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
           return '($name as Map).map((k, v) => MapEntry(${decode(key, 'k')}, ${decode(value, 'v')}))';
         },
         object: () {
-          return '${type.getDisplayString()}.fromJson($name as Map<String, Object?>)';
+          return '${type.toCode()}.fromJson($name as Map<String, Object?>)';
         },
       );
 

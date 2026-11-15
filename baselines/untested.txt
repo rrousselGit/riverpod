@@ -18,7 +18,6 @@ packages/riverpod_analyzer_utils/lib/src/argument_list_utils.dart
 packages/riverpod_analyzer_utils/lib/src/build_yaml.dart
 packages/riverpod_analyzer_utils/lib/src/errors.dart
 packages/riverpod_analyzer_utils/lib/src/nodes/annotation.dart
-packages/riverpod_analyzer_utils/lib/src/nodes/dependencies.dart
 packages/riverpod_analyzer_utils/lib/src/nodes/generated_providers/function.dart
 packages/riverpod_analyzer_utils/lib/src/nodes/generated_providers/identifiers.dart
 packages/riverpod_analyzer_utils/lib/src/nodes/generated_providers/notifier.dart
@@ -58,9 +57,7 @@ packages/riverpod_devtool_generator/lib/builder.dart
 packages/riverpod_generator/integration/build_yaml/lib/dependencies.dart
 packages/riverpod_generator/integration/build_yaml/lib/main.dart
 packages/riverpod_generator/lib/builder.dart
-packages/riverpod_generator/lib/src/json_generator.dart
 packages/riverpod_generator/lib/src/parse_generator.dart
-packages/riverpod_generator/lib/src/riverpod_generator.dart
 packages/riverpod_generator/lib/src/templates/family.dart
 packages/riverpod_generator/lib/src/templates/hash.dart
 packages/riverpod_generator/lib/src/templates/notifier.dart
