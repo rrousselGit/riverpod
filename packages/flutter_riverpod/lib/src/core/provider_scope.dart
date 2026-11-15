@@ -1,6 +1,23 @@
 // ignore_for_file: invalid_use_of_internal_member
 part of '../core.dart';
 
+// Examples can assume:
+// import 'package:flutter_test/flutter_test.dart';
+// import 'package:material_ui/material_ui.dart';
+//
+// class MyApp extends SizedBox {}
+// class Home extends SizedBox {}
+// class Gallery extends SizedBox {}
+//
+// class MyTheme {
+//   MyTheme.light();
+//   MyTheme.dark();
+// }
+//
+// class Repository {}
+// class FakeRepository implements Repository {}
+// final repositoryProvider = Provider<Repository>((ref) => Repository());
+
 /// {@template riverpod.provider_scope}
 /// A widget that stores the state of providers.
 ///
@@ -56,6 +73,7 @@ part of '../core.dart';
 ///             overrides: [
 ///               themeProvider.overrideWithValue(MyTheme.dark()),
 ///             ],
+///             child: Gallery(),
 ///           ),
 ///         },
 ///       ),

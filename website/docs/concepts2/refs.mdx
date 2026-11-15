@@ -6,6 +6,18 @@ import {
   AutoSnippet,
 } from "/src/components/CodeSnippet";
 
+<!-- Examples can assume:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
+
+final myProvider = Provider<int>((ref) => 0);
+final tickProvider = Provider<int>((ref) => 0);
+final isDivisibleBy4Provider = Provider<bool>((ref) {
+  return ref.watch(tickProvider) % 4 == 0;
+});
+late Ref ref;
+-->
+
 Refs are the primary way to interact with <Link documentID="concepts2/providers"/>.  
 Refs are fairly similar to the `BuildContext` in Flutter, but for providers instead of widgets.
 A non-exhaustive list of things you can do with a ref:
@@ -87,7 +99,7 @@ void myFunction(WidgetRef ref) {
   // You can pass the ref around!
 }
 
-...
+// ...
 
 Consumer(
   builder: (context, ref, _) {
@@ -317,7 +329,7 @@ This will make your code more brittle, as changes in your provider's behavior co
 UI to be out of sync with the provider's state.
 
 Either use [Ref.watch] anyway (as the difference is negligible) or use [select]:
-```dart
+```dart no-analyze
 Consumer(
   builder: (context, ref, _) {
     // ❌ Don't use "read" as a mean to ignore changes

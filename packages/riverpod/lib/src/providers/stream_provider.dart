@@ -10,6 +10,12 @@ import '../framework.dart';
 import 'future_provider.dart' show FutureProvider;
 import 'provider.dart' show Provider;
 
+// Examples can assume:
+// import 'package:flutter_riverpod/flutter_riverpod.dart' show WidgetRef;
+// import 'package:material_ui/material_ui.dart';
+//
+// final messageProvider = StreamProvider.autoDispose<String>((ref) async* {});
+
 /// Implementation detail of `riverpod_generator`.
 /// Do not use, as this may be removed at any time.
 @internal
@@ -34,7 +40,7 @@ base mixin $StreamProvider<ValueT>
 /// It can be used to express a value asynchronously loaded that can change over
 /// time, such as an editable `Message` coming from a web socket:
 ///
-/// ```dart
+/// ```dart no-analyze
 /// final messageProvider = StreamProvider.autoDispose<String>((ref) async* {
 ///   // Open the connection
 ///   final channel = IOWebSocketChannel.connect('ws://echo.websocket.org');

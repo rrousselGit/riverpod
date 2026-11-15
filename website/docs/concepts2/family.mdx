@@ -11,6 +11,19 @@ import singleOverride from 'raw-loader!./family/single_override.dart';
 import allOverride from 'raw-loader!./family/all_overrides.dart';
 import activeProviders from 'raw-loader!./family/all_of.dart';
 
+<!-- Examples can assume:
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class User {}
+
+final userProvider = FutureProvider.autoDispose.family<User, String>(
+  (ref, id) async => User(),
+);
+final myProvider = Provider.family<int, List<int>>((ref, list) => 0);
+late WidgetRef ref;
+-->
+
 One of Riverpod's most powerful feature is called "Families".  
 In short, it allows a provider to be associated with multiple independent states,
 based on a unique parameter combination.
@@ -91,6 +104,7 @@ class Example extends ConsumerWidget {
     final user2 = ref.watch(userProvider('456'));
 
     // user1 and user2 are independent.
+    return const Placeholder();
   }
 }
 ```

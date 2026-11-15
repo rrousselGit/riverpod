@@ -14,6 +14,11 @@ Two packages are built on it:
 
 ## Usage
 
+<!-- Examples can assume:
+import 'package:riverpod/riverpod.dart';
+import 'package:vm_service/vm_service_io.dart';
+-->
+
 Everything is exposed as Riverpod providers. They read the application from
 `appConnectionProvider`, which has to be overridden:
 

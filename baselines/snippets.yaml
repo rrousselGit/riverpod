@@ -5,76 +5,16 @@
 # Paths are relative to the repository root.
 
 # Globs of the files whose snippets are never extracted: the changelogs,
-# whose snippets are about past versions, the translations of the docs, which
-# may be out of date, and the extraction itself.
+# whose snippets are about past versions, the tests, whose doc comments are
+# not docs of the packages, the translations of the docs, which may be out of
+# date, and the extraction itself.
 ignored:
   - "**/CHANGELOG.md"
+  - "**/test/**"
   - tools/doc_snippets/**
   - website/i18n/**
 
-# The files that had invalid snippets when the extraction was added. None of
-# their snippets are extracted. Do not add to this list: fix the snippets
-# instead, or tag the ones that are not meant to compile `dart no-analyze`.
-# Remove an entry once the snippets of its file are valid.
-unchecked:
-  - README.md
-  - packages/flutter_riverpod/lib/src/core/consumer.dart
-  - packages/flutter_riverpod/lib/src/core/provider_scope.dart
-  - packages/flutter_riverpod/lib/src/core/widget_ref.dart
-  - packages/flutter_riverpod/lib/src/providers/legacy/change_notifier_provider.dart
-  - packages/flutter_riverpod/test/utils.dart
-  - packages/riverpod/lib/src/core/async_value.dart
-  - packages/riverpod/lib/src/core/devtool.dart
-  - packages/riverpod/lib/src/core/element.dart
-  - packages/riverpod/lib/src/core/foundation.dart
-  - packages/riverpod/lib/src/core/modifiers/future.dart
-  - packages/riverpod/lib/src/core/modifiers/select.dart
-  - packages/riverpod/lib/src/core/mutations.dart
-  - packages/riverpod/lib/src/core/provider/functional_provider.dart
-  - packages/riverpod/lib/src/core/provider/notifier_provider.dart
-  - packages/riverpod/lib/src/core/provider/provider.dart
-  - packages/riverpod/lib/src/core/provider_listenable_transformer.dart
-  - packages/riverpod/lib/src/core/provider_listenable_transformer2.dart
-  - packages/riverpod/lib/src/core/proxy_provider_listenable.dart
-  - packages/riverpod/lib/src/core/ref.dart
-  - packages/riverpod/lib/src/providers/future_provider.dart
-  - packages/riverpod/lib/src/providers/legacy/state_controller.dart
-  - packages/riverpod/lib/src/providers/legacy/state_notifier_provider.dart
-  - packages/riverpod/lib/src/providers/legacy/state_provider.dart
-  - packages/riverpod/lib/src/providers/notifier/orphan.dart
-  - packages/riverpod/lib/src/providers/provider.dart
-  - packages/riverpod/lib/src/providers/stream_provider.dart
-  - packages/riverpod/test/src/utils.dart
-  - packages/riverpod_analyzer_utils/lib/src/type_checker.dart
-  - packages/riverpod_annotation/lib/experimental/json_persist.dart
-  - packages/riverpod_annotation/lib/experimental/scope.dart
-  - packages/riverpod_annotation/lib/src/riverpod_annotation.dart
-  - packages/riverpod_devtool_core/README.md
-  - packages/riverpod_generator/README.md
-  - packages/riverpod_generator/test/mock.dart
-  - packages/riverpod_lint/README.md
-  - packages/riverpod_sqflite/README.md
-  - tools/generate_providers/src/docs.dart
-  - website/docs/3.0_migration.mdx
-  - website/docs/concepts/about_hooks.mdx
-  - website/docs/concepts2/auto_dispose.mdx
-  - website/docs/concepts2/consumers.mdx
-  - website/docs/concepts2/containers.mdx
-  - website/docs/concepts2/family.mdx
-  - website/docs/concepts2/mutations.mdx
-  - website/docs/concepts2/observers.mdx
-  - website/docs/concepts2/offline.mdx
-  - website/docs/concepts2/overrides.mdx
-  - website/docs/concepts2/providers.mdx
-  - website/docs/concepts2/refs.mdx
-  - website/docs/concepts2/retry.mdx
-  - website/docs/concepts2/scoping.mdx
-  - website/docs/from_provider/provider_vs_riverpod.mdx
-  - website/docs/from_provider/quickstart.mdx
-  - website/docs/how_to/testing.mdx
-  - website/docs/migration/0.13.0_to_0.14.0.mdx
-  - website/docs/migration/0.14.0_to_1.0.0.mdx
-  - website/docs/root/do_dont.mdx
-  - website/docs/root/faq.mdx
-  - website/docs/tutorials/first_app.mdx
-  - website/docs/whats_new.mdx
+# The files whose snippets are not extracted yet. Do not add to this list: fix
+# the snippets instead, or tag the ones that are not meant to compile
+# `dart no-analyze`.
+unchecked: []

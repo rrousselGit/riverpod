@@ -16,6 +16,16 @@ import awaitFuture from "!!raw-loader!./testing/await_future.dart";
 import notifierMock from "./testing/notifier_mock";
 import notifierUsage from "!!raw-loader!./testing/notifier_usage.dart";
 
+<!-- Examples can assume:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mockito/mockito.dart';
+
+class MyNotifier extends Notifier<int> {
+  @override
+  int build() => throw UnimplementedError();
+}
+-->
+
 A core part of the Riverpod API is the ability to test your providers in isolation.
 
 For a proper test suite, there are a few challenges to overcome:

@@ -87,6 +87,48 @@ dart analyze
 
 ## All the lints
 
+<!-- Examples can assume:
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+// Stand-ins for the providers that riverpod_generator would generate.
+final rootProvider = Provider<int>((ref) => 0);
+final scopedProvider = Provider<int>(dependencies: const [], (ref) => 0);
+final dependencyProvider = Provider<int>((ref) => 0);
+
+final myProvider = Provider.family<int, Object?>((ref, parameter) => 0);
+
+class ClassThatOverridesEqual {
+  @override
+  bool operator ==(Object other) => other is ClassThatOverridesEqual;
+
+  @override
+  int get hashCode => 0;
+}
+
+class ClassWithNoCustomEqual {}
+
+Object? variable;
+
+class MyService {
+  void doSomething() {}
+}
+
+final provider = Provider<MyService>((ref) => MyService());
+
+class MyWidget extends ConsumerStatefulWidget {
+  @override
+  ConsumerState<MyWidget> createState() => throw UnimplementedError();
+}
+
+Future<int> fetch() async => 0;
+
+late WidgetRef ref;
+late AsyncValue<int?> asyncValue;
+-->
+
 ### missing_provider_scope
 
 Flutter applications using Riverpod should have a ProviderScope widget at the top
@@ -94,7 +136,7 @@ of the widget tree.
 
 **Good**:
 
-```dart
+```dart no-analyze
 void main() {
   runApp(ProviderScope(child: MyApp()));
 }
@@ -102,7 +144,7 @@ void main() {
 
 **Bad**:
 
-```dart
+```dart no-analyze
 void main() {
   runApp(MyApp());
 }
@@ -129,7 +171,7 @@ int scoped(Ref ref) => 0;
 
 **Good**:
 
-```dart
+```dart no-analyze
 // No dependencies used, no need to specify "dependencies"
 @riverpod
 int example(Ref ref) => 0;
@@ -176,7 +218,7 @@ ProviderScope(
 
 **Bad**:
 
-```dart
+```dart no-analyze
 // scopedProvider isn't used and should therefore not be listed
 @Riverpod(dependencies: [scoped])
 int example(Ref ref) => 0;
@@ -228,8 +270,8 @@ void main() {
     ProviderScope(
       // This is the main ProviderScope. All providers can be overridden there
       overrides: [
-        rootProvider.overrideWith(...),
-        scopedProvider.overrideWith(...),
+        rootProvider.overrideWith((ref) => 42),
+        scopedProvider.overrideWith((ref) => 42),
       ],
       child: MyApp(),
     ),
@@ -243,7 +285,7 @@ class MyApp extends StatelessWidget {
       // This ProviderScope is not the root one, so only providers with "dependencies"
       // can be specified.
       overrides: [
-        scopedProvider.overrideWith(...),
+        scopedProvider.overrideWith((ref) => 42),
       ],
       child: Container(),
     );
@@ -263,7 +305,7 @@ class MyApp extends StatelessWidget {
       overrides: [
         // rootProvider does not specify "dependencies" and therefore should not
         // be overridden here.
-        rootProvider.overrideWith(...),
+        rootProvider.overrideWith((ref) => 42),
       ],
       child: Container(),
     );
@@ -277,7 +319,7 @@ Providers should not interact with `BuildContext`.
 
 **Good**:
 
-```dart
+```dart no-analyze
 @riverpod
 int fn(Ref ref) => 0;
 
@@ -291,8 +333,9 @@ class MyNotifier extends _$MyNotifier {
 
 **Bad**:
 
-```dart
+```dart no-analyze
 // Providers should not receive a BuildContext as a parameter.
+@riverpod
 int fn(Ref ref, BuildContext context) => 0;
 
 @riverpod
@@ -342,7 +385,7 @@ Instead, you should do `ref.watch(provider).someState`.
 
 **Bad**:
 
-```dart
+```dart no-analyze
 @riverpod
 class GeneratedNotifier extends _$GeneratedNotifier {
   // Notifiers should not have public properties/getters
@@ -355,7 +398,7 @@ class GeneratedNotifier extends _$GeneratedNotifier {
 
 **Good**:
 
-```dart
+```dart no-analyze
 class Model {
   Model(this.a, this.b);
   final int a;
@@ -372,7 +415,7 @@ class MyNotifier extends _$MyNotifier {
 }
 ```
 
-```dart
+```dart no-analyze
 @riverpod
 class MyNotifier extends _$MyNotifier {
   // Alternatively, notifiers are allowed to have properties/getters if they
@@ -404,7 +447,7 @@ In that scenario, you may explicitly wrap the value in `Raw`:
 
 **Good**:
 
-```dart
+```dart no-analyze
 @riverpod
 int integer(Ref ref) => 0;
 
@@ -445,14 +488,14 @@ Functional providers must receive a ref matching the provider name as their firs
 
 **Good**:
 
-```dart
+```dart no-analyze
 @riverpod
 int myProvider(Ref ref) => 0;
 ```
 
 **Bad**:
 
-```dart
+```dart no-analyze
 // No "ref" parameter found
 @riverpod
 int myProvider() => 0;
@@ -468,7 +511,7 @@ Classes annotated by `@riverpod` must extend \_$ClassName
 
 **Good**:
 
-```dart
+```dart no-analyze
 @riverpod
 class Example extends _$Example {
   int build() => 0;
@@ -477,7 +520,7 @@ class Example extends _$Example {
 
 **Bad**:
 
-```dart
+```dart no-analyze
 // No "extends" found
 @riverpod
 class Example {
@@ -507,6 +550,8 @@ class _MyWidgetState extends ConsumerState<MyWidget> {
   }
 
   // ...
+  @override
+  Widget build(BuildContext context) => const Placeholder();
 }
 ```
 
@@ -612,7 +657,7 @@ Classes annotated by `@riverpod` must have the `build` method.
 
 **Good**:
 
-```dart
+```dart no-analyze
 @riverpod
 class Example extends _$Example {
 
@@ -623,7 +668,7 @@ class Example extends _$Example {
 
 **Bad**:
 
-```dart
+```dart no-analyze
 // No "build" method found
 @riverpod
 class Example extends _$Example {}
@@ -638,7 +683,7 @@ For example, an error will be shown if a "notifier" is abstract:
 
 **Good**:
 
-```dart
+```dart no-analyze
 @riverpod
 class Example extends _$Example {
   @override
@@ -648,7 +693,7 @@ class Example extends _$Example {
 
 **Bad**:
 
-```dart
+```dart no-analyze
 @riverpod
 abstract class Example extends _$Example {
   @override
@@ -664,28 +709,34 @@ is possibly nullable.
 **Bad**:
 
 ```dart
-switch (...) {
+switch (asyncValue) {
   // int? is nullable, therefore ":final value?" should not be used
   case AsyncValue<int?>(:final value?):
      print('data $value');
+  default:
+  // ...
 }
 ```
 
 **Good**:
 
 ```dart
-switch (...) {
+switch (asyncValue) {
   // int is non-nullable, so using ":final value?" is fine.
   case AsyncValue<int>(:final value?):
      print('data $value');
+  default:
+  // ...
 }
 ```
 
 ```dart
-switch (...) {
+switch (asyncValue) {
   // int? is nullable, therefore we use "hasValue: true"
   case AsyncValue<int?>(:final value, hasValue: true):
      print('data $value');
+  default:
+  // ...
 }
 ```
 
@@ -697,7 +748,7 @@ This includes `.state`, `.future`, and `.ref`.
 
 **Bad**:
 
-```dart
+```dart no-analyze
 @riverpod
 class A extends _$A {
   @override
@@ -718,7 +769,7 @@ class B extends _$B {
 
 **Good**:
 
-```dart
+```dart no-analyze
 @riverpod
 class A extends _$A {
   @override

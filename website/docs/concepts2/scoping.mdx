@@ -7,6 +7,16 @@ import usage from './scoping/usage';
 import dependencies from './scoping/dependencies';
 import override from 'raw-loader!./scoping/override.dart';
 
+<!-- Examples can assume:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final currentItemIdProvider = Provider<String?>(
+  dependencies: const [],
+  (ref) => null,
+);
+late WidgetRef ref;
+-->
+
 Scoping is the act of changing the behavior of a provider for only a small part of your application.
 
 This is useful for:
