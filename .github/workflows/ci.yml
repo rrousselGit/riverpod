@@ -30,6 +30,7 @@ env:
 
 jobs:
   generate:
+    # Avoid changing job names of required jobs as they need updating github settings
     name: Package graph & generated code are up to date
     runs-on: ubuntu-latest
     steps:
@@ -38,7 +39,7 @@ jobs:
         with:
           channel: master
           cache: true
-      - run: scripts/check.sh graph generate
+      - run: scripts/check.sh graph generate snippets
 
   analyze:
     name: Format & analyze

@@ -46,15 +46,6 @@ layers="$(graph_layers | while read -r layer; do
 done)"
 targets="$(tr ' ' '\n' <<<"$layers" | grep -c .)"
 
-# The tree a `git add -A` would produce now, without touching the real index.
-# Comparing it before and after catches modified, new and deleted files while
-# ignoring changes the working copy already had.
-snapshot() {
-  local idx="$1/snapshot.index" real
-  real="$(git rev-parse --git-path index)"
-  if [ -f "$real" ]; then cp "$real" "$idx"; else rm -f "$idx"; fi
-  GIT_INDEX_FILE="$idx" git add -A . && GIT_INDEX_FILE="$idx" git write-tree
-}
 if [ "$check" = 1 ]; then
   snapdir="$(mktemp -d)"
   trap 'rm -rf "$snapdir"' EXIT

@@ -37,6 +37,7 @@ workspace:
   - packages/riverpod_sqflite/example
   - packages/riverpod_sqflite
   - tools/code_changes
+  - tools/doc_snippets
   - tools/generate_providers
   - tools/package_graph
   - tools/repo_checks
