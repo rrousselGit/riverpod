@@ -1272,14 +1272,23 @@ final class ProviderContainer implements MutationTarget {
     _pointerManager.tryRemove(provider);
   }
 
-  void _disposeProvider(ProviderBase<Object?> provider) {
+  void _disposeElement(ProviderElement element) {
+    final provider = element.origin;
     final pointer = _pointerManager.readPointer(provider);
-    // The provider is already disposed, so we don't need to do anything
-    if (pointer == null) return;
+    // Its provider may have a new element since, which must not be disposed:
+    // an element can be scheduled twice, or by the KeepAliveLink of a
+    // previous build.
+    if (pointer?.element != element) {
+      // The element is otherwise already disposed, unless its pointer was
+      // removed without disposing it, such as by a child container overriding
+      // its family.
+      if (!element._disposed) element.dispose();
+      return;
+    }
 
-    pointer._onExistenceChanged(false);
+    pointer!._onExistenceChanged(false);
 
-    pointer.element?.dispose();
+    element.dispose();
     pointer.element = null;
 
     _recursivePointerRemoval(provider, pointer);

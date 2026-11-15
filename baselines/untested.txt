@@ -12,7 +12,6 @@ packages/riverpod/lib/src/common/pragma.dart
 packages/riverpod/lib/src/common/tenable.dart
 packages/riverpod/lib/src/core/base_ref.dart
 packages/riverpod/lib/src/core/provider/functional_provider.dart
-packages/riverpod/lib/src/core/scheduler.dart
 packages/riverpod_analyzer_utils/lib/src/analyzer_utils.dart
 packages/riverpod_analyzer_utils/lib/src/argument_list_utils.dart
 packages/riverpod_analyzer_utils/lib/src/build_yaml.dart
