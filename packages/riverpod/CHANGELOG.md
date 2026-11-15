@@ -2,6 +2,10 @@
 
 - Fix the deprecation messages of `exists` pointing to `provider.exist`, which does not exist, instead of `provider.exists`. (thanks to @BiAksoy)
 - Fix the devtool failing to refresh when several tools inspect an application at the same time.
+- Fix an `autoDispose` provider being disposed while still listened to or kept
+  alive, when a `KeepAliveLink` obtained before the provider was invalidated
+  and disposed is closed after the provider was created again. Its listeners
+  then threw `called ProviderSubscription.read on a subscription that was closed` (#4806).
 - Fixed reading `provider.notifier` throwing a type error when a generated
   `Notifier` is overridden with `overrideWithValue`. This requires regenerating
   the code with the latest `riverpod_generator`.
