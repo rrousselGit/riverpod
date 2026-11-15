@@ -10,7 +10,6 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:test/test.dart';
 
 void main() {
-  // https://github.com/rrousselGit/riverpod/issues/4372
   test('parses dependencies imported with a prefix', () async {
     final errors = <RiverpodAnalysisError>[];
     final previousErrorReporter = errorReporter;

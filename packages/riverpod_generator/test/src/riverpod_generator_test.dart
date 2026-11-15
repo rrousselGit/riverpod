@@ -7,7 +7,6 @@ import 'package:test/test.dart';
 import 'utils.dart';
 
 void main() {
-  // https://github.com/rrousselGit/riverpod/issues/4372
   group('refers to dependencies using the import prefix of their library', () {
     // Both libraries declare the same names: only the prefix tells them apart.
     const providers = r'''

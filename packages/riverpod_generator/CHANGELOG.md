@@ -1,7 +1,7 @@
 ## Unreleased fix
 
-- `@JsonPersist` now decodes types imported with a prefix (`import ... as prefix`) using that prefix, instead of writing `Type.fromJson` unprefixed, which did not compile or picked a same-named type of another import. (#4372)
-- `@Riverpod(dependencies: [prefix.provider])` now works when the dependency is imported with a prefix: functions are no longer rejected, and the generated code refers to the dependency using that prefix. (#4372)
+- `@JsonPersist` now decodes types imported with a prefix (`import ... as prefix`) using that prefix, instead of writing `Type.fromJson` unprefixed, which did not compile or picked a same-named type of another import.
+- `@Riverpod(dependencies: [prefix.provider])` now works when the dependency is imported with a prefix: functions are no longer rejected, and the generated code refers to the dependency using that prefix.
 
 ## 4.0.10 - 2026-11-06
 
