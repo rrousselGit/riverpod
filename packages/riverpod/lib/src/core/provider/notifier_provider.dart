@@ -441,6 +441,23 @@ abstract base class $ClassProvider<
     );
   }
 
+  /// Implementation of `overrideWithValue` for generated notifiers.
+  ///
+  /// As opposed to [$SyncValueProvider], this keeps the notifier, such that
+  /// [notifier] and the methods of the notifier are still usable.
+  /// @nodoc
+  @internal
+  Override $overrideWithValue(CreatedT value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride:
+          _ClassProviderValueView<NotifierT, StateT, ValueT, CreatedT>(
+            this,
+            value,
+          ),
+    );
+  }
+
   /// {@template riverpod.override_with_build}
   /// Overrides the `build` method of a notifier, allowing you to replace the
   /// default implementation with a custom one for testing or specific use cases.
@@ -524,6 +541,20 @@ final class _ClassProviderView<
   String? debugGetCreateSourceHash() => _inner.debugGetCreateSourceHash();
 }
 
+/// A [_ClassProviderView] which replaces `build` with a value.
+final class _ClassProviderValueView<
+  NotifierT extends AnyNotifier<StateT, ValueT>,
+  StateT,
+  ValueT,
+  CreatedT
+>
+    extends _ClassProviderView<NotifierT, StateT, ValueT, CreatedT> {
+  _ClassProviderValueView(super._inner, this._value)
+    : super(runNotifierBuildOverride: (_, _) => _value);
+
+  final CreatedT _value;
+}
+
 @internal
 @publicInCodegen
 abstract class $ClassProviderElement<
@@ -582,6 +613,26 @@ abstract class $ClassProviderElement<
     }
 
     return whenComplete;
+  }
+
+  @override
+  void update(ProviderBase<StateT> newProvider) {
+    final previousProvider = provider;
+    if (newProvider
+            is! _ClassProviderValueView<NotifierT, StateT, ValueT, CreatedT> ||
+        previousProvider
+            is! _ClassProviderValueView<NotifierT, StateT, ValueT, CreatedT>) {
+      return;
+    }
+
+    provider = newProvider;
+    _runNotifierBuildOverride = newProvider._runNotifierBuildOverride;
+    if (newProvider._value == previousProvider._value) return;
+
+    // The value is treated as a dependency of the notifier: rebuilding,
+    // and synchronously to match `Provider.overrideWithValue`.
+    invalidateSelf(asReload: true, manual: false);
+    flush();
   }
 
   WhenComplete handleCreate(Ref ref, CreatedT Function() created);

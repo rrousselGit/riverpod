@@ -65,7 +65,6 @@ packages/riverpod_generator/lib/src/templates/family.dart
 packages/riverpod_generator/lib/src/templates/hash.dart
 packages/riverpod_generator/lib/src/templates/notifier.dart
 packages/riverpod_generator/lib/src/templates/parameters.dart
-packages/riverpod_generator/lib/src/templates/provider.dart
 packages/riverpod_generator/lib/src/templates/provider_variable.dart
 packages/riverpod_generator/lib/src/templates/template.dart
 packages/riverpod_lint/lib/main.dart

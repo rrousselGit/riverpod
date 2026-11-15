@@ -1,3 +1,9 @@
+## Unreleased fix
+
+- Fixed reading `provider.notifier` throwing a type error when a generated
+  `Notifier` is overridden with `overrideWithValue`. The notifier is now
+  created as usual, only `build` is replaced by the value.
+
 ## 4.0.10 - 2026-11-06
 
 - Allow `build` 5, as required by `build_runner` 2.17.1. (thanks to @uveshm003)

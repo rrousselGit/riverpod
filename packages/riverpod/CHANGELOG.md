@@ -2,6 +2,9 @@
 
 - Fix the deprecation messages of `exists` pointing to `provider.exist`, which does not exist, instead of `provider.exists`. (thanks to @BiAksoy)
 - Fix the devtool failing to refresh when several tools inspect an application at the same time.
+- Fixed reading `provider.notifier` throwing a type error when a generated
+  `Notifier` is overridden with `overrideWithValue`. This requires regenerating
+  the code with the latest `riverpod_generator`.
 
 ## 3.5.0 - 2026-11-06
 

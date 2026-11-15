@@ -184,13 +184,20 @@ final class $name$_genericsDefinition
       return;
     }
 
+    final override = switch (provider) {
+      ClassBasedProviderDeclaration() => r'$overrideWithValue(value)',
+      FunctionalProviderDeclaration() =>
+        '''
+#{{riverpod|\$ProviderOverride}}(
+      origin: this,
+      providerOverride: #{{riverpod|\$SyncValueProvider}}<${provider.providerElement.valueTypeNode.toCode()}>(value),
+    )''',
+    };
+
     buffer.writeln('''
   /// {@macro riverpod.override_with_value}
   #{{riverpod|Override}} overrideWithValue(${provider.providerElement.exposedTypeNode} value) {
-    return #{{riverpod|\$ProviderOverride}}(
-      origin: this,
-      providerOverride: #{{riverpod|\$SyncValueProvider}}<${provider.providerElement.valueTypeNode.toCode()}>(value),
-    );
+    return $override;
   }
 ''');
   }

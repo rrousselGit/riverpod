@@ -950,10 +950,7 @@ final class Regression3490Provider<ModelT, SortT, CursorT>
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(void value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<void>(value),
-    );
+    return $overrideWithValue(value);
   }
 
   @override

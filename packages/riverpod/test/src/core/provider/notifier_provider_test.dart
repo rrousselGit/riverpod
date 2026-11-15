@@ -587,6 +587,104 @@ void main() {
       });
     });
   });
+
+  group(r'$overrideWithValue', () {
+    // Regression tests for https://github.com/rrousselGit/riverpod/issues/4699
+    final provider = NotifierProvider<DeferredNotifier<int>, int>(
+      () => DeferredNotifier((ref, self) => fail('Should not call build')),
+    );
+
+    test('exposes the value, with a usable notifier', () {
+      final container = ProviderContainer.test(
+        overrides: [provider.$overrideWithValue(42)],
+      );
+
+      expect(container.read(provider), 42);
+
+      container.read(provider.notifier).state++;
+      expect(container.read(provider), 43);
+
+      container.invalidate(provider);
+      expect(container.read(provider), 42);
+    });
+
+    test('updating the override with a different value '
+        'synchronously updates the state and keeps the notifier', () {
+      final container = ProviderContainer.test(
+        overrides: [provider.$overrideWithValue(42)],
+      );
+      final listener = Listener<int>();
+      container.listen(provider, listener.call);
+      final notifier = container.read(provider.notifier);
+      notifier.ref.onManualInvalidation(
+        () => fail('Not a manual invalidation'),
+      );
+
+      container.updateOverrides([provider.$overrideWithValue(21)]);
+
+      verifyOnly(listener, listener(42, 21));
+      expect(container.read(provider.notifier), same(notifier));
+      expect(notifier.ref.isReload, true);
+
+      // Later rebuilds use the new value too.
+      notifier.state = 0;
+      container.invalidate(provider);
+      expect(container.read(provider), 21);
+    });
+
+    test('updating the override with the same value '
+        'keeps the changes made by the notifier', () {
+      final container = ProviderContainer.test(
+        overrides: [provider.$overrideWithValue(42)],
+      );
+      final listener = Listener<int>();
+      container.listen(provider, listener.call);
+      container.read(provider.notifier).state = 43;
+      clearInteractions(listener);
+
+      container.updateOverrides([provider.$overrideWithValue(42)]);
+
+      verifyZeroInteractions(listener);
+      expect(container.read(provider), 43);
+    });
+
+    test('updating the override does not hide '
+        'that the notifier failed to be created', () {
+      final provider = NotifierProvider<DeferredNotifier<int>, int>(
+        () => throw StateError('foo'),
+      );
+      final container = ProviderContainer.test(
+        overrides: [provider.$overrideWithValue(42)],
+      );
+      expect(
+        () => container.read(provider),
+        throwsProviderException(isStateError),
+      );
+
+      container.updateOverrides([provider.$overrideWithValue(21)]);
+
+      expect(
+        () => container.read(provider),
+        throwsProviderException(isStateError),
+      );
+    });
+
+    test('updating an overrideWith does nothing', () {
+      final container = ProviderContainer.test(
+        overrides: [
+          provider.overrideWith(() => DeferredNotifier((ref, self) => 1)),
+        ],
+      );
+      expect(container.read(provider), 1);
+
+      container.updateOverrides([
+        provider.overrideWith(() => DeferredNotifier((ref, self) => 2)),
+      ]);
+      container.invalidate(provider);
+
+      expect(container.read(provider), 1);
+    });
+  });
 }
 
 // ignore: unreachable_from_main, inference test
