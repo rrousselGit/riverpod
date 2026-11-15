@@ -2073,6 +2073,60 @@ void main() {
       });
     });
 
+    group('disposing an element that was already disposed (#4806)', () {
+      test('does not dispose the new element when closing the KeepAliveLink '
+          'of the previous one', () async {
+        final container = ProviderContainer.test();
+        final links = <KeepAliveLink>[];
+        var disposeCount = 0;
+        final provider = Provider.autoDispose((ref) {
+          links.add(ref.keepAlive());
+          ref.onDispose(() => disposeCount++);
+          return 0;
+        });
+
+        container.read(provider);
+        // Drops the link without closing it, then disposes the element.
+        container.invalidate(provider);
+        await container.pump();
+        expect(container.exists(provider), false);
+        expect(disposeCount, 1);
+
+        final sub = container.listen(provider, (_, _) {});
+        links.first.close();
+        await container.pump();
+
+        expect(sub.closed, false);
+        expect(sub.read(), 0);
+        expect(disposeCount, 1);
+      });
+
+      test('still disposes the new element once it is unused', () async {
+        final container = ProviderContainer.test();
+        final links = <KeepAliveLink>[];
+        final provider = Provider.autoDispose((ref) {
+          links.add(ref.keepAlive());
+          return 0;
+        });
+
+        container.read(provider);
+        container.invalidate(provider);
+        await container.pump();
+
+        final sub = container.listen(provider, (_, _) {});
+        links.first.close();
+        await container.pump();
+
+        sub.close();
+        await container.pump();
+        expect(container.exists(provider), true);
+
+        links.last.close();
+        await container.pump();
+        expect(container.exists(provider), false);
+      });
+    });
+
     group('exists', () {
       test('exist listenables compare equal for the same provider', () {
         final provider = Provider((ref) => 0);

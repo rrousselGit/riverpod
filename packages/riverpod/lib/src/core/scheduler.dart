@@ -236,16 +236,12 @@ class ProviderScheduler {
 
       if ((links != null && links.isNotEmpty) ||
           element.container._disposed ||
-          // The element may have been disposed since it was scheduled, such
-          // as when scheduled twice or by the KeepAliveLink of a previous
-          // build. Disposing by provider would then dispose its replacement.
-          element._disposed ||
           element.hasNonWeakListeners) {
         continue;
       }
 
       if (element.weakDependents.isEmpty) {
-        element.container._disposeProvider(element.origin);
+        element.container._disposeElement(element);
       } else {
         // Don't delete the pointer if there are some "weak" listeners active.
         element.clearState();
