@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart' show ContainerReadElement;
@@ -269,6 +271,56 @@ void main() {
         container.read(first.notifier).increment();
 
         expect(sub.read(), 1);
+      });
+    });
+
+    // The VM does not consider `Sub<String?>` to be a `Sub<FutureOr<String>?>`.
+    // Yet that is what `StateT` is inferred to in:
+    // `Future<String> fn() async => ref.read(provider) ?? ''`
+    group('when StateT is inferred as FutureOr<T>? (#4899)', () {
+      final provider = Provider<String?>((ref) => 'host');
+
+      test('supports read/watch/listen', () async {
+        final dep = Provider<List<Future<String> Function()>>((ref) {
+          return [
+            () async => container.read(provider) ?? '',
+            () async => ref.read(provider) ?? '',
+            () async => ref.listen(provider, (_, _) {}).read() ?? '',
+            () async => ref.watch(provider) ?? '',
+          ];
+        });
+
+        for (final fn in container.read(dep)) {
+          expect(await fn(), 'host');
+        }
+      });
+
+      test('fireImmediately reports data', () {
+        final listener = Listener<FutureOr<String>?>();
+
+        container.listen<FutureOr<String>?>(
+          provider,
+          listener.call,
+          fireImmediately: true,
+        );
+
+        verifyOnly(listener, listener(null, 'host'));
+      });
+
+      test('fireImmediately reports errors', () {
+        final failing = Provider<String?>((ref) => throw StateError('err'));
+        final listener = Listener<FutureOr<String>?>();
+        final onError = ErrorListener();
+
+        container.listen<FutureOr<String>?>(
+          failing,
+          listener.call,
+          onError: onError.call,
+          fireImmediately: true,
+        );
+
+        verifyZeroInteractions(listener);
+        verifyOnly(onError, onError(argThat(isStateError), any));
       });
     });
   });

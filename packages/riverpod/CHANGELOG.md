@@ -2,6 +2,10 @@
 
 - Fix the deprecation messages of `exists` pointing to `provider.exist`, which does not exist, instead of `provider.exists`. (thanks to @BiAksoy)
 - Fix the devtool failing to refresh when several tools inspect an application at the same time.
+- Fix `NoSuchMethodError: The getter '_listenedElement' was called on null`
+  when reading/listening to a nullable provider where a `FutureOr<T>?` is expected,
+  such as with `Future<T> fn() async => ref.read(provider) ?? other`.
+  This also fixes `fireImmediately` not invoking the listener in that case.
 
 ## 3.5.0 - 2026-11-06
 

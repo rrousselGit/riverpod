@@ -43,17 +43,14 @@ sealed class ProviderSubscription<OutT> {
   ///
   /// It is safe to call this method multiple times.
   void close();
+
+  ProviderSubscriptionImpl<OutT> get _impl;
 }
 
 @internal
 extension ProviderSubImpl<StateT> on ProviderSubscription<StateT> {
-  ProviderSubscriptionImpl<StateT> get impl {
-    final that = this;
-    switch (that) {
-      case ProviderSubscriptionImpl<StateT>():
-        return that;
-    }
-  }
+  // Not a type check, as the VM fails those when StateT is `FutureOr<T>?`.
+  ProviderSubscriptionImpl<StateT> get impl => _impl;
 
   ProviderProviderSubscription<Object?>? get providerSub {
     final that = impl;
@@ -91,6 +88,9 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   ProviderSubscriptionImpl({required this.onClose});
 
   void Function()? onClose;
+
+  @override
+  ProviderSubscriptionImpl<OutT> get _impl => this;
 
   /// The object that listens to the associated [ProviderListenable].
   ///
@@ -468,10 +468,11 @@ void _handleFireImmediately<StateT>(
 }) {
   if (!fireImmediately) return;
 
-  switch (sub.readSafe()) {
-    case $ResultData<StateT>(:final value):
-      sub.impl._notifyData(null, value);
-    case $ResultError<StateT>(:final error, :final stackTrace):
-      sub.impl._notifyError(error, stackTrace);
+  // Not matching on `$ResultData<StateT>`. See `impl`.
+  final result = sub.readSafe();
+  if (result case $ResultError<Object?>(:final error, :final stackTrace)) {
+    sub.impl._notifyError(error, stackTrace);
+  } else {
+    sub.impl._notifyData(null, result.valueOrRawException);
   }
 }
