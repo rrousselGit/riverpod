@@ -1748,6 +1748,41 @@ void main() {
           expect(container.read(another), 1);
         },
       );
+
+      test('supports a dependency listener reading the provider while it is '
+          'flushing its dependencies', () {
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/4448
+        // In 2.x, the nested read rebuilt the provider while its dependencies
+        // were being iterated, throwing a ConcurrentModificationError.
+        final container = ProviderContainer.test();
+        var value = 0;
+        final root = Provider((ref) => value);
+        final a = Provider((ref) => ref.watch(root));
+        final b = Provider((ref) => ref.watch(root));
+        var buildCount = 0;
+        final provider = Provider<int>((ref) {
+          buildCount++;
+          return ref.watch(a) + ref.watch(b);
+        });
+
+        container.listen(provider, (_, _) {});
+        final nestedReads = <int>[];
+        container.listen(
+          a,
+          (_, _) => nestedReads.add(container.read(provider)),
+        );
+        container.listen(
+          b,
+          (_, _) => nestedReads.add(container.read(provider)),
+        );
+
+        value = 1;
+        container.invalidate(root);
+
+        expect(container.read(provider), 2);
+        expect(nestedReads, [2, 2]);
+        expect(buildCount, 2);
+      });
     });
 
     group('caching', () {
