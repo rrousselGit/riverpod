@@ -45,6 +45,11 @@ int single(Ref ref) => 0;
 
 @Riverpod(dependencies: [p.functional])
 int family(Ref ref, int id) => 0;
+
+const scoped = Riverpod(dependencies: [root]);
+
+@scoped
+int alias(Ref ref) => 0;
 ''',
       });
     });
@@ -60,6 +65,14 @@ int family(Ref ref, int id) => 0;
       expect(
         generated,
         contains('dependencies:<ProviderOrFamily>[p.functionalProvider]'),
+      );
+      // A constant annotation has no list to read prefixes from.
+      expect(
+        generated,
+        contains(
+          "name:r'aliasProvider',isAutoDispose:true,"
+          'dependencies:<ProviderOrFamily>[rootProvider]',
+        ),
       );
     });
 

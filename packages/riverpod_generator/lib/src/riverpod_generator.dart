@@ -284,11 +284,20 @@ extension ProviderNames on GeneratorProviderDeclaration {
     if (dependencies == null && !providerElement.isScoped) return 'null';
 
     final uniqueDependencies = <GeneratorProviderDeclarationElement>{};
-    final names = [
-      for (final dependency in dependencies ?? <ProviderDependency>[])
-        if (uniqueDependencies.add(dependency.provider))
-          dependency.prefixed(dependency.provider.providerName(options)),
-    ];
+    final names = dependencies != null
+        ? [
+            for (final dependency in dependencies)
+              if (uniqueDependencies.add(dependency.provider))
+                dependency.prefixed(dependency.provider.providerName(options)),
+          ]
+        // The annotation is a constant, such as `@scoped`: There is no list
+        // to read the import prefixes from.
+        : [
+            for (final dependency in {
+              ...?providerElement.annotation.dependencies,
+            })
+              dependency.providerName(options),
+          ];
 
     return '<#{{riverpod|ProviderOrFamily}}>[${names.join(',')}]';
   }
