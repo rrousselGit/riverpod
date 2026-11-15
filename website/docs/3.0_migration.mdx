@@ -369,6 +369,14 @@ final provider = NotifierProvider.family<CounterNotifier, int, String>(CounterNo
 }
 ```
 
+:::info
+This applies to Notifiers written by hand.
+With code generation, a `@riverpod` class keeps its parameters on `build`
+(for example `int build(String arg)`), and the generated base class also
+exposes them as getters, so other methods can read `arg` too.
+See [Family](concepts2/family) for an example.
+:::
+
 ## Provider failures are now rethrown as ProviderExceptions
 
 In Riverpod 3.0, all provider failures are [rethrown as `ProviderException`s](./whats_new.mdx#when-reading-a-provider-results-in-an-exception-the-error-is-now-wrapped-in-a-providerexception). 
