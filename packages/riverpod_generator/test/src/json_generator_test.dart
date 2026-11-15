@@ -77,8 +77,12 @@ class Unprefixed extends _$Unprefixed {
       return match!.group(1)!;
     }
 
-    test('as the state', () {
+    test('as the state, leaving unprefixed types as is', () {
       expect(decodeOf('Prefixed'), 'p.Model.fromJson(easMap<String,Object?>)');
+      expect(
+        decodeOf('Unprefixed'),
+        '(easList).map((e)=>Model.fromJson(easMap<String,Object?>)).toList()',
+      );
     });
 
     test('nested in collections, and nullable', () {
@@ -95,13 +99,6 @@ class Unprefixed extends _$Unprefixed {
       expect(
         decodeOf('Generic'),
         'p.Box<p.Model>.fromJson(easMap<String,Object?>)',
-      );
-    });
-
-    test('but leaves unprefixed types as is', () {
-      expect(
-        decodeOf('Unprefixed'),
-        '(easList).map((e)=>Model.fromJson(easMap<String,Object?>)).toList()',
       );
     });
   });
