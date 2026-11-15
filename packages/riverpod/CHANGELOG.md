@@ -2,6 +2,10 @@
 
 - Fix the deprecation messages of `exists` pointing to `provider.exist`, which does not exist, instead of `provider.exists`. (thanks to @BiAksoy)
 - Fix the devtool failing to refresh when several tools inspect an application at the same time.
+- Fix an `autoDispose` provider being disposed while still listened to or kept
+  alive, when a `KeepAliveLink` obtained before the provider was invalidated
+  and disposed is closed after the provider was created again. Its listeners
+  then threw `called ProviderSubscription.read on a subscription that was closed` (#4806).
 - Fix `NoSuchMethodError: The getter '_listenedElement' was called on null`
   when reading/listening to a nullable provider where a `FutureOr<T>?` is expected,
   such as with `Future<T> fn() async => ref.read(provider) ?? other`.
