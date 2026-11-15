@@ -2125,6 +2125,26 @@ void main() {
         await container.pump();
         expect(container.exists(provider), false);
       });
+
+      test('disposes an element awaiting disposal when a child container '
+          'overrides its family', () async {
+        final root = ProviderContainer.test();
+        var disposeCount = 0;
+        final family = Provider.autoDispose.family<int, int>((ref, id) {
+          ref.onDispose(() => disposeCount++);
+          return id;
+        });
+
+        root.read(family(0));
+        // Unmounts the element of the root, without disposing it.
+        ProviderContainer.test(
+          parent: root,
+          overrides: [family.overrideWith((ref, id) => id)],
+        );
+        await root.pump();
+
+        expect(disposeCount, 1);
+      });
     });
 
     group('exists', () {

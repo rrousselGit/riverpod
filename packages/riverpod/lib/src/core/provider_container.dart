@@ -1275,15 +1275,14 @@ final class ProviderContainer implements MutationTarget {
   void _disposeElement(ProviderElement element) {
     final provider = element.origin;
     final pointer = _pointerManager.readPointer(provider);
-    // The element is already disposed, so we don't need to do anything.
     // Its provider may have a new element since, which must not be disposed:
     // an element can be scheduled twice, or by the KeepAliveLink of a
     // previous build.
     if (pointer?.element != element) {
-      assert(
-        element._disposed,
-        'Tried to dispose an element that is not mounted in its container',
-      );
+      // The element is otherwise already disposed, unless its pointer was
+      // removed without disposing it, such as by a child container overriding
+      // its family.
+      if (!element._disposed) element.dispose();
       return;
     }
 
