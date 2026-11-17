@@ -6,6 +6,9 @@
   alive, when a `KeepAliveLink` obtained before the provider was invalidated
   and disposed is closed after the provider was created again. Its listeners
   then threw `called ProviderSubscription.read on a subscription that was closed` (#4806).
+- Fixed `persist` throwing `UnmountedRefException` when a provider is disposed
+  before the storage read completes. The decoded value is now ignored if the
+  provider is no longer mounted. Fixes #4895 (thanks to @itsatifsiddiqui)
 
 ## 3.5.0 - 2026-11-06
 
