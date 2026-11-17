@@ -55,7 +55,7 @@ jobs:
           channel: master
           cache: true
       # The token lets scripts/issues.sh read the state of the linked issues.
-      - run: scripts/check.sh format analyze legacy issues
+      - run: scripts/check.sh format analyze legacy issues links
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
