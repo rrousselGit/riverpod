@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "meta_generator": "node meta_generator.js",
+    "build:demos": "flutter build web --wasm --no-web-resources-cdn -t demos/main.dart -o static/flutter",
     "docusaurus": "docusaurus",
     "start": "npm run meta_generator && docusaurus start",
     "build": "npm run meta_generator && docusaurus build",
