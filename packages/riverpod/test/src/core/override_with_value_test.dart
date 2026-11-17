@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/framework.dart' show debugCanModifyProviders;
 import 'package:test/test.dart';
 
 import '../matrix.dart';
@@ -559,6 +560,9 @@ void main() {
     });
 
     test('the override can be updated while another provider is building', () {
+      // As set by Flutter, to reject changes made while widgets are building.
+      debugCanModifyProviders = () => fail('Should not be called');
+      addTearDown(() => debugCanModifyProviders = null);
       final container = ProviderContainer.test(
         overrides: [provider.$overrideWithValue(42)],
       );

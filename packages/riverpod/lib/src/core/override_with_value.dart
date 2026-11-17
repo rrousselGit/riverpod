@@ -13,19 +13,15 @@ extension<StateT, ValueT> on ProviderElement<StateT, ValueT> {
         ProviderElement._debugCurrentlyBuildingElement;
     // Asserts would otherwise prevent a provider rebuild from updating
     // other providers
-    if (kDebugMode) {
-      _debugSkipNotifyListenersAsserts = true;
-      ProviderElement._debugCurrentlyBuildingElement = null;
-    }
+    _debugSkipNotifyListenersAsserts = true;
+    ProviderElement._debugCurrentlyBuildingElement = null;
 
     try {
       setState();
     } finally {
-      if (kDebugMode) {
-        _debugSkipNotifyListenersAsserts = false;
-        ProviderElement._debugCurrentlyBuildingElement =
-            debugPreviouslyBuildingElement;
-      }
+      _debugSkipNotifyListenersAsserts = false;
+      ProviderElement._debugCurrentlyBuildingElement =
+          debugPreviouslyBuildingElement;
     }
   }
 }
@@ -181,7 +177,6 @@ class _AsyncValueProviderElement<ValueT>
 /// `provider.notifier` and the methods of the notifier are still usable.
 ///
 /// This is an implementation detail of `overrideWithValue`.
-@publicInCodegen
 @internal
 final class $NotifierValueProvider<NotifierT extends $Notifier<StateT>, StateT>
     extends _ClassProviderView<NotifierT, StateT, StateT, StateT>
