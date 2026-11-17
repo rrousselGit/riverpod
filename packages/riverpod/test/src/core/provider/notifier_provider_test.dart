@@ -647,6 +647,42 @@ void main() {
       verifyOnly(listener, listener(42, 21));
     });
 
+    test('a failing update does not disable the asserts '
+        'against modifying providers during a build', () {
+      var shouldThrow = true;
+      final provider = NotifierProvider<DeferredNotifier<int>, int>(
+        () => DeferredNotifier(
+          (ref, self) => 0,
+          updateShouldNotify: (previous, next) {
+            if (shouldThrow) throw StateError('foo');
+            return true;
+          },
+        ),
+      );
+      final errors = <Object>[];
+      final container = runZonedGuarded(
+        () => ProviderContainer.test(
+          overrides: [provider.$overrideWithValue(42)],
+        ),
+        (err, stack) => errors.add(err),
+      )!;
+      container.read(provider);
+
+      container.updateOverrides([provider.$overrideWithValue(21)]);
+      expect(errors, [isStateError]);
+      shouldThrow = false;
+
+      final other = Provider((ref) {
+        ref.read(provider.notifier).state = 0;
+        return 0;
+      });
+
+      expect(
+        () => container.read(other),
+        throwsProviderException(isA<AssertionError>()),
+      );
+    });
+
     test('updating the override with the same value '
         'keeps the changes made by the notifier', () {
       final container = ProviderContainer.test(

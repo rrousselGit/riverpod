@@ -642,13 +642,15 @@ abstract class $ClassProviderElement<
       ProviderElement._debugCurrentlyBuildingElement = null;
     }
 
-    // The equivalent of `notifier.state = value`, for any kind of notifier.
-    handleCreate(ref!, () => newProvider._value);
-
-    if (kDebugMode) {
-      _debugSkipNotifyListenersAsserts = false;
-      ProviderElement._debugCurrentlyBuildingElement =
-          debugPreviouslyBuildingElement;
+    try {
+      // The equivalent of `notifier.state = value`, for any kind of notifier.
+      handleCreate(ref!, () => newProvider._value);
+    } finally {
+      if (kDebugMode) {
+        _debugSkipNotifyListenersAsserts = false;
+        ProviderElement._debugCurrentlyBuildingElement =
+            debugPreviouslyBuildingElement;
+      }
     }
   }
 
