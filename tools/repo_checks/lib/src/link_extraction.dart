@@ -26,7 +26,10 @@ final _inlineCode = RegExp(
   r'(?<!`)(`+)(?!`)(?:(?!\n[ \t]*\n).)+?(?<!`)\1(?!`)',
   dotAll: true,
 );
-final _comment = RegExp(r'<!--.*?-->|\{/\*.*?\*/\}', dotAll: true);
+// Where an HTML or an MDX comment starts.
+final _commentStart = RegExp(r'<!--|\{/\*');
+// The `*` that starts the lines of a block comment.
+final _blockDecoration = RegExp(r'^[ \t]*\*(?!/)', multiLine: true);
 
 // `](destination`, where the destination may be within `<>`, and may have
 // one level of parentheses.
@@ -66,7 +69,7 @@ final _notLineBreak = RegExp('[^\n]');
 /// Code, whether fenced or in backticks, and comments have no links.
 @internal
 List<FoundLink> linksInMarkdown(String content) {
-  final text = _maskAll(_inlineCode, _maskAll(_comment, _maskFences(content)));
+  final text = _maskAll(_inlineCode, _maskBlocks(content));
   final links = <FoundLink>[];
   // Where a destination that is already a link starts, so that a URL is not
   // also found as text.
@@ -150,7 +153,7 @@ List<FoundLink> linksInDart(CompilationUnit unit) {
   for (Token? token = unit.beginToken; token != null; token = token.next) {
     // Each line of a `///` comment is its own token. So a fenced code block
     // spans several, up to the end of the comment at the latest.
-    var inFence = false;
+    var fences = _Fences();
     for (
       Token? comment = token.precedingComments;
       comment != null;
@@ -158,11 +161,12 @@ List<FoundLink> linksInDart(CompilationUnit unit) {
     ) {
       var text = comment.lexeme;
       if (text.startsWith('///')) {
-        final isFence = _fence.hasMatch(text.substring(3));
-        if (isFence) inFence = !inFence;
-        if (isFence || inFence) continue;
+        if (fences.isCode(text.substring(3))) continue;
       } else {
-        text = _maskFences(text);
+        // A comment of another kind ends the code of the doc comment. In a
+        // block comment, the fences follow the `*` of their line.
+        fences = _Fences();
+        text = _maskBlocks(_maskAll(_blockDecoration, text), comments: false);
       }
       for (final (:offset, :target) in _urlsIn(_maskAll(_inlineCode, text))) {
         links.add((
@@ -195,10 +199,23 @@ Iterable<({int offset, String target})> _urlsIn(String text) sync* {
   }
 }
 
-final _heading = RegExp(r'^ {0,3}#{1,6}[ \t]+(.*?)[ \t]*$', multiLine: true);
+// `# Heading`, or a line that `===` or `---` underlines.
+final _heading = RegExp(
+  r'^ {0,3}#{1,6}[ \t]+(.*?)[ \t]*$|'
+  r'^ {0,3}(\S.*?)[ \t]*\n {0,3}(?:=+|-+)[ \t]*$',
+  multiLine: true,
+);
+// The metadata that a file starts with, between two `---` lines.
+final _frontMatter = RegExp(
+  r'^---[ \t]*\n.*?\n---[ \t]*(?=\n|$)',
+  dotAll: true,
+);
 final _closingHashes = RegExp(r'[ \t]+#+$');
 final _explicitId = RegExp(r'[ \t]*\{#([^}\s]+)\}$');
-final _htmlId = RegExp(r'''\b(?:id|name)\s*=\s*\{?\s*["']([^"']+)["']''');
+// Not the end of another attribute, such as `data-id`.
+final _htmlId = RegExp(
+  r'''(?<![\w:-])(?:id|name)\s*=\s*\{?\s*["']([^"']+)["']''',
+);
 final _codeSpan = RegExp(r'(`+)(.+?)\1');
 final _linkText = RegExp(
   r'!?\[((?:[^\[\]]|\[[^\[\]]*\])*)\](?:\([^)]*\)|\[[^\]]*\])',
@@ -217,17 +234,24 @@ final _notInSlug = RegExp(r'[^\p{L}\p{M}\p{N}\p{Pc}\- ]', unicode: true);
 ///
 /// - its headings, as GitHub and Docusaurus name them: in lowercase, without
 ///   punctuation and with `-` for spaces, then `-1`, `-2`... for the headings
-///   of the same name;
+///   of the same name. Those are the lines that start with `#`, and those
+///   that `===` or `---` underlines;
 /// - the id of the headings that set it, as in `## Heading {#id}`;
 /// - the `id` and `name` attributes of its HTML tags.
 @internal
 Set<String> anchorsOf(String content) {
-  final text = _maskAll(_comment, _maskFences(content));
+  final text = _maskBlocks(
+    content.replaceFirstMapped(
+      _frontMatter,
+      (match) => match[0]!.replaceAll(_notLineBreak, ' '),
+    ),
+  );
   final anchors = <String>{};
+  // How many headings have each name, as github-slugger counts them.
   final counts = <String, int>{};
 
   for (final match in _heading.allMatches(text)) {
-    var heading = match[1]!.replaceFirst(_closingHashes, '');
+    var heading = match[2] ?? match[1]!.replaceFirst(_closingHashes, '');
     final id = _explicitId.firstMatch(heading);
     if (id != null) {
       anchors.add(id[1]!);
@@ -252,8 +276,15 @@ Set<String> anchorsOf(String content) {
         .toLowerCase()
         .replaceAll(_notInSlug, '')
         .replaceAll(' ', '-');
-    final count = counts.update(slug, (count) => count + 1, ifAbsent: () => 0);
-    anchors.add(count == 0 ? slug : '$slug-$count');
+    // A numbered name is taken too: after `a`, `a` and `a-1`, the anchors
+    // are `a`, `a-1` and `a-1-1`.
+    var anchor = slug;
+    while (counts.containsKey(anchor)) {
+      final count = counts[slug] = counts[slug]! + 1;
+      anchor = '$slug-$count';
+    }
+    counts[anchor] = 0;
+    anchors.add(anchor);
   }
 
   for (final match in _htmlId.allMatches(text)) {
@@ -267,25 +298,68 @@ String _plain(String text) => text
     .replaceAll(_emphasis, '')
     .replaceAllMapped(_escape, (match) => match[1]!);
 
-/// Replaces the fenced code blocks of [content] with spaces, so that the
-/// offsets of the rest are unchanged.
-String _maskFences(String content) {
-  final lines = content.split('\n');
-  String? fence;
-  for (var i = 0; i < lines.length; i++) {
-    final match = _fence.firstMatch(lines[i]);
+/// Tells which lines are code, from the fences before them.
+class _Fences {
+  String? _opening;
+
+  /// Whether [line] is in a fenced code block, or is one of its fences. The
+  /// lines must be given in order.
+  bool isCode(String line) {
+    final match = _fence.firstMatch(line);
     final marker = match?[1];
-    final wasInFence = fence != null;
-    if (fence == null) {
-      fence = marker;
-    } else if (marker != null &&
-        marker[0] == fence[0] &&
-        marker.length >= fence.length &&
-        // Unlike an opening fence, a closing one has no info string.
-        lines[i].substring(match!.end).trim().isEmpty) {
-      fence = null;
+    final opening = _opening;
+    if (opening == null) {
+      _opening = marker;
+      return marker != null;
     }
-    if (wasInFence || fence != null) lines[i] = ' ' * lines[i].length;
+    // Unlike an opening fence, a closing one is as long as the opening one,
+    // of the same character, and has no info string.
+    if (marker != null &&
+        marker[0] == opening[0] &&
+        marker.length >= opening.length &&
+        line.substring(match!.end).trim().isEmpty) {
+      _opening = null;
+    }
+    return true;
+  }
+}
+
+/// Replaces the fenced code blocks of [content], and its HTML and MDX
+/// [comments], with spaces, so that the offsets of the rest are unchanged.
+///
+/// Code has no comments, and a comment has no code: `<!--` in a code block
+/// and a fence in a comment are text.
+String _maskBlocks(String content, {bool comments = true}) {
+  final lines = content.split('\n');
+  final fences = _Fences();
+  // What ends the comment that the line is in.
+  String? commentEnd;
+  for (var i = 0; i < lines.length; i++) {
+    final line = lines[i];
+    if (commentEnd == null && fences.isCode(line)) {
+      lines[i] = ' ' * line.length;
+      continue;
+    }
+    if (!comments) continue;
+
+    final buffer = StringBuffer();
+    var offset = 0;
+    while (offset < line.length) {
+      if (commentEnd == null) {
+        final start = _commentStart.firstMatch(line.substring(offset));
+        if (start == null) break;
+        buffer.write(line.substring(offset, offset + start.start));
+        offset += start.start;
+        commentEnd = start[0] == '<!--' ? '-->' : '*/}';
+      }
+      final end = line.indexOf(commentEnd, offset);
+      final next = end < 0 ? line.length : end + commentEnd.length;
+      buffer.write(' ' * (next - offset));
+      offset = next;
+      if (end >= 0) commentEnd = null;
+    }
+    buffer.write(line.substring(offset));
+    lines[i] = buffer.toString();
   }
   return lines.join('\n');
 }

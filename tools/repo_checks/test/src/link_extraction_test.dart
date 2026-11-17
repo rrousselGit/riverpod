@@ -141,6 +141,24 @@ https://d.dev -->
       );
     });
 
+    test('has no code in comments, nor comments in code', () {
+      expect(
+        _markdown('''
+<!--
+~~~
+-->
+[a](./a.md) <!-- b --> [c](./c.md) {/* d */} [e](./e.md) <!-- f
+```
+[g](./g.md) --> [h](./h.md)
+```
+<!-- [i](./i.md)
+```
+[j](./j.md)
+'''),
+        ['./a.md', './c.md', './e.md', './h.md', './j.md'],
+      );
+    });
+
     test('does not let a lone backtick hide the next paragraphs', () {
       expect(
         _markdown('''
@@ -227,6 +245,36 @@ void fn2() {}
       );
     });
 
+    test('ends the code of a comment like Markdown does', () {
+      expect(
+        _dart('''
+/// ~~~~
+/// ~~~
+/// https://a.dev
+/// ```
+/// ~~~~ info
+/// https://b.dev
+/// ~~~~~
+/// https://c.dev
+void fn() {}
+
+/**
+ * ~~~
+ * https://d.dev
+ * ~~~
+ * https://e.dev <!-- https://f.dev -->
+ */
+void fn2() {}
+
+/// ```
+/// https://g.dev
+// https://h.dev
+void fn3() {}
+'''),
+        ['https://c.dev', 'https://e.dev', 'https://f.dev', 'https://h.dev'],
+      );
+    });
+
     test('gives the offset of the URLs', () {
       const content = '''
 /// A
@@ -264,6 +312,31 @@ void fn() {}
       expect(anchorsOf('# A\n## A\n### a\n# B'), {'a', 'a-1', 'a-2', 'b'});
     });
 
+    test('numbers a heading whose name is a numbered one', () {
+      expect(anchorsOf('# A\n# A\n# A-1\n# A'), {'a', 'a-1', 'a-1-1', 'a-2'});
+    });
+
+    test('names the underlined headings', () {
+      expect(
+        anchorsOf('''
+---
+title: Not a heading
+---
+Title
+=====
+Some text.
+
+  A `second` one  
+  ---
+# Title
+
+| a |
+|---|
+'''),
+        {'title', 'a-second-one', 'title-1'},
+      );
+    });
+
     test('uses the id that a heading sets', () {
       expect(anchorsOf('## A heading {#custom-id}\n## Other'), {
         'custom-id',
@@ -273,7 +346,10 @@ void fn() {}
 
     test('finds the ids and the names of tags', () {
       expect(
-        anchorsOf('<a name="a"></a> <h2 id=\'b\'>B</h2> <div id={"c"} />'),
+        anchorsOf(
+          '<a name="a"></a> <h2 id=\'b\'>B</h2> <div id={"c"} /> '
+          '<p data-id="d" aria-name="e" x:id="f" />',
+        ),
         {'a', 'b', 'c'},
       );
     });
@@ -285,11 +361,15 @@ void fn() {}
 # A comment
 ```
 <!-- # Hidden -->
+<!--
+~~~
+-->
+# After a comment
 #NotAHeading
     # Code
 # Shown
 '''),
-        {'shown'},
+        {'after-a-comment', 'shown'},
       );
     });
   });

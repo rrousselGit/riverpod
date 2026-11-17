@@ -14,6 +14,14 @@ const _repository = (slug: 'rrousselGit/riverpod', branch: 'master');
 const _concurrency = 8;
 const _timeout = Duration(seconds: 20);
 
+/// The error code of a lookup that found no host of that name
+/// (`EAI_NONAME`), unlike those that could not tell.
+final _unknownHostCode = Platform.isWindows
+    ? 11001
+    : Platform.isMacOS
+    ? 8
+    : -2;
+
 /// Checks that the links of the Markdown and MDX files, and of the comments
 /// of the Dart files, are valid (see [checkLinks]), then that the links to
 /// other websites exist, by requesting them (see [checkExternalLinks]).
@@ -138,8 +146,8 @@ Future<Map<Uri, ({LinkState state, String detail})>> _request(
             final url = queue.removeLast();
             var result = await _state(client, url);
             // Once more, in case the failure was temporary.
-            if (result.state == LinkState.unreachable ||
-                result.state == LinkState.unverified) {
+            if (result.state != LinkState.found &&
+                result.state != LinkState.missing) {
               result = await _state(client, url);
             }
             results[url] = result;
@@ -167,9 +175,11 @@ Future<({LinkState state, String detail})> _state(
       detail: 'the server answered $statusCode',
     );
   } on SocketException catch (e) {
-    if (e.message.contains('Failed host lookup')) {
+    if (e.osError?.errorCode == _unknownHostCode) {
       return (state: LinkState.unknownHost, detail: 'no such host');
     }
+    // Among which the lookups that failed for another reason, such as a
+    // resolver that did not answer.
     return (state: LinkState.unreachable, detail: 'could not connect');
   } on TimeoutException {
     return (state: LinkState.unreachable, detail: 'no answer in time');
@@ -181,13 +191,19 @@ Future<({LinkState state, String detail})> _state(
   }
 }
 
-Future<int> _statusCode(HttpClient client, String method, Uri url) {
-  return () async {
-    final request = await client.openUrl(method, url);
-    request.headers.set(HttpHeaders.acceptHeader, '*/*');
-    final response = await request.close();
-    // The body is not needed.
-    await response.listen((_) {}).cancel();
-    return response.statusCode;
-  }().timeout(_timeout);
+Future<int> _statusCode(HttpClient client, String method, Uri url) async {
+  // Connecting has its own timeout.
+  final request = await client.openUrl(method, url);
+  request.headers.set(HttpHeaders.acceptHeader, '*/*');
+  final HttpClientResponse response;
+  try {
+    response = await request.close().timeout(_timeout);
+  } on TimeoutException {
+    // Otherwise, the request goes on, and holds its connection.
+    request.abort();
+    rethrow;
+  }
+  // The body is not needed.
+  await response.listen((_) {}).cancel();
+  return response.statusCode;
 }
