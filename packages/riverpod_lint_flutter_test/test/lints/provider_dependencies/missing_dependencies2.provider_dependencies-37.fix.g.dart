@@ -851,10 +851,7 @@ final class ClassWatchGeneratedRootButMissingDependenciesProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<int>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 
@@ -953,10 +950,7 @@ final class Regression2417Provider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<int>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 
@@ -1206,10 +1200,7 @@ final class AliasClassProvider extends $NotifierProvider<AliasClass, int> {
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<int>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 
@@ -1262,10 +1253,7 @@ final class RiverpodDependenciesProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<int>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 

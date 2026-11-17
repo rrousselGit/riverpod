@@ -317,10 +317,7 @@ final class ValueClassProvider extends r.$NotifierProvider<ValueClass, int> {
 
   /// {@macro riverpod.override_with_value}
   r.Override overrideWithValue(int value) {
-    return r.$ProviderOverride(
-      origin: this,
-      providerOverride: r.$SyncValueProvider<int>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 
@@ -463,10 +460,7 @@ final class FamilyClassProvider extends r.$NotifierProvider<FamilyClass, int> {
 
   /// {@macro riverpod.override_with_value}
   r.Override overrideWithValue(int value) {
-    return r.$ProviderOverride(
-      origin: this,
-      providerOverride: r.$SyncValueProvider<int>(value),
-    );
+    return $overrideWithValue(value);
   }
 
   @override
@@ -557,10 +551,7 @@ final class GenericClassProvider<ItemT>
 
   /// {@macro riverpod.override_with_value}
   r.Override overrideWithValue(List<ItemT> value) {
-    return r.$ProviderOverride(
-      origin: this,
-      providerOverride: r.$SyncValueProvider<List<ItemT>>(value),
-    );
+    return $overrideWithValue(value);
   }
 
   @override
@@ -671,10 +662,7 @@ final class ScopedProvider extends r.$NotifierProvider<Scoped, int> {
 
   /// {@macro riverpod.override_with_value}
   r.Override overrideWithValue(int value) {
-    return r.$ProviderOverride(
-      origin: this,
-      providerOverride: r.$SyncValueProvider<int>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 

@@ -6,6 +6,9 @@
   alive, when a `KeepAliveLink` obtained before the provider was invalidated
   and disposed is closed after the provider was created again. Its listeners
   then threw `called ProviderSubscription.read on a subscription that was closed` (#4806).
+- Fixed reading `provider.notifier` throwing a type error when a generated
+  `Notifier` is overridden with `overrideWithValue`. This requires regenerating
+  the code with the latest `riverpod_generator`.
 
 ## 3.5.0 - 2026-11-06
 

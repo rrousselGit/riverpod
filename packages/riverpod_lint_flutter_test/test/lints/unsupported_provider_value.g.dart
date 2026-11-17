@@ -156,10 +156,7 @@ final class StateNotifierClassProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(MyStateNotifier value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<MyStateNotifier>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 
@@ -293,10 +290,7 @@ final class SyncSelfNotifierProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(SyncSelfNotifier value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<SyncSelfNotifier>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 
@@ -484,10 +478,7 @@ final class ChangeNotifierClassProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(MyChangeNotifier value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<MyChangeNotifier>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 
@@ -626,10 +617,7 @@ final class NotifierClassProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(MyNotifier value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<MyNotifier>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 
@@ -720,10 +708,7 @@ final class AsyncNotifierClassProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(MyAsyncNotifier value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<MyAsyncNotifier>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 

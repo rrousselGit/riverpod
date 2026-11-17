@@ -75,6 +75,16 @@ void main() {
           family(42).overrideWithValue(21).toString(),
           'myName(42).overrideWithValue(21)',
         );
+
+        // Notifiers overridden by value, as done by riverpod_generator
+        final notifierProvider = NotifierProvider<Notifier<int>, int>(
+          () => throw UnimplementedError(),
+          name: 'myName',
+        );
+        expect(
+          notifierProvider.$overrideWithValue(21).toString(),
+          'myName.overrideWithValue(21)',
+        );
       });
 
       test('exposes origin in tests', () {
