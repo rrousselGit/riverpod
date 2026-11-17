@@ -1,3 +1,8 @@
+## Unreleased minor
+
+- `dependencies: [prefix.provider]` is now parsed when a function is imported with a prefix, instead of reporting a `providerDependencyListParseError`.
+- Added `ProviderDependency.importPrefix`.
+
 ## 1.0.0 - 2026-11-06
 
 - Mark the `ClassMembers` extension as `@internal`.

@@ -143,7 +143,9 @@ class _RiverpodGeneratorVisitor {
     for (final dependency in dependencies) {
       if (!uniqueDependencies.add(dependency.provider)) continue;
 
-      allTransitiveDependencies.add(dependency.provider.providerName(options));
+      allTransitiveDependencies.add(
+        dependency.prefixed(dependency.provider.providerName(options)),
+      );
 
       final uniqueTransitiveDependencies =
           computeAllTransitiveDependencies(dependency.provider)
@@ -158,7 +160,9 @@ class _RiverpodGeneratorVisitor {
         if (!uniqueDependencies.add(transitiveDependency)) continue;
 
         allTransitiveDependencies.add(
-          '${dependency.provider.providerTypeName}.\$allTransitiveDependencies$index',
+          dependency.prefixed(
+            '${dependency.provider.providerTypeName}.\$allTransitiveDependencies$index',
+          ),
         );
       }
     }
@@ -180,24 +184,19 @@ class _RiverpodGeneratorVisitor {
   }
 }
 
+extension on ProviderDependency {
+  /// [code], a reference to something that the library of [provider] declares,
+  /// using the import prefix that the dependency was written with.
+  String prefixed(String code) {
+    final importPrefix = this.importPrefix;
+    return importPrefix == null ? code : '$importPrefix.$code';
+  }
+}
+
 extension ProviderElementNames on GeneratorProviderDeclarationElement {
   String get providerTypeName => '${name.titled}Provider';
 
   String get familyTypeName => '${name.titled}Family';
-
-  String dependencies(BuildYamlOptions options) {
-    var dependencies = annotation.dependencies?.toSet();
-    if (dependencies == null && !isScoped) return 'null';
-    dependencies ??= {};
-
-    final buffer = StringBuffer('<#{{riverpod|ProviderOrFamily}}>');
-    buffer.write('[');
-
-    buffer.writeAll(dependencies.map((e) => e.providerName(options)), ',');
-
-    buffer.write(']');
-    return buffer.toString();
-  }
 
   String allTransitiveDependencies(List<String>? deps) {
     var allTransitiveDependencies = deps;
@@ -280,8 +279,28 @@ extension ProviderNames on GeneratorProviderDeclaration {
     }
   }
 
-  String dependencies(BuildYamlOptions options) =>
-      providerElement.dependencies(options);
+  String dependencies(BuildYamlOptions options) {
+    final dependencies = annotation.dependencyList?.values;
+    if (dependencies == null && !providerElement.isScoped) return 'null';
+
+    final uniqueDependencies = <GeneratorProviderDeclarationElement>{};
+    final names = dependencies != null
+        ? [
+            for (final dependency in dependencies)
+              if (uniqueDependencies.add(dependency.provider))
+                dependency.prefixed(dependency.provider.providerName(options)),
+          ]
+        // The annotation is a constant, such as `@scoped`: There is no list
+        // to read the import prefixes from.
+        : [
+            for (final dependency in {
+              ...?providerElement.annotation.dependencies,
+            })
+              dependency.providerName(options),
+          ];
+
+    return '<#{{riverpod|ProviderOrFamily}}>[${names.join(',')}]';
+  }
 
   String allTransitiveDependencies(List<String>? allTransitiveDependencies) {
     return providerElement.allTransitiveDependencies(allTransitiveDependencies);

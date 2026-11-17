@@ -19,6 +19,8 @@ extension on CollectionElement {
 
       final element = switch (that) {
         SimpleIdentifier() => that.element,
+        // A function imported with a prefix: `prefix.provider`
+        PrefixedIdentifier() => that.element,
         TypeLiteral() => that.type.element,
         _ => null,
       };
@@ -95,6 +97,13 @@ final class ProviderDependency {
 
   final CollectionElement node;
   final GeneratorProviderDeclarationElement provider;
+
+  /// The import prefix used by [node] to refer to [provider], if any.
+  String? get importPrefix => switch (node) {
+    PrefixedIdentifier(:final prefix) => prefix.name,
+    TypeLiteral(:final type) => type.importPrefix?.name.lexeme,
+    _ => null,
+  };
 }
 
 extension on Expression {
