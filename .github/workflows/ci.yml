@@ -42,7 +42,7 @@ jobs:
       - run: scripts/check.sh graph generate snippets
 
   analyze:
-    name: Format, analyze & links
+    name: Format, analyze
     runs-on: ubuntu-latest
     # scripts/issues.sh only reads the state of issues.
     permissions:
