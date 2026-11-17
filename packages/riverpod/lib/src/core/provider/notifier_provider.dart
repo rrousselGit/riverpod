@@ -532,9 +532,7 @@ final class _ClassProviderView<
   $ClassProviderElement<NotifierT, StateT, ValueT, CreatedT> $createElement(
     $ProviderPointer pointer,
   ) {
-    return _inner.$createElement(pointer)
-      ..provider = this
-      .._runNotifierBuildOverride = _runNotifierBuildOverride;
+    return _inner.$createElement(pointer)..provider = this;
   }
 
   @override
@@ -572,7 +570,6 @@ abstract class $ClassProviderElement<
 
   @override
   $ClassProvider<NotifierT, StateT, ValueT, CreatedT> provider;
-  RunNotifierBuild<NotifierT, CreatedT>? _runNotifierBuildOverride;
 
   final classListenable = $Observable<NotifierT>();
 
@@ -596,13 +593,15 @@ abstract class $ClassProviderElement<
     switch (result) {
       case $ResultData():
         try {
-          switch (_runNotifierBuildOverride) {
-            case final override?:
+          switch (provider) {
+            case _ClassProviderView<NotifierT, StateT, ValueT, CreatedT>(
+              _runNotifierBuildOverride: final override?,
+            ):
               whenComplete = handleCreate(
                 ref,
                 () => override(ref, result.value),
               );
-            case null:
+            default:
               whenComplete = result.value.runBuild();
           }
         } catch (err, stack) {
@@ -626,13 +625,29 @@ abstract class $ClassProviderElement<
     }
 
     provider = newProvider;
-    _runNotifierBuildOverride = newProvider._runNotifierBuildOverride;
-    if (newProvider._value == previousProvider._value) return;
+    if (newProvider._value == previousProvider._value ||
+        // The notifier failed to be created. There is no state to update.
+        classListenable.result?.value == null) {
+      return;
+    }
 
-    // The value is treated as a dependency of the notifier: rebuilding,
-    // and synchronously to match `Provider.overrideWithValue`.
-    invalidateSelf(asReload: true, manual: false);
-    flush();
+    final debugPreviouslyBuildingElement =
+        ProviderElement._debugCurrentlyBuildingElement;
+    // Asserts would otherwise prevent a provider rebuild from updating
+    // other providers
+    if (kDebugMode) {
+      _debugSkipNotifyListenersAsserts = true;
+      ProviderElement._debugCurrentlyBuildingElement = null;
+    }
+
+    // The equivalent of `notifier.state = value`, for any kind of notifier.
+    handleCreate(ref!, () => newProvider._value);
+
+    if (kDebugMode) {
+      _debugSkipNotifyListenersAsserts = false;
+      ProviderElement._debugCurrentlyBuildingElement =
+          debugPreviouslyBuildingElement;
+    }
   }
 
   WhenComplete handleCreate(Ref ref, CreatedT Function() created);

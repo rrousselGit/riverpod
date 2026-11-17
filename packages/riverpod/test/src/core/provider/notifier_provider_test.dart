@@ -609,27 +609,42 @@ void main() {
     });
 
     test('updating the override with a different value '
-        'synchronously updates the state and keeps the notifier', () {
+        'sets the state without rebuilding the notifier', () {
       final container = ProviderContainer.test(
         overrides: [provider.$overrideWithValue(42)],
       );
       final listener = Listener<int>();
       container.listen(provider, listener.call);
       final notifier = container.read(provider.notifier);
-      notifier.ref.onManualInvalidation(
-        () => fail('Not a manual invalidation'),
-      );
+      var disposed = false;
+      notifier.ref.onDispose(() => disposed = true);
 
       container.updateOverrides([provider.$overrideWithValue(21)]);
 
       verifyOnly(listener, listener(42, 21));
       expect(container.read(provider.notifier), same(notifier));
-      expect(notifier.ref.isReload, true);
+      expect(disposed, false);
 
       // Later rebuilds use the new value too.
       notifier.state = 0;
       container.invalidate(provider);
       expect(container.read(provider), 21);
+    });
+
+    test('the override can be updated while another provider is building', () {
+      final container = ProviderContainer.test(
+        overrides: [provider.$overrideWithValue(42)],
+      );
+      final listener = Listener<int>();
+      container.listen(provider, listener.call);
+      final other = Provider((ref) {
+        container.updateOverrides([provider.$overrideWithValue(21)]);
+        return 0;
+      });
+
+      container.read(other);
+
+      verifyOnly(listener, listener(42, 21));
     });
 
     test('updating the override with the same value '
