@@ -532,7 +532,9 @@ final class _ClassProviderView<
   $ClassProviderElement<NotifierT, StateT, ValueT, CreatedT> $createElement(
     $ProviderPointer pointer,
   ) {
-    return _inner.$createElement(pointer)..provider = this;
+    return _inner.$createElement(pointer)
+      ..provider = this
+      .._runNotifierBuildOverride = _runNotifierBuildOverride;
   }
 
   @override
@@ -570,6 +572,7 @@ abstract class $ClassProviderElement<
 
   @override
   $ClassProvider<NotifierT, StateT, ValueT, CreatedT> provider;
+  RunNotifierBuild<NotifierT, CreatedT>? _runNotifierBuildOverride;
 
   final classListenable = $Observable<NotifierT>();
 
@@ -593,15 +596,13 @@ abstract class $ClassProviderElement<
     switch (result) {
       case $ResultData():
         try {
-          switch (provider) {
-            case _ClassProviderView<NotifierT, StateT, ValueT, CreatedT>(
-              _runNotifierBuildOverride: final override?,
-            ):
+          switch (_runNotifierBuildOverride) {
+            case final override?:
               whenComplete = handleCreate(
                 ref,
                 () => override(ref, result.value),
               );
-            default:
+            case null:
               whenComplete = result.value.runBuild();
           }
         } catch (err, stack) {
@@ -625,6 +626,7 @@ abstract class $ClassProviderElement<
     }
 
     provider = newProvider;
+    _runNotifierBuildOverride = newProvider._runNotifierBuildOverride;
     if (newProvider._value == previousProvider._value ||
         // The notifier failed to be created. There is no state to update.
         classListenable.result?.value == null) {
