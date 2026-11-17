@@ -322,6 +322,48 @@ void main() {
       });
     });
 
+    group('scoped family override does not leak into the parent', () {
+      test('per-argument override after the parent mounted the family', () {
+        final family = Provider.family<String, String>((ref, k) => 'real-$k');
+
+        final root = ProviderContainer();
+        addTearDown(root.dispose);
+        root.read(family('a'));
+
+        final scope = ProviderContainer(
+          parent: root,
+          overrides: [
+            family('a').overrideWithValue('override-a'),
+            family('b').overrideWithValue('override-b'),
+          ],
+        );
+        expect(scope.read(family('a')), 'override-a');
+
+        expect(root.read(family('a')), 'real-a');
+        expect(root.read(family('b')), 'real-b');
+
+        scope.dispose();
+        expect(root.read(family('b')), 'real-b');
+      });
+
+      test('whole-family override after the parent mounted the family', () {
+        final family = Provider.family<String, String>((ref, k) => 'real-$k');
+
+        final root = ProviderContainer();
+        addTearDown(root.dispose);
+        root.read(family('a'));
+
+        final scope = ProviderContainer(
+          parent: root,
+          overrides: [family.overrideWith((ref, k) => 'override-$k')],
+        );
+        scope.read(family('a'));
+
+        expect(root.read(family('a')), 'real-a');
+        expect(root.read(family('b')), 'real-b');
+      });
+    });
+
     group('upsertPointer', () {
       test('on scoped providers, has no impact on the ancestor container', () {
         final provider = Provider((_) => 0, dependencies: const []);

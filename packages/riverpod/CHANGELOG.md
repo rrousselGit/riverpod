@@ -1,5 +1,8 @@
 ## Unreleased patch
 
+- Fixed a scoped per-argument or whole-family override leaking into the parent
+  container when the parent had already mounted that family, so later reads on
+  the parent returned the scope's override (#5012).
 - Fix the deprecation messages of `exists` pointing to `provider.exist`, which does not exist, instead of `provider.exists`. (thanks to @BiAksoy)
 - Fix the devtool failing to refresh when several tools inspect an application at the same time.
 - Fix an `autoDispose` provider being disposed while still listened to or kept

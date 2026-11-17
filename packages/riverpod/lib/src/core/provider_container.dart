@@ -389,6 +389,20 @@ class ProviderPointerManager {
   final ProviderDirectory orphanPointers;
   final HashMap<Family, ProviderDirectory> familyPointers;
 
+  /// Forks [existing] before an override is written into it.
+  ///
+  /// Families without `dependencies` are inherited from the parent by
+  /// reference, so writing an override straight into their directory would leak
+  /// it into the parent. Forking keeps the write local to this container.
+  ProviderDirectory _writableFamilyPointer(
+    Family family,
+    ProviderDirectory existing,
+  ) {
+    final forked = ProviderDirectory.from(existing);
+    familyPointers[family] = forked;
+    return forked;
+  }
+
   ProviderSubscriptionImpl<bool> listenToExistence(
     ProviderBase<Object?> provider, {
     required Node source,
@@ -441,7 +455,10 @@ class ProviderPointerManager {
       familyOverride: null,
     );
 
-    familyPointer.addProviderOverride(override, targetContainer: container);
+    _writableFamilyPointer(
+      from,
+      familyPointer,
+    ).addProviderOverride(override, targetContainer: container);
   }
 
   void _initializeOverrides(List<Override> overrides) {
@@ -457,7 +474,7 @@ class ProviderPointerManager {
             /// A provider from that family was overridden first.
             /// We override the family but preserve the provider overrides too.
 
-            previousPointer
+            _writableFamilyPointer(overriddenFamily, previousPointer)
               ..familyOverride = override
               ..targetContainer = container
               // Remove inherited family values and keep only local ones
