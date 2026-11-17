@@ -7,6 +7,11 @@
   `try/catch` can handle it, instead of being reported as uncaught to the zone.
   Widgets that don't catch it now show Flutter's error widget instead of
   keeping their previous UI. (#4432) (thanks to @naghinezhad)
+- Fix an `autoDispose` provider being disposed while still listened to or kept
+  alive, when a `KeepAliveLink` obtained before the provider was invalidated
+  and disposed is closed after the provider was created again. `ref.watch`
+  then threw `called ProviderSubscription.read on a subscription that was closed`
+  on every rebuild of the widget (#4806).
 
 ## 3.5.0 - 2026-11-06
 
@@ -1438,7 +1443,7 @@ Fixed a bug that prevented the use of `ConsumerWidget` under normal circumstance
 - `ref.watch` on non ".autoDispose" providers can no longer read ".autoDispose"
   providers.
 
-  For more info, see http://riverpod.dev/docs/concepts/modifiers/auto_dispose#the-argument-type-autodisposeprovider-cant-be-assigned-to-the-parameter-type-alwaysaliveproviderbase
+  For more info, see https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Provider/autoDispose-constant.html
 
 - `ScopedProvider` now accepts `null` as a function:
 

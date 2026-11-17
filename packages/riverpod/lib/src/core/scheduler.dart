@@ -241,7 +241,7 @@ class ProviderScheduler {
       }
 
       if (element.weakDependents.isEmpty) {
-        element.container._disposeProvider(element.origin);
+        element.container._disposeElement(element);
       } else {
         // Don't delete the pointer if there are some "weak" listeners active.
         element.clearState();

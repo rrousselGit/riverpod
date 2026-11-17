@@ -134,6 +134,28 @@ lower an entry once its file has fewer unlinked comments. Locally, checking
 that the issues are open needs `GITHUB_TOKEN` or `gh auth login`, and is
 skipped otherwise.
 
+#### Links are valid
+
+`scripts/check.sh links` (part of CI) fails when a link of a Markdown or MDX
+file, or a URL in a comment of a Dart file, is broken:
+
+- A path must be a file of the repository or, in the docs of the website, one
+  of its pages or static files.
+- `<Link documentID="concepts2/providers" hash="heading" />` must name a page
+  of the website and one of its headings, and `<DartPad id="..." />` a gist.
+- A `#fragment` must be a heading of the Markdown file it links.
+- A reference link, `[text][label]`, must be defined.
+- A URL of `riverpod.dev`, or of a file of this repository on GitHub, is
+  checked against your working copy. So it can link what your change adds.
+- Any other URL is requested, and fails when its server answers 404 or 410, or
+  when its host does not exist. A URL that cannot be verified, as its server
+  is down or refuses scripts, is only listed. `scripts/links.sh --offline`
+  skips those requests.
+
+Code has no links, so write the URLs that an example makes up in backticks or
+in a code block. Generated files and the translations of the docs are exempt,
+as is what `baselines/links.yaml` ignores.
+
 #### Code snippets are analyzed
 
 `scripts/check.sh snippets` (part of CI) extracts every `dart` snippet of the

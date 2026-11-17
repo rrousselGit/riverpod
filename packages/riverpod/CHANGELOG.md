@@ -2,6 +2,10 @@
 
 - Fix the deprecation messages of `exists` pointing to `provider.exist`, which does not exist, instead of `provider.exists`. (thanks to @BiAksoy)
 - Fix the devtool failing to refresh when several tools inspect an application at the same time.
+- Fix an `autoDispose` provider being disposed while still listened to or kept
+  alive, when a `KeepAliveLink` obtained before the provider was invalidated
+  and disposed is closed after the provider was created again. Its listeners
+  then threw `called ProviderSubscription.read on a subscription that was closed` (#4806).
 
 ## 3.5.0 - 2026-11-06
 
@@ -1399,7 +1403,7 @@ Migrated to null-safety
   providers.
 
   For more info, see
-  http://riverpod.dev/docs/concepts/modifiers/auto_dispose#the-argument-type-autodisposeprovider-cant-be-assigned-to-the-parameter-type-alwaysaliveproviderbase
+  https://pub.dev/documentation/riverpod/latest/riverpod/Provider/autoDispose-constant.html
 
 - `ScopedProvider` now accepts `null` as a function:
 
