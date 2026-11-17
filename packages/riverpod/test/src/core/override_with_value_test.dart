@@ -578,6 +578,29 @@ void main() {
       verifyOnly(listener, listener(42, 21));
     });
 
+    test('updating the override respects Notifier.updateShouldNotify', () {
+      final provider = NotifierProvider<DeferredNotifier<int>, int>(
+        () => DeferredNotifier(
+          (ref, self) => 0,
+          updateShouldNotify: (previous, next) => next.isEven,
+        ),
+      );
+      final container = ProviderContainer.test(
+        overrides: [provider.$overrideWithValue(0)],
+      );
+      final listener = Listener<int>();
+      container.listen(provider, listener.call);
+
+      container.updateOverrides([provider.$overrideWithValue(1)]);
+
+      verifyZeroInteractions(listener);
+      expect(container.read(provider), 1);
+
+      container.updateOverrides([provider.$overrideWithValue(2)]);
+
+      verifyOnly(listener, listener(1, 2));
+    });
+
     test('a failing update does not disable the asserts '
         'against modifying providers during a build', () {
       var shouldThrow = true;
