@@ -1443,7 +1443,7 @@ Fixed a bug that prevented the use of `ConsumerWidget` under normal circumstance
 - `ref.watch` on non ".autoDispose" providers can no longer read ".autoDispose"
   providers.
 
-  For more info, see http://riverpod.dev/docs/concepts/modifiers/auto_dispose#the-argument-type-autodisposeprovider-cant-be-assigned-to-the-parameter-type-alwaysaliveproviderbase
+  For more info, see https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Provider/autoDispose-constant.html
 
 - `ScopedProvider` now accepts `null` as a function:
 

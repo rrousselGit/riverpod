@@ -9,7 +9,4 @@ ignored:
   - website/i18n/**
 
 # What the links that are not checked start with.
-ignored_links:
-  # A page of the website that no longer exists, which the changelogs of
-  # past versions link.
-  - http://riverpod.dev/docs/concepts/modifiers/auto_dispose#
+ignored_links: []

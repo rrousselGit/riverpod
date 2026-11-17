@@ -1403,7 +1403,7 @@ Migrated to null-safety
   providers.
 
   For more info, see
-  http://riverpod.dev/docs/concepts/modifiers/auto_dispose#the-argument-type-autodisposeprovider-cant-be-assigned-to-the-parameter-type-alwaysaliveproviderbase
+  https://pub.dev/documentation/riverpod/latest/riverpod/Provider/autoDispose-constant.html
 
 - `ScopedProvider` now accepts `null` as a function:
 
