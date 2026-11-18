@@ -444,7 +444,28 @@ class ProviderPointerManager {
     familyPointer.addProviderOverride(override, targetContainer: container);
   }
 
+  /// Forks, once each, the family directories that [overrides] write to.
+  ///
+  /// Families without `dependencies` are inherited from the parent by
+  /// reference, so writing an override straight into their directory would leak
+  /// it into the parent. Forking keeps the writes local to this container.
+  void _forkOverriddenFamilies(List<Override> overrides) {
+    final families = {
+      for (final override in overrides)
+        switch (override) {
+          _ProviderOverride() => override.origin.from,
+          _FamilyOverride() => override.from,
+        },
+    };
+    for (final family in families.nonNulls) {
+      final existing = familyPointers[family];
+      if (existing == null) continue;
+      familyPointers[family] = ProviderDirectory.from(existing);
+    }
+  }
+
   void _initializeOverrides(List<Override> overrides) {
+    _forkOverriddenFamilies(overrides);
     for (final override in overrides) {
       switch (override) {
         case _ProviderOverride():
