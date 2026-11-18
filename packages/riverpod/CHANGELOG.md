@@ -11,8 +11,9 @@
   the code with the latest `riverpod_generator`.
 - Fix `persist` replacing the data of an `AsyncNotifier`/`StreamNotifier` with
   the persisted value when the provider emitted data before an asynchronous
-  `Storage.read` completed. The provider no longer goes back to `AsyncLoading`
-  with stale data. (thanks to @uveshm003)
+  `Storage.read` completed, including when it was reloading or had failed by
+  then. The provider no longer goes back to `AsyncLoading` with stale data.
+  (thanks to @uveshm003)
 
 ## 3.5.0 - 2026-11-06
 

@@ -446,6 +446,42 @@ void main() {
 
               expect(container.read(provider), const AsyncData<Object?>(0));
             });
+
+            test('If a provider emits data then reloads before an asynchronous '
+                'adapter, the decoded value does not override it', () async {
+              final read = Completer<PersistedData<Object?>?>();
+              var depValue = 0;
+              final dep = Provider((ref) => depValue);
+              var buildCount = 0;
+              final provider = factory.simpleProvider((ref, self) {
+                ref.watch(dep);
+                // The reload never completes, so the provider stays loading.
+                if (buildCount++ == 0) return Future.value(0);
+                return Completer<Object?>().future;
+              }, storage: DelegatingStorage(read: (_) => read.future));
+              final container = ProviderContainer.test();
+
+              final sub = container.listen(provider, (a, b) {});
+              expect(await container.read(provider.future!), 0);
+
+              depValue++;
+              container.invalidate(dep);
+              await container.pump();
+              expect(
+                container.read(provider),
+                isA<AsyncLoading<Object?>>().having((s) => s.value, 'value', 0),
+              );
+
+              read.complete(const PersistedData(42));
+              await container.pump();
+
+              expect(
+                container.read(provider),
+                isA<AsyncLoading<Object?>>()
+                    .having((s) => s.value, 'value', 0)
+                    .having((s) => s.isFromCache, 'isFromCache', false),
+              );
+            });
           }
         });
 
