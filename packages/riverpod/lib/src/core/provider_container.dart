@@ -389,20 +389,6 @@ class ProviderPointerManager {
   final ProviderDirectory orphanPointers;
   final HashMap<Family, ProviderDirectory> familyPointers;
 
-  /// Forks [existing] before an override is written into it.
-  ///
-  /// Families without `dependencies` are inherited from the parent by
-  /// reference, so writing an override straight into their directory would leak
-  /// it into the parent. Forking keeps the write local to this container.
-  ProviderDirectory _writableFamilyPointer(
-    Family family,
-    ProviderDirectory existing,
-  ) {
-    final forked = ProviderDirectory.from(existing);
-    familyPointers[family] = forked;
-    return forked;
-  }
-
   ProviderSubscriptionImpl<bool> listenToExistence(
     ProviderBase<Object?> provider, {
     required Node source,
@@ -455,13 +441,31 @@ class ProviderPointerManager {
       familyOverride: null,
     );
 
-    _writableFamilyPointer(
-      from,
-      familyPointer,
-    ).addProviderOverride(override, targetContainer: container);
+    familyPointer.addProviderOverride(override, targetContainer: container);
+  }
+
+  /// Forks, once each, the family directories that [overrides] write to.
+  ///
+  /// Families without `dependencies` are inherited from the parent by
+  /// reference, so writing an override straight into their directory would leak
+  /// it into the parent. Forking keeps the writes local to this container.
+  void _forkOverriddenFamilies(List<Override> overrides) {
+    final families = {
+      for (final override in overrides)
+        switch (override) {
+          _ProviderOverride() => override.origin.from,
+          _FamilyOverride() => override.from,
+        },
+    };
+    for (final family in families.nonNulls) {
+      final existing = familyPointers[family];
+      if (existing == null) continue;
+      familyPointers[family] = ProviderDirectory.from(existing);
+    }
   }
 
   void _initializeOverrides(List<Override> overrides) {
+    _forkOverriddenFamilies(overrides);
     for (final override in overrides) {
       switch (override) {
         case _ProviderOverride():
@@ -474,7 +478,7 @@ class ProviderPointerManager {
             /// A provider from that family was overridden first.
             /// We override the family but preserve the provider overrides too.
 
-            _writableFamilyPointer(overriddenFamily, previousPointer)
+            previousPointer
               ..familyOverride = override
               ..targetContainer = container
               // Remove inherited family values and keep only local ones
