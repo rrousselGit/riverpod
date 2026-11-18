@@ -312,6 +312,12 @@ abstract class $AsyncNotifierBase<ValueT>
     extends AnyNotifier<AsyncValue<ValueT>, ValueT> {
   @override
   void _setStateFromValue(ValueT value) {
+    // The provider emitted data before the decoding completed. That data is
+    // more recent than the persisted one, so keep it. This also covers a
+    // provider that emitted data then started reloading or failed, as it
+    // still holds the live value.
+    if (state.hasValue && !state.isFromCache) return;
+
     state = AsyncLoading._(
       (progress: state.progress),
       value: (value, kind: DataKind.cache, source: DataSource.liveOrRefresh),
