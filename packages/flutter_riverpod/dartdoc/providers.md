@@ -1,4 +1,19 @@
 <!-- WARNING: This file should be kept in sync with its duplicates in the other riverpod packages -->
+<!-- Examples can assume:
+import 'dart:async';
+
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class MyValue {}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => const Placeholder();
+}
+
+Future<String> fetchWeather({required String city}) async => 'Sunny';
+-->
 Here, you will find the list of all providers (excluding the "legacy" ones)  
 You can safely pick a provider from this list and be sure that its usage is recommended.
 
@@ -100,7 +115,7 @@ final cityProvider = Provider((ref) => 'London');
 
 We can now create another provider that will consume our `cityProvider`:
 
-```dart
+```dart continued
 final weatherProvider = FutureProvider((ref) async {
   // We use `ref.watch` to watch another provider, and we pass it the provider
   // that we want to consume. Here: cityProvider

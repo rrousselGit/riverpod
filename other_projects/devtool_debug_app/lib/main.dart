@@ -160,14 +160,15 @@ final objectWithExternalFields = Provider<Object>((ref) {
   return ValueNotifier(0);
 });
 
-class _AsyncStateNotifier<T> extends AsyncNotifier<T> {
+class _AsyncStateNotifier<ValueT> extends AsyncNotifier<ValueT> {
   _AsyncStateNotifier(this._build);
-  final FutureOr<T> Function(Ref ref, _AsyncStateNotifier<T> self) _build;
+  final FutureOr<ValueT> Function(Ref ref, _AsyncStateNotifier<ValueT> self)
+  _build;
 
   // remove protected
   @override
-  Future<T> get future;
+  Future<ValueT> get future;
 
   @override
-  FutureOr<T> build() => _build(ref, this);
+  FutureOr<ValueT> build() => _build(ref, this);
 }

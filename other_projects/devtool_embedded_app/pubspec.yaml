@@ -1,0 +1,26 @@
+name: devtool_embedded_app
+description: >
+  Runs the Riverpod devtool next to the application that it inspects, in a
+  single window and a single debug session.
+publish_to: "none"
+
+environment:
+  sdk: ^3.12.0
+
+resolution: workspace
+
+dependencies:
+  devtool_debug_app:
+  devtools_app_shared: ^0.4.0
+  flutter:
+    sdk: flutter
+  flutter_driver:
+    sdk: flutter
+  hooks_riverpod:
+  material_ui: ^1.0.0
+  riverpod_devtool:
+  riverpod_devtool_core:
+  vm_service: ^15.0.2
+
+flutter:
+  uses-material-design: true

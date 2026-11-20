@@ -1,12 +1,7 @@
-// ignore_for_file: unused_import, prefer_const_constructors
-// Ignored so that uncommenting the code to mock HTP requests is simple.
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
-import 'src/fake_marvel.dart';
-import 'src/marvel.dart';
 import 'src/screens/character_detail.dart';
 import 'src/screens/home.dart';
 

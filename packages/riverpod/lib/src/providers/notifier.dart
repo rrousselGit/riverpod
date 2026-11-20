@@ -54,6 +54,16 @@ abstract base class $NotifierProvider //
     required super.retry,
   });
 
+  /// Implementation of `overrideWithValue` for generated notifiers.
+  /// @nodoc
+  @internal
+  Override $overrideWithValue(StateT value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $NotifierValueProvider<NotifierT, StateT>(this, value),
+    );
+  }
+
   /// @nodoc
   @internal
   @override

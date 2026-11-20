@@ -135,10 +135,7 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<String>(value),
-    );
+    return $overrideWithValue(value);
   }
 
   @override
@@ -357,10 +354,7 @@ final class NotCopiedClassBasedProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<String>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 

@@ -1,0 +1,20 @@
+# scripts/snippets.sh extracts the `dart` snippets of the doc comments of the
+# Dart files, and of the Markdown and MDX files, into Dart files of
+# tools/doc_snippets/snippets, where they are analyzed like any other code.
+# See "Code snippets are analyzed" in CONTRIBUTING.md.
+# Paths are relative to the repository root.
+
+# Globs of the files whose snippets are never extracted: the changelogs,
+# whose snippets are about past versions, the tests, whose doc comments are
+# not docs of the packages, the translations of the docs, which may be out of
+# date, and the extraction itself.
+ignored:
+  - "**/CHANGELOG.md"
+  - "**/test/**"
+  - tools/doc_snippets/**
+  - website/i18n/**
+
+# The files whose snippets are not extracted yet. Do not add to this list: fix
+# the snippets instead, or tag the ones that are not meant to compile
+# `dart no-analyze`.
+unchecked: []

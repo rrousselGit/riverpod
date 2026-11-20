@@ -12,10 +12,11 @@ class OnlyUseKeepAliveInsideKeepAlive extends AnalysisRule {
 
   static const code = LintCode(
     'only_use_keep_alive_inside_keep_alive',
-    'KeepAliveLink can only be used inside providers that are kept alive.',
+    'If a provider is declared as `keepAlive`, '
+        'it can only use providers that are also declared as `keepAlive`.',
     correctionMessage:
         'Either stop marking this provider as `keepAlive` or '
-        'remove `keepAlive` from the used provider.',
+        'mark the used provider as `keepAlive` too.',
     severity: DiagnosticSeverity.WARNING,
   );
 

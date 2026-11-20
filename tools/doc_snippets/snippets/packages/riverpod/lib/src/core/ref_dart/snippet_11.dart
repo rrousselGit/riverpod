@@ -1,0 +1,54 @@
+// GENERATED from packages/riverpod/lib/src/core/ref.dart by scripts/snippets.sh.
+// Do not modify by hand: edit the snippet instead.
+
+import 'package:riverpod/riverpod.dart';
+// Ref.onManualInvalidation is experimental, and its doc has an example.
+import 'dart:convert';
+
+import 'package:collection/collection.dart';
+import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
+import 'package:riverpod/legacy.dart';
+
+class Configs {
+  String get host => '';
+}
+
+class User {
+  factory User.fromJson(Object? json) => throw UnimplementedError();
+}
+
+class Item {
+  factory Item.fromJson(Object? json) => throw UnimplementedError();
+  String get id => '';
+}
+
+class Todo {
+  String get title => '';
+}
+
+enum Sort { byName }
+
+class Disposable {
+  void dispose() {}
+}
+
+final dio = Dio();
+late Ref ref;
+final provider = Provider((ref) => 0);
+
+final sortProvider = StateProvider((_) => Sort.byName);
+final unsortedTodosProvider = StateProvider((_) => <Todo>[]);
+
+final sortedTodosProvider = Provider((ref) {
+  // listen to both the sort enum and the unfiltered list of todos
+  final sort = ref.watch(sortProvider);
+  final todos = ref.watch(unsortedTodosProvider);
+
+  // Creates a new sorted list from the combination of the unfiltered
+  // list and the filter type.
+  return [...todos]..sort((a, b) {
+    // ...
+    return a.title.compareTo(b.title);
+  });
+});

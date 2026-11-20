@@ -1,3 +1,4 @@
+// dart format off
 // ignore_for_file: avoid_unused_constructor_parameters
 
 import 'package:riverpod/riverpod.dart';

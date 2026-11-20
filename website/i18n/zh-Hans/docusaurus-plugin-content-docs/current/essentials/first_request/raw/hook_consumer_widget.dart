@@ -1,3 +1,4 @@
+// dart format off
 // ignore_for_file: omit_local_variable_types, unused_local_variable, prefer_const_constructors
 
 import 'package:material_ui/material_ui.dart';

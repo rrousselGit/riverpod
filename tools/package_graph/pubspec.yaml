@@ -1,0 +1,11 @@
+name: package_graph
+description: Generates /package_graph.yaml from the pubspec.yaml files of the workspace.
+publish_to: "none"
+
+environment:
+  sdk: ^3.12.0
+
+resolution: workspace
+
+dependencies:
+  yaml: ^3.1.1

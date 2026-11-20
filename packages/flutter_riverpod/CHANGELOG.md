@@ -1,10 +1,59 @@
-## Unreleased minor
+## Unreleased fix
 
+- Fix the deprecation messages of `exists` pointing to `provider.exist`, which does not exist, instead of `provider.exists`. (thanks to @BiAksoy)
+- `WidgetRef.watch` now rebuilds the widget when a watched provider emits an
+  error after the initial build (such as from an automatic retry), like
+  `Ref.watch` does. The error is rethrown by `ref.watch` during `build`, so a
+  `try/catch` can handle it, instead of being reported as uncaught to the zone.
+  Widgets that don't catch it now show Flutter's error widget instead of
+  keeping their previous UI. (#4432) (thanks to @naghinezhad)
+- Fix an `autoDispose` provider being disposed while still listened to or kept
+  alive, when a `KeepAliveLink` obtained before the provider was invalidated
+  and disposed is closed after the provider was created again. `ref.watch`
+  then threw `called ProviderSubscription.read on a subscription that was closed`
+  on every rebuild of the widget (#4806).
+
+## 3.5.0 - 2026-11-06
+
+- `ProviderObserver`s are no longer notified when a provider's future
+  completes after the provider was disposed. This stops `providerDidFail` from
+  reporting disposal errors, such as when an `autoDispose` provider awaiting
+  another provider's `.future` is disposed mid-load (#4706).
+- `ProviderDisposedException` is now exported by `package:flutter_riverpod/misc.dart`.
+  `provider.future` completes with it instead of a `StateError` when the
+  provider is disposed before emitting a value.
+- Fix a `setState() or markNeedsBuild() called during build` error when resuming a consumer with a diamond-shaped provider dependency graph. (thanks to @yazanmg)
+- `AsyncValueIsLoadingException` now has a public constructor. (thanks to @uveshm003)
+- `debugTrackProviderCreation` is now exported by `package:flutter_riverpod/misc.dart`.
+- `provider.listenable` is now available from `package:flutter_riverpod/flutter_riverpod.dart`, and
+  `CustomProviderListenable`, `ProviderTransformer2`,
+  `SyncProviderTransformer2` and `WhenComplete` from
+  `package:flutter_riverpod/misc.dart`, as they already were in `riverpod`.
+- Devtools now retain only the current provider snapshot by default. Set
+  `debugTrackProviderHistory = true` (imported from `package:riverpod/misc.dart`)
+  to opt into time-travel history; setting it back to `false` releases previous
+  frames.
+- Devtools inspection caches are released when their client closes or stops
+  renewing its session for 30 seconds, including after an abrupt disconnect.
+- Deprecated `Ref.exists`.
+- Added `provider.exists`, which is listenable.
+  This enables writing `ref.listen(provider.exists, ...)`.
+- Fix `selectAsync` notifying a closed subscription after an upstream refresh.
+- Fixed `ref.read`/`container.read` of `provider.listenable` throwing an internal `StateError` on `.value`; it now throws a clear one explaining `.listenable` needs `ref.watch`, `ref.listen` or `container.listen` instead (thanks to @Yasser-Ameur)
+- Fixed a debug-only infinite loop in the circular-dependency check. Closing a
+  dependency ring left the offending subscription in the graph, so a subsequent
+  rebuild could make the check walk the cycle forever. The subscription is now
+  removed when the check throws, and the walk keeps a visited set. (thanks to @chiliec)
 - Migrated Material imports to `package:material_ui/material_ui.dart` and added
   `material_ui` as a dependency.
 - Updated the DevTools extension to use Material UI themes and localizations.
 
+### Dependency changes
+
+- `riverpod` upgraded to `3.5.0`
+
 ## 3.4.3 - 2026-09-04
+
 ### Dependency changes
 
 - `riverpod` upgraded to `3.4.3`
@@ -1394,7 +1443,7 @@ Fixed a bug that prevented the use of `ConsumerWidget` under normal circumstance
 - `ref.watch` on non ".autoDispose" providers can no longer read ".autoDispose"
   providers.
 
-  For more info, see http://riverpod.dev/docs/concepts/modifiers/auto_dispose#the-argument-type-autodisposeprovider-cant-be-assigned-to-the-parameter-type-alwaysaliveproviderbase
+  For more info, see https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Provider/autoDispose-constant.html
 
 - `ScopedProvider` now accepts `null` as a function:
 
@@ -1614,3 +1663,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

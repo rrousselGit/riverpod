@@ -2,6 +2,7 @@
 
 export 'src/internals.dart'
     show
+        debugTrackProviderCreation,
         debugTrackProviderHistory,
         ProviderListenableOrFamily,
         ProviderOrFamily,
@@ -16,6 +17,7 @@ export 'src/internals.dart'
         ProviderListenable,
         Override,
         ProviderBase,
+        ProviderDisposedException,
         KeepAliveLink,
         ProviderException,
         ProviderTransformerContext,

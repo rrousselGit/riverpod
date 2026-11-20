@@ -152,10 +152,7 @@ final class $DynamicClassProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(dynamic value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<dynamic>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 
@@ -211,10 +208,7 @@ final class $DynamicClassFamilyProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(dynamic value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<dynamic>(value),
-    );
+    return $overrideWithValue(value);
   }
 
   @override
@@ -499,10 +493,7 @@ final class AliasClassProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<int> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<AsyncValue<int>>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 
@@ -558,10 +549,7 @@ final class AliasClassFamilyProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<int> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<AsyncValue<int>>(value),
-    );
+    return $overrideWithValue(value);
   }
 
   @override

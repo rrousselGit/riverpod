@@ -1,3 +1,4 @@
+// dart format off
 import 'package:riverpod/riverpod.dart';
 
 /* SNIPPET START */

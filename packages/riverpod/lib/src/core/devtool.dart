@@ -1,5 +1,8 @@
 part of '../framework.dart';
 
+// Examples can assume:
+// import 'package:riverpod/misc.dart';
+
 /// A flag to control whether Riverpod should track the [StackTrace] of providers
 /// when they are created.
 ///
@@ -19,6 +22,7 @@ part of '../framework.dart';
 ///
 /// Make sure to hot-restart your application after changing this flag.
 /// The devtool should then automatically pick up the stack trace of providers.
+@publicInMisc
 bool debugTrackProviderCreation = false;
 
 /// Whether Riverpod retains previous frames for time-travel debugging.
@@ -28,8 +32,10 @@ bool debugTrackProviderCreation = false;
 /// or enable it later to record from the current snapshot onwards.
 /// Recording history retains provider states in memory. Set this back to `false`
 /// to release that history. This flag has no effect in release mode.
+@publicInMisc
 bool get debugTrackProviderHistory => _debugTrackProviderHistory;
 bool _debugTrackProviderHistory = false;
+@publicInMisc
 set debugTrackProviderHistory(bool value) {
   if (_debugTrackProviderHistory == value) return;
   _debugTrackProviderHistory = value;
@@ -152,14 +158,16 @@ class RiverpodDevtool {
   }
 
   T withFrameCache<T>(String sessionId, T Function() encode) {
-    if (_encodingSession != null) {
-      throw StateError('Nested frame serialization');
-    }
-    final session = _encodingSession = _session(sessionId);
+    final session = _session(sessionId);
+    if (session.isEncoding) throw StateError('Nested frame serialization');
+    // The VM can run the evaluation of a client in the middle of the one of
+    // another client. The interrupted export resumes once this one is done.
+    final interrupted = _encodingSession;
+    _encodingSession = session;
     try {
       return session.withFrameCache(encode);
     } finally {
-      _encodingSession = null;
+      _encodingSession = interrupted;
     }
   }
 
@@ -278,6 +286,8 @@ class _DevtoolSession {
   final _frameCacheKeys = Map<Object?, String>.identity();
   Set<String>? _usedKeys;
   Set<String>? _createdKeys;
+
+  bool get isEncoding => _usedKeys != null;
 
   void renew() {
     _expiration?.cancel();
@@ -645,6 +655,7 @@ final class ConsumerMeta {
 }
 
 /// An observer who's responsible for communicating with the Riverpod devtool
+@internal
 @visibleForTesting
 final class DevtoolObserver extends ProviderObserver {
   /// An observer who's responsible for communicating with the Riverpod devtool

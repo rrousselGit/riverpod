@@ -1,49 +1,32 @@
 import 'dart:async';
 
-import 'package:devtools_app_shared/service.dart';
 import 'package:devtools_app_shared/ui.dart' as shared_ui;
 import 'package:devtools_extensions/devtools_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' as flutter_material;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:riverpod_devtool_core/riverpod_devtool_core.dart';
 
+import 'src/connection.dart';
 import 'src/frame_view.dart';
-
-final class Observer extends ProviderObserver {
-  const Observer();
-  @override
-  void providerDidFail(
-    ProviderObserverContext context,
-    Object error,
-    StackTrace stackTrace,
-  ) {
-    // Replacing a frame disposes its inspector providers and cancels their
-    // pending VM requests. Those cancellations are expected, not failures.
-    if (error is CancelledException) return;
-
-    // ignore: avoid_print
-    print(
-      'Error in provider ${context.provider}:'
-      '\n$error'
-      '\n$stackTrace',
-    );
-  }
-}
+import 'src/observer.dart';
 
 void main() {
   runZonedGuarded(
     () {
       WidgetsFlutterBinding.ensureInitialized();
       runApp(
-        const ProviderScope(
-          observers: [Observer()],
-          child: RiverpodDevtoolExtension(),
+        ProviderScope(
+          observers: const [Observer()],
+          overrides: [
+            appConnectionProvider.overrideWith(devtoolsAppConnection),
+          ],
+          child: const RiverpodDevtoolExtension(),
         ),
       );
     },
     (err, stack) {
-      // ignore: avoid_print
       print('Uncaught error: $err\n$stack');
     },
   );

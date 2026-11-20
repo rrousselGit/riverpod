@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:analysis_server_plugin/plugin.dart';
 import 'package:analysis_server_plugin/registry.dart';
 
+import 'src/lints/avoid_annotation_api_in_strings.dart';
+import 'src/lints/avoid_legacy_api.dart';
 import 'src/lints/avoid_sub_read.dart';
 import 'src/lints/generic_name.dart';
 import 'src/lints/show_all.dart';
@@ -22,6 +24,10 @@ class _Plugin extends Plugin {
     registry.registerWarningRule(RuleVisitor());
 
     registry.registerWarningRule(AvoidSubRead());
+
+    registry.registerWarningRule(AvoidLegacyApi());
+
+    registry.registerWarningRule(AvoidAnnotationApiInStrings());
 
     registry.registerWarningRule(ShowAll());
     registry.registerFixForRule(ShowAll.code, ShowAllFix.new);

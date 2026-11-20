@@ -6,7 +6,7 @@
 // dart pub global activate -s path <repository_path>/tools/generate_providers
 //
 // You can then use it in your terminal by executing:
-// generate_providers <riverpod/flutter_riverpod/hooks_riverpod> <path to builder file to update>
+// generate_providers <riverpod/riverpod_legacy/flutter_riverpod> <path to builder file to update>
 
 import 'dart:async';
 
@@ -15,8 +15,8 @@ import 'package:meta/meta.dart';
 import 'internals.dart';
 
 @internal
-final class StateProviderFamilyBuilder {
-  const StateProviderFamilyBuilder();
+final class ProviderFamilyBuilder {
+  const ProviderFamilyBuilder();
 
   /// {@template riverpod.family}
   /// A group of providers that builds their value from an external parameter.
@@ -33,11 +33,11 @@ final class StateProviderFamilyBuilder {
   ///     } else if (locale == const Locale('fr')) {
   ///       return 'Titre Français';
   ///     }
+  ///     throw UnsupportedError('Unsupported locale: $locale');
   ///   });
   ///
   ///   // ...
   ///
-  ///   @override
   ///   Widget build(BuildContext context, WidgetRef ref) {
   ///     final locale = Localizations.localeOf(context);
   ///
@@ -59,9 +59,8 @@ final class StateProviderFamilyBuilder {
   ///
   ///   // ...
   ///
-  ///   @override
   ///   Widget build(BuildContext context, WidgetRef ref) {
-  ///     int userId; // Read the user ID from somewhere
+  ///     final userId = 42; // Read the user ID from somewhere
   ///
   ///     // Read and potentially fetch the user with id `userId`.
   ///     // When `userId` changes, this will automatically update the UI
@@ -80,7 +79,7 @@ final class StateProviderFamilyBuilder {
   /// - Connect a provider with another provider without having a direct reference on it.
   ///
   ///   ```dart
-  ///   final repositoryProvider = Provider.family<String, FutureProvider<Configurations>>((ref, configurationsProvider) {
+  ///   final repositoryProvider = FutureProvider.family<Repository, FutureProvider<Configurations>>((ref, configurationsProvider) async {
   ///     // Read a provider without knowing what that provider is.
   ///     final configurations = await ref.read(configurationsProvider.future);
   ///     return Repository(host: configurations.host);
@@ -97,14 +96,17 @@ final class StateProviderFamilyBuilder {
   ///
   /// ```dart
   /// final messagesFamily = FutureProvider.family<Message, String>((ref, id) async {
-  ///   return dio.get('http://my_api.dev/messages/$id');
+  ///   final response = await dio.get<Map<String, Object?>>(
+  ///     'http://my_api.dev/messages/$id',
+  ///   );
+  ///   return Message.fromJson(response.data!);
   /// });
   /// ```
   ///
   /// Then, when using our `messagesFamily` provider, the syntax is slightly modified.
   /// The usual:
   ///
-  /// ```dart
+  /// ```dart no-analyze
   /// Widget build(BuildContext context, WidgetRef ref) {
   ///   // Error – messagesFamily is not a provider
   ///   final response = ref.watch(messagesFamily);
@@ -114,9 +116,11 @@ final class StateProviderFamilyBuilder {
   /// will not work anymore.
   /// Instead, we need to pass a parameter to `messagesFamily`:
   ///
-  /// ```dart
+  /// ```dart continued
   /// Widget build(BuildContext context, WidgetRef ref) {
   ///   final response = ref.watch(messagesFamily('id'));
+  ///   // ...
+  ///   return const SizedBox();
   /// }
   /// ```
   ///
@@ -124,7 +128,7 @@ final class StateProviderFamilyBuilder {
   /// simultaneously. For example, we could use a `titleFamily` to read both
   /// the french and english translations at the same time:
   ///
-  /// ```dart
+  /// ```dart no-analyze
   /// @override
   /// Widget build(BuildContext context, WidgetRef ref) {
   ///   final frenchTitle = ref.watch(titleFamily(const Locale('fr')));
@@ -148,6 +152,7 @@ final class StateProviderFamilyBuilder {
   ///
   ///   ```dart
   ///   final example = Provider.autoDispose.family<Value, ComplexParameter>((ref, param) {
+  ///     return Value(param);
   ///   });
   ///   ```
   ///
@@ -169,7 +174,7 @@ final class StateProviderFamilyBuilder {
   /// This includes:
   /// - A tuple (using `package:tuple`)
   /// - Objects generated with Freezed/built_value, such as:
-  ///   ```dart
+  ///   ```dart no-analyze
   ///   @freezed
   ///   abstract class MyParameter with _$MyParameter {
   ///     factory MyParameter({
@@ -196,15 +201,15 @@ final class StateProviderFamilyBuilder {
   ///   ```
   ///
   /// - Objects based on `package:equatable`, such as:
-  ///   ```dart
+  ///   ```dart no-analyze
   ///   class MyParameter extends Equatable  {
-  ///     factory MyParameter({
+  ///     MyParameter({
   ///       required this.userId,
-  ///       requires this.locale,
+  ///       required this.locale,
   ///     });
   ///
   ///     final int userId;
-  ///     final Local locale;
+  ///     final Locale locale;
   ///
   ///     @override
   ///     List<Object> get props => [userId, locale];
@@ -227,14 +232,14 @@ final class StateProviderFamilyBuilder {
   ///   }
   ///   ```
   /// {@endtemplate}
-  StateProviderFamily<StateT, ArgT> call<StateT, ArgT>(
+  ProviderFamily<StateT, ArgT> call<StateT, ArgT>(
     StateT Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
     bool isAutoDispose = false,
   }) {
-    return StateProviderFamily<StateT, ArgT>(
+    return ProviderFamily<StateT, ArgT>(
       create,
       name: name,
       isAutoDispose: isAutoDispose,
@@ -265,7 +270,7 @@ final class StateProviderFamilyBuilder {
   ///
   /// ```dart
   /// final myProvider = FutureProvider.autoDispose((ref) async {
-  ///   final response = await httpClient.get(...);
+  ///   final response = await httpClient.get('path');
   ///   ref.keepAlive();
   ///   return response;
   /// });
@@ -292,153 +297,6 @@ final class StateProviderFamilyBuilder {
   /// });
   /// ```
   /// {@endtemplate}
-  AutoDisposeStateProviderFamilyBuilder get autoDispose =>
-      const AutoDisposeStateProviderFamilyBuilder();
-}
-
-@internal
-final class AutoDisposeStateProviderBuilder {
-  const AutoDisposeStateProviderBuilder();
-
-  /// {@macro riverpod.family}
-  StateProvider<StateT> call<StateT>(
-    StateT Function(Ref ref) create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-    Retry? retry,
-  }) {
-    return StateProvider<StateT>(
-      create,
-      name: name,
-      isAutoDispose: true,
-      dependencies: dependencies,
-      retry: retry,
-    );
-  }
-
-  /// {@macro riverpod.family}
-  AutoDisposeStateProviderFamilyBuilder get family =>
-      const AutoDisposeStateProviderFamilyBuilder();
-}
-
-@internal
-final class AutoDisposeStateProviderFamilyBuilder {
-  const AutoDisposeStateProviderFamilyBuilder();
-
-  /// {@macro riverpod.family}
-  StateProviderFamily<StateT, ArgT> call<StateT, ArgT>(
-    StateT Function(Ref ref, ArgT param) create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-    Retry? retry,
-  }) {
-    return StateProviderFamily<StateT, ArgT>(
-      create,
-      name: name,
-      isAutoDispose: true,
-      dependencies: dependencies,
-      retry: retry,
-    );
-  }
-}
-
-@internal
-final class StateNotifierProviderFamilyBuilder {
-  const StateNotifierProviderFamilyBuilder();
-
-  /// {@macro riverpod.family}
-  StateNotifierProviderFamily<NotifierT, StateT, ArgT>
-  call<NotifierT extends StateNotifier<StateT>, StateT, ArgT>(
-    NotifierT Function(Ref ref, ArgT param) create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-    Retry? retry,
-    bool isAutoDispose = false,
-  }) {
-    return StateNotifierProviderFamily<NotifierT, StateT, ArgT>(
-      create,
-      name: name,
-      isAutoDispose: isAutoDispose,
-      dependencies: dependencies,
-      retry: retry,
-    );
-  }
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeStateNotifierProviderFamilyBuilder get autoDispose =>
-      const AutoDisposeStateNotifierProviderFamilyBuilder();
-}
-
-@internal
-final class AutoDisposeStateNotifierProviderBuilder {
-  const AutoDisposeStateNotifierProviderBuilder();
-
-  /// {@macro riverpod.family}
-  StateNotifierProvider<NotifierT, StateT>
-  call<NotifierT extends StateNotifier<StateT>, StateT>(
-    NotifierT Function(Ref ref) create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-    Retry? retry,
-  }) {
-    return StateNotifierProvider<NotifierT, StateT>(
-      create,
-      name: name,
-      isAutoDispose: true,
-      dependencies: dependencies,
-      retry: retry,
-    );
-  }
-
-  /// {@macro riverpod.family}
-  AutoDisposeStateNotifierProviderFamilyBuilder get family =>
-      const AutoDisposeStateNotifierProviderFamilyBuilder();
-}
-
-@internal
-final class AutoDisposeStateNotifierProviderFamilyBuilder {
-  const AutoDisposeStateNotifierProviderFamilyBuilder();
-
-  /// {@macro riverpod.family}
-  StateNotifierProviderFamily<NotifierT, StateT, ArgT>
-  call<NotifierT extends StateNotifier<StateT>, StateT, ArgT>(
-    NotifierT Function(Ref ref, ArgT param) create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-    Retry? retry,
-  }) {
-    return StateNotifierProviderFamily<NotifierT, StateT, ArgT>(
-      create,
-      name: name,
-      isAutoDispose: true,
-      dependencies: dependencies,
-      retry: retry,
-    );
-  }
-}
-
-@internal
-final class ProviderFamilyBuilder {
-  const ProviderFamilyBuilder();
-
-  /// {@macro riverpod.family}
-  ProviderFamily<StateT, ArgT> call<StateT, ArgT>(
-    StateT Function(Ref ref, ArgT param) create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-    Retry? retry,
-    bool isAutoDispose = false,
-  }) {
-    return ProviderFamily<StateT, ArgT>(
-      create,
-      name: name,
-      isAutoDispose: isAutoDispose,
-      dependencies: dependencies,
-      retry: retry,
-    );
-  }
-
-  /// {@macro riverpod.autoDispose}
   AutoDisposeProviderFamilyBuilder get autoDispose =>
       const AutoDisposeProviderFamilyBuilder();
 }

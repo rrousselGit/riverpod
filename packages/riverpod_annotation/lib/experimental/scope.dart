@@ -1,3 +1,13 @@
+// Examples can assume:
+// import 'package:flutter/widgets.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:riverpod_annotation/experimental/scope.dart';
+//
+// // The snippet that defines BookView, for the ones that use it.
+// import 'book_view.dart';
+//
+// final selectedBookIDProvider = Provider<String>(selectedBookID);
+
 /// {@template riverpod_annotation.dependencies}
 /// An annotation to be specified on non-provider objects that use scoped providers.
 ///
@@ -22,7 +32,7 @@
 /// that uses it.
 /// For instance, a `Consumer`:
 ///
-/// ```dart
+/// ```dart continued name=book_view
 /// @Dependencies([selectedBookID])
 /// class BookView extends ConsumerWidget {
 ///   @override
@@ -42,7 +52,7 @@
 ///       selectedBookIDProvider.overrideWithValue('myBookID'),
 ///     ],
 ///     child: BookView(),
-///   ),
+///   )
 ///   ```
 /// - or using `BookView` in a widget that also specifies `@Dependencies([selectedBookID])`:
 ///   ```dart

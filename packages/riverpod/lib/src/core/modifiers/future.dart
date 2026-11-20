@@ -1,5 +1,14 @@
 part of '../../framework.dart';
 
+// Examples can assume:
+// import 'package:http/http.dart' as http;
+//
+// class Config {
+//   String get host => '';
+// }
+//
+// typedef Configs = Config;
+
 /// Internal typedef for cancelling the subscription to an async operation
 @internal
 typedef AsyncSubscription = ({
@@ -102,7 +111,7 @@ abstract interface class AsyncProviderListenable<ValueT>
   ///   final configs = await ref.watch(configsProvider.future);
   ///
   ///   // Do something with the result
-  ///   return await http.get('${configs.host}/products');
+  ///   return await http.get(Uri.parse('${configs.host}/products'));
   /// });
   /// ```
   Refreshable<Future<ValueT>> get future;
@@ -141,18 +150,18 @@ base mixin $FutureModifier<ValueT> on $ProviderBaseImpl<AsyncValue<ValueT>>
   /// ```dart
   /// // A provider which asynchronously loads configurations,
   /// // which may change over time.
-  /// final configsProvider = StreamProvider<Config>((ref) async {
+  /// final configsProvider = StreamProvider<Config>((ref) async* {
   ///   // TO-DO fetch the configurations, such as by using Firebase
   /// });
   ///
   /// // A provider which fetches a list of products based on the configurations
-  /// final productsProvider = FutureProvider<List>((ref) async {
+  /// final productsProvider = FutureProvider((ref) async {
   ///   // We obtain the host from the configs, while ignoring changes to
   ///   // other properties. As such, the productsProvider will rebuild only
   ///   // if the host changes
   ///   final host = await ref.watch(configsProvider.selectAsync((config) => config.host));
   ///
-  ///   return http.get('$host/products');
+  ///   return http.get(Uri.parse('$host/products'));
   /// });
   /// ```
   /// {@endtemplate}

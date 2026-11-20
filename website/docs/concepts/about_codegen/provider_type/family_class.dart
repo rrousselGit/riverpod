@@ -1,3 +1,4 @@
+// dart format off
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'family_class.g.dart';

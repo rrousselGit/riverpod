@@ -1,3 +1,4 @@
+// dart format off
 // Geçerli sayfayı kontrol eden bir provider
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

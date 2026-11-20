@@ -1,9 +1,36 @@
 part of '../framework.dart';
 
+/// A provider used by `overrideWithValue`.
+abstract interface class _OverrideWithValue {
+  Object? get _value;
+}
+
+extension<StateT, ValueT> on ProviderElement<StateT, ValueT> {
+  /// Runs [setState] as part of [ProviderElement.update], which may be
+  /// called while a provider is building.
+  void _setStateOnUpdate(void Function() setState) {
+    final debugPreviouslyBuildingElement =
+        ProviderElement._debugCurrentlyBuildingElement;
+    // Asserts would otherwise prevent a provider rebuild from updating
+    // other providers
+    _debugSkipNotifyListenersAsserts = true;
+    ProviderElement._debugCurrentlyBuildingElement = null;
+
+    try {
+      setState();
+    } finally {
+      _debugSkipNotifyListenersAsserts = false;
+      ProviderElement._debugCurrentlyBuildingElement =
+          debugPreviouslyBuildingElement;
+    }
+  }
+}
+
 @reopen
 abstract base class _ValueProvider<StateT, ValueT>
     extends $ProviderBaseImpl<StateT>
-    with LegacyProviderMixin<StateT> {
+    with LegacyProviderMixin<StateT>
+    implements _OverrideWithValue {
   /// Creates a [_ValueProvider].
   _ValueProvider(this._value)
     : super(
@@ -16,6 +43,7 @@ abstract base class _ValueProvider<StateT, ValueT>
         retry: null,
       );
 
+  @override
   final StateT _value;
 
   @override
@@ -80,24 +108,7 @@ abstract class _ValueProviderElement<StateT, ValueT>
     final previousState = stateResult()! as $ResultData<StateT>;
 
     if (newValue != previousState.value) {
-      final debugPreviouslyBuildingElement =
-          ProviderElement._debugCurrentlyBuildingElement;
-      // Asserts would otherwise prevent a provider rebuild from updating
-      // other providers
-      if (kDebugMode) {
-        _debugSkipNotifyListenersAsserts = true;
-        ProviderElement._debugCurrentlyBuildingElement = null;
-      }
-
-      _setValue(newValue);
-
-      // Asserts would otherwise prevent a provider rebuild from updating
-      // other providers
-      if (kDebugMode) {
-        _debugSkipNotifyListenersAsserts = false;
-        ProviderElement._debugCurrentlyBuildingElement =
-            debugPreviouslyBuildingElement;
-      }
+      _setStateOnUpdate(() => _setValue(newValue));
 
       onChange?.call(newValue);
     }
@@ -157,5 +168,54 @@ class _AsyncValueProviderElement<ValueT>
       case AsyncLoading():
         onLoading(value, seamless: true);
     }
+  }
+}
+
+/// A [Notifier] whose `build` is replaced by a value.
+///
+/// As opposed to [$SyncValueProvider], this keeps the notifier, such that
+/// `provider.notifier` and the methods of the notifier are still usable.
+///
+/// This is an implementation detail of `overrideWithValue`.
+@internal
+final class $NotifierValueProvider<NotifierT extends $Notifier<StateT>, StateT>
+    extends _ClassProviderView<NotifierT, StateT, StateT, StateT>
+    implements _OverrideWithValue {
+  /// Creates a [$NotifierValueProvider].
+  $NotifierValueProvider(super._inner, this._value)
+    : super(runNotifierBuildOverride: (_, _) => _value);
+
+  @override
+  final StateT _value;
+
+  /// @nodoc
+  @internal
+  @override
+  $NotifierProviderElement<NotifierT, StateT> $createElement(
+    $ProviderPointer pointer,
+  ) {
+    return _NotifierValueProviderElement(pointer)
+      ..provider = this
+      .._runNotifierBuildOverride = _runNotifierBuildOverride;
+  }
+}
+
+class _NotifierValueProviderElement<NotifierT extends $Notifier<StateT>, StateT>
+    extends $NotifierProviderElement<NotifierT, StateT> {
+  _NotifierValueProviderElement(super.pointer);
+
+  @override
+  void update(covariant $NotifierValueProvider<NotifierT, StateT> newProvider) {
+    final previousValue = (provider as _OverrideWithValue)._value;
+    provider = newProvider;
+    _runNotifierBuildOverride = newProvider._runNotifierBuildOverride;
+
+    if (newProvider._value == previousValue ||
+        // The notifier failed to be created. There is no state to update.
+        classListenable.result?.value == null) {
+      return;
+    }
+
+    _setStateOnUpdate(() => setValueFromState(newProvider._value));
   }
 }

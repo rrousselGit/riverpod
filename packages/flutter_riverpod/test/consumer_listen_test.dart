@@ -1,7 +1,4 @@
-// ignore_for_file: invalid_use_of_internal_member
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart' hide Listener;
 import 'package:mockito/mockito.dart';
@@ -62,7 +59,7 @@ void main() {
     });
 
     testWidgets('can downcast the value', (tester) async {
-      final dep = StateProvider((ref) => 0);
+      final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
       final provider = Provider((ref) => ref.watch(dep));
 
       final container = ProviderContainer.test();
@@ -102,7 +99,7 @@ void main() {
 
     testWidgets('can mark parents as dirty during onChange', (tester) async {
       final container = ProviderContainer.test();
-      final provider = StateProvider((ref) => 0);
+      final provider = NotifierProvider(() => SettableNotifier((ref) => 0));
       final onChange = Listener<int>();
 
       await tester.pumpWidget(
@@ -128,7 +125,7 @@ void main() {
     });
 
     testWidgets('calls onChange synchronously if possible', (tester) async {
-      final provider = StateProvider((ref) => 0);
+      final provider = NotifierProvider(() => SettableNotifier((ref) => 0));
       final onChange = Listener<int>();
       final container = ProviderContainer.test();
 
@@ -156,7 +153,7 @@ void main() {
     testWidgets('calls onChange asynchronously if the change is indirect', (
       tester,
     ) async {
-      final provider = StateProvider((ref) => 0);
+      final provider = NotifierProvider(() => SettableNotifier((ref) => 0));
       final isEven = Provider((ref) => ref.watch(provider).isEven);
       final onChange = Listener<bool>();
       final container = ProviderContainer.test();
@@ -186,7 +183,7 @@ void main() {
     });
 
     testWidgets('closes the subscription on dispose', (tester) async {
-      final provider = StateProvider((ref) => 0);
+      final provider = NotifierProvider(() => SettableNotifier((ref) => 0));
       final onChange = Listener<int>();
       final container = ProviderContainer.test();
 
@@ -213,7 +210,9 @@ void main() {
     });
 
     testWidgets('closes the subscription on provider change', (tester) async {
-      final provider = StateProvider.family<int, int>((ref, _) => 0);
+      final provider = NotifierProvider.family<SettableNotifier<int>, int, int>(
+        (_) => SettableNotifier((ref) => 0),
+      );
       final container = ProviderContainer.test();
 
       await tester.pumpWidget(
@@ -262,7 +261,9 @@ void main() {
     testWidgets('listen to the new provider on provider change', (
       tester,
     ) async {
-      final provider = StateProvider.family<int, int>((ref, _) => 0);
+      final provider = NotifierProvider.family<SettableNotifier<int>, int, int>(
+        (_) => SettableNotifier((ref) => 0),
+      );
       final container = ProviderContainer.test();
       final onChange = Listener<int>();
 

@@ -46,6 +46,18 @@ void main() {
 
       expect(element.isActive, true);
     });
+
+    group('read', () {
+      test('throws if used after close', () {
+        final container = ProviderContainer.test();
+        final provider = FutureProvider((ref) async => 0);
+
+        final sub = container.listen(provider.future, (prev, value) {});
+        sub.close();
+
+        expect(sub.read, throwsStateError);
+      });
+    });
   });
 
   group('ProviderSubscription.resume', () {
@@ -152,6 +164,112 @@ void main() {
       expect(sub.isPaused, true);
       sub.resume();
       expect(sub.isPaused, false);
+    });
+
+    group('when a dependency changed during the pause', () {
+      test('notifies the listener once with the latest value', () {
+        final container = ProviderContainer.test();
+        final dep = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier((ref, _) => 0),
+        );
+        final provider = Provider((ref) => ref.watch(dep));
+        final listener = Listener<int>();
+
+        final sub = container.listen(provider, listener.call);
+
+        sub.pause();
+        container.read(dep.notifier).state++;
+        sub.resume();
+
+        verifyOnly(listener, listener(0, 1));
+      });
+    });
+  });
+
+  group('ProviderSubscription', () {
+    late ProviderContainer container;
+    final didChange = Listener<int>();
+
+    setUp(() {
+      container = ProviderContainer.test();
+    });
+
+    tearDown(() {
+      reset(didChange);
+      container.dispose();
+    });
+
+    test('no longer call listeners anymore after close', () {
+      final first = NotifierProvider<Counter, int>(Counter.new);
+      final provider = Provider((ref) => ref.watch(first));
+      final element = container.readProviderElement(provider);
+
+      expect(element.hasNonWeakListeners, false);
+
+      final sub = container.listen(provider, didChange.call);
+
+      expect(element.hasNonWeakListeners, true);
+
+      sub.close();
+      container.read(first.notifier).increment();
+
+      expect(element.hasNonWeakListeners, false);
+      verifyZeroInteractions(didChange);
+    });
+
+    group('.read', () {
+      test('rethrows the exception thrown when building a provider', () {
+        final error = Error();
+        final provider = Provider<int>((ref) => throw error, name: 'hello');
+
+        final sub = container.listen(provider, (_, _) {});
+
+        expect(sub.read, throwsProviderException(error));
+      });
+
+      test(
+        'rethrows the exception thrown when building a selected provider',
+        () {
+          final error = Error();
+          final provider = Provider<int>((ref) => throw error, name: 'hello');
+
+          final sub = container.listen(
+            provider.select((value) => value),
+            (_, _) {},
+          );
+
+          expect(sub.read, throwsProviderException(error));
+        },
+      );
+
+      test('flushes the provider', () {
+        final first = NotifierProvider<Counter, int>(Counter.new);
+        final provider = Provider((ref) => ref.watch(first));
+
+        final sub = container.listen(provider, (_, _) {});
+
+        expect(sub.read(), 0);
+
+        container.read(first.notifier).increment();
+
+        expect(sub.read(), 1);
+      });
+
+      test('flushes the selected provider', () {
+        final first = NotifierProvider<Counter, int>(Counter.new);
+        final provider = Provider((ref) => ref.watch(first));
+
+        final sub = container.listen(
+          provider.select((value) => value),
+          (_, _) {},
+        );
+
+        expect(sub.read(), 0);
+
+        container.read(first.notifier).increment();
+
+        expect(sub.read(), 1);
+      });
     });
   });
 }

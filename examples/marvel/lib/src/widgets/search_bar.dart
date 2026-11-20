@@ -1,5 +1,4 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -9,7 +8,6 @@ import '../screens/home.dart';
 class _SearchTheme {
   const _SearchTheme({
     required this.width,
-    // ignore: unused_element, blocked by https://github.com/dart-lang/linter/issues/3232
     this.height = 300,
     required this.searchDecoration,
     required this.iconPadding,

@@ -1,0 +1,12 @@
+# scripts/links.sh checks that the links of the Markdown and MDX files, and
+# of the comments of the Dart files, are valid.
+# See "Links are valid" in CONTRIBUTING.md.
+# Paths are relative to the repository root.
+
+# Globs of the files whose links are not checked: the translations of the
+# docs, which may be out of date.
+ignored:
+  - website/i18n/**
+
+# What the links that are not checked start with.
+ignored_links: []

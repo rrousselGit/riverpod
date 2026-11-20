@@ -7,13 +7,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_devtool/main.dart';
-import 'package:riverpod_devtool/src/frames.dart';
+import 'package:riverpod_devtool/src/connection.dart';
 import 'package:riverpod_devtool/src/ui_primitives/search_bar.dart';
+import 'package:riverpod_devtool_core/riverpod_devtool_core.dart';
 
 Future<void> pumpExtension(WidgetTester tester) async {
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
+        appConnectionProvider.overrideWith(devtoolsAppConnection),
         filteredFramesProvider.overrideWith((ref) => const AsyncLoading()),
       ],
       child: const RiverpodDevtoolExtension(),

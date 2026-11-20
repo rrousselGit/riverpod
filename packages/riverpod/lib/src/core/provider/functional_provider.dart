@@ -1,5 +1,20 @@
 part of '../../framework.dart';
 
+// Examples can assume:
+// import 'package:flutter/widgets.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart' show ProviderScope;
+//
+// class MyService {}
+//
+// class MyFakeService extends MyService {}
+//
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) => const Placeholder();
+// }
+//
+// final otherProvider = Provider((ref) => 0);
+
 /// Implementation detail of `riverpod_generator`.
 /// Do not use, as this can be removed at any time.
 @internal
@@ -57,9 +72,9 @@ abstract base class $FunctionalProvider<
   ///     overrides: [
   ///       // Replace the implementation of the provider with a different one
   ///       myService.overrideWith((ref) {
-  ///         ref.watch('other');
-  ///         return MyFakeService(),
-  ///       })),
+  ///         ref.watch(otherProvider);
+  ///         return MyFakeService();
+  ///       }),
   ///     ],
   ///     child: MyApp(),
   ///   ),

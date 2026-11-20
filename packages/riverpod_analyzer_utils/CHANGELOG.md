@@ -1,3 +1,16 @@
+## Unreleased minor
+
+- `dependencies: [prefix.provider]` is now parsed when a function is imported with a prefix, instead of reporting a `providerDependencyListParseError`.
+- Added `ProviderDependency.importPrefix`.
+
+## 1.0.0 - 2026-11-06
+
+- Mark the `ClassMembers` extension as `@internal`.
+- Fix bug with latest analyzer
+- Providers whose return type is unresolved (such as `MissingType` or
+  `Future<MissingType>`) now report an `invalidProviderType` error instead of
+  crashing.
+
 ## 1.0.0-dev.12 - 2026-09-04
 
 - Upgraded `analyzer` to `<15.0.0`

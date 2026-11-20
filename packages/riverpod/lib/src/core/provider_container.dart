@@ -1,5 +1,9 @@
 part of '../framework.dart';
 
+// Examples can assume:
+// late Ref ref;
+// final myFamily = Provider.family<int, int>((ref, id) => id);
+
 /// An abstraction of both [ProviderContainer] and [$ProviderElement] used by
 /// [ProviderListenable].
 @internal
@@ -1152,15 +1156,11 @@ final class ProviderContainer implements MutationTarget {
   }
 
   /// {@macro riverpod.exists}
-  @Deprecated('Use `ref.read/watch/listen(provider.exist)` instead')
+  @Deprecated('Use `ref.read/watch/listen(provider.exists)` instead')
   bool exists(ProviderBase<Object?> provider) {
     switch (provider) {
       case $ProviderBaseImpl():
-        return _pointerManager
-                .readDirectory(provider)
-                ?.pointers[provider]
-                ?.element !=
-            null;
+        return _pointerManager.readElement(provider) != null;
     }
   }
 
@@ -1272,14 +1272,23 @@ final class ProviderContainer implements MutationTarget {
     _pointerManager.tryRemove(provider);
   }
 
-  void _disposeProvider(ProviderBase<Object?> provider) {
+  void _disposeElement(ProviderElement element) {
+    final provider = element.origin;
     final pointer = _pointerManager.readPointer(provider);
-    // The provider is already disposed, so we don't need to do anything
-    if (pointer == null) return;
+    // Its provider may have a new element since, which must not be disposed:
+    // an element can be scheduled twice, or by the KeepAliveLink of a
+    // previous build.
+    if (pointer?.element != element) {
+      // The element is otherwise already disposed, unless its pointer was
+      // removed without disposing it, such as by a child container overriding
+      // its family.
+      if (!element._disposed) element.dispose();
+      return;
+    }
 
-    pointer._onExistenceChanged(false);
+    pointer!._onExistenceChanged(false);
 
-    pointer.element?.dispose();
+    element.dispose();
     pointer.element = null;
 
     _recursivePointerRemoval(provider, pointer);
@@ -1505,7 +1514,11 @@ abstract base class ProviderObserver {
   void didAddProvider(ProviderObserverContext context, Object? value) {}
 
   /// A provider emitted an error, be it by throwing during initialization
-  /// or by having a [Future]/[Stream] emit an error
+  /// or by having a [Future]/[Stream] emit an error.
+  ///
+  /// This is **not** called when a provider is disposed before emitting its
+  /// first value (see [ProviderDisposedException]). That case is a normal
+  /// lifecycle event, not a failure.
   void providerDidFail(
     ProviderObserverContext context,
     Object error,
@@ -1526,7 +1539,7 @@ abstract base class ProviderObserver {
   /// that caused the state change.
   /// This includes when a mutation manually calls `state=`:
   ///
-  /// ```dart
+  /// ```dart no-analyze
   /// @riverpod
   /// class Example extends _$Example {
   ///   @override

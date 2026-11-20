@@ -1,5 +1,34 @@
 part of '../framework.dart';
 
+// Examples can assume:
+// import 'package:flutter_riverpod/flutter_riverpod.dart' show WidgetRef;
+// import 'package:material_ui/material_ui.dart';
+// import 'package:riverpod/experimental/mutation.dart';
+//
+// class Todo {
+//   Todo({required this.title});
+//   final String title;
+//   String get id => title;
+// }
+//
+// class User {
+//   String get id => '';
+// }
+//
+// class TodoList extends Notifier<List<Todo>> {
+//   @override
+//   List<Todo> build() => [];
+//   Future<void> addTodo(Todo todo) async {}
+// }
+//
+// final todoListProvider = NotifierProvider<TodoList, List<Todo>>(
+//   TodoList.new,
+// );
+// final mutation = Mutation<void>();
+// late WidgetRef ref;
+// late Todo todo;
+// late User user;
+
 /// Mutation code. This should be in riverpod_annotation, but has to be here
 /// for the sake of ProviderObserver.
 @internal
@@ -216,7 +245,7 @@ abstract class MutationTarget {
 ///
 /// Once defined, you can use mutations using [Ref.watch] to listen to their state:
 ///
-/// ```dart
+/// ```dart continued
 /// Widget build(BuildContext context, WidgetRef ref) {
 ///   final addTodo = ref.watch(addTodoMutation);
 ///
@@ -245,17 +274,18 @@ abstract class MutationTarget {
 /// This is typically done inside a callback, such as the `onPressed`
 /// of a button:
 ///
-/// ```dart
+/// ```dart continued
 /// ElevatedButton(
 ///   onPressed: () {
-///     addTodoMutation.run(ref, () async {
+///     addTodoMutation.run(ref, (tsx) async {
 ///       // This is where you perform the side-effect. Here, you can
 ///       // read your providers to modify them.
-///       await ref.read(todoListProvider.notifier).addTodo(
+///       await tsx.get(todoListProvider.notifier).addTodo(
 ///         Todo(title: 'New Todo'),
 ///       );
 ///     });
 ///   },
+///   child: const Text('Add Todo'),
 /// );
 /// ```
 ///
@@ -295,17 +325,20 @@ abstract class MutationTarget {
 ///
 /// ```dart
 /// final deleteTodoMutation = Mutation<void>();
-/// ...
+/// // ...
 ///
 /// // You can pass a unique object to the mutation upon watching it.
-/// final deleteTodo = ref.watch(deleteMutation(todo.id));
-/// ...
+/// final deleteTodo = ref.watch(deleteTodoMutation(todo.id));
+/// // ...
 ///
-/// onPressed: () {
-///   // Upon calling `run`, you will have to pass the same key as when
-///   // watching the mutation.
-///   deleteTodo(todo.id).run(ref, () async { /* ... */ });
-/// }
+/// ElevatedButton(
+///   onPressed: () {
+///     // Upon calling `run`, you will have to pass the same key as when
+///     // watching the mutation.
+///     deleteTodoMutation(todo.id).run(ref, (tsx) async { /* ... */ });
+///   },
+///   child: const Text('Delete Todo'),
+/// );
 /// ```
 ///
 /// See also:

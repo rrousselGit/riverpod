@@ -3,6 +3,10 @@ title: ^0.13.0 to ^0.14.0
 version: 2
 ---
 
+<!-- Examples can assume:
+import 'package:flutter_riverpod/legacy.dart';
+-->
+
 With the release of version `0.14.0` of Riverpod, the syntax for using [StateNotifierProvider] changed
 (see https://github.com/rrousselGit/riverpod/issues/341 for the explanation).
 
@@ -23,7 +27,7 @@ class MyStateNotifier extends StateNotifier<MyModel> {
 
   Before:
 
-  ```dart
+  ```dart no-analyze
   final provider = StateNotifierProvider<MyStateNotifier>((ref) {
     return MyStateNotifier();
   });
@@ -31,7 +35,7 @@ class MyStateNotifier extends StateNotifier<MyModel> {
 
   After:
 
-  ```dart
+  ```dart continued
   final provider = StateNotifierProvider<MyStateNotifier, MyModel>((ref) {
     return MyStateNotifier();
   });
@@ -41,7 +45,7 @@ class MyStateNotifier extends StateNotifier<MyModel> {
 
   Before:
 
-  ```dart
+  ```dart no-analyze
   Widget build(BuildContext context, ScopedReader watch) {
     MyStateNotifier notifier = watch(provider);
   }
@@ -49,7 +53,7 @@ class MyStateNotifier extends StateNotifier<MyModel> {
 
   After:
 
-  ```dart
+  ```dart no-analyze
   Widget build(BuildContext context, ScopedReader watch) {
     MyStateNotifier notifier = watch(provider.notifier);
   }
@@ -59,7 +63,7 @@ class MyStateNotifier extends StateNotifier<MyModel> {
 
   Before:
 
-  ```dart
+  ```dart no-analyze
   Widget build(BuildContext context, ScopedReader watch) {
     MyModel state = watch(provider.state);
   }
@@ -67,7 +71,7 @@ class MyStateNotifier extends StateNotifier<MyModel> {
 
   After:
 
-  ```dart
+  ```dart no-analyze
   Widget build(BuildContext context, ScopedReader watch) {
     MyModel state = watch(provider);
   }

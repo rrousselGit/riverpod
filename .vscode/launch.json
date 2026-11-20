@@ -10,6 +10,14 @@
       "request": "launch",
       "type": "dart",
       "args": ["--dart-define=use_simulated_environment=true"]
+    },
+    {
+      // The devtool and the application it inspects, in a single window.
+      "name": "devtool_embedded_app",
+      "cwd": "other_projects/devtool_embedded_app",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "macos"
     }
   ]
 }

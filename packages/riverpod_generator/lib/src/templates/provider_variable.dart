@@ -14,7 +14,7 @@ class ProviderVariableTemplate extends Template {
     final providerName = provider.providerName(options);
 
     buffer.writeln(provider.doc);
-    buffer.writeln('@ProviderFor(${provider.name})');
+    buffer.writeln('@#{{riverpod_annotation|ProviderFor}}(${provider.name})');
     buffer.writeln(provider.metadata);
 
     switch (provider) {

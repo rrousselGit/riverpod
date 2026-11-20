@@ -1,3 +1,4 @@
+// dart format off
 // This code is distributed under the MIT License.
 // Copyright (c) 2022 Remi Rousselet.
 // You can find the original at https://github.com/rrousselGit/riverpod.

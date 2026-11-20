@@ -1,3 +1,4 @@
+// dart format off
 
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:material_ui/material_ui.dart';
