@@ -145,6 +145,55 @@ void main() {
     });
   });
 
+  group('handles listen(weak: false)', () {
+    test('notifies listeners when the selected value changes', () async {
+      final container = ProviderContainer.test();
+      final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
+      final provider = FutureProvider((ref) async => ref.watch(dep));
+      final calls = <Future<int>>[];
+
+      container.listen(
+        provider.selectAsync((value) => value * 2),
+        (previous, next) => calls.add(next),
+      );
+      await container.read(provider.future);
+      expect(calls, isEmpty);
+
+      container.read(dep.notifier).state = 1;
+      await container.read(provider.future);
+
+      expect(calls, hasLength(1));
+      expect(await calls.single, 2);
+    });
+
+    test('notifies listeners when the provider starts failing', () async {
+      final container = ProviderContainer.test();
+      final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
+      final provider = FutureProvider<int>((ref) async {
+        final value = ref.watch(dep);
+        if (value == 1) throw StateError('failed');
+        return value;
+      }, retry: (_, _) => null);
+      final calls = <Future<int>>[];
+
+      container.listen(provider.selectAsync((value) => value * 2), (
+        previous,
+        next,
+      ) {
+        // Errors are asserted below; avoid reporting them to the zone.
+        calls.add(next..ignore());
+      });
+      await container.read(provider.future);
+      expect(calls, isEmpty);
+
+      container.read(dep.notifier).state = 1;
+      await container.read(provider.future).catchError((Object _) => 0);
+
+      expect(calls, hasLength(1));
+      await expectLater(calls.single, throwsProviderException(isStateError));
+    });
+  });
+
   group('If disposed before a value could be emitted', () {
     test('.selectAsync disposes smoothly on a simple .read', () async {
       // regression test for #4316
