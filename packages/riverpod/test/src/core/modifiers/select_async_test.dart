@@ -8,6 +8,192 @@ import '../../matrix.dart';
 import '../../utils.dart';
 
 void main() {
+  group('handles listen(weak: true)', () {
+    test('does not initialize the provider until it is used', () async {
+      final container = ProviderContainer.test();
+      var buildCount = 0;
+      var selectCount = 0;
+      final provider = FutureProvider<int>((ref) {
+        buildCount++;
+        return 42;
+      });
+
+      final sub = container.listen(
+        provider.selectAsync((value) {
+          selectCount++;
+          return value * 2;
+        }),
+        (previous, next) {},
+        weak: true,
+      );
+
+      await container.pump();
+      expect(buildCount, 0);
+      expect(selectCount, 0);
+
+      container.listen(provider, (previous, next) {});
+
+      expect(await sub.read(), 84);
+      expect(buildCount, 1);
+      expect(selectCount, 1);
+    });
+
+    test('read initializes the provider and waits for its result', () async {
+      final container = ProviderContainer.test();
+      final completer = Completer<int>();
+      var buildCount = 0;
+      final provider = FutureProvider<int>((ref) {
+        buildCount++;
+        return completer.future;
+      });
+
+      final sub = container.listen(
+        provider.selectAsync((value) => value * 2),
+        (previous, next) {},
+        weak: true,
+      );
+
+      final future = sub.read();
+      expect(buildCount, 1);
+
+      completer.complete(21);
+      expect(await future, 42);
+      expect(sub.read(), same(future));
+    });
+
+    test('read selects an already initialized provider', () async {
+      final container = ProviderContainer.test();
+      var selectCount = 0;
+      final provider = FutureProvider<int>((ref) => 21);
+      container.listen(provider, (previous, next) {});
+      await container.read(provider.future);
+
+      final sub = container.listen(
+        provider.selectAsync((value) {
+          selectCount++;
+          return value * 2;
+        }),
+        (previous, next) {},
+        weak: true,
+      );
+
+      await container.pump();
+      expect(selectCount, 0);
+
+      expect(await sub.read(), 42);
+      expect(selectCount, 1);
+    });
+
+    test('read resolves provider errors', () async {
+      final container = ProviderContainer.test();
+      final completer = Completer<int>();
+      final provider = FutureProvider<int>(
+        (ref) => completer.future,
+        retry: (_, _) => null,
+      );
+
+      final sub = container.listen(
+        provider.selectAsync((value) => value * 2),
+        (previous, next) {},
+        weak: true,
+      );
+
+      final future = sub.read();
+      final expectation = expectLater(
+        future,
+        throwsProviderException(isStateError),
+      );
+      completer.completeError(StateError('failed'));
+
+      await expectation;
+    });
+
+    test('read resolves selector errors for initialized providers', () async {
+      final container = ProviderContainer.test();
+      final provider = FutureProvider<int>((ref) => 21);
+      container.listen(provider, (previous, next) {});
+      await container.read(provider.future);
+
+      final sub = container.listen(
+        provider.selectAsync((value) => throw StateError('failed')),
+        (previous, next) {},
+        weak: true,
+      );
+
+      await expectLater(sub.read(), throwsProviderException(isStateError));
+    });
+
+    test('read does not keep an auto-dispose provider alive', () async {
+      final container = ProviderContainer.test();
+      var disposeCount = 0;
+      final provider = FutureProvider.autoDispose<int>((ref) {
+        ref.onDispose(() => disposeCount++);
+        return 21;
+      });
+
+      final sub = container.listen(
+        provider.selectAsync((value) => value * 2),
+        (previous, next) {},
+        weak: true,
+      );
+
+      expect(await sub.read(), 42);
+      expect(disposeCount, 0);
+
+      await container.pump();
+      expect(disposeCount, 1);
+    });
+  });
+
+  group('handles listen(weak: false)', () {
+    test('notifies listeners when the selected value changes', () async {
+      final container = ProviderContainer.test();
+      final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
+      final provider = FutureProvider((ref) async => ref.watch(dep));
+      final calls = <Future<int>>[];
+
+      container.listen(
+        provider.selectAsync((value) => value * 2),
+        (previous, next) => calls.add(next),
+      );
+      await container.read(provider.future);
+      expect(calls, isEmpty);
+
+      container.read(dep.notifier).state = 1;
+      await container.read(provider.future);
+
+      expect(calls, hasLength(1));
+      expect(await calls.single, 2);
+    });
+
+    test('notifies listeners when the provider starts failing', () async {
+      final container = ProviderContainer.test();
+      final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
+      final provider = FutureProvider<int>((ref) async {
+        final value = ref.watch(dep);
+        if (value == 1) throw StateError('failed');
+        return value;
+      }, retry: (_, _) => null);
+      final calls = <Future<int>>[];
+
+      container.listen(provider.selectAsync((value) => value * 2), (
+        previous,
+        next,
+      ) {
+        // Errors are asserted below; avoid reporting them to the zone.
+        calls.add(next..ignore());
+      });
+      await container.read(provider.future);
+      expect(calls, isEmpty);
+
+      container.read(dep.notifier).state = 1;
+      await container.read(provider.future).catchError((Object _) => 0);
+
+      expect(calls, hasLength(1));
+      await expectLater(calls.single, throwsProviderException(isStateError));
+    });
+  });
+
   group('If disposed before a value could be emitted', () {
     test('.selectAsync disposes smoothly on a simple .read', () async {
       // regression test for #4316

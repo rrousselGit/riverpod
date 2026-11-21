@@ -46,7 +46,7 @@ final class _AsyncSelector<InputT, OutputT>
     Completer<OutputT>? selectedCompleter;
     Future<OutputT>? selectedFuture;
 
-    void emitData(OutputT data, {required bool callListeners}) {
+    void emitData(OutputT data) {
       final previousFuture = selectedFuture;
       if (selectedCompleter != null) {
         selectedCompleter!.complete(data);
@@ -55,17 +55,11 @@ final class _AsyncSelector<InputT, OutputT>
         if (providerSub.closed) return;
 
         selectedFuture = Future.value(data);
-        if (callListeners) {
-          providerSub._notifyData(previousFuture, selectedFuture!);
-        }
+        providerSub._notifyData(previousFuture, selectedFuture!);
       }
     }
 
-    void emitError(
-      Object err,
-      StackTrace stack, {
-      required bool callListeners,
-    }) {
+    void emitError(Object err, StackTrace stack) {
       final error = ProviderException(err, stack);
       final previousFuture = selectedFuture;
       if (selectedCompleter != null) {
@@ -75,14 +69,12 @@ final class _AsyncSelector<InputT, OutputT>
         if (providerSub.closed) return;
 
         selectedFuture = Future.error(error, stack);
-        if (callListeners) {
-          providerSub._notifyData(previousFuture, selectedFuture!);
-        }
+        providerSub._notifyData(previousFuture, selectedFuture!);
       }
     }
 
     Future<InputT> listenedFuture;
-    void playValue(Future<InputT> newFuture, {bool callListeners = true}) {
+    void playValue(Future<InputT> newFuture) {
       void onLoading() {
         if (selectedFuture == null) {
           // The first time a future is emitted
@@ -107,14 +99,10 @@ final class _AsyncSelector<InputT, OutputT>
           switch (newSelectedValue) {
             case $ResultData():
               if (newSelectedValue != lastSelectedValue) {
-                emitData(newSelectedValue.value, callListeners: callListeners);
+                emitData(newSelectedValue.value);
               }
             case $ResultError():
-              emitError(
-                newSelectedValue.error,
-                newSelectedValue.stackTrace,
-                callListeners: callListeners,
-              );
+              emitError(newSelectedValue.error, newSelectedValue.stackTrace);
           }
 
           lastSelectedValue = newSelectedValue;
@@ -122,7 +110,7 @@ final class _AsyncSelector<InputT, OutputT>
         onError: (Object err, StackTrace stack) {
           // A new future has been emitted since, ignore
           if (listenedFuture != newFuture) return;
-          emitError(err, stack, callListeners: callListeners);
+          emitError(err, stack);
 
           // Error in the provider, it should've already been propagated
           // so no need to pollute the stack
@@ -139,13 +127,15 @@ final class _AsyncSelector<InputT, OutputT>
       onError: onError,
     );
 
-    playValue(switch (sub.readSafe()) {
-      $ResultData<Future<InputT>>() && final d => d.value,
-      $ResultError<Future<InputT>>() && final d => Future.error(
-        d.error,
-        d.stackTrace,
-      )..ignore(),
-    }, callListeners: false);
+    if (!weak) {
+      playValue(switch (sub.readSafe()) {
+        $ResultData<Future<InputT>>() && final d => d.value,
+        $ResultError<Future<InputT>>() && final d => Future.error(
+          d.error,
+          d.stackTrace,
+        )..ignore(),
+      });
+    }
 
     return providerSub =
         ExternalProviderSubscription<Future<InputT>, Future<OutputT>>.fromSub(
@@ -157,6 +147,12 @@ final class _AsyncSelector<InputT, OutputT>
             final result = sub.readSafe();
             if (result case $ResultError(:final error, :final stackTrace)) {
               return $Result.error(error, stackTrace);
+            }
+
+            // An already initialized provider may not notify a weak listener
+            // when read, so initialize the selected future lazily.
+            if (selectedFuture == null) {
+              playValue(result.value!);
             }
 
             return $ResultData(selectedFuture!);
