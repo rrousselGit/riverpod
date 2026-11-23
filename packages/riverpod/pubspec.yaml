@@ -39,4 +39,4 @@ dev_dependencies:
   path: ^1.9.0
   riverpod_devtool_generator: ^0.0.0
   test: ^1.0.0
-  trotter: ^2.0.0-dev.1
+  trotter: ^3.0.0
