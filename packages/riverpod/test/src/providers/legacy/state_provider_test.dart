@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_types_on_closure_parameters
-
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
@@ -11,6 +9,25 @@ import '../../utils.dart';
 
 void main() {
   group('StateProvider', () {
+    test('isAutoDispose defaults to false, and can be set', () {
+      expect(StateProvider((ref) => 0).isAutoDispose, isFalse);
+      expect(
+        StateProvider((ref) => 0, isAutoDispose: true).isAutoDispose,
+        isTrue,
+      );
+      expect(
+        StateProvider.family<int, int>((ref, arg) => 0).isAutoDispose,
+        isFalse,
+      );
+      expect(
+        StateProvider.family<int, int>(
+          (ref, arg) => 0,
+          isAutoDispose: true,
+        ).isAutoDispose,
+        isTrue,
+      );
+    });
+
     test('supports overrideWith', () {
       final provider = StateProvider<int>((ref) => 0);
       final autoDispose = StateProvider.autoDispose<int>((ref) => 0);

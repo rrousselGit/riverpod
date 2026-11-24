@@ -1,9 +1,8 @@
-import 'package:devtools_app_shared/utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_devtool/src/state_inspector/inspector.dart';
-import 'package:riverpod_devtool/src/vm_service.dart';
+import 'package:riverpod_devtool_core/riverpod_devtool_core.dart';
 import 'package:vm_service/vm_service.dart' as vm;
 
 import '../../widget_test_helpers.dart';
@@ -52,7 +51,7 @@ class _Eval implements Eval {
   Future<Byte<VmInstance>> instance(
     VmInstanceRef ref, {
     required Disposable isAlive,
-  }) async => ByteVariable(ref.requireInstance);
+  }) async => ByteVariable(VmInstance(ref.raw as vm.Instance));
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -87,6 +86,7 @@ Future<void> _show(
       overrides: [
         evalProvider.overrideWith((ref) => Future.value(factory)),
         devtoolSessionProvider.overrideWith(_Session.new),
+        hotReloadEventProvider.overrideWith((ref) {}),
       ],
       child: testApp(child),
     ),

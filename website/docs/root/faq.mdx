@@ -6,6 +6,31 @@ version: 2
 import { Link } from "/src/components/Link";
 import { AutoSnippet, When } from "/src/components/CodeSnippet";
 
+<!-- Examples can assume:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
+
+late WidgetRef ref;
+late BuildContext context;
+late Future<void> future;
+final provider = Provider((ref) => 0);
+
+class YourNotifier extends Notifier<int> {
+  @override
+  int build() => 0;
+  void yourMethod() {}
+}
+final yourNotifierProvider = NotifierProvider<YourNotifier, int>(
+  YourNotifier.new,
+);
+
+class User {
+  User(this.name);
+  final String name;
+}
+final userProvider = Provider<User?>((ref) => null);
+-->
+
 Here are some commonly asked questions from the community:
 
 ## What is the difference between `ref.refresh` and `ref.invalidate`?
@@ -16,7 +41,7 @@ and wonder how they differ.
 It's simpler than you think: `ref.refresh` is nothing but syntax sugar for
 `invalidate` + `read`:
 
-```dart
+```dart no-analyze
 T refresh<T>(provider) {
   invalidate(provider);
   return read(provider);
@@ -140,8 +165,9 @@ mounted. This generally happens after an `await`:
 ElevatedButton(
   onPressed: () async {
     await future;
-    ref.read(...); // May throw "Using "ref" when a widget is about to or has been unmounted is unsafe."
-  }
+    ref.read(provider); // May throw "Using "ref" when a widget is about to or has been unmounted is unsafe."
+  },
+  child: const Text('Click me'),
 )
 ```
 
@@ -152,8 +178,9 @@ ElevatedButton(
   onPressed: () async {
     await future;
     if (!context.mounted) return;
-    ref.read(...); // No longer throws
-  }
+    ref.read(provider); // No longer throws
+  },
+  child: const Text('Click me'),
 )
 ```
 

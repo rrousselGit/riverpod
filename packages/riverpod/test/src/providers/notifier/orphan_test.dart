@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_types_on_closure_parameters, invalid_use_of_protected_member
-
 import 'package:riverpod/misc.dart' show Refreshable, ProviderListenable;
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';

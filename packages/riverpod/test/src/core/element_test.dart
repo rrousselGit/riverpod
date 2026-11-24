@@ -10,6 +10,75 @@ import '../utils.dart';
 
 void main() {
   group('ProviderElement', () {
+    group('StreamProvider dependencies across rebuilds', () {
+      late ProviderContainer container;
+      late StreamProvider<int> provider;
+      late StreamController<int> controller;
+      var listeners = 0;
+      var throwOnBuild = false;
+
+      setUp(() {
+        listeners = 0;
+        throwOnBuild = false;
+        container = ProviderContainer.test(retry: (_, _) => null);
+        final dependency = Provider((ref) {
+          ref.onAddListener(() => listeners++);
+          ref.onRemoveListener(() => listeners--);
+        });
+        provider = StreamProvider((ref) {
+          ref.watch(dependency);
+          if (throwOnBuild) throw StateError('build');
+
+          final current = controller = StreamController<int>();
+          ref.onDispose(current.close);
+          return current.stream;
+        });
+        container.listen(provider, (_, _) {});
+      });
+
+      Future<void> rebuild() async {
+        container.invalidate(provider);
+        container.read(provider);
+        await container.pump();
+      }
+
+      test('are retained while the new stream has not emitted', () async {
+        await rebuild();
+
+        expect(listeners, 2);
+      });
+
+      test('are released once the new stream emits a value', () async {
+        await rebuild();
+        controller.add(0);
+        await container.pump();
+
+        expect(listeners, 1);
+      });
+
+      test('are released once the new stream emits an error', () async {
+        await rebuild();
+        controller.addError(0);
+        await container.pump();
+
+        expect(listeners, 1);
+      });
+
+      test('are released once the new stream closes empty', () async {
+        await rebuild();
+        await controller.close();
+
+        expect(listeners, 1);
+      });
+
+      test('are released if the new build throws', () async {
+        throwOnBuild = true;
+        await rebuild();
+
+        expect(listeners, 1);
+      });
+    });
+
     group('pausedActiveSubscriptionCount', () {
       test('Handles subscription.pause', () async {
         final container = ProviderContainer.test();
@@ -158,7 +227,7 @@ void main() {
       });
 
       test('rebuilding a provider can modify other providers', () async {
-        final dep = StateProvider((ref) => 0);
+        final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
         final provider = Provider((ref) => ref.watch(dep));
         final another = NotifierProvider<Notifier<int>, int>(
           () => DeferredNotifier((ref, self) {
@@ -177,7 +246,7 @@ void main() {
 
       test("initState can't dirty ancestors", () {
         final container = ProviderContainer.test();
-        final ancestor = StateProvider((_) => 0);
+        final ancestor = NotifierProvider(() => SettableNotifier((_) => 0));
         final child = Provider((ref) {
           ref.watch(ancestor.notifier).state++;
           return ref.watch(ancestor);
@@ -188,19 +257,23 @@ void main() {
 
       test("initState can't dirty siblings", () {
         final container = ProviderContainer.test();
-        final ancestor = StateProvider((_) => 0, name: 'ancestor');
-        final counter = Counter();
-        final sibling = StateNotifierProvider<Counter, int>(name: 'sibling', (
-          ref,
-        ) {
-          ref.watch(ancestor);
-          return counter;
-        });
+        final ancestor = NotifierProvider(
+          () => SettableNotifier((_) => 0),
+          name: 'ancestor',
+        );
+        late DeferredNotifier<int> counter;
+        final sibling = NotifierProvider<DeferredNotifier<int>, int>(
+          name: 'sibling',
+          () => counter = DeferredNotifier((ref, self) {
+            ref.watch(ancestor);
+            return 0;
+          }),
+        );
         var didWatchAncestor = false;
         final child = Provider(name: 'child', (ref) {
           ref.watch(ancestor);
           didWatchAncestor = true;
-          counter.increment();
+          counter.state++;
         });
 
         container.read(sibling);
@@ -211,7 +284,7 @@ void main() {
 
       test("initState can't mark dirty other provider", () {
         final container = ProviderContainer.test();
-        final provider = StateProvider((ref) => 0);
+        final provider = NotifierProvider(() => SettableNotifier((ref) => 0));
         final provider2 = Provider((ref) {
           ref.watch(provider.notifier).state = 42;
           return 0;
@@ -224,8 +297,10 @@ void main() {
 
       test("nested initState can't mark dirty other providers", () {
         final container = ProviderContainer.test();
-        final counter = Counter();
-        final provider = StateNotifierProvider<Counter, int>((_) => counter);
+        late Counter counter;
+        final provider = NotifierProvider<Counter, int>(
+          () => counter = Counter(),
+        );
         final nested = Provider((_) => 0);
         final provider2 = Provider((ref) {
           ref.watch(nested);
@@ -238,35 +313,12 @@ void main() {
         expect(errorsOf(() => container.read(provider2)), isNotEmpty);
       });
 
-      test('auto dispose can dirty providers', () async {
-        final container = ProviderContainer.test();
-        final counter = Counter();
-        final provider = StateNotifierProvider<Counter, int>((_) => counter);
-        var didDispose = false;
-        final provider2 = Provider.autoDispose((ref) {
-          ref.onDispose(() {
-            didDispose = true;
-            counter.increment();
-          });
-        });
-
-        container.read(provider);
-
-        final sub = container.listen<void>(provider2, (_, _) {});
-        sub.close();
-
-        expect(counter.state, 0);
-
-        await container.pump();
-
-        expect(didDispose, true);
-        expect(counter.state, 1);
-      });
-
       test("Provider can't dirty anything on create", () {
         final container = ProviderContainer.test();
-        final counter = Counter();
-        final provider = StateNotifierProvider<Counter, int>((_) => counter);
+        late Counter counter;
+        final provider = NotifierProvider<Counter, int>(
+          () => counter = Counter(),
+        );
         late List<Object> errors;
         final computed = Provider((ref) {
           errors = errorsOf(counter.increment);
@@ -745,6 +797,62 @@ void main() {
         });
       });
 
+      test('errors emitted by a watched provider after build (e.g. on retry) '
+          'can be caught by the dependent provider', () {
+        // Guards the Ref.watch behavior that WidgetRef.watch mirrors since
+        // https://github.com/rrousselGit/riverpod/issues/4432: errors emitted
+        // by a dependency after the initial build (such as from retries)
+        // rebuild the dependent provider so that `ref.watch` rethrows the
+        // error, instead of being sent to the zone's uncaught handler.
+        final errors = <Object>[];
+        runZonedGuarded(
+          () => fakeAsync((fake) {
+            final container = ProviderContainer.test(
+              retry: (_, _) => const Duration(milliseconds: 200),
+            );
+
+            var attempt = 0;
+            final dep = Provider<int>((ref) {
+              attempt++;
+              throw Exception('Test error $attempt');
+            });
+
+            var buildCount = 0;
+            final provider = Provider<String>((ref) {
+              buildCount++;
+              try {
+                ref.watch(dep);
+                return 'no error';
+              } catch (_) {
+                return 'caught';
+              }
+            });
+
+            final listener = Listener<String>();
+            container.listen(
+              provider,
+              listener.call,
+              fireImmediately: true,
+              onError: (e, s) => errors.add(e),
+            );
+
+            verifyOnly(listener, listener(null, 'caught'));
+            expect(buildCount, 1);
+
+            // Let several retries fire.
+            fake.elapse(const Duration(seconds: 30));
+
+            // The dependent provider rebuilt on each retry but kept catching
+            // the error; none of them escaped to the zone.
+            expect(buildCount, greaterThan(1));
+            verifyNoMoreInteractions(listener);
+          }),
+          (e, s) => errors.add(e),
+        );
+
+        expect(errors, isEmpty);
+      });
+
       test(
         'disposes of the timer when the element is disposed',
         () => fakeAsync((fake) {
@@ -773,7 +881,7 @@ void main() {
       'does not throw outdated error when a dependency is flushed while the dependent is building',
       () async {
         final container = ProviderContainer.test();
-        final a = StateProvider((ref) => 0);
+        final a = NotifierProvider(() => SettableNotifier((ref) => 0));
 
         final dep = Provider<int>((ref) {
           return ref.watch(a) + 10;
@@ -840,11 +948,7 @@ void main() {
         'when selecting a provider, element.visitAncestors visits the selected provider',
         () {
           final container = ProviderContainer.test();
-          final selected = StateNotifierProvider<StateController<int>, int>((
-            ref,
-          ) {
-            return StateController(0);
-          });
+          final selected = NotifierProvider(() => SettableNotifier((ref) => 0));
           final provider = Provider((ref) {
             ref.watch(selected.select((value) => null));
           });
@@ -942,8 +1046,8 @@ void main() {
 
       test('re-evaluating a provider can stop listening to a dependency', () {
         final container = ProviderContainer.test();
-        final first = StateProvider((ref) => 0);
-        final second = StateProvider((ref) => 0);
+        final first = NotifierProvider(() => SettableNotifier((ref) => 0));
+        final second = NotifierProvider(() => SettableNotifier((ref) => 0));
         final computed = Provider<String>((ref) {
           if (ref.watch(first) == 0) {
             return ref.watch(second).toString();
@@ -981,7 +1085,7 @@ void main() {
 
       test('remove dependencies on dispose', () async {
         final container = ProviderContainer.test();
-        final first = StateProvider((ref) => 0);
+        final first = NotifierProvider(() => SettableNotifier((ref) => 0));
         final computed = Provider.autoDispose((ref) {
           return ref.watch(first);
         });
@@ -1105,7 +1209,7 @@ void main() {
           final container = ProviderContainer.test();
 
           var buildCount = 0;
-          final dep = StateProvider((ref) => 0);
+          final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
           final provider = Provider((ref) {
             buildCount++;
             return ref.watch(dep);
@@ -1201,7 +1305,7 @@ void main() {
         final container = ProviderContainer.test();
         final listener = Listener<int>();
 
-        final dep = StateProvider((ref) => 0);
+        final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
         final provider = NotifierProvider<DeferredNotifier<int>, int>(
           () => DeferredNotifier((ref, self) {
             ref.watch(dep);
@@ -1219,7 +1323,7 @@ void main() {
       final container = ProviderContainer.test();
       final listener = Listener<int>();
 
-      final dep = StateProvider((ref) => 0);
+      final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
       final provider = NotifierProvider<DeferredNotifier<int>, int>(
         () => DeferredNotifier((ref, self) {
           ref.watch(dep);
@@ -1238,7 +1342,7 @@ void main() {
     });
 
     test(
-      'throws StateError if the provider is disposed before a value was emitted',
+      'throws ProviderDisposedException if the provider is disposed before a value was emitted',
       () async {
         final provider = StreamProvider<int>((ref) async* {});
         final container = ProviderContainer.test(
@@ -1252,18 +1356,29 @@ void main() {
         await expectLater(
           future,
           throwsA(
-            isStateError.having(
-              (e) => e.message,
-              'message',
-              equalsIgnoringHashCodes(
-                'The provider StreamProvider<int>#00000 was disposed during loading state, '
-                'yet no value could be emitted.',
-              ),
+            isA<ProviderDisposedException>().having(
+              (e) => e.provider,
+              'provider',
+              provider,
             ),
           ),
         );
       },
     );
+
+    test('ProviderDisposedException.toString', () {
+      final provider = Provider((ref) => 0);
+
+      expect(
+        ProviderDisposedException(provider).toString(),
+        equalsIgnoringHashCodes(
+          'ProviderDisposedException: The provider Provider<int>#00000 was '
+          'disposed during loading state, before it could emit a value.\n'
+          'This is a normal lifecycle event caused by the provider being '
+          'no longer listened to while still loading.',
+        ),
+      );
+    });
 
     group('auto dispose', () {
       test(
@@ -1275,9 +1390,9 @@ void main() {
             ref.onDispose(() => dependencyDisposeCount++);
             return 0;
           });
-          final isDependingOnDependency = StateProvider(
+          final isDependingOnDependency = NotifierProvider(
+            () => SettableNotifier((ref) => true),
             name: 'isDependingOnDependency',
-            (ref) => true,
           );
           final provider = Provider.autoDispose(name: 'provider', (ref) {
             if (ref.watch(isDependingOnDependency)) {
@@ -1567,7 +1682,7 @@ void main() {
           'but without calling ref.onDispose again', () async {
         final container = ProviderContainer.test();
         final onDispose = OnDisposeMock();
-        final dep = StateProvider((ref) => 0);
+        final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
         final provider = Provider.autoDispose((ref) {
           ref.onDispose(onDispose.call);
           return ref.watch(dep);
@@ -1591,7 +1706,7 @@ void main() {
       test(
         'flushes listened-to providers even if they have no external listeners',
         () async {
-          final dep = StateProvider((ref) => 0);
+          final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
           final provider = Provider((ref) => ref.watch(dep));
           final another = NotifierProvider<Notifier<int>, int>(
             () => DeferredNotifier((ref, self) {
@@ -1612,7 +1727,10 @@ void main() {
       test(
         'flushes listened-to providers even if they have no external listeners (with ProviderListenable)',
         () async {
-          final dep = StateProvider(name: 'dep', (ref) => 0);
+          final dep = NotifierProvider(
+            () => SettableNotifier((ref) => 0),
+            name: 'dep',
+          );
           final provider = Provider(name: 'provider', (ref) => ref.watch(dep));
           final another = NotifierProvider<Notifier<int>, int>(
             name: 'another',
@@ -1630,15 +1748,47 @@ void main() {
           expect(container.read(another), 1);
         },
       );
+
+      test('supports a dependency listener reading the provider while it is '
+          'flushing its dependencies', () {
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/4448
+        // In 2.x, the nested read rebuilt the provider while its dependencies
+        // were being iterated, throwing a ConcurrentModificationError.
+        final container = ProviderContainer.test();
+        var value = 0;
+        final root = Provider((ref) => value);
+        final a = Provider((ref) => ref.watch(root));
+        final b = Provider((ref) => ref.watch(root));
+        var buildCount = 0;
+        final provider = Provider<int>((ref) {
+          buildCount++;
+          return ref.watch(a) + ref.watch(b);
+        });
+
+        container.listen(provider, (_, _) {});
+        final nestedReads = <int>[];
+        container.listen(
+          a,
+          (_, _) => nestedReads.add(container.read(provider)),
+        );
+        container.listen(
+          b,
+          (_, _) => nestedReads.add(container.read(provider)),
+        );
+
+        value = 1;
+        container.invalidate(root);
+
+        expect(container.read(provider), 2);
+        expect(nestedReads, [2, 2]);
+        expect(buildCount, 2);
+      });
     });
 
     group('caching', () {
       test('the value is cached between multiple listeners', () {
         final container = ProviderContainer.test();
-        final notifier = Counter();
-        final provider = StateNotifierProvider<Counter, int>((_) {
-          return notifier;
-        });
+        final provider = NotifierProvider<Counter, int>(Counter.new);
         var callCount = 0;
         final computed = Provider((ref) {
           callCount++;
@@ -1683,7 +1833,7 @@ void main() {
         () {
           final container = ProviderContainer.test();
           var callCount = 0;
-          final atom = StateProvider((ref) => 0);
+          final atom = NotifierProvider(() => SettableNotifier((ref) => 0));
           final dependency = Provider((ref) => ref.watch(atom));
           final provider = Provider((ref) {
             callCount++;

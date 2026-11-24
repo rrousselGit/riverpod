@@ -11,6 +11,8 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:analyzer/file_system/overlay_file_system.dart';
 import 'package:analyzer/file_system/physical_file_system.dart';
+import 'package:analyzer/src/dart/analysis/analysis_context_collection.dart';
+import 'package:analyzer/src/dart/analysis/file_byte_store.dart';
 import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 import 'package:package_config/package_config.dart';
@@ -51,14 +53,27 @@ List<RiverpodAnalysisError> collectErrors(void Function() cb) {
 
 int _testNumber = 0;
 
+/// Whether a test that is not skipped was declared yet in this file.
+bool _declaredRunnableTest = false;
+
 Future<_TestAnalysisContext>? _analysisContext;
 
 /// Shares dependency analysis while keeping each test's files at unique paths.
+///
+/// Analysis results are also cached on disk, in [byteStore], so that test
+/// files (each in its own isolate) and later runs skip analyzing the
+/// dependencies again, such as Flutter.
 class _TestAnalysisContext {
-  _TestAnalysisContext(this.directory, this.resources, this.collection);
+  _TestAnalysisContext(
+    this.directory,
+    this.resources,
+    this.byteStore,
+    this.collection,
+  );
 
   final Directory directory;
   final OverlayResourceProvider resources;
+  final FileByteStore byteStore;
   final AnalysisContextCollection collection;
   int _stamp = 0;
 
@@ -89,11 +104,25 @@ class _TestAnalysisContext {
       content: '{}',
       modificationStamp: 0,
     );
-    final collection = AnalysisContextCollection(
+    // FileByteStore silently fails its writes if this folder doesn't exist.
+    final cache = Directory(
+      p.join(
+        p.dirname(configUri.toFilePath()),
+        'riverpod_analyzer_utils_tests',
+        'analysis_cache',
+      ),
+    )..createSync(recursive: true);
+    final byteStore = FileByteStore(
+      cache.path,
+      // Test files run in isolates of the same process.
+      tempNameSuffix: p.basename(directory.path),
+    );
+    final collection = AnalysisContextCollectionImpl(
       includedPaths: [directory.path],
       resourceProvider: resources,
+      byteStore: byteStore,
     );
-    return _TestAnalysisContext(directory, resources, collection);
+    return _TestAnalysisContext(directory, resources, byteStore, collection);
   }
 
   void write(String path, String content) {
@@ -158,50 +187,75 @@ void testSource(
     });
   }
   final testId = _testNumber++;
-  test(description, skip: skip, timeout: timeout, () async {
-    final analysis = await (_analysisContext ??= _TestAnalysisContext.create());
-    final testDirectory = p.join(analysis.directory.path, 'lib', 'test$testId');
-    final path = p.join(testDirectory, 'foo.dart');
-    analysis.write(path, 'library foo;$source');
-    for (final entry in files.entries) {
-      analysis.write(
-        p.join(testDirectory, entry.key),
-        'library "${entry.key}"; ${entry.value}',
+  // A skipped test does not run, so leaves the first analysis to the next one.
+  final firstRunnable =
+      !_declaredRunnableTest && (skip == null || skip == false);
+  if (firstRunnable) _declaredRunnableTest = true;
+  test(
+    description,
+    skip: skip,
+    // The first test of each file to run analyzes the dependencies, such as
+    // Flutter, unless another file already cached them: on CI, all files
+    // start at once.
+    timeout: timeout ?? (firstRunnable ? const Timeout.factor(4) : null),
+    () async {
+      final analysis = await (_analysisContext ??=
+          _TestAnalysisContext.create());
+      final testDirectory = p.join(
+        analysis.directory.path,
+        'lib',
+        'test$testId',
       );
-    }
-    final context = analysis.collection.contextFor(path);
-    await context.applyPendingFileChanges();
-
-    Future<ResolvedLibraryResult> getLibrary() async {
-      return await context.currentSession.getResolvedLibrary(path)
-          as ResolvedLibraryResult;
-    }
-
-    if (runGenerator) {
-      final library = await getLibrary();
-      final generated = RiverpodGenerator(
-        const {},
-      ).generateForUnit(library.units.map((e) => e.unit).toList());
-      analysis.write(
-        p.join(testDirectory, 'foo.g.dart'),
-        'part of "foo.dart";$generated',
-      );
+      final path = p.join(testDirectory, 'foo.dart');
+      analysis.write(path, 'library foo;$source');
+      for (final entry in files.entries) {
+        analysis.write(
+          p.join(testDirectory, entry.key),
+          'library "${entry.key}"; ${entry.value}',
+        );
+      }
+      final context = analysis.collection.contextFor(path);
       await context.applyPendingFileChanges();
-    }
 
-    final library = await getLibrary();
-    final unit = library.units.firstWhere((unit) => unit.path == path).unit;
-    try {
-      await run(TestSourceResolver(context, path), unit, library.units);
-    } finally {
-      collectErrors(() {
-        for (final unit in library.units) {
-          expectRiverpodAstOnlyHasASingleOptionPerNode(unit.unit);
-        }
-      });
-    }
-  });
+      Future<ResolvedLibraryResult> getLibrary() async {
+        return await context.currentSession.getResolvedLibrary(path)
+            as ResolvedLibraryResult;
+      }
+
+      if (runGenerator) {
+        final library = await getLibrary();
+        final generated = RiverpodGenerator(
+          const {},
+        ).generateForUnit(library.units.map((e) => e.unit).toList());
+        analysis.write(
+          p.join(testDirectory, 'foo.g.dart'),
+          'part of "foo.dart";$generated',
+        );
+        await context.applyPendingFileChanges();
+      }
+
+      final library = await getLibrary();
+      // Writes are asynchronous, and lost if the isolate exits before they end.
+      await analysis.byteStore.flush();
+      final unit = library.units.firstWhere((unit) => unit.path == path).unit;
+      try {
+        await run(TestSourceResolver(context, path), unit, library.units);
+      } finally {
+        collectErrors(() {
+          for (final unit in library.units) {
+            expectRiverpodAstOnlyHasASingleOptionPerNode(unit.unit);
+          }
+        });
+      }
+    },
+  );
 }
+
+/// Matches the `toSource()` of the node that begins a cascade section.
+///
+/// Since analyzer 14.7.0, it starts with the cascade operator (`..watch(dep)`
+/// rather than `watch(dep)`).
+Matcher cascadeSectionSource(String source) => anyOf(source, '..$source');
 
 /// Asserts that no [AstNode] has more than one Riverpod AST representation.
 void expectRiverpodAstOnlyHasASingleOptionPerNode(AstNode node) {
@@ -287,7 +341,6 @@ extension FindAst<NodeT extends AstNode> on List<NodeT> {
 }
 
 extension ResolverX on TestSourceResolver {
-  // ignore: invalid_use_of_internal_member
   Future<RiverpodAnalysisResult> resolveRiverpodAnalysisResult({
     String libraryName = 'foo',
     bool ignoreErrors = false,

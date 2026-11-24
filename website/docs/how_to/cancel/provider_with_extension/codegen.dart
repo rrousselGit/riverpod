@@ -9,7 +9,7 @@ part 'codegen.g.dart';
 
 /* SNIPPET START */
 @riverpod
-Future<Activity> activity(Ref ref) async {
+Future<Brewery> brewery(Ref ref) async {
   // {@template client}
   // We obtain an HTTP client using the extension we created earlier.
   // {@endtemplate}
@@ -21,10 +21,10 @@ Future<Activity> activity(Ref ref) async {
   // leaves the page.
   // {@endtemplate}
   final response = await client.get(
-    Uri.https('www.boredapi.com', '/api/activity'),
+    Uri.https('api.openbrewerydb.org', '/v1/breweries/random'),
   );
 
-  final json = jsonDecode(response.body) as Map;
-  return Activity.fromJson(Map.from(json));
+  final json = (jsonDecode(response.body) as List).first as Map;
+  return Brewery.fromJson(Map.from(json));
 }
 /* SNIPPET END */

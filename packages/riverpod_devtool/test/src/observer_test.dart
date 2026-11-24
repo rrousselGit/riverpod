@@ -1,10 +1,9 @@
 import 'dart:async';
 
-import 'package:devtools_app_shared/service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_devtool/src/observer.dart';
-import 'package:riverpod_devtool/src/vm_service.dart';
+import 'package:riverpod_devtool_core/riverpod_devtool_core.dart';
 
 void main() {
   test('does not log VM requests cancelled after inspector disposal', () async {

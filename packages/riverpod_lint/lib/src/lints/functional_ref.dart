@@ -14,7 +14,6 @@ import 'package:collection/collection.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../imports.dart';
-import '../riverpod_custom_lint.dart';
 
 class FunctionalRef extends AnalysisRule {
   FunctionalRef() : super(name: code.name, description: code.problemMessage);
@@ -74,8 +73,10 @@ class _Visitor extends SimpleAstVisitor<void> {
     final refNodeType = refNode.type;
     if (refNodeType == null) return;
 
-    final expectedRefName = refNameFor(declaration);
-    if (refNodeType.beginToken.lexeme != expectedRefName) {
+    // Checks the resolved type rather than the source, so that a prefixed
+    // `r.Ref` is accepted.
+    final type = refNodeType.type;
+    if (type == null || !refType.isExactlyType(type)) {
       rule.reportAtNode(refNodeType, arguments: []);
     }
   }

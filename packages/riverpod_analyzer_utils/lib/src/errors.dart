@@ -17,6 +17,7 @@ enum RiverpodAnalysisErrorCode {
   providerOrFamilyExpressionParseError,
   invalidRetryArgument,
   invalidProviderNameStripPattern,
+  invalidProviderType,
 }
 
 class RiverpodAnalysisError {

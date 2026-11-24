@@ -25,6 +25,3 @@ int incorrectlyTyped(
 int noRefButArgs({int a = 42}) {
   return 0;
 }
-
-@riverpod
-int valid(Ref ref) => 0;

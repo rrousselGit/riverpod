@@ -1,5 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, type=warning
+// ignore_for_file: type=lint, type=warning, todo
 // Offsets for "class_based_to_functional_provider":
 // 18: @riverpod
 // 19: <>class <>ExampleFamily <>extends <>_$ExampleFamily <>{

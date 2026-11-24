@@ -1,5 +1,8 @@
 part of '../framework.dart';
 
+// Examples can assume:
+// import 'package:riverpod/misc.dart';
+
 /// A flag to control whether Riverpod should track the [StackTrace] of providers
 /// when they are created.
 ///
@@ -155,14 +158,16 @@ class RiverpodDevtool {
   }
 
   T withFrameCache<T>(String sessionId, T Function() encode) {
-    if (_encodingSession != null) {
-      throw StateError('Nested frame serialization');
-    }
-    final session = _encodingSession = _session(sessionId);
+    final session = _session(sessionId);
+    if (session.isEncoding) throw StateError('Nested frame serialization');
+    // The VM can run the evaluation of a client in the middle of the one of
+    // another client. The interrupted export resumes once this one is done.
+    final interrupted = _encodingSession;
+    _encodingSession = session;
     try {
       return session.withFrameCache(encode);
     } finally {
-      _encodingSession = null;
+      _encodingSession = interrupted;
     }
   }
 
@@ -281,6 +286,8 @@ class _DevtoolSession {
   final _frameCacheKeys = Map<Object?, String>.identity();
   Set<String>? _usedKeys;
   Set<String>? _createdKeys;
+
+  bool get isEncoding => _usedKeys != null;
 
   void renew() {
     _expiration?.cancel();

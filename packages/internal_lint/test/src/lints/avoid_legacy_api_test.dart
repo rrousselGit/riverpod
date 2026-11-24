@@ -37,7 +37,7 @@ void main() {
 
   test('reports imports and uses of legacy APIs', () async {
     final root = createFixture({
-      'scripts/legacy_api.yaml': _policy,
+      'baselines/legacy_api.yaml': _policy,
       'a.dart': _legacyUse,
     });
 
@@ -61,7 +61,7 @@ import 'package:riverpod/legacy.dart' show StateProvider;
 void fn() {}
 ''';
     final root = createFixture({
-      'scripts/legacy_api.yaml': _policy,
+      'baselines/legacy_api.yaml': _policy,
       'a.dart': content,
     });
 
@@ -84,7 +84,7 @@ void fn(Ref ref) {
 }
 ''';
     final root = createFixture({
-      'scripts/legacy_api.yaml': _policy,
+      'baselines/legacy_api.yaml': _policy,
       'other.dart': _legacyUse,
       'a.dart': content,
     });
@@ -104,7 +104,7 @@ export 'package:riverpod/src/internals.dart' hide StateProvider, StateNotifier, 
 export 'package:riverpod/legacy.dart';
 ''';
     final root = createFixture({
-      'scripts/legacy_api.yaml': _policy,
+      'baselines/legacy_api.yaml': _policy,
       'a.dart': content,
     });
 
@@ -118,7 +118,7 @@ export 'package:riverpod/legacy.dart';
 
   test('allows the files that the policy allows', () async {
     final root = createFixture({
-      'scripts/legacy_api.yaml': _policy,
+      'baselines/legacy_api.yaml': _policy,
       'allowed/a.dart': _legacyUse,
     });
 
@@ -127,7 +127,7 @@ export 'package:riverpod/legacy.dart';
 
   test('skips ignored files', () async {
     final root = createFixture({
-      'scripts/legacy_api.yaml': _policy,
+      'baselines/legacy_api.yaml': _policy,
       'ignored/a.dart': _legacyUse,
     });
 
@@ -136,7 +136,7 @@ export 'package:riverpod/legacy.dart';
 
   test('allows the files of the baseline', () async {
     final root = createFixture({
-      'scripts/legacy_api.yaml': _policy,
+      'baselines/legacy_api.yaml': _policy,
       'baseline_used.dart': _legacyUse,
     });
 
@@ -145,7 +145,7 @@ export 'package:riverpod/legacy.dart';
 
   test('reports baseline files that no longer use legacy APIs', () async {
     final root = createFixture({
-      'scripts/legacy_api.yaml': _policy,
+      'baselines/legacy_api.yaml': _policy,
       'baseline_unused.dart': 'void main() {}',
     });
 
@@ -161,8 +161,8 @@ export 'package:riverpod/legacy.dart';
 
   test('reads the policy of the closest parent folder', () async {
     final root = createFixture({
-      'scripts/legacy_api.yaml': 'allowed:\n  - "**"\n',
-      'nested/scripts/legacy_api.yaml': _policy,
+      'baselines/legacy_api.yaml': 'allowed:\n  - "**"\n',
+      'nested/baselines/legacy_api.yaml': _policy,
       'nested/a.dart': _legacyUse,
     });
 

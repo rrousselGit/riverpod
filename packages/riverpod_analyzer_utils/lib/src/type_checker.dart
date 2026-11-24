@@ -23,11 +23,11 @@ abstract class TypeChecker {
   /// provided type checkers return true, which is useful for deprecating an
   /// API:
   /// ```dart
-  /// const $Foo = const TypeChecker.fromRuntime(Foo);
-  /// const $Bar = const TypeChecker.fromRuntime(Bar);
+  /// const $Foo = const TypeChecker.fromName('Foo');
+  /// const $Bar = const TypeChecker.fromName('Bar');
   ///
   /// // Used until $Foo is deleted.
-  /// const $FooOrBar = const TypeChecker.forAny(const [$Foo, $Bar]);
+  /// const $FooOrBar = const TypeChecker.any(const [$Foo, $Bar]);
   /// ```
   const factory TypeChecker.any(Iterable<TypeChecker> checkers) = _AnyChecker;
 

@@ -5,7 +5,6 @@ import 'analyzer_test_utils.dart';
 void main() {
   testSource(
     'Decode ProviderContainer creations',
-    timeout: const Timeout.factor(4),
     source: '''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/misc.dart';

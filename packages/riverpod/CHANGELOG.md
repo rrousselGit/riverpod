@@ -1,5 +1,26 @@
-## Unreleased minor
+## Unreleased patch
 
+- Fix the deprecation messages of `exists` pointing to `provider.exist`, which does not exist, instead of `provider.exists`. (thanks to @BiAksoy)
+- Fix the devtool failing to refresh when several tools inspect an application at the same time.
+- Fix an `autoDispose` provider being disposed while still listened to or kept
+  alive, when a `KeepAliveLink` obtained before the provider was invalidated
+  and disposed is closed after the provider was created again. Its listeners
+  then threw `called ProviderSubscription.read on a subscription that was closed` (#4806).
+- Fixed reading `provider.notifier` throwing a type error when a generated
+  `Notifier` is overridden with `overrideWithValue`. This requires regenerating
+  the code with the latest `riverpod_generator`.
+
+## 3.5.0 - 2026-11-06
+
+- `ProviderObserver`s are no longer notified when a provider's future
+  completes after the provider was disposed. This stops `providerDidFail` from
+  reporting disposal errors, such as when an `autoDispose` provider awaiting
+  another provider's `.future` is disposed mid-load (#4706).
+- Added `ProviderDisposedException`. `provider.future` now completes with it
+  instead of a `StateError` when the provider is disposed before emitting a value.
+- Fix resuming a paused subscription scheduling a provider refresh while its dependency graph is still being flushed, which could throw `setState() or markNeedsBuild() called during build` in Flutter with diamond-shaped dependencies. (thanks to @yazanmg)
+- Fix `StreamProvider`/`StreamNotifier` retaining obsolete dependency subscriptions across rebuilds until the stream closes, even after emitting data.
+- `AsyncValueIsLoadingException` now has a public constructor. (thanks to @uveshm003)
 - `debugTrackProviderCreation` is now exported by `package:riverpod/misc.dart`.
 - Devtools now retain only the current provider snapshot by default. Set
   `debugTrackProviderHistory = true` (imported from `package:riverpod/misc.dart`)
@@ -7,11 +28,14 @@
   frames.
 - Devtools inspection caches are released when their client closes or stops
   renewing its session for 30 seconds, including after an abrupt disconnect.
+- Deprecated `Ref.exists`.
+- Added `provider.exists`, which is listenable.
+  This enables writing `ref.listen(provider.exists, ...)`.
+- Fix the deprecated `container.exists`/`ref.exists` returning `false` from a
+  scoped container for a provider mounted in an ancestor but never read through
+  that scope (#4785).
 - Added a regression test for reading a weak `select` subscription on a
   provider that was already mounted by another listener.
-- Deprecated `Ref.exist`.
-- Added `provider.exist`, which is listenable.
-  This enables writing `ref.listen(provider.exist, ...)`.
 - Fix `selectAsync` notifying a closed subscription after an upstream refresh.
 - Fixed `ref.read`/`container.read` of `provider.listenable` throwing an internal `StateError` on `.value`; it now throws a clear one explaining `.listenable` needs `ref.watch`, `ref.listen` or `container.listen` instead (thanks to @Yasser-Ameur)
 - Fixed a debug-only infinite loop in the circular-dependency check. Closing a
@@ -1384,7 +1408,7 @@ Migrated to null-safety
   providers.
 
   For more info, see
-  http://riverpod.dev/docs/concepts/modifiers/auto_dispose#the-argument-type-autodisposeprovider-cant-be-assigned-to-the-parameter-type-alwaysaliveproviderbase
+  https://pub.dev/documentation/riverpod/latest/riverpod/Provider/autoDispose-constant.html
 
 - `ScopedProvider` now accepts `null` as a function:
 
@@ -1601,3 +1625,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+

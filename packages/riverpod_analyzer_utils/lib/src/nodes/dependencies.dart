@@ -19,6 +19,8 @@ extension on CollectionElement {
 
       final element = switch (that) {
         SimpleIdentifier() => that.element,
+        // A function imported with a prefix: `prefix.provider`
+        PrefixedIdentifier() => that.element,
         TypeLiteral() => that.type.element,
         _ => null,
       };
@@ -43,6 +45,8 @@ extension on CollectionElement {
         if (dependencyProvider != null) {
           return ProviderDependency._(provider: dependencyProvider, node: that);
         }
+        // Annotated but unparsable: parsing the provider reported the error.
+        if (RiverpodAnnotationElement._of(element, this) != null) return null;
 
         errorReporter(
           RiverpodAnalysisError.ast(
@@ -63,6 +67,8 @@ extension on CollectionElement {
         if (dependencyProvider != null) {
           return ProviderDependency._(provider: dependencyProvider, node: that);
         }
+        // Annotated but unparsable: parsing the provider reported the error.
+        if (RiverpodAnnotationElement._of(element, this) != null) return null;
 
         errorReporter(
           RiverpodAnalysisError.ast(
@@ -91,6 +97,13 @@ final class ProviderDependency {
 
   final CollectionElement node;
   final GeneratorProviderDeclarationElement provider;
+
+  /// The import prefix used by [node] to refer to [provider], if any.
+  String? get importPrefix => switch (node) {
+    PrefixedIdentifier(:final prefix) => prefix.name,
+    TypeLiteral(:final type) => type.importPrefix?.name.lexeme,
+    _ => null,
+  };
 }
 
 extension on Expression {
@@ -144,6 +157,10 @@ extension on DartObject {
       );
 
       if (provider != null) return provider;
+      // Annotated but unparsable: parsing the provider reported the error.
+      if (RiverpodAnnotationElement._of(functionType, from) != null) {
+        return null;
+      }
     }
 
     final type = toTypeValue();
@@ -154,6 +171,9 @@ extension on DartObject {
       );
 
       if (provider != null) return provider;
+      if (RiverpodAnnotationElement._of(type.element!, from) != null) {
+        return null;
+      }
     }
 
     errorReporter(

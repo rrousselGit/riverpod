@@ -150,7 +150,12 @@ class ClassBasedProviderDeclarationElement
       }
 
       final rootUnit = from.root as CompilationUnit;
-      final types = _computeTypes(buildMethod.returnType, rootUnit);
+      final types = _computeTypes(
+        buildMethod.returnType,
+        rootUnit,
+        providerName: element.name!,
+        from: from,
+      );
       if (types == null) {
         // Error already reported
         return null;

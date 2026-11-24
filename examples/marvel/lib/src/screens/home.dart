@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-// ignore: undefined_hidden_name
 import 'package:material_ui/material_ui.dart' hide SearchBar;
 
 import '../marvel.dart';

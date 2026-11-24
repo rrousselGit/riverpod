@@ -33,11 +33,20 @@ ensure_deps
 if [ $# -eq 1 ]; then
   cd "$ROOT/$1" || exit 1
   [ -d test ] || { echo "$1 has no tests."; exit 0; }
+  # A package that holds the tests of another reports that other's coverage.
+  of="$(tests_of "$1")"
+  # Tests that a plain `dart test` skips, such as slow ones, run here through
+  # the package's `check` preset, if its dart_test.yaml defines one.
+  preset=""
+  awk '/^presets:/ { p = 1; next } /^[^ #]/ { p = 0 } p && /^  check:/ { f = 1 } END { exit !f }' \
+    dart_test.yaml 2>/dev/null && preset="-P check"
+  # shellcheck disable=SC2086 # $preset is empty or a flag and its value
   case "$(test_runner "$1"):$coverage" in
-    chrome:*)           exec flutter test --no-pub --platform chrome ;;
-    flutter:*)          exec flutter test --no-pub $coverage ;;
-    dart:--coverage)    exec "$SCRIPTS/coverage.sh" ;;
-    *)                  exec dart test ;;
+    chrome:*)           exec flutter test --no-pub --platform chrome $preset ;;
+    flutter:--coverage) exec flutter test --no-pub --coverage ${of:+"--coverage-package=^$of\$"} $preset ;;
+    flutter:*)          exec flutter test --no-pub $preset ;;
+    dart:--coverage)    exec "$SCRIPTS/coverage.sh" ${of:+"--scope-output=$of"} ${preset:+-- $preset} ;;
+    *)                  exec dart test $preset ;;
   esac
 fi
 # Activate once here, rather than racing from parallel coverage.sh runs.

@@ -1,5 +1,5 @@
-import 'package:devtools_app_shared/service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_devtool_core/riverpod_devtool_core.dart';
 
 final class Observer extends ProviderObserver {
   const Observer();
@@ -13,7 +13,6 @@ final class Observer extends ProviderObserver {
     // pending VM requests. Those cancellations are expected, not failures.
     if (error is CancelledException) return;
 
-    // ignore: avoid_print
     print(
       'Error in provider ${context.provider}:'
       '\n$error'

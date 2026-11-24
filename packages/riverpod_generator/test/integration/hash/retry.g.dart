@@ -34,7 +34,7 @@ final class AProvider extends $FunctionalProvider<String, String, String>
       $ProviderElement(pointer);
 
   @override
-  String create(Ref ref) {
+  String create(prefix.Ref ref) {
     return a(ref);
   }
 
@@ -79,7 +79,7 @@ final class BProvider extends $FunctionalProvider<String, String, String>
       $ProviderElement(pointer);
 
   @override
-  String create(Ref ref) {
+  String create(prefix.Ref ref) {
     final argument = this.argument as int;
     return b(ref, argument);
   }
@@ -147,7 +147,7 @@ final class CProvider extends $FunctionalProvider<String, String, String>
       $ProviderElement(pointer);
 
   @override
-  String create(Ref ref) {
+  String create(prefix.Ref ref) {
     return c(ref);
   }
 
@@ -187,7 +187,7 @@ final class DProvider extends $FunctionalProvider<String, String, String>
       $ProviderElement(pointer);
 
   @override
-  String create(Ref ref) {
+  String create(prefix.Ref ref) {
     return d(ref);
   }
 

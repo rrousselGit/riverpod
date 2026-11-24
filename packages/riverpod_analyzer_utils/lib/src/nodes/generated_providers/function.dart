@@ -70,7 +70,12 @@ class FunctionalProviderDeclarationElement
       if (riverpodAnnotation == null) return null;
 
       final rootUnit = from.root as CompilationUnit;
-      final types = _computeTypes(element.returnType, rootUnit);
+      final types = _computeTypes(
+        element.returnType,
+        rootUnit,
+        providerName: element.name!,
+        from: from,
+      );
       if (types == null) {
         // Error already reported
         return null;

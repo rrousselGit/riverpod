@@ -1,5 +1,4 @@
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart' show ContainerReadElement;
 import 'package:test/test.dart';
@@ -166,6 +165,25 @@ void main() {
       sub.resume();
       expect(sub.isPaused, false);
     });
+
+    group('when a dependency changed during the pause', () {
+      test('notifies the listener once with the latest value', () {
+        final container = ProviderContainer.test();
+        final dep = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier((ref, _) => 0),
+        );
+        final provider = Provider((ref) => ref.watch(dep));
+        final listener = Listener<int>();
+
+        final sub = container.listen(provider, listener.call);
+
+        sub.pause();
+        container.read(dep.notifier).state++;
+        sub.resume();
+
+        verifyOnly(listener, listener(0, 1));
+      });
+    });
   });
 
   group('ProviderSubscription', () {
@@ -182,8 +200,7 @@ void main() {
     });
 
     test('no longer call listeners anymore after close', () {
-      final counter = Counter();
-      final first = StateNotifierProvider<Counter, int>((ref) => counter);
+      final first = NotifierProvider<Counter, int>(Counter.new);
       final provider = Provider((ref) => ref.watch(first));
       final element = container.readProviderElement(provider);
 
@@ -194,7 +211,7 @@ void main() {
       expect(element.hasNonWeakListeners, true);
 
       sub.close();
-      counter.increment();
+      container.read(first.notifier).increment();
 
       expect(element.hasNonWeakListeners, false);
       verifyZeroInteractions(didChange);
@@ -226,22 +243,20 @@ void main() {
       );
 
       test('flushes the provider', () {
-        final counter = Counter();
-        final first = StateNotifierProvider<Counter, int>((ref) => counter);
+        final first = NotifierProvider<Counter, int>(Counter.new);
         final provider = Provider((ref) => ref.watch(first));
 
         final sub = container.listen(provider, (_, _) {});
 
         expect(sub.read(), 0);
 
-        counter.increment();
+        container.read(first.notifier).increment();
 
         expect(sub.read(), 1);
       });
 
       test('flushes the selected provider', () {
-        final counter = Counter();
-        final first = StateNotifierProvider<Counter, int>((ref) => counter);
+        final first = NotifierProvider<Counter, int>(Counter.new);
         final provider = Provider((ref) => ref.watch(first));
 
         final sub = container.listen(
@@ -251,7 +266,7 @@ void main() {
 
         expect(sub.read(), 0);
 
-        counter.increment();
+        container.read(first.notifier).increment();
 
         expect(sub.read(), 1);
       });

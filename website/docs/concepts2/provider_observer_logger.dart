@@ -2,7 +2,6 @@
 // ignore_for_file: use_key_in_widget_constructors, avoid_print
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:material_ui/material_ui.dart';
 
 /* SNIPPET START */
@@ -50,7 +49,17 @@ class MyApp extends StatelessWidget {
   }
 }
 
-final counterProvider = StateProvider((ref) => 0, name: 'counter');
+final counterProvider = NotifierProvider<Counter, int>(
+  Counter.new,
+  name: 'counter',
+);
+
+class Counter extends Notifier<int> {
+  @override
+  int build() => 0;
+
+  void increment() => state++;
+}
 
 class Home extends ConsumerWidget {
   @override
@@ -63,7 +72,7 @@ class Home extends ConsumerWidget {
         child: Text('$count'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => ref.read(counterProvider.notifier).state++,
+        onPressed: () => ref.read(counterProvider.notifier).increment(),
         child: const Icon(Icons.add),
       ),
     );

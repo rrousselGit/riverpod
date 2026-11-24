@@ -257,10 +257,7 @@ final class GenericClassProvider<ValueT extends num>
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(List<ValueT> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<List<ValueT>>(value),
-    );
+    return $overrideWithValue(value);
   }
 
   @override
@@ -470,10 +467,7 @@ final class RawFutureClassProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Raw<Future<String>> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<Raw<Future<String>>>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 
@@ -522,10 +516,7 @@ final class RawStreamClassProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Raw<Stream<String>> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<Raw<Stream<String>>>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 
@@ -747,10 +738,7 @@ final class RawFamilyFutureClassProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Raw<Future<String>> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<Raw<Future<String>>>(value),
-    );
+    return $overrideWithValue(value);
   }
 
   @override
@@ -845,10 +833,7 @@ final class RawFamilyStreamClassProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Raw<Stream<String>> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<Raw<Stream<String>>>(value),
-    );
+    return $overrideWithValue(value);
   }
 
   @override
@@ -1196,10 +1181,7 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<String>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 
@@ -1250,10 +1232,7 @@ final class _PrivateClassProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<String>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 
@@ -1319,10 +1298,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<String>(value),
-    );
+    return $overrideWithValue(value);
   }
 
   @override
@@ -1469,10 +1445,7 @@ final class LocalStaticDefaultProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<String>(value),
-    );
+    return $overrideWithValue(value);
   }
 
   @override
@@ -1784,10 +1757,7 @@ final class Supports$InClassNameProvider<And$InT>
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<String>(value),
-    );
+    return $overrideWithValue(value);
   }
 
   @override
@@ -1909,10 +1879,7 @@ final class Supports$InClassFamilyNameProvider<And$InT>
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<String>(value),
-    );
+    return $overrideWithValue(value);
   }
 
   @override
@@ -2173,10 +2140,7 @@ final class UnnecessaryCastClassProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<String>(value),
-    );
+    return $overrideWithValue(value);
   }
 
   @override
@@ -2682,10 +2646,7 @@ final class VoidClassProvider extends $NotifierProvider<VoidClass, void> {
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(void value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<void>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 
@@ -2741,10 +2702,7 @@ final class VoidClassWithArgsProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(void value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<void>(value),
-    );
+    return $overrideWithValue(value);
   }
 
   @override

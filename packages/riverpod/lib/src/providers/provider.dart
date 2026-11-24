@@ -3,8 +3,24 @@ import 'package:meta/meta.dart';
 import '../builder.dart';
 import '../common/internal_lints.dart';
 import '../framework.dart';
-import 'legacy/state_notifier_provider.dart' show StateNotifierProvider;
+import 'notifier.dart' show NotifierProvider;
 import 'stream_provider.dart' show StreamProvider;
+
+// Examples can assume:
+// import 'dart:async';
+// import 'package:flutter_riverpod/flutter_riverpod.dart' show ProviderScope;
+// import 'package:material_ui/material_ui.dart';
+//
+// class MyValue {}
+//
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) => const Placeholder();
+// }
+//
+// Future<String> fetchWeather({required String city}) async => 'Sunny';
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use, as this may be removed at any time.
@@ -90,7 +106,7 @@ final class Provider<ValueT> extends $FunctionalProvider<ValueT, ValueT, ValueT>
   ///
   /// We can then override this provider with the current theme of the app:
   ///
-  /// ```dart
+  /// ```dart continued
   /// MaterialApp(
   ///   builder: (context, child) {
   ///     final theme = Theme.of(context);
@@ -169,7 +185,7 @@ final class Provider<ValueT> extends $FunctionalProvider<ValueT, ValueT, ValueT>
 ///   [Provider] is the most basic of all providers. It exposes an object that never
 ///   changes.\
 ///   We could replace [Provider] with other providers like [StreamProvider] or
-///   [StateNotifierProvider], to change how the value is interacted with.
+///   [NotifierProvider], to change how the value is interacted with.
 ///
 /// - A function that creates the shared state.\
 ///   That function will always receive an object called `ref` as a parameter. This object
@@ -220,7 +236,7 @@ final class Provider<ValueT> extends $FunctionalProvider<ValueT, ValueT, ValueT>
 ///
 /// We can now create another provider that will consume our `cityProvider`:
 ///
-/// ```dart
+/// ```dart continued
 /// final weatherProvider = FutureProvider((ref) async {
 ///   // We use `ref.watch` to watch another provider, and we pass it the provider
 ///   // that we want to consume. Here: cityProvider

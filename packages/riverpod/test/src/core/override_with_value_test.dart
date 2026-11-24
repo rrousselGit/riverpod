@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/framework.dart' show debugCanModifyProviders;
 import 'package:test/test.dart';
 
+import '../matrix.dart';
 import '../utils.dart';
 
 void main() {
@@ -525,6 +527,151 @@ void main() {
 
         await expectLater(future, completion(42));
       });
+    });
+  });
+
+  group('NotifierValueProvider', () {
+    // Regression tests for https://github.com/rrousselGit/riverpod/issues/4699
+    final provider = NotifierProvider<DeferredNotifier<int>, int>(
+      () => DeferredNotifier((ref, self) => fail('Should not call build')),
+    );
+
+    test('updating the override with a different value '
+        'sets the state without rebuilding the notifier', () {
+      final container = ProviderContainer.test(
+        overrides: [provider.$overrideWithValue(42)],
+      );
+      final listener = Listener<int>();
+      container.listen(provider, listener.call);
+      final notifier = container.read(provider.notifier);
+      var disposed = false;
+      notifier.ref.onDispose(() => disposed = true);
+
+      container.updateOverrides([provider.$overrideWithValue(21)]);
+
+      verifyOnly(listener, listener(42, 21));
+      expect(container.read(provider.notifier), same(notifier));
+      expect(disposed, false);
+
+      // Later rebuilds use the new value too.
+      notifier.state = 0;
+      container.invalidate(provider);
+      expect(container.read(provider), 21);
+    });
+
+    test('the override can be updated while another provider is building', () {
+      // As set by Flutter, to reject changes made while widgets are building.
+      debugCanModifyProviders = () => fail('Should not be called');
+      addTearDown(() => debugCanModifyProviders = null);
+      final container = ProviderContainer.test(
+        overrides: [provider.$overrideWithValue(42)],
+      );
+      final listener = Listener<int>();
+      container.listen(provider, listener.call);
+      final other = Provider((ref) {
+        container.updateOverrides([provider.$overrideWithValue(21)]);
+        return 0;
+      });
+
+      container.read(other);
+
+      verifyOnly(listener, listener(42, 21));
+    });
+
+    test('updating the override respects Notifier.updateShouldNotify', () {
+      final provider = NotifierProvider<DeferredNotifier<int>, int>(
+        () => DeferredNotifier(
+          (ref, self) => 0,
+          updateShouldNotify: (previous, next) => next.isEven,
+        ),
+      );
+      final container = ProviderContainer.test(
+        overrides: [provider.$overrideWithValue(0)],
+      );
+      final listener = Listener<int>();
+      container.listen(provider, listener.call);
+
+      container.updateOverrides([provider.$overrideWithValue(1)]);
+
+      verifyZeroInteractions(listener);
+      expect(container.read(provider), 1);
+
+      container.updateOverrides([provider.$overrideWithValue(2)]);
+
+      verifyOnly(listener, listener(1, 2));
+    });
+
+    test('a failing update does not disable the asserts '
+        'against modifying providers during a build', () {
+      var shouldThrow = true;
+      final provider = NotifierProvider<DeferredNotifier<int>, int>(
+        () => DeferredNotifier(
+          (ref, self) => 0,
+          updateShouldNotify: (previous, next) {
+            if (shouldThrow) throw StateError('foo');
+            return true;
+          },
+        ),
+      );
+      final errors = <Object>[];
+      final container = runZonedGuarded(
+        () => ProviderContainer.test(
+          overrides: [provider.$overrideWithValue(42)],
+        ),
+        (err, stack) => errors.add(err),
+      )!;
+      container.read(provider);
+
+      container.updateOverrides([provider.$overrideWithValue(21)]);
+      expect(errors, [isStateError]);
+      shouldThrow = false;
+
+      final other = Provider((ref) {
+        ref.read(provider.notifier).state = 0;
+        return 0;
+      });
+
+      expect(
+        () => container.read(other),
+        throwsProviderException(isA<AssertionError>()),
+      );
+    });
+
+    test('updating the override with the same value '
+        'keeps the changes made by the notifier', () {
+      final container = ProviderContainer.test(
+        overrides: [provider.$overrideWithValue(42)],
+      );
+      final listener = Listener<int>();
+      container.listen(provider, listener.call);
+      container.read(provider.notifier).state = 43;
+      clearInteractions(listener);
+
+      container.updateOverrides([provider.$overrideWithValue(42)]);
+
+      verifyZeroInteractions(listener);
+      expect(container.read(provider), 43);
+    });
+
+    test('updating the override does not hide '
+        'that the notifier failed to be created', () {
+      final provider = NotifierProvider<DeferredNotifier<int>, int>(
+        () => throw StateError('foo'),
+      );
+      final container = ProviderContainer.test(
+        overrides: [provider.$overrideWithValue(42)],
+      );
+      expect(
+        () => container.read(provider),
+        throwsProviderException(isStateError),
+      );
+
+      container.updateOverrides([provider.$overrideWithValue(21)]);
+
+      expect(
+        () => container.read(provider),
+        throwsProviderException(isStateError),
+      );
     });
   });
 }

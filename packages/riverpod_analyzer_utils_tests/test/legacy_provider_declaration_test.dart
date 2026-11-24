@@ -573,6 +573,8 @@ final autoDisposeFamily2 = AsyncNotifierProvider.family.autoDispose<AsyncNotifie
 
     testSource(
       'Decode LegacyProviderType.changeNotifierProvider',
+      // The first test of the file to resolve package:flutter, which is slow.
+      timeout: const Timeout.factor(4),
       source: '''
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_riverpod/misc.dart';

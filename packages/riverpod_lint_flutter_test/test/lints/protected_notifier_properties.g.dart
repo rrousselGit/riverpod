@@ -33,10 +33,7 @@ final class AProvider extends $NotifierProvider<A, int> {
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<int>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 
@@ -84,10 +81,7 @@ final class A2Provider extends $NotifierProvider<A2, int> {
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<int>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 
@@ -140,10 +134,7 @@ final class A3Provider extends $NotifierProvider<A3, int> {
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<int>(value),
-    );
+    return $overrideWithValue(value);
   }
 
   @override
@@ -226,10 +217,7 @@ final class A4Provider extends $NotifierProvider<A4, int> {
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<int>(value),
-    );
+    return $overrideWithValue(value);
   }
 
   @override
@@ -619,10 +607,7 @@ final class BProvider extends $NotifierProvider<B, int> {
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<int>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 
@@ -670,10 +655,7 @@ final class B2Provider extends $NotifierProvider<B2, int> {
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<int>(value),
-    );
+    return $overrideWithValue(value);
   }
 }
 

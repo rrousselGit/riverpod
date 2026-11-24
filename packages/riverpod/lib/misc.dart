@@ -17,6 +17,7 @@ export 'src/internals.dart'
         ProviderListenable,
         Override,
         ProviderBase,
+        ProviderDisposedException,
         KeepAliveLink,
         ProviderException,
         ProviderTransformerContext,

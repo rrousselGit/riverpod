@@ -1,5 +1,3 @@
-// ignore_for_file: invalid_use_of_internal_member
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';

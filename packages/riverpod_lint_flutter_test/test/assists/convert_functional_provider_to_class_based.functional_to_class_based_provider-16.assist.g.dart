@@ -89,10 +89,7 @@ final class ExampleFamilyProvider
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<int>(value),
-    );
+    return $overrideWithValue(value);
   }
 
   @override

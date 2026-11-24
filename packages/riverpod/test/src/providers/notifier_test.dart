@@ -1,8 +1,5 @@
-// ignore_for_file: invalid_use_of_protected_member, prefer_const_constructors
-
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart' show UnmountedRefException;
 import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
@@ -212,7 +209,7 @@ void main() {
     );
 
     test('calls notifier.build on every watch update', () async {
-      final dep = StateProvider((ref) => 0);
+      final dep = NotifierProvider(() => SettableNotifier((ref) => 0));
       final provider = factory.simpleTestProvider((ref, _) {
         return ref.watch(dep);
       });
@@ -606,6 +603,24 @@ void main() {
       reason: 'notifierA should keep its current state when notifierB changes',
     );
     expect(subB.read(), 21, reason: 'notifierB should update its state to 21');
+  });
+
+  test(r'$overrideWithValue exposes the value, with a usable notifier', () {
+    // Regression test for https://github.com/rrousselGit/riverpod/issues/4699
+    final provider = NotifierProvider<DeferredNotifier<int>, int>(
+      () => DeferredNotifier((ref, self) => fail('Should not call build')),
+    );
+    final container = ProviderContainer.test(
+      overrides: [provider.$overrideWithValue(42)],
+    );
+
+    expect(container.read(provider), 42);
+
+    container.read(provider.notifier).state++;
+    expect(container.read(provider), 43);
+
+    container.invalidate(provider);
+    expect(container.read(provider), 42);
   });
 }
 

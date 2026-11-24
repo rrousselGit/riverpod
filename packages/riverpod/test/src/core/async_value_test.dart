@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_types_on_closure_parameters, prefer_const_constructors, prefer_const_declarations
+// ignore_for_file: prefer_const_declarations
 
 import 'dart:async';
 
@@ -1354,6 +1354,19 @@ void main() {
     try {} on AsyncValueIsLoadingException {
       // Can catch AsyncValueIsLoadingException without triggering a warning.
     }
+  });
+
+  test('AsyncValueIsLoadingException can be constructed', () {
+    const loading = AsyncLoading<int>();
+    final exception = AsyncValueIsLoadingException(loading);
+
+    expect(exception.value, same(loading));
+    expect(
+      exception.toString(),
+      'AsyncValueIsLoadingException: '
+      '`requireValue` was called on the async value `$loading`, '
+      'yet it neither has an error nor a value.',
+    );
   });
 
   test('requireValue', () {

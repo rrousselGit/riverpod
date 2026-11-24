@@ -130,6 +130,97 @@ Future<Raw<int>> value3(Ref ref) async => 0;
     },
   );
 
+  group('Invalid provider types', () {
+    testSource(
+      'Reports an error and skips providers with unresolved types',
+      source: r'''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+@riverpod
+MissingType invalid(Ref ref) => throw UnimplementedError();
+
+@riverpod
+Future<MissingType> invalidFuture(Ref ref) async => throw UnimplementedError();
+
+@riverpod
+class InvalidNotifier extends _$InvalidNotifier {
+  @override
+  MissingType build() => throw UnimplementedError();
+}
+
+@riverpod
+class InvalidStream extends _$InvalidStream {
+  @override
+  Stream<MissingType> build() => throw UnimplementedError();
+}
+''',
+      (resolver, unit, units) async {
+        final errors = collectErrors(() {
+          for (final name in [
+            'invalid',
+            'invalidFuture',
+            'InvalidNotifier',
+            'InvalidStream',
+          ]) {
+            expect(unit.declarations.findByName(name).provider, isNull);
+          }
+        });
+
+        expect(errors.map((e) => (e.code, e.message, e.targetNode)), [
+          for (final name in [
+            'invalid',
+            'invalidFuture',
+            'InvalidNotifier',
+            'InvalidStream',
+          ])
+            (
+              RiverpodAnalysisErrorCode.invalidProviderType,
+              'Invalid provider type: the return type of "$name" '
+                  'could not be resolved.',
+              unit.declarations.findByName(name),
+            ),
+        ]);
+      },
+    );
+
+    testSource(
+      'Depending on a provider with an unresolved type does not report a second error',
+      source: r'''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+@riverpod
+MissingType invalid(Ref ref) => throw UnimplementedError();
+
+@riverpod
+class InvalidNotifier extends _$InvalidNotifier {
+  @override
+  MissingType build() => throw UnimplementedError();
+}
+
+@Riverpod(dependencies: [invalid, InvalidNotifier])
+int dependent(Ref ref) => 0;
+''',
+      (resolver, unit, units) async {
+        final errors = collectErrors(() {
+          for (final d in unit.declarations) {
+            d.provider;
+          }
+        });
+
+        expect(errors.map((e) => (e.code, e.targetNode)), [
+          (
+            RiverpodAnalysisErrorCode.invalidProviderType,
+            unit.declarations.findByName('invalid'),
+          ),
+          (
+            RiverpodAnalysisErrorCode.invalidProviderType,
+            unit.declarations.findByName('InvalidNotifier'),
+          ),
+        ]);
+      },
+    );
+  });
+
   testSource(
     'Decode isScoped',
     source: '''

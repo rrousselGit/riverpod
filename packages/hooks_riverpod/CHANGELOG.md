@@ -1,5 +1,13 @@
-## Unreleased minor
+## 3.5.0 - 2026-11-06
 
+- `ProviderObserver`s are no longer notified when a provider's future
+  completes after the provider was disposed. This stops `providerDidFail` from
+  reporting disposal errors, such as when an `autoDispose` provider awaiting
+  another provider's `.future` is disposed mid-load (#4706).
+- `ProviderDisposedException` is now exported by `package:hooks_riverpod/misc.dart`.
+  `provider.future` completes with it instead of a `StateError` when the
+  provider is disposed before emitting a value.
+- `AsyncValueIsLoadingException` now has a public constructor. (thanks to @uveshm003)
 - `debugTrackProviderCreation` is now exported by `package:hooks_riverpod/misc.dart`.
 - `provider.listenable` is now available from `package:hooks_riverpod/hooks_riverpod.dart`, and
   `CustomProviderListenable`, `ProviderTransformer2`,
@@ -11,9 +19,9 @@
   frames.
 - Devtools inspection caches are released when their client closes or stops
   renewing its session for 30 seconds, including after an abrupt disconnect.
-- Deprecated `Ref.exist`.
-- Added `provider.exist`, which is listenable.
-  This enables writing `ref.listen(provider.exist, ...)`.
+- Deprecated `Ref.exists`.
+- Added `provider.exists`, which is listenable.
+  This enables writing `ref.listen(provider.exists, ...)`.
 - Fix `selectAsync` notifying a closed subscription after an upstream refresh.
 - Fixed `ref.read`/`container.read` of `provider.listenable` throwing an internal `StateError` on `.value`; it now throws a clear one explaining `.listenable` needs `ref.watch`, `ref.listen` or `container.listen` instead (thanks to @Yasser-Ameur)
 - Fixed a debug-only infinite loop in the circular-dependency check. Closing a
@@ -23,6 +31,11 @@
 - Migrated Material imports to `package:material_ui/material_ui.dart` and added
   `material_ui` as a dependency.
 - Updated the DevTools extension to use Material UI themes and localizations.
+
+### Dependency changes
+
+- `flutter_riverpod` upgraded to `3.5.0`
+- `riverpod` upgraded to `3.5.0`
 
 ## 3.4.3 - 2026-09-04
 
@@ -1614,7 +1627,7 @@ Fixed a bug that prevented the use of `ConsumerWidget` under normal circumstance
 - `ref.watch` on non ".autoDispose" providers can no longer read ".autoDispose"
   providers.
 
-  For more info, see http://riverpod.dev/docs/concepts/modifiers/auto_dispose#the-argument-type-autodisposeprovider-cant-be-assigned-to-the-parameter-type-alwaysaliveproviderbase
+  For more info, see https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/Provider/autoDispose-constant.html
 
 - `ScopedProvider` now accepts `null` as a function:
 
@@ -1841,3 +1854,4 @@ The behavior is the same. Only the syntax changed.
 Initial release
 
 <!-- cSpell:ignoreRegExp @\w+ -->
+
