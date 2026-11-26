@@ -1858,6 +1858,30 @@ void main() {
           expect(callCount, 1);
         },
       );
+
+      test('notifies observers of a disposal once per rebuild', () {
+        final observer = ObserverMock();
+        final container = ProviderContainer.test(observers: [observer]);
+        final onDispose = OnDisposeMock();
+        var callCount = 0;
+        final provider = Provider((ref) {
+          ref.onDispose(onDispose.call);
+          return ++callCount;
+        });
+
+        container.read(provider);
+        clearInteractions(observer);
+
+        container.invalidate(provider);
+        container.read(provider);
+
+        verifyInOrder([
+          observer.didDisposeProvider(any),
+          observer.didUpdateProvider(any, 1, 2),
+        ]);
+        verifyNoMoreInteractions(observer);
+        verify(onDispose()).called(1);
+      });
     });
   });
 }

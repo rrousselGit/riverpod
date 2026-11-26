@@ -450,6 +450,7 @@ abstract class ProviderElement<StateT, ValueT> {
   // ignore: type_annotate_public_apis, false positive
   var unsafeCheckIfMounted = true;
   $Ref<StateT, ValueT>? ref;
+  $Ref<StateT, ValueT>? _refDisposedForObservers;
 
   /// Whether this [ProviderElement] is actively in use.
   ///
@@ -1320,7 +1321,10 @@ $this''',
 
     _runCallbacks(container, ref._onDisposeListeners);
 
-    if (!origin._isSynthetic) {
+    // Invalidating a provider runs this, then rebuilding it runs this again for
+    // the same Ref. Observers are only told about the first disposal.
+    if (!origin._isSynthetic && !identical(ref, _refDisposedForObservers)) {
+      _refDisposedForObservers = ref;
       for (final observer in container.observers) {
         container.runUnaryGuarded(
           observer.didDisposeProvider,
