@@ -9,6 +9,9 @@
 - Fixed reading `provider.notifier` throwing a type error when a generated
   `Notifier` is overridden with `overrideWithValue`. This requires regenerating
   the code with the latest `riverpod_generator`.
+- Fix `ProviderObserver.didDisposeProvider` being called twice for a single
+  disposal, such as when a provider is invalidated, refreshed or rebuilt
+  because a dependency changed (thanks to @Yasser-Ameur).
 
 ## 3.5.0 - 2026-11-06
 
